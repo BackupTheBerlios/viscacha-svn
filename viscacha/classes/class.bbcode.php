@@ -205,14 +205,11 @@ class BBCode {
 		$this->noparse[$pid] = $desc;
 		return $o;
 	}
-	function cb_url ($url, $title = FALSE, $img = FALSE, $chop = FALSE) {
+	function cb_url ($url, $title = false, $img = false, $chop = '') {
 		global $config;
 
-		if ($chop != FALSE) {
-			$chars = explode("'", $chop);
-		}
-		if ((isset($chars) && (($chars[0] == '>' && $chars[1] == '<') || ($chars[0] == '"' && $chars[1] == '"'))) || ($img && preg_match("/(([^?&=].*?)\.(png|gif|bmp|jpg|jpe|jpeg))/is", $url)) || preg_match("/(\")/is", $url)) {
-			return $chars[0].$url.$chars[1];
+		if ($img && preg_match("/(([^?&=].*?)\.(png|gif|bmp|jpg|jpe|jpeg))/is", $url)) {
+			return $url.$chop;
 		}
 
 		$url = trim($url);
@@ -220,12 +217,20 @@ class BBCode {
 			$url = "http://".$url;
 		}
 		
+		$specialchars = array('&quot;','&gt;','&lt;','&#039;');
+		foreach ($specialchars as $char) {
+			$full = $url.$chop;
+			if (($pos = strpos($full, $char)) !== false) {
+				$url = substr($full, 0, $pos);
+				$chop = substr($full, $pos);
+				break;
+			}
+		}
+		
 		$pid = $this->noparse_id();
 		$this->noparse[$pid] = $url;
 		
-		// Workaround for a bug with ' Entity (&#039;) 
-		$add039 = '';
-		if ($title != FALSE) {
+		if ($title != false) {
 		    $ahref = '<a href="<!PID:'.$pid.'>" target="_blank">'.$title.'</a>';
 		    return $ahref;
 		}	
@@ -236,17 +241,13 @@ class BBCode {
 			   $suffix = ceil($config['maxurllength']/3);
 			}
 			$newurl = substr($url, 0, $suffix+1).$config['maxurltrenner'].substr($url, -$prefix);
-			$ahref = '<a href="<!PID:'.$pid.'>" target="_blank">'.$newurl.'</a>'.$add039;
+			$ahref = '<a href="<!PID:'.$pid.'>" target="_blank">'.$newurl.'</a>';
 		}
 		else{  
-		   $ahref = '<a href="<!PID:'.$pid.'>" target="_blank">'.$url.'</a>'.$add039;
+		   $ahref = '<a href="<!PID:'.$pid.'>" target="_blank">'.$url.'</a>';
 		}
-		if (isset($chars)) {
-	    	return $chars[0].$ahref.$chars[1];
-	    }
-	    else {
-	        return $ahref;
-	    }
+		
+	    return $ahref.$chop;
 	}
 	function cb_pdf_list ($type,$pattern) {
 	    $liarray = preg_split('/(\n\s?-\s|\[\*\])/',$pattern);
@@ -408,7 +409,7 @@ class BBCode {
 	function strip_bbcodes ($text) {
 		$text = preg_replace('/(\r\n|\r|\n)/', "\n", $text);
 		$text = preg_replace('/\[hide\](.+?)\[\/hide\]/is', '', $text);
-		$text = preg_replace("~\[url=((news:|telnet://|callto://|irc://|teamspeak://|http://|https://|ftp://|www.|mailto:|ed2k://|\w+?.\w{2,7})[a-z0-9;\/\?:@=\&\$\-_\.\+!\*'\(\),\~%#]+?)\](.+?)\[\/url\]~is", "\\3", $text);
+		$text = preg_replace("~\[url=((telnet://|callto://|irc://|teamspeak://|http://|https://|ftp://|www.|mailto:|ed2k://|\w+?.\w{2,7})[a-z0-9;\/\?:@=\&\$\-_\.\+!\*'\(\),\~%#]+?)\](.+?)\[\/url\]~is", "\\3", $text);
 
 		$search = array(
 			'[sub]','[/sub]',
@@ -473,7 +474,7 @@ class BBCode {
 		    $text = preg_replace('/\[hide\](.+?)\[\/hide\]/is', '', $text);
 		}
 		if ($type == 'plain') {
-			$text = preg_replace("~\[url=((news:|telnet://|callto://|irc://|teamspeak://|http://|https://|ftp://|www.|mailto:|ed2k://|\w+?.\w{2,7})[a-z0-9;\/\?:@=\&\$\-_\.\+!\*'\(\),\~%#]+?)\](.+?)\[\/url\]~is", "\\3 (\\1)", $text);
+			$text = preg_replace("~\[url=((telnet://|callto://|irc://|teamspeak://|http://|https://|ftp://|www.|mailto:|ed2k://|\w+?.\w{2,7})[a-z0-9;\/\?:@=\&\$\-_\.\+!\*'\(\),\~%#]+?)\](.+?)\[\/url\]~is", "\\3 (\\1)", $text);
 
 			$search = array(
 			'[sub]','[/sub]',
@@ -527,8 +528,8 @@ class BBCode {
 			}
 			$text = preg_replace('/\[note=(.+?)\](.+?)\[\/note\]/is', "\\1 (<i>\\2</i>)", $text);
 
-			$text = preg_replace("~\[url\]((news:|telnet://|callto://|irc://|teamspeak://|http://|https://|ftp://|www.|mailto:|ed2k://|\w+?.\w{2,7})+:\/\/[a-z0-9;\/\?:@=\&\$\-_\.\+!\*'\(\),\~%#]+?)\[\/url\]~is", "<a href=\"\\1\">\\1</a>", $text);
-			$text = preg_replace("~\[url=((news:|telnet://|callto://|irc://|teamspeak://|http://|https://|ftp://|www.|mailto:|ed2k://|\w+?.\w{2,7})[a-z0-9;\/\?:@=\&\$\-_\.\+!\*'\(\),\~%#]+?)\](.+?)\[\/url\]~is", "<a href=\"\\1\">\\3</a>", $text);
+			$text = preg_replace("~\[url\]((telnet://|callto://|irc://|teamspeak://|http://|https://|ftp://|www.|mailto:|ed2k://|\w+?.\w{2,7})+:\/\/[a-z0-9;\/\?:@=\&\$\-_\.\+!\*'\(\),\~%#]+?)\[\/url\]~is", "<a href=\"\\1\">\\1</a>", $text);
+			$text = preg_replace("~\[url=((telnet://|callto://|irc://|teamspeak://|http://|https://|ftp://|www.|mailto:|ed2k://|\w+?.\w{2,7})[a-z0-9;\/\?:@=\&\$\-_\.\+!\*'\(\),\~%#]+?)\](.+?)\[\/url\]~is", "<a href=\"\\1\">\\3</a>", $text);
 			$text = preg_replace("/\[img\](([^?&=].*?)\.(png|gif|bmp|jpg|jpe|jpeg))\[\/img\]/is", "<img src=\"\\1\">", $text);
 			
 			$text = preg_replace('/\[color=\#?([0-9A-F]{3,6})\](.+?)\[\/color\]/is', "<font color=\"#\\1\">\\2</font>", $text);
@@ -582,9 +583,9 @@ class BBCode {
 			
 			$text = preg_replace('/\[note=(.+?)\](.+?)\[\/note\]/ise', '$this->cb_note("\1", "\2")', $text);
 			
-			$text = preg_replace("~\[url\]((news:|telnet://|callto://|irc://|teamspeak://|http://|https://|ftp://|www.|mailto:|ed2k://|\w+?.\w{2,7})+:\/\/[a-z0-9;\/\?:@=\&\$\-_\.\+!\*'\(\),\~%#]+?)\[\/url\]~ise", '$this->cb_url("\1")', $text);
-			$text = preg_replace("~\[url=((news:|telnet://|callto://|irc://|teamspeak://|http://|https://|ftp://|www.|mailto:|ed2k://|\w+?.\w{2,7})[a-z0-9;\/\?:@=\&\$\-_\.\+!\*'\(\),\~%#]+?)\](.+?)\[\/url\]~ise", '$this->cb_url("\1", "\3")', $text);
-			$text = preg_replace("~(.?)((news:|telnet://|callto://|irc://|teamspeak://|http://|https://|ftp://|www.|ed2k://)[a-zA-Z0-9\-\.@]+\.[a-zA-Z0-9]{1,7}(:\d*)?/?([a-zA-Z0-9\-\.:;_\?\,/\\\+&%\$#\=\~]*)?([a-zA-Z0-9/\\\+\=\?]{1}))(.?)~ie", '$this->cb_url("\2", FALSE, TRUE, "\1\'\7")', $text);
+			$text = preg_replace("~\[url\]((telnet://|callto://|irc://|teamspeak://|http://|https://|ftp://|www.|mailto:|ed2k://|\w+?.\w{2,7})+:\/\/[a-z0-9;\/\?:@=\&\$\-_\.\+!\*'\(\),\~%#]+?)\[\/url\]~ise", '$this->cb_url("\1")', $text);
+			$text = preg_replace("~\[url=((telnet://|callto://|irc://|teamspeak://|http://|https://|ftp://|www.|mailto:|ed2k://|\w+?.\w{2,7})[a-z0-9;\/\?:@=\&\$\-_\.\+!\*'\(\),\~%#]+?)\](.+?)\[\/url\]~ise", '$this->cb_url("\1", "\3")', $text);
+			$text = preg_replace("~((et://|svn://|telnet://|callto://|irc://|teamspeak://|http://|https://|ftp://|ed2k://|www.)[a-zA-Z0-9\-\.@]+\.[a-zA-Z0-9]{1,7}(:\d*)?/?([a-zA-Z0-9\-\.:;_\?\,/\\\+&%\$#\=\~]*)?([a-zA-Z0-9/\\\+\=\?]{1}))([^\"\>\s\=\,]{0,6})~ise", '$this->cb_url("\1", false, true, "\6")', $text);
 			
 			if ($this->profile['resizeImg'] > 0) {
 			    $text = preg_replace("/\[img\](([^?&=].*?)\.(png|gif|bmp|jpg|jpe|jpeg))\[\/img\]/is", "<img src='\\1' alt='' name='resize' />", $text);
