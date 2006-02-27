@@ -225,7 +225,7 @@ elseif ($_GET['action'] == "sendjabber" && $is_member) {
 }
 elseif ($_GET['action'] == "ims" && $is_member) {
 	$error = array();
-	if ($_GET['type'] == 'icq' || $_GET['type'] == 'aol' || $_GET['type'] == 'yahoo' || $_GET['type'] == 'msn' || $_GET['type'] == 'jabber') {
+	if ($_GET['type'] == 'icq' || $_GET['type'] == 'aol' || $_GET['type'] == 'yahoo' || $_GET['type'] == 'msn' || $_GET['type'] == 'jabber' || $_GET['type'] == 'skype') {
 		$imtext = $lang->phrase('im_'.$_GET['type']);
 	}
 	else {
@@ -235,7 +235,7 @@ elseif ($_GET['action'] == "ims" && $is_member) {
 		$error[] = $lang->phrase('not_allowed');
 	}
 		
-	$result = $db->query('SELECT id, name, icq, aol, yahoo, msn, jabber FROM '.$db->pre.'user WHERE id = "'.$_GET['id'].'"',__LINE__,__FILE__);
+	$result = $db->query('SELECT id, name, icq, aol, yahoo, msn, jabber, skype FROM '.$db->pre.'user WHERE id = "'.$_GET['id'].'"',__LINE__,__FILE__);
 	$row = $gpc->prepare($db->fetch_assoc($result));
 	if ($row[$_GET['type']] == NULL || $row[$_GET['type']] == '') {
 		$error[] = $lang->phrase('im_no_data');
@@ -288,13 +288,12 @@ elseif ($is_guest) {
 	echo $tpl->parse("profile/guest");
 }
 elseif ($is_member) {
-	$result=$db->query('SELECT * FROM '.$db->pre.'user WHERE id = '.$_GET['id'],__LINE__,__FILE__);
+	$result = $db->query("SELECT u.*, f.* FROM {$db->pre}user AS u LEFT JOIN {$db->pre}userfields AS f ON u.id = f.ufid WHERE id = {$_GET['id']} LIMIT 1",__LINE__,__FILE__);
 	if ($db->num_rows($result) == 1) {
 		$row = $gpc->prepare($db->fetch_object($result));
 	
 		if ($config['showpostcounter']) {
-			$sql='SELECT COUNT(name) FROM '.$db->pre.'replies WHERE name = "'.$_GET['id'].'"'; // etwas ungenau, aber noch recht schnell
-			$anz= $db->fetch_array($db->query($sql,__LINE__,__FILE__));
+			$anz= $db->fetch_array($db->query('SELECT COUNT(name) FROM '.$db->pre.'replies WHERE name = "'.$_GET['id'].'"',__LINE__,__FILE__)); // etwas ungenau, aber noch recht schnell
 			
 			$days2 = $anz[0] / ((times() - $row->regdate) / 86400);
 			$days2 = sprintf("%01.2f", $days2);
@@ -327,7 +326,7 @@ elseif ($is_member) {
 		$row->signature = $bbcode->parse($row->signature);
 		
 		// Set the instant-messengers
-		if ($row->jabber || $row->icq > 0 || $row->aol || $row->msn || $row->yahoo) {
+		if ($row->jabber || $row->icq > 0 || $row->aol || $row->msn || $row->yahoo || $row->skype) {
 			$imanz = 1;
 		}
 		else {
@@ -370,6 +369,93 @@ elseif ($is_member) {
 				$osi = 0;
 			}
 		}
+
+		// Custom Profile Fields
+		$customfields = array('1' => array(), '2' => array(), '3' => array());
+		$query = $db->query("SELECT * FROM ".$db->pre."profilefields WHERE viewable != '0' ORDER BY disporder");
+		while($profilefield = $db->fetch_assoc($query)) {
+			$select = array();
+			$thing = explode("\n", $profilefield['type'], 2);
+			$type = $thing[0];
+			if (!isset($thing[1])) {
+				$options = '';
+			}
+			else {
+				$options = $thing[1];
+			}
+			$field = "fid{$profilefield['fid']}";
+			if($type == "multiselect") {
+				$useropts = @explode("\n", $row->$field);
+				while(list($key, $val) = each($useropts)) {
+					$seloptions[$val] = $val;
+				}
+				$expoptions = explode("\n", $options);
+				if(is_array($expoptions)) {
+					while(list($key, $val) = each($expoptions)) {
+						list($key, $val) = explode('=', $val, 2);
+						if(isset($seloptions[$key]) && $key == $seloptions[$key]) {
+							$select[] = trim($val);
+						}
+					}
+					$code = implode(', ', $select);
+				}
+			}
+			elseif($type == "select") {
+				$expoptions = explode("\n", $options);
+				if(is_array($expoptions)) {
+					while(list($key, $val) = each($expoptions)) {
+						list($key, $val) = explode('=', $val, 2);
+						if ($key == $row->$field) {
+							$code = trim($val);
+						}
+					}
+				}
+			}
+			elseif($type == "radio") {
+				$expoptions = explode("\n", $options);
+				if(is_array($expoptions)) {
+					while(list($key, $val) = each($expoptions)) {
+						list($key, $val) = explode('=', $val, 2);
+						if ($key == $row->$field) {
+							$code = trim($val);
+						}
+					}
+				}
+			}
+			elseif($type == "checkbox") {
+				$useropts = @explode("\n", $row->$field);
+				while(list($key, $val) = each($useropts)) {
+					$seloptions[$val] = $val;
+				}
+				$expoptions = explode("\n", $options);
+				if(is_array($expoptions)) {
+					while(list($key, $val) = each($expoptions)) {
+						list($key, $val) = explode('=', $val, 2);
+						if (isset($seloptions[$key]) && $key == $seloptions[$key]) {
+							$select[] = trim($val);
+						}
+					}
+					$code = implode(', ', $select);
+				}
+			}
+			elseif($type == "textarea") {
+				$code = nl2br($row->$field);
+			}
+			else {
+				$code = $row->$field;
+			}
+			if (empty($code)) {
+				$code = $lang->phrase('profile_na');
+			}
+			$customfields[$profilefield['viewable']][] = array(
+				'value' => $code,
+				'name' => $profilefield['name'],
+				'description' => $profilefield['description'],
+				'maxlength' => $profilefield['maxlength']
+			);
+			unset($code, $select, $val, $options, $expoptions, $useropts, $seloptions);
+		}
+
 		$mymodules->load('profile_top');
 		echo $tpl->parse("profile/index");
 		$mymodules->load('profile_bottom');

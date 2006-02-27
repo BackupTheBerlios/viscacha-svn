@@ -784,8 +784,12 @@ function makecookie($name, $value = '', $expire = 31536000) {
 //	else {
 //		$secure = 0;
 //	}
-
-	$expire = time() + $expire;
+	if ($expire != null) {
+		$expire = time() + $expire;
+	}
+	else {
+		$expire = 0;
+	}
 	setcookie($name, $value, $expire);
 }
 ?>

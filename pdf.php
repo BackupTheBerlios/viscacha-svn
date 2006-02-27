@@ -67,7 +67,7 @@ if ($info['prefix'] > 0) {
 	}
 }
 
-forum_opt($last['opt'], $last['optvalue'], $last['id']);
+forum_opt($last['opt'], $last['optvalue'], $last['id'], 'pdf');
 
 $start = $_GET['page']*$config['topiczahl'];
 $start = $start-$config['topiczahl'];

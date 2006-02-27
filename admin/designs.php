@@ -53,6 +53,8 @@ elseif ($job == 'design_default') {
 		$c->getdata();
 		$c->updateconfig('templatedir', int, $id);
 		$c->savedata();
+		$scache = new scache('load-designs');
+		$scache->deletedata();
 		ok('admin.php?action=designs&job=design');
 	}
 	else {
@@ -124,7 +126,7 @@ elseif ($job == 'design_edit') {
   <tr>
    <td class="mbox" width="40%">Images-Verzeichnis:</td>
    <td class="mbox" width="60%">
-   <?php foreach ($templates as $dir) { ?>
+   <?php foreach ($images as $dir) { ?>
    <input<?php echo iif($info['images'] == $dir, ' checked="checked"'); ?> type="radio" name="images" value="<?php echo $dir; ?>" /> <a href="admin.php?action=explorer&path=<?php echo urlencode('./images/'.$dir.'/'); ?>" target="_blank"><?php echo $dir; ?></a><br />
    <?php } ?>
    </td>
@@ -175,7 +177,8 @@ elseif ($job == 'design_edit2') {
 			$use = 1;
 		}
 	}
-	
+	$scache = new scache('load-designs');
+	$scache->deletedata();
 	$db->query("UPDATE {$db->pre}designs SET template = '{$template}', stylesheet = '{$stylesheet}', images = '{$images}', publicuse = '{$use}', smileyfolder = '{$sfolder}', smileypath = '{$spath}',name = '{$name}' WHERE id = '{$id}' LIMIT 1");
 
 	ok('admin.php?action=designs&job=design&id='.$id, 'Changes were successfully changed'.$error.'.');	
@@ -317,6 +320,8 @@ elseif ($job == 'design_add2') {
 		
 		rmdirr($tempdir);
 	}
+	$scache = new scache('load-designs');
+	$scache->deletedata();
 	ok('admin.php?action=designs&job=design', 'Design "'.$ini['name'].'" erfolgreich importiert.');
 	
 }

@@ -62,6 +62,7 @@ $http_vars = array(
 'gender' => str,
 'aol' => str,
 'msn' => str,
+'skype' => str,
 'yahoo' => str,
 'jabber' => str,
 'fid' => str,

@@ -39,7 +39,7 @@ $tpl = new tpl();
 $my->p = $slog->Permissions();
 
 if ($_GET['action'] == "login2") {
-
+	$remember = $gpc->get('remember', int, 1);
     $loc = strip_tags($gpc->get('location', none, 'index.php'.SID2URL_1));
     $file = basename($loc);
     if ($file = 'log.php') {
@@ -50,13 +50,12 @@ if ($_GET['action'] == "login2") {
         viscacha_header($loc);
     }
 
-    if (!$slog->sid_login()) {
+    if (!$slog->sid_login($remember)) {
 		error($lang->phrase('log_wrong_data'), "log.php?action=login&amp;location=".urlencode($loc).SID2URL_x);
     }
     else {
         ok($lang->phrase('log_msglogin'), $loc);
     }
-    
 }
 elseif ($_GET['action'] == "logout") {
 
@@ -90,8 +89,8 @@ elseif ($_GET['action'] == "pwremind2") {
 	}
 	set_flood();
 
-    $result=$db->query('SELECT id FROM '.$db->pre.'user WHERE name="'.$_POST['name'].'" AND mail="'.$_POST['email'].'" LIMIT 1',__LINE__,__FILE__);
-    $user=$db->fetch_array($result);
+    $result = $db->query('SELECT id FROM '.$db->pre.'user WHERE name="'.$_POST['name'].'" AND mail="'.$_POST['email'].'" LIMIT 1',__LINE__,__FILE__);
+    $user = $db->fetch_array($result);
     if ($db->num_rows($result) != 1) {
 		error($lang->phrase('log_pwremind_failed'), "log.php?action=pwremind".SID2URL_x);
     }

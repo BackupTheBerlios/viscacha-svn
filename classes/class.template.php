@@ -54,9 +54,7 @@ class tpl {
 	}
 
     function globalvars ($vars) {
-
         $this->vars = $vars;
-
     }
 	
 	function parse($thisfile,$thisext='html') {

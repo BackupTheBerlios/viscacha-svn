@@ -330,6 +330,7 @@ while ($row = $gpc->prepare($db->fetch_object($result))) {
 		}
 	}
 	
+	$anz = 0;
 	if (!empty($row->edit)) {
 		$edits = explode("\n", $row->edit);
 		$anz = count($edits);

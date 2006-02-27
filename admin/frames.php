@@ -49,7 +49,6 @@ if ($job == 'menu') {
 	   <h3><img id="img_admin_menu8" name="collapse" src="admin/html/images/plus.gif" alt=""> Members</h3>
 	  <ul id="part_admin_menu8">
 	   <li>&raquo; <a href="admin.php?action=members&job=manage" target="Main">List of Members</a></li>
-	   <li>&raquo; <a href="admin.php?action=members&job=search" target="Main">Search for Members</a></li>
 	   <li>&raquo; <a href="admin.php?action=members&job=banned" target="Main">Blocked IP Addresses</a></li>
 	   <li>&raquo; <a href="admin.php?action=members&job=newsletter" target="Main">Newsletter Manager</a></li>
 	   <li>&raquo; <a href="admin.php?action=members&job=emaillist" target="Main">Export Email Addresses</a></li>
@@ -63,6 +62,13 @@ if ($job == 'menu') {
 	   <li>&raquo; <a href="admin.php?action=groups&job=add" target="Main">Add new Usergroup</a></li>
 	  </ul>
 	 </div>
+	 <div class="border">
+	   <h3><img id="img_admin_menu16" name="collapse" src="admin/html/images/plus.gif" alt=""> Custom Profile Fields</h3>
+	  <ul id="part_admin_menu16">
+	   <li>&raquo; <a href="admin.php?action=profilefield&job=manage" target="Main">Profile Field Manager</a></li>
+	   <li>&raquo; <a href="admin.php?action=profilefield&job=add" target="Main">Add new Profile Field</a></li>
+	  </ul>
+	 </div>	 
 	 <div class="border">
 	   <h3><img id="img_admin_menu9" name="collapse" src="admin/html/images/plus.gif" alt=""> Templates &amp; Styles</h3>
 	  <ul id="part_admin_menu9">

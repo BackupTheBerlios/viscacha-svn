@@ -40,7 +40,6 @@ function lcfirst($p) {
 	return strtolower($p{0}).substr($p, 1);
 }
 
-
 /* Missing constants from PHP-Compat */
 
 /**
@@ -268,7 +267,22 @@ if (!defined('MHASH_ADLER32')) {
     define('MHASH_ADLER32', 18);
 }
 
-/* Missing functions from PHP-Compat */
+/* Missing functions (from PHP-Compat) */
+
+/**
+ * Replace htmlspecialchars_decode()
+ *
+ * @link        http://php.net/function.htmlspecialchars_decode
+ * @author      Matthias Mohr
+ * @version     $Revision: 1.0 $
+ * @since       PHP 5.1.0
+ * @require     PHP 4.0.0 (user_error)
+ */
+if (!function_exists('htmlspecialchars_decode')) {
+	function htmlspecialchars_decode($str, $quote_style = ENT_COMPAT) {
+		return strtr($str, array_flip(get_html_translation_table(HTML_SPECIALCHARS, $quote_style)));
+	}
+}
 
 /**
  * Replace mhash()

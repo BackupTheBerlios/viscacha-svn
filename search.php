@@ -154,7 +154,7 @@ if ($_GET['action'] == "search") {
 		$sql_where .= "r.name = '{$rname}' ";
 	}
 
-	if (strxlen($_POST['name']) >= $config['searchminlength']) {
+	if (strlen($_POST['name']) >= $config['searchminlength']) {
 		$used[] = $_POST['name'];
 	}
 	else {

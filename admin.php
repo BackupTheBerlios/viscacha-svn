@@ -93,6 +93,9 @@ if ($my->p['admin'] == 1) {
 	elseif ($action == 'designs') {
 		include('admin/designs.php');
 	}
+	elseif ($action == 'profilefield') {
+		include('admin/profilefield.php');
+	}
 	else {
 		if (strlen($action) == 0) {
 			include('admin/frames.php');

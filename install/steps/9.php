@@ -1,4 +1,5 @@
 <?php
+$error = array();
 if (isset($_REQUEST['save']) && $_REQUEST['save'] == 1) {
 	include('../data/config.inc.php');
 	require_once('../classes/class.filesystem.php');
@@ -23,7 +24,6 @@ if (isset($_REQUEST['save']) && $_REQUEST['save'] == 1) {
 			<?php
 		}
 		else {
-			$error = array();
 			if (!isset($_REQUEST['name'])) {
 				$_REQUEST['name'] = '';
 			}
@@ -82,6 +82,7 @@ if (isset($_REQUEST['save']) && $_REQUEST['save'] == 1) {
 		}
 	}
 }
+if (count($error) == 0) {
 ?>
 <div class="bbody">
 <p>The installation is completed. You can visit the Admin Control Panel with your username ans password. 
@@ -91,3 +92,4 @@ If you have problems, visit <a href="http://docs.viscacha.org" target="_blank">V
 <p class="hl_false">For your security please completely remove the installation directory (<code><?php echo realpath('./'); ?></code>) including all files and sub-folders!</p>
 </div>
 <div class="bfoot center"><a class="submit" href="../admin/">Go to Admin Control Panel</a></div>
+<?php } ?>

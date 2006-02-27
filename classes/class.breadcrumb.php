@@ -8,6 +8,8 @@ class breadcrumb {
     }
     
     function Add($title, $url = NULL) {
+		$title = htmlspecialchars_decode($title);
+		$title = htmlspecialchars($title);
     	$this->content[] = array(
     	    'title' => $title,
     	    'url' => $url

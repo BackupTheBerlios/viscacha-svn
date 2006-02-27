@@ -52,5 +52,6 @@ INSERT INTO `{:=DBPREFIX=:}spider` (`id`, `user_agent`, `name`, `type`) VALUES
 (53, 'OmniExplorer_Bot', 'OmniExplorer Internet Categorizer', 'b'),
 (54, 'sohu-search', 'Sohu', 'b'),
 (55, 'Twiceler', 'Twiceler', 'b'),
+(56, 'Accoona-AI-Agent', 'Accoona', 'b'),
 (61, 'Yahoo! Slurp', 'Yahoo', 'b'),
 (60, 'IRLbot', 'IRL Crawler', 'b');

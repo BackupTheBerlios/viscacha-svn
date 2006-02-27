@@ -698,7 +698,7 @@ function ok ($errormsg = NULL, $errorurl = "javascript: history.back(-1)", $EOS 
 	exit;
 }
 
-function forum_opt($opt, $optvalue, $bid) {
+function forum_opt($opt, $optvalue, $bid, $check = 'forum') {
 	global $my, $lang, $tpl;
 	if ($opt == 'pw' && (!isset($my->pwfaccess[$bid]) || $my->pwfaccess[$bid] != $optvalue)) {
     	if (!$tpl->tplsent('header')) {
@@ -712,7 +712,7 @@ function forum_opt($opt, $optvalue, $bid) {
 	elseif ($opt == "re") {
 		error($lang->phrase('forumopt_re'),$optvalue);
 	}
-	elseif ($my->p['postreplies'] == 0 || $my->p['forum'] == 0) {
+	elseif ($my->p[$check] == 0 || $my->p['forum'] == 0) {
 		errorLogin();
 	}
 

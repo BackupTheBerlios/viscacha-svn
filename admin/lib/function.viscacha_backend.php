@@ -25,6 +25,7 @@ if ($config['check_filesystem'] == 1) {
 	check_executable('classes/fonts');
 	check_executable('classes/geshi');
 	check_executable('classes/graphic/noises');
+	check_writable_r('templates');
 }
 
 @ini_set('default_charset', '');
@@ -53,6 +54,14 @@ include_once ("classes/class.language.php");
 include_once ("classes/class.bbcode.php");
 // Global functions
 require_once ("classes/function.global.php");
+
+function array2sqlsetlist($array, $seperator = ', ') {
+	$sqlarray = array();
+	foreach ($array as $key => $value) {
+		$sqlarray[] = "`{$key}` = '{$value}'";
+	}
+	return implode($seperator, $sqlarray);
+}
 
 function wysiwyg($name, $wysiwyg = true, $preload = '<div class="border"><div class="h3">Title</div><div class="bbody">Content</div></div>', $inline = 1, $formid = 'form') {
 	global $my, $tpl;
@@ -457,7 +466,7 @@ function ok ($url, $msg = "Settings were saved successfully!") {
 	?>
 <script language="Javascript" type="text/javascript">
 <!--
-window.setTimeout('location.href="<?php echo $url; ?>"', 3000);
+window.setTimeout('location.href="<?php echo $url; ?>"', 1000);
 -->
 </script>
 <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">

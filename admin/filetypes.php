@@ -10,27 +10,27 @@ if ($job == 'add') {
    <td class="obox" colspan=2>Dateityp hinzufügen</td>
   </tr>
   <tr> 
-   <td class="mbox" width="50%"><font class="mtext">Endung(en getrennt mit Komma):</font></td>
+   <td class="mbox" width="50%">Endung(en getrennt mit Komma):</font></td>
    <td class="mbox" width="50%"><input type="text" name="extension" size="50" /></td> 
   </tr>
   <tr> 
-   <td class="mbox" width="50%"><font class="mtext">Relevante Programme:</font><br><font class="stext">Optional: Eine Auswahl relevanter Programme, mit denen man eine solche Datei erstellen, verwalten ... kann.</font></td>
+   <td class="mbox" width="50%">Relevante Programme:</font><br><font class="stext">Optional: Eine Auswahl relevanter Programme, mit denen man eine solche Datei erstellen, verwalten ... kann.</font></td>
    <td class="mbox" width="50%"><input type="text" name="program" size="50" /></td> 
   </tr>
   <tr> 
-   <td class="mbox" width="50%"><font class="mtext">Beschreibung:</font><br><font class="stext">HTML ist möglich!</font></td>
+   <td class="mbox" width="50%">Beschreibung:</font><br><font class="stext">HTML ist möglich!</font></td>
    <td class="mbox" width="50%"><textarea name="desctxt" rows="5" cols="50"></textarea></td> 
   </tr>
   <tr> 
-   <td class="mbox" width="50%"><font class="mtext">Icon-Dateiname:</font><br><font class="stext">Optional. Angeben ohne Endung.</font></td>
+   <td class="mbox" width="50%">Icon-Dateiname:</font><br><font class="stext">Optional. Angeben ohne Endung.</font></td>
    <td class="mbox" width="50%"><input type="text" name="icon" size="50" /></td> 
   </tr>
   <tr> 
-   <td class="mbox" width="50%"><font class="mtext">Mimetype:</font></td>
+   <td class="mbox" width="50%">Mimetype:</font></td>
    <td class="mbox" width="50%"><input type="text" name="mimetype" size="50" /></td> 
   </tr>
   <tr> 
-   <td class="mbox" width="50%"><font class="mtext">Art des Versands:</font></td>
+   <td class="mbox" width="50%">Art des Versands:</font></td>
    <td class="mbox" width="50%">
    <select name="stream">
    <option value="attachment">Attachment (zum Download anbieten)</option>
@@ -96,27 +96,27 @@ elseif ($job == 'edit') {
    <td class="obox" colspan="2">Dateityp ändern</td>
   </tr>
   <tr> 
-   <td class="mbox" width="50%"><font class="mtext">Endung(en getrennt mit Komma):</font></td>
+   <td class="mbox" width="50%">Endung(en getrennt mit Komma):</font></td>
    <td class="mbox" width="50%"><input type="text" name="extension" size="50" value="<?php echo $row['extension']; ?>"></td> 
   </tr>
   <tr> 
-   <td class="mbox" width="50%"><font class="mtext">Relevante Programme:</font><br><font class="stext">Optional: Eine Auswahl relevanter Programme, mit denen man eine solche Datei erstellen, verwalten ... kann.</font></td>
+   <td class="mbox" width="50%">Relevante Programme:</font><br><font class="stext">Optional: Eine Auswahl relevanter Programme, mit denen man eine solche Datei erstellen, verwalten ... kann.</font></td>
    <td class="mbox" width="50%"><input type="text" name="program" size="50" value="<?php echo $row['program']; ?>"></td> 
   </tr>
   <tr> 
-   <td class="mbox" width="50%"><font class="mtext">Beschreibung:</font><br><font class="stext">HTML ist möglich!</font></td>
+   <td class="mbox" width="50%">Beschreibung:</font><br><font class="stext">HTML ist möglich!</font></td>
    <td class="mbox" width="50%"><textarea name="desctxt" rows="5" cols="50"><?php echo $row['desctxt']; ?></textarea></td> 
   </tr>
   <tr> 
-   <td class="mbox" width="50%"><font class="mtext">Icon-Dateiname:</font><br><font class="stext">Optional. Angeben ohne Endung.</font></td>
+   <td class="mbox" width="50%">Icon-Dateiname:</font><br><font class="stext">Optional. Angeben ohne Endung.</font></td>
    <td class="mbox" width="50%"><input type="text" name="icon" size="50" value="<?php echo $row['icon']; ?>"></td> 
   </tr>
   <tr> 
-   <td class="mbox" width="50%"><font class="mtext">Mimetype:</font></td>
+   <td class="mbox" width="50%">Mimetype:</font></td>
    <td class="mbox" width="50%"><input type="text" name="mimetype" size="50" value="<?php echo $row['mimetype']; ?>"></td> 
   </tr>
   <tr> 
-   <td class="mbox" width="50%"><font class="mtext">Art des Versands:</font></td>
+   <td class="mbox" width="50%">Art des Versands:</font></td>
    <td class="mbox" width="50%">
    <select name="stream">
    <option value="inline"<?php echo iif($row['stream'] == 'inline', ' selected="selected"'); ?>>Inline (im Browser öffnen)</option>
@@ -177,12 +177,12 @@ elseif ($job == 'manage') {
 	   <td class="obox" colspan="6">Dateitypen verwalten</td>
 	  </tr>
 	  <tr> 
-	   <td class="ubox" width="5%"><font class="mtext">Löschen</font></td>
-	   <td class="ubox" width="5%"><font class="mtext">Icon</font></td>
-	   <td class="ubox" width="10%"><font class="mtext">Dateityp</font></td>
-	   <td class="ubox" width="25%"><font class="mtext">Relevante Programme</font></td> 
-	   <td class="ubox" width="15%"><font class="mtext">Mimetype</font></td>
-	   <td class="ubox" width="40%"><font class="mtext">Beschreibung</font></td> 
+	   <td class="ubox" width="5%">Löschen</font></td>
+	   <td class="ubox" width="5%">Icon</font></td>
+	   <td class="ubox" width="10%">Dateityp</font></td>
+	   <td class="ubox" width="25%">Relevante Programme</font></td> 
+	   <td class="ubox" width="15%">Mimetype</font></td>
+	   <td class="ubox" width="40%">Beschreibung</font></td> 
 	  </tr>
 	<?php
 	while ($row = $gpc->prepare($db->fetch_assoc($result))) {

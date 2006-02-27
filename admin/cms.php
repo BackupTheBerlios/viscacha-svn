@@ -892,6 +892,8 @@ elseif ($job == 'com_add2') {
 
 			$result = $db->query("SELECT template, stylesheet, images FROM {$db->pre}designs WHERE id = '{$config['templatedir']}'",__LINE__,__FILE__);
 			$design = $db->fetch_assoc($result);
+			
+			$result = $db->query("SELECT stylesheet FROM {$db->pre}designs GROUP BY stylesheet",__LINE__,__FILE__);
 
 			if (isset($cfg['php']) && count($cfg['php']) > 0) {
 				$filesystem->mkdir("./components/$id");
@@ -922,8 +924,10 @@ elseif ($job == 'com_add2') {
 			}
 			
 			if (isset($cfg['style']) && count($cfg['style']) > 0) {
-				foreach ($cfg['style'] as $file) {
-					$filesystem->copy("$tdir/style/$file", "./designs/{$design['stylesheet']}/$file");
+				while ($css = $db->fetch_assoc($result)) {
+					foreach ($cfg['style'] as $file) {
+						$filesystem->copy("$tdir/style/$file", "./designs/{$css['stylesheet']}/$file");
+					}
 				}
 			}
 
@@ -1199,6 +1203,7 @@ elseif ($job == 'doc_add2') {
    <td class="mbox">
 	HTML-Sourcecode:<br /> 
 	<?php
+	$editorpath = 'templates/editor/';
 	$path = $tpl->altdir.'docs/'.$format['template'].'.html';
 	if ($format['inline'] == 1 && file_exists($path)) {
 		$preload = file_get_contents($path);
@@ -1209,10 +1214,10 @@ elseif ($job == 'doc_add2') {
 	?>
 	<textarea id="template" name="template" rows="20" cols="110" class="texteditor"><?php echo $preload; ?></textarea>
 	<?php if ($format['parser'] == 1) { ?>
-	<link rel="stylesheet" type="text/css" href="templates/editor/rte.css" />
-	<script language="JavaScript" type="text/javascript" src="templates/editor/lang/en.js"></script>
-	<script language="JavaScript" type="text/javascript" src="templates/editor/richtext.js"></script>
-	<script language="JavaScript" type="text/javascript" src="templates/editor/html2xhtml.js"></script>
+	<link rel="stylesheet" type="text/css" href="<?php echo $editorpath; ?>rte.css" />
+	<script language="JavaScript" type="text/javascript" src="<?php echo $editorpath; ?>lang/en.js"></script>
+	<script language="JavaScript" type="text/javascript" src="<?php echo $editorpath; ?>richtext.js"></script>
+	<script language="JavaScript" type="text/javascript" src="<?php echo $editorpath; ?>html2xhtml.js"></script>
 	<script language="JavaScript" type="text/javascript">
 	<!--
 	window.onload = function() {
@@ -1227,7 +1232,7 @@ elseif ($job == 'doc_add2') {
 	};
 	var lang = "en";
 	var encoding = "iso-8859-1";
-	initRTE("templates/editor/images/", "templates/editor/", '', true);
+	initRTE("templates/editor/images/", "<?php echo $editorpath; ?>", '', true);
 	writeRichText('rte', FetchElement('template').value, '', 750, 350, true, false, false);
 	//-->
 	</script>

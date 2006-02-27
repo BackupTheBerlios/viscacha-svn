@@ -37,6 +37,7 @@ $lang->init($my->language);
 $tpl = new tpl();
 $my->p = $slog->Permissions();
 
+include_once ("classes/function.profilefields.php");
 
 if ($my->vlogin) {
 	error($lang->phrase('already_registered'));
@@ -86,6 +87,34 @@ if ($_GET['action'] == "save") {
 	if ($_POST['pw'] != $_POST['pwx']) {
 		$error[] = $lang->phrase('pw_comparison_failed');
 	}
+
+	// Custom profile fields
+	$upquery = array();
+	$query = $db->query("SELECT * FROM ".$db->pre."profilefields WHERE editable != '0' AND required = '1' ORDER BY disporder");
+	while($profilefield = $db->fetch_assoc($query)) {
+		$profilefield['type'] = $gpc->prepare($profilefield['type']);
+		$thing = explode("\n", $profilefield['type'], 2);
+		$type = $thing[0];
+		$field = "fid{$profilefield['fid']}";
+
+		$value = $gpc->get($field, none);
+
+		if((is_string($value) && strlen($value) == 0) || (is_array($value) && count($value) == 0)) {
+			$error[] = $lang->phrase('error_missingrequiredfield');
+		}
+		if($profilefield['maxlength'] > 0 && ((is_string($value) && strlen($value) > $profilefield['maxlength']) || (is_array($value) && count($value) > $profilefield['maxlength']))) {
+			$error[] = $lang->phrase('error_customfieldtoolong');
+		}
+		
+		if($type == "multiselect" || $type == "checkbox") {
+			$options = implode("\n", $value);
+		}
+		else {
+			$options = $value;
+		}
+		$options = $gpc->save_str($options);
+		$upquery[] = "`{$field}` = '{$options}'";
+	}
 	
 	if (count($error) > 0) {
 		error($error,"register.php?name=".$_POST['name']."&amp;email=".$_POST['email'].SID2URL_x);
@@ -96,7 +125,13 @@ if ($_GET['action'] == "save") {
 		$db->query("INSERT INTO {$db->pre}user (name, pw, mail, regdate, confirm) VALUES ('{$_POST['name']}', '{$_POST['pwx']}', '{$_POST['email']}', '{$reg}', '{$config['confirm_registration']}')",__LINE__,__FILE__); 
         $redirect = $db->insert_id();
         $confirmcode = md5($config['cryptkey'].$reg);
-        
+
+		// Custom profile fields
+		if (count($upquery) > 0) {
+			$upquery[] = "`ufid` = '{$redirect}'";
+			$db->query("INSERT INTO {$db->pre}userfields SET ".implode(', ', $upquery));
+		}
+
         if ($config['confirm_registration'] != '11') {
 			$data = $lang->get_mail('register_'.$config['confirm_registration']);
 			$to = array('0' => array('name' => $_POST['name'], 'mail' => $_POST['email']));
@@ -167,6 +202,7 @@ else {
 	$breadcrumb->Add($lang->phrase('register_title'));
 	echo $tpl->parse("header");
 	echo $tpl->parse("menu");
+	$customfields = addprofile_customfields();
 	$mymodules->load('register_top');
 	$rules = $lang->get_words('rules');
 	echo $tpl->parse("register");

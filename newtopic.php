@@ -45,7 +45,7 @@ if (empty($board) || !isset($fc[$board])) {
 }
 $last = $fc[$board];
 
-forum_opt($last['opt'], $last['optvalue'], $last['id']);
+forum_opt($last['opt'], $last['optvalue'], $last['id'], 'posttopics');
 
 if ($config['tpcallow'] == 1 && $my->p['attachments'] == 1) { 
 	$p_upload = 1;

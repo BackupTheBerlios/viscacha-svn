@@ -19,6 +19,7 @@ CREATE TABLE `{:=DBPREFIX=:}user` (
   `aol` varchar(128) NOT NULL default '',
   `msn` varchar(128) NOT NULL default '',
   `jabber` varchar(128) NOT NULL default '',
+  `skype` varchar(128) NOT NULL default '',
   `timezone` varchar(5) default NULL,
   `groups` varchar(128) NOT NULL default '',
   `opt_textarea` tinyint(1) unsigned NOT NULL default '0',

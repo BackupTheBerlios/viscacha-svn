@@ -318,10 +318,7 @@ function logged () {
 		$my->mark = array();
 	}
 		
-	if ($my->vlogin) {
-		makecookie($config['cookie_prefix'].'_vdata', $my->id."|".$my->pw);
-	}
-	else {
+	if (!$my->vlogin) {
 		$my->id = 0;
 	}
 
@@ -446,8 +443,8 @@ function sid_load($fromnew=FALSE) {
 	}
 
 	$result = $db->query('
-	SELECT u.*, s.lastvisit as clv, s.ip, s.mark, s.pwfaccess, s.sid, s.settings   
-	FROM '.$db->pre.'session AS s LEFT JOIN '.$db->pre.'user as u ON s.mid = u.id 
+	SELECT u.*, f.*, s.lastvisit as clv, s.ip, s.mark, s.pwfaccess, s.sid, s.settings   
+	FROM '.$db->pre.'session AS s LEFT JOIN '.$db->pre.'user as u ON s.mid = u.id LEFT JOIN '.$db->pre.'userfields as f ON f.ufid = u.id
 	WHERE '.$sql.'
 	LIMIT 1
 	',__LINE__,__FILE__);
@@ -478,7 +475,7 @@ function sid_new($fromload=FALSE) {
 		}
 	}
 
-	$result = $db->query('SELECT * FROM '.$db->pre.'user WHERE id = "'.$this->cookiedata[0].'" AND pw = "'.$this->cookiedata[1].'" LIMIT 1',__LINE__,__FILE__);
+	$result = $db->query('SELECT u.*, f.* FROM '.$db->pre.'user AS u LEFT JOIN '.$db->pre.'userfields as f ON f.ufid = u.id WHERE u.id = "'.$this->cookiedata[0].'" AND u.pw = "'.$this->cookiedata[1].'" LIMIT 1',__LINE__,__FILE__);
 	$my = $gpc->prepare($db->fetch_object($result));
 	if ($db->num_rows($result) == 1 && $my->confirm == '11') {
 		$id = &$my->id;
@@ -492,7 +489,7 @@ function sid_new($fromload=FALSE) {
 		$lastvisit = $this->cookielastvisit;
 		$my->clv = $this->cookielastvisit;
 		$my->vlogin = FALSE;
-		makecookie($config['cookie_prefix'].'_vdata', "|");
+		makecookie($config['cookie_prefix'].'_vdata', "|", -60);
 	}
 	
 	makecookie($config['cookie_prefix'].'_vlastvisit', $lastvisit);
@@ -539,9 +536,9 @@ function sid_logout() {
 	makecookie($config['cookie_prefix'].'_vdata', '|', -60);
 	$db->query("UPDATE {$db->pre}user SET lastvisit = '".time()."' WHERE id = '".$my->id."'",__LINE__,__FILE__);
 }
-function sid_login() {
+function sid_login($remember = 1) {
 	global $my, $config, $db, $gpc;
-	$result = $db->query('SELECT u.*, s.mid FROM '.$db->pre.'user AS u LEFT JOIN '.$db->pre.'session AS s ON s.mid = u.id WHERE name="'.$_POST['name'].'" AND pw=MD5("'.$_POST['pw'].'") LIMIT 1',__LINE__,__FILE__);
+	$result = $db->query('SELECT u.*, f.*, s.mid FROM '.$db->pre.'user AS u LEFT JOIN '.$db->pre.'session AS s ON s.mid = u.id LEFT JOIN '.$db->pre.'userfields as f ON f.ufid = u.id WHERE name="'.$_POST['name'].'" AND pw=MD5("'.$_POST['pw'].'") LIMIT 1',__LINE__,__FILE__);
 
 	$my2 = array();
 	$my2['mark'] = $my->mark;
@@ -623,7 +620,13 @@ function sid_login() {
 		$qid = $gpc->get('id', int);
 		
 		$db->query ("UPDATE {$db->pre}session SET settings = '".serialize($my->settings)."', mark = '".serialize($my->mark)."', wiw_script = '".SCRIPTNAME."', wiw_action = '".$action."', wiw_id = '".$qid."', active = '".time()."', mid = '$my->id', lastvisit = '$my->lastvisit' WHERE $sqlwhere LIMIT 1",__LINE__,__FILE__);
-		makecookie($config['cookie_prefix'].'_vdata', $my->id."|".$my->pw);
+		if ($remember == 1) {
+			$expire = 31536000;
+		}
+		else {
+			$expire = null;
+		}
+		makecookie($config['cookie_prefix'].'_vdata', $my->id."|".$my->pw, $expire);
 		makecookie($config['cookie_prefix'].'_vlastvisit', $my->lastvisit);
 		$this->cookiedata[0] = $my->id;
 		$this->cookiedata[1] = $my->pw;

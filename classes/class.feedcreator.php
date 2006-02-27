@@ -597,8 +597,12 @@ class FeedDate {
 	 * @return a date in ISO 8601 format
 	 */
 	function iso8601() {
-		$date = date("Y-m-d\TH:i:sO",$this->unix);
-		return $date;
+	  	//$int_date: current date in UNIX timestamp
+	   	$date_mod = date('Y-m-d\TH:i:s', $this->unix);
+	   	$pre_timezone = date('O', $this->unix);
+	   	$time_zone = substr($pre_timezone, 0, 3).":".substr($pre_timezone, 3, 2);
+	   	$date_mod .= $time_zone;
+	   	return $date_mod;
 	}
 	
 	/**

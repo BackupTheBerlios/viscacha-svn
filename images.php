@@ -36,7 +36,7 @@ $lang->init($my->language);
 
 if ($_GET['action'] == 'vote') {
 	$result = $db->query('SELECT id, topic, posts, sticky, status, last, board, vquestion, prefix FROM '.$db->pre.'topics WHERE id = '.$_GET['id'].' LIMIT 1',__LINE__,__FILE__);
-	$info = $gpc->prepare($db->fetch_assoc($result));
+	$info = $db->fetch_assoc($result);
 
 	require_once('classes/class.charts.php');
 	$PG = new PowerGraphic();

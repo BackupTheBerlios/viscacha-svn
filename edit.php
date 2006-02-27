@@ -48,7 +48,7 @@ $my->mp = $slog->ModPermissions($info['board']);
 
 $fc = cache_cat_bid();
 $last = $fc[$info['board']];
-forum_opt($last['opt'], $last['optvalue'], $last['id']);
+forum_opt($last['opt'], $last['optvalue'], $last['id'], 'edit');
 
 $prefix = cache_prefix($info['board']);
 $pre = '';

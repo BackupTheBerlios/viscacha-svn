@@ -37,6 +37,8 @@ $lang->init($my->language);
 $tpl = new tpl();
 $my->p = $slog->Permissions();
 
+include_once ("classes/function.profilefields.php");
+
 $breadcrumb->Add($lang->phrase('teamcp'));
 
 echo $tpl->parse("header");
@@ -62,28 +64,30 @@ if ($my->vlogin && $my->p['admin'] == 1) {
 		}
 		// Step 1: Write Data to File with old Usernames
 		$olduserdata = file_get_contents('data/deleteduser.php');
-		$olduserdata .= "\n".$user['id']."\t".$user['name'];
+		$olduserdata .= "\n{$user['id']}\t".$user['name'];
 		$olduserdata = trim($olduserdata);
 		file_put_contents('data/deleteduser.php', $olduserdata);
 		// Step 2: Delete all abos
-		$db->query("DELETE FROM {$db->pre}abos WHERE mid = '".$user['id']."'");
+		$db->query("DELETE FROM {$db->pre}abos WHERE mid = '{$user['id']}'");
 		// Step 3: Delete all favorites
-		$db->query("DELETE FROM {$db->pre}fav WHERE mid = '".$user['id']."'");
+		$db->query("DELETE FROM {$db->pre}fav WHERE mid = '{$user['id']}'");
 		// Step 4: Delete as mod
-		$db->query("DELETE FROM {$db->pre}moderators WHERE mid = '".$user['id']."'");
+		$db->query("DELETE FROM {$db->pre}moderators WHERE mid = '{$user['id']}'");
 		// Step 5: Delete all pms
-		$db->query("DELETE FROM {$db->pre}pm WHERE pm_to = '".$user['id']."'");
+		$db->query("DELETE FROM {$db->pre}pm WHERE pm_to = '{$user['id']}'");
 		// Step 6: Search all old posts by an user, and update to guests post
-		$db->query("UPDATE {$db->pre}replies SET name = '".$user['name']."', email = '".$user['mail']."' WHERE name = '".$user['id']."' AND email = ''");
+		$db->query("UPDATE {$db->pre}replies SET name = '".$user['name']."', email = '".$user['mail']."' WHERE name = '{$user['id']}' AND email = ''");
 		// Step 7: Search all old topics by an user, and update to guests post
-		$db->query("UPDATE {$db->pre}topics SET name = '".$user['name']."' WHERE name = '".$user['id']."'");
-		$db->query("UPDATE {$db->pre}topics SET last_name = '".$user['name']."' WHERE last_name = '".$user['id']."'");
+		$db->query("UPDATE {$db->pre}topics SET name = '".$user['name']."' WHERE name = '{$user['id']}'");
+		$db->query("UPDATE {$db->pre}topics SET last_name = '".$user['name']."' WHERE last_name = '{$user['id']}'");
 		// Step 8: Set uploads from member to guests-group
-		$db->query("UPDATE {$db->pre}uploads SET mid = '0' WHERE mid = '".$user['id']."'");
+		$db->query("UPDATE {$db->pre}uploads SET mid = '0' WHERE mid = '{$user['id']}'");
 		// Step 9: Delete pic
 		removeOldImages('uploads/pics/', $user['id']);
 		// Step 10: Delete user himself
-		$db->query("DELETE FROM {$db->pre}user WHERE id = '".$user['id']."'");
+		$db->query("DELETE FROM {$db->pre}user WHERE id = '{$user['id']}'");
+		// Step 11: Delete user's custom profilefields
+		$db->query("DELETE FROM {$db->pre}userfields WHERE ufid = '{$user['id']}'");
 
 		ok($lang->phrase('member_deleted'),'members.php'.SID2URL_1);
 	}
@@ -99,7 +103,8 @@ if ($my->vlogin && $my->p['admin'] == 1) {
 		}
 		if (empty($user['language'])) {
 		    $user['language'] = $config['langdir'];
-		}		
+		}
+		$user['icq'] = iif(empty($user['icq']), '', $user['icq']);
 		
 		// Settings
 		$design = cache_loaddesign();
@@ -113,6 +118,10 @@ if ($my->vlogin && $my->p['admin'] == 1) {
 	    $miny = $year-100;
 	    $result = $db->query("SELECT id, title, name, core FROM {$db->pre}groups ORDER BY admin DESC , guest ASC , core ASC");
 		
+		$random = md5(microtime());
+		
+		$customfields = admin_customfields($user['id']);
+		
 		echo $tpl->parse("menu");
 		echo $tpl->parse("admin/members/edit");
 	}
@@ -120,7 +129,17 @@ if ($my->vlogin && $my->p['admin'] == 1) {
 	
 		$cache = cache_loaddesign();
 		$cache2 = cache_loadlanguage();
-	
+
+		$random = $gpc->get('random', none);
+		$name = $gpc->get('name_'.$random, str);
+		if (empty($name)) {
+			$_POST['name'] = $user['name'];
+		}
+		else {
+			$_POST['name'] = $name;
+		}
+		$_POST['pw'] = $gpc->get('pw_'.$random, str);
+
 	    $error = array();
 		if (strxlen($_POST['comment']) > $config['maxaboutlength']) {
 			$error[] = $lang->phrase('about_too_long');
@@ -147,7 +166,7 @@ if ($my->vlogin && $my->p['admin'] == 1) {
 			$_POST['hp'] = '';
 		}
 		if (strxlen($_POST['location']) > 50) {
-			$error[] = $lang->phrase('editprofile_location_too_short');
+			$error[] = $lang->phrase('editprofile_location_too_long');
 		}
 		if ($_POST['gender'] != 'm' && $_POST['gender'] != 'w' && $_POST['gender'] != '') {
 			$error[] = $lang->phrase('editprofile_gender_incorrect');
@@ -205,9 +224,8 @@ if ($my->vlogin && $my->p['admin'] == 1) {
     			$_POST['icq'] = 0;
 		    }
 
-            $pw = $gpc->get('pw', none);
-            if (!empty($pw) && strlen($pw) >= $config['minpwlength']) {
-                $md5 = md5($pw);
+            if (!empty($_POST['pw']) && strlen($_POST['pw']) >= $config['minpwlength']) {
+                $md5 = md5($_POST['pw']);
 				$update_sql = ", pw = '{$md5}' ";
             }
             else {
@@ -220,9 +238,11 @@ if ($my->vlogin && $my->p['admin'] == 1) {
 			elseif (empty($_POST['pic']) || !file_exists($_POST['pic'])) {
 				$_POST['pic'] = '';
 			}
+			
+			admin_customsave($user['id']);
 
-			$db->query("UPDATE {$db->pre}user SET groups = '".$_POST['groups']."', timezone = '".$_POST['temp']."', opt_textarea = '".$_POST['opt_0']."', opt_pmnotify = '".$_POST['opt_1']."', opt_hidebad = '".$_POST['opt_2']."', opt_hidemail = '".$_POST['opt_3']."', template = '".$_POST['opt_4']."', language = '".$_POST['opt_5']."', pic = '".$_POST['pic']."', about = '".$_POST['comment']."', icq = '".$_POST['icq']."', yahoo = '".$_POST['yahoo']."', aol = '".$_POST['aol']."', msn = '".$_POST['msn']."', jabber = '".$_POST['jabber']."', birthday = '".$bday."', gender = '".$_POST['gender']."', hp = '".$_POST['hp']."', signature = '".$_POST['signature']."', location = '".$_POST['location']."', fullname = '".$_POST['fullname']."', mail = '".$_POST['email']."', name = '".$_POST['name']."'".$update_sql." WHERE id = '".$user['id']."' LIMIT 1",__LINE__,__FILE__); 
-			ok($lang->phrase('data_success'), "profile.php?id=".$_GET['id']);
+			$db->query("UPDATE {$db->pre}user SET groups = '".$_POST['groups']."', timezone = '".$_POST['temp']."', opt_textarea = '".$_POST['opt_0']."', opt_pmnotify = '".$_POST['opt_1']."', opt_hidebad = '".$_POST['opt_2']."', opt_hidemail = '".$_POST['opt_3']."', template = '".$_POST['opt_4']."', language = '".$_POST['opt_5']."', pic = '".$_POST['pic']."', about = '".$_POST['comment']."', icq = '".$_POST['icq']."', yahoo = '".$_POST['yahoo']."', aol = '".$_POST['aol']."', msn = '".$_POST['msn']."', jabber = '".$_POST['jabber']."', skype = '{$_POST['skype']}', birthday = '".$bday."', gender = '".$_POST['gender']."', hp = '".$_POST['hp']."', signature = '".$_POST['signature']."', location = '".$_POST['location']."', fullname = '".$_POST['fullname']."', mail = '".$_POST['email']."', name = '".$_POST['name']."'".$update_sql." WHERE id = '".$user['id']."' LIMIT 1",__LINE__,__FILE__); 
+			ok($lang->phrase('data_success'), "profile.php?id=".$user['id']);
 		}
 	}
 }

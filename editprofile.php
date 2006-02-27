@@ -42,6 +42,8 @@ if (!$my->vlogin) {
     errorLogin($lang->phrase('not_allowed'),'log.php');
 }
 
+include_once ("classes/function.profilefields.php");
+
 $breadcrumb->Add($lang->phrase('editprofile_title'), 'editprofile.php'.SID2URL_1);
 
 if ($_GET['action'] == "pw2") {
@@ -344,6 +346,31 @@ elseif ($_GET['action'] == "pic") {
 	$mymodules->load('editprofile_pic_top');
     echo $tpl->parse("editprofile/pic");
 }
+elseif ($_GET['action'] == "profile") {
+    $breadcrumb->Add($lang->phrase('editprofile_profile'));
+	echo $tpl->parse("header");
+    echo $tpl->parse("menu");
+
+    $bday = explode('-',$my->birthday);
+    if (empty($bday[0])) {
+    	$bday[0] = '0000';
+    }
+    if (empty($bday[1])) {
+    	$bday[1] = '00';
+    }
+    if (empty($bday[2])) {
+    	$bday[2] = '00';
+    }
+	$my->icq = iif(empty($my->icq), '', $my->icq);
+    $year = gmdate('Y');
+    $maxy = $year-6;
+    $miny = $year-100;
+    
+	$customfields = editprofile_customfields(1, $my->id);
+    
+    $mymodules->load('editprofile_profile_top');
+    echo $tpl->parse("editprofile/profile");
+}
 elseif ($_GET['action'] == "profile2") {
 
 	$_POST['hp'] = trim($_POST['hp']);
@@ -373,7 +400,7 @@ elseif ($_GET['action'] == "profile2") {
 		$_POST['hp'] = '';
 	}
 	if (strxlen($_POST['location']) > 50) {
-		$error[] = $lang->phrase('editprofile_location_too_short');
+		$error[] = $lang->phrase('editprofile_location_too_long');
 	}
 	if ($_POST['gender'] != 'm' && $_POST['gender'] != 'w' && $_POST['gender'] != '') {
 		$error[] = $lang->phrase('editprofile_gender_incorrect');
@@ -390,6 +417,9 @@ elseif ($_GET['action'] == "profile2") {
 	if (strxlen($_POST['fullname']) > 128) {
 		$error[] = $lang->phrase('editprofile_fullname_incorrect');
 	}
+	
+	$error_custom = editprofile_customsave(1, $my->id);
+	$error = array_merge($error, $error_custom);
 
 	if (count($error) > 0) {
 		error($error, "editprofile.php?action=profile".SID2URL_x);
@@ -417,7 +447,7 @@ elseif ($_GET['action'] == "profile2") {
 	    	$changename = '';
 	    }
 
-		$db->query("UPDATE {$db->pre}user SET icq = '{$_POST['icq']}', yahoo = '{$_POST['yahoo']}', aol = '{$_POST['aol']}', msn = '{$_POST['msn']}', jabber = '{$_POST['jabber']}', birthday = '{$bday}', gender = '{$_POST['gender']}', hp = '{$_POST['hp']}', signature = '{$_POST['signature']}', location = '{$_POST['location']}', fullname = '{$_POST['fullname']}', mail = '{$_POST['email']}'{$changename} WHERE id = '{$my->id}' LIMIT 1",__LINE__,__FILE__);
+		$db->query("UPDATE {$db->pre}user SET skype = '{$_POST['skype']}', icq = '{$_POST['icq']}', yahoo = '{$_POST['yahoo']}', aol = '{$_POST['aol']}', msn = '{$_POST['msn']}', jabber = '{$_POST['jabber']}', birthday = '{$bday}', gender = '{$_POST['gender']}', hp = '{$_POST['hp']}', signature = '{$_POST['signature']}', location = '{$_POST['location']}', fullname = '{$_POST['fullname']}', mail = '{$_POST['email']}'{$changename} WHERE id = '{$my->id}' LIMIT 1",__LINE__,__FILE__);
 		ok($lang->phrase('data_success'), "editprofile.php?action=profile".SID2URL_x);
 	}
 
@@ -426,11 +456,15 @@ elseif ($_GET['action'] == "settings") {
 	$breadcrumb->Add($lang->phrase('editprofile_settings'));
 	echo $tpl->parse("header");
 	echo $tpl->parse("menu");
+	
 	$design = cache_loaddesign();
 	$mydesign = $design[$my->template]['name'];
 	$language = cache_loadlanguage();
 	$mylanguage = $language[$my->language]['language'];
+	
+	$customfields = editprofile_customfields(2, $my->id);
 	$mymodules->load('editprofile_settings_top');
+	
     echo $tpl->parse("editprofile/settings");
 }
 elseif ($_GET['action'] == "settings2") {
@@ -466,6 +500,10 @@ elseif ($_GET['action'] == "settings2") {
 	if ($_POST['opt_6'] < 0 && $_POST['opt_6'] > 2) {
 		$error[] = $lang->phrase('editprofile_settings_error').$lang->phrase('editprofile_newsletter');
 	}
+	
+	$error_custom = editprofile_customsave(2, $my->id);
+	$error = array_merge($error, $error_custom);
+	
 	if (count($error) > 0) {
 		error($error,"editprofile.php?action=settings".SID2URL_x);
 	}
@@ -474,27 +512,6 @@ elseif ($_GET['action'] == "settings2") {
 		ok($lang->phrase('data_success'), "editprofile.php?action=settings".SID2URL_x);
 	}
 
-}
-elseif ($_GET['action'] == "profile") {
-    $breadcrumb->Add($lang->phrase('editprofile_profile'));
-	echo $tpl->parse("header");
-    echo $tpl->parse("menu");
-
-    $bday = explode('-',$my->birthday);
-    if (empty($bday[0])) {
-    	$bday[0] = '0000';
-    }
-    if (empty($bday[1])) {
-    	$bday[1] = '00';
-    }
-    if (empty($bday[2])) {
-    	$bday[2] = '00';
-    }
-    $year = gmdate('Y');
-    $maxy = $year-6;
-    $miny = $year-100;
-    $mymodules->load('editprofile_profile_top');
-    echo $tpl->parse("editprofile/profile");
 }
 elseif ($_GET['action'] == "mylast") {
     $breadcrumb->Add($lang->phrase('editprofile_mylast'));

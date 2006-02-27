@@ -55,9 +55,6 @@ while ($row = mysql_fetch_assoc($result)) {
 	$inner['index_letter'] .= $tpl->parse("members/index_letter");
 }
 
-$result = $db->query('SELECT COUNT(*) FROM '.$db->pre.'user',__LINE__,__FILE__);
-$count = $db->fetch_array($result);
-$temp = pages($count[0], 'mlistenzahl', "members.php?sort=".$_GET['sort']."&amp;letter=".$_GET['letter']."&amp;order=".$_GET['order'].SID2URL_x."&amp;");
 
 if ($_GET['order'] == '1') {
 	$_GET['order'] = 'DESC';
@@ -80,6 +77,10 @@ else {
 	$where = '';
 }
 
+$result = $db->query('SELECT COUNT(*) FROM '.$db->pre.'user'.$where,__LINE__,__FILE__);
+$count = $db->fetch_array($result);
+
+$temp = pages($count[0], 'mlistenzahl', "members.php?sort=".$_GET['sort']."&amp;letter=".$_GET['letter']."&amp;order=".$_GET['order'].SID2URL_x."&amp;");
 $start = $_GET['page']*$config['mlistenzahl'];
 $start = $start-$config['mlistenzahl'];
 
