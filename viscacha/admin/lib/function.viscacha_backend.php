@@ -417,7 +417,7 @@ function foot() {
 	<br style="line-height: 8px;" />
 	<div class="stext center">[Load Time: <?php echo round($benchmark, 5); ?>] [Queries: <?php echo $db->benchmark('queries'); ?>]</div>
     <div id="copyright">
-        <strong><a href="http://www.mamo-net.de" target="_blank">Viscacha <?php echo $config['version']; ?></a></strong><br />
+        <strong><a href="http://www.viscacha.org" target="_blank">Viscacha <?php echo $config['version']; ?></a></strong><br />
         Copyright &copy; 2004-2006, MaMo Net
         <?php echo iif($config['pccron'] == 1, '<img src="cron.php" width="0" height="0" alt="" />'); ?>
     </div>

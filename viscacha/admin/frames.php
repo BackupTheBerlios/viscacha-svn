@@ -154,7 +154,7 @@ if ($job == 'menu') {
 	   <li>&raquo; <a href="log.php?action=logout<?php echo SID2URL_x; ?>" target="_top">Sign off</a></li>
 	   <li>&raquo; <a href="admin.php?action=misc&job=phpinfo" target="Main">PHP Info</a></li>
 	   <li>&raquo; <a href="admin.php?action=misc&job=credits" target="Main">Credits &amp; License</a></li>
-	   <li>&raquo; <a href="http://www.mamo-net.de" target="_blank">Support</a></li>
+	   <li>&raquo; <a href="http://www.viscacha.org" target="_blank">Support</a></li>
 	  </ul>
 	 </div>
 	</body>

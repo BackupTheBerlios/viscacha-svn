@@ -37,7 +37,7 @@ $nextstep = $step+1;
 <head>
 	<title>Viscacha Setup</title>
 	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1" />
-	<meta name="generator" content="Viscacha (http://www.mamo-net.de)" />
+	<meta name="generator" content="Viscacha (http://www.viscacha.org)" />
 	<link rel="stylesheet" type="text/css" href="designs/standard.css" />
 	<!--[if IE]>
 	<link rel="stylesheet" type="text/css" href="designs/ie.css" />
@@ -80,7 +80,7 @@ $nextstep = $step+1;
 	</div>
 	<br class="invclear" />
 	<div class="breadcrumb center">
-		<strong><a href="http://www.mamo-net.de" target="_blank">Viscacha <?php echo VISCACHA_VERSION; ?></a></strong> Copyright &copy;, MaMo Net
+		<strong><a href="http://www.viscacha.org" target="_blank">Viscacha <?php echo VISCACHA_VERSION; ?></a></strong> Copyright &copy;, MaMo Net
 	</div>
 </div>
 </body>

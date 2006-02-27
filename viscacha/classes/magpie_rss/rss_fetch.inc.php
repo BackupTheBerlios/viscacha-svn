@@ -378,7 +378,7 @@ function init () {
     }
     
     if ( !defined('MAGPIE_USER_AGENT') ) {
-        $ua = 'Viscacha (+http://www.mamo-net.de; MagpieRSS)'; 
+        $ua = 'Viscacha (+http://www.viscacha.org; MagpieRSS)'; 
         define('MAGPIE_USER_AGENT', $ua);
     }
     

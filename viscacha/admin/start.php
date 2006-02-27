@@ -158,6 +158,7 @@ else {
 		<option value="http://www.viscacha.org/">Home Page (viscacha.org)</option>
 		<option value="http://docs.viscacha.org/">Reference Manual</option>
 		<option value="http://files.viscacha.org/">Download Latest Version</option>
+		<option value="http://bugs.viscacha.org/">Bugtracker &amp; ToDo</option>
 		</optgroup>
 	</select>
 	</form>
