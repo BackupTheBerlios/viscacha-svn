@@ -428,7 +428,6 @@ class VeriWord {
 		}
 
 		return $im_noise;
-		imagedestroy($im_noise);
 	}
 
 	function validate_type() {
