@@ -1353,8 +1353,13 @@ elseif ($job == 'search2') {
 			$value = $gpc->get($key, $data[1], DONT_CARE);
 		}
 		if ($key == 'regdate' || $key == 'lastvisit') {
-			$input[$key] =  @mktime(0, 0, 0, intval($value[2]), intval($value[1]), intval($value[3]));
-			if ($input[$key] == -1 || $input[$key] == false) { // -1 for php version < 5.1.0, false for php version >= 5.1.0
+			if (array_sum($value) != 0) { // for php version >= 5.1.0
+				$input[$key] =  @mktime(0, 0, 0, intval($value[2]), intval($value[1]), intval($value[3]));
+				if ($input[$key] == -1 || $input[$key] == false) { // -1 for php version < 5.1.0, false for php version >= 5.1.0
+					$input[$key] = DONT_CARE;
+				}
+			}
+			else {
 				$input[$key] = DONT_CARE;
 			}
 		}
