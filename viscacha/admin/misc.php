@@ -290,15 +290,177 @@ elseif ($job == 'feedcreator_delete') {
 }
 elseif ($job == "captcha") {
 	echo head();
+	$fonts = 0;
+	$dir = 'classes/fonts/';
+	if ($dh = opendir($dir)) {
+		while (($file = readdir($dh)) !== false) {
+			if(preg_match('/captcha_\d+\.ttf/i', $file)) {
+				$fonts++;
+			}
+		}
+		closedir($dh);
+	}
+	$noises = 0;
+	$dir = 'classes/graphic/noises/';
+	if ($dh = opendir($dir)) {
+		while (($file = readdir($dh)) !== false) {
+			if(get_extension($file) == '.jpg') {
+				$noises++;
+			}
+		}
+		closedir($dh);
+	}
 	?>
  <table class="border">
   <tr> 
    <td class="obox">Captcha Manager</td>
   </tr>
   <tr>
-   <td class="mbox">Not implemented yet.</td>
+   <td class="mbox">
+   <ul>
+   <li>Hintergrundbilder: <?php echo $noises; ?> [<a href="admin.php?action=misc&amp;job=captcha_noises">Verwalten</a>]</li>
+   <li>Schriftarten: <?php echo $fonts; ?> [<a href="admin.php?action=misc&amp;job=captcha_fonts">Verwalten</a>]</li>
+   </ul>
+   </td>
   </tr>
  </table>
+	<?php
+	echo foot();
+}
+elseif ($job == "captcha_noises_delete") {
+	echo head();
+	$delete = $gpc->get('delete', arr_str);
+	$deleted = 0;
+	foreach ($delete as $filename) {
+		$filesystem->unlink('classes/graphic/noises/'.$filename.'.jpg');
+		if (!file_exists('classes/graphic/noises/'.$filename.'.jpg')) {
+			$deleted++;
+		}
+	}
+	ok('admin.php?action=misc&job=captcha_noises', $deleted.' Hintergrundbilder wurden gelöscht.');
+}
+elseif ($job == "captcha_noises_view") {
+	$file = $gpc->get('file', str);
+	viscacha_header('Content-Type: image/jpeg');
+	viscacha_header('Content-Disposition: inline; filename="'.$file.'.jpg"');
+	readfile('classes/graphic/noises/'.$file.'.jpg');
+}
+elseif ($job == "captcha_noises") {
+	$fonts = array();
+	$dir = 'classes/graphic/noises/';
+	if ($dh = opendir($dir)) {
+		while (($file = readdir($dh)) !== false) {
+			if(get_extension($file) == '.jpg') {
+				$fonts[] = $dir.$file;
+			}
+		}
+		closedir($dh);
+	}
+	echo head();
+	?>
+<form action="admin.php?action=misc&job=captcha_noises_delete" name="form2" method="post">
+ <table class="border">
+  <tr> 
+   <td class="obox" colspan="3">Captcha Manager &raquo; Hintergrundbilder</td>
+  </tr>
+  <tr>
+   <td class="ubox" width="10%">Löschen</td>
+   <td class="ubox" width="90%">Vorschau der Hintergrundgrafik</td>
+  </tr>
+  <?php foreach ($fonts as $path) { ?>
+  <tr>
+   <td class="mbox"><input type="checkbox" name="delete[]" value="<?php echo basename($path, ".jpg"); ?>" /></td>
+   <td class="mbox"><img border="1" src="admin.php?action=misc&job=captcha_noises_view&file=<?php echo basename($path, ".jpg"); ?>" /></td>
+  </tr>
+  <?php } ?>
+  <tr> 
+   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="Delete"></td> 
+  </tr>
+ </table>
+</form>
+<br />
+<form name="form2" method="post" enctype="multipart/form-data" action="admin.php?action=explorer&job=upload&cfg=captcha_noises">
+ <table class="border" cellpadding="3" cellspacing="0" border="0">
+  <tr><td class="obox">Neue Schriftarten-Datei hochladen</td></tr>
+  <tr>
+   <td class="mbox">
+	Um eine Datei anzufügen, klicken Sie auf die "Durchsuchen"-Schaltfläche und wählen Sie eine Datei aus.
+	Klicken Sie dann auf "Senden", um den Vorgang abzuschließen.<br /><br />
+	Erlaubte Dateitypen: .jpg<br />
+	Maximale Dateigröße: 200 KB<br />
+	Empfohlene Bildgröße: 150x40 Pixel - Maximale Bildgröße: 300x80 Pixel<br /><br />
+	<strong>Datei hochladen:</strong>
+	<br /><input type="file" name="upload_0" size="40" />
+   </td>
+  </tr>
+  <tr><td class="ubox" align="center"><input accesskey="s" type="submit" value="Upload" /></td></tr>
+ </table>
+</form>
+	<?php
+	echo foot();
+}
+elseif ($job == "captcha_fonts_delete") {
+	echo head();
+	$delete = $gpc->get('delete', arr_str);
+	$deleted = 0;
+	foreach ($delete as $filename) {
+		$filesystem->unlink('classes/fonts/'.$filename.'.ttf');
+		if (!file_exists('classes/fonts/'.$filename.'.ttf')) {
+			$deleted++;
+		}
+	}
+	ok('admin.php?action=misc&job=captcha_fonts', $deleted.' Schriftarten wurden gelöscht.');
+}
+elseif ($job == "captcha_fonts") {
+	$fonts = array();
+	$dir = 'classes/fonts/';
+	if ($dh = opendir($dir)) {
+		while (($file = readdir($dh)) !== false) {
+			if(preg_match('/captcha_\d+\.ttf/i', $file)) {
+				$fonts[] = $dir.$file;
+			}
+		}
+		closedir($dh);
+	}
+	echo head();
+	?>
+<form action="admin.php?action=misc&job=captcha_fonts_delete" name="form2" method="post">
+ <table class="border">
+  <tr> 
+   <td class="obox" colspan="3">Captcha Manager &raquo; Schriftarten</td>
+  </tr>
+  <tr>
+   <td class="ubox" width="10%">Löschen</td>
+   <td class="ubox" width="90%">Vorschau der Schriftart</td>
+  </tr>
+  <?php foreach ($fonts as $path) { ?>
+  <tr>
+   <td class="mbox"><input type="checkbox" name="delete[]" value="<?php echo basename($path, ".ttf"); ?>" /></td>
+   <td class="mbox"><img border="1" src="classes/graphic/text2image.php?file=<?php echo basename($path, ".ttf"); ?>&amp;text=1234567890&amp;size=30" /></td>
+  </tr>
+  <?php } ?>
+  <tr> 
+   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="Delete"></td> 
+  </tr>
+ </table>
+</form>
+<br />
+<form name="form2" method="post" enctype="multipart/form-data" action="admin.php?action=explorer&job=upload&cfg=captcha_fonts">
+ <table class="border" cellpadding="3" cellspacing="0" border="0">
+  <tr><td class="obox">Neue Schriftarten-Datei hochladen</td></tr>
+  <tr>
+   <td class="mbox">
+	Um eine Datei anzufügen, klicken Sie auf die "Durchsuchen"-Schaltfläche und wählen Sie eine Datei aus.
+	Klicken Sie dann auf "Senden", um den Vorgang abzuschließen.<br /><br />
+	Erlaubte Dateitypen: .ttf<br />
+	Maximale Dateigröße: 500 KB<br /><br />
+	<strong>Datei hochladen:</strong>
+	<br /><input type="file" name="upload_0" size="40" />
+   </td>
+  </tr>
+  <tr><td class="ubox" align="center"><input accesskey="s" type="submit" value="Upload" /></td></tr>
+ </table>
+</form>
 	<?php
 	echo foot();
 }

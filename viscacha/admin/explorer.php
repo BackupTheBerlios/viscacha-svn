@@ -32,6 +32,22 @@ if ($job == 'upload') {
 		$dir = realpath('./admin/backup/');
 		$url = 'admin.php?action=db&job=restore';
 	}
+	elseif ($cfg == 'captcha_fonts') {
+		$ups = 1;
+		$filesize = 500; // 500KB
+		$filetypes = '.ttf';
+		$dir = realpath('./classes/fonts/');
+		$url = 'admin.php?action=misc&job=captcha_fonts';
+	}
+	elseif ($cfg == 'captcha_noises') {
+		$ups = 1;
+		$filesize = 200; // 200KB
+		$filetypes = '.jpg';
+		$dir = realpath('./classes/graphic/noises/');
+		$url = 'admin.php?action=misc&job=captcha_noises';
+		$imgwidth = 300;
+		$imgheight = 80;
+	}
 	else {
 		$ups = $uploadfields;
 		$filesize = ini_maxupload();
@@ -85,10 +101,25 @@ if ($job == 'upload') {
 	if ($success == 0) {
 	    $inserterrors[] = 'No file successfully uploaded!';
 	}
+	
 	if (count($inserterrors) > 0) {
 		error($url, $inserterrors);
 	}
 	else {
+		if ($cfg == 'captcha_fonts') {
+			$n = 1;
+			while(file_exists($dir.DIRECTORY_SEPARATOR.'captcha_'.$n.'.ttf')) {
+				$n++;
+			}
+			$filesystem->rename($dir.DIRECTORY_SEPARATOR.$my_uploader->file['name'], $dir.DIRECTORY_SEPARATOR.'captcha_'.$n.'.ttf');
+		}
+		elseif ($cfg == 'captcha_noises') {
+			$n = 1;
+			while(file_exists($dir.DIRECTORY_SEPARATOR.'noise_'.$n.'.jpg')) {
+				$n++;
+			}
+			$filesystem->rename($dir.DIRECTORY_SEPARATOR.$my_uploader->file['name'], $dir.DIRECTORY_SEPARATOR.'noise_'.$n.'.jpg');
+		}
 		ok($url, 'Upload ready!');
 	}
 }

@@ -132,7 +132,7 @@ if ($job == 'menu') {
 	  <h3><img id="img_admin_menu14" name="collapse" src="admin/html/images/plus.gif" alt="" /> Managing Tools</h3>
 	  <ul id="part_admin_menu14">
 	   <li>&raquo; <a href="admin.php?action=misc&job=cache" target="Main">Cache Manager</a></li>
-	   <li>&raquo; <s><a href="admin.php?action=misc&job=captcha" target="Main">Captcha Manager</a></s></li>
+	   <li>&raquo; <a href="admin.php?action=misc&job=captcha" target="Main">Captcha Manager</a></li>
 	   <li>&raquo; <s><a href="admin.php?action=misc&job=spellcheck" target="Main">Spell Checker</a></s></li>
 	   <li>&raquo; <a href="admin.php?action=misc&job=feedcreator" target="Main">Feedcreator</a></li>
 	   <li>&raquo; <a href="admin.php?action=misc&job=sessionmails" target="Main">Wegwerf-Emailadressen</a></li>
