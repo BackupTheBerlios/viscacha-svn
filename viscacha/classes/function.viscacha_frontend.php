@@ -666,7 +666,7 @@ function error ($errormsg=NULL,$errorurl='javascript:history.back(-1);', $EOS = 
 	exit;
 }
 
-function ok ($errormsg = NULL, $errorurl = "javascript: history.back(-1)", $EOS = NULL) {
+function ok ($errormsg = NULL, $errorurl = "javascript:history.back(-1)", $EOS = NULL) {
 	global $config, $my, $tpl, $zeitmessung, $db, $slog, $phpdoc, $lang, $breadcrumb;
 	if ($errormsg == NULL) {
 		$errormsg = $lang->phrase('unknown_ok');

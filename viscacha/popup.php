@@ -39,7 +39,7 @@ $tpl = new tpl();
 if ($_GET['action'] == "hlcode") {
 	if (strlen($_GET['fid']) != 32) {
 		echo $tpl->parse("popup/header");
-		error($lang->phrase('query_string_error'), 'javascript: parent.close();');
+		error($lang->phrase('query_string_error'), 'javascript:parent.close();');
 	}
 
 	$scache = new scache('geshicode/'.$_GET['fid']);
@@ -147,7 +147,7 @@ elseif ($_GET['action'] == "showpost") {
 		$error[] = $lang->phrase('not_allowed');
 	}
 	if (count($error) > 0) {
-		errorLogin($error,'javascript: self.close();');
+		errorLogin($error,'javascript:self.close();');
 	}
 	
 	$fc = cache_cat_bid();
@@ -245,7 +245,7 @@ elseif ($_GET['action'] == "edithistory") {
 		$error[] = $lang->phrase('not_allowed');
 	}
 	if (count($error) > 0) {
-		errorLogin($error,'javascript: self.close();');
+		errorLogin($error,'javascript:self.close();');
 	}
 	
 	$fc = cache_cat_bid();
@@ -287,7 +287,7 @@ elseif ($_GET['action'] == "edithistory") {
 }
 else {
 	echo $tpl->parse("popup/header");
-	error($lang->phrase('query_string_error'), 'javascript: parent.close();');
+	error($lang->phrase('query_string_error'), 'javascript:parent.close();');
 }
 
 $slog->updatelogged();

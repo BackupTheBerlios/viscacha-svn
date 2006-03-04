@@ -185,14 +185,14 @@ else {
 	}
 	if ($error) {
 		echo $tpl->parse("popup/header");
-		error($lang->phrase('query_string_error'), 'javascript: self.close();');
+		error($lang->phrase('query_string_error'), 'javascript:self.close();');
 	}
 	$my->p = $slog->Permissions($upinfo['board']);
 	$my->mp = $slog->ModPermissions($upinfo['board']);
 	
 	if ($my->p['attachments'] != 1) {
 		echo $tpl->parse("popup/header");
-		errorLogin($lang->phrase('not_allowed'), 'javascript: self.close();');
+		errorLogin($lang->phrase('not_allowed'), 'javascript:self.close();');
 	}
 	
 	if ($_GET['action'] == "save") {

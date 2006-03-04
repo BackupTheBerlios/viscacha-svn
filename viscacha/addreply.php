@@ -222,6 +222,7 @@ else {
 		$memberdata = cache_memberdata();
 		
 		// Multiquote
+		$qid = $gpc->get('qid', arr_int);
 		if(isset($_COOKIE[$config['cookie_prefix'].'_vquote'])) {
 		    $pids = $_COOKIE[$config['cookie_prefix'].'_vquote'];
 		    $pids = urldecode($pids);
@@ -229,6 +230,9 @@ else {
 		    	$qids = explode(',',$pids);
 		    }
 		    makecookie($config['cookie_prefix'].'_vquote', '', 0);
+		}
+		elseif (count($qid) > 0) {
+			$qids = $qid;
 		}
 		
 		if (count($qids) > 0) {

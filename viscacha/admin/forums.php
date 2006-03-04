@@ -7,18 +7,21 @@ function ForumSubs ($tree, $cat, $board, $char = '+', $level = 0) {
 		?>
 		<tr> 
 			<td class="mmbox" width="50%"><?php echo str_repeat($char, $level).' <b>'.$cdata['name']; ?></b></td>
-			<td class="mmbox" width="10%"><font class='mtext'><?php echo $cdata['c_order']; ?>&nbsp;&nbsp;
+			<td class="mmbox" width="10%"><?php echo $cdata['c_order']; ?>&nbsp;&nbsp;
 				<a href="admin.php?action=forums&job=move&temp1=c_<?php echo $cdata['id']; ?>&int1=-1"><img src="admin/html/images/asc.gif" border="0" alt="Hoch"></a>&nbsp;
 				<a href="admin.php?action=forums&job=move&temp1=c_<?php echo $cdata['id']; ?>&int1=1"><img src="admin/html/images/desc.gif" border="0" alt="Runter"></a>
 			</td>
 			<td class="mmbox" width="30%">
-			  	<select size="1" name="c" onchange="locate(this.value)">
-			  	<option value="" selected>Bitte wählen</option>
+			  <form name="act" action="admin.php?action=locate" method="post">
+			  	<select size="1" name="url" onchange="locate(this.value)">
+			  	<option value="" selected="selected">Bitte w&auml;hlen</option>
 				 <optgroup label="Allgemein">
 				  <option value="admin.php?action=forums&job=cat_edit&id=<?php echo $cdata['id']; ?>">Kategorie ändern</option>
 				  <option value="admin.php?action=forums&job=cat_delete&id=<?php echo $cdata['id']; ?>">Kategorie löschen</option>
 				 </optgroup>
 				</select>
+				<input type="submit" value="Go">
+			  </form>
 			</td> 
 		</tr>
 		<?php
@@ -32,8 +35,9 @@ function ForumSubs ($tree, $cat, $board, $char = '+', $level = 0) {
 				<a href="admin.php?action=forums&job=move&temp1=f_<?php echo $bdata['id']; ?>&int1=1"><img src="admin/html/images/desc.gif" border="0" alt="Runter"></a>
 				</td>
 			   <td class="mbox" width="30%">
-			  		<select size="1" name="f" onchange="locate(this.value)">
-			  		<option value="" selected>Bitte wählen</option>
+				<form name="act" action="admin.php?action=locate" method="post">
+			  		<select size="1" name="url" onchange="locate(this.value)">
+			  		<option value="" selected="selected">Bitte w&auml;hlen</option>
 					 <optgroup label="Allgemein">
 					  <option value="admin.php?action=forums&job=edit&id=<?php echo $bdata['id']; ?>">Forum ändern</option>
 					  <option value="admin.php?action=forums&job=delete&id=<?php echo $bdata['id']; ?>">Forum löschen</option>
@@ -55,6 +59,8 @@ function ForumSubs ($tree, $cat, $board, $char = '+', $level = 0) {
 					 </optgroup>
 					 <?php } ?>
 					</select>
+					<input type="submit" value="Go" />
+				</form>
 			   </td> 
 			  </tr>	
 	    	<?php
@@ -620,7 +626,6 @@ elseif ($job == 'manage') {
 	viscacha_header('Pragma: no-cache');
 	echo head();
 	?>
-	<form name="form" method="post" action="admin.php?action=forums&job=manage2">
 	<table class="border">
 	<tr><td class="obox" colspan="3">Manage Forums & Categories</td></tr>
 	<tr> 
@@ -635,7 +640,6 @@ elseif ($job == 'manage') {
 	ForumSubs($tree, $categories, $boards);
 	?>
 	</table>
-	</form>
 	<?php
 	echo foot();
 }

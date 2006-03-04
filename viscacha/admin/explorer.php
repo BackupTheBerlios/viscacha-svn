@@ -187,7 +187,7 @@ elseif ($job == "chmod") {
   </tr>
   <tr> 
    <td class="mbox">CHMOD-Helper:
-   <noscript><br /><span class="stext">You can not use this Helper, until you enable JavaScript.</span></noscript>
+   <noscript><br /><span class="stext">You can not use this Helper, until JavaScript is enabled.</span></noscript>
    </td>
    <td class="mbox">
 	<table cellpadding="3" cellspacing="0" border="1">

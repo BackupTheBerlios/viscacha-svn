@@ -63,48 +63,6 @@ function array2sqlsetlist($array, $seperator = ', ') {
 	return implode($seperator, $sqlarray);
 }
 
-function wysiwyg($name, $wysiwyg = true, $preload = '<div class="border"><div class="h3">Title</div><div class="bbody">Content</div></div>', $inline = 1, $formid = 'form') {
-	global $my, $tpl;
-	$path = $tpl->altdir.'docs/'.$preload.'.html';
-	if (strpos($preload, '<') === false && file_exists($path)) {
-		$preload = file_get_contents($path);
-	}
-	$textarea = <<<EOD
-<textarea id="{$name}" name="{$name}" rows="20" cols="110" class="texteditor">{$preload}</textarea>
-EOD;
-	if ($wysiwyg == true) {
-		$field = <<<EOD
-{$textarea}
-<link rel="stylesheet" type="text/css" href="templates/editor/rte.css" />
-<script language="JavaScript" type="text/javascript" src="templates/editor/lang/en.js"></script>
-<script language="JavaScript" type="text/javascript" src="templates/editor/richtext.js"></script>
-<script language="JavaScript" type="text/javascript" src="templates/editor/html2xhtml.js"></script>
-<script language="JavaScript" type="text/javascript">
-<!--
-window.onload = function() {
-	forms = FetchElement('{$formid}');
-	ta = FetchElement('{$name}');
-	forms.onsubmit = function() {
-   		updateRTE('rte'); 
-  		ta.value = forms.rte.value;
-  		forms.submit(); 
-	};
-	ta.style.display = 'none';
-};
-var lang = "en";
-var encoding = "iso-8859-1";
-initRTE("templates/editor/images/", "templates/editor/", "designs/{$my->cssid}/standard.css", false);
-writeRichText('rte', FetchElement('{$name}').value, '', 750, 350, true, false, false);
-//-->
-</script>
-EOD;
-		return $field;
-	}
-	else {
-		return $textarea;
-	}
-}
-
 function gzAbortNotLoaded() {
 	if (!extension_loaded("zlib") || !function_exists('readgzfile')) {
 		error('javascript:history.back(-1);', 'GZIP Extension not loaded.');	

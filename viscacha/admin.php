@@ -96,6 +96,16 @@ if ($my->p['admin'] == 1) {
 	elseif ($action == 'profilefield') {
 		include('admin/profilefield.php');
 	}
+	elseif ($action == 'locate') {
+		$url = $gpc->get('url', none);
+		if (!empty($url)) {
+			viscacha_header('Location: '.$url);
+		}
+		else {
+			echo head();
+			error($_SERVER['HTTP_REFERER'], 'Please choose a valid option!');
+		}
+	}
 	else {
 		if (strlen($action) == 0) {
 			include('admin/frames.php');

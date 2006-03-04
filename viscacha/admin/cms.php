@@ -43,7 +43,7 @@ if ($job == 'plugins') {
 		foreach ($cat[$pos] as $head) {
 		?>
 		<tr class="mbox">
-		<td width="50%">
+		<td width="40%">
 		<?php echo $head['name']; ?><?php echo iif ($head['active'] == 0, ' (<em>Inaktiv</em>)'); ?>
 		</td>
 		<td width="10%">
@@ -57,17 +57,16 @@ if ($job == 'plugins') {
 		?>
 		</td>
 		<td width="15%" align="right"><?php echo $head['ordering']; ?>&nbsp;&nbsp;
-		<a href="admin.php?action=cms&plug=1&job=nav_move&id=<?php echo $head['id']; ?>&int1=-1"><img src="admin/html/images/asc.gif" border="0" alt="Hoch"></a>&nbsp;
-		<a href="admin.php?action=cms&plug=1&job=nav_move&id=<?php echo $head['id']; ?>&int1=1"><img src="admin/html/images/desc.gif" border="0" alt="Runter"></a>
+		 <a href="admin.php?action=cms&plug=1&job=nav_move&id=<?php echo $head['id']; ?>&int1=-1"><img src="admin/html/images/asc.gif" border="0" alt="Hoch"></a>&nbsp;
+		 <a href="admin.php?action=cms&plug=1&job=nav_move&id=<?php echo $head['id']; ?>&int1=1"><img src="admin/html/images/desc.gif" border="0" alt="Runter"></a>
 		</td>
-		<td width="35%">
-			<select size="1" name="c" onchange="locate(this.value)">
-				<option value="" selected>Bitte wählen</option>
-				<option value="admin.php?action=cms&job=plugins_info&id=<?php echo $head['id']; ?>">Informationen</option>
-				<option value="admin.php?action=cms&job=plugins_config&id=<?php echo $head['id']; ?>" style="text-decoration:line-through;">Konfiguration</option>
-				<option value="admin.php?action=cms&job=plugins_edit&id=<?php echo $head['id']; ?>" style="text-decoration:line-through;">&Auml;ndern</option>
-				<option value="admin.php?action=cms&job=plugins_delete&id=<?php echo $head['id']; ?>" style="text-decoration:line-through;">L&ouml;schen</option>
-			</select>
+		<td width="45%">
+		 [<a href="admin.php?action=cms&job=plugins_info&id=<?php echo $head['id']; ?>">Informationen</a>] 
+		 <!--
+		 [<a href="admin.php?action=cms&job=plugins_config&id=<?php echo $head['id']; ?>" style="text-decoration:line-through;">Konfiguration</a>] 
+		 [<a href="admin.php?action=cms&job=plugins_edit&id=<?php echo $head['id']; ?>" style="text-decoration:line-through;">&Auml;ndern</a>] 
+		 [<a href="admin.php?action=cms&job=plugins_delete&id=<?php echo $head['id']; ?>" style="text-decoration:line-through;">L&ouml;schen</a>]
+		 -->
 		</td>
 		</tr>
 		<?php
@@ -198,18 +197,17 @@ elseif ($job == 'nav') {
 	<a href="admin.php?action=cms&job=nav_move&id=<?php echo $head['id']; ?>&int1=1"><img src="admin/html/images/desc.gif" border="0" alt="Runter"></a>
 	</td>
 	<td width="35%">
-		<select size="1" name="c" onchange="locate(this.value)">
-			<option value="" selected>Bitte wählen</option>
-			<?php if ($head['module'] == 1) { ?>
-			<option value="admin.php?action=cms&job=plugins_info&id=<?php echo $head['id']; ?>">Informationen</option>
-			<option value="admin.php?action=cms&job=plugins_config&nav=1&id=<?php echo $head['id']; ?>" style="text-decoration:line-through;">Konfiguration</option>
-			<option value="admin.php?action=cms&job=plugins_edit&nav=1&id=<?php echo $head['id']; ?>" style="text-decoration:line-through;">&Auml;ndern</option>
-			<option value="admin.php?action=cms&job=plugins_delete&nav=1&id=<?php echo $head['id']; ?>" style="text-decoration:line-through;">L&ouml;schen</option>
-			<?php } else { ?>
-			<option value="admin.php?action=cms&job=nav_edit&id=<?php echo $head['id']; ?>">Ändern</option>
-			<option value="admin.php?action=cms&job=nav_delete&id=<?php echo $head['id']; ?>">Löschen</option>	
-			<?php } ?>
-		</select>
+	 <?php if ($head['module'] == 1) { ?>
+	 [<a href="admin.php?action=cms&job=plugins_info&id=<?php echo $head['id']; ?>">Informationen</a>] 
+	 <!--
+	 [<a href="admin.php?action=cms&job=plugins_config&nav=1&id=<?php echo $head['id']; ?>" style="text-decoration:line-through;">Konfiguration</a>] 
+	 [<a href="admin.php?action=cms&job=plugins_edit&nav=1&id=<?php echo $head['id']; ?>" style="text-decoration:line-through;">&Auml;ndern</a>] 
+	 [<a href="admin.php?action=cms&job=plugins_delete&nav=1&id=<?php echo $head['id']; ?>" style="text-decoration:line-through;">L&ouml;schen</a>]
+	 -->
+	 <?php } else { ?>
+	 [<a href="admin.php?action=cms&job=nav_edit&id=<?php echo $head['id']; ?>">Ändern</a>] 
+	 [<a href="admin.php?action=cms&job=nav_delete&id=<?php echo $head['id']; ?>">Löschen</a>]	
+	 <?php } ?>
 	</td>
 	</tr>
 	<?php
@@ -241,13 +239,10 @@ elseif ($job == 'nav') {
 				<a href="admin.php?action=cms&job=nav_move&id=<?php echo $link['id']; ?>&int1=-1"><img src="admin/html/images/asc.gif" border="0" alt="Hoch"></a>&nbsp;
 				<a href="admin.php?action=cms&job=nav_move&id=<?php echo $link['id']; ?>&int1=1"><img src="admin/html/images/desc.gif" border="0" alt="Runter"></a>
 				</font></td>			
-				<td class="mbox" width="25%"><font class="mtext">
-					<select size="1" name="c" onchange="locate(this.value)">
-						<option value="" selected>Bitte wählen</option>
-						<option value="admin.php?action=cms&job=nav_edit&id=<?php echo $link['id'].SID2URL_x; ?>">Ändern</option>
-						<option value="admin.php?action=cms&job=nav_delete&id=<?php echo $link['id'].SID2URL_x; ?>">Löschen</option>
-					</select>
-				</font></td>
+				<td class="mbox" width="25%">
+				 [<a href="admin.php?action=cms&job=nav_edit&id=<?php echo $link['id'].SID2URL_x; ?>">Ändern</a>] 
+				 [<a href="admin.php?action=cms&job=nav_delete&id=<?php echo $link['id'].SID2URL_x; ?>">Löschen</a>]
+				</td>
 				</tr>
 				<?php
 				if (isset($sub[$link['id']]) && count($sub[$link['id']]) > 0) {
@@ -279,11 +274,8 @@ elseif ($job == 'nav') {
 							<a href="admin.php?action=cms&job=nav_move&id=<?php echo $sublink['id']; ?>&int1=1"><img src="admin/html/images/desc.gif" border="0" alt="Runter"></a>
 							</td>			
 							<td class="mbox" width="25%">
-								<select size="1" name="c" onchange="locate(this.value)">
-									<option value="" selected>Bitte wählen</option>
-									<option value="admin.php?action=cms&job=nav_edit&id=<?php echo $sublink['id']; ?>">Ändern</option>
-									<option value="admin.php?action=cms&job=nav_delete&id=<?php echo $sublink['id']; ?>">Löschen</option>
-								</select>
+							 [<a href="admin.php?action=cms&job=nav_edit&id=<?php echo $sublink['id']; ?>">Ändern</a>] 
+							 [<a href="admin.php?action=cms&job=nav_delete&id=<?php echo $sublink['id']; ?>">Löschen</a>]
 							</td>
 							</tr>
 							<?php
@@ -715,8 +707,9 @@ elseif ($job == 'com') {
 	<?php echo $head['config']['version']; ?><br>
 	</td>
 	<td class="mbox" width="30%">
-		<select size="1" name="c" onchange="locate(this.value)">
-			<option value="" selected>Bitte w&auml;hlen</option>
+	<form name="" action="admin.php?action=locate" method="post">
+		<select size="1" name="url" onchange="locate(this.value)">
+			<option value="" selected="selected">Bitte w&auml;hlen</option>
 			<option value="admin.php?action=cms&job=com_info&id=<?php echo $head['id']; ?>">Informationen</option>
 			<option value="admin.php?action=cms&job=com_admin&cid=<?php echo $head['id']; ?>">Administration</option>
 			<?php if (!empty($cfg['config']['readme'])) { ?>
@@ -725,6 +718,8 @@ elseif ($job == 'com') {
 			<option value="admin.php?action=cms&job=com_export&id=<?php echo $head['id']; ?>">Exportieren</option>
 			<option value="admin.php?action=cms&job=com_delete&id=<?php echo $head['id']; ?>">L&ouml;schen</option>
 		</select>
+		<input type="submit" value="Go">
+	</form>
 	</td>
 	</tr>
 	<?php

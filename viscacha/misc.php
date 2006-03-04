@@ -343,7 +343,7 @@ elseif ($_GET['action'] == "markasread") {
 		}
 	}
 	if (empty($loc)) {
-		$loc = 'javascript: history.back(-1);';
+		$loc = 'javascript:history.back(-1);';
 	}
 	$slog->mark_read();
 	ok($lang->phrase('marked_as_read'), $loc);
