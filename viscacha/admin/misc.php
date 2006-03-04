@@ -466,17 +466,78 @@ elseif ($job == "captcha_fonts") {
 }
 elseif ($job == "spellcheck") {
 	echo head();
+	if (!$config['spellcheck']) {
+		error('admin.php?action=settings&job=spellcheck', 'Spell Check is disabled.');
+	}
+	$dicts = array();
+	$result = $db->query('SELECT id FROM '.$db->pre.'language',__LINE__,__FILE__);
+	while ($row = $db->fetch_assoc($result)) {
+		@include('language/'.$row['id'].'/settings.lng.php');
+		$dicts[] = $lang['spellcheck_dict'];
+	}
 	?>
+<form name="form2" method="post" action="admin.php?action=misc&amp;job=spellcheck_add">
  <table class="border">
   <tr> 
-   <td class="obox">Spell Checker</td>
+   <td class="obox">Spell Checker &raquo; Add words to the wordlist</td>
   </tr>
   <tr>
-   <td class="mbox">Not implemented yet.</td>
+   <td class="mbox">
+   Enter custom words you want added to your personal dictionary that will be used in addition to the native dictionaries. (1 word per line.)<br /><br />
+   <textarea name="words" rows="10" cols="100"></textarea><br />
+   <strong>Dictionary:</strong> <select name="dict">
+   <?php foreach ($dicts as $dict) { ?>
+   <option value="<?php echo $dict; ?>"><?php echo $dict; ?></option>
+   <?php } ?>
+   </select>
+   </td>
   </tr>
+  <tr><td class="ubox" align="center"><input accesskey="s" type="submit" value="Save" /></td></tr>
  </table>
+</form>
 	<?php
 	echo foot();
+}
+elseif ($job == "spellcheck_add") {
+	echo head();
+	$dict = $gpc->get('dict', str);
+	if ($config['pspell'] == 'pspell') {
+		include('classes/spellchecker/pspell.class.php');
+	}
+	elseif ($config['pspell'] == 'mysql') {
+		include('classes/spellchecker/mysql.class.php');
+		global $db;
+		$path = $db;
+	}
+	else {
+		include('classes/spellchecker/php.class.php');
+		$path = 'classes/spellchecker/dict/';
+	}
+	$sc = new spellchecker($dict,$config['spellcheck_ignore'],$config['spellcheck_mode'], true);
+	if (isset($path)) {
+		$sc->set_path($path);
+	}
+	$sc->init();
+
+	$x = $sc->error();
+	if (!empty($x)) {
+		error('admin.php?action=misc&job=spellcheck', $x);
+	}
+	
+	$words = $gpc->get('words', none);
+	$word_seperator = "0-9\\.,;:!\\?\\-\\|\n\r\s\"'\\[\\]\\{\\}\\(\\)\\/\\\\";
+	$words = preg_split('~['.$word_seperator.']+?~', $words, -1, PREG_SPLIT_NO_EMPTY);
+	foreach ($words as $k => $w) {
+		if (empty($w)) {
+			unset($words[$k]);
+		}
+	}
+	if ($sc->add($words)) {
+		ok('admin.php?action=misc&job=spellcheck');
+	}
+	else {
+		error('admin.php?action=misc&job=spellcheck');
+	}
 }
 elseif ($job == "credits") {
 	echo head();
