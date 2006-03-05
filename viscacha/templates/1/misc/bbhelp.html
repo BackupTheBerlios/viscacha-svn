@@ -34,6 +34,9 @@ Mit BB-Codes können Sie Ihren, im Forum geschriebenen Text, formatierten. Es sin
 	<li><a href="#reader">[reader]</a></li>
 	<li><a href="#tabletab">[table]Text[/table] und [tab]</a></li>
 	<li><a href="#tt">[tt]Text[/tt]</a></li>
+	<?php foreach ($cbb as $bb) { ?>
+	<li><a href="#bb<?php echo $bb['id']; ?>"><?php echo $bb['title']; ?></a></li>
+	<?php } ?>
 	</ul>
 </li>
 <li><strong><a href="#smileys">Smileys</a></strong></li>
@@ -166,6 +169,10 @@ Ausgabe:<br />
 </div>
 <div class="bfoot"><a href="#top" class="right"><img src="<?php echo $tpl->img('asc'); ?>" alt="Nach oben" /></a>[tt]Text[/tt]<a name="tt"></a></div>
 <div class="bbody">Hiermit kann ein Text im Schreibmaschinenstil dargestellt werden.<br /><br />Aus [tt]Schreibmaschinenähnlicher Text[/tt] wird <tt>Schreibmaschinenähnlicher Text</tt></div>
+<?php foreach ($cbb as $bb) { ?>
+<div class="bfoot"><a href="#top" class="right"><img src="<?php echo $tpl->img('asc'); ?>" alt="Nach oben" /></a><?php echo $bb['title']; ?><a name="bb<?php echo $bb['id']; ?>"></a></div>
+<div class="bbody"><?php echo $bb['bbcodeexplanation']; ?><br /><br /><?php echo $bb['bbcodeexample']; ?><br />wird zu<br /><?php echo $bbcode->customBB($bb['bbcodeexample']); ?></div>
+<?php } ?>
 </div>
 <br class="minibr" />
 <div class="border">

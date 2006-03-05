@@ -1,9 +1,9 @@
 <?php echo iif($subforums, '<br />'); ?>
 <table class="tables">
   <tr>
-	<td class="tfoot" colspan="5">
-	<span class="right">
-		<a id="menu_forumtools" href="javascript:Link()"><img src="<?php echo $tpl->img('desc'); ?>" alt="" /> <?php echo $lang->phrase('forum_options'); ?></a>
+	<td class="tfoot textright" colspan="5">
+		<span class="left"><?php echo $pages; ?></span>
+		<a id="menu_forumtools" href="#forumtools"><img src="<?php echo $tpl->img('desc'); ?>" alt="" /> <?php echo $lang->phrase('forum_options'); ?></a>
 		<script type="text/javascript">RegisterMenu('forumtools');</script>
 		<div class="popup" id="popup_forumtools">
 		<strong><?php echo $lang->phrase('forum_options_search'); ?></strong>
@@ -24,8 +24,6 @@
 		<?php if ($my->p['posttopics'] == 1) { ?>
 		<a class="sep" href="newtopic.php?id=<?php echo $board.SID2URL_x; ?>"><img src="<?php echo $tpl->img('newtopic'); ?>" alt="" /> <?php echo $lang->phrase('forum_newtopic'); ?></a>
 		<?php } ?>
-	</span>
-	<?php echo $pages; ?>
 	</td>
   </tr>
   <tr> 
@@ -63,6 +61,22 @@
 </form>
 </div>
 </div>
+<noscript>
+	<br class="minibr" />
+	<div class="popup_noscript">
+	<a name="forumtools"></a><strong><?php echo $lang->phrase('forum_options_search'); ?></strong>
+	<ul><li><form method="post" action="search.php?action=search<?php echo SID2URL_x; ?>">
+		<?php echo $lang->phrase('forum_options_search_forum'); ?>
+	   	<input type="text" name="search" size="22" />
+	   	<input type="submit" value="<?php echo $lang->phrase('forum_options_search_submit'); ?>" /><input type="hidden" name="boards[]" value="<?php echo $board; ?>" />
+	 </form></li>
+	</ul>
+	<strong><?php echo $lang->phrase('forum_options_misc'); ?></strong>
+	<ul>
+	<li><a href="misc.php?action=markforumasread&amp;board=<?php echo $board.SID2URL_x; ?>"><?php echo $lang->phrase('forum_options_markread'); ?></a></li>
+	</ul>
+	</div>
+</noscript>
 <?php if ($my->p['admin'] == 1 || $my->p['gmod'] == 1 || $my->mp[0] == 1) { ?>
 <br />
 <div class="border">

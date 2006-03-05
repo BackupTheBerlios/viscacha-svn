@@ -1,22 +1,20 @@
 <div class="border">
-<div class="bfoot topfooter">
-   <span class="right">
-	<a id="menu_threadtools" href="javascript:Link()"><img src="<?php echo $tpl->img('desc'); ?>" alt="<?php echo $lang->phrase('box_collapse'); ?>" /> <?php echo $lang->phrase('showtopic_options'); ?></a>
+<div class="bfoot topfooter textright">
+	<span class="left"><?php echo $temp; ?></span>
+	<a id="menu_threadtools" href="#threadtools"><img src="<?php echo $tpl->img('desc'); ?>" alt="<?php echo $lang->phrase('box_collapse'); ?>" /> <?php echo $lang->phrase('showtopic_options'); ?></a>
 	<script type="text/javascript">RegisterMenu('threadtools');</script>
 	<div class="popup" id="popup_threadtools">
 <?php if($my->vlogin) { ?>
 	 <strong><?php echo $lang->phrase('showtopic_options_manage'); ?></strong>
 	 <ul>
 	 <li><a href="editprofile.php?action=addfav&amp;id=<?php echo $info['id'].SID2URL_x; ?>"><?php echo $lang->phrase('showtopic_options_favs'); ?></a></li>
+	 </ul>
 	 <?php if ($info['status'] == 0) { ?>
-     <li>
-	   <select name="location" onchange="addabo(this.value,'<?php echo $info['id']; ?>')">
-		<option value="x"><?php echo $lang->phrase('showtopic_options_abo'); ?></option>
-		<option value="0"><?php echo $lang->phrase('showtopic_options_abo0'); ?></option>
-		<option value="1"><?php echo $lang->phrase('showtopic_options_abo1'); ?></option>
-		<option value="7"><?php echo $lang->phrase('showtopic_options_abo7'); ?></option>
-	   </select>
-     </li>
+	 <strong><?php echo $lang->phrase('showtopic_options_abo'); ?></strong>
+	 <ul>
+     <li><a href="editprofile.php?action=addabo&amp;temp=0&amp;id=<?php echo $info['id'].SID2URL_x; ?>"><?php echo $lang->phrase('showtopic_options_abo0'); ?></a></li>
+     <li><a href="editprofile.php?action=addabo&amp;temp=1&amp;id=<?php echo $info['id'].SID2URL_x; ?>"><?php echo $lang->phrase('showtopic_options_abo1'); ?></a></li>
+     <li><a href="editprofile.php?action=addabo&amp;temp=7&amp;id=<?php echo $info['id'].SID2URL_x; ?>"><?php echo $lang->phrase('showtopic_options_abo7'); ?></a></li>
      </ul>
 <?php }} ?>
 	 <strong><?php echo $lang->phrase('showtopic_options_export'); ?></strong>
@@ -31,7 +29,6 @@
 <?php if($my->p['postreplies'] == 1 && $info['status'] == 0) { ?>
 	<a class="sep" href="addreply.php?id=<?php echo $info['id'].SID2URL_x; ?>"><img src="<?php echo $tpl->img('addreply'); ?>" alt="" /> <?php echo $lang->phrase('box_reply'); ?></a>
 <?php } ?>
-   </span><?php echo $temp; ?>
 </div></div>
 <br class="minibr" />
 <?php echo $inner['vote_result'].$inner['index_bit']; ?>
@@ -43,6 +40,32 @@
 <?php } ?>
 </span><?php echo $temp; ?>
 </div></div>
+<noscript>
+	<br class="minibr" />
+	<div class="popup_noscript"><a name="threadtools"></a>
+<?php if($my->vlogin) { ?>
+	 <strong><?php echo $lang->phrase('showtopic_options_manage'); ?></strong>
+	 <ul>
+	 <li><a href="editprofile.php?action=addfav&amp;id=<?php echo $info['id'].SID2URL_x; ?>"><?php echo $lang->phrase('showtopic_options_favs'); ?></a></li>
+	 </ul>
+	 <?php if ($info['status'] == 0) { ?>
+	 <strong><?php echo $lang->phrase('showtopic_options_abo'); ?></strong>
+	 <ul>
+     <li><a href="editprofile.php?action=addabo&amp;temp=0&amp;id=<?php echo $info['id'].SID2URL_x; ?>"><?php echo $lang->phrase('showtopic_options_abo0'); ?></a></li>
+     <li><a href="editprofile.php?action=addabo&amp;temp=1&amp;id=<?php echo $info['id'].SID2URL_x; ?>"><?php echo $lang->phrase('showtopic_options_abo1'); ?></a></li>
+     <li><a href="editprofile.php?action=addabo&amp;temp=7&amp;id=<?php echo $info['id'].SID2URL_x; ?>"><?php echo $lang->phrase('showtopic_options_abo7'); ?></a></li>
+     </ul>
+<?php }} ?>
+	 <strong><?php echo $lang->phrase('showtopic_options_export'); ?></strong>
+	 <ul>
+	 <li><a href="print.php?id=<?php echo $info['id']; ?>&amp;page=<?php echo $_GET['page'].SID2URL_x; ?>"><img src="<?php echo $tpl->img('print'); ?>" alt="" /> <?php echo $lang->phrase('showtopic_options_print'); ?></a></li>
+<?php if ($config['pdfdownload'] == 1) { ?>
+	  <li><a href="pdf.php?id=<?php echo $info['id']; ?>&amp;page=<?php echo $_GET['page'].SID2URL_x; ?>"><img src="<?php echo $tpl->img('pdf'); ?>" alt="" /> <?php echo $lang->phrase('showtopic_options_pdf'); ?></a></li>
+<?php } ?>
+	  <li><a href="print.php?id=<?php echo $info['id']; ?>&amp;page=<?php echo $_GET['page'].SID2URL_x; ?>&amp;action=word"><img src="<?php echo $tpl->img('word'); ?>" alt="" /> <?php echo $lang->phrase('showtopic_options_word'); ?></a></li>
+	 </ul>
+	</div>
+</noscript>
 <?php if ($my->p['admin'] == 1 || $my->p['gmod'] == 1 || $my->mp[0] == 1) { ?>
 <br />
 <div class="border">

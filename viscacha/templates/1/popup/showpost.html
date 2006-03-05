@@ -1,3 +1,11 @@
+<script src="templates/menu.js" type="text/javascript"></script>
+<script type="text/javascript">
+<!--
+	window.onload = function () {
+		initImg(<?php echo $config['resizebigimgwidth']; ?>);
+	}
+-->
+</script>
 <div class="border">
 <div class="topfooter bfoot">
 <span class="right"><a href="showtopic.php?id=<?php echo $row->topic_id; ?>" target="_blank"><?php echo $lang->phrase('showpost_show_topic'); ?></a></span>
@@ -32,7 +40,11 @@ if (!empty($inner['upload_box'])) {
   <?php } if (!empty($row->signature) && $my->opt_showsig == 1) { ?>
    <div class="signature"><?php echo $row->signature; ?></div>
   <?php } if (!empty($row->edit)) { ?>
-   <div class="textright stext"><?php echo $lang->phrase('post_editinfo'); ?></div>
+   <div class="textright stext">
+   <?php echo $lang->phrase('post_editinfo1'); ?>
+   <strong><a href="popup.php?action=edithistory&id=<?php echo $row->id.SID2URL_x; ?>" target="edithistory" onclick="edithistory(this)"><?php echo $anz; ?></a></strong>
+   <?php echo $lang->phrase('post_editinfo2'); ?>
+   </div>
 <?php }} ?>
 </div>
 </div>

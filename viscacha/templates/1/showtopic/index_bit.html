@@ -4,7 +4,7 @@
 <?php if($my->p['edit'] == 1 && $info['status'] == 0 && ($my->mp[4] == 1 || $my->id == $row->mid)) { ?>
 	 <a href="edit.php?id=<?php echo $row->id.SID2URL_x; ?>"><img src="<?php echo $tpl->img('edit'); ?>" alt="" /> <?php echo $lang->phrase('post_edit'); ?></a>
 <?php } if($my->p['postreplies'] == 1 && $info['status'] == 0) { ?>
-	 <a class="sep" title="<?php echo $lang->phrase('post_quote_desc'); ?>" href="javascript: multiquote(<?php echo $row->id; ?>)"><img src="<?php echo $tpl->img('no_mquote'); ?>" alt="" id="mq_<?php echo $row->id; ?>" /> <?php echo $lang->phrase('post_quote'); ?></a>
+	 <a class="sep" title="<?php echo $lang->phrase('post_quote_desc'); ?>" href="addreply.php?id=<?php echo $info['id'].SID2URL_x; ?>&amp;qid[]=<?php echo $row->id; ?>" onclick="multiquote(<?php echo $row->id; ?>); return false;"><img src="<?php echo $tpl->img('no_mquote'); ?>" alt="" id="mq_<?php echo $row->id; ?>" /> <?php echo $lang->phrase('post_quote'); ?></a>
 <?php } if($my->vlogin) { ?>
 	 <a class="sep" title="<?php echo $lang->phrase('post_copy_desc'); ?>" href="editprofile.php?action=copy&amp;id=<?php echo $row->id.SID2URL_x; ?>"><img src="<?php echo $tpl->img('copy'); ?>" alt="" /> <?php echo $lang->phrase('post_copy'); ?></a>
 <?php } ?>
@@ -31,7 +31,7 @@
    	<a href="javascript:self.scrollTo(0,0);"><img src="<?php echo $tpl->img('asc'); ?>" alt="" /></a>
    	<a href="javascript:self.scrollTo(0,9999999999);"><img src="<?php echo $tpl->img('desc'); ?>" alt="" /></a>
   </span>
-  <span class='stext'><?php echo $lang->phrase('showtopic_subject'); ?><strong><a href="javascript: showpost('<?php echo $row->id; ?>');"><?php echo $row->topic; ?></a></strong></span>
+  <span class='stext'><?php echo $lang->phrase('showtopic_subject'); ?><strong><a href="popup.php?action=showpost&id=<?php echo $row->id.SID2URL_x; ?>" target="showpost" onclick="showpost(this)"><?php echo $row->topic; ?></a></strong></span>
   <hr />
 <?php 
 echo $row->comment;
@@ -54,7 +54,11 @@ if (!empty($inner['image_box'])) {
 <?php } if (!empty($row->signature) && $my->opt_showsig == 1) { ?>
    <div class="signature"><?php echo $row->signature; ?></div>
 <?php } } if (!empty($row->edit)) { ?>
-   <div class="textright stext"><?php echo $lang->phrase('post_editinfo'); ?></div>
+   <div class="textright stext">
+   <?php echo $lang->phrase('post_editinfo1'); ?>
+   <strong><a href="popup.php?action=edithistory&id=<?php echo $row->id.SID2URL_x; ?>" target="edithistory" onclick="edithistory(this)"><?php echo $anz; ?></a></strong>
+   <?php echo $lang->phrase('post_editinfo2'); ?>
+   </div>
 <?php } ?>
 </div>
 </div>

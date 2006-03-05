@@ -8,7 +8,7 @@ function refreshElement(parentWindow) {
 }
 
 function setFocus(field) {
-	if (!field.hasfocus) {
+	if (field.hasfocus == false) {
 		field.focus();
 	}
 }

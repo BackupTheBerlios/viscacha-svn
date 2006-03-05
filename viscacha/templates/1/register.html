@@ -25,7 +25,11 @@
 	  <br /><span class="stext"><?php echo $lang->phrase('register_tempmails'); ?></span>
     <?php } ?>
 </label>
-<input class="label" type="text" id="email" name="email" size="40" value="<?php echo $_GET['email']; ?>" /> 
+<input class="label" type="text" id="email" name="email" size="40" value="<?php echo $_GET['email']; ?>" />
+<?php foreach ($customfields as $row) { ?>
+<br class="newinput" /><hr class="formsep" />
+  <label for="<?php echo $row['field']; ?>"><?php echo $row['name'] . iif(!empty($row['description']), '<br /><span class="stext">'.$row['description'].'</span>'); ?></label> 
+  <?php echo $row['input']; } ?>
 <br class="newinput" />
 <?php if ($config['botgfxtest'] == 1) { ?>
 <hr class="formsep" />

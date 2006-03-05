@@ -606,18 +606,9 @@ elseif ($job == 'custombb_add2') {
 		error('admin.php?action=bbcodes&job=custombb_add', 'Please complete all required fields');
 	}
 
-	$result = $db->query("SELECT * FROM {$db->pre}bbcode WHERE bbcodetag = '{$query['bbcodetag']}' AND twoparams = ".$query['twoparams'], __LINE__, __FILE__);
+	$result = $db->query("SELECT * FROM {$db->pre}bbcode WHERE bbcodetag = '{$query['bbcodetag']}' AND twoparams = '{$query['twoparams']}'", __LINE__, __FILE__);
 	if ($db->num_rows($result) > 0) {
 		error('admin.php?action=bbcodes&job=custombb_add', 'There is already a BB Code named &quot;'.$query['bbcodetag'].'&quot;. You may not create duplicate names.');
-	}
-
-	$query['bbcodereplacement'] = str_replace('%', '%%', $query['bbcodereplacement']);
-	if ($query['twoparams']) {
-		$query['bbcodereplacement'] = str_replace('{param}', '%1$s', $query['bbcodereplacement']);
-		$query['bbcodereplacement'] = str_replace('{option}', '%2$s', $query['bbcodereplacement']);
-	}
-	else {
-		$query['bbcodereplacement'] = str_replace('{param}', '%1$s', $query['bbcodereplacement']);
 	}
 	
 	$db->query("
@@ -636,15 +627,6 @@ elseif ($job == 'custombb_edit') {
 
 	$result = $db->query("SELECT * FROM {$db->pre}bbcode WHERE id = ".$id, __LINE__, __FILE__);
 	$bbcode = $gpc->prepare($db->fetch_assoc($result));
-
-	if($bbcode['twoparams']) {
-		$bbcode['bbcodereplacement'] = str_replace('%1$s', '{param}', $bbcode['bbcodereplacement']);
-		$bbcode['bbcodereplacement'] = str_replace('%2$s', '{option}', $bbcode['bbcodereplacement']);
-	}
-	else {
-		$bbcode['bbcodereplacement'] = str_replace('%1$s', '{param}', $bbcode['bbcodereplacement']);
-	}
-	$bbcode['bbcodereplacement'] = str_replace('%%', '%', $bbcode['bbcodereplacement']);
 
 	?>
 	<form action="admin.php?action=bbcodes&job=custombb_edit2&amp;id=<?php echo $bbcode['id']; ?>" name="form2" method="post">
@@ -718,18 +700,9 @@ elseif ($job == 'custombb_edit2') {
 		error('admin.php?action=bbcodes&job=custombb_add', 'Please complete all required fields');
 	}
 
-	$result = $db->query("SELECT * FROM {$db->pre}bbcode WHERE bbcodetag = '{$query['bbcodetag']}' AND twoparams = ".$query['twoparams'], __LINE__, __FILE__);
+	$result = $db->query("SELECT * FROM {$db->pre}bbcode WHERE bbcodetag = '{$query['bbcodetag']}' AND twoparams = '{$query['twoparams']}'", __LINE__, __FILE__);
 	if ($db->num_rows($result) > 0) {
 		error('admin.php?action=bbcodes&job=custombb_add', 'There is already a BB Code named &quot;'.$query['bbcodetag'].'&quot;. You may not create duplicate names.');
-	}
-
-	$query['bbcodereplacement'] = str_replace('%', '%%', $query['bbcodereplacement']);
-	if ($query['twoparams']) {
-		$query['bbcodereplacement'] = str_replace('{param}', '%1$s', $query['bbcodereplacement']);
-		$query['bbcodereplacement'] = str_replace('{option}', '%2$s', $query['bbcodereplacement']);
-	}
-	else {
-		$query['bbcodereplacement'] = str_replace('{param}', '%1$s', $query['bbcodereplacement']);
 	}
 
 	$db->query("UPDATE {$db->pre}bbcode SET title = '{$query['title']}',bbcodetag = '{$query['bbcodetag']}',bbcodereplacement = '{$query['bbcodereplacement']}',bbcodeexample = '{$query['bbcodeexample']}',bbcodeexplanation = '{$query['bbcodeexplanation']}',twoparams = '{$query['twoparams']}',buttonimage = '{$query['buttonimage']}' WHERE id = '{$query['id']}'", __LINE__, __FILE__);

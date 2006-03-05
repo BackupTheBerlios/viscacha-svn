@@ -32,6 +32,7 @@ class BBCode {
 
 	var $smileys = array();
 	var $bbcodes = array();
+	var $custombb = array();
 	var $profile = '';
 	var $cfg = array();
 	var $reader = '';
@@ -47,6 +48,7 @@ class BBCode {
 	    );
 		$this->cache_smileys();
 		$this->cache_bbcode();
+		$this->cache_custombb();
 		$this->setProfile('standard');
 		include('classes/class.convertroman.php');
 	}
@@ -633,11 +635,10 @@ class BBCode {
 			$text = $this->wordwrap($text);
 		}
 		$text = str_ireplace('[reader]', $this->reader, $text);
+		$text = $this->customBB($text, $type);
 		$text = $this->parseDoc($text);
 		$text = $this->dict($text, $type);
 		$text = $this->replace($text);
-		// Version 1.1
-		//$text = $this->customBB($text, $type);
 		$text = $this->nl2br($text, $type);
 		$text = $this->replacePID($text);
 		$text = $this->censor($text);
@@ -768,6 +769,9 @@ class BBCode {
 	}
 	function getSmileys () {
 		return $this->smileys;
+	}
+	function getCustomBB () {
+		return $this->custombb;
 	}
 	function setProfile ($name = 'standard', $new = SP_CHANGE) {
 		if ($new == SP_COPY) {
@@ -955,8 +959,19 @@ class BBCode {
 		return $text;
 	}
 	function customBB ($text, $type='html') {
-		foreach ($this->bbcodes['bb'] as $regexp) {
-           	$text = @preg_replace($regexp['search'], $regexp['replace'], $text);
+		foreach ($this->custombb as $re) {
+			// Paramter for Opening Tag
+			$param = ($re['twoparams'] ? '=([^\]\'\"]*?)' : '');
+			// Opening Tag
+			$regexp = '\['.$re['bbcodetag'].$param.'\]';
+			// Getting content
+			$regexp .= '(.+?)';
+			// Closing Tag
+			$regexp .= '\[\/'.$re['bbcodetag'].'\]';
+			if ($type == 'plain') {
+				$re['bbcodereplacement'] = strip_tags($re['bbcodereplacement']);
+			}
+           	$text = preg_replace('~'.$regexp.'~is', $re['bbcodereplacement'], $text);
         }
 		return $text;
 	}
@@ -994,6 +1009,28 @@ class BBCode {
 		}
 		$this->bbcodes = $cache;
 	}
+	function cache_custombb () {
+		global $db;
+		$scache = new scache('custombb');
+		if ($scache->existsdata() == TRUE) {
+			$cache = $scache->importdata();
+		}
+		else {
+			$bbresult = $db->query("SELECT * FROM {$db->pre}bbcode ORDER BY id",__LINE__,__FILE__);
+			while ($bb = $db->fetch_assoc($bbresult)) {
+				if ($bb['twoparams']) {
+					$bb['bbcodereplacement'] = str_replace('{param}', '\2', $bb['bbcodereplacement']);
+					$bb['bbcodereplacement'] = str_replace('{option}', '\1', $bb['bbcodereplacement']);
+				}
+				else {
+					$bb['bbcodereplacement'] = str_replace('{param}', '\1', $bb['bbcodereplacement']);
+				}
+				$cache[] = $bb;
+			}
+			$scache->exportdata($cache);
+		}
+		$this->custombb = $cache;
+	}
 	function cache_smileys () {
 		global $db, $bbcode;
 		$scache = new scache('smileys');
@@ -1029,6 +1066,21 @@ class BBCode {
 	}
 	function getbbhtml ($file = "main/bbhtml") {
 	    global $tpl;
+	    $cbb = $this->custombb;
+	    foreach ($cbb as $key => $bb) {
+	    	if (empty($bb['buttonimage'])) {
+	    		unset($cbb[$key]);
+	    		continue;
+	    	}
+	    	$cbb[$key]['title'] = htmlspecialchars($bb['title']);
+	    	if ($bb['twoparams']) {
+	    		$cbb[$key]['href'] = "InsertTagsParams('[{$bb['bbcodetag']}={param1}]{param2}','[/{$bb['bbcodetag']}]');";
+	    	}
+	    	else {
+	    		$cbb[$key]['href'] = "InsertTags('[{$bb['bbcodetag']}]','[/{$bb['bbcodetag']}]');";
+	    	}
+	    }
+	    $tpl->globalvars(compact("cbb"));
 	    return $tpl->parse($file);
 	}
 	function replaceTextOnce($original, $newindex) {

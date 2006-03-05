@@ -21,7 +21,7 @@
   <input id="membersuggest_val" type="text" onkeyup="ajax_searchmember(this.value);" name="name" size="40" value="<?php echo $data['name']; ?>" />
   <?php } else { ?>
   <input id="membersuggest_val" name="name2" disabled="disabled" type="text" onkeyup="ajax_searchmember(this.value);" size="40" value="<?php echo $showname; ?>" />
-  <span class="stext" id="edit_pmto">[<a href="javascript: edit_pmto();"><?php echo $lang->phrase('pm_addressee_edit'); ?></a>]</span>
+  <span class="stext" id="edit_pmto">[<a href="javascript:edit_pmto();"><?php echo $lang->phrase('pm_addressee_edit'); ?></a>]</span>
   <input id="membersuggest_val2" type="hidden" name="name" value="<?php echo $data['name']; ?>" />
   <?php } ?>
   <br /><span class="stext" id="membersuggest"></span>

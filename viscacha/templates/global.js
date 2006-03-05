@@ -41,57 +41,42 @@ function submit_flood(Button) {
 	Button.value=lng['js_submitted'];
 }
 
-// Einzelnen Post anzeigen
-function showpost(pid) {
-    window.open("popup.php?action=showpost&id="+pid+sidx,"","width=640,height=480,resizable=yes,scrollbars=yes,location=yes");
+function showpost(Link) {
+    window.open(Link.href, "showpost", "width=640,height=480,resizable=yes,scrollbars=yes,location=yes");
 }
-function edithistory(pid) {
-    window.open("popup.php?action=edithistory&id="+pid+sidx,"","width=640,height=380,resizable=yes,scrollbars=yes,location=no");
+function edithistory(Link) {
+    window.open(Link.href, "edithistory", "width=640,height=380,resizable=yes,scrollbars=yes,location=no");
 }
-
-// Öffne Upload-Verwaltung
 function adduploads(Link) {
-    window.open(Link.href,"","width=480,height=480,resizable=yes,scrollbars=yes,status=yes");  
+    window.open(Link.href, "adduploads", "width=480,height=480,resizable=yes,scrollbars=yes,status=yes");  
+}
+function filetypeinfo(ftype) {
+	window.open(Link.href, "filetypeinfo", "width=400,height=250,resizable=no,scrollbars=yes");
 }
 
-// Abo hinzufügen
-function addabo(formv,id) {
-	if (formv == 'x') {
-		return false;
-	}
-	else {
-		location.href='editprofile.php?action=addabo&id='+id+'&temp='+formv+sidx;
+function deletenotice(id) {
+	input = confirm(lng['js_confirm_ndelete']);
+	if (input == true) {
+	    notices = document.getElementsByName("notice[]");
+		notices[id].value = '';
+		noticeArea = FetchElement("notice_"+id);
+		noticeArea.style.display = 'none';
+		Form = FetchElement('notice');
+		Form.submit();
+		return;
 	}
 }
 
 function confirmdelete(box) {
     if (box.checked == true) {
-	    input=confirm(lng['js_confirm_pdelete']);
-	    if (input==true) {
+	    input = confirm(lng['js_confirm_pdelete']);
+	    if (input == true) {
 	        box.checked = true;
 	    }
 	    else {
 	        box.checked = false;
 	    }
 	}
-}
-
-// Notiz löschen
-function deletenotice(id) {
-	input=confirm(lng['js_confirm_ndelete']);
-	if (input==true) {
-	    notices = document.getElementsByName("notice[]");
-		notices[id].value = '';
-		notices[id].style.display = 'none';
-		Form = FetchElement('notice');
-		Form.Submit();
-		return;
-	}
-}
-
-// Fenster mit Dateierklärungen öffnen
-function filetypeinfo(ftype) {
-	window.open("popup.php?action=filetypes&type="+ftype+sidx,"","width=400,height=250,resizable=no,scrollbars=yes");
 }
 
 // Bilder an Forum anpassen
@@ -253,7 +238,7 @@ function ajax_searchmember(name) {
 		    if (suggest.length > 3) {
 		        names = oXML.responseText.split(",");
 				for (var i=0;i<names.length;i++) {
-					names[i] = '<a href="javascript: ajax_smIns(\''+names[i]+'\');">'+names[i]+'</a>';
+					names[i] = '<a href="javascript:ajax_smIns(\''+names[i]+'\');">'+names[i]+'</a>';
 				}
 		    	inline.innerHTML = lng['ajax7']+names.join(', ');
 		    }
@@ -371,5 +356,13 @@ function multiquote(id) {
     }
     
     mqmakeCookie(newval.join(','));
-    return;
+    return false;
+}
+
+// Namen richtig setzen beim PM schreiben
+function edit_pmto() {
+	FetchElement('membersuggest_val').name = 'name';	
+	FetchElement('membersuggest_val2').name = 'name2';	
+	FetchElement('membersuggest_val').disabled = '';
+	FetchElement('edit_pmto').style.display = 'none';	
 }

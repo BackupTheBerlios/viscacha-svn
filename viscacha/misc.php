@@ -329,6 +329,7 @@ elseif ($_GET['action'] == "bbhelp") {
 	$my->p = $slog->Permissions();
 	$bbcode = initBBCodes();
 	$smileys = $bbcode->getSmileys();
+	$cbb = $bbcode->getCustomBB();
 	$breadcrumb->Add($lang->phrase('bbhelp_title'));
 	echo $tpl->parse("header");
 	echo $tpl->parse("menu");
