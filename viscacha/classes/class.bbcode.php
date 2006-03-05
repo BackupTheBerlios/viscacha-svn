@@ -980,7 +980,7 @@ class BBCode {
 			$cache = $scache->importdata();
 		}
 		else {
-			$bbresult = $db->query("SELECT * FROM {$db->pre}bbcode",__LINE__,__FILE__);
+			$bbresult = $db->query("SELECT * FROM {$db->pre}textparser",__LINE__,__FILE__);
 			$cache = array(
 				'censor' => array(),
 				'bb' => array(),

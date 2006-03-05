@@ -269,7 +269,7 @@ elseif ($job == 'add_smiley') {
 }
 elseif ($job == 'word') {
 	echo head();
-	$result = $db->query("SELECT * FROM {$db->pre}bbcode WHERE type = 'word'",__LINE__,__FILE__);
+	$result = $db->query("SELECT * FROM {$db->pre}textparser WHERE type = 'word'",__LINE__,__FILE__);
 ?>
 <form name="form" method="post" action="admin.php?action=bbcodes&job=del">
 <input name="temp4" value="word" type="hidden">
@@ -375,7 +375,7 @@ elseif ($job == 'censor') {
 }
 elseif ($job == 'replace') {
 	echo head();
-	$result = $db->query("SELECT * FROM {$db->pre}bbcode WHERE type = 'replace'",__LINE__,__FILE__);
+	$result = $db->query("SELECT * FROM {$db->pre}textparser WHERE type = 'replace'",__LINE__,__FILE__);
 ?>
 <form name="form" method="post" action="admin.php?action=bbcodes&job=del">
 <input name="temp4" value="replace" type="hidden">
@@ -444,7 +444,7 @@ elseif ($job == 'add') {
 		error('admin.php?action=bbcodes&job='.$type, $error);
 	}
 	
-	$db->query("INSERT INTO {$db->pre}bbcode (`search`,`replace`,`type`,`desc`) VALUES ('".$gpc->get('temp1', str)."','".$gpc->get('temp2', str)."','{$type}','".$gpc->get('temp3', str)."')",__LINE__,__FILE__);
+	$db->query("INSERT INTO {$db->pre}textparser (`search`,`replace`,`type`,`desc`) VALUES ('".$gpc->get('temp1', str)."','".$gpc->get('temp2', str)."','{$type}','".$gpc->get('temp3', str)."')",__LINE__,__FILE__);
 
 	$scache = new scache('bbcode');
 	$scache->deletedata();
@@ -458,7 +458,7 @@ elseif ($job == 'del') {
 	if (count($delete) > 0) {
 		error('admin.php?action=bbcodes&job='.$type, 'Sie haben keine gültige Auswahl getroffen.');
 	}
-	$db->query('DELETE FROM '.$db->pre.'bbcode WHERE id IN ('.implode(',',$delete).')',__LINE__,__FILE__);
+	$db->query('DELETE FROM '.$db->pre.'textparser WHERE id IN ('.implode(',',$delete).')',__LINE__,__FILE__);
 	$anz = $db->affected_rows();
     $scache = new scache('bbcode');
     $scache->deletedata();
@@ -532,5 +532,272 @@ elseif ($job == 'del_codefiles') {
     $scache = new scache('syntax-highlight');
     $scache->deletedata();
     ok('admin.php?action=bbcodes&job=codefiles', 'Dateien wurden gelöscht');
+}
+elseif ($job == 'custombb_add') {
+	echo head();
+	?>
+	<form action="admin.php?action=bbcodes&job=custombb_add2" name="form2" method="post">
+	<table align="center" class="border">
+	<tr>
+		<td class="obox" align="center" colspan="2"><b>Add new BB Code</b></td>
+	</tr>
+	<tr>
+		<td class="mbox" width="50%">Title</td>
+		<td class="mbox" width="50%"><input type="text" name="title" value="" size="60" /></td>
+	</tr>
+	<tr>
+		<td class="mbox">Tag<br />
+		<span class="stext">This is the text for the BB code, which goes inside the square brackets.</span></td>
+		<td class="mbox"><input type="text" name="bbcodetag" value="" size="60" /></td>
+	</tr>
+	<tr>
+		<td class="mbox">Replacement<br />
+		<span class="stext">This is the HTML code for the BB code replacement. Make sure that you include '{param}' (without the quotes) to insert the text between the opening and closing BB code tags, and '{option}' for the parameter within the BB code tag. You can only use {option} if 'Use Option' is set to yes.</span></td>
+		<td class="mbox"><textarea name="bbcodereplacement" rows="6" cols="60" wrap="virtual"></textarea></td>
+	</tr>
+	<tr>
+		<td class="mbox">Example<br />
+		<span class="stext">This is a sample piece of BB code to use as an example for this particular BB code.</span></td>
+		<td class="mbox"><input type="text" name="bbcodeexample" value="" size="60" /></td>
+	</tr>
+	<tr>
+		<td class="mbox">Description<br />
+		<span class="stext">This is a piece of text to describe the BB code tag. This can include HTML tags if you wish.</span></td>
+		<td class="mbox"><textarea name="bbcodeexplanation" rows="8" cols="60" wrap="virtual"></textarea></td>
+	</tr>
+	<tr>
+		<td class="mbox">Use {option}<br />
+		<span class="stext">Setting this option to yes will allow you to create a [tag=option][/tag] style tag, rather than just a [tag][/tag] style tag.</span></td>
+		<td class="mbox">
+			<input type="radio" name="twoparams" value="1" />Yes<br />
+			<input type="radio" name="twoparams" value="0" checked="checked" />No
+		</td>
+	</tr>
+	<tr>
+		<td class="mbox">Button Image<br />
+		<span class="stext">Optional - If you would like this bbcode to appear as a clickable button on the message editor toolbar, enter the URL of an image 21 x 20 pixels in size that will act as the button to insert this bbcode.</span>
+		</td>
+		<td class="mbox"><input type="text" name="buttonimage" value="" size="60" /></td>
+	</tr>
+	<tr><td class="ubox" colspan="2" align="center"><input type="submit" value="Save" /></td></tr>
+	</table>
+	</form>
+	<?php
+	echo foot();
+}
+elseif ($job == 'custombb_add2') {
+	$vars = array(
+		'title'				=> str,
+		'bbcodetag'			=> str,
+		'bbcodereplacement' => str,
+		'bbcodeexample'		=> str,
+		'bbcodeexplanation' => str,
+		'twoparams'			=> int,
+		'buttonimage'		=> str
+	);
+	$query = array();
+	foreach ($vars as $key => $type) {
+		$query[$key] = $gpc->get($key, $type);
+	}
+
+	echo head();
+
+	if (!$query['bbcodetag'] OR !$query['bbcodereplacement'] OR !$query['bbcodeexample']) {
+		error('admin.php?action=bbcodes&job=custombb_add', 'Please complete all required fields');
+	}
+
+	$result = $db->query("SELECT * FROM {$db->pre}bbcode WHERE bbcodetag = '{$query['bbcodetag']}' AND twoparams = ".$query['twoparams'], __LINE__, __FILE__);
+	if ($db->num_rows($result) > 0) {
+		error('admin.php?action=bbcodes&job=custombb_add', 'There is already a BB Code named &quot;'.$query['bbcodetag'].'&quot;. You may not create duplicate names.');
+	}
+
+	$query['bbcodereplacement'] = str_replace('%', '%%', $query['bbcodereplacement']);
+	if ($query['twoparams']) {
+		$query['bbcodereplacement'] = str_replace('{param}', '%1$s', $query['bbcodereplacement']);
+		$query['bbcodereplacement'] = str_replace('{option}', '%2$s', $query['bbcodereplacement']);
+	}
+	else {
+		$query['bbcodereplacement'] = str_replace('{param}', '%1$s', $query['bbcodereplacement']);
+	}
+	
+	$db->query("
+	INSERT INTO {$db->pre}bbcode (bbcodetag, bbcodereplacement, bbcodeexample, bbcodeexplanation, twoparams, title, buttonimage)
+	VALUES ('{$query['bbcodetag']}','{$query['bbcodereplacement']}','{$query['bbcodeexample']}','{$query['bbcodeexplanation']}','{$query['twoparams']}','{$query['title']}','{$query['buttonimage']}')
+	", __LINE__, __FILE__);
+
+    $scache = new scache('custombb');
+    $scache->deletedata();
+
+	ok('admin.php?action=bbcodes&job=custombb');
+}
+elseif ($job == 'custombb_edit') {
+	echo head();
+	$id = $gpc->get('id', int);
+
+	$result = $db->query("SELECT * FROM {$db->pre}bbcode WHERE id = ".$id, __LINE__, __FILE__);
+	$bbcode = $gpc->prepare($db->fetch_assoc($result));
+
+	if($bbcode['twoparams']) {
+		$bbcode['bbcodereplacement'] = str_replace('%1$s', '{param}', $bbcode['bbcodereplacement']);
+		$bbcode['bbcodereplacement'] = str_replace('%2$s', '{option}', $bbcode['bbcodereplacement']);
+	}
+	else {
+		$bbcode['bbcodereplacement'] = str_replace('%1$s', '{param}', $bbcode['bbcodereplacement']);
+	}
+	$bbcode['bbcodereplacement'] = str_replace('%%', '%', $bbcode['bbcodereplacement']);
+
+	?>
+	<form action="admin.php?action=bbcodes&job=custombb_edit2&amp;id=<?php echo $bbcode['id']; ?>" name="form2" method="post">
+	<table align="center" class="border">
+	<tr>
+		<td class="obox" align="center" colspan="2"><b>Add new BB Code</b></td>
+	</tr>
+	<tr>
+		<td class="mbox" width="50%">Title</td>
+		<td class="mbox" width="50%"><input type="text" name="title" value="<?php echo $bbcode['title']; ?>" size="60" /></td>
+	</tr>
+	<tr>
+		<td class="mbox">Tag<br />
+		<span class="stext">This is the text for the BB code, which goes inside the square brackets.</span></td>
+		<td class="mbox"><input type="text" name="bbcodetag" value="<?php echo $bbcode['bbcodetag']; ?>" size="60" /></td>
+	</tr>
+	<tr>
+		<td class="mbox">Replacement<br />
+		<span class="stext">This is the HTML code for the BB code replacement. Make sure that you include '{param}' (without the quotes) to insert the text between the opening and closing BB code tags, and '{option}' for the parameter within the BB code tag. You can only use {option} if 'Use Option' is set to yes.</span></td>
+		<td class="mbox"><textarea name="bbcodereplacement" rows="6" cols="60" wrap="virtual"><?php echo $bbcode['bbcodereplacement']; ?></textarea></td>
+	</tr>
+	<tr>
+		<td class="mbox">Example<br />
+		<span class="stext">This is a sample piece of BB code to use as an example for this particular BB code.</span></td>
+		<td class="mbox"><input type="text" name="bbcodeexample" value="<?php echo $bbcode['bbcodeexample']; ?>" size="60" /></td>
+	</tr>
+	<tr>
+		<td class="mbox">Description<br />
+		<span class="stext">This is a piece of text to describe the BB code tag. This can include HTML tags if you wish.</span></td>
+		<td class="mbox"><textarea name="bbcodeexplanation" rows="8" cols="60" wrap="virtual"><?php echo $bbcode['bbcodeexplanation']; ?></textarea></td>
+	</tr>
+	<tr>
+		<td class="mbox">Use {option}<br />
+		<span class="stext">Setting this option to yes will allow you to create a [tag=option][/tag] style tag, rather than just a [tag][/tag] style tag.</span></td>
+		<td class="mbox">
+			<input type="radio" name="twoparams" value="1"<?php echo iif($bbcode['twoparams'], ' checked="checked"'); ?> />Yes<br />
+			<input type="radio" name="twoparams" value="0"<?php echo iif(!$bbcode['twoparams'], ' checked="checked"'); ?> />No
+		</td>
+	</tr>
+	<tr>
+		<td class="mbox">Button Image<br />
+		<span class="stext">Optional - If you would like this bbcode to appear as a clickable button on the message editor toolbar, enter the URL of an image 21 x 20 pixels in size that will act as the button to insert this bbcode.</span>
+		</td>
+		<td class="mbox"><input type="text" name="buttonimage" value="<?php echo $bbcode['buttonimage']; ?>" size="60" /></td>
+	</tr>
+	<tr><td class="ubox" colspan="2" align="center"><input type="submit" value="Save" /></td></tr>
+	</table>
+	</form>
+	<?php
+	echo foot();
+}
+elseif ($job == 'custombb_edit2') {
+	$vars = array(
+		'id'				=> int,
+		'title'				=> str,
+		'bbcodetag'			=> str,
+		'bbcodereplacement' => str,
+		'bbcodeexample'		=> str,
+		'bbcodeexplanation' => str,
+		'twoparams'			=> int,
+		'buttonimage'		=> str
+	);
+	$query = array();
+	foreach ($vars as $key => $type) {
+		$query[$key] = $gpc->get($key, $type);
+	}
+
+	echo head();
+
+	if (!$query['bbcodetag'] OR !$query['bbcodereplacement'] OR !$query['bbcodeexample']) {
+		error('admin.php?action=bbcodes&job=custombb_add', 'Please complete all required fields');
+	}
+
+	$result = $db->query("SELECT * FROM {$db->pre}bbcode WHERE bbcodetag = '{$query['bbcodetag']}' AND twoparams = ".$query['twoparams'], __LINE__, __FILE__);
+	if ($db->num_rows($result) > 0) {
+		error('admin.php?action=bbcodes&job=custombb_add', 'There is already a BB Code named &quot;'.$query['bbcodetag'].'&quot;. You may not create duplicate names.');
+	}
+
+	$query['bbcodereplacement'] = str_replace('%', '%%', $query['bbcodereplacement']);
+	if ($query['twoparams']) {
+		$query['bbcodereplacement'] = str_replace('{param}', '%1$s', $query['bbcodereplacement']);
+		$query['bbcodereplacement'] = str_replace('{option}', '%2$s', $query['bbcodereplacement']);
+	}
+	else {
+		$query['bbcodereplacement'] = str_replace('{param}', '%1$s', $query['bbcodereplacement']);
+	}
+
+	$db->query("UPDATE {$db->pre}bbcode SET title = '{$query['title']}',bbcodetag = '{$query['bbcodetag']}',bbcodereplacement = '{$query['bbcodereplacement']}',bbcodeexample = '{$query['bbcodeexample']}',bbcodeexplanation = '{$query['bbcodeexplanation']}',twoparams = '{$query['twoparams']}',buttonimage = '{$query['buttonimage']}' WHERE id = '{$query['id']}'", __LINE__, __FILE__);
+
+    $scache = new scache('custombb');
+    $scache->deletedata();
+
+	ok('admin.php?action=bbcodes&job=custombb');
+}
+elseif ($job == 'custombb_delete') {
+	echo head();
+	$id = $gpc->get('id', int);
+	?>
+	<table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
+	<tr><td class="obox">Delete Custom BB Code</td></tr>
+	<tr><td class="mbox">
+	<p align="center">Wollen Sie diesen BB-Code wirklich löschen?</p>
+	<p align="center">
+	<a href="admin.php?action=bbcodes&job=custombb_delete2&id=<?php echo $id; ?>"><img border="0" align="middle" alt="" src="admin/html/images/yes.gif"> Yes</a>
+	&nbsp&nbsp;&nbsp;&nbsp&nbsp;&nbsp;
+	<a href="javascript: history.back(-1);"><img border="0" align="middle" alt="" src="admin/html/images/no.gif"> No</a>
+	</p>
+	</td></tr>
+	</table>
+	<?php
+	echo foot();
+}
+elseif ($job == 'custombb_delete2'){
+	echo head();
+	$id = $gpc->get('id', int);
+	$db->query("DELETE FROM {$db->pre}bbcode WHERE id = ".$id, __LINE__, __FILE__);
+    $scache = new scache('custombb');
+    $scache->deletedata();
+	ok('admin.php?action=bbcodes&job=custombb', 'Custom BB Code successfully deleted');
+}
+elseif ($job == 'custombb') {
+	$result = $db->query("SELECT * FROM {$db->pre}bbcode", __LINE__, __FILE__);
+	echo head();
+	?>
+	<table align="center" class="border">
+	<tr>
+		<td class="obox" align="center" colspan="4"><span style="float: right;">[<a href="admin.php?action=bbcodes&job=custombb_add">Add new BB Code</a>]</span>Custom BB Code Manager</td>
+	</tr>
+	<tr>
+		<td class="ubox" width="30%">Title</td>
+		<td class="ubox" width="35%">BB Code</td>
+		<td class="ubox" width="10%">Button Image</td>
+		<td class="ubox" width="25%">Action</td>
+	</tr>
+	<?php
+	while ($bbcode = $db->fetch_assoc($result)) {
+		if (!empty($bbcode['buttonimage'])) {
+			$src = "<img style=\"background: buttonface; border:solid 1px highlight;\" src=\"{$bbcode['buttonimage']}\" alt=\"\" />";
+		}
+		else {
+			$src = '-';
+		}
+		?>
+		<tr>
+			<td class="mbox"><?php echo $bbcode['title']; ?></td>
+			<td class="mbox"><code><?php echo $bbcode['bbcodeexample']; ?></code></td>
+			<td class="mbox" align="center"><?php echo $src; ?></td>
+			<td class="mbox">[<a href="admin.php?action=bbcodes&job=custombb_edit&id=<?php echo $bbcode['id']; ?>">Edit</a>] [<a href="admin.php?action=bbcodes&job=custombb_delete&id=<?php echo $bbcode['id']; ?>">Delete</a>]</td>
+		</tr>
+		<?
+	}
+	?>
+	</table>
+	<?php
 }
 ?>

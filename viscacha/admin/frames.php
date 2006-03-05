@@ -94,7 +94,7 @@ if ($job == 'menu') {
 	   <li>&raquo; <a href="admin.php?action=bbcodes&job=censor" target="Main">Censorship Manager</a></li>
 	   <li>&raquo; <a href="admin.php?action=bbcodes&job=replace" target="Main">Vocabulary Manager</a></li>
 	   <li>&raquo; <a href="admin.php?action=bbcodes&job=codefiles" target="Main">Syntax Highlighting Manager</a></li>
-   <!--<li>&raquo; <a href="admin.php?action=bbcodes&job=custombb" target="Main">BB Code Manager</a></li> Later -->
+       <li>&raquo; <a href="admin.php?action=bbcodes&job=custombb" target="Main">Custom BB Code Manager</a></li>
 	  </ul>
 	 </div>
 	 <div class="border">

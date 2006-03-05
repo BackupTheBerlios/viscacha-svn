@@ -1,8 +1,12 @@
 CREATE TABLE `{:=DBPREFIX=:}bbcode` (
-  `id` smallint(5) unsigned NOT NULL auto_increment,
-  `search` tinytext NOT NULL,
-  `replace` tinytext NOT NULL,
-  `type` enum('censor','bb','word','replace') NOT NULL default 'word',
-  `desc` tinytext NOT NULL,
-  PRIMARY KEY  (`id`)
-) TYPE=MyISAM PACK_KEYS=1 AUTO_INCREMENT=1 ;
+  `id` smallint(5) unsigned NOT NULL,
+  `bbcodetag` varchar(200) NOT NULL default '',
+  `bbcodereplacement` mediumtext NOT NULL,
+  `bbcodeexample` varchar(255) NOT NULL,
+  `bbcodeexplanation` mediumtext NOT NULL,
+  `twoparams` enum('0','1') NOT NULL default '0',
+  `title` varchar(200) NOT NULL,
+  `buttonimage` varchar(255) NOT NULL,
+  PRIMARY KEY  (`id`),
+  UNIQUE KEY `uniquetag` (`bbcodetag`,`twoparams`)
+) TYPE=MyISAM AUTO_INCREMENT=1 ;
