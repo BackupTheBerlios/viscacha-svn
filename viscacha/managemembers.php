@@ -69,8 +69,6 @@ if ($my->vlogin && $my->p['admin'] == 1) {
 		file_put_contents('data/deleteduser.php', $olduserdata);
 		// Step 2: Delete all abos
 		$db->query("DELETE FROM {$db->pre}abos WHERE mid = '{$user['id']}'");
-		// Step 3: Delete all favorites
-		$db->query("DELETE FROM {$db->pre}fav WHERE mid = '{$user['id']}'");
 		// Step 4: Delete as mod
 		$db->query("DELETE FROM {$db->pre}moderators WHERE mid = '{$user['id']}'");
 		// Step 5: Delete all pms

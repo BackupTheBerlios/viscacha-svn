@@ -109,7 +109,6 @@ if (($info['name'] == $my->id || $my->mp[0] == 1) && $my->p['edit'] && ($edit_se
 				$db->query ("DELETE FROM {$db->pre}uploads WHERE tid = '{$info['id']}'",__LINE__,__FILE__);
 				if ($info['tstart'] == 1) {
 					$db->query ("DELETE FROM {$db->pre}abos WHERE tid = '{$info['topic_id']}'",__LINE__,__FILE__);
-					$db->query ("DELETE FROM {$db->pre}fav WHERE tid = '{$info['topic_id']}'",__LINE__,__FILE__);
 					$db->query ("DELETE FROM {$db->pre}topics WHERE id = '{$info['topic_id']}'",__LINE__,__FILE__);
 					$votes = $db->query("SELECT id FROM {$db->pre}vote WHERE tid = '{$info['id']}'",__LINE__,__FILE__);
 					$voteaids = array();

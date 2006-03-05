@@ -94,8 +94,6 @@ if ($my->vlogin && $my->mp[0] == 1) {
 		$anz += $db->affected_rows();
 		$db->query ("DELETE FROM {$db->pre}abos WHERE tid = '{$info['id']}'",__LINE__,__FILE__);
 		$anz += $db->affected_rows();
-		$db->query ("DELETE FROM {$db->pre}fav WHERE tid = '{$info['id']}'",__LINE__,__FILE__);
-		$anz += $db->affected_rows();
 		$db->query ("DELETE FROM {$db->pre}topics WHERE id = '{$info['id']}'",__LINE__,__FILE__);
 		$anz += $db->affected_rows();
 		$votes = $db->query("SELECT id FROM {$db->pre}vote WHERE tid = '{$info['id']}'",__LINE__,__FILE__);

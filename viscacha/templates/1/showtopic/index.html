@@ -7,14 +7,14 @@
 <?php if($my->vlogin) { ?>
 	 <strong><?php echo $lang->phrase('showtopic_options_manage'); ?></strong>
 	 <ul>
-	 <li><a href="editprofile.php?action=addfav&amp;id=<?php echo $info['id'].SID2URL_x; ?>"><?php echo $lang->phrase('showtopic_options_favs'); ?></a></li>
+	 <li><a href="editprofile.php?action=addabo&amp;type=f&amp;id=<?php echo $info['id'].SID2URL_x; ?>"><?php echo $lang->phrase('showtopic_options_favs'); ?></a></li>
 	 </ul>
 	 <?php if ($info['status'] == 0) { ?>
 	 <strong><?php echo $lang->phrase('showtopic_options_abo'); ?></strong>
 	 <ul>
-     <li><a href="editprofile.php?action=addabo&amp;temp=0&amp;id=<?php echo $info['id'].SID2URL_x; ?>"><?php echo $lang->phrase('showtopic_options_abo0'); ?></a></li>
-     <li><a href="editprofile.php?action=addabo&amp;temp=1&amp;id=<?php echo $info['id'].SID2URL_x; ?>"><?php echo $lang->phrase('showtopic_options_abo1'); ?></a></li>
-     <li><a href="editprofile.php?action=addabo&amp;temp=7&amp;id=<?php echo $info['id'].SID2URL_x; ?>"><?php echo $lang->phrase('showtopic_options_abo7'); ?></a></li>
+     <li><a href="editprofile.php?action=addabo&amp;type=0&amp;id=<?php echo $info['id'].SID2URL_x; ?>"><?php echo $lang->phrase('showtopic_options_abo0'); ?></a></li>
+     <li><a href="editprofile.php?action=addabo&amp;type=1&amp;id=<?php echo $info['id'].SID2URL_x; ?>"><?php echo $lang->phrase('showtopic_options_abo1'); ?></a></li>
+     <li><a href="editprofile.php?action=addabo&amp;type=7&amp;id=<?php echo $info['id'].SID2URL_x; ?>"><?php echo $lang->phrase('showtopic_options_abo7'); ?></a></li>
      </ul>
 <?php }} ?>
 	 <strong><?php echo $lang->phrase('showtopic_options_export'); ?></strong>
@@ -46,7 +46,7 @@
 <?php if($my->vlogin) { ?>
 	 <strong><?php echo $lang->phrase('showtopic_options_manage'); ?></strong>
 	 <ul>
-	 <li><a href="editprofile.php?action=addfav&amp;id=<?php echo $info['id'].SID2URL_x; ?>"><?php echo $lang->phrase('showtopic_options_favs'); ?></a></li>
+	 <li><a href="editprofile.php?action=addabo&amp;temp=f&amp;id=<?php echo $info['id'].SID2URL_x; ?>"><?php echo $lang->phrase('showtopic_options_favs'); ?></a></li>
 	 </ul>
 	 <?php if ($info['status'] == 0) { ?>
 	 <strong><?php echo $lang->phrase('showtopic_options_abo'); ?></strong>

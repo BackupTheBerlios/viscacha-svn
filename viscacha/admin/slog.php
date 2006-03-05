@@ -383,10 +383,10 @@ if ($show == 1) {
 	$result = $db->query('SELECT COUNT(*) FROM '.$db->pre.'user',__LINE__,__FILE__);
 	$members = $db->fetch_array($result);
 	
-	$result = $db->query('SELECT COUNT(*) FROM '.$db->pre.'abos',__LINE__,__FILE__);
+	$result = $db->query('SELECT COUNT(*) FROM '.$db->pre.'abos WHERE type != "f"',__LINE__,__FILE__);
 	$abos = $db->fetch_array($result);
 
-	$result = $db->query('SELECT COUNT(*) FROM '.$db->pre.'fav',__LINE__,__FILE__);
+	$result = $db->query('SELECT COUNT(*) FROM '.$db->pre.'abos WHERE type = "f"',__LINE__,__FILE__);
 	$favs = $db->fetch_array($result);
 
 	$result = $db->query('SELECT COUNT(*) FROM '.$db->pre.'uploads',__LINE__,__FILE__);

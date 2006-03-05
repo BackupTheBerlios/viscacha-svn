@@ -35,7 +35,7 @@ $slog = new slog();
 $my = $slog->logged();
 $lang->init($my->language);
 $tpl = new tpl();
-if ($_GET['action'] != "addabo" && $_GET['action'] != "addfav" && $_GET['action'] != "copy") {
+if ($_GET['action'] != "addabo" && $_GET['action'] != "copy") {
 	$my->p = $slog->Permissions();
 }
 if (!$my->vlogin) {
@@ -68,27 +68,6 @@ if ($_GET['action'] == "pw2") {
 	    $db->query("UPDATE {$db->pre}user SET pw = MD5('{$_POST['pwx']}') WHERE id = '$my->id' LIMIT 1",__LINE__,__FILE__);
 	    ok($lang->phrase('editprofile_pw_success'), "log.php".SID2URL_1);
 	}
-
-}
-elseif ($_GET['action'] == "abos2") {
-	if (count($_POST['delete']) < 1) {
-		error($lang->phrase('no_data_selected'), "editprofile.php?action=abos".SID2URL_x);
-	}
-
-	$db->query ("DELETE FROM {$db->pre}abos WHERE mid = '$my->id' AND id IN(".implode(',',$_POST['delete']).")",__LINE__,__FILE__);
-	$anz = $db->affected_rows();
-	ok($lang->phrase('x_entries_deleted'), "editprofile.php?action=abos".SID2URL_x);
-
-}
-
-elseif ($_GET['action'] == "fav2") {
-	if (count($_POST['delete']) < 1) {
-		error($lang->phrase('no_data_selected'), "editprofile.php?action=fav".SID2URL_x);
-	}
-
-	$db->query ("DELETE FROM {$db->pre}fav WHERE mid = '$my->id' AND id IN(".implode(',',$_POST['delete']).")",__LINE__,__FILE__);
-	$anz = $db->affected_rows();
-	ok($lang->phrase('x_entries_deleted'), "editprofile.php?action=fav".SID2URL_x);
 
 }
 elseif ($_GET['action'] == "attachments2" && $config['tpcallow'] == 1) {
@@ -135,10 +114,29 @@ elseif ($_GET['action'] == "abos") {
     $breadcrumb->Add($lang->phrase('editprofile_abos'));
 	echo $tpl->parse("header");
     echo $tpl->parse("menu");
+	
+	$p = $_GET['page']-1;
+	
+	$sqlwhere = '';
+	if (!empty($_GET['type'])) {
+		if ($_GET['type'] == 's') {
+			$type = '';
+		}
+		else {
+			$type = $_GET['type'];
+		}
+		$sqlwhere = " AND type = '{$type}'";
+	}
 
-    $result = $db->query("SELECT a.id, a.tid, t.topic, a.type, t.prefix FROM {$db->pre}abos AS a LEFT JOIN {$db->pre}topics AS t ON a.tid=t.id WHERE a.mid = '{$my->id}' ORDER BY a.id DESC",__LINE__,__FILE__);
-
+    $result = $db->query("
+    SELECT a.id, a.tid, a.type, t.topic, t.prefix, t.last, t.last_name, t.board 
+    FROM {$db->pre}abos AS a LEFT JOIN {$db->pre}topics AS t ON a.tid=t.id 
+    WHERE a.mid = '{$my->id}' {$sqlwhere}
+    ORDER BY a.id DESC
+    ",__LINE__,__FILE__);
+    
 	$prefix = cache_prefix();
+	$memberdata = cache_memberdata();
 
     $cache = array();
     while ($row = $db->fetch_assoc($result)) {
@@ -149,38 +147,10 @@ elseif ($_GET['action'] == "abos") {
     		$row['prefix'] = '';
     	}
     	$row['topic'] = $gpc->prepare($row['topic']);
-	    if ($row['type'] == 'd') {
-	    	$row['period'] = $lang->phrase('editprofile_digest_d');
+	    if ($row['type'] != 'd' && $row['type'] != 'w' && $row['type'] != 'f') {
+	    	$row['type'] = 's';
 	    }
-	    elseif ($row['type'] == 'w') {
-	    	$row['period'] = $lang->phrase('editprofile_digest_w');
-	    }
-	    else {
-	    	$row['period'] = $lang->phrase('editprofile_digest_s');
-	    }
-
-	    $cache[] = $row;
-	}
-
-    echo $tpl->parse("editprofile/abos");
-
-}
-elseif ($_GET['action'] == "fav") {
-    $breadcrumb->Add($lang->phrase('editprofile_fav'));
-	echo $tpl->parse("header");
-    echo $tpl->parse("menu");
-
-	$prefix = cache_prefix();
-	$memberdata = cache_memberdata();
-    $result = $db->query("SELECT f.id, f.tid, t.topic, t.last, t.last_name, t.board, t.prefix FROM {$db->pre}fav AS f LEFT JOIN {$db->pre}topics AS t ON f.tid=t.id WHERE f.mid = '{$my->id}' ORDER BY f.id DESC",__LINE__,__FILE__);
-    $cache = array();
-
-    while ($row = $gpc->prepare($db->fetch_assoc($result))) {
-		$showprefix = '';
-		if (isset($prefix[$row['board']][$row['prefix']]) && $row['prefix'] > 0) {
-			$showprefix = $prefix[$row['board']][$row['prefix']];
-		}
-
+	    
 		if (is_id($row['last_name'])) {
 			$row['last_name'] = $memberdata[$row['last_name']];
 		}
@@ -194,10 +164,53 @@ elseif ($_GET['action'] == "fav") {
 			$row['alt'] = $lang->phrase('forum_icon_new');
 			$row['src'] = $tpl->img('dir_open2');
 		}
-    	$row['last'] = str_date($lang->phrase('dformat1'),times($row['last']));
-    	$cache[] = $row;
-    }
-    echo $tpl->parse("editprofile/fav");
+
+		$row['last'] = str_date($lang->phrase('dformat1'),times($row['last']));
+
+	    $cache[] = $row;
+	}
+
+	$count = count($cache);
+	$pages = pages($count, 'topiczahl', 'editprofile.php?action=abos&amp;type='.$_GET['type'].'&amp;');
+	$cache = array_chunk($cache, $config['topiczahl']);
+	if (!isset($cache[$p])) {
+		$count = 0;
+	}
+	
+    echo $tpl->parse("editprofile/abos");
+
+}
+elseif ($_GET['action'] == "abos2") {
+	$digest = $gpc->get('digest', arr_str);
+	
+	if (count($_POST['delete']) == 0 && count($digest) == 0) {
+		error($lang->phrase('no_data_selected'), "editprofile.php?action=abos".SID2URL_x);
+	}
+	
+	$anz = 0;
+	if (count($_POST['delete']) > 0) {
+		$delete = implode(',', $_POST['delete']);
+		$db->query ("DELETE FROM `{$db->pre}abos` WHERE `mid` = '{$my->id}' AND `id` IN({$delete})",__LINE__,__FILE__);
+		$anz = $db->affected_rows();
+	}
+	
+	$anz2 = 0;
+	if (count($digest) > 0) {
+		$update = array('s' => array(),'d' => array(),'w' => array(),'f' => array());
+		foreach ($digest as $id => $type) {
+			$update[$type][] = $id;
+		}
+		foreach ($update as $type => $ids) {
+			if (count($ids) > 0) {
+				$ids = implode(',', $ids);
+				$db->query("UPDATE `{$db->pre}abos` SET `type` = '{$type}' WHERE `mid` = '{$my->id}' AND `id` IN ({$id})",__LINE__,__FILE__);
+				$anz2 += $db->affected_rows();
+			}
+		}
+	}
+	
+	ok($lang->phrase('x_entries_deleted_x_changed'), "editprofile.php?action=abos".SID2URL_x);
+
 }
 
 elseif ($_GET['action'] == "pw") {
@@ -549,24 +562,6 @@ elseif ($_GET['action'] == "mylast") {
     echo $tpl->parse("editprofile/mylast");
     $mymodules->load('editprofile_mylast_bottom');
 }
-elseif ($_GET['action'] == "addfav") {
-	$result = $db->query('SELECT id, board FROM '.$db->pre.'topics WHERE id = '.$_GET['id'],__LINE__,__FILE__);
-	$info = $db->fetch_assoc($result);
-	$my->p = $slog->Permissions($info['board']);
-
-	$fc = cache_cat_bid();
-	$last = $fc[$info['board']];
-	forum_opt($last['opt'], $last['optvalue'], $last['id']);
-
-	$result = $db->query('SELECT id FROM '.$db->pre.'fav WHERE tid = '.$info['id'].' AND mid = '.$my->id,__LINE__,__FILE__);
-	if ($db->num_rows($result) > 0) {
-		error($lang->phrase('addfav_error'));
-	}
-	else {
-		$db->query('INSERT INTO '.$db->pre.'fav (tid,mid) VALUES ("'.$_GET['id'].'","'.$my->id.'")',__LINE__,__FILE__);
-		ok($lang->phrase('data_success'));
-	}
-}
 elseif ($_GET['action'] == "addabo") {
 	$result = $db->query('SELECT id, board FROM '.$db->pre.'topics WHERE id = '.$_GET['id'],__LINE__,__FILE__);
 	$info = $db->fetch_assoc($result);
@@ -576,14 +571,17 @@ elseif ($_GET['action'] == "addabo") {
 	$last = $fc[$info['board']];
 	forum_opt($last['opt'], $last['optvalue'], $last['id']);
 
-	if ($_GET['temp'] == 0) {
+	if ($_GET['type'] == 0) {
 		$type = '';
 	}
-	elseif ($_GET['temp'] == 1) {
+	elseif ($_GET['type'] == 1) {
 		$type = 'd';
 	}
-	elseif ($_GET['temp'] == 7) {
+	elseif ($_GET['type'] == 7) {
 		$type = 'w';
+	}
+	elseif ($_GET['type'] == 'f') {
+		$type = 'f';
 	}
 	else {
 		error($lang->phrase('query_string_error'));

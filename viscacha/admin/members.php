@@ -290,8 +290,6 @@ elseif ($job == 'merge2') {
 
 	// Step 2: Update abos
 	$db->query("UPDATE {$db->pre}abos SET mid = '".$base['id']."' WHERE mid = '".$old['id']."'");
-	// Step 3: Update favorites
-	$db->query("UPDATE {$db->pre}fav SET mid = '".$base['id']."' WHERE mid = '".$old['id']."'");
 	// Step 4: Update mods
 	$db->query("UPDATE {$db->pre}moderators SET mid = '".$base['id']."' WHERE mid = '".$old['id']."'");
 	// Step 5: Update pms
@@ -874,8 +872,6 @@ elseif ($job == 'delete') {
 		$filesystem->file_put_contents('data/deleteduser.php', $olduserdata);
 		// Step 6: Delete all abos
 		$db->query("DELETE FROM {$db->pre}abos WHERE mid IN ({$did})");
-		// Step 7: Delete all favorites
-		$db->query("DELETE FROM {$db->pre}fav WHERE mid IN ({$did})");
 		// Step 8: Delete as mod
 		$db->query("DELETE FROM {$db->pre}moderators WHERE mid IN ({$did})");
 		$delete = $gpc->get('delete', arr_int);
