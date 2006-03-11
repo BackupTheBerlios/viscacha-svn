@@ -11,7 +11,7 @@ class DB {
 	var $dbprefix;
 	var $system;
 	var $escaper;
-	var $conn=NULL;
+	var $conn = NULL;
 	var $result = FALSE;
 	var $dbqd = array();
 	var $logerrors = TRUE;
@@ -119,7 +119,7 @@ class DB {
 	    return $table_data;
     }
 
-	function multi_query($lines) {
+	function multi_query($lines, $die = true) {
 		$s = array('queries' => array(), 'ok' => 0);
 		$lines = str_replace("\r", "\n", $lines);
 		$lines = explode("\n", $lines);
@@ -135,7 +135,7 @@ class DB {
 		$lines = explode(";\n", $line);
 		foreach ($lines as $h) {
 			if (strlen($h) > 10) {
-				$result = $this->query($h);
+				$result = $this->query($h, __LINE__, __FILE__, $die);
 				if ($result) {
 					if ($this->num_rows($result) > 0) {
 						$x = array();
@@ -278,7 +278,7 @@ class DB {
 	   list($usec, $sec) = explode(" ", microtime());
 	   return ((float)$usec + (float)$sec);
 	}
-	function query($sql, $line = 0, $file = '', $unbuffered = FALSE) {
+	function query($sql, $line = 0, $file = '', $die = true, $unbuffered = false) {
 		global $config;
 
 		$zm1 = $this->benchmarktime();
@@ -289,8 +289,15 @@ class DB {
 		else {
 			$func = 'mysql_query';
 		}
+		
+		if ($die == true) {
+			$errfunc = 'die';
+		}
+		else {
+			$errfunc = 'trigger_error';
+		}
 
-		$this->result = $func($sql, $this->conn) or die('Database error: '.$this->error($line, $file, $sql));
+		$this->result = $func($sql, $this->conn) or $errfunc('Database error: '.$this->error($line, $file, $sql));
 	    
 		$zm2 = $this->benchmarktime();
 		

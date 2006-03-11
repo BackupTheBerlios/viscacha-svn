@@ -10,5 +10,5 @@ Normale Systemvorraussetzungen:
   
 Optimale Systemvorraussetzungen: 
  - PHP ab Version 5.0.0 
- - PHP-Erweiterungen: mysql, pcre, gd, zlib, xml, pspell, iconv, mbstring, mhash
+ - PHP-Erweiterungen: mysql, pcre, gd, zlib, xml, pspell, iconv, mbstring, mhash, sockets
  - MySQL ab Version 4.1

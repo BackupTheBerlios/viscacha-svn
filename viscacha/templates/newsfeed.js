@@ -42,11 +42,3 @@ function changeNF(id){
 	fscroller.innerHTML=nf_content[id][nf_index[id]];
 	nf_index[id]++;
 }
-
-// Namen richtig setzen beim PM schreiben
-function edit_pmto() {
-	FetchElement('membersuggest_val').name = 'name';	
-	FetchElement('membersuggest_val2').name = 'name2';	
-	FetchElement('membersuggest_val').disabled = '';
-	FetchElement('edit_pmto').style.display = 'none';	
-}

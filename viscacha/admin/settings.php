@@ -1586,7 +1586,7 @@ elseif ($job == 'version') {
 		$news = 'Konnte keine Verbindung zum Server aufbauen.';
 	}
 	if (!$version) {
-		$version = 'KoKeine Verbindung';
+		$version = 'Keine Verbindung';
 	}
 	if (!$comp) {
 		$comp = 'Konnte keine Verbindung zum Server aufbauen.';

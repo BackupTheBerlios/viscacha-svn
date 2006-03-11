@@ -1,6 +1,57 @@
 <?php
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "db.php") die('Error: Hacking Attempt');
 
+function exec_query_form ($query = '') {
+	global $db;
+	$tables = $db->list_tables();
+?>
+<form name="form" method="post" action="admin.php?action=db&job=query2">
+ <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
+  <tr> 
+   <td class="obox" colspan="2"><b>Execute Queries</b></td>
+  </tr>
+  <tr> 
+	<td class="mbox" width="90%">
+	<span style="float: right;">semicolon-separated list</span><strong>Queries:</strong>
+	<textarea name="query" id="query" rows="10" cols="90" class="texteditor" style="width: 100%; height: 200px;"><?php echo iif(!empty($query), $query); ?></textarea>
+	</td>
+	<td class="mbox" width="10%">
+	<strong>Tables:</strong>
+	<div style="overflow: scroll; height: 200px; width: 150px; border: 1px solid #336699; padding: 2px;">
+	<?php foreach ($tables as $table) { ?>
+	<a href="javascript:InsertTags('query', '`<?php echo $table; ?>`', '');"><?php echo $table; ?></a><br />
+	<?php } ?>
+	</div>
+	</td>
+  </tr>
+  <tr> 
+   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="Submit"></td> 
+  </tr>
+ </table>
+</form>
+<br />
+<?php if (empty($query)) { ?>
+<form name="form" method="post" action="admin.php?action=db&amp;job=query2&amp;type=1" enctype="multipart/form-data">
+ <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
+  <tr> 
+   <td class="obox"><b>Import SQL File</b></td>
+  </tr>
+  <tr>
+  	<td class="mbox">
+  	<input type="file" name="upload" size="80" /><br />
+  	<span class="stext">Erlaubte Dateitypen: .sql, .zip - Maximale Dateigröße: <?php echo formatFilesize(ini_maxupload()); ?></span>
+  	</td>
+  </tr>
+  <tr> 
+   <td class="ubox" align="center"><input type="submit" name="Submit" value="Submit"></td> 
+  </tr>
+ </table>
+</form>
+<br />
+<?php
+	}
+}
+
 if ($job == 'optimize') {
 	echo head();
 	$result = $db->list_tables();
@@ -277,7 +328,7 @@ elseif ($job == 'restore2') {
 	
 	error('admin.php?action=db&job=restore');
 }
-elseif($job == 'download') {
+elseif ($job == 'download') {
 	$dir = "./admin/backup/";
 	$file = $gpc->get('file', none);
 	$ext = get_extension($file, true);
@@ -404,56 +455,105 @@ elseif ($job == 'status') {
 }
 elseif ($job == 'query') {
 	echo head();
-	$tables = $db->list_tables();
-	?>
-<form name="form" method="post" action="admin.php?action=db&job=query2">
- <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
-  <tr> 
-   <td class="obox" colspan="2"><b>Queries</b></td>
-  </tr>
-  <tr> 
-	<td class="mbox" width="90%">
-	<span style="float: right;">semicolon-separated list</span><strong>Queries:</strong>
-	<textarea name="query" id="query" rows="10" cols="90" class="texteditor" style="width: 100%; height: 200px;"></textarea>
-	</td>
-	<td class="mbox" width="10%">
-	<strong>Tables:</strong>
-	<div style="overflow: scroll; height: 200px; width: 150px; border: 1px solid #336699; padding: 2px;">
-	<?php foreach ($tables as $table) { ?>
-	<a href="javascript:InsertTags('query', '`<?php echo $table; ?>`', '');"><?php echo $table; ?></a><br />
-	<?php } ?>
-	</div>
-	</td>
-  </tr>
-  <tr> 
-   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="Submit"></td> 
-  </tr>
- </table>
-</form>
-	<?php
+	exec_query_form();
 	echo foot();
 }
 elseif ($job == 'query2') {
-	$lines = $gpc->get('query', none);
-	$q = $db->multi_query($lines);
 	echo head();
-	echo '<table class="border" border="0" cellspacing="0" cellpadding="4" align="center"><tr><td class="obox">'.$q['ok'].' Queries executed</td></tr></table>';
-	foreach ($q['queries'] as $num) {
-		if (count($num) > 0) {
-			$keys = array_keys($num[0]);
-			echo '<br><table class="border" border="0" cellspacing="0" cellpadding="4" align="center"><tr>';
-			foreach ($keys as $field) {
-				echo '<td class="obox">'.$field.'</td>';
+
+	$type = $gpc->get('type', int);
+	if ($type == 1) {
+		$filetypes = array('.zip','.sql');
+		$dir = 'temp/';
+		$inserterrors = array();
+		require("classes/class.upload.php");
+	
+		if (empty($_FILES['upload']['name'])) {
+			$inserterrors[] = 'No file specified.';
+		}
+		
+		$my_uploader = new uploader();
+		$my_uploader->max_filesize(ini_maxupload());
+		if ($my_uploader->upload('upload', $filetypes)) {
+			$my_uploader->save_file($dir, 2);
+			$errstr = $my_uploader->return_error();
+			if (!empty($errstr)) {
+				array_push($inserterrors, $my_uploader->return_error());
 			}
-			echo "</tr>";
-			foreach ($num as $row) {
-				echo "<tr>";
-				foreach ($keys as $field) {
-					echo '<td class="mbox">'.htmlentities($row[$field]).'</td>';
+		}
+		else {
+			array_push($inserterrors, $my_uploader->return_error());
+		}
+		$file = $dir.DIRECTORY_SEPARATOR.$my_uploader->file['name'];
+		if (!file_exists($file)) {
+			$inserterrors[] = 'File ('.$file.') does not exist.';
+		}
+		
+		if (count($inserterrors) > 0) {
+			error('admin.php?action=db&job=query', $inserterrors);
+		}
+		else {
+			$ext = get_extension($file, true);
+			if (($ext == 'zip' || $ext == 'sql') && file_exists($file)) {
+				if ($ext == 'zip') {
+					require_once('classes/class.zip.php');
+					$archive = new PclZip($file);
+					if (($list = $archive->listContent()) == 0) {
+						error($archive->errorInfo(true));
+					}
+					$data = $archive->extractByIndex($list[0]['index'], PCLZIP_OPT_EXTRACT_AS_STRING);
+					$lines = $data[0]['content'];
+					unset($data);
+				}
+				elseif ($ext == 'sql') {
+					$lines = file_get_contents($file);
 				}
 			}
-			echo '</table>';
 		}
+	}
+	else {
+		$lines = $gpc->get('query', none);
+	}
+	
+	$sql = str_replace('{:=DBPREFIX=:}', $db->pre, $lines);
+	@exec_query_form($lines);
+	
+	if (!empty($lines)) {
+
+		ob_start();
+		$q = $db->multi_query($sql, false);
+		$error = ob_get_contents();
+		$error = trim($error);
+		ob_end_clean();
+		if (!empty($error)) {
+			?>
+			 <table class="border" align="center">
+			  <tr><td class="obox">MySQL Error</td></tr>
+			  <tr><td class="mbox"><?php echo strip_tags($error); ?></td></tr>
+			 </table>
+			<?php
+		}
+		else {
+			echo '<table class="border" border="0" cellspacing="0" cellpadding="4" align="center"><tr><td class="obox">'.$q['ok'].' Queries executed</td></tr></table>';
+			foreach ($q['queries'] as $num) {
+				if (count($num) > 0) {
+					$keys = array_keys($num[0]);
+					echo '<br><table class="border" border="0" cellspacing="0" cellpadding="4" align="center"><tr>';
+					foreach ($keys as $field) {
+						echo '<td class="obox">'.$field.'</td>';
+					}
+					echo "</tr>";
+					foreach ($num as $row) {
+						echo "<tr>";
+						foreach ($keys as $field) {
+							echo '<td class="mbox">'.nl2br(htmlentities($row[$field])).'</td>';
+						}
+					}
+					echo '</table>';
+				}
+			}
+		}
+	
 	}
 	echo foot();
 }

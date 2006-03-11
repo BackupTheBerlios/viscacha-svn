@@ -131,6 +131,11 @@ function get_remote($file) {
 		$data = get_remote($loc[1]);
 	}
 
+	// Workaround for a mysterious bug....
+	if (preg_match('#\d+[\r\n\s]+([\d-]+)[\r\n\s]+\d+#i', $data, $d)) {
+		$data = $d[1];
+	}
+
 	return $data;
 }
 
