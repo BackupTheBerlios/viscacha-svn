@@ -291,13 +291,13 @@ class DB {
 		}
 		
 		if ($die == true) {
-			$errfunc = 'die';
+			$errfunc = E_USER_ERROR;
 		}
 		else {
-			$errfunc = 'trigger_error';
+			$errfunc = E_USER_NOTICE;
 		}
 
-		$this->result = $func($sql, $this->conn) or $errfunc('Database error: '.$this->error($line, $file, $sql));
+		$this->result = $func($sql, $this->conn) or trigger_error('Database error: '.$this->error($line, $file, $sql), $errfunc);
 	    
 		$zm2 = $this->benchmarktime();
 		
