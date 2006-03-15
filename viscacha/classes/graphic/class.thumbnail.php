@@ -87,11 +87,11 @@ function create_image(&$image) {
 	
 		imageinterlace ($image, 0);
 		if ($type == 'gif' AND IMAGEGIF) {
-			imagegif($image, $this->path, 60);
+			imagegif($image, $this->path);
 			imagedestroy($image);
 		}
 		elseif (($type == 'png' OR $type == 'gif') AND IMAGEPNG) {
-			imagepng($image, $this->path, 60);
+			imagepng($image, $this->path);
 			imagedestroy($image);
 		}
 		elseif (IMAGEJPEG) {
