@@ -54,32 +54,61 @@ function exec_query_form ($query = '') {
 
 if ($job == 'optimize') {
 	echo head();
-	$result = $db->list_tables();
+	$tables = array();
+	$data_length = 0;
+	$index_length = 0;
+	$data_free = 0;
+	$result = $db->query("SHOW TABLE STATUS");
+	while($table = $db->fetch_assoc($result)) {
+		$table['Engine'] = (!empty($table['Type']) ? $table['Type'] : $table['Engine']);
+		$table['possible'] = (!in_array(strtolower($table['Engine']), array('heap', 'memory')));
+		$data_length += $table['Data_length'];
+		$index_length += $table['Index_length'];
+		$data_free += $table['Data_free'];
+		$tables[] = $table;
+	}
 	?>
 <form name="form" method="post" action="admin.php?action=db&job=optimize2">
  <table class="border">
   <tr> 
-   <td class="obox" colspan="3">Repair &amp; Optimize</td>
+   <td class="obox" colspan="6">Repair &amp; Optimize</td>
   </tr>
   <tr> 
-   <td class="ubox" width="10%">Repair</td>
-   <td class="ubox" width="10%">Optimize</td>
-   <td class="ubox" width="80%">Database</td>
+   <td class="ubox" width="7%">Repair</td>
+   <td class="ubox" width="7%">Optimize</td>
+   <td class="ubox" width="47%">Database</td>
+   <td class="ubox" width="13%">Data Length</td>
+   <td class="ubox" width="13%">Index Length</td>
+   <td class="ubox" width="13%">Overhead</td>
   </tr>
   <tr>
-   <td class="mbox" width="10%"><input type="checkbox" onclick="check_all('repair[]')" name="repair_all"></td>
-   <td class="mbox" width="10%"><input type="checkbox" onclick="check_all('optimize[]')" name="optimize_all"></td>
-   <td class="mbox" width="80%"><strong>All tables</strong></td>
+   <td class="mbox"><input type="checkbox" onclick="check_all('repair[]')" name="repair_all"></td>
+   <td class="mbox"><input type="checkbox" onclick="check_all('optimize[]')" name="optimize_all"></td>
+   <td class="mbox"><strong>All</strong></td>
+   <td class="mbox"><strong><?php echo formatFilesize($data_length); ?></strong></td>
+   <td class="mbox"><strong><?php echo formatFilesize($index_length); ?></strong></td>
+   <td class="mbox"><strong><?php echo formatFilesize($data_free); ?></strong></td>
   </tr>
-	<?php foreach ($result as $row) { ?>
+	<?php foreach ($tables as $table) { ?>
 		<tr>
-		   <td class="mbox" width="10%"><input type="checkbox" name="repair[]" value="<?php echo $row; ?>"></td>
-		   <td class="mbox" width="10%"><input type="checkbox" name="optimize[]" value="<?php echo $row; ?>"></td>
-		   <td class="mbox" width="80%"><?php echo $row; ?></td>
+		   <td class="mbox">
+		   <?php if ($table['possible']) { ?>
+		   	<input type="checkbox" name="repair[]" value="<?php echo $table['Name']; ?>">
+		   <?php } else { echo '-'; } ?>
+		   </td>
+		   <td class="mbox">
+		   <?php if ($table['possible']) { ?>
+			<input<?php echo iif($table['Data_free'] > 0, ' checked="checked"'); ?> type="checkbox" name="optimize[]" value="<?php echo $table['Name']; ?>">
+		   <?php } else { echo '-'; } ?>
+		   </td>
+		   <td class="mbox"><?php echo $table['Name']; ?></td>
+		   <td class="mbox"><?php echo formatFilesize($table['Data_length']); ?></td>
+		   <td class="mbox"><?php echo formatFilesize($table['Index_length']); ?></td>
+		   <td class="mbox"><?php echo formatFilesize($table['Data_free']); ?></td>
 		</tr>
 	<?php } ?>
   <tr> 
-   <td class="ubox" width="100%" colspan="3" align="center"><input type="submit" name="Submit" value="Submit"></td> 
+   <td class="ubox" colspan="6" align="center"><input type="submit" name="Submit" value="Submit"></td> 
   </tr>
  </table>
 </form> 

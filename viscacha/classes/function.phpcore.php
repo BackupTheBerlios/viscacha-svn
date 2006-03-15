@@ -35,6 +35,22 @@ function viscacha_header($header) {
 	header($header);
 }
 
+// PHP has no comfortable solution?!
+function imagegreyscale(&$img) {
+	$x = imagesx($img);
+	$y = imagesy($img);
+
+	for($i=0; $i<$y; $i++) {
+		for($j=0; $j<$x; $j++) {
+	    	$pos = imagecolorat($img, $j, $i);  
+	    	$f = imagecolorsforindex($img, $pos);
+	    	$gst = $f['red']*0.15 + $f['green']*0.5 + $f['blue']*0.35;  
+	    	$col = imagecolorresolve($img, $gst, $gst, $gst);
+	    	imagesetpixel($img, $j, $i, $col);    
+	  	}
+	}
+}
+
 // PHP is stupid: No lcfirst()
 function lcfirst($p) {
 	return strtolower($p{0}).substr($p, 1);

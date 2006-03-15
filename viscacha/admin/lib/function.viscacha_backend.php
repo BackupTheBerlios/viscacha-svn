@@ -275,19 +275,19 @@ function recur_dir($dir, $clevel = 0) {
 
 function formatFilesize($byte) {
     $string = 'Byte';
-    if($byte>1024) {
+    if($byte>=1024) {
         $byte/=1024;
         $string = 'KB';
     }
-    if($byte>1024) {
+    if($byte>=1024) {
         $byte/=1024;
         $string = 'MB';
     }
-    if($byte>1024) {
+    if($byte>=1024) {
         $byte/=1024;
         $string = 'GB';
     }
-    if($byte>1024) {
+    if($byte>=1024) {
         $byte/=1024;
         $string = 'TB';
     }

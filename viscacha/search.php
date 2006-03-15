@@ -430,7 +430,7 @@ elseif ($_GET['action'] == "active") {
     	$count = $db->num_rows($result);
     		
     	if ($count > 0) {
-    		$temp = pages($count, 'forumzahl', "search.php?action=result&amp;fid=".$_GET['fid'].SID2URL_x."&amp;");
+    		$temp = pages($count, 'forumzahl', "search.php?action=active&amp;type=".$_GET['type'].SID2URL_x."&amp;");
     		
     		$forums = cache_cat_bid();
     		$prefix = cache_prefix();

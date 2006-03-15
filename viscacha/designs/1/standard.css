@@ -55,6 +55,7 @@ hr {
 
 .hiddenl {
 	margin: 0px;
+	padding: 0px;
 	list-style-type: none;
 	list-style-image: none;
 }
@@ -344,11 +345,15 @@ label, .labeldiv {
 .uploadbox_br {
 	clear: left;
 }
+
+/* Bars / Charts */
 .votebar {
 	background-color: #BCCADA;
 	font-size: 8px;
+	height: 8px;
 	border: solid #839FBC 1px;
 }
+
 .fullname {
 	font-weight: bold;
 	font-style: italic;

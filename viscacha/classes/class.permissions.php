@@ -120,6 +120,10 @@ function getTeamID () {
 	return $data;
 }
 
+function getIP() {
+	return $this->ip;
+}
+
 /*
 * Ermittelt den öffentlichen Status einer Person und liefert die Gruppentitel per Array zurück
 */
@@ -202,6 +206,7 @@ function setlang($l1, $l2) {
 	if (date('I', times()) == 1) {
 		$my->timezonestr .= $l2;
 	}
+	$my->ip = $this->ip;
 }
 
 function updatelogged () {

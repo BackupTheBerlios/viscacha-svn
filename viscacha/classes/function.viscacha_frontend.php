@@ -137,19 +137,19 @@ function numbers ($nvar,$deci=NULL) {
 function formatFilesize($byte) {
 	global $lang;
     $string = $lang->phrase('fs_byte');
-    if($byte>1024) {
+    if($byte>=1024) {
         $byte/=1024;
         $string = $lang->phrase('fs_kb');
     }
-    if($byte>1024) {
+    if($byte>=1024) {
         $byte/=1024;
         $string = $lang->phrase('fs_mb');
     }
-    if($byte>1024) {
+    if($byte>=1024) {
         $byte/=1024;
         $string = $lang->phrase('fs_gb');
     }
-    if($byte>1024) {
+    if($byte>=1024) {
         $byte/=1024;
         $string = $lang->phrase('fs_tb');
     }
