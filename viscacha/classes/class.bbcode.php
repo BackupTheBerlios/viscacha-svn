@@ -243,10 +243,12 @@ class BBCode {
 			   $suffix = ceil($config['maxurllength']/3);
 			}
 			$newurl = substr($url, 0, $suffix+1).$config['maxurltrenner'].substr($url, -$prefix);
-			$ahref = '<a href="<!PID:'.$pid.'>" target="_blank">'.$newurl.'</a>';
+			$pid2 = $this->noparse_id();
+			$this->noparse[$pid2] = $newurl;
+			$ahref = '<a href="<!PID:'.$pid.'>" target="_blank"><!PID:'.$pid2.'></a>';
 		}
 		else{  
-		   $ahref = '<a href="<!PID:'.$pid.'>" target="_blank">'.$url.'</a>';
+		   $ahref = '<a href="<!PID:'.$pid.'>" target="_blank"><!PID:'.$pid.'></a>';
 		}
 		
 	    return $ahref.$chop;
