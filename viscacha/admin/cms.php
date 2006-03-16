@@ -146,7 +146,7 @@ elseif ($job == 'nav') {
   <tr> 
    <td class="obox" colspan="4">
    	<span style="float: right;">
-   	[<a href="admin.php?action=cms&job=nav_add">Link erstellen</a>]
+   	[<a href="admin.php?action=cms&job=nav_add">Link hinzufügen</a>]
    	[<a href="admin.php?action=cms&job=nav_addbox">Box erstellen</a>]
    	[<a href="admin.php?action=cms&job=nav_addplugin">PlugIn hinzufügen</a>]
    	</span>Navigation verwalten
@@ -500,7 +500,7 @@ elseif ($job == 'nav_add') {
 <form name="form" method="post" action="admin.php?action=cms&job=nav_add2">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr> 
-   <td class="obox" colspan="2">Neue Box erstellen</td>
+   <td class="obox" colspan="2">Neuen Link hinzufügen</td>
   </tr>
   <tr> 
    <td class="mbox" width="50%">Titel:</td>

@@ -45,14 +45,33 @@ if ($job == 'menu') {
 	   <li>&raquo; <a href="admin.php?action=forums&job=mods" target="Main">Moderator Manager</a></li>
 	  </ul>
 	 </div>
+	 <!--
+	 <div class="border">
+	   <h3><img id="img_admin_menu17" name="collapse" src="admin/html/images/plus.gif" alt=""> Threads &amp; Posts</h3>
+	  <ul id="part_admin_menu17">
+	   <li>&raquo; <a href="admin.php?action=posts&job=manage" target="Main">Moderate Topics &amp; Posts</a></li>
+	   <li>&raquo; <a href="admin.php?action=posts&job=addforum" target="Main">Beitragsbewertungen</a></li>
+	   <li>&raquo; <a href="admin.php?action=posts&job=addcat" target="Main">Manage Attachments</a></li>
+	   <li>&raquo; <a href="admin.php?action=posts&job=addforum" target="Main">Prune Threads</a></li>
+	   <li>&raquo; <a href="admin.php?action=posts&job=mods" target="Main">Delete Poll</a></li>
+	  </ul>
+	 </div>
+	 -->
 	 <div class="border">
 	   <h3><img id="img_admin_menu8" name="collapse" src="admin/html/images/plus.gif" alt=""> Members</h3>
 	  <ul id="part_admin_menu8">
 	   <li>&raquo; <a href="admin.php?action=members&job=manage" target="Main">List of Members</a></li>
-	   <li>&raquo; <a href="admin.php?action=members&job=banned" target="Main">Blocked IP Addresses</a></li>
+	   <!--
+	   <li>&raquo; <a href="admin.php?action=members&job=add" target="Main">Add new User</a></li>
+	   <li>&raquo; <a href="admin.php?action=members&job=add" target="Main">Mitgliederbeurteilungen</a></li>
+	   -->
 	   <li>&raquo; <a href="admin.php?action=members&job=newsletter" target="Main">Newsletter Manager</a></li>
 	   <li>&raquo; <a href="admin.php?action=members&job=emaillist" target="Main">Export Email Addresses</a></li>
 	   <li>&raquo; <a href="admin.php?action=members&job=activate" target="Main">Moderate/Unlock Members</a></li>
+	   <li>&raquo; <a href="admin.php?action=members&job=banned" target="Main">Blocked IP Addresses</a></li>
+	   <!--
+	   <li>&raquo; <a href="admin.php?action=members&job=ipadresses" target="Main">Search IP Adresses</a></li>
+	   -->
 	  </ul>
 	 </div>
 	 <div class="border">

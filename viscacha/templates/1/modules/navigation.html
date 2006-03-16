@@ -9,9 +9,11 @@
 	<?php } if (count($sub['sub'])) { ?>
 	<ul class="nav_sub">
 	<?php foreach ($sub['sub'] as $subsub) { ?>
-		<li>
-		<a href="<?php echo $subsub['link']; ?>"<?php echo iif(!empty($subsub['param']), ' target="'.$subsub['param'].'"'); ?>><?php echo $subsub['name']; ?></a>
-		</li>
+		<?php if(!empty($subsub['link'])) { ?>
+			<li><a href="<?php echo $subsub['link']; ?>"<?php echo iif(!empty($subsub['param']), ' target="'.$subsub['param'].'"'); ?>><?php echo $subsub['name']; ?></a></li>
+		<?php } else { ?>
+			<li><strong><?php echo $subsub['name']; ?></strong></li>
+		<?php } ?>
 	<?php } ?>
 	</ul>
 	<?php } ?>

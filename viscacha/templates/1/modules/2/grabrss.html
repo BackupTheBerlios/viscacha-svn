@@ -6,7 +6,7 @@
 		<!--
 		nf_content[<?php echo $ini['params']['feed']; ?>] = new Array();
 		<?php foreach ($items as $line) { ?>
-		nf_content[<?php echo $ini['params']['feed']; ?>][<?php echo $a; ?>] = '<a href="<?php echo $line['link']; ?>" target="_blank"><?php echo $line['title']; ?></a>';
+		nf_content[<?php echo $ini['params']['feed']; ?>][<?php echo $a; ?>] = '<a href="<?php echo $line['link']; ?>" target="_blank"><?php echo $line['title']; ?><\/a>';
 		<?php $a++; } ?>
 		setTimeout("registerNF(<?php echo $ini['params']['feed']; ?>, 3)",0);
 		-->
