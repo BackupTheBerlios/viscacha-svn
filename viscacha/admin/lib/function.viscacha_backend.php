@@ -16,7 +16,6 @@ if ($config['check_filesystem'] == 1) {
 	check_executable_r('designs');
 	check_executable_r('docs');
 	check_executable_r('images');
-	check_executable_r('smilies');
 	check_executable_r('templates');
 	check_executable_r('components');
 	check_executable_r('language');

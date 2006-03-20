@@ -153,11 +153,11 @@ if ($_GET['action'] == "save") {
 		$date = time();
 		
 		$db->query("UPDATE {$db->pre}topics SET last_name = '".$pnameid."', last = '".$date."', posts = posts+1 WHERE id = '{$_POST['id']}'",__LINE__,__FILE__);
-		$db->query("INSERT INTO {$db->pre}replies (board,topic,topic_id,name,comment,dosmileys,dowords,email,date) VALUES ('{$info['board']}','{$_POST['topic']}','{$_POST['id']}','{$pnameid}','{$_POST['comment']}','{$_POST['dosmileys']}','{$_POST['dowords']}','{$_POST['email']}','{$date}')",__LINE__,__FILE__); 
+		$db->query("INSERT INTO {$db->pre}replies (board,topic,topic_id,name,comment,dosmileys,dowords,email,date,ip) VALUES ('{$info['board']}','{$_POST['topic']}','{$_POST['id']}','{$pnameid}','{$_POST['comment']}','{$_POST['dosmileys']}','{$_POST['dowords']}','{$_POST['email']}','{$date}','{$my->ip}')",__LINE__,__FILE__); 
 		$redirect = $db->insert_id();
 		// Set uploads to correct reply
 		$db->query("UPDATE {$db->pre}uploads SET tid = '{$redirect}' WHERE mid = '{$pid}' AND topic_id = '{$_POST['id']}' AND tid = '0'",__LINE__,__FILE__);
-		
+
 		if ($_POST['page'] && $my->vlogin) {
 			$type = NULL;
 			if ($_POST['page'] == '1') {
@@ -186,6 +186,14 @@ if ($_GET['action'] == "save") {
 			$from = array();
 			xmail($to, $from, $data['title'], $data['comment']);
 	    }
+	    
+	    $close = $gpc->get('close', int);
+	    if ($close == 1 && $my->vlogin) {
+	    	$my->mp = $slog->ModPermissions($info['board']);
+	    	if ($my->mp[0] == 1) {
+	    		$db->query("UPDATE {$db->pre}topics SET status = '1' WHERE id = '".$info['id']."'",__LINE__,__FILE__);
+	    	}
+	    }
 
 		ok($lang->phrase('data_success'),"showtopic.php?id={$_POST['id']}&amp;action=last".SID2URL_x);
 	}
@@ -193,6 +201,8 @@ if ($_GET['action'] == "save") {
 else {
 
 	$qids = array();
+	
+	$my->mp = $slog->ModPermissions($info['board']);
 	
 	$bbcode = initBBCodes();
 
@@ -252,16 +262,15 @@ else {
 		$result = $db->query('SELECT id FROM '.$db->pre.'abos WHERE mid = '.$my->id.' AND tid = '.$_GET['id'],__LINE__,__FILE__); 
 		$abox = $db->fetch_object($result);
 	}
+
+	$inner['smileys'] = $bbcode->getsmileyhtml($config['smileysperrow']);
+	$inner['bbhtml'] = $bbcode->getbbhtml();
 	
 	echo $tpl->parse("header");
 	echo $tpl->parse("menu");
 	
 	$mymodules->load('addreply_top');
-	
-	$inner['smileys'] = $bbcode->getsmileyhtml($config['smileysperrow']);
-	$inner['bbhtml'] = $bbcode->getbbhtml();
 	echo $tpl->parse("addreply");
-	
 	$mymodules->load('addreply_bottom');
 }
 

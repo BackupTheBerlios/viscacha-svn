@@ -154,22 +154,29 @@ function cache_loadlanguage () {
 	return $cache2;
 }
 
-function cache_loaddesign () {
+function cache_loaddesign ($fresh = false) {
 	global $db, $config;
-	$scache = new scache('load-designs');
-	if ($scache->existsdata() == TRUE) {
-	    $design = $scache->importdata();
+	if ($fresh == true) {
+		$result = $db->query("SELECT id, template, stylesheet, images, name FROM {$db->pre}designs",__LINE__,__FILE__);
+		$design = array();
+		while ($row = $db->fetch_assoc($result)) {
+			$design[$row['id']] = $row;
+		}
 	}
 	else {
-	    $result = $db->query("SELECT id, template, stylesheet, images, name, smileyfolder FROM {$db->pre}designs WHERE publicuse = '1'",__LINE__,__FILE__);
-	    $design = array();
-	    while ($row = $db->fetch_assoc($result)) {
-			$row['smileyfolder'] = str_replace('{folder}', $config['furl'], $row['smileyfolder']);
-	        $design[$row['id']] = $row;
-	    }
-	    $scache->exportdata($design);
+		$scache = new scache('load-designs');
+		if ($scache->existsdata() == TRUE) {
+			$design = $scache->importdata();
+		}
+		else {
+			$result = $db->query("SELECT id, template, stylesheet, images, name FROM {$db->pre}designs WHERE publicuse = '1'",__LINE__,__FILE__);
+			$design = array();
+			while ($row = $db->fetch_assoc($result)) {
+				$design[$row['id']] = $row;
+			}
+			$scache->exportdata($design);
+		}
 	}
-
 	return $design;
 }
 
@@ -195,15 +202,15 @@ function cache_fileicons() {
 }
 function cache_wraps() {
 	global $db;
-	$scache = new scache('wraps');
+	$scache = new scache('wrap_titles');
 	if ($scache->existsdata() == TRUE) {
 	    $fc = $scache->importdata();
 	}
 	else {
-	    $result = $db->query("SELECT id, title, active FROM {$db->pre}documents",__LINE__,__FILE__);
+	    $result = $db->query("SELECT id, title FROM {$db->pre}documents WHERE active = '1'",__LINE__,__FILE__);
 	    $fc = array();
 	    while ($row = $db->fetch_assoc($result)) {
-	        $fc[$row['id']] = $row;
+	        $fc[$row['id']] = $row['title'];
 	    }
 	    $scache->exportdata($fc);
 	}

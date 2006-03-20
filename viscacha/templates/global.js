@@ -53,6 +53,9 @@ function adduploads(Link) {
 function filetypeinfo(ftype) {
 	window.open(Link.href, "filetypeinfo", "width=400,height=250,resizable=no,scrollbars=yes");
 }
+function postrating(Link) {
+    window.open(Link.href, "postrating", "width=400,height=120,resizable=yes,scrollbars=yes,location=no");
+}
 
 function deletenotice(id) {
 	input = confirm(lng['js_confirm_ndelete']);

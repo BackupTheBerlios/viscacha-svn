@@ -760,7 +760,7 @@ class BBCode {
 		if ($type != 'plain') {
 			foreach ($this->smileys as $smiley) {
 				$smiley['search'] = htmlentities($smiley['search'], ENT_QUOTES);
-				$smiley['desc'] = str_replace('"', '&quot;', $smiley['desc']);
+				$smiley['desc'] = htmlspecialchars($smiley['desc']);
 				$smiley['replace'] = str_replace('{folder}', $this->profile['SmileyUrl'], $smiley['replace']);
 				$text = str_replace(' '.$smiley['search'], ' <img src="'.$smiley['replace'].'" border="0" alt="'.$smiley['desc'].'" />', $text);
 			}
@@ -1103,7 +1103,7 @@ function initBBCodes($signature = FALSE) {
 	$bbcode->setDoc($config['reduce_endchars'], $config['reduce_nl'], $config['topicuppercase']);
 	$bbcode->setURL($config['reduce_url'], $config['maxurllength'], $config['maxurltrenner']);
 	$bbcode->setName($my->name);
-	$bbcode->setSmileyDir($my->smileyfolder);
+	$bbcode->setSmileyDir($config['smileyurl']);
 	if ($signature == TRUE) {
 		initSignatureBBCodes($bbcode);
 	}

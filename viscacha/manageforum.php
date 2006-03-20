@@ -224,6 +224,8 @@ if ($my->vlogin && $my->mp[0] == 1) {
 		}
 		$db->query ("DELETE FROM {$db->pre}uploads WHERE topic_id IN({$ids})",__LINE__,__FILE__);
 		$anz += $db->affected_rows();
+		$db->query ("DELETE FROM {$db->pre}postratings WHERE tid IN '{$ids}'",__LINE__,__FILE__);
+		$anz += $db->affected_rows();
 		$db->query ("DELETE FROM {$db->pre}abos WHERE tid IN({$ids})",__LINE__,__FILE__);
 		$anz += $db->affected_rows();
 		$db->query ("DELETE FROM {$db->pre}topics WHERE id IN({$ids})",__LINE__,__FILE__);
@@ -237,7 +239,7 @@ if ($my->vlogin && $my->mp[0] == 1) {
 			$db->query ("DELETE FROM {$db->pre}votes WHERE id IN (".implode(',', $voteaids).")",__LINE__,__FILE__);
 			$anz += $db->affected_rows();
 		}
-		$db->query ("DELETE FROM {$db->pre}vote WHERE id IN({$ids})",__LINE__,__FILE__);
+		$db->query ("DELETE FROM {$db->pre}vote WHERE tid IN({$ids})",__LINE__,__FILE__);
 		$anz += $db->affected_rows();
 		
 		UpdateBoardStats($board);

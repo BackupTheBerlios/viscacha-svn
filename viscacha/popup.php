@@ -231,7 +231,7 @@ elseif ($_GET['action'] == "showpost") {
 elseif ($_GET['action'] == "edithistory") {
 	echo $tpl->parse("popup/header");
 
-	$result = $db->query("SELECT r.topic_id, r.board, r.edit, r.id, r.topic, r.date, u.name as uname, r.name as gname, u.id as mid, u.groups, r.email as gmail FROM {$db->pre}replies AS r LEFT JOIN {$db->pre}user AS u ON r.name=u.id WHERE r.id = '{$_GET['id']}' LIMIT 1",__LINE__,__FILE__);
+	$result = $db->query("SELECT r.ip, r.topic_id, r.board, r.edit, r.id, r.topic, r.date, u.name as uname, r.name as gname, u.id as mid, u.groups, r.email as gmail FROM {$db->pre}replies AS r LEFT JOIN {$db->pre}user AS u ON r.name=u.id WHERE r.id = '{$_GET['id']}' LIMIT 1",__LINE__,__FILE__);
 	$found = $db->num_rows($result);
 	if ($found == 1) {
 		$row = $gpc->prepare($db->fetch_assoc($result));
@@ -274,16 +274,75 @@ elseif ($_GET['action'] == "edithistory") {
 			if (empty($e)) {
 				continue;
 			}
-			@list($name, $date, $reason) = @explode("\t", $e, 3);
+			$data = explode("\t", $e);
 			$edit[] = array(
-				'date' => str_date($lang->phrase('dformat1'), times($date)),
-				'reason' => iif(empty($reason), $lang->phrase('post_editinfo_na'), $reason),
-				'name' => $name
+				'date' => str_date($lang->phrase('dformat1'), times($data[1])),
+				'reason' => @iif(empty($data[2]), $lang->phrase('post_editinfo_na'), $data[2]),
+				'name' => $data[0],
+				'ip' => @iif(isset($data[3]), $data[3])
 			);
 		}
 	}
 	
 	echo $tpl->parse("popup/edithistory");
+}
+elseif ($_GET['action'] == "postrating") {
+	if ($my->vlogin) {
+		$rtg = $gpc->get('rating', int);
+		
+		$result = $db->query("SELECT * FROM {$db->pre}replies WHERE id = '{$_GET['id']}'", __LINE__, __FILE__);
+		$post = $db->fetch_assoc($result);
+
+		if ($post['name'] == $my->id) {
+			$error = $lang->phrase('postrating_you_posted');
+		}
+		
+		$result = $db->query("SELECT mid, pid, tid, rating FROM {$db->pre}postratings WHERE mid = '{$my->id}' AND pid = '{$_GET['id']}'", __LINE__, __FILE__);
+		$rating = $db->fetch_assoc($result);
+		$rating['rating'] = intval($rating['rating']);
+
+		if ($post['name'] != $my->id) {
+			if (!empty($rtg) && $rating['rating'] != 1 && $rating['rating'] != -1) {
+				$result = $db->query("SELECT topic_id, name, email FROM {$db->pre}replies WHERE id = '{$_GET['id']}'", __LINE__, __FILE__);
+				$topic = $db->fetch_assoc($result);
+				if (empty($topic['email']) && is_id($topic['name'])) {
+					$aid = $topic['name'];
+				}
+				else {
+					$aid = 0;
+				}
+				
+				$db->query("INSERT INTO {$db->pre}postratings SET aid = '{$aid}', mid = '{$my->id}', pid = '{$_GET['id']}', tid = '{$topic['topic_id']}', rating = '{$rtg}'", __LINE__, __FILE__);
+				$rating = array(
+					'rating' => $rtg,
+					'pid' => $_GET['id'],
+					'tid' => $_GET['topic_id'],
+					'mid' => $my->id
+				);
+			}
+		
+			if ($db->affected_rows() != 1) { 
+				$error = $lang->phrase('unknown_error');
+			}
+			elseif ($rating['rating'] == 1) {
+				$error = $lang->phrase('postrating_rated_positive');
+			}
+			elseif ($rating['rating'] == -1) {
+				$error = $lang->phrase('postrating_rated_negative');
+			}
+			else {
+				$error = $lang->phrase('query_string_error');
+			}
+		}
+
+	}
+	else {
+		$error = $lang->phrase('log_not_logged');
+	}
+
+	echo $tpl->parse("popup/header");
+	echo $tpl->parse("popup/postrating");
+	echo $tpl->parse("popup/footer");
 }
 else {
 	echo $tpl->parse("popup/header");

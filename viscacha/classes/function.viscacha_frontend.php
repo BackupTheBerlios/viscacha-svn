@@ -26,6 +26,18 @@ if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "function.v
 
 require_once("classes/function.frontend_init.php");
 
+function cmp_edit_date($a, $b) {
+	if ($a['date'] < $b['date']) {
+		return -1;
+	}
+	if ($a['date'] == $b['date']) {
+		return 0;
+	}
+	if ($a['date'] > $b['date']) {
+		return 1;
+	}
+}
+
 function DocCodePagination($cc) {
 	$pos1 = stripos($cc, '{pagebreak}');
 	if ($pos1 === false) {
@@ -333,18 +345,17 @@ function t2 ($time = NULL) {
 }
 
 
-function UpdateTopicStats ($topic,$givestat=0) {
+function UpdateTopicStats($topic) {
 	global $db;
-	$resultc = $db->query("SELECT COUNT(*) FROM {$db->pre}replies WHERE topic_id='$topic' AND tstart = '0'",__LINE__,__FILE__);
-	$count = $db->fetch_array($resultc);
-	$result = $db->query("SELECT date, name FROM {$db->pre}replies WHERE topic_id='$topic' ORDER BY date DESC LIMIT 1",__LINE__,__FILE__);
-	$info = $db->fetch_array($result);
-	if ($givestat == 0) {
-	    $db->query("UPDATE {$db->pre}topics SET posts = '{$count[0]}', last = '{$info['date']}', last_name = '{$info['name']}' WHERE id = '".$topic."'",__LINE__,__FILE__);
-	}
-	else {
-	    return $count[0];
-	}
+	$resultc = $db->query("SELECT COUNT(*) as posts FROM {$db->pre}replies WHERE topic_id = '{$topic}' AND tstart = '0'",__LINE__,__FILE__);
+	$count = $db->fetch_assoc($resultc);
+	$result = $db->query("SELECT date, name FROM {$db->pre}replies WHERE topic_id = '{$topic}' ORDER BY date DESC LIMIT 1",__LINE__,__FILE__);
+	$last = $db->fetch_assoc($result);
+	$result = $db->query("SELECT id, date, name FROM {$db->pre}replies WHERE topic_id = '{$topic}' ORDER BY date ASC LIMIT 1",__LINE__,__FILE__);
+	$start = $db->fetch_assoc($result);
+	$db->query("UPDATE {$db->pre}topics SET posts = '{$count['posts']}', last = '{$last['date']}', last_name = '{$last['name']}', date = '{$start['date']}', name = '{$start['name']}' WHERE id = '{$topic}'",__LINE__,__FILE__);
+	$db->query("UPDATE {$db->pre}replies SET tstart = '1' WHERE id = '{$start['id']}'",__LINE__,__FILE__);
+	return $count['posts'];
 }
 
 function SubStats($rtopics, $rreplys, $rid, $cat_cache,$bids=array()) {

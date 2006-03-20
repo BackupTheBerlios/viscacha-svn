@@ -107,6 +107,7 @@ if (($info['name'] == $my->id || $my->mp[0] == 1) && $my->p['edit'] && ($edit_se
 				    @unlink('uploads/topics/'.$urow[0]);
 				}
 				$db->query ("DELETE FROM {$db->pre}uploads WHERE tid = '{$info['id']}'",__LINE__,__FILE__);
+				$db->query ("DELETE FROM {$db->pre}postratings WHERE pid = '{$info['id']}'",__LINE__,__FILE__);
 				if ($info['tstart'] == 1) {
 					$db->query ("DELETE FROM {$db->pre}abos WHERE tid = '{$info['topic_id']}'",__LINE__,__FILE__);
 					$db->query ("DELETE FROM {$db->pre}topics WHERE id = '{$info['topic_id']}'",__LINE__,__FILE__);
@@ -118,7 +119,7 @@ if (($info['name'] == $my->id || $my->mp[0] == 1) && $my->p['edit'] && ($edit_se
 					if (count($voteaids) > 0) {
 						$db->query ("DELETE FROM {$db->pre}votes WHERE id IN (".implode(',', $voteaids).")",__LINE__,__FILE__);
 					}
-					$db->query ("DELETE FROM {$db->pre}vote WHERE id = '{$info['id']}'",__LINE__,__FILE__);
+					$db->query ("DELETE FROM {$db->pre}vote WHERE tid = '{$info['id']}'",__LINE__,__FILE__);
 				}
 				UpdateBoardStats($info['board']);
 				UpdateTopicStats($info['topic_id']);
@@ -176,7 +177,7 @@ if (($info['name'] == $my->id || $my->mp[0] == 1) && $my->p['edit'] && ($edit_se
 				}
 			}
 			else {
-				$info['edit'] .= $my->name."\t".time()."\t".$_POST['about']."\n";
+				$info['edit'] .= $my->name."\t".time()."\t".$_POST['about']."\t".$my->ip."\n";
 				$db->query ("UPDATE {$db->pre}replies SET edit = '{$info['edit']}', topic = '{$_POST['topic']}', comment = '{$_POST['comment']}', dosmileys = '{$_POST['dosmileys']}', dowords = '{$_POST['dowords']}' WHERE id = '{$_GET['id']}'",__LINE__,__FILE__);
 				if ($info['tstart'] == '1') {
 					$db->query ("UPDATE {$db->pre}topics SET prefix = '{$_POST['opt_0']}', topic = '{$_POST['topic']}' WHERE id = '{$info['topic_id']}'",__LINE__,__FILE__);

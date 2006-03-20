@@ -7,7 +7,7 @@ if ($job == 'menu') {
 	<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 	<html>
 	<head>
-	<title><?php echo $config['fname']; ?>: Administrations Control Panel > Navigation</title>
+	<title><?php echo $config['fname']; ?>: Administration Control Panel > Navigation</title>
 	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 	<meta http-equiv="pragma" content="no-cache">
 	<link rel="stylesheet" type="text/css" href="admin/html/menu.css">
@@ -45,33 +45,25 @@ if ($job == 'menu') {
 	   <li>&raquo; <a href="admin.php?action=forums&job=mods" target="Main">Moderator Manager</a></li>
 	  </ul>
 	 </div>
-	 <!--
 	 <div class="border">
 	   <h3><img id="img_admin_menu17" name="collapse" src="admin/html/images/plus.gif" alt=""> Threads &amp; Posts</h3>
 	  <ul id="part_admin_menu17">
-	   <li>&raquo; <a href="admin.php?action=posts&job=manage" target="Main">Moderate Topics &amp; Posts</a></li>
-	   <li>&raquo; <a href="admin.php?action=posts&job=addforum" target="Main">Beitragsbewertungen</a></li>
-	   <li>&raquo; <a href="admin.php?action=posts&job=addcat" target="Main">Manage Attachments</a></li>
-	   <li>&raquo; <a href="admin.php?action=posts&job=addforum" target="Main">Prune Threads</a></li>
-	   <li>&raquo; <a href="admin.php?action=posts&job=mods" target="Main">Delete Poll</a></li>
+	   <!-- <li>&raquo; <a href="admin.php?action=posts&job=moderate" target="Main">Moderate Topics &amp; Posts</a></li> -->
+	   <li>&raquo; <s><a href="admin.php?action=posts&job=postrating" target="Main">Beitragsbewertungen</a></s></li>
+	   <!-- <li>&raquo; <s><a href="admin.php?action=posts&job=attachments" target="Main">Attachment Manager</a></s></li> -->
 	  </ul>
 	 </div>
-	 -->
 	 <div class="border">
 	   <h3><img id="img_admin_menu8" name="collapse" src="admin/html/images/plus.gif" alt=""> Members</h3>
 	  <ul id="part_admin_menu8">
 	   <li>&raquo; <a href="admin.php?action=members&job=manage" target="Main">List of Members</a></li>
-	   <!--
-	   <li>&raquo; <a href="admin.php?action=members&job=add" target="Main">Add new User</a></li>
-	   <li>&raquo; <a href="admin.php?action=members&job=add" target="Main">Mitgliederbeurteilungen</a></li>
-	   -->
+	   <!-- <li>&raquo; <s><a href="admin.php?action=members&job=add" target="Main">Add new User</a></s></li> -->
+	   <li>&raquo; <s><a href="admin.php?action=members&job=memberrating" target="Main">Mitgliederbeurteilungen</a></s></li>
 	   <li>&raquo; <a href="admin.php?action=members&job=newsletter" target="Main">Newsletter Manager</a></li>
 	   <li>&raquo; <a href="admin.php?action=members&job=emaillist" target="Main">Export Email Addresses</a></li>
 	   <li>&raquo; <a href="admin.php?action=members&job=activate" target="Main">Moderate/Unlock Members</a></li>
 	   <li>&raquo; <a href="admin.php?action=members&job=banned" target="Main">Blocked IP Addresses</a></li>
-	   <!--
-	   <li>&raquo; <a href="admin.php?action=members&job=ipadresses" target="Main">Search IP Adresses</a></li>
-	   -->
+	   <li>&raquo; <a href="admin.php?action=members&job=ips" target="Main">Search IP Adresses</a></li>
 	  </ul>
 	 </div>
 	 <div class="border">
@@ -108,7 +100,7 @@ if ($job == 'menu') {
 	 <div class="border">
 	   <h3><img id="img_admin_menu10" name="collapse" src="admin/html/images/plus.gif" alt=""> Text Processing</h3>
 	  <ul id="part_admin_menu10">
-	   <li>&raquo; <a href="admin.php?action=bbcodes&job=smiley" target="Main">Smilie Manager</a></li>
+	   <li>&raquo; <a href="admin.php?action=bbcodes&job=smileys" target="Main">Smiley Manager</a></li>
 	   <li>&raquo; <a href="admin.php?action=bbcodes&job=word" target="Main">Glossary Manager</a></li>
 	   <li>&raquo; <a href="admin.php?action=bbcodes&job=censor" target="Main">Censorship Manager</a></li>
 	   <li>&raquo; <a href="admin.php?action=bbcodes&job=replace" target="Main">Vocabulary Manager</a></li>

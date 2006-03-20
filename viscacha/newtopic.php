@@ -250,9 +250,9 @@ elseif ($_GET['action'] == "save") {
 		
 		$db->query("
 		INSERT INTO {$db->pre}replies 
-		(board,topic,topic_id,name,comment,dosmileys,dowords,email,date,tstart) 
+		(board,topic,topic_id,name,comment,dosmileys,dowords,email,date,tstart,ip) 
 		VALUES 
-		('{$board}','{$_POST['topic']}','{$tredirect}','{$pnameid}','{$_POST['comment']}','{$_POST['dosmileys']}','{$_POST['dowords']}','{$_POST['email']}','{$date}','1')"
+		('{$board}','{$_POST['topic']}','{$tredirect}','{$pnameid}','{$_POST['comment']}','{$_POST['dosmileys']}','{$_POST['dowords']}','{$_POST['email']}','{$date}','1','{$my->ip}')"
 		,__LINE__,__FILE__);
 		$rredirect = $db->insert_id();
 
@@ -274,6 +274,29 @@ elseif ($_GET['action'] == "save") {
 			}
 		}
 		
+	    $close = $gpc->get('close', int);
+	    $pin = $gpc->get('pin', int);
+	    $stat = $gpc->get('status', int);
+	    if (($close == 1 || $pin == 1 || $stat > 0) && $my->vlogin) {
+	    	$my->mp = $slog->ModPermissions($board);
+	    	if ($close == 1 && $my->mp[0] == 1) {
+	    		$db->query("UPDATE {$db->pre}topics SET status = '1' WHERE id = '{$tredirect}'",__LINE__,__FILE__);
+	    	}
+	    	if ($pin == 1 && $my->mp[0] == 1) {
+	    		$db->query("UPDATE {$db->pre}topics SET sticky = '1' WHERE id = '{$tredirect}'",__LINE__,__FILE__);	
+	    	}
+	    	if (($stat == 1 && $my->mp[3] == 1) || ($stat == 2 && $my->mp[2] == 1)) {
+			    if ($stat == 1) {
+				    $input = 'a';
+			    }
+			    if ($stat == 2) {
+				    $input = 'n';
+			    }
+			    $db->query("UPDATE {$db->pre}topics SET mark = '{$input}' WHERE id = '{$tredirect}'",__LINE__,__FILE__);
+	    	}
+	    }
+	    
+		
 		$db->query ("UPDATE {$db->pre}cat SET topics = topics+1, last_topic = '{$tredirect}' WHERE id = '{$board}'");
 		$scache = new scache('cat_bid');
 		$scache->deletedata();
@@ -287,6 +310,8 @@ elseif ($_GET['action'] == "save") {
 
 }
 else {
+	$my->mp = $slog->ModPermissions($board);
+
 	echo $tpl->parse("header");
 	echo $tpl->parse("menu");
 

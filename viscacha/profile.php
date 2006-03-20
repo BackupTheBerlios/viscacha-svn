@@ -455,6 +455,21 @@ elseif ($is_member) {
 			);
 			unset($code, $select, $val, $options, $expoptions, $useropts, $seloptions);
 		}
+		
+		if ($config['memberrating'] == 1) {
+			$result = $db->query("SELECT rating FROM {$db->pre}postratings WHERE aid = '{$row->id}'");
+			$ratings = array();
+			while ($dat = $db->fetch_assoc($result)) {
+				$ratings[] = $dat['rating'];
+			}
+			$ratingcounter = count($ratings);
+			if ($ratingcounter> 0 && $ratingcounter >= $config['memberrating_counter']) {
+				$row->rating = round(array_sum($ratings)/$ratingcounter*50)+50;
+			}
+			else {
+				$row->rating = $lang->phrase('profile_na');
+			}
+		}
 
 		$mymodules->load('profile_top');
 		echo $tpl->parse("profile/index");

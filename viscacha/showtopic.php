@@ -238,6 +238,17 @@ if ($config['tpcallow'] == 1) {
 	}
 }
 
+if ($config['postrating'] == 1) {
+	$result = $db->query("SELECT pid, mid, rating FROM {$db->pre}postratings WHERE tid = '{$info['id']}'");
+	$ratings = array();
+	while ($row = $db->fetch_assoc($result)) {
+		if (!isset($ratings[$row['pid']])) {
+			$ratings[$row['pid']] = array();
+		}
+		$ratings[$row['pid']][$row['mid']] = $row['rating'];
+	}
+}
+
 $result = $db->query("
 SELECT r.edit, r.dosmileys, r.dowords, r.id, r.topic, r.comment, r.date, u.name as uname, r.name as gname, u.id as mid, u.groups, u.fullname, u.hp, u.pic, r.email as gmail, u.signature, u.regdate, u.location 
 FROM {$db->pre}replies AS r LEFT JOIN {$db->pre}user AS u ON r.name=u.id 
@@ -339,6 +350,24 @@ while ($row = $gpc->prepare($db->fetch_object($result))) {
 		$date = gmdate($lang->phrase('dformat1'), times($lastdata[1]));
 		$why = iif(empty($lastdata[2]), $lang->phrase('post_editinfo_na'), $bbcode->wordwrap($lastdata[2]));
 	}
+
+	// Ratings
+	$showrating = false;
+	$row->rating = 50;
+	$ratingcounter = 0;
+	if ($config['postrating'] == 1) {
+		if (!isset($ratings[$row->id])) {
+			$ratings[$row->id] = array();
+		}
+		if ($my->vlogin && $my->id != $row->mid && !isset($ratings[$row->id][$my->id])) {
+			$showrating = true;
+		}
+		$ratingcounter = count($ratings[$row->id]);
+		if (count($ratings[$row->id]) > 0) {
+			$row->rating = round(array_sum($ratings[$row->id])/$ratingcounter*50)+50;
+		}
+	}
+	
 	$mymodules->load('showtopic_bit');
 	$inner['index_bit'] .= $tpl->parse("showtopic/index_bit");
 } 

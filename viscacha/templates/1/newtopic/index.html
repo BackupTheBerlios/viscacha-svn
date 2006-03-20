@@ -67,4 +67,32 @@
 </div>
 <div class="bfoot center"><input onclick="submit_flood(this)" accesskey="s" type="submit" name="Submit2" value="<?php echo $lang->phrase('submit_form'); ?>"> <input type="submit" name="Preview2" value="<?php echo $lang->phrase('preview_form'); ?>" /></div>
 </div>
+<?php if ($my->mp[0] == 1) { ?>
+<br class="minibr" />
+<div class="border">
+<h3><?php echo $lang->phrase('admin_options'); ?></h3>
+<div class="bbody">
+<label for="close"><?php echo $lang->phrase('admin_addpost_close'); ?></label>
+<div class="label"><input type="checkbox" id="close" name="close" value="1" /> <?php echo $lang->phrase('admin_addpost_close_desc'); ?></div>
+<br class="newinput" /><hr class="formsep" />
+<label for="pin"><?php echo $lang->phrase('admin_addpost_pin'); ?></label>
+<div class="label"><input type="checkbox" id="pin" name="pin" value="1" /> <?php echo $lang->phrase('admin_addpost_pin_desc'); ?></div>
+<br class="newinput" />
+<?php if ($my->mp[2] == 1 || $my->mp[3] == 1) { ?>
+<hr class="formsep" />
+<label for="close"><?php echo $lang->phrase('admin_addpost_status'); ?></label>
+<select class="label" size="1" name="status" id="status">
+	<option value="0" selected="selected"><?php echo $lang->phrase('ats_choose'); ?></option>
+	<?php if ($my->mp[0] == 1 && $my->mp[3] == 1) { ?>
+	<option value="1"><?php echo $lang->phrase('ats_select3'); ?></option>
+	<?php } if ($my->mp[0] == 1 && $my->mp[2] == 1) { ?>
+	<option value="2"><?php echo $lang->phrase('ats_select4'); ?></option>
+	<?php } ?>
+</select>
+<br class="newinput" />
+<?php } ?>
+<br class="iefix_br" />
+</div>
+</div>
+<?php } ?>
 </form>

@@ -143,6 +143,7 @@ elseif ($_GET['action'] == "attachment") {
 		}
 		else {
 			viscacha_header('Content-Type: '.$mime['mime']);
+			viscacha_header('Content-Length: '.filesize($uppath));
 			viscacha_header('Content-Disposition: '.$mime['browser'].'; filename="'.$row['file'].'"');
 			readfile($uppath);
 		}

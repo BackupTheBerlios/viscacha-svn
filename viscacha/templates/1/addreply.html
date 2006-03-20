@@ -68,4 +68,15 @@ if ($p_upload == 1) { ?>
   <input type="hidden" name="id" value="<?php echo $_GET['id']; ?>" />
 </div>
 </div>
+<?php if ($my->mp[0] == 1 && $info['status'] == 0) { ?>
+<br class="minibr" />
+<div class="border">
+<h3><?php echo $lang->phrase('admin_options'); ?></h3>
+<div class="bbody">
+<label for="close"><?php echo $lang->phrase('admin_addpost_close'); ?></label>
+<div class="label"><input type="checkbox" id="close" name="close" value="1" /> <?php echo $lang->phrase('admin_addpost_close_desc'); ?></div>
+<br class="newinput" /><br class="iefix_br" />
+</div>
+</div>
+<?php } ?>
 </form>

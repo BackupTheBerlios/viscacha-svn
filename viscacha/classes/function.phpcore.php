@@ -12,12 +12,156 @@ file_get_contents, str_ireplace, str_split, version_compare, is_a, http_build_qu
 @set_magic_quotes_runtime(0);
 @ini_set('magic_quotes_gpc',0);
 
+/* Error Handling */
 if (isset($config['error_reporting']) && $config['error_reporting'] > 0) {
 	error_reporting($config['error_reporting']);
 }
+set_error_handler('msg_handler');
+
+function get_backtrace() {
+	global $config;
+
+	$output = '<div style="font-family: monospace;">';
+	if (function_exists('debug_backtrace')) {
+		$backtrace = debug_backtrace();
+	}
+	else {
+		$output .= 'Backtrace is not available!</div>';
+		return $output;
+	}
+	$path = realpath($config['fpath']);
+
+	foreach ($backtrace as $number => $trace) {
+		// We skip the first one, because it only shows this file/function
+		if ($number == 0) {
+			continue;
+		}
+
+		if (isset($trace['file'])) {
+			// Strip the current directory from path
+			$trace['file'] = str_replace(array($path, '\\'), array('', '/'), $trace['file']);
+			$trace['file'] = substr($trace['file'], 1);
+		}
+		
+		$args = array();
+		foreach ($trace['args'] as $argument) {
+			switch (gettype($argument)) {
+				case 'integer':
+				case 'double':
+					$args[] = $argument;
+				break;
+				
+				case 'string':
+					$argument = htmlspecialchars(substr($argument, 0, 64)) . ((strlen($argument) > 64) ? '...' : '');
+					$args[] = "'{$argument}'";
+				break;
+				
+				case 'array':
+					$args[] = 'Array(' . count($argument) . ')';
+				break;
+				
+				case 'object':
+					$args[] = 'Object(' . get_class($argument) . ')';
+				break;
+				
+				case 'resource':
+					$args[] = 'Resource(' . strstr($a, '#') . ')';
+				break;
+				
+				case 'boolean':
+					$args[] = ($argument) ? 'true' : 'false';
+				break;
+				
+				case 'NULL':
+					$args[] = 'NULL';
+				break;
+				
+				default:
+					$args[] = 'Unknown';
+			}
+		}
+		
+		$trace['file'] = (!isset($trace['file'])) ? 'N/A' : $trace['file'];
+		$trace['line'] = (!isset($trace['line'])) ? 'N/A' : $trace['line'];
+		$trace['class'] = (!isset($trace['class'])) ? '' : $trace['class'];
+		$trace['type'] = (!isset($trace['type'])) ? '' : $trace['type'];
+		
+		$output .= '<b>File:</b> ' . htmlspecialchars($trace['file']) . '<br />';
+		$output .= '<b>Line:</b> ' . $trace['line'] . '<br />';
+		$output .= '<b>Call:</b> ' . htmlspecialchars($trace['class'] . $trace['type'] . $trace['function']) . '(' . ((count($args)) ? implode(', ', $args) : '') . ')<br />';
+		$output .= '<br />';
+	}
+	$output .= '</div>';
+	return $output;
+}
+
+/**
+* Error and message handler, call with trigger_error if reqd
+*/
+function msg_handler($errno, $errtext, $errfile, $errline) {
+	global $db, $config;
+	
+	$errdate = date("Y-m-d H:i:s (T)");
+
+	$errortype = array (
+		E_ERROR			=> "PHP Error",
+		E_WARNING		=> "PHP Warning",
+		E_NOTICE		=> "PHP Notice",
+		E_USER_ERROR	=> "User Error",
+		E_USER_WARNING	=> "User Warning",
+		E_USER_NOTICE	=> "User Notice"
+	);
+
+	switch ($errno) {
+		case E_WARNING:
+		case E_NOTICE:
+		case E_USER_WARNING:
+		case E_USER_NOTICE:
+			echo "<strong>".$errortype[$errno]."</strong>: ".$errtext." (File: <tt>$errfile</tt> on line <tt>$errline</tt>)";
+		break;
+		case E_USER_ERROR:
+		case E_ERROR:
+			if (isset($db)) {
+				$db->close();
+			}
+			@ob_clean();
+			?>
+			<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+			<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr">
+			<head>
+			<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+			<title>Viscacha <?php echo $config['version']; ?> &raquo; Error</title>
+			</head>
+			<body>
+			<h1>General Error</h1>
+			<p>
+			[<a href="<?php echo $config['furl']; ?>/index.php">Return to Index</a>]
+			<?php if (!empty($_SERVER['HTTP_REFERER'])) { ?>
+			&nbsp;&nbsp;[<a href="<?php echo $_SERVER['HTTP_REFERER']; ?>">Return to last Page</a>]
+			<?php } ?>
+			</p>
+			<h3>Error Message</h3>
+			<p><strong><?php echo $errortype[$errno]; ?></strong>: <?php echo $errtext; ?></p>
+			<h3>Error Details</h3>
+			<p>
+			File: <?php echo $errfile; ?><br />
+			Line: <?php echo $errline; ?><br />
+			Date: <?php echo $errdate; ?><br />
+			</p>
+			<h3>Backtrace</h3>
+			<?php echo get_backtrace(); ?>
+			<p style="text-align: right;">Please notify the board administrator: <a href="mailto:<?php echo $config['forenmail']; ?>"><?php echo $config['forenmail']; ?></a></p>
+			<p style="text-align: center;"><strong><a href="http://www.viscacha.org" target="_blank">Viscacha <?php echo $config['version']; ?></a></strong><br />Copyright &copy; by MaMo Net</p>
+			</body>
+			</html>
+			<?php
+			exit;
+		break;
+	}
+}
+
 
 /* Fixed php functions */
-
 
 // You should use fixed_dirname instead of dirname
 // Written by Manuel Lemos
@@ -292,7 +436,7 @@ if (!defined('MHASH_ADLER32')) {
  * @author      Matthias Mohr
  * @version     $Revision: 1.0 $
  * @since       PHP 5.1.0
- * @require     PHP 4.0.0 (user_error)
+ * @require     PHP 4.0.0 (trigger_error)
  */
 if (!function_exists('htmlspecialchars_decode')) {
 	function htmlspecialchars_decode($str, $quote_style = ENT_COMPAT) {
@@ -309,7 +453,7 @@ if (!function_exists('htmlspecialchars_decode')) {
  * @author      Aidan Lister <aidan@php.net>
  * @version     $Revision: 1.1 $
  * @since       PHP 4.1.0
- * @require     PHP 4.0.0 (user_error)
+ * @require     PHP 4.0.0 (trigger_error)
  */
 if (!function_exists('mhash')) {
     function mhash($hashtype, $data, $key = '')    
@@ -463,7 +607,7 @@ function sha1($str, $raw_output=FALSE)
  * @author      Aidan Lister <aidan@php.net>
  * @version     $Revision: 1.6 $
  * @since       PHP 4.3.0
- * @require     PHP 4.0.0 (user_error)
+ * @require     PHP 4.0.0 (trigger_error)
  */
 if (!function_exists('str_shuffle')) {
     function str_shuffle($str)
@@ -495,13 +639,13 @@ if (!function_exists('str_shuffle')) {
  * @author      Aidan Lister <aidan@php.net>
  * @version     $Revision: 1.10 $
  * @since       PHP 4.2.0
- * @require     PHP 4.0.0 (user_error)
+ * @require     PHP 4.0.0 ()
  */
 if (!function_exists('array_change_key_case')) {
     function array_change_key_case($input, $case = CASE_LOWER)
     {
         if (!is_array($input)) {
-            user_error('array_change_key_case(): The argument should be an array',
+            trigger_error('array_change_key_case(): The argument should be an array',
                 E_USER_WARNING);
             return false;
         }
@@ -529,13 +673,13 @@ if (!function_exists('array_change_key_case')) {
  * @version     $Revision: 1.7 $
  * @since       PHP 4.3.0
  * @internal    Setting the charset will not do anything
- * @require     PHP 4.0.0 (user_error)
+ * @require     PHP 4.0.0 ()
  */
 if (!function_exists('html_entity_decode')) {
     function html_entity_decode($string, $quote_style = ENT_COMPAT, $charset = null)
     {
         if (!is_int($quote_style)) {
-            user_error('html_entity_decode() expects parameter 2 to be long, ' .
+            trigger_error('html_entity_decode() expects parameter 2 to be long, ' .
                 gettype($quote_style) . ' given', E_USER_WARNING);
             return;
         }
@@ -566,26 +710,26 @@ if (!function_exists('html_entity_decode')) {
  * @author      Thiemo Mättig (http://maettig.com)
  * @version     $Revision: 1.14 $
  * @since       PHP 4.2.0
- * @require     PHP 4.0.0 (user_error)
+ * @require     PHP 4.0.0 ()
  */
 if (!function_exists('array_chunk')) {
     function array_chunk($input, $size, $preserve_keys = false)
     {
         if (!is_array($input)) {
-            user_error('array_chunk() expects parameter 1 to be array, ' .
+            trigger_error('array_chunk() expects parameter 1 to be array, ' .
                 gettype($input) . ' given', E_USER_WARNING);
             return;
         }
 
         if (!is_numeric($size)) {
-            user_error('array_chunk() expects parameter 2 to be long, ' .
+            trigger_error('array_chunk() expects parameter 2 to be long, ' .
                 gettype($size) . ' given', E_USER_WARNING);
             return;
         }
 
         $size = (int)$size;
         if ($size <= 0) {
-            user_error('array_chunk() Size parameter expected to be greater than 0',
+            trigger_error('array_chunk() Size parameter expected to be greater than 0',
                 E_USER_WARNING);
             return;
         }
@@ -617,7 +761,7 @@ if (!function_exists('array_chunk')) {
  * @version     $Revision: 1.25 $
  * @internal    resource_context is not supported
  * @since       PHP 5
- * @require     PHP 4.0.0 (user_error)
+ * @require     PHP 4.0.0 ()
  */
 if (!function_exists('file_put_contents')) {
     function file_put_contents($filename, $content, $flags = null, $resource_context = null)
@@ -629,7 +773,7 @@ if (!function_exists('file_put_contents')) {
 
         // If we don't have a string, throw an error
         if (!is_scalar($content)) {
-            user_error('file_put_contents() The 2nd parameter should be either a string or an array',
+            trigger_error('file_put_contents() The 2nd parameter should be either a string or an array',
                 E_USER_WARNING);
             return false;
         }
@@ -649,7 +793,7 @@ if (!function_exists('file_put_contents')) {
 
         // Open the file for writing
         if (($fh = @fopen($filename, $mode, $use_inc_path)) === false) {
-            user_error('file_put_contents() failed to open stream: Permission denied',
+            trigger_error('file_put_contents() failed to open stream: Permission denied',
                 E_USER_WARNING);
             return false;
         }
@@ -668,7 +812,7 @@ if (!function_exists('file_put_contents')) {
             $errormsg = sprintf('file_put_contents() Failed to write %d bytes to %s',
                             $length,
                             $filename);
-            user_error($errormsg, E_USER_WARNING);
+            trigger_error($errormsg, E_USER_WARNING);
             return false;
         }
 
@@ -680,7 +824,7 @@ if (!function_exists('file_put_contents')) {
             $errormsg = sprintf('file_put_contents() Only %d of %d bytes written, possibly out of free disk space.',
                             $bytes,
                             $length);
-            user_error($errormsg, E_USER_WARNING);
+            trigger_error($errormsg, E_USER_WARNING);
             return false;
         }
 
@@ -699,13 +843,13 @@ if (!function_exists('file_put_contents')) {
  * @version     $Revision: 1.21 $
  * @internal    resource_context is not supported
  * @since       PHP 5
- * @require     PHP 4.0.0 (user_error)
+ * @require     PHP 4.0.0 ()
  */
 if (!function_exists('file_get_contents')) {
     function file_get_contents($filename, $incpath = false, $resource_context = null)
     {
         if (false === $fh = fopen($filename, 'rb', $incpath)) {
-            user_error('file_get_contents() failed to open stream: No such file or directory',
+            trigger_error('file_get_contents() failed to open stream: No such file or directory',
                 E_USER_WARNING);
             return false;
         }
@@ -734,24 +878,24 @@ if (!function_exists('file_get_contents')) {
  * @author      Aidan Lister <aidan@php.net>
  * @version     $Revision: 1.13 $
  * @since       PHP 5
- * @require     PHP 4.0.0 (user_error)
+ * @require     PHP 4.0.0 ()
  */
 if (!function_exists('stripos')) {
     function stripos($haystack, $needle, $offset = null)
     {
         if (!is_scalar($haystack)) {
-            user_error('stripos() expects parameter 1 to be string, ' .
+            trigger_error('stripos() expects parameter 1 to be string, ' .
                 gettype($haystack) . ' given', E_USER_WARNING);
             return false;
         }
 
         if (!is_scalar($needle)) {
-            user_error('stripos() needle is not a string or an integer.', E_USER_WARNING);
+            trigger_error('stripos() needle is not a string or an integer.', E_USER_WARNING);
             return false;
         }
 
         if (!is_int($offset) && !is_bool($offset) && !is_null($offset)) {
-            user_error('stripos() expects parameter 3 to be long, ' .
+            trigger_error('stripos() expects parameter 3 to be long, ' .
                 gettype($offset) . ' given', E_USER_WARNING);
             return false;
         }
@@ -786,7 +930,7 @@ if (!function_exists('stripos')) {
  * @author      Aidan Lister <aidan@php.net>
  * @version     $Revision: 1.18 $
  * @since       PHP 5
- * @require     PHP 4.0.0 (user_error)
+ * @require     PHP 4.0.0 ()
  * @note        count not by returned by reference, to enable
  *              change '$count = null' to '&$count'
  */
@@ -795,7 +939,7 @@ if (!function_exists('str_ireplace')) {
     {
         // Sanity check
         if (is_string($search) && is_array($replace)) {
-            user_error('Array to string conversion', E_USER_NOTICE);
+            trigger_error('Array to string conversion', E_USER_NOTICE);
             $replace = (string) $replace;
         }
 
@@ -878,20 +1022,20 @@ if (!function_exists('str_ireplace')) {
  * @author      Aidan Lister <aidan@php.net>
  * @version     $Revision: 1.15 $
  * @since       PHP 5
- * @require     PHP 4.0.0 (user_error)
+ * @require     PHP 4.0.0 ()
  */
 if (!function_exists('str_split')) {
     function str_split($string, $split_length = 1)
     {
         if (!is_scalar($split_length)) {
-            user_error('str_split() expects parameter 2 to be long, ' .
+            trigger_error('str_split() expects parameter 2 to be long, ' .
                 gettype($split_length) . ' given', E_USER_WARNING);
             return false;
         }
 
         $split_length = (int) $split_length;
         if ($split_length < 1) {
-            user_error('str_split() The length of each segment must be greater than zero', E_USER_WARNING);
+            trigger_error('str_split() The length of each segment must be greater than zero', E_USER_WARNING);
             return false;
         }
         
@@ -931,26 +1075,26 @@ if (!function_exists('str_split')) {
  * @author      Aidan Lister <aidan@php.net>
  * @version     $Revision: 1.13 $
  * @since       PHP 4.1.0
- * @require     PHP 4.0.5 (user_error)
+ * @require     PHP 4.0.5 ()
  */
 if (!function_exists('version_compare')) {
     function version_compare($version1, $version2, $operator = '<')
     {
         // Check input
         if (!is_scalar($version1)) {
-            user_error('version_compare() expects parameter 1 to be string, ' .
+            trigger_error('version_compare() expects parameter 1 to be string, ' .
                 gettype($version1) . ' given', E_USER_WARNING);
             return;
         }
 
         if (!is_scalar($version2)) {
-            user_error('version_compare() expects parameter 2 to be string, ' .
+            trigger_error('version_compare() expects parameter 2 to be string, ' .
                 gettype($version2) . ' given', E_USER_WARNING);
             return;
         }
 
         if (!is_scalar($operator)) {
-            user_error('version_compare() expects parameter 3 to be string, ' .
+            trigger_error('version_compare() expects parameter 3 to be string, ' .
                 gettype($operator) . ' given', E_USER_WARNING);
             return;
         }
@@ -1110,19 +1254,19 @@ if (!function_exists('array_fill')) {
  * @author      Aidan Lister <aidan@php.net>
  * @version     $Revision: 1.21 $
  * @since       PHP 5
- * @require     PHP 4.0.0 (user_error)
+ * @require     PHP 4.0.0 ()
  */
 if (!function_exists('array_combine')) {
     function array_combine($keys, $values)
     {
         if (!is_array($keys)) {
-            user_error('array_combine() expects parameter 1 to be array, ' .
+            trigger_error('array_combine() expects parameter 1 to be array, ' .
                 gettype($keys) . ' given', E_USER_WARNING);
             return;
         }
 
         if (!is_array($values)) {
-            user_error('array_combine() expects parameter 2 to be array, ' .
+            trigger_error('array_combine() expects parameter 2 to be array, ' .
                 gettype($values) . ' given', E_USER_WARNING);
             return;
         }
@@ -1130,12 +1274,12 @@ if (!function_exists('array_combine')) {
         $key_count = count($keys);
         $value_count = count($values);
         if ($key_count !== $value_count) {
-            user_error('array_combine() Both parameters should have equal number of elements', E_USER_WARNING);
+            trigger_error('array_combine() Both parameters should have equal number of elements', E_USER_WARNING);
             return false;
         }
 
         if ($key_count === 0 || $value_count === 0) {
-            user_error('array_combine() Both parameters should have number of elements at least 0', E_USER_WARNING);
+            trigger_error('array_combine() Both parameters should have number of elements at least 0', E_USER_WARNING);
             return false;
         }
 
@@ -1160,7 +1304,7 @@ if (!function_exists('array_combine')) {
  * @author      Aidan Lister <aidan@php.net>
  * @version     $Revision: 1.16 $
  * @since       PHP 4.2.0
- * @require     PHP 4.0.0 (user_error) (is_subclass_of)
+ * @require     PHP 4.0.0 () (is_subclass_of)
  */
 //  Required for lib_diff.php
 if (!function_exists('is_a')) {
@@ -1188,7 +1332,7 @@ if (!function_exists('is_a')) {
  * @author      Aidan Lister <aidan@php.net>
  * @version     $Revision: 1.16 $
  * @since       PHP 5
- * @require     PHP 4.0.0 (user_error)
+ * @require     PHP 4.0.0 ()
  */
 if (!function_exists('http_build_query')) {
     function http_build_query($formdata, $numeric_prefix = null)
@@ -1200,7 +1344,7 @@ if (!function_exists('http_build_query')) {
 
         // Check we have an array to work with
         if (!is_array($formdata)) {
-            user_error('http_build_query() Parameter 1 expected to be Array or Object. Incorrect value given.',
+            trigger_error('http_build_query() Parameter 1 expected to be Array or Object. Incorrect value given.',
                 E_USER_WARNING);
             return false;
         }
@@ -1265,13 +1409,13 @@ if (!function_exists('http_build_query')) {
  * @author      Aidan Lister <aidan@php.net>
  * @version     $Revision: 1.7 $
  * @since       PHP 4.1.0
- * @require     PHP 4.0.0 (user_error)
+ * @require     PHP 4.0.0 ()
  */
 if (!function_exists('array_key_exists')) {
     function array_key_exists($key, $search)
     {
         if (!is_scalar($key)) {
-            user_error('array_key_exists() The first argument should be either a string or an integer',
+            trigger_error('array_key_exists() The first argument should be either a string or an integer',
                 E_USER_WARNING);
             return false;
         }
@@ -1281,7 +1425,7 @@ if (!function_exists('array_key_exists')) {
         }
 
         if (!is_array($search)) {
-            user_error('array_key_exists() The second argument should be either an array or an object',
+            trigger_error('array_key_exists() The second argument should be either an array or an object',
                 E_USER_WARNING);
             return false;
         }

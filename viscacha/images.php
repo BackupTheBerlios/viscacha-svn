@@ -34,6 +34,11 @@ $slog = new slog();
 $my = $slog->logged();
 $lang->init($my->language);
 
+function ImageHexColorAllocate(&$image, $string) {
+	sscanf($string, "%2x%2x%2x", $red, $green, $blue);
+	return ImageColorAllocate($image,$red,$green,$blue);
+}
+
 if ($_GET['action'] == 'vote') {
 	$result = $db->query('SELECT id, topic, posts, sticky, status, last, board, vquestion, prefix FROM '.$db->pre.'topics WHERE id = '.$_GET['id'].' LIMIT 1',__LINE__,__FILE__);
 	$info = $db->fetch_assoc($result);
@@ -67,6 +72,54 @@ if ($_GET['action'] == 'vote') {
 	
 	$PG->start();
 }
+elseif ($_GET['action'] == 'postrating' || $_GET['action'] == 'memberrating') {
+	$colors = array('FF0000', 'E44C00', 'E89A00', 'EBE700', '9EE800', '4DE400');
+
+	if ($_GET['action'] == 'memberrating' && $config['memberrating'] == 1) {
+		$result = $db->query("SELECT rating FROM {$db->pre}postratings WHERE aid = '{$_GET['id']}'");
+		$width = 100;
+		$height = 8;
+	}
+	elseif ($_GET['action'] == 'postrating' && $config['postrating'] == 1) {
+		$result = $db->query("SELECT rating FROM {$db->pre}postratings WHERE pid = '{$_GET['id']}'");
+		$width = 50;
+		$height = 8;
+	}
+	else {
+		header ("Content-type: image/png");
+		$image = imagecreate(1, 1);
+		$back = ImageColorAllocate($image,0,0,0);
+		imagecolortransparent($image, $back);
+		imagePNG($image);
+		imagedestroy($image);
+	}
+	
+	$ratings = array();
+	while ($row = $db->fetch_assoc($result)) {
+		$ratings[] = $row['rating'];
+	}
+	$ratingcounter = count($ratings);
+	if ($ratingcounter > 0) {
+		$rating = round((array_sum($ratings)/$ratingcounter+1)*($width/2));
+	}
+	else {
+		$rating = $width/2;
+	}
+	$five = ceil(((array_sum($ratings)/$ratingcounter)+1)*2.5);
+	
+	header ("Content-type: image/png");
+	
+	$image = imagecreate($width+2, $height+2);
+	$back = ImageHexColorAllocate($image, 'ffffff');
+	$fill = ImageHexColorAllocate($image, $colors[$five]);
+	$border = ImageHexColorAllocate($image, '000000');
+	ImageFilledRectangle($image,1,1,$width,$height,$back);
+	ImageFilledRectangle($image,1,1,$rating,$height,$fill);
+	ImageRectangle($image,0,0,$width+1,$height+1,$border);
+	imagePNG($image);
+	imagedestroy($image);
+}
+
 
 $slog->updatelogged();
 $zeitmessung = t2();

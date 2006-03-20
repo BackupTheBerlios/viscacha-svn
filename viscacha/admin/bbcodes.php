@@ -1,25 +1,35 @@
 <?php
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "bbcodes.php") die('Error: Hacking Attempt');
 
-if ($job == 'man_smileys') {
-	echo head();
-	$fd = $gpc->get('fdelete');
-	$deleteid = $gpc->get('delete', arr_int);
-	$fe = $gpc->get('fedit');
-	$editid = $gpc->get('edit', arr_int);
-	if (!empty($fd) && count($deleteid) > 0) {
+if ($job == 'smileys_delete') {
+	$deleteid = $gpc->get('id', arr_int);
+	if (count($deleteid) > 0) {
+		echo head();
 	   	$scache = new scache('smileys');
 	   	$scache->deletedata();
+	   	$result = $db->query('SELECT * FROM '.$db->pre.'smileys WHERE id IN ('.implode(',', $deleteid).')',__LINE__,__FILE__);
+	   	while ($row = $db->fetch_assoc($result)) {
+	   		$row['replace'] = str_replace('{folder}', $config['smileypath'], $row['replace']);
+	   		$filesystem->unlink($row['replace']);
+	   	}
 		$db->query('DELETE FROM '.$db->pre.'smileys WHERE id IN ('.implode(',', $deleteid).')',__LINE__,__FILE__);
 		$anz = $db->affected_rows();
-	
-		ok('admin.php?action=bbcodes&job='.$gpc->get('temp4', str), $anz.' entries were deleted successfully!');
 	}
-	elseif (!empty($fe) && count($editid) > 0) {
-		
-		$result = $db->query('SELECT * FROM '.$db->pre.'smileys WHERE id IN ('.implode(',', $editid).')',__LINE__,__FILE__);
-		?>
-<form name="form" method="post" enctype="multipart/form-data" action="admin.php?action=bbcodes&job=edit_smiley">
+	else {
+		$anz = 0;
+	}
+	ok('admin.php?action=bbcodes&job=smileys', $anz.' entries were deleted successfully!');
+}
+elseif ($job == 'smileys_edit') {
+	$editid = $gpc->get('id', arr_int);
+	if (count($editid) == 0) {
+		viscacha_header('Location: admin.php?action=bbcodes&job=smileys');
+		exit;
+	}
+	$result = $db->query('SELECT * FROM '.$db->pre.'smileys WHERE id IN ('.implode(',', $editid).')',__LINE__,__FILE__);
+	echo head();
+	?>
+<form name="form" method="post" enctype="multipart/form-data" action="admin.php?action=bbcodes&job=smileys_edit2">
  <table class="border">
   <tr> 
    <td class="obox">Edit <?php echo count($editid); ?> Smileys</td>
@@ -36,7 +46,7 @@ if ($job == 'man_smileys') {
    <td class="mbox" width="50%"><input type="text" name="search_<?php echo $row['id']; ?>" size="50" value="<?php echo $row['search']; ?>"></td> 
   </tr>
   <tr> 
-   <td class="mbox" width="50%">Image:<br><font class="stext">URL or relative path to the image. Only when you do not upload an image.<br />{folder} is a placeholder for the adresses to the smiley directories.</font></td>
+   <td class="mbox" width="50%">Image:<br><font class="stext">URL or relative path to the image.<br />{folder} is a placeholder for the adress to the smiley directory.</font></td>
    <td class="mbox" width="50%"><input type="text" name="replace_<?php echo $row['id']; ?>" size="50" value="<?php echo $row['replace']; ?>"></td> 
   </tr>
   <tr>
@@ -55,13 +65,9 @@ if ($job == 'man_smileys') {
   </tr>
  </table>
 </form> 
-		<?php
-	}
-	else {
-		error('admin.php?action=bbcodes&job=smiley', 'Keine (gültige) Eingabe gemacht!');
-	}
+	<?php
 }
-elseif ($job == 'edit_smiley') {
+elseif ($job == 'smileys_edit2') {
 	echo head();
 	$id = $gpc->get('id', arr_int);
 	foreach ($id as $i) {
@@ -73,87 +79,218 @@ elseif ($job == 'edit_smiley') {
 	}
 	$scache = new scache('smileys');
 	$scache->deletedata();
-	ok('admin.php?action=bbcodes&job=smiley', count($id).' Smileys wurden editiert.');
+	ok('admin.php?action=bbcodes&job=smileys', count($id).' Smileys wurden editiert.');
 }
-elseif ($job == 'smiley') {
+elseif ($job == 'smileys_import') {
 	echo head();
+	?>
+<form name="form2" method="post" enctype="multipart/form-data" action="admin.php?action=bbcodes&job=smileys_import2">
+ <table class="border" cellpadding="4" cellspacing="0" border="0">
+  <tr><td class="obox" colspan="2">Import Smileypack</td></tr>
+  <tr><td class="mbox"><em>Entweder</em> Datei hochladen:<br /><span class="stext">Erlaubte Dateitypen: .zip - Maximale Dateigröße: 2 MB</span></td>
+  <td class="mbox"><input type="file" name="upload" size="40" /></td></tr>
+  <tr><td class="mbox"><em>oder</em> Datei vom Server auswählen:<br /><span class="stext">Pfad ausgehend vom Viscacha-Hauptverzeichnis: <?php echo $config['fpath']; ?></span></td>
+  <td class="mbox"><input type="text" name="server" size="50" /></td></tr>
+  <tr><td class="mbox">Datei nach dem importieren löschen:</td>
+  <td class="mbox"><input type="checkbox" name="delete" value="1" /></td></tr>
+  <tr><td class="ubox" colspan="2" align="center"><input accesskey="s" type="submit" value="Send" /></td></tr>
+ </table>
+</form>
+	<?php
+	echo foot();
+}
+elseif ($job == 'smileys_import2') {
+	$server = $gpc->get('server', none);
+	$del = $gpc->get('delete', int);
+	$inserterrors = array();
 	
-	$result = $db->query("SELECT id, name, smileyfolder, smileypath FROM {$db->pre}designs WHERE publicuse = '1'",__LINE__,__FILE__);
-	$design = array();
-	$folders = array();
-	$des = array();
-	while ($row = $db->fetch_assoc($result)) {
-		$design[$row['id']] = $row;
-		$row['smileyfolder'] = str_replace('{folder}', $config['furl'], $row['smileyfolder']);
-		$folders[$row['id']] = $row['smileyfolder'];
-		$md5 = $row['smileyfolder'];
-		if (!isset($des[$md5])) {
-			$des[$md5] = array();
+	if (!empty($_FILES['upload']['name'])) {
+		$filesize = 2048*1024;
+		$filetypes = array('.zip');
+		$dir = realpath('temp/');
+	
+		$insertuploads = array();
+		require("classes/class.upload.php");
+		 
+		$my_uploader = new uploader();
+		$my_uploader->max_filesize($filesize);
+		if ($my_uploader->upload('upload', $filetypes)) {
+			$my_uploader->save_file($dir, 2);
+			if ($my_uploader->return_error()) {
+				array_push($inserterrors,$my_uploader->return_error());
+			}
 		}
-		$des[$md5][] = $row['id'];
+		else {
+			array_push($inserterrors,$my_uploader->return_error());
+		}
+		$file = $dir.'/'.$my_uploader->file['name'];
+		if (!file_exists($file)) {
+			$inserterrors[] = 'File ('.$file.') does not exist.';
+		}
 	}
-	$folders = array_unique($folders);
+	elseif (file_exists($server)) {
+		$ext = get_extension($server, true);
+		if ($ext == 'zip') {
+			$file = $server;
+		}
+		else {
+			$inserterrors[] = 'Angegebene Datei ist keine ZIP-Datei.';
+		}
+	}
+	else {
+		$inserterrors[] = 'Keine gültige Datei angegeben.';
+	}
+	echo head();
+	if (count($inserterrors) > 0) {
+		error('admin.php?action=bbcodes&job=smileys_import', $inserterrors);
+	}
 	
+	$tempdir = 'temp/'.md5(microtime()).'/';
+	
+	require_once('classes/class.zip.php');
+	$archive = new PclZip($file);
+	$failure = $archive->extract($tempdir);
+	if ($failure < 1) {
+		rmdirr($tempdir);
+		error('admin.php?action=bbcodes&job=smileys_import', 'ZIP-Archiv konnte nicht gelesen werden order ist leer.');
+	}
+
+	$codes = array();
+	$result = $db->query('SELECT search FROM '.$db->pre.'smileys');
+	while ($row = $db->fetch_assoc($result)) {
+		$codes[] = $row['search'];
+	}
+	$package = $myini->read($tempdir.'/smileys.ini');
+	$sqlinsert = array();
+	foreach ($package as $ini) {
+		if (strpos($ini['replace'], '{folder}') !== false) {
+			$ini['replace_temp'] = str_replace('{folder}', $tempdir, $ini['replace']);
+			$ini['replace_new'] = str_replace('{folder}', $config['smileypath'], $ini['replace']);
+			$n = 0;
+			while(file_exists($ini['replace_new'])) {
+				$ext = get_extension($ini['replace_new']);
+				$length = strlen($ext);
+				$base = substr($ini['replace_new'], $length*(-1), $length);
+				$n++;
+				$base .= '_'.$n;
+				$ini['replace_new'] = $base.$ext;
+			}
+			$filesystem->copy($ini['replace_temp'], $ini['replace_new']);
+		}
+		$sqlinsert[] = '("'.$gpc->save_str($ini['search']).'", "'.$gpc->save_str($ini['replace']).'", "'.$gpc->save_str($ini['desc']).'")';
+	}
+	$db->query('INSERT INTO '.$db->pre.'smileys (`search`, `replace`, `desc`) VALUES '.implode(', ', $sqlinsert));
+	$anz = $db->affected_rows();
+	
+	rmdirr($tempdir);
+	
+	ok('admin.php?action=bbcodes&job=smileys', $anz.' Smileys erfolgreich importiert.');
+}
+elseif ($job == 'smileys_export') {
+	$smileys = $gpc->get('id', arr_int);
+
+	if (count($smileys) > 0) {
+		$sqlwhere = " WHERE id IN (".implode(',', $smileys).") ";
+	}
+	else {
+		$sqlwhere = "";
+	}
+	
+	$file = 'smileys_'.date('Ymd').'.zip';
+	$tempdir = "temp/";
+	$smilieconfig = $config['smileypath'].'/smileys.ini';
+	
+	$result = $db->query('SELECT `id`, `search`, `replace`, `desc` FROM `'.$db->pre.'smileys` '.$sqlwhere);
+	$files = array();
+	$filedata = array();
+	while ($row = $db->fetch_assoc($result)) {
+		$filepath = str_replace('{folder}', $config['smileypath'], $row['replace']);
+		$filedata[$row['id']] = array(
+			'search' => $row['search'],
+			'replace' => $row['replace'],
+			'desc' => $row['desc'],
+		);
+		if (!preg_match('~http(s)?:\/\/~i', $filepath)) {
+			$files[] = $filepath;
+		}
+	}
+	
+	$myini->write($smilieconfig, $filedata);
+	$files[] = $smilieconfig;
+	$files = array_unique($files);
+	
+	require_once('classes/class.zip.php');
+	$archive = new PclZip($tempdir.$file);
+	// Have to parse $dir with PclZipUtilTranslateWinPath to have equal paths at $files-Array and $dir (PclZip-Bug?)
+	$v_list = $archive->create($files, PCLZIP_OPT_REMOVE_PATH, PclZipUtilTranslateWinPath($config['smileypath']));
+	if ($v_list == 0) {
+		echo head();
+		$filesystem->unlink($smilieconfig);
+		error('admin.php?action=bbcodes&job=smileys', $archive->errorInfo(true));
+	}
+	else {
+		viscacha_header('Content-Type: application/zip');
+		viscacha_header('Content-Disposition: attachment; filename="'.$file.'"');
+		viscacha_header('Content-Length: '.filesize($tempdir.$file));
+		readfile($tempdir.$file);
+		$filesystem->unlink($tempdir.$file);
+	}
+	$filesystem->unlink($smilieconfig);
+}
+elseif ($job == 'smileys') {
+	echo head();
 	$result = $db->query("SELECT * FROM {$db->pre}smileys AS s ORDER BY s.show DESC");
 ?>
-<form name="form" method="post" action="admin.php?action=bbcodes&job=man_smileys">
-<input name="temp4" value="smiley" type="hidden">
+<form name="form" method="post" action="admin.php?action=bbcodes">
  <table class="border">
   <tr> 
-   <td class="obox" colspan="<?php echo 6+count($folders); ?>">Manage Smileys</td>
+   <td class="obox" colspan="6"><span style="float: right;">[<a href="admin.php?action=bbcodes&amp;job=smileys_import">Smileypack importieren</a>]</span>Manage Smileys</td>
   </tr>
   <tr class="ubox">
-   <td width="5%" rowspan="2">DEL</td>
-   <td width="5%" rowspan="2">Edit</td>
-   <td width="10%" rowspan="2">Code</td> 
-   <td width="30%" rowspan="2">URL</td>
-   <td width="10%" colspan="<?php echo count($folders); ?>">Images/Designs</td>
-   <td width="5%" rowspan="2">Show directly</td> 
-   <td width="35%" rowspan="2">Description</td> 
-  </tr>
-  <tr class="ubox">
-  <?php foreach ($des as $id) { ?>
-   <td align="center"><?php echo implode(',', $id); ?></td>
-  <?php } ?>
+   <td width="5%">Choose<br /><span class="stext"><input type="checkbox" onclick="check_all('id[]');" name="all" value="1" /> All</span></td>
+   <td width="10%">Code</td> 
+   <td width="30%">URL</td>
+   <td width="15%">Images</td>
+   <td width="5%">Show directly</td> 
+   <td width="35%">Description</td> 
   </tr>
 <?php
 	while ($row = $db->fetch_assoc($result)) {
-		$imgsrc = array();
-		foreach ($folders as $id => $url) {
-			$imgsrc[$id] = str_replace('{folder}', $url, $row['replace']);
-		}
+		$src = str_replace('{folder}', $config['smileyurl'], $row['replace']);
 ?> 
   <tr class="mbox">
-   <td width="5%"><input type="checkbox" name="delete[]" value="<?php echo $row['id']; ?>"></td>
-   <td width="5%"><input type="checkbox" name="edit[]" value="<?php echo $row['id']; ?>"></td>
+   <td width="5%"><input type="checkbox" name="id[]" value="<?php echo $row['id']; ?>"></td>
    <td width="10%"><?php echo $row['search']; ?></td> 
    <td width="30%"><?php echo $row['replace']; ?></td>
-   <?php foreach ($imgsrc as $design => $src) { ?>
-   <td align="center">
-   <img src="<?php echo $src; ?>" alt="Design: <?php echo $design; ?>" border="0" />&nbsp;
-   </td>
-   <?php } ?>
-   <td width="5%" align="center"><?php echo noki($row['show'], ' onmouseover="HandCursor(this)" onclick="ajax_noki(this, \'action=bbcodes&job=ajax_smileypos&id='.$row['id'].'\')"'); ?></td> 
+   <td align="center" width="15%"><img src="<?php echo $src; ?>" alt="<?php echo $row['search']; ?>" border="0" />&nbsp;</td>
+   <td width="5%" align="center"><?php echo noki($row['show'], ' onmouseover="HandCursor(this)" onclick="ajax_noki(this, \'action=bbcodes&job=smileys_ajax_pos&id='.$row['id'].'\')"'); ?></td> 
    <td width="35%"><?php echo $row['desc']; ?></td> 
   </tr>
 <?php } ?>
   <tr> 
-   <td class="ubox" colspan="<?php echo 6+count($folders); ?>" align="center"><input type="submit" name="fdelete" value="Delete"> <input type="submit" name="fedit" value="Edit"></td> 
+   <td class="ubox" colspan="6" align="center">
+   Ausgewählte Smileys: <select name="job">
+    <option value="smileys_edit" selected="selected">Ändern</option>
+    <option value="smileys_export">Exportieren</option>
+   	<option value="smileys_delete">Löschen</option>
+   </select>&nbsp;&nbsp;&nbsp;&nbsp;
+   <input type="submit" value="Go">
+   </td> 
   </tr>
  </table>
 </form>
 <br>
-<form name="form" method="post" enctype="multipart/form-data" action="admin.php?action=bbcodes&job=add_smiley">
+<form name="form" method="post" enctype="multipart/form-data" action="admin.php?action=bbcodes&amp;job=smileys_add">
  <table class="border">
   <tr> 
-   <td class="obox" colspan="2">Add Smiley</td>
+   <td class="obox" colspan="2"><span style="float: right;">[<a href="admin.php?action=bbcodes&amp;job=smileys_import">Smileypack importieren</a>]</span>Add Smiley</td>
   </tr>
   <tr> 
    <td class="mbox" width="50%">Code:</td>
    <td class="mbox" width="50%"><input type="text" name="code" size="50"></td> 
   </tr>
   <tr> 
-   <td class="mbox" width="50%">Image:<br><font class="stext">URL or relative path to the image. Only when you do not upload an image.<br />{folder} = <?php echo $my->smileyfolder; ?></font></td>
+   <td class="mbox" width="50%">Image:<br><font class="stext">URL or relative path to the image. Only when you do not upload an image.<br />{folder} = <?php echo $config['smileypath']; ?> and <?php echo $config['smileyurl']; ?></font></td>
    <td class="mbox" width="50%"><input type="text" name="img" size="50"></td> 
   </tr>
    <td class="mbox" width="50%">Upload an image<br><font class="stext">Erlaubte Dateitypen: .gif, .jpg, .jpeg, .png, .jpe, .bmp<br />Maximale Dateigröße: 200 KB</font></td>
@@ -174,7 +311,7 @@ elseif ($job == 'smiley') {
 	<?php
 	echo foot();
 }
-elseif ($job == 'ajax_smileypos') {
+elseif ($job == 'smileys_ajax_pos') {
 	$id = $gpc->get('id', int);
 	$result = $db->query("SELECT b.show FROM {$db->pre}smileys AS b WHERE id = '{$id}' LIMIT 1",__LINE__,__FILE__);
 	$use = $db->fetch_assoc($result);
@@ -184,7 +321,7 @@ elseif ($job == 'ajax_smileypos') {
     $scache->deletedata();
 	die(strval($use));
 }
-elseif ($job == 'add_smiley') {
+elseif ($job == 'smileys_add') {
 	echo head();
 	$error = array();
 	
@@ -201,18 +338,6 @@ elseif ($job == 'add_smiley') {
 	$img = $gpc->get('img', str);
 	
 	$has_upload = false;
-
-	$result = $db->query("SELECT id, name, smileyfolder, smileypath FROM {$db->pre}designs WHERE publicuse = '1'",__LINE__,__FILE__);
-	$folders = array();
-	$folders2 = array();
-	while ($row = $db->fetch_assoc($result)) {
-		$row['smileypath'] = str_replace('{folder}', $config['fpath'], $row['smileypath']);
-		$row['smileyfolder'] = str_replace('{folder}', $config['furl'], $row['smileyfolder']);
-		$folders[] = $row['smileypath'];
-		$folders2[] = $row['smileyfolder'];
-	}
-	$folders = array_unique($folders);
-	$folders2 = array_unique($folders2);
 	
 	for ($i = 0; $i < $ups; $i++) {
 	    if (empty($_FILES['upload_'.$i]['name'])) {
@@ -250,14 +375,15 @@ elseif ($job == 'add_smiley') {
 	    error('admin.php?action=bbcodes&job=smiley', $error);
 	}
 	if ($has_upload) {
-		foreach ($folders as $dest) {
-			$filesystem->copy($path.$has_upload, $dest.'/'.$has_upload);
-		}
+		$filesystem->copy($path.$has_upload, $config['smileypath'].'/'.$has_upload);
 		$img = '{folder}/'.$has_upload;
 	}
 	else {
-		foreach ($folders2 as $dir) {
-			$img = str_replace($dir, '{folder}', $img);
+		if (stripos(realpath($img), realpath($config['fpath'])) !== false) {
+			$img = str_replace(realpath($config['fpath']), '{folder}', realpath($img));
+		}
+		else {
+			$img = str_replace($config['fpath'], '{folder}', $img);
 		}
 	}
 	$db->query("INSERT INTO {$db->pre}smileys (`search`,`replace`,`desc`,`show`) VALUES ('".$gpc->get('code', str)."','".$img."','".$gpc->get('desc', str)."','".$gpc->get('show', int)."')",__LINE__,__FILE__);
@@ -265,7 +391,7 @@ elseif ($job == 'add_smiley') {
     $scache = new scache('smileys');
     $scache->deletedata();
 
-	ok('admin.php?action=bbcodes&job=smiley', 'Smiley was successfully added');
+	ok('admin.php?action=bbcodes&job=smileys', 'Smiley was successfully added');
 }
 elseif ($job == 'word') {
 	echo head();
@@ -274,7 +400,7 @@ elseif ($job == 'word') {
 <form name="form" method="post" action="admin.php?action=bbcodes&job=del">
 <input name="temp4" value="word" type="hidden">
  <table class="border">
-  <tr> 
+  <tr>
    <td class="obox" colspan=4>Manage Glossary</b></td>
   </tr>
   <tr>

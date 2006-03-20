@@ -96,6 +96,9 @@ if ($my->p['admin'] == 1) {
 	elseif ($action == 'profilefield') {
 		include('admin/profilefield.php');
 	}
+	elseif ($action == 'posts') {
+		include('admin/posts.php');
+	}
 	elseif ($action == 'locate') {
 		$url = $gpc->get('url', none);
 		if (!empty($url)) {
@@ -121,7 +124,7 @@ else {
 		echo head();
 		error('index.php'.SID2URL_1, 'You are not allowed to view this page!');
 	}
-    viscacha_header('Location: log.php?location=admin.php'.SID2URL_JS_x);
+    viscacha_header('Location: log.php?redirect=admin.php'.SID2URL_JS_x);
 }
 
 $db->close();	

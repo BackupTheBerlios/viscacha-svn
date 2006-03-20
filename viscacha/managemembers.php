@@ -80,11 +80,15 @@ if ($my->vlogin && $my->p['admin'] == 1) {
 		$db->query("UPDATE {$db->pre}topics SET last_name = '".$user['name']."' WHERE last_name = '{$user['id']}'");
 		// Step 8: Set uploads from member to guests-group
 		$db->query("UPDATE {$db->pre}uploads SET mid = '0' WHERE mid = '{$user['id']}'");
-		// Step 9: Delete pic
+		// Step 9: Set post ratings from member to guests-group I
+		$db->query("UPDATE {$db->pre}postratings SET mid = '0' WHERE mid = '{$user['id']}'");
+		// Step 10: Set post ratings from member to guests-group II
+		$db->query("UPDATE {$db->pre}postratings SET aid = '0' WHERE aid = '{$user['id']}'");
+		// Step 11: Delete pic
 		removeOldImages('uploads/pics/', $user['id']);
-		// Step 10: Delete user himself
+		// Step 12: Delete user himself
 		$db->query("DELETE FROM {$db->pre}user WHERE id = '{$user['id']}'");
-		// Step 11: Delete user's custom profilefields
+		// Step 13: Delete user's custom profilefields
 		$db->query("DELETE FROM {$db->pre}userfields WHERE ufid = '{$user['id']}'");
 
 		ok($lang->phrase('member_deleted'),'members.php'.SID2URL_1);

@@ -10,7 +10,7 @@ if ($job == 'design') {
 	?>
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr> 
-   <td class="obox" colspan="6"><span style="float: right;">[<a href="admin.php?action=designs&amp;job=design_add">Add new Design</a>]</span>Designs</td>
+   <td class="obox" colspan="6"><span style="float: right;">[<a href="admin.php?action=designs&amp;job=design_import">Import Design</a>] [<a href="admin.php?action=designs&amp;job=design_add">Add new Design</a>]</span>Designs</td>
   </tr>
   <tr>
    <td class="ubox" width="40%">Name</td>
@@ -34,7 +34,7 @@ if ($job == 'design') {
    <?php if ($row['publicuse'] == 1 && $config['templatedir'] != $row['id']) { ?>
    [<a href="admin.php?action=designs&amp;job=design_default&amp;id=<?php echo $row['id']; ?>">Set as default</a>]
    <?php } ?>
-   [<a href="forum.php?design=<?php echo $row['id']; ?>&amp;admin=1" target="_blank">View</a>]
+   [<a href="forum.php?design=<?php echo $row['id']; ?>&amp;admin=<?php echo $config['cryptkey'].SID2URL_x; ?>" target="_blank">View</a>]
    </td>
   </tr>
   <?php } ?>
@@ -132,14 +132,6 @@ elseif ($job == 'design_edit') {
    </td>
   </tr>
   <tr>
-   <td class="mbox" width="40%">Pfad zu den Smileys:<br /><span class="stext">{folder} ist der Platzhalter für den Pfad zum Viscacha-Verzeichnis.<br />{folder} = <code><?php echo $config['fpath']; ?></code></span></td>
-   <td class="mbox" width="60%"><input type="text" name="smileypath" size="60" value="<?php echo $gpc->prepare($info['smileypath']); ?>" /></td>
-  </tr>
-  <tr>
-   <td class="mbox" width="40%">URL zu den Smileys:<br /><span class="stext">{folder} ist der Platzhalter für die URL zum Viscacha-Verzeichnis.<br />{folder} = <code><?php echo $config['furl']; ?></code></span></td>
-   <td class="mbox" width="60%"><input type="text" name="smileyfolder" size="60" value="<?php echo $gpc->prepare($info['smileyfolder']); ?>" /></td>
-  </tr>
-  <tr>
    <td class="mbox" width="40%">Published:</td>
    <td class="mbox" width="60%"><input type="checkbox" name="publicuse" value="1"<?php echo iif($info['publicuse'] == '1', ' checked="checked"'); ?> /></td>
   </tr>
@@ -159,8 +151,6 @@ elseif ($job == 'design_edit2') {
 	$stylesheet = $gpc->get('stylesheet', int);
 	$images = $gpc->get('images', int);
 	$use = $gpc->get('publicuse', int);
-	$sfolder = $gpc->get('smileyfolder', str);
-	$spath = $gpc->get('smileypath', str);
 	$name = $gpc->get('name', str);
 	$error = '';
 	
@@ -179,7 +169,7 @@ elseif ($job == 'design_edit2') {
 	}
 	$scache = new scache('load-designs');
 	$scache->deletedata();
-	$db->query("UPDATE {$db->pre}designs SET template = '{$template}', stylesheet = '{$stylesheet}', images = '{$images}', publicuse = '{$use}', smileyfolder = '{$sfolder}', smileypath = '{$spath}',name = '{$name}' WHERE id = '{$id}' LIMIT 1");
+	$db->query("UPDATE {$db->pre}designs SET template = '{$template}', stylesheet = '{$stylesheet}', images = '{$images}', publicuse = '{$use}', name = '{$name}' WHERE id = '{$id}' LIMIT 1");
 
 	ok('admin.php?action=designs&job=design&id='.$id, 'Changes were successfully changed'.$error.'.');	
 }
@@ -192,26 +182,119 @@ elseif ($job == 'design_delete') {
 	$scache = new scache('load-designs');
 	$scache->deletedata();
 
-	$idir = 'images/'.$info['images'];
-	rmdirr($idir);
-	$sdir = 'designs/'.$info['stylesheet'];
-	rmdirr($sdir);
-	$tdir = 'templates/'.$info['template'];
-	rmdirr($tdir);
-	@clearstatcache();
+// Do NOT removes data. That "feature" is terrible on account of loosing data!
 	
 	echo head();
 	if (file_exists($tdir) || is_dir($tdir) || file_exists($sdir) || is_dir($sdir) || file_exists($idir) || is_dir($idir)) {
-		error('admin.php?action=designs&amp;job=design', 'Design konne nicht gelöscht werden.');
+		error('admin.php?action=designs&job=design', 'Design konne nicht gelöscht werden.');
 	}
 	else {
-		ok('admin.php?action=designs&amp;job=design', 'Design erfolgreich gelöscht.');
+		ok('admin.php?action=designs&job=design', 'Design erfolgreich gelöscht.');
 	}
 }
 elseif ($job == 'design_add') {
+	$id = $gpc->get('id', int);
+	
+	$dir = "templates/";
+	$templates = array();
+	$d = dir($dir);
+	while (false !== ($entry = $d->read())) {
+		if (is_dir($dir.$entry) && preg_match('/^\d{1,}$/', $entry) && $entry != '.' && $entry != '..') {
+			$templates[] = $entry;
+		}
+	}
+	$d->close();
+
+	$dir = "images/";
+	$images = array();
+	$d = dir($dir);
+	while (false !== ($entry = $d->read())) {
+		if (is_dir($dir.$entry) && preg_match('/^\d{1,}$/', $entry) && $entry != '.' && $entry != '..') {
+			$images[] = $entry;
+		}
+	}
+	$d->close();
+	
+	$dir = "designs/";
+	$stylesheet = array();
+	$d = dir($dir);
+	while (false !== ($entry = $d->read())) {
+		if (is_dir($dir.$entry) && preg_match('/^\d{1,}$/', $entry) && $entry != '.' && $entry != '..') {
+			$stylesheet[] = $entry;
+		}
+	}
+	$d->close();
+
 	echo head();
 	?>
 <form name="form2" method="post" enctype="multipart/form-data" action="admin.php?action=designs&job=design_add2">
+ <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
+  <tr> 
+   <td class="obox" colspan="6">Design ändern</td>
+  </tr>
+  <tr>
+   <td class="mbox" width="40%">Name für das Design:</td>
+   <td class="mbox" width="60%"><input type="text" name="name" size="60" /></td>
+  </tr>
+  <tr>
+   <td class="mbox" width="40%">Template-Verzeichnis:</td>
+   <td class="mbox" width="60%">
+   <?php foreach ($templates as $dir) { ?>
+   <input type="radio" name="template" value="<?php echo $dir; ?>" /> <a href="admin.php?action=designs&job=templates_browse&id=<?php echo $dir; ?>" target="_blank"><?php echo $dir; ?></a><br />
+   <?php } ?>
+   </td>
+  </tr>
+  <tr>
+   <td class="mbox" width="40%">Stylesheet-Verzeichnis:</td>
+   <td class="mbox" width="60%">
+   <?php foreach ($stylesheet as $dir) { ?>
+   <input type="radio" name="stylesheet" value="<?php echo $dir; ?>" /> <a href="admin.php?action=explorer&path=<?php echo urlencode('./designs/'.$dir.'/'); ?>" target="_blank"><?php echo $dir; ?></a><br />
+   <?php } ?>
+   </td>
+  </tr>
+  <tr>
+   <td class="mbox" width="40%">Images-Verzeichnis:</td>
+   <td class="mbox" width="60%">
+   <?php foreach ($images as $dir) { ?>
+   <input type="radio" name="images" value="<?php echo $dir; ?>" /> <a href="admin.php?action=explorer&path=<?php echo urlencode('./images/'.$dir.'/'); ?>" target="_blank"><?php echo $dir; ?></a><br />
+   <?php } ?>
+   </td>
+  </tr>
+  <tr>
+   <td class="mbox" width="40%">Published:</td>
+   <td class="mbox" width="60%"><input type="checkbox" name="publicuse" value="1" /></td>
+  </tr>
+  <tr>
+   <td class="ubox" colspan="2" align="center"><input type="submit" value="Save" /></td>
+  </tr>
+ </table>
+</form>
+	<?php
+	echo foot();
+}
+elseif ($job == 'design_add2') {
+	echo head();
+
+	$template = $gpc->get('template', int);
+	$stylesheet = $gpc->get('stylesheet', int);
+	$images = $gpc->get('images', int);
+	$use = $gpc->get('publicuse', int);
+	$name = $gpc->get('name', str);
+	
+	if (empty($name)) {
+		$name = 'Design '.$id;
+	}
+	
+	$scache = new scache('load-designs');
+	$scache->deletedata();
+	$db->query("INSERT INTO {$db->pre}designs SET template = '{$template}', stylesheet = '{$stylesheet}', images = '{$images}', publicuse = '{$use}', name = '{$name}'", __LINE__, __FILE__);
+
+	ok('admin.php?action=designs&job=design', 'Design was successfully added');	
+}
+elseif ($job == 'design_import') {
+	echo head();
+	?>
+<form name="form2" method="post" enctype="multipart/form-data" action="admin.php?action=designs&job=design_import2">
  <table class="border" cellpadding="4" cellspacing="0" border="0">
   <tr><td class="obox" colspan="2">Import new Design</td></tr>
   <tr><td class="mbox"><em>Entweder</em> Datei hochladen:<br /><span class="stext">Erlaubte Dateitypen: .zip - Maximale Dateigröße: <?php echo formatFilesize(ini_maxupload()); ?></span></td>
@@ -226,7 +309,7 @@ elseif ($job == 'design_add') {
 	<?php
 	echo foot();
 }
-elseif ($job == 'design_add2') {
+elseif ($job == 'design_import2') {
 
 	$dir = $gpc->get('dir', int);
 	$server = $gpc->get('server', none);
@@ -271,7 +354,7 @@ elseif ($job == 'design_add2') {
 	}
 	echo head();
 	if (count($inserterrors) > 0) {
-		error('admin.php?action=designs&job=design_add', $inserterrors);
+		error('admin.php?action=designs&job=design_import', $inserterrors);
 	}
 	$tempdir = 'temp/'.md5(microtime()).'/';
 	$filesystem->mkdir($tempdir, 0777);
@@ -280,14 +363,14 @@ elseif ($job == 'design_add2') {
 	$failure = $archive->extract($tempdir);
 	if ($failure < 1) {
 		rmdirr($tempdir);
-		error('admin.php?action=designs&job=design_add', 'ZIP-Archiv konnte nicht gelesen werden order ist leer.');
+		error('admin.php?action=designs&job=design_import', 'ZIP-Archiv konnte nicht gelesen werden order ist leer.');
 	}
 	else {
 		$tplid = 1;
 		while(is_dir('templates/'.$tplid)) {
 			$tplid++;
 			if ($tplid > 10000) {
-				error('admin.php?action=designs&job=design_add', 'Execution stopped: Buffer overflow (Templates)');
+				error('admin.php?action=designs&job=design_import', 'Execution stopped: Buffer overflow (Templates)');
 			}
 		}
 		$tpldir = 'templates/'.$tplid;
@@ -295,7 +378,7 @@ elseif ($job == 'design_add2') {
 		while(is_dir('designs/'.$cssid)) {
 			$cssid++;
 			if ($cssid > 10000) {
-				error('admin.php?action=designs&job=design_add', 'Execution stopped: Buffer overflow (Stylesheets)');
+				error('admin.php?action=designs&job=design_import', 'Execution stopped: Buffer overflow (Stylesheets)');
 			}
 		}
 		$cssdir = 'designs/'.$cssid;
@@ -303,7 +386,7 @@ elseif ($job == 'design_add2') {
 		while(is_dir('images/'.$imgid)) {
 			$imgid++;
 			if ($imgid > 10000) {
-				error('admin.php?action=designs&job=design_add', 'Execution stopped: Buffer overflow (Images)');
+				error('admin.php?action=designs&job=design_import', 'Execution stopped: Buffer overflow (Images)');
 			}
 		}
 		$imgdir = 'images/'.$imgid;
@@ -316,7 +399,7 @@ elseif ($job == 'design_add2') {
 		$row = $db->fetch_assoc($result);
 		$ini = $myini->read($tempdir.'design.ini');
 		
-		$db->query("INSERT INTO `{$db->pre}designs` (`template` , `stylesheet` , `images` , `smileyfolder` , `smileypath` , `name`) VALUES ('{$tplid}', '{$cssid}', '{$imgid}', '{$row['smileyfolder']}', '{$row['smileypath']}', '{$ini['name']}')");
+		$db->query("INSERT INTO `{$db->pre}designs` (`template` , `stylesheet` , `images` , `name`) VALUES ('{$tplid}', '{$cssid}', '{$imgid}', '{$ini['name']}')");
 		
 		rmdirr($tempdir);
 	}

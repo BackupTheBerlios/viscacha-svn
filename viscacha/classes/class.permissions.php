@@ -361,7 +361,14 @@ function logged () {
 		}
 	}
 
-	$cache = cache_loaddesign();
+	$admin = $gpc->get('admin', str);
+	if ($admin != $config['cryptkey']) {
+		$fresh = false;
+	}
+	else {
+		$fresh = true;
+	}
+	$cache = cache_loaddesign($fresh);
 	$q_tpl = $gpc->get('design', int);
 	if (isset($my->template) == false || isset($cache[$my->template]) == false) {
 		$my->template = $config['templatedir'];
@@ -370,15 +377,14 @@ function logged () {
 		$my->template = $my->settings['q_tpl'];
 	}
 	if (isset($cache[$q_tpl])) {
-		//if ($gpc->get('admin', int) != 1) {
+		if ($admin != 1) {
 			$my->settings['q_tpl'] = $q_tpl;
-		//}
+		}
 		$my->template = $q_tpl;
 	}
 	$my->templateid = $cache[$my->template]['template'];
 	$my->imagesid = $cache[$my->template]['images'];
 	$my->cssid = $cache[$my->template]['stylesheet'];
-	$my->smileyfolder = $cache[$my->template]['smileyfolder'];
 
 	$cache2 = cache_loadlanguage();
 	$q_lng = $gpc->get('lang', int);
@@ -595,7 +601,6 @@ function sid_login($remember = 1) {
 		$my->templateid = $cache[$my->template]['template'];
 		$my->imagesid = $cache[$my->template]['images'];
 		$my->cssid = $cache[$my->template]['stylesheet'];
-		$my->smileyfolder = $cache[$my->template]['smileyfolder'];
 
 		$cache2 = cache_loadlanguage();
 		$q_lng = $gpc->get('lang', int);

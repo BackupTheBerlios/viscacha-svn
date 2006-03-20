@@ -192,16 +192,16 @@ class DB {
 		}
 	}
 	function open($host="",$user="",$pwd="",$dbname="")  {
-		if($host!="") {
+		if(!empty($host)) {
 			$this->host=$host;
 		}
-	 	if($user!="") {
+	 	if(!empty($user)) {
 	    	$this->user=$user;
 	    }
-	 	if($pwd!="") {
+	 	if(!empty($pwd)) {
 	    	$this->pwd=$pwd;
 	    }
-	 	if($dbname!="") {
+	 	if(!empty($dbname)) {
 	    	$this->database=$dbname;
 	    }
 		$this->connect();
@@ -212,10 +212,10 @@ class DB {
 		return mysql_affected_rows($this->conn);
 	}
 	function free_result($result = '') {
-		if ($result == '') {
+		if (empty($result)) {
 	    	$result = $this->result;
 	    }
-	    return (@mysql_free_result($result));
+	    return @mysql_free_result($result);
 	}
 	function close() {
 		if (!empty($this->result)) {
@@ -237,7 +237,7 @@ class DB {
 		}
 	}
 	function select_db($dbname="") {
-		if($dbname=="") {
+		if(empty($dbname)) {
 			$dbname=$this->database;
 		}
 		return mysql_select_db($dbname,$this->conn);
@@ -308,7 +308,7 @@ class DB {
 	    return $this->result;
 	}
 	function num_rows($result='') {
-		if ($result == '') {
+		if (empty($result)) {
 	    	$result = $this->result;
 	    }
 	    return (@mysql_num_rows($result));
@@ -317,19 +317,19 @@ class DB {
 	    return (@mysql_insert_id($this->conn));
 	}
 	function fetch_object($result='') {
-		if ($result == '') {
+		if (empty($result)) {
 	    	$result = $this->result;
 	    }
 	    return (@mysql_fetch_object($result));
 	}
 	function fetch_array($result='',$prefix=DB_BOTH) {
-		if ($result == '') {
+		if (empty($result)) {
 	    	$result = $this->result;
 	    }
 	    return (@mysql_fetch_array($result, $prefix));
 	}
 	function fetch_assoc($result='') {
-		if ($result == '') {
+		if (empty($result)) {
 	    	$result = $this->result;
 	    }
 	    return (@mysql_fetch_assoc($result));
@@ -339,7 +339,7 @@ class DB {
 		return $func($value);
 	}
 	function list_tables($result='') {
-		if ($result == '') {
+		if (empty($result)) {
 			$result = $this->database;
 		}
 		$result = $this->query('SHOW TABLES FROM '.$result,__LINE__,__FILE__);
@@ -350,37 +350,37 @@ class DB {
 		return $tables;
 	}
 	function num_fields($result='') {
-		if ($result == '') {
+		if (empty($result)) {
 	    	$result = $this->result;
 	    }
 		return mysql_num_fields($result);
 	}
 	function field_flags($result='') {
-		if ($result == '') {
+		if (empty($result)) {
 	    	$result = $this->result;
 	    }
 		return mysql_field_flags($result, $k);
 	}
 	function field_len($result='',$k) {
-		if ($result == '') {
+		if (empty($result)) {
 	    	$result = $this->result;
 	    }
 		return mysql_field_len($result, $k);
 	}
 	function field_type($result='',$k) {
-		if ($result == '') {
+		if (empty($result)) {
 	    	$result = $this->result;
 	    }
 		return mysql_field_type($result, $k);
 	}
 	function field_name($result='',$k) {
-		if ($result == '') {
+		if (empty($result)) {
 	    	$result = $this->result;
 	    }
 		return mysql_field_name($result, $k);
 	}
 	function field_table($result='',$k) {
-		if ($result == '') {
+		if (empty($result)) {
 	    	$result = $this->result;
 	    }
 		return mysql_field_table($result, $k);

@@ -8,7 +8,7 @@
 	<input type="password" name="pw" size="20" /><br />
 	<input type="checkbox" name="remember" value="1" checked="checked" /> <?php echo $lang->phrase('login_rememberme'); ?><br />
 	<input type="submit" name="Submit" value="<?php echo $lang->phrase('mymenu_send'); ?>" />
-	<input type="hidden" name="location" value="<?php echo $request_uri; ?>" />
+	<input type="hidden" name="redirect" value="<?php echo $request_uri; ?>" />
 </p>
 	<ul class="nav">
 	<li><a href="log.php?action=pwremind<?php echo SID2URL_x; ?>"><?php echo $lang->phrase('login_lost_password'); ?></a></li>

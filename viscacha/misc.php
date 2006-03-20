@@ -83,7 +83,7 @@ elseif ($_GET['action'] == "wwo") {
 
 	// Foren cachen
 	$cat_cache =  cache_cat_bid();
-	// Wraps cachen
+	// Documents cachen
 	$wrap_cache = cache_wraps();
 	// Mitglieder
 	$memberdata = cache_memberdata();
@@ -144,8 +144,8 @@ elseif ($_GET['action'] == "wwo") {
 			break;
 		case 'docs':
 			$id = $row->wiw_id;
-			if (isset($wrap_cache[$id]['title'])) {
-				$title = $wrap_cache[$id]['title'];
+			if (isset($wrap_cache[$id])) {
+				$title = $wrap_cache[$id];
 			}
 			else {
 				$title = $lang->phrase('wwo_fallback');

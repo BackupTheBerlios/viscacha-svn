@@ -877,9 +877,13 @@ elseif ($job == 'delete') {
 		$delete = $gpc->get('delete', arr_int);
 		// Step 9: Set uploads from member to guests-group
 		$db->query("UPDATE {$db->pre}uploads SET mid = '0' WHERE mid IN ({$did})");
-		// Step 10: Delete user himself
+		// Step 10: Set post ratings from member to guests-group I
+		$db->query("UPDATE {$db->pre}postratings SET mid = '0' WHERE mid IN ({$did})");
+		// Step 11: Set post ratings from member to guests-group II
+		$db->query("UPDATE {$db->pre}postratings SET aid = '0' WHERE aid IN ({$did})");
+		// Step 12: Delete user himself
 		$db->query("DELETE FROM {$db->pre}user WHERE id IN ({$did})");
-		// Step 10: Delete user's custom profile fields
+		// Step 13: Delete user's custom profile fields
 		$db->query("DELETE FROM {$db->pre}userfields WHERE ufid IN ({$did})");
 		ok('javascript:history.back(-1);', $db->affected_rows().' members deleted');
 	}
@@ -1567,12 +1571,147 @@ elseif ($job == 'confirm') {
 		$confirm = '11';
 	}
 	
-	$db->query('UPDATE '.$db->pre.'user SET confirm = "'.$confirm.'" WHERE id = "'.$row['id'].'" LIMIT 1');
+	$db->query('UPDATE '.$db->pre.'user SET confirm = "'.$confirm.'" WHERE id = "'.$row['id'].'" LIMIT 1', __LINE__, __FILE__);
 	
 	// Send Mail
 	$content = $lang->get_mail('admin_confirmed');
 	xmail(array('0' => array('mail' => $row['mail'])), array(), $content['title'], $content['comment']);
 	
 	ok('admin.php?action=members&job=activate', 'Mitglied wurde freigeschaltet!');
+}
+if ($job == 'ips') {
+	$username = $gpc->get('username', str);
+	$ipaddress = $gpc->get('ipaddress', str);
+	$userid = $gpc->get('id', int);
+
+	if (!empty($username)) {
+		$result = $db->query("SELECT id, name FROM {$db->pre}user WHERE name = '{$username}' LIMIT 1", __LINE__, __FILE__);
+		$userinfo = $db->fetch_assoc($result);
+		$userid = $userinfo['id'];
+		if (!is_id($userid)) {
+			error('admin.php?action=members&job=ip', 'Invalid user specified!');
+		}
+	}
+
+	echo head();
+	if (!empty($ipaddress) || $userid > 0) {
+		if (!empty($ipaddress)) {
+			$hostname = @gethostbyaddr($ipaddress);
+			if (!$hostname OR $hostname == $ipaddress) {
+				$hostname = 'Could not resolve Hostname';
+			}
+			$users = $db->query("SELECT DISTINCT u.id, u.name, r.ip FROM {$db->pre}replies AS r, {$db->pre}user AS u  WHERE u.id = r.name AND r.ip LIKE '{$ipaddress}%' AND r.ip != '' ORDER BY u.name", __LINE__, __FILE__);
+			?>
+			<table align="center" class="border">
+			<tr>
+				<td class="obox">IP Address search for IP Address &quot;<?php echo $ipaddress; ?>&quot;</td>
+			</tr>
+			<tr>
+				<td class="ubox">
+				<a href="usertools.php?do=iphost&amp;ip=<?php echo $ipaddress; ?>"><?php echo $ipaddress; ?></a>: <b><?php echo $hostname; ?></b>
+				</td>
+			</tr>
+			<tr>
+				<td class="mbox">
+				<ul>
+				<?php while ($user = $db->fetch_assoc($users)) { ?>
+					<li>
+					<a href="admin.php?action=members&amp;job=edit&amp;id=<?php echo $user['id']; ?>"><b><?php echo $user['name']; ?></b></a> &nbsp;&nbsp;&nbsp;
+					<a href="admin.php?action=members&amp;job=iphost&amp;ip=<?php echo $user['ip']; ?>" title="Resolve Address"><?php echo $user['ip']; ?></a> &nbsp;&nbsp;&nbsp; 
+					[<a href="admin.php?action=members&amp;job=ips&amp;id=<?php echo $user['id']; ?>&amp;username=<?php echo urlencode($user['name']); ?>">View other IP Addresses for this User</a>]
+					</li>
+					<?php
+				}
+				if ($db->num_rows() == 0) {
+					?>
+					<li>No matches found!</li>
+					<?php
+				}
+				?>
+				</ul>
+				</td>
+			</tr>
+			</table>
+			<br />
+		<?php } if ($userid > 0) { ?>
+			<table align="center" class="border">
+			<tr>
+				<td class="obox">Search IP Addresses for Username &quot;<?php echo $userinfo['name']; ?>&quot;</td>
+			</tr>
+			<tr>
+				<td class="mbox">
+				<ul>
+				<?php
+				$ips = $db->query("SELECT DISTINCT ip FROM {$db->pre}replies WHERE name = '{$userid}' AND ip != '{$ipaddress}' AND ip != '' ORDER BY ip", __LINE__, __FILE__);
+				while ($ip = $db->fetch_assoc($ips)) {
+					?>
+					<li>
+					<a href="admin.php?action=members&job=iphost&amp;ip=<?php echo $ip['ip']; ?>" title="Resolve Address"><?php echo $ip['ip']; ?></a> &nbsp;&nbsp;&nbsp;
+					[<a href="admin.php?action=members&amp;job=ips&amp;ipaddress=<?php echo $ip['ip']; ?>">Find more Users with this IP Address</a>]
+					</li>
+					<?php
+				}
+				if ($db->num_rows() == 0) {
+					?>
+					<li>No matches found!</li>
+					<?php
+				}
+				?>
+				</ul>
+				</td>
+			</tr>
+			</table>
+			<br />
+			<?php
+		}
+	}
+	?>
+	<form action="admin.php?action=members&amp;job=ips" method="post">
+	<table align="center" class="border">
+	<tr>
+		<td class="obox" colspan="2">Search IP Addresses</td>
+	</tr>
+	<tr>
+		<td class="mbox">Find Users by IP Address<br /><span class="stext">You may enter a partial IP Address</span></td>
+		<td class="mbox"><input type="text" name="ipaddress" value="<?php echo $ipaddress; ?>" size="35" /></td>
+	</tr>
+	<tr>
+		<td class="mbox">Find IP Addresses matching a Username</td>
+		<td class="mbox"><input type="text" name="username" value="<?php echo $username; ?>" size="35" /></td>
+	</tr>
+	<tr>
+		<td class="ubox" colspan="2" align="center"><input type="submit" value="Find" /></td>
+	</tr>
+	</table>
+	</form>
+	<?php
+	echo foot();
+}
+elseif ($job == 'iphost') {
+	$ip = $gpc->get('ip', str);
+	$resolvedip = @gethostbyaddr($ip);
+	if ($resolvedip == $ip) {
+		$host = '<i>Not Available</i>';
+	}
+	else {
+		$host = $resolvedip;
+	}
+	echo head();
+	?>
+	<table align="center" class="border">
+	<tr>
+		<td class="obox" colspan="2">Resolve IP Address</td>
+	</tr>
+	<tr>
+		<td class="mbox">IP Address</td>
+		<td class="mbox"><a href="http://www.ripe.net/perl/whois?form_type=simple&amp;do_search=Search&amp;searchtext=<?php echo $ip; ?>" target="_blank"><?php echo $ip; ?></a></td>
+	</tr>
+	<tr>
+		<td class="mbox">Host Name</td>
+		<td class="mbox"><?php echo $host; ?></td>
+	</tr>
+	</table>
+	<?php
+	echo foot();
 }
 ?>

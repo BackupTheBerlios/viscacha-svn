@@ -31,7 +31,9 @@
 <?php } ?>
 </div></div>
 <br class="minibr" />
-<?php echo $inner['vote_result'].$inner['index_bit']; ?>
+<?php echo $inner['vote_result']; ?>
+<form action="managetopic.php?id=<?php echo $info['id'].SID2URL_x; ?>" method="post">
+<?php echo $inner['index_bit']; ?>
 <div class="border">
 <div class="bfoot topfooter">
 <span class="right">
@@ -66,30 +68,40 @@
 	 </ul>
 	</div>
 </noscript>
-<?php if ($my->p['admin'] == 1 || $my->p['gmod'] == 1 || $my->mp[0] == 1) { ?>
+<?php if ($my->mp[0] == 1) { ?>
 <br />
 <div class="border">
 <h3><?php echo $lang->phrase('admin_options'); ?></h3>
 <div class="bbody">
 <?php  if ($info['status'] != 2) { if ($info['status'] == 1) { ?>
-<a href="managetopic.php?action=open&amp;id=<?php echo $_GET['id'].SID2URL_x; ?>"><?php echo $lang->phrase('admin_topics_open'); ?></a> | 
+<a href="managetopic.php?action=open&amp;id=<?php echo $info['id'].SID2URL_x; ?>"><?php echo $lang->phrase('admin_topics_open'); ?></a> | 
 <?php } else { ?>
-<a href="managetopic.php?action=close&amp;id=<?php echo $_GET['id'].SID2URL_x; ?>"><?php echo $lang->phrase('admin_topics_close'); ?></a> | 
+<a href="managetopic.php?action=close&amp;id=<?php echo $info['id'].SID2URL_x; ?>"><?php echo $lang->phrase('admin_topics_close'); ?></a> | 
 <?php } if ($info['sticky'] == '1') { ?>
-<a href="managetopic.php?action=unpin&amp;id=<?php echo $_GET['id'].SID2URL_x; ?>"><?php echo $lang->phrase('admin_topics_unpin'); ?></a> | 
+<a href="managetopic.php?action=unpin&amp;id=<?php echo $info['id'].SID2URL_x; ?>"><?php echo $lang->phrase('admin_topics_unpin'); ?></a> | 
 <?php } else { ?>
-<a href="managetopic.php?action=pin&amp;id=<?php echo $_GET['id'].SID2URL_x; ?>"><?php echo $lang->phrase('admin_topics_pin'); ?></a> | 
+<a href="managetopic.php?action=pin&amp;id=<?php echo $info['id'].SID2URL_x; ?>"><?php echo $lang->phrase('admin_topics_pin'); ?></a> | 
 <?php }} ?>
-<a href="managetopic.php?action=delete&amp;id=<?php echo $_GET['id'].SID2URL_x; ?>"><?php echo $lang->phrase('admin_topics_delete'); ?></a> | 
-<a href="managetopic.php?action=move&amp;id=<?php echo $_GET['id'].SID2URL_x; ?>"><?php echo $lang->phrase('admin_topics_move'); ?></a> | 
-<a href="managetopic.php?action=status&amp;id=<?php echo $_GET['id'].SID2URL_x; ?>"><?php echo $lang->phrase('admin_topics_status'); ?></a> | 
-<a href="managetopic.php?action=stat&amp;id=<?php echo $_GET['id'].SID2URL_x; ?>"><?php echo $lang->phrase('admin_topic_stats'); ?></a> | 
+<a href="managetopic.php?action=delete&amp;id=<?php echo $info['id'].SID2URL_x; ?>"><?php echo $lang->phrase('admin_topics_delete'); ?></a> | 
+<a href="managetopic.php?action=move&amp;id=<?php echo $info['id'].SID2URL_x; ?>"><?php echo $lang->phrase('admin_topics_move'); ?></a> | 
+<a href="managetopic.php?action=status&amp;id=<?php echo $info['id'].SID2URL_x; ?>"><?php echo $lang->phrase('admin_topics_status'); ?></a> | 
+<a href="managetopic.php?action=stat&amp;id=<?php echo $info['id'].SID2URL_x; ?>"><?php echo $lang->phrase('admin_topic_stats'); ?></a> | 
 <?php if (empty($info['vquestion'])) { ?>
-<a href="newtopic.php?action=startvote&amp;id=<?php echo $info['board']; ?>&amp;topic_id=<?php echo $_GET['id'].SID2URL_x; ?>"><?php echo $lang->phrase('admin_topic_vote'); ?></a>
+<a href="newtopic.php?action=startvote&amp;id=<?php echo $info['board']; ?>&amp;topic_id=<?php echo $info['id'].SID2URL_x; ?>"><?php echo $lang->phrase('admin_topic_vote'); ?></a>
 <?php } else { ?>
-<a href="managetopic.php?action=vote_export&amp;id=<?php echo $_GET['id'].SID2URL_x; ?>"><?php echo $lang->phrase('admin_topic_vote_export'); ?></a> | 
-<a href="managetopic.php?action=vote_edit&amp;id=<?php echo $_GET['id'].SID2URL_x; ?>"><?php echo $lang->phrase('admin_topic_vote_edit'); ?></a>
+<a href="managetopic.php?action=vote_export&amp;id=<?php echo $info['id'].SID2URL_x; ?>"><?php echo $lang->phrase('admin_topic_vote_export'); ?></a> | 
+<a href="managetopic.php?action=vote_edit&amp;id=<?php echo $info['id'].SID2URL_x; ?>"><?php echo $lang->phrase('admin_topic_vote_edit'); ?></a> | 
+<a href="managetopic.php?action=vote_delete&amp;id=<?php echo $info['id'].SID2URL_x; ?>"><?php echo $lang->phrase('admin_topic_vote_delete'); ?></a>
+<?php } if ($info['posts'] > 0) { ?>
+<hr />
+<?php echo $lang->phrase('admin_marked_posts'); ?>&nbsp;
+<select name="action">
+	<option value="pdelete"><?php echo $lang->phrase('admin_topics_delete'); ?></option>
+	<option value="pmerge"><?php echo $lang->phrase('admin_posts_merge'); ?></option>
+</select>&nbsp;
+<input type="submit" value="<?php echo $lang->phrase('submit_form'); ?>" />
 <?php } ?>
 </div>
 </div>
 <?php } ?>
+</form>

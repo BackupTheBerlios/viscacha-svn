@@ -40,9 +40,9 @@ $my->p = $slog->Permissions();
 
 if ($_GET['action'] == "login2") {
 	$remember = $gpc->get('remember', int, 1);
-    $loc = strip_tags($gpc->get('location', none, 'index.php'.SID2URL_1));
+    $loc = strip_tags($gpc->get('redirect', none, 'index.php'.SID2URL_1));
     $file = basename($loc);
-    if ($file = 'log.php') {
+    if ($file == 'log.php') {
     	$loc = 'index.php'.SID2URL_1;
     }
 
@@ -51,7 +51,7 @@ if ($_GET['action'] == "login2") {
     }
 
     if (!$slog->sid_login($remember)) {
-		error($lang->phrase('log_wrong_data'), "log.php?action=login&amp;location=".urlencode($loc).SID2URL_x);
+		error($lang->phrase('log_wrong_data'), "log.php?action=login&amp;redirect=".urlencode($loc).SID2URL_x);
     }
     else {
         ok($lang->phrase('log_msglogin'), $loc);
@@ -64,9 +64,9 @@ elseif ($_GET['action'] == "logout") {
     }
     else {
         $slog->sid_logout();
-        $loc = strip_tags($gpc->get('location', none, 'index.php'.SID2URL_1));
+        $loc = strip_tags($gpc->get('redirect', none, 'index.php'.SID2URL_1));
 	    $file = basename($loc);
-	    if ($file = 'log.php') {
+	    if ($file == 'log.php') {
 	    	$loc = 'index.php'.SID2URL_1;
 	    }
         ok($lang->phrase('log_msglogout'), $loc);
@@ -115,7 +115,7 @@ else {
     echo $tpl->parse("header");
     echo $tpl->parse("menu");
     
-    $loc = htmlspecialchars($gpc->get('location', none));
+    $loc = htmlspecialchars($gpc->get('redirect', none));
     if (empty($loc)) {
         if (!empty($_SERVER['HTTP_REFERER'])) {
             $url = parse_url($_SERVER['HTTP_REFERER']);
