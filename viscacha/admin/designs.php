@@ -230,7 +230,7 @@ elseif ($job == 'design_add') {
 <form name="form2" method="post" enctype="multipart/form-data" action="admin.php?action=designs&job=design_add2">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr> 
-   <td class="obox" colspan="6">Design ändern</td>
+   <td class="obox" colspan="6">Design hinzufügen</td>
   </tr>
   <tr>
    <td class="mbox" width="40%">Name für das Design:</td>
