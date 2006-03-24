@@ -218,9 +218,9 @@ class DB {
 	    return @mysql_free_result($result);
 	}
 	function close() {
-		if (!empty($this->result)) {
-	    	$this->free_result();
-	    }
+//		if (!empty($this->result)) {
+//	    	$this->free_result();
+//	    }
 		return mysql_close($this->conn);
 	}
 	function connect($die = true) {

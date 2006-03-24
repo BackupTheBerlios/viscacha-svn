@@ -4,6 +4,35 @@ if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "designs.ph
 require_once("admin/lib/class.servernavigator.php");
 $snav = new ServerNavigator();
 
+function export_template_list ($path, $d = 0) {
+   	if (substr($path , strlen($path)-1) != '/') {
+		$path .= '/';
+	}     
+   	$dirlist = array ();
+   	if ($handle = opendir($path)) {
+       	while (false !== ($file = readdir($handle))) {
+           	if ($file != '.' && $file != '..') {
+               	$file = $path . $file ;
+               	if (!is_dir($file)) {
+					$extension = get_extension($path);
+					if (stripos($extension, 'bak') === false) {
+						$dirlist[] = $file;;
+					}
+				}
+               	elseif ($d >= 0) {
+                   	$result = export_template_list ( $file . '/' , $d + 1 );
+                   	$dirlist = array_merge ( $dirlist , $result );
+               	}
+       		}
+       	}
+       	closedir($handle);
+   	}
+   	if ($d == 0) {
+		natcasesort($dirlist);
+	}
+   	return ($dirlist);
+}
+
 if ($job == 'design') {
 	echo head();
 	$result = $db->query('SELECT * FROM '.$db->pre.'designs ORDER BY name');
@@ -185,12 +214,7 @@ elseif ($job == 'design_delete') {
 // Do NOT removes data. That "feature" is terrible on account of loosing data!
 	
 	echo head();
-	if (file_exists($tdir) || is_dir($tdir) || file_exists($sdir) || is_dir($sdir) || file_exists($idir) || is_dir($idir)) {
-		error('admin.php?action=designs&job=design', 'Design konne nicht gelöscht werden.');
-	}
-	else {
-		ok('admin.php?action=designs&job=design', 'Design erfolgreich gelöscht.');
-	}
+	ok('admin.php?action=designs&job=design', 'Design erfolgreich gelöscht.');
 }
 elseif ($job == 'design_add') {
 	$id = $gpc->get('id', int);
@@ -366,38 +390,60 @@ elseif ($job == 'design_import2') {
 		error('admin.php?action=designs&job=design_import', 'ZIP-Archiv konnte nicht gelesen werden order ist leer.');
 	}
 	else {
-		$tplid = 1;
-		while(is_dir('templates/'.$tplid)) {
-			$tplid++;
-			if ($tplid > 10000) {
-				error('admin.php?action=designs&job=design_import', 'Execution stopped: Buffer overflow (Templates)');
-			}
-		}
-		$tpldir = 'templates/'.$tplid;
-		$cssid = 1;
-		while(is_dir('designs/'.$cssid)) {
-			$cssid++;
-			if ($cssid > 10000) {
-				error('admin.php?action=designs&job=design_import', 'Execution stopped: Buffer overflow (Stylesheets)');
-			}
-		}
-		$cssdir = 'designs/'.$cssid;
-		$imgid = 1;
-		while(is_dir('images/'.$imgid)) {
-			$imgid++;
-			if ($imgid > 10000) {
-				error('admin.php?action=designs&job=design_import', 'Execution stopped: Buffer overflow (Images)');
-			}
-		}
-		$imgdir = 'images/'.$imgid;
-		
-		copyr($tempdir.'templates', $tpldir);
-		copyr($tempdir.'designs', $cssdir);
-		copyr($tempdir.'images', $imgdir);
+		$ini = $myini->read($tempdir.'design.ini');
 		
 		$result = $db->query("SELECT * FROM `{$db->pre}designs` WHERE id = '{$config['templatedir']}' LIMIT 1");
 		$row = $db->fetch_assoc($result);
-		$ini = $myini->read($tempdir.'design.ini');
+		
+		if (!empty($ini['template'])) {
+			$tplid = 1;
+			while(is_dir('templates/'.$tplid)) {
+				$tplid++;
+				if ($tplid > 10000) {
+					error('admin.php?action=designs&job=design_import', 'Execution stopped: Buffer overflow (Templates)');
+				}
+			}
+			$tpldir = 'templates/'.$tplid;
+		}
+		else {
+			$tplid = $row['template'];
+		}
+		if (!empty($ini['stylesheet'])) {
+			$cssid = 1;
+			while(is_dir('designs/'.$cssid)) {
+				$cssid++;
+				if ($cssid > 10000) {
+					error('admin.php?action=designs&job=design_import', 'Execution stopped: Buffer overflow (Stylesheets)');
+				}
+			}
+			$cssdir = 'designs/'.$cssid;
+		}
+		else {
+			$tplid = $row['stylesheet'];
+		}
+		if (!empty($ini['images'])) {
+			$imgid = 1;
+			while(is_dir('images/'.$imgid)) {
+				$imgid++;
+				if ($imgid > 10000) {
+					error('admin.php?action=designs&job=design_import', 'Execution stopped: Buffer overflow (Images)');
+				}
+			}
+			$imgdir = 'images/'.$imgid;
+		}
+		else {
+			$tplid = $row['images'];
+		}
+		
+		if (!empty($ini['template'])) {
+			copyr($tempdir.'templates', $tpldir);
+		}
+		if (!empty($ini['stylesheet'])) {
+			copyr($tempdir.'designs', $cssdir);
+		}
+		if (!empty($ini['images'])) {
+			copyr($tempdir.'images', $imgdir);
+		}
 		
 		$db->query("INSERT INTO `{$db->pre}designs` (`template` , `stylesheet` , `images` , `name`) VALUES ('{$tplid}', '{$cssid}', '{$imgid}', '{$ini['name']}')");
 		
@@ -410,15 +456,64 @@ elseif ($job == 'design_import2') {
 }
 elseif ($job == 'design_export') {
 	$id = $gpc->get('id', int);
-	$result = $db->query("SELECT * FROM {$db->pre}designs WHERE id = '{$id}' LIMIT 1");
+	echo head();
+	?>
+<form name="form2" method="post" action="admin.php?action=designs&job=design_export2&id=<?php echo $id; ?>">
+ <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
+  <tr> 
+   <td class="obox" colspan="6">Design exportieren</td>
+  </tr>
+  <tr>
+   <td class="mbox" width="40%">Templates exportieren:</td>
+   <td class="mbox" width="60%"><input type="checkbox" name="tpl" value="1" checked="checked" /></td>
+  </tr>
+  <tr>
+   <td class="mbox" width="40%">Stylesheets exportieren:</td>
+   <td class="mbox" width="60%"><input type="checkbox" name="css" value="1" checked="checked" /></td>
+  </tr>
+  <tr>
+   <td class="mbox" width="40%">Images exportieren:</td>
+   <td class="mbox" width="60%"><input type="checkbox" name="img" value="1" checked="checked" /></td>
+  </tr>
+  <tr>
+   <td class="ubox" colspan="2" align="center"><input type="submit" value="Export" /></td>
+  </tr>
+ </table>
+</form>
+	<?php
+	echo foot();
+}
+elseif ($job == 'design_export2') {
+	$id = $gpc->get('id', int);
+	$tpl = $gpc->get('tpl', int);
+	$img = $gpc->get('img', int);
+	$css = $gpc->get('css', int);
+	
+	$columns = array('id', 'name');
+	if ($tpl == 1) {
+		$columns[] = 'template';
+	}
+	if ($img == 1) {
+		$columns[] = 'images';
+	}
+	if ($css == 1) {
+		$columns[] = 'stylesheet';
+	}
+	
+	$result = $db->query("SELECT ".implode(',', $columns)." FROM {$db->pre}designs WHERE id = '{$id}' LIMIT 1");
 	$info = $db->fetch_assoc($result);
 	
 	$file = convert2adress($info['name']).'.zip';
-	$dirs = array(
-		"templates/{$info['template']}/",
-		"images/{$info['images']}/",
-		"designs/{$info['stylesheet']}/"
-	);
+	$dirs = array();
+	if ($tpl == 1) {
+		$dirs[] = array('dir' => "templates/{$info['template']}/", 'func' => 'export_template_list');
+	}
+	if ($img == 1) {
+		$dirs[] = array('dir' => "images/{$info['images']}/", 'func' => '');
+	}
+	if ($css == 1) {
+		$dirs[] = array('dir' => "designs/{$info['stylesheet']}/", 'func' => '');
+	}
 	$tempdir = "temp/";
 	$error = false;
 	$settings = $tempdir.'design.ini';
@@ -433,7 +528,13 @@ elseif ($job == 'design_export') {
 	else {
 		foreach ($dirs as $dir) {
 			$archive = new PclZip($tempdir.$file);
-			$v_list = $archive->add($dir, PCLZIP_OPT_REMOVE_PATH, $dir, PCLZIP_OPT_ADD_PATH, extract_dir($dir, false));
+			if (!empty($dir['func']) && function_exists($dir['func'])) {
+				$list = $dir['func']($dir['dir']);
+				$v_list = $archive->add($list, PCLZIP_OPT_REMOVE_PATH, $dir['dir'], PCLZIP_OPT_ADD_PATH, extract_dir($dir['dir'], false));
+			}
+			else {
+				$v_list = $archive->add($dir['dir'], PCLZIP_OPT_REMOVE_PATH, $dir['dir'], PCLZIP_OPT_ADD_PATH, extract_dir($dir['dir'], false));
+			}
 			if ($v_list == 0) {
 				$error = true;
 				break;
@@ -444,7 +545,7 @@ elseif ($job == 'design_export') {
 		echo head();
 		$filesystem->unlink($tempdir.$file);
 		$filesystem->unlink($settings);
-		error('admin.php?action=designs&job=design', $archive->errorInfo(true));
+		error('admin.php?action=designs&job=export&id='.$id, $archive->errorInfo(true));
 	}
 	else {
 		viscacha_header('Content-Type: application/zip');
@@ -602,9 +703,11 @@ elseif ($job == 'templates_export') {
 	$dir = "templates/{$id}/";
 	$tempdir = "temp/";
 	
+	$list = export_template_list($dir);
+	
 	require_once('classes/class.zip.php');
 	$archive = new PclZip($tempdir.$file);
-	$v_list = $archive->create($dir, PCLZIP_OPT_REMOVE_PATH, $dir);
+	$v_list = $archive->create($list, PCLZIP_OPT_REMOVE_PATH, $dir);
 	if ($v_list == 0) {
 		echo head();
 		error('admin.php?action=designs&job=templates', $archive->errorInfo(true));
