@@ -727,10 +727,10 @@ elseif ($job == 'templates_delete') {
 	rmdirr($dir);
 	@clearstatcache();
 	if (file_exists($dir) || is_dir($dir)) {
-		error('admin.php?action=designs&amp;job=templates', 'Verzeichnis konne nicht gelöscht werden.');
+		error('admin.php?action=designs&job=templates', 'Verzeichnis konne nicht gelöscht werden.');
 	}
 	else {
-		ok('admin.php?action=designs&amp;job=templates', 'Verzeichnis erfolgreich gelöscht.');
+		ok('admin.php?action=designs&job=templates', 'Verzeichnis erfolgreich gelöscht.');
 	}
 }
 elseif ($job == 'templates_file_edit') {
@@ -1139,10 +1139,10 @@ elseif ($job == 'css_delete') {
 	rmdirr($dir);
 	@clearstatcache();
 	if (file_exists($dir) || is_dir($dir)) {
-		error('admin.php?action=designs&amp;job=css', 'Verzeichnis konne nicht gelöscht werden.');
+		error('admin.php?action=designs&job=css', 'Verzeichnis konne nicht gelöscht werden.');
 	}
 	else {
-		ok('admin.php?action=designs&amp;job=css', 'Verzeichnis erfolgreich gelöscht.');
+		ok('admin.php?action=designs&job=css', 'Verzeichnis erfolgreich gelöscht.');
 	}
 }
 elseif ($job == 'css_add') {
@@ -1321,10 +1321,10 @@ elseif ($job == 'images_delete') {
 	rmdirr($dir);
 	@clearstatcache();
 	if (file_exists($dir) || is_dir($dir)) {
-		error('admin.php?action=designs&amp;job=images', 'Verzeichnis konne nicht gelöscht werden.');
+		error('admin.php?action=designs&job=images', 'Verzeichnis konne nicht gelöscht werden.');
 	}
 	else {
-		ok('admin.php?action=designs&amp;job=images', 'Verzeichnis erfolgreich gelöscht.');
+		ok('admin.php?action=designs&job=images', 'Verzeichnis erfolgreich gelöscht.');
 	}
 }
 elseif ($job == 'images_add') {

@@ -105,7 +105,7 @@ if (!empty($marksql)) {
 	$info['topics'] = $vlasttopics[0];
 }
 
-$pages = pages($info['topics'], 'forumzahl', 'showforum.php?id='.$board.'sort='.$_GET['sort'].'&amp;');
+$pages = pages($info['topics'], $config['forumzahl'], 'showforum.php?id='.$board.'sort='.$_GET['sort'].'&amp;', $_GET['page']);
 $inner['index_bit'] = '';
 if ($info['topics'] > 0) {
 	$start = $_GET['page']*$config['forumzahl'];
@@ -185,6 +185,14 @@ if ($info['topics'] > 0) {
 				$src = $tpl->img('dir_open2');
 			}
 		}
+		
+		if ($row->posts > $config['topiczahl']) {
+			$topic_pages = pages($row->posts+1, $config['topiczahl'], "showtopic.php?id=".$row->id."&amp;", 0, '_small');
+		}
+		else {
+			$topic_pages = '';
+		}
+		
 		$inner['index_bit'] .= $tpl->parse("showforum/index_bit");
 	}
 }

@@ -338,7 +338,7 @@ if ($my->vlogin && $my->mp[0] == 1) {
 		if ($my->mp[0] == 1 && $my->mp[4] == 0) {
 			errorLogin($lang->phrase('not_allowed'), 'showtopic.php?id='.$info['id'].SID2URL_x);
 		}
-		$ids = $gpc->get('id', arr_int);
+		$ids = $gpc->get('ids', arr_int);
 		if (count($ids) == 0) {
 			error($lang->phrase('no_data_selected'));
 		}

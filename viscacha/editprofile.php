@@ -129,7 +129,7 @@ elseif ($_GET['action'] == "abos") {
 	}
 
     $result = $db->query("
-    SELECT a.id, a.tid, a.type, t.topic, t.prefix, t.last, t.last_name, t.board 
+    SELECT a.id, a.tid, a.type, t.topic, t.prefix, t.last, t.last_name, t.board, t.posts 
     FROM {$db->pre}abos AS a LEFT JOIN {$db->pre}topics AS t ON a.tid=t.id 
     WHERE a.mid = '{$my->id}' {$sqlwhere}
     ORDER BY a.id DESC
@@ -167,11 +167,18 @@ elseif ($_GET['action'] == "abos") {
 
 		$row['last'] = str_date($lang->phrase('dformat1'),times($row['last']));
 
+		if ($row['posts'] > $config['topiczahl']) {
+			$row['topic_pages'] = pages($row['posts']+1, $config['topiczahl'], "showtopic.php?id=".$row['id']."&amp;", 0, '_small');
+		}
+		else {
+			$row['topic_pages'] = '';
+		}
+
 	    $cache[] = $row;
 	}
 
 	$count = count($cache);
-	$pages = pages($count, 'topiczahl', 'editprofile.php?action=abos&amp;type='.$_GET['type'].'&amp;');
+	$pages = pages($count, $config['topiczahl'], 'editprofile.php?action=abos&amp;type='.$_GET['type'].'&amp;', $_GET['page']);
 	$cache = array_chunk($cache, $config['topiczahl']);
 	if (!isset($cache[$p])) {
 		$count = 0;
@@ -555,7 +562,14 @@ elseif ($_GET['action'] == "mylast") {
 		else {
 			$row['pre'] = '';
 		}
+		if ($row['posts'] > $config['topiczahl']) {
+			$row['topic_pages'] = pages($row['posts']+1, $config['topiczahl'], "showtopic.php?id=".$row['id']."&amp;", 0, '_small');
+		}
+		else {
+			$row['topic_pages'] = '';
+		}
 		$row['posts'] = numbers($row['posts']);
+		$mymodules->load('editprofile_mylast_prepare');
 		$cache[] = $row;
     }
     $mymodules->load('editprofile_mylast_top');
@@ -580,7 +594,7 @@ elseif ($_GET['action'] == "addabo") {
 	elseif ($_GET['type'] == 7) {
 		$type = 'w';
 	}
-	elseif ($_GET['type'] == 'f') {
+	elseif ($_GET['type'] == 9) {
 		$type = 'f';
 	}
 	else {

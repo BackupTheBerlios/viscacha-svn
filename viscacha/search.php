@@ -44,8 +44,10 @@ if ($my->p['search'] == 0) {
 
 $breadcrumb->Add($lang->phrase('search'));
 
-// Suchanfragen längerfristig speichern können!
-// Googlify
+// ToDO:
+// * Suchanfragen längerfristig speichern können!
+// * GooglifyMe
+// * Modularer Aufbau!!
 
 if ($_GET['action'] == "search") {
 
@@ -280,7 +282,7 @@ elseif ($_GET['action'] == "result") {
 	$count = count($cache);
 	$pages = array_chunk($cache, $config['forumzahl']);
 
-	$temp = pages($count, 'forumzahl', "search.php?action=result&amp;fid=".$_GET['fid'].SID2URL_x."&amp;");
+	$temp = pages($count, $config['forumzahl'], "search.php?action=result&amp;fid=".$_GET['fid'].SID2URL_x."&amp;", $_GET['page']);
 	
 	$forums = cache_cat_bid();
 	$memberdata = cache_memberdata();
@@ -356,6 +358,13 @@ elseif ($_GET['action'] == "result") {
 		}
 		$qhighlight = urlencode(implode(' ', $data['used']));
 		
+		if ($row->posts > $config['topiczahl']) {
+			$topic_pages = pages($row->posts+1, $config['topiczahl'], "showtopic.php?id=".$row->id."&amp;", 0, '_small');
+		}
+		else {
+			$topic_pages = '';
+		}
+		
 		$mymodules->load('search_result_bit');
 		$inner['index_bit'] .= $tpl->parse("search/result_bit");
 	}
@@ -430,7 +439,7 @@ elseif ($_GET['action'] == "active") {
     	$count = $db->num_rows($result);
     		
     	if ($count > 0) {
-    		$temp = pages($count, 'forumzahl', "search.php?action=active&amp;type=".$_GET['type'].SID2URL_x."&amp;");
+    		$temp = pages($count, $config['forumzahl'], "search.php?action=active&amp;type=".$_GET['type'].SID2URL_x."&amp;", $_GET['page']);
     		
     		$forums = cache_cat_bid();
     		$prefix = cache_prefix();
@@ -494,6 +503,14 @@ elseif ($_GET['action'] == "active") {
     					$src = $tpl->img('dir_open2');
     				}
     			}
+    			
+				if ($row->posts > $config['topiczahl']) {
+					$topic_pages = pages($row->posts+1, $config['topiczahl'], "showtopic.php?id=".$row->id."&amp;", 0, '_small');
+				}
+				else {
+					$topic_pages = '';
+				}
+    			
     			$mymodules->load('search_active_bit');
     			$inner['index_bit'] .= $tpl->parse("search/active_bit");
     		}

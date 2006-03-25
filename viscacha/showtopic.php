@@ -143,7 +143,7 @@ else {
 	$searchsql = " LIMIT ".$speeder;
 }
 
-$temp = pages($speeder, 'topiczahl', "showtopic.php?id=".$info['id']."&amp;");
+$temp = pages($speeder, $config['topiczahl'], "showtopic.php?id=".$info['id']."&amp;", $_GET['page']);
 	
 $bbcode = initBBCodes(TRUE);
 $q = explode(' ', trim($q));

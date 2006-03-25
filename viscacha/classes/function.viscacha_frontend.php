@@ -269,19 +269,20 @@ function get_mimetype($file) {
 	}
 }
 
-// Params: Anz. Beiträge, Beiträge p. Seite (array-index in $config), URL
+/**
 
-function pages ($anzposts, $arrindex, $uri) {
+
+
+*/
+function pages ($anzposts, $epp, $uri, $p = 0, $template = '') {
 	global $config, $tpl, $lang;
 
-	if ($anzposts == 0) {
+	if ($anzposts < 1) {
 		$anzposts = 1;
 	}
 
-   	$pgs = $anzposts/$config[$arrindex];
-    $anz = ceil($pgs);
+   	$anz = ceil($anzposts/$epp);
     $sep = $lang->phrase('pages_sep');
-    $p = &$_GET['page'];
     $pages = array();
 	if ($anz > 10) {
 		$pages[1] = 1;
@@ -300,18 +301,21 @@ function pages ($anzposts, $arrindex, $uri) {
 		}
 	}
 	else {
-	    for($i=1;$i<=$anz;$i++) {
+	    for($i=1; $i<=$anz; $i++) {
 	        $pages[$i] = $i;
 	    }
 	}
-	$tpl->globalvars(compact("p"));
-	$pages[$p] = $tpl->parse("main/pages_current");
+	
+	if ($p > 0) {
+		$tpl->globalvars(compact("p"));
+		$pages[$p] = $tpl->parse("main/pages_current".$template);
+	}
 
 	ksort($pages);
 	
 	$tpl->globalvars(compact("uri", "anz", "pages"));
 	$lang->assign('anz', $anz);
-    return $tpl->parse("main/pages");
+    return $tpl->parse("main/pages".$template);
 }
 
 function double_udata ($opt,$val) {

@@ -70,7 +70,7 @@ if ($my->vlogin && $my->mp[0] == 1) {
         	$info['topics'] = $vlasttopics[0];
         }
         
-        $pages = pages($info['topics'], 'forumzahl', 'manageforum.php?action=index&amp;id='.$board.'&amp;type='.$_GET['type'].'&amp;');
+        $pages = pages($info['topics'], $config['forumzahl'], 'manageforum.php?action=index&amp;id='.$board.'&amp;type='.$_GET['type'].'&amp;', $_GET['page']);
         $inner['index_bit'] = '';
         if ($info['topics'] > 0) {
         	$start = $_GET['page']*$config['forumzahl'];

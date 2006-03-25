@@ -80,7 +80,7 @@ else {
 $result = $db->query('SELECT COUNT(*) FROM '.$db->pre.'user'.$where,__LINE__,__FILE__);
 $count = $db->fetch_array($result);
 
-$temp = pages($count[0], 'mlistenzahl', "members.php?sort=".$_GET['sort']."&amp;letter=".$_GET['letter']."&amp;order=".$_GET['order'].SID2URL_x."&amp;");
+$temp = pages($count[0], $config['mlistenzahl'], "members.php?sort=".$_GET['sort']."&amp;letter=".$_GET['letter']."&amp;order=".$_GET['order'].SID2URL_x."&amp;", $_GET['page']);
 $start = $_GET['page']*$config['mlistenzahl'];
 $start = $start-$config['mlistenzahl'];
 

@@ -305,7 +305,7 @@ elseif ($_GET['action'] == "browse") {
 	$memberdata = cache_memberdata();
 
     $count = $db->fetch_array($db->query("SELECT COUNT(*) FROM {$db->pre}pm WHERE pm_to = '".$my->id."' AND dir = '".$_GET['id']."'",__LINE__,__FILE__));
-    $temp = pages($count[0], 'pmzahl', 'pm.php?action=browse&amp;id='.$_GET['id'].'&amp;');
+    $temp = pages($count[0], $config['pmzahl'], 'pm.php?action=browse&amp;id='.$_GET['id'].'&amp;', $_GET['page']);
     $start = $_GET['page']*$config['pmzahl'];
     $start = $start-$config['pmzahl'];
 
