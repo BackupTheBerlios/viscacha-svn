@@ -470,6 +470,69 @@ elseif ($job == 'manage') {
 	<?php
     echo foot();
 }
+elseif ($job == 'memberrating') {
+	echo head();
+	$page = $gpc->get('page', int, 1);
+	
+	$count = $db->fetch_array($db->query('SELECT COUNT(*) FROM '.$db->pre.'postratings WHERE aid != "0" GROUP BY aid'));
+	$temp = pages($count[0], "admin.php?action=members&job=memberrating&amp;", 25);
+
+	$start = $page*25;
+	$start = $start-25;
+	
+	$change = array('m' => 'male', 'w' => 'female', '' => '-');
+
+	$result = $db->query('
+	SELECT u.*, avg(p.rating) AS ravg, count(*) AS rcount 
+	FROM '.$db->pre.'postratings AS p 
+		LEFT JOIN '.$db->pre.'user AS u ON p.aid = u.id 
+	WHERE aid != "0" 
+	GROUP BY aid 
+	ORDER BY ravg DESC 
+	LIMIT '.$start.',25
+	', __LINE__, __FILE__);
+	?>
+	<form name="form" action="admin.php?action=members&job=delete" method="post">
+	<table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
+		<tr> 
+		  <td class="obox" colspan="6">Memberrating</td>
+		</tr>
+		<tr> 
+		  <td class="ubox" colspan="6"><span style="float: right;"><?php echo $temp; ?></span><?php echo $count[0]; ?> rated Members</td>
+		</tr>
+		<tr>
+		  <td class="obox">Del</td>
+		  <td class="obox">Name</td>
+		  <td class="obox">Bewertung (Anz. Bewertungen)</td>
+		  <td class="obox">Email</td>
+		  <td class="obox">Last Visit</td>
+		  <td class="obox">Registered on</td>
+		</tr>
+	<?php
+	while ($row = $gpc->prepare($db->fetch_object($result))) { 
+		$row->regdate = gmdate('d.m.Y', times($row->regdate));
+		$row->lastvisit = gmdate('d.m.Y H:i', times($row->lastvisit));
+		$percent = round((($row->ravg*50)+50));
+		?>
+	    <tr>
+	      <td class="mbox"><input type="checkbox" name="delete[]" value="<?php echo $row->id; ?>"></td> 
+		  <td class="mbox"><a title="Edit" href="admin.php?action=members&job=edit&id=<?php echo $row->id; ?>"><?php echo $row->name; ?></a><?php echo iif($row->fullname,"<br><i>".$row->fullname."</i>"); ?></td> 
+		  <td class="mbox"><img src="images.php?action=memberrating&id=<?php echo $row->id; ?>" alt="<?php echo $percent; ?>%" title="<?php echo $percent; ?>%"  /> <?php echo $percent; ?>% (<?php echo $row->rcount; ?>)</td>
+		  <td class="mbox" align="center"><a href="mailto:<?php echo $row->mail; ?>">Email</a></td> 
+		  <td class="mbox"><?php echo $row->lastvisit; ?></td>
+		  <td class="mbox"><?php echo $row->regdate; ?></td>
+		</tr>
+		<?php
+	} 
+	?>
+		<tr> 
+		  <td class="ubox" colspan="6"><span style="float: right;"><?php echo $temp; ?></span><input type="submit" name="submit" value="Delete"></td>
+		</tr>
+	</table>
+	</form>
+	<?php
+    echo foot();
+}
 elseif ($job == 'edit') {
 	include_once ("classes/function.profilefields.php");
 
@@ -1579,7 +1642,7 @@ elseif ($job == 'confirm') {
 	
 	ok('admin.php?action=members&job=activate', 'Mitglied wurde freigeschaltet!');
 }
-if ($job == 'ips') {
+elseif ($job == 'ips') {
 	$username = $gpc->get('username', str);
 	$ipaddress = $gpc->get('ipaddress', str);
 	$userid = $gpc->get('id', int);

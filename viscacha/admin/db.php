@@ -216,6 +216,17 @@ elseif ($job == 'restore') {
 	echo head();
 	$result = array();
 	$dir = "./admin/backup/";
+	
+	$mem_limit = @ini_get('memory_limit');
+	if (empty($mem_limit)) {
+		$mem_limit = @get_cfg_var('memory_limit');
+	}
+	$mem_limit = intval($mem_limit)*1024*1024;
+	$maxlimit = 2*1024*1024;
+	if ($mem_limit > $maxlimit) {
+		$maxlimit = $mem_limit;
+	}
+	
 	$handle = opendir($dir);
 	while ($file = readdir($handle)) {
 		if ($file != "." && $file != ".." && !is_dir($dir.$file)) {					  
@@ -225,42 +236,52 @@ elseif ($job == 'restore') {
 				$date = str_replace('.zip', '', $nfo['basename']);
 				$date = str_replace('.sql', '', $date);
 				
-		        if ($nfo['extension'] == 'zip') {
-					require_once('classes/class.zip.php');
-					$archive = new PclZip($dir.$file);
-					if (($list = $archive->listContent()) > 0) {
-						$data = $archive->extractByIndex($list[0]['index'], PCLZIP_OPT_EXTRACT_AS_STRING);
-						$headers = explode("\n", $data[0]['content']);
-						unset($data);
-					}
-		        }
-		        elseif ($nfo['extension'] == 'sql') {
-		            $headers = file($dir.$file);
-		        }
-		        if (isset($headers) && is_array($headers)) {
-		            $header = array();
-		            foreach ($headers as $h) {
-		            	$comment = substr($h, 0, 2);
-		            	if ($comment == '--' || $comment == '//') {
-		            		$header[] = substr($h, 2);
-		            	}
-		            	else {
-		            		break;
-		            	}
-		            }
-		            $header = array_map('trim', $header);
-		            $header = implode("<br />\n", $header);
+				if (filesize($dir.$file) < $maxlimit) {
+			        if ($nfo['extension'] == 'zip') {
+						require_once('classes/class.zip.php');
+						$archive = new PclZip($dir.$file);
+						if (($list = $archive->listContent()) > 0) {
+							$data = $archive->extractByIndex($list[0]['index'], PCLZIP_OPT_EXTRACT_AS_STRING);
+							$headers = preg_split("/\r\n|\r|\n/", $data[0]['content']);
+							unset($data);
+						}
+			        }
+			        elseif ($nfo['extension'] == 'sql') {
+						$fd = fopen($dir.$file, "r");
+						while (!feof($fd)) {
+							$headers[] = fgets($fd, 2048);
+						}
+						fclose ($fd);
+			        }
+			        if (isset($headers) && is_array($headers)) {
+			            $header = array();
+			            foreach ($headers as $h) {
+			            	$comment = substr($h, 0, 2);
+			            	if ($comment == '--' || $comment == '//') {
+			            		$header[] = substr($h, 2);
+			            	}
+			            	else {
+			            		break;
+			            	}
+			            }
+			            $header = array_map('trim', $header);
+			            $header = implode("<br />\n", $header);
+			        }
+			        else {
+			        	$header = 'Can not read information. This file is maybe damaged.';
+			        }
 		        }
 		        else {
-		        	$header = 'Can not read information. This file is maybe damaged.';
+		        	$header = 'File is too big for opening.';
 		        }
 				
 				$result[] = array(
-				'file' => $nfo['basename'],
-				'size' => filesize($dir.$file),
-				'date' => $date,
-				'header' => $header
+					'file' => $nfo['basename'],
+					'size' => filesize($dir.$file),
+					'date' => $date,
+					'header' => $header
 				);
+				unset($header, $buffer, $headers);
 			}
 		}
 	}
@@ -280,7 +301,7 @@ elseif ($job == 'restore') {
 		<tr>
 		   <td class="mbox" width="5%" align="center"><input type="radio" name="file" value="<?php echo $row['file']; ?>"></td>
 		   <td class="mbox" width="5%" align="center"><input type="checkbox" name="delete[]" value="<?php echo $row['file']; ?>"></td>
-		   <td class="mbox stext" width="90%" rowspan="2"><?php echo $row['header']; ?></td>
+		   <td class="mbox stext" width="90%" rowspan="2">File: <b><?php echo $row['file']; ?></b><br /><?php echo $row['header']; ?></td>
 		   <td class="mbox stext" nowrap="nowrap" width="10%" rowspan="2"><?php echo FormatFilesize($row['size']); ?></td>
 		</tr>
         <tr>

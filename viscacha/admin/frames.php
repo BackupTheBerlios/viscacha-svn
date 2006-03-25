@@ -46,7 +46,7 @@ if ($job == 'menu') {
 	  </ul>
 	 </div>
 	 <div class="border">
-	   <h3><img id="img_admin_menu17" name="collapse" src="admin/html/images/plus.gif" alt=""> Threads &amp; Posts</h3>
+	   <h3><img id="img_admin_menu17" name="collapse" src="admin/html/images/plus.gif" alt=""> Topics &amp; Posts</h3>
 	  <ul id="part_admin_menu17">
 	   <!-- <li>&raquo; <a href="admin.php?action=posts&job=moderate" target="Main">Moderate Topics &amp; Posts</a></li> -->
 	   <li>&raquo; <s><a href="admin.php?action=posts&job=postrating" target="Main">Postratings</a></s></li>
@@ -58,7 +58,7 @@ if ($job == 'menu') {
 	  <ul id="part_admin_menu8">
 	   <li>&raquo; <a href="admin.php?action=members&job=manage" target="Main">List of Members</a></li>
 	   <!-- <li>&raquo; <s><a href="admin.php?action=members&job=add" target="Main">Add new User</a></s></li> -->
-	   <li>&raquo; <s><a href="admin.php?action=members&job=memberrating" target="Main">Memberratings</a></s></li>
+	   <li>&raquo; <a href="admin.php?action=members&job=memberrating" target="Main">Memberratings</a></li>
 	   <li>&raquo; <a href="admin.php?action=members&job=newsletter" target="Main">Newsletter Manager</a></li>
 	   <li>&raquo; <a href="admin.php?action=members&job=emaillist" target="Main">Export Email Addresses</a></li>
 	   <li>&raquo; <a href="admin.php?action=members&job=activate" target="Main">Moderate/Unlock Members</a></li>

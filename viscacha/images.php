@@ -101,11 +101,13 @@ elseif ($_GET['action'] == 'postrating' || $_GET['action'] == 'memberrating') {
 	$ratingcounter = count($ratings);
 	if ($ratingcounter > 0) {
 		$rating = round((array_sum($ratings)/$ratingcounter+1)*($width/2));
+		$avg = array_sum($ratings)/$ratingcounter;
 	}
 	else {
 		$rating = $width/2;
+		$avg = 0;
 	}
-	$five = ceil(((array_sum($ratings)/$ratingcounter)+1)*2.5);
+	$five = ceil(($avg+1)*2.5);
 	
 	header ("Content-type: image/png");
 	

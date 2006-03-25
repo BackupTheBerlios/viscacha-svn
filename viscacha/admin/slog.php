@@ -135,7 +135,7 @@ elseif ($job == 's_general_image') {
 		case 3: 
 			$table = $db->pre."replies";
 			$datefield = "date";
-			$stats_name = 'Antworten';
+			$stats_name = 'Beiträge';
 		break;
 		default: 
 			$table = $db->pre."pm";
