@@ -29,7 +29,7 @@ if ($job == 'ftp') {
 	  <td class="mbox" width="50%"><input type="text" name="ftp_port" value="21" size="4" value="<?php echo $config['ftp_port']; ?>"></td> 
 	 </tr>
 	 <tr>
-	  <td class="mbox" width="50%">FTP-Startpath:<br /><span class="stext"> Path, the FTP-Program works from. This path should be the relative FTP-path to your Viscacha-Installation. If the directory containing Viscacha is your FTP-account path, you just need an &quot;/&quot; for*nix-systems. Path located by the script:<code><?php echo $path; ?></code></span></td>
+	  <td class="mbox" width="50%">FTP-Startpath:<br /><span class="stext"> Path, from which the FTP-Program works. This path should be the relative FTP-path to your Viscacha-Installation. If the directory containing Viscacha is your FTP-account path, you just need an &quot;/&quot; under *nix-systems. Path determined by the script:<code><?php echo $path; ?></code></span></td>
 	  <td class="mbox" width="50%"><input type="text" name="ftp_path" value="<?php echo $config['ftp_path']; ?>" size="50"></td> 
 	 </tr>
 	 <tr> 
@@ -83,7 +83,7 @@ elseif ($job == 'posts') {
 	   <td class="mbox" width="50%"><input type="text" name="edit_delete_time" value="<?php echo $config['edit_delete_time']; ?>" size="5"></td> 
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">Maximum number of threads which can be quoted in a new post by multiquote:<br /><span class="stext">If there are more threads to quote in the cache, only the first X will be included in the textfield.</span></td>
+	   <td class="mbox" width="50%">Maximum number of threads which can be quoted in a new post by multiquote:<br /><span class="stext">If there are more threads in the cache to multiquote, only the first Xs will be included in the textfield.</span></td>
 	   <td class="mbox" width="50%"><input type="text" name="maxmultiquote" value="<?php echo $config['maxmultiquote']; ?>" size="4"></td> 
 	  </tr>
 	  <tr> 
@@ -103,19 +103,19 @@ elseif ($job == 'posts') {
 	   <td class="mbox" width="50%"><input type="text" name="maxpostlength" value="<?php echo $config['maxpostlength']; ?>" size="8"></td> 
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">Automatically resize too big pictures:<br /><span class="stext">IPictures included with the [img]-BB-Code and which are too big for the design, will automatically be resized with Javascript. A click on the picture will show it  in original size.</span></td>
+	   <td class="mbox" width="50%">Automatic resizing of too big pictures:<br /><span class="stext">Pictures pasted in through [img]-BB-Code and which are too big for the design, can automatically be resized by using Javascript. A click on the picture will show it  in original size.</span></td>
 	   <td class="mbox" width="50%"><input type="checkbox" name="resizebigimg" value="1"<?php echo iif($config['resizebigimg'] == 1,' checked="checked"'); ?>></td> 
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">Maximum width for included pictures:<br /><span class="stext">Picture width in pixels. Only relevant if „automatically resize“ is selected.</span></td>
+	   <td class="mbox" width="50%">Maximum width for included pictures:<br /><span class="stext">Picture width in pixels. Only relevant if "automatic resizing" is selected.</span></td>
 	   <td class="mbox" width="50%"><input type="text" name="resizebigimgwidth" value="<?php echo $config['resizebigimgwidth']; ?>" size="6"></td> 
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">Activate PDF-output for Documents:<br /><span class="stext">IIndependent from group- or rightsettings.</span></td>
+	   <td class="mbox" width="50%">Activate PDF-output for Documents:<br /><span class="stext">Independent from group- or rightsettings.</span></td>
 	   <td class="mbox" width="50%"><input type="checkbox" name="pdfdownload" value="1"<?php echo iif($config['pdfdownload'] == 1,' checked="checked"'); ?>></td> 
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">Compress PDF-Output:<br /><span class="stext">IIf the output is compressed, the file can be downloaded faster, but it will use more server performance.</span></td>
+	   <td class="mbox" width="50%">Compress PDF-Output:<br /><span class="stext">If the output is compressed, the file can be downloaded much faster, but it will need more server performance.</span></td>
 	   <td class="mbox" width="50%"><input type="checkbox" name="pdfcompress" value="1"<?php echo iif($config['pdfcompress'] == 1,' checked="checked"'); ?>></td> 
 	  </tr>
 	  <tr> 
@@ -198,27 +198,27 @@ elseif ($job == 'profile') {
 	   <td class="mbox" width="50%"><input type="text" name="mylastzahl" value="<?php echo $config['mylastzahl']; ?>" size="5"></td> 
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">Show online-status in profile:<br /><span class="stext">IWill show the users online-status in his profile.</span></td>
+	   <td class="mbox" width="50%">Show online-status in profile:<br /><span class="stext">Will show the users online-status in his profile.</span></td>
 	   <td class="mbox" width="50%"><input type="checkbox" name="osi_profile" value="1"<?php echo iif($config['osi_profile'] == 1,' checked="checked"'); ?>></td> 
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">Allow vCard-Download:<br /><span class="stext">IA vCard is an electronic &quot;visiting card&quot; which can be imported into the local adressbook by another user.</span></td>
+	   <td class="mbox" width="50%">Allow vCard-Download:<br /><span class="stext">A vCard is an electronic &quot;visiting card&quot; which can be imported into the local adressbook of another user via mouse click.</span></td>
 	   <td class="mbox" width="50%"><input type="checkbox" name="vcard_dl" value="1"<?php echo iif($config['vcard_dl'] == 1,' checked="checked"'); ?>></td> 
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">Allow vCard-Download for guests:<br /><span class="stext">IActivate the vCard Download also for not registered users.</span></td>
+	   <td class="mbox" width="50%">Allow vCard-Download for guests:<br /><span class="stext">Activate the vCard Download also for not registered users (guests).</span></td>
 	   <td class="mbox" width="50%"><input type="checkbox" name="vcard_dl_guests" value="1"<?php echo iif($config['vcard_dl_guests'] == 1,' checked="checked"'); ?>></td> 
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">Allow users to change their username:<br /><span class="stext">IIf this option is activated, the users are able to change their username.</span></td>
+	   <td class="mbox" width="50%">Allow users to change their username:<br /><span class="stext">If this option is activated, the users are able to change their username.</span></td>
 	   <td class="mbox" width="50%"><input type="checkbox" name="changename_allowed" value="1"<?php echo iif($config['changename_allowed'] == 1,' checked="checked"'); ?>></td> 
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">Show number of written threads in profile:<br /><span class="stext">IThe complete number of contributed threads may be shown in the users profile. This option may slowdown the performance on bigger Boards.</span></td>
+	   <td class="mbox" width="50%">Show number of written threads in profile:<br /><span class="stext">The complete number of contributed threads can be shown in the users profile. This option may slowdown the performance during big forums.</span></td>
 	   <td class="mbox" width="50%"><input type="checkbox" name="showpostcounter" value="1"<?php echo iif($config['showpostcounter'] == 1,' checked="checked"'); ?>></td> 
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">Show Memberrating:<br /><span class="stext">IShow the rating based on the postrating.</span></td>
+	   <td class="mbox" width="50%">Show Memberrating:<br /><span class="stext">Show the rating based on the postrating.</span></td>
 	   <td class="mbox" width="50%"><input type="checkbox" name="memberrating" value="1"<?php echo iif($config['memberrating'] == 1,' checked="checked"'); ?>></td>
 	  </tr>
 	  <tr> 
@@ -324,15 +324,15 @@ elseif ($job == 'search') {
 	   <td class="obox" colspan="2"><b>Search</b></td>
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">Minimum length of Searchterm:<br /><span class="stext">This option allows to ignore too small words. Words with less characters then the here setted number will be ignored. </span></td>
+	   <td class="mbox" width="50%">Minimum length of Searchterm:<br /><span class="stext">This option allows to ignore small words. Words with less characters as here set will be ignored. </span></td>
 	   <td class="mbox" width="50%"><input type="text" name="searchminlength" value="<?php echo $config['searchminlength']; ?>" size="3"></td> 
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">Maximum number of search results:<br /><span class="stext">After reaching the maximum number the search will be stopped to relieve the server.</span></td>
+	   <td class="mbox" width="50%">Maximum number of search results:<br /><span class="stext">After reaching the maximum number the search will be stopped in order to relieve the server.</span></td>
 	   <td class="mbox" width="50%"><input type="text" name="maxsearchresults" value="<?php echo $config['maxsearchresults']; ?>" size="4"></td> 
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">Activate Floodblocking for Search:<br /><span class="stext">IFlooding is a common method to prevent normal work or get servers down.</span></td>
+	   <td class="mbox" width="50%">Activate Floodblocking for Search:<br /><span class="stext">Flooding is a command which when very fast repeated in extreme case can inhibit normal work or bring the server down.</span></td>
 	   <td class="mbox" width="50%"><input type="checkbox" name="floodsearch" value="1"<?php echo iif($config['floodsearch'] == 1,' checked="checked"'); ?>></td> 
 	  </tr>
 	  <tr>
@@ -404,7 +404,7 @@ elseif ($job == 'server') {
 	   </select></td> 
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">Test Filesystem for correctly setted CHMODS:<br /><span class="stext">IActivating this option will check the CHMOD settings for files and folders on every call. This option should not be activated, if there were made changes on the filesystem before, for example after the installation or updates.</span></td>
+	   <td class="mbox" width="50%">Test the filesystem for correctly set CHMODS:<br /><span class="stext">Activating this option will check at every call if CHMOD for files and folders are right set. This option should be deactivated, if changes were made on the filesystem before, for example after the installation or updates.</span></td>
 	   <td class="mbox" width="50%"><input type="checkbox" name="check_filesystem" value="1"<?php echo iif($config['check_filesystem'] == 1,' checked="checked"'); ?>></td> 
 	  </tr>
 	  <tr> 
@@ -412,7 +412,7 @@ elseif ($job == 'server') {
 	   <td class="mbox" width="50%"><input type="checkbox" name="correctsubdomains" value="1"<?php echo iif($config['hterrordocs'] == 1,' checked="checked"'); ?>></td> 
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">.htaccess: Use Error-Documents:<br /><span class="stext">IOn Server-Errors (400, 401, 403, 404, 500) the custom Error-sites will be shown. Example: <a href="misc.php?action=error&id=404" target="_blank">Error 404</a></span></td>
+	   <td class="mbox" width="50%">.htaccess: Use Error-Documents:<br /><span class="stext">On Server-Errors (400, 401, 403, 404, 500) the custom Error-sites will be shown. Example: <a href="misc.php?action=error&id=404" target="_blank">Error 404</a></span></td>
 	   <td class="mbox" width="50%"><input type="checkbox" name="hterrordocs" value="1"<?php echo iif($config['hterrordocs'] == 1,' checked="checked"'); ?>></td> 
 	  </tr>
 	  <tr>
@@ -465,11 +465,11 @@ elseif ($job == 'session') {
 	   <td class="mbox" width="50%"><input type="text" name="sessionsave" value="<?php echo $config['sessionsave']; ?>" size="4"></td> 
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">Activate Floodblocking:<br /><span class="stext">IFlooding is a common method to prevent normal work or get servers down.</span></td>
+	   <td class="mbox" width="50%">Activate Floodblocking:<br /><span class="stext">Flooding is a command which when very fast repeated in extreme case can inhibit normal work or bring the server down.</span></td>
 	   <td class="mbox" width="50%"><input type="checkbox" name="enableflood" value="1"<?php echo iif($config['enableflood'] == 1,' checked="checked"'); ?>></td> 
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">Check IP if Session-ID is used:<br /><span class="stext">IMakes a take over more difficult</span></td>
+	   <td class="mbox" width="50%">Check IP if Session-ID is used:<br /><span class="stext">Makes a take over more difficult</span></td>
 	   <td class="mbox" width="50%"><input type="checkbox" name="session_checkip" value="1"<?php echo iif($config['session_checkip'] == 1,' checked="checked"'); ?>></td> 
 	  </tr>
 	  <tr>
@@ -503,7 +503,7 @@ elseif ($job == 'boardcat') {
 	   <td class="obox" colspan="2"><b>Forums &amp; Categories</b></td>
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">Number of Topics per Forumpage:<br /><span class="stext">Number of Topics per Page shown in the Topicoverview.</span></td>
+	   <td class="mbox" width="50%">Number of Topics per Forumpage:<br /><span class="stext">Number of topics that in the topic overview are shown per page.</span></td>
 	   <td class="mbox" width="50%"><input type="text" name="forumzahl" value="<?php echo $config['forumzahl']; ?>" size="50"></td> 
 	  </tr>
 	  <tr> 
@@ -511,7 +511,7 @@ elseif ($job == 'boardcat') {
 	   <td class="mbox" width="50%"><input type="checkbox" name="showsubfs" value="1"<?php echo iif($config['showsubfs'] == 1,' checked="checked"'); ?>></td> 
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">Syncronize Forumstatistics on change:<br /><span class="stext">INot recommended for big Forums! If this option is activated, the Threadnumber, Topicnumber etc. will be equalized with Data Assets on every change, otherwise it will be updated manually.</span></td>
+	   <td class="mbox" width="50%">Syncronize Forumstatistics on change:<br /><span class="stext">Not recommended for big Forums! If this option is activated, the number of threads, topics etc. will be equalized with data assets by every change, otherwise it will be adapted manually.</span></td>
 	   <td class="mbox" width="50%"><input type="checkbox" name="updateboardstats" value="1"<?php echo iif($config['updateboardstats'] == 1,' checked="checked"'); ?>></td> 
 	  </tr>
 	  <tr>
@@ -547,7 +547,7 @@ elseif ($job == 'user') {
 	   <td class="mbox" width="50%"><input type="text" name="mlistenzahl" value="<?php echo $config['mlistenzahl']; ?>" size="4"></td> 
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">Teamlist - Show period of Moderator rights:<br /><span class="stext">IShow for Moderators in the Teamlist how long the user has Moderator rights.</span></td>
+	   <td class="mbox" width="50%">Teamlist - Show time period of Moderator rights:<br /><span class="stext">Show in the moderator teamlist how long the user has moderator rights.</span></td>
 	   <td class="mbox" width="50%"><input type="checkbox" name="team_mod_dateuntil" value="1"<?php echo iif($config['team_mod_dateuntil'] == 1,' checked="checked"'); ?>></td> 
 	  </tr>
 	  <tr>
@@ -651,11 +651,11 @@ elseif ($job == 'email') {
 	   <td class="mbox" width="50%"><input type="text" name="sendmail_host" value="<?php echo $config['sendmail_host']; ?>" size="50"></td> 
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">SMTP - Host:<br /><span class="stext">IOnly if SMTP is activated.</span></td>
+	   <td class="mbox" width="50%">SMTP - Host:<br /><span class="stext">Only if SMTP is activated.</span></td>
 	   <td class="mbox" width="50%"><input type="text" name="smtp_host" value="<?php echo $config['smtp_host']; ?>" size="50"></td> 
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">SMTP - Authentification:<br /><span class="stext">IOnly if SMTP is activated.</span></td>
+	   <td class="mbox" width="50%">SMTP - Authentification:<br /><span class="stext">Only if SMTP is activated.</span></td>
 	   <td class="mbox" width="50%"><input type="checkbox" name="smtp_auth" value="1"<?php echo iif($config['smtp_auth'] == 1,' checked="checked"'); ?>></td> 
 	  </tr>
 	  <tr> 
@@ -667,7 +667,7 @@ elseif ($job == 'email') {
 	   <td class="mbox" width="50%"><input type="text" name="smtp_password" value="<?php echo $config['smtp_password']; ?>" size="50"></td> 
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">Block "Trash"-E-Mail Adresses:<br /><span class="stext">IThe Domains can be edited <a href="admin.php?action=misc&job=sessionmails">here</a>.</span></td>
+	   <td class="mbox" width="50%">Block "Trash"-E-Mail Adresses:<br /><span class="stext">The Domains can be edited <a href="admin.php?action=misc&job=sessionmails">here</a>.</span></td>
 	   <td class="mbox" width="50%"><input type="checkbox" name="sessionmails" value="1"<?php echo iif($config['sessionmails'] == 1,' checked="checked"'); ?>></td> 
 	  </tr>
 	  <tr>
@@ -731,11 +731,11 @@ elseif ($job == 'lang') {
 	   <td class="obox" colspan="2"><b>Internationalizement &amp; Languages </b></td>
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">Activate Character sets:<br /><span class="stext">IActivate Support for asian Languages. May only be activated if problems occur.</span></td>
+	   <td class="mbox" width="50%">Activate Character sets:<br /><span class="stext">Activate support for asian languages. Should only be activated if problems occur.</span></td>
 	   <td class="mbox" width="50%"><input type="checkbox" name="asia" value="1"<?php echo iif($config['asia'] == 1,' checked="checked"'); ?>></td> 
 	  </tr>
 	  <tr>
-	   <td class="mbox" width="50%">Character Set in which incoming Data will be converted to:<br /><span class="stext">Information: ISO-8895-15 is the same character set as ISO-8895-1, however supplemented over the Euro-Character as well as french and finnish Characters.</span></td>
+	   <td class="mbox" width="50%">Character Set in which incoming Data will be converted to:<br /><span class="stext">Information: ISO-8895-15 is the same character set as ISO-8895-1, however completed with the Euro-character as well as French and Finnish characters.</span></td>
 	   <td class="mbox" width="50%"><select name="asia_charset">
 	   <?php foreach ($charsets as $key => $opt) { ?>
 	   <option value="<?php echo $key; ?>"<?php echo iif($config['asia_charset'] == $key, ' selected="selected"'); ?>><?php echo $key.': '.$opt; ?></option>
@@ -780,7 +780,7 @@ elseif ($job == 'register') {
 	   </select></td> 
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">User has to accept rules on registration:<br /><span class="stext">IThe behaviour conditions <!-- Ersetzen durch Link zu ACP -->(<a href="misc.php?action=rules" target="_blank">look up</a>) must be read and accepted.</span></td>
+	   <td class="mbox" width="50%">User has to accept rules on registration:<br /><span class="stext">The behaviour conditions <!-- Ersetzen durch Link zu ACP -->(<a href="misc.php?action=rules" target="_blank">look up</a>) must be read and accepted.</span></td>
 	   <td class="mbox" width="50%"><input type="checkbox" name="acceptrules" value="1"<?php echo iif($config['acceptrules'] == 1,' checked="checked"'); ?>></td> 
 	  </tr>
 	  <tr> 
@@ -792,7 +792,7 @@ elseif ($job == 'register') {
 	   <td class="mbox" width="50%"><input type="checkbox" name="botgfxtest_filter" value="1"<?php echo iif($config['botgfxtest_filter'] == 1,' checked="checked"'); ?>></td> 
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">Spam-Bot-Schutz: Show Text-Code instead of CAPTCHA-Image:<br /><span class="stext">IExamples see below.</span></td>
+	   <td class="mbox" width="50%">Spam-Bot-Schutz: Show Text-Code instead of CAPTCHA-Image:<br /><span class="stext">Examples see below.</span></td>
 	   <td class="mbox" width="50%"><input type="checkbox" name="register_text_verification" value="1"<?php echo iif($config['register_text_verification'] == 1,' checked="checked"'); ?>></td> 
 	  </tr>
 	   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="Submit"></td> 
@@ -851,7 +851,7 @@ elseif ($job == 'spellcheck') {
 	   <td class="mbox" width="50%"><input type="checkbox" name="spellcheck" value="1"<?php echo iif($config['spellcheck'] == 1,' checked="checked"'); ?>></td> 
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">Spellcheck-System:<br /><span class="stext">It is recommended to use Pspell, because both MySQL and Textfiles will extremely stress the server. Pspell is on your system <?php echo $ps; ?>.</span></td>
+	   <td class="mbox" width="50%">Spellcheck-System:<br /><span class="stext">It is recommended to use Pspell, because both MySQL and as well Textfiles may extremely stress the server. Pspell is on your system <?php echo $ps; ?>.</span></td>
 	   <td class="mbox" width="50%"><select name="pspell">
 	   <option value="pspell"<?php echo iif($config['pspell'] == 'pspell', ' selected="selected"'); ?>>PSpell/Aspell (recommended)</option>
 	   <option value="mysql"<?php echo iif($config['pspell'] == 'mysql', ' selected="selected"'); ?>>MySQL/PHP</option>
@@ -859,7 +859,7 @@ elseif ($job == 'spellcheck') {
 	   </select></td> 
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">Ignore Words with less characters then:<br /><span class="stext">This setting allows to jump over short words. Words with less then the here setted characters will be jumped over.</span></td>
+	   <td class="mbox" width="50%">Ignore Words with less characters then:<br /><span class="stext">This setting allows to jump over short words. Words with less then the here indicated number of characters will be jumped over.</span></td>
 	   <td class="mbox" width="50%"><input type="text" name="spellcheck_ignore" value="<?php echo $config['spellcheck_ignore']; ?>" size="4"></td> 
 	  </tr>
 	  <tr> 
@@ -899,15 +899,15 @@ elseif ($job == 'jabber') {
 	   <td class="obox" colspan="2"><b>Jabber</b></td>
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">Enable Jabber-Support:<br /><span class="stext">IActivates the dispatch of messages over Jabber. The profile field is <em>not</em> concerned.</span></td>
+	   <td class="mbox" width="50%">Enable Jabber-Support:<br /><span class="stext">Activates the dispatch of messages over Jabber. The profile field is <em>not</em> concerned.</span></td>
 	   <td class="mbox" width="50%"><input type="checkbox" name="enable_jabber" value="1"<?php echo iif($config['enable_jabber'] == 1,' checked="checked"'); ?>></td> 
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">Jabber-Server (and Port):<br /><span class="stext">Indicate Jabber-Server without protocol. In normal Jabber-Adresses this entry is the same as the text after the @. The port can be attached separated with ":". Example for the adress username@domain.com and the port 5222: "domain.com:5222":</span></td>
+	   <td class="mbox" width="50%">Jabber-Server (and Port):<br /><span class="stext">Indicate Jabber-Server without protocol. In normal Jabber addresses this entry is the same as the text after the @. The port can be attached separated with ":". Example for the address username@domain.com and the port 5222: "domain.com:5222":</span></td>
 	   <td class="mbox" width="50%"><input type="text" name="jabber_server" value="<?php echo $config['jabber_server']; ?>" size="50"></td> 
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">Jabber-Username:<br /><span class="stext">Jabber-Account username for dispatching Jabber-messages. In normal Jabber-adresses this entry is the same as the text before the @. Example: username@domain.com = "username".</span></td>
+	   <td class="mbox" width="50%">Jabber-Username:<br /><span class="stext">Jabber-Account of a username for dispatching Jabber-messages. In normal Jabber addresses this entry is the same as the text before the @. Example: username@domain.com = "username".</span></td>
 	   <td class="mbox" width="50%"><input type="text" name="jabber_user" value="<?php echo $config['jabber_user']; ?>" size="50"></td> 
 	  </tr>
 	  <tr> 
@@ -971,7 +971,7 @@ elseif ($job == 'db') {
 	   <td class="mbox" width="50%"><input type="text" name="optimizetables" value="<?php echo $config['optimizetables']; ?>" size="50"></td> 
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">Persistent Connection:<br /><font class="stext">SQL-Connections which will not be closed after the End of the Script. If a Connection is requested, it will be examined if there already is a Connection opened.<br>Source: <a href="http://www.php.net/manual/features.persistent-connections.php" target="_blank">php.net - Persistent Databaseconnections</a></font></td>
+	   <td class="mbox" width="50%">Persistent Connection:<br /><font class="stext">SQL connections which will not be closed after the End of the Script. If a connection is requested, it will be checked if a connection has already been established.<br>Source: <a href="http://www.php.net/manual/features.persistent-connections.php" target="_blank">php.net - Persistent Databaseconnections</a></font></td>
 	   <td class="mbox" width="50%"><input type="checkbox" name="pconnect" value="1"<?php echo iif($config['pconnect'],' checked'); ?>></td> 
 	  </tr>
 	   <td class="ubox" width="100%" colspan="2" align="center"><input type="submit" name="Submit" value="Submit"></td> 
@@ -1165,11 +1165,11 @@ elseif ($job == 'cron') {
 	   <td class="obox" colspan="2"><b>Scheduled Settings</b></td>
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">Scheduled Tasks in page:<br><span class="stext">If this option is activated, Viscacha will check if there are Tasks to do on every site impression. For a better Performance you can page out this task, by loading the file <a href="cron.php" target="_blank">cron.php</a>with a scheduled cron job.</span></td>
+	   <td class="mbox" width="50%">Scheduled Tasks in page:<br><span class="stext">If this option is activated, Viscacha will check if there are Tasks to be done at every page call. For a better Performance you can page out this task, by loading the file <a href="cron.php" target="_blank">cron.php</a>with a scheduled cron job.</span></td>
 	   <td class="mbox" width="50%"><input type="checkbox" name="pccron" value="1"<?php echo iif($config['pccron'],' checked'); ?>></td> 
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">Max. number of tasks wich will be executed per page impression:<br><font class="stext">For bigger boards a small number (1-2) is strongly recommended, for smaller boards the number can be higher (3-5). 0 = execute all!</font></td>
+	   <td class="mbox" width="50%">Max. number of tasks wich will be executed per page impression:<br><font class="stext">For bigger boards a small number (1-2) is strongly recommended, for small boards the number can be higher (3-5). 0 = execute all!</font></td>
 	   <td class="mbox" width="50%"><input type="text" name="pccron_maxjobs" value="<?php echo $config['pccron_maxjobs']; ?>" size="4"></td> 
 	  </tr>
 	  <tr> 
@@ -1223,7 +1223,7 @@ elseif ($job == 'general') {
 	   <td class="obox" colspan="2"><b>General Forum Settings</b></td>
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">Page name:<br><font class="stext">Will among other things be used in E-Mails and should not exceed 64 characters.</font></td>
+	   <td class="mbox" width="50%">Page name:<br><font class="stext">Is used, among other, in e-mails and should not exceed 64 characters.</font></td>
 	   <td class="mbox" width="50%"><input type="text" name="fname" value="<?php echo $config['fname']; ?>" size="50"></td> 
 	  </tr>
 	  <tr> 
@@ -1239,7 +1239,7 @@ elseif ($job == 'general') {
 	   <td class="mbox" width="50%"><input type="text" name="fpath" value="<?php echo $config['fpath']; ?>" size="50"></td> 
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">Forum E-Mail address:<br /><font class="stext">Will be used for every outgoing E-Mail.</font></td>
+	   <td class="mbox" width="50%">Forum E-Mail address:<br /><font class="stext">Will be used for every outgoing e-mail.</font></td>
 	   <td class="mbox" width="50%"><input type="text" name="forenmail" value="<?php echo $config['forenmail']; ?>" size="50"></td> 
 	  </tr>
 	  <tr> 
@@ -1278,11 +1278,11 @@ elseif ($job == 'sitestatus') {
 	   <td class="obox" colspan="2">Switch Viscacha on and off</td>
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">Switch off:<br><font class="stext">If your page is switched off, your users will get the changeable message indicated under this option, however administrators  can use the site as usual.</font></td>
+	   <td class="mbox" width="50%">Switch off:<br><font class="stext">If your page is switched off, your users will get the changeable message indicated under this option, however administrators can use the site as usual.</font></td>
 	   <td class="mbox" width="50%"><input type="checkbox" name="foffline" value="1"<?php echo iif($config['foffline'],' checked'); ?>></td> 
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">Offline message:<br><font class="stext">Thsi message will be shown if page is switched off<br>HTML and PHP are allowed!</font></td>
+	   <td class="mbox" width="50%">Offline message:<br><font class="stext">This message will be shown if page is switched off.<br>HTML and PHP are allowed!</font></td>
 	   <td class="mbox" width="50%"><textarea class="texteditor" name="template" rows="5" cols="60"><?php echo $obox; ?></textarea></td> 
 	  </tr>
 	   <td class="ubox" width="100%" colspan="2" align="center"><input type="submit" name="Submit" value="Submit"></td> 
@@ -1453,7 +1453,7 @@ elseif ($job == 'textprocessing') {
 	  </tr>
 	  <tr> 
 	   <td class="mbox" width="50%">Censor Texts:<br>
-	   <font class="stext">The words to censor can be specified <a href="admin.php?action=bbcodes&job=censor">here</a>. The extended censoring will make the censor more accurate.</font></td>
+	   <font class="stext">The words to censor can be specified <a href="admin.php?action=bbcodes&job=censor">here</a>. The extended censoring will make the censor more accurate and find out also letters which are separated with eventual characters.</font></td>
 	   <td class="mbox" width="50%">
 	   <input type="radio" name="censorstatus" value="0"<?php echo iif($config['censorstatus'] == 0,' checked'); ?>> No censor<br>
 	   <input type="radio" name="censorstatus" value="1"<?php echo iif($config['censorstatus'] == 1,' checked'); ?>> Normal censor<br>
@@ -1465,7 +1465,7 @@ elseif ($job == 'textprocessing') {
 	   <td class="mbox" width="50%"><input type="checkbox" name="dictstatus" value="1"<?php echo iif($config['dictstatus'],' checked'); ?>></td> 
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">Replace vocabulary:<br><font class="stext">You can replace the <a href="admin.php?action=bbcodes&job=replace">vocabulary</a> automatically (however optional for every thread).</font></td>
+	   <td class="mbox" width="50%">Replace vocabulary:<br><font class="stext">You can replace the <a href="admin.php?action=bbcodes&job=replace">vocabulary</a> automatically (however explicit selectable in every thread).</font></td>
 	   <td class="mbox" width="50%"><input type="checkbox" name="wordstatus" value="1"<?php echo iif($config['wordstatus'],' checked'); ?>></td> 
 	  </tr>
 	  <tr> 
@@ -1501,7 +1501,7 @@ elseif ($job == 'textprocessing') {
 	   <td class="mbox" width="50%"><input type="text" name="maxwordlength" value="<?php echo $config['maxwordlength']; ?>" size="4"></td> 
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">Wordwrap: Character or HTML-Tag with wich too long words will be separated:<br><font class="stext">For example a line break with &lt;br /&gt; or a painted (-).</font></td>
+	   <td class="mbox" width="50%">Wordwrap: Character or HTML-Tag with wich too long words will be separated:<br><font class="stext">For example a line break with &lt;br /&gt; or a dash (-).</font></td>
 	   <td class="mbox" width="50%"><input type="text" name="maxwordlengthchar" value="<?php echo $config['maxwordlengthchar']; ?>" size="8"></td> 
 	  </tr>
   	  <tr> 
@@ -1828,7 +1828,7 @@ else {
  <tr class="mbox"><td>
   <a href="admin.php?action=settings&job=sitestatus">Switch Viscacha on or off</a>
  </td><td>
-  <span class="stext">Here you can temporarly deactivate the system for non-administrators to do maintenance work or updates.</span>
+  <span class="stext">Here you can temporarily deactivate the system for non-administrators to do maintenance work or updates.</span>
  </td></tr>
  <tr class="mbox"><td>
   <a href="admin.php?action=settings&job=general">General Settings</a>
