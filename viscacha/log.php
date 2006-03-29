@@ -50,6 +50,12 @@ if ($_GET['action'] == "login2") {
         viscacha_header($loc);
     }
 
+	if ($remember == 1) {
+		$remember = true;
+	}
+	else {
+		$remember = false;
+	}
     if (!$slog->sid_login($remember)) {
 		error($lang->phrase('log_wrong_data'), "log.php?action=login&amp;redirect=".urlencode($loc).SID2URL_x);
     }

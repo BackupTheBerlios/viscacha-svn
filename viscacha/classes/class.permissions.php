@@ -1,5 +1,4 @@
 <?php
-
 class slog {
 
 var $statusdata;
@@ -20,8 +19,14 @@ var $querysid;
 var $positive;
 var $negative;
 var $boards;
+var $sidload;
 
-// Konstruktor
+/**
+ * Constructor for this class.
+ *
+ * This class manages the user-permissions, login and logout.
+ * This function does some initial work: caching search engine user agents, detects the spiders and gets the ip of the user.
+ */
 function slog () {
 	global $config;
 
@@ -44,8 +49,14 @@ function slog () {
 	$this->positive = array();
 	$this->negative = array();
 	$this->boards = array();
+	$this->sidload = false;
 }
 
+/**
+ * Checks if it is time to delete the old user sessions (and returns true in this case).
+ *
+ * @return boolean
+ */
 function SessionDel () {
 	global $config;
 
@@ -65,9 +76,12 @@ function SessionDel () {
 	}
 }
 
-/*
-* Get the IDs for Member and Guest Group and sets constants
-*/
+/**
+ * Gets the IDs for the member and the guest group and sets constants.
+ * 
+ * The ID for the members is set to the constant 'GROUP_GUEST'.
+ * The ID for the guests is set to the constant 'GROUP_MEMBER'.
+ */
 function defineGID() {
 	global $db;
 	$scache = new scache('groupstandard');
@@ -95,9 +109,15 @@ function defineGID() {
 	}
 }
 
-/*
-* Ermittelt die Team-Gruppen-IDs (Admins & G-Mods)
-*/
+/**
+ * Gets the IDs for the admin- and global moderator-groups.
+ * 
+ * This function returns an array containign two arrays with the group ids. 
+ * The array with the key 'admin' contains the ids for the administrators and 
+ * the array with the key 'gmod' contains the ids for the global moderators.
+ *
+ * @return array Array containing admin and g-mod ids
+ */
 function getTeamID () {
 	global $db;
 	$scache = new scache('team_ag');
@@ -120,14 +140,28 @@ function getTeamID () {
 	return $data;
 }
 
+/**
+ * Returns the ip of the calling user. 
+ * 
+ * The ip is determined while constructing this class by function getip().
+ *
+ * @return string Ip-Adress
+ */
 function getIP() {
 	return $this->ip;
 }
 
-/*
-* Ermittelt den öffentlichen Status einer Person und liefert die Gruppentitel per Array zurück
-*/
-function getStatus($groups, $implode = false) {
+/**
+ * Determines the public status of a member and returns the titles.
+ * 
+ * If you specify the second parameter and it is empty you get an array.
+ * If the second parameter is not empty, the titles will be separated by this parameter.
+ *
+ * @param String Komma-separated list containing the group-ids
+ * @param String Separator for the titles or empty string
+ * @return mixed An array with the titles or a string (depends on second parameter)
+ */
+function getStatus($groups, $implode = '') {
 	$titles = array();
 	if (count($this->statusdata) == 0) {
 		$this->getStatusData();
@@ -180,9 +214,9 @@ function getStatus($groups, $implode = false) {
 	}
 }
 
-/*
-* - Holt die Daten für getStatus() -
-*/
+/**
+ * Caches the data used by method getStatus().
+ */
 function getStatusData () {
 	global $db;
 	$scache = new scache('group_status');
@@ -198,6 +232,14 @@ function getStatusData () {
 	}
 }
 
+/**
+ * This is a quick and dirty helper function to set some data.
+ * 
+ * This function sets some language-data (name for guests and the timezone) and sets $my->ip.
+ *
+ * @param string Language: Guest's name
+ * @param string Language: Timezone
+ */
 function setlang($l1, $l2) {
 	global $my;
 	if (!$my->vlogin) {
@@ -209,6 +251,9 @@ function setlang($l1, $l2) {
 	$my->ip = $this->ip;
 }
 
+/**
+ * Function that updates the user and session data after the script finished.
+ */
 function updatelogged () {
 	global $my, $db, $gpc;
 	$serialized = serialize($my->mark);
@@ -238,15 +283,33 @@ function updatelogged () {
 
 }
 
-function logged () {
-	global $config, $db, $phpdoc, $gpc;
-
-	// Alte Sessions (nach bestimmter Zeit, die geprüft wird) löschen
+/**
+ * Deletes old sessions (after a specific time, set in the admin control panel).
+ *
+ * @return boolean
+ */
+function deleteOldSessions () {
+    global $config;
 	if ($this->SessionDel() == true) {
 	    $sessionsave = $config['sessionsave']*60;
 	    $old = time()-$sessionsave;
 	    $db->query ("DELETE FROM {$db->pre}session WHERE active <= '".$old."'",__LINE__,__FILE__);
+	    return true;
 	}
+	else {
+		return false;
+	}
+}
+
+/**
+ * This script gets and prepares userdata, checks login data, sets cookies and manages sessions.
+ *
+ * @return object Data of the user who is calling this script
+ */
+function logged () {
+	global $config, $db, $gpc;
+
+	$this->deleteOldSessions();
 	
 	$sessionid = $gpc->get('s', str);
 	if (empty($sessionid) || strlen($sessionid) != $config['sid_length']) {
@@ -410,22 +473,9 @@ function logged () {
 		$my->opt_showsig = 1;
 	}
 
+	// Ban this user...
 	if ($this->bi[1] == 'e') {
-		$slog = new slog();
-		$my = $slog->logged();
-		global $lang;
-		$lang->init($my->language);
-		$tpl = new tpl();
-
-		ob_start();
-		include('data/banned.php');
-		$banned = ob_get_contents();
-		ob_end_clean();
-        echo $tpl->parse("banned");
-
-        $phpdoc->Out();
-		$db->close();
-		exit();
+		$this->banish();
 	}
 
 	$this->sid2url();
@@ -433,7 +483,37 @@ function logged () {
 	return $my;
 }
 
-function sid_load($fromnew=FALSE) {
+/**
+ * Bans a user. 
+ * 
+ * After calling the function exit() is called and script ends. 
+ * Connection to database is closed. Template 'banned' will be shown.
+ * Error Message is loaded from 'data/banned.php'-file.
+ */
+function banish() {
+	global $config, $db, $phpdoc, $gpc, $lang;
+	$slog = new slog();
+	$my = $slog->logged();
+	$lang->init($my->language);
+	$tpl = new tpl();
+	
+	ob_start();
+	include('data/banned.php');
+	$banned = ob_get_contents();
+	ob_end_clean();
+	
+	echo $tpl->parse("banned");
+    $phpdoc->Out();
+	$db->close();
+	exit();
+}
+
+/**
+ * Loads an existing session.
+ *
+ * @return object Data of the user who is calling this script
+ */
+function sid_load() {
 	global $config, $db, $gpc;
 	if ($config['session_checkip']) {
 		$short_ip = ext_iptrim ($this->ip, 3);
@@ -470,18 +550,29 @@ function sid_load($fromnew=FALSE) {
 		}
 	}
 	else {
-		$my = $this->sid_new(TRUE);
+		$this->sidload = true;
+		$my = $this->sid_new();
 	}
 
 	return $my;
 }
-function sid_new($fromload=FALSE) {
+
+/**
+ * Creates a new session.
+ * 
+ * If cookies are disabled the page will be reloaded with session id added to query string.
+ *
+ * @param boolean Set to true if this function is called from sid_load()
+ * @return object Data of the user who is calling this script
+ */
+function sid_new() {
 	global $config, $db, $gpc;
 
-	if (!$fromload) {
+	if (!$this->sidload) {
 		$load = $db->query('SELECT mid FROM '.$db->pre.'session WHERE mid = "'.$this->cookiedata[0].'" LIMIT 1',__LINE__,__FILE__);
 		if ($db->num_rows($load) == 1) {
-			$my = $this->sid_load(TRUE);
+			$this->sidload = true;
+			$my = $this->sid_load();
 			return $my;
 		}
 	}
@@ -518,6 +609,7 @@ function sid_new($fromload=FALSE) {
 	(sid, mid, wiw_script, wiw_action, wiw_id, active, ip, remoteaddr, lastvisit, mark, pwfaccess, settings) VALUES
 	('$this->sid', '$id','".SCRIPTNAME."','".$action."','".$qid."','".time()."','$this->ip','".$gpc->save_str(htmlspecialchars($_SERVER['HTTP_USER_AGENT']))."','$lastvisit','$my->mark','$my->pwfaccess','$my->settings')",__LINE__,__FILE__);
 
+	// ToDo: Ohne Refresh?!
 	if (!$this->cookies && !$this->querysid) {
 		$arr = parse_url($_SERVER['REQUEST_URI']);
 		if (empty($arr['query'])) {
@@ -531,6 +623,10 @@ function sid_new($fromload=FALSE) {
 
 	return $my;
 }
+
+/**
+ * Logs the user out.
+ */
 function sid_logout() {
 	global $my, $db, $config, $gpc;
 	if ($my->id > 0) {
@@ -547,7 +643,14 @@ function sid_logout() {
 	makecookie($config['cookie_prefix'].'_vdata', '|', -60);
 	$db->query("UPDATE {$db->pre}user SET lastvisit = '".time()."' WHERE id = '".$my->id."'",__LINE__,__FILE__);
 }
-function sid_login($remember = 1) {
+
+/**
+ * Logs the user in.
+ *
+ * @param boolean Remember the user's data (with cookies).
+ * @return boolean Returns 'true' on success, 'false' on failure.
+ */
+function sid_login($remember = true) {
 	global $my, $config, $db, $gpc;
 	$result = $db->query('SELECT u.*, f.*, s.mid FROM '.$db->pre.'user AS u LEFT JOIN '.$db->pre.'session AS s ON s.mid = u.id LEFT JOIN '.$db->pre.'userfields as f ON f.ufid = u.id WHERE name="'.$_POST['name'].'" AND pw=MD5("'.$_POST['pw'].'") LIMIT 1',__LINE__,__FILE__);
 
@@ -630,7 +733,7 @@ function sid_login($remember = 1) {
 		$qid = $gpc->get('id', int);
 		
 		$db->query ("UPDATE {$db->pre}session SET settings = '".serialize($my->settings)."', mark = '".serialize($my->mark)."', wiw_script = '".SCRIPTNAME."', wiw_action = '".$action."', wiw_id = '".$qid."', active = '".time()."', mid = '$my->id', lastvisit = '$my->lastvisit' WHERE $sqlwhere LIMIT 1",__LINE__,__FILE__);
-		if ($remember == 1) {
+		if ($remember == true) {
 			$expire = 31536000;
 		}
 		else {
@@ -640,16 +743,26 @@ function sid_login($remember = 1) {
 		makecookie($config['cookie_prefix'].'_vlastvisit', $my->lastvisit);
 		$this->cookiedata[0] = $my->id;
 		$this->cookiedata[1] = $my->pw;
-		return TRUE;
+		return true;
 	}
 	else {
-		return FALSE;
+		return false;
 	}
 }
 
+/**
+ * Defines constants with some variations of session ids.
+ *
+ * If cookies are enabled the constants are empty. If cookies are disabled
+ * 'SID2URL' contains the plain session id,
+ * 'SID2URL_1' contains '?s=' and the session id,
+ * 'SID2URL_x' contains '&amp;amp;s=' and the session id,
+ * 'SID2URL_JS_1' contains '?s=' and the plain session id and
+ * 'SID2URL_JS_x' contains '&amp;s=' and the plain session id.
+ */
 function sid2url() {
 	if (!defined('SID2URL')) {
-    	if ($this->cookies || $this->bi[0] != FALSE) {
+    	if ($this->cookies || $this->bi[0] != false) {
     		DEFINE('SID2URL_JS_x', '');
     		DEFINE('SID2URL_JS_1', '');
     		DEFINE('SID2URL_x', '');
@@ -666,6 +779,13 @@ function sid2url() {
 	}
 }
 
+/**
+ * Sets all posts read (sets lastvisit time to now).
+ * 
+ * Returns 'true' on success and 'false' on failure.
+ *
+ * @return boolean
+ */
 function mark_read() {
 	global $my, $db;
 	if ($my->vlogin) {
@@ -675,12 +795,22 @@ function mark_read() {
 		$db->query ("UPDATE {$db->pre}session SET lastvisit = '".time()."' WHERE sid = '$this->sid'",__LINE__,__FILE__);
 	}
 	$my->mark = array();
-	return $db->affected_rows();
+	if ($db->affected_rows() > 0) {
+		return true;
+	}
+	else {
+		return false;
+	}
 }
 
-/*
-* - Konstruiert eine sichere Session-ID -
-*/
+/**
+ * Creates a Session-ID.
+ * 
+ * The ID has the length specified in $config['sid_length']. Possible lengths are 64, 96, 128 and 32 characters.
+ * If the length is invalid, 32 will be used.
+ *
+ * @return String Session-ID
+ */
 function construct_sid() {
 	global $config;
 	if ($config['sid_length'] == 64) {
@@ -705,6 +835,14 @@ function construct_sid() {
 	return $this->sid;
 }
 
+/**
+ * Gets the permissions of a member in a specified board.
+ *
+ * @param integer Board-ID or 0 for all boards
+ * @param string Komma-separated list with group-ids
+ * @param boolean Is it a member?
+ * @return array Permissions
+ */
 function Permissions ($board = 0, $groups = null, $member = null) {
 	global $db, $my;
 	
@@ -820,6 +958,11 @@ function Permissions ($board = 0, $groups = null, $member = null) {
 	return $permissions;
 }
 
+/**
+ * Returns an array with board-ids the user has permissions for.
+ *
+ * @return array Board-IDs
+ */
 function getBoards() {
 	if (count($this->boards) == 0) {
 		$this->boards = array_keys(cache_cat_bid());
@@ -827,13 +970,13 @@ function getBoards() {
 	return $this->boards;
 }
 
-/*
-* - Ermittelt die Berechtigungen eines Besuchers für alle Foren	-
-* - Vorheriger Aufruf von Permissions() erforderlich!			-
-*
-* Array     =   GlobalPermissions ()
-* $array[Board-ID][perm]
-*/
+/**
+ * Determines the permissions of an user for all forums.
+ * 
+ * Returns an array ($array[Board-ID][Permission-Key]) with permissions. It is required to call $this->Permissions() before!
+ *
+ * @return array Permissions
+ */
 function GlobalPermissions() {
 	global $db, $my;
 	$boardid = $this->getBoards();
@@ -896,17 +1039,20 @@ function GlobalPermissions() {
 	return $permissions;
 }
 
-/*
-* - Ermittelt die zusätzlichen Berechtigungen eines Users (Moderatorenbezogen) -
-*
-* Array     =   ModPermissions (Board-ID)
-* Array     =   [0] Angegebener User ist im Forum Moderator
-*               [1] Themenbewertungen setzen
-*		    	[2] Themen als News setzen
-*		    	[3] Themen als Artikel setzen
-*		    	[4] Beiträge löschen
-*		    	[5] Beiträge  verschieben/kopieren
-*/
+/**
+ * Determines the permissions of a moderator.
+ *
+ * Returns an array with the following keys and the values:
+ * [0] user is moderator in this forum,
+ * [1] rate topic,
+ * [2] set topic as news,
+ * [3] set topic as article,
+ * [4] delete posts,
+ * [5] move/copy topics
+ * 
+ * @param integer Board-ID
+ * @return array Permissions
+ */
 function ModPermissions ($bid) {
 	global $my, $db;
 	if ($my->vlogin && $my->id > 0) {
@@ -932,7 +1078,17 @@ function ModPermissions ($bid) {
 /*
 * - Konstruiert den günstigsten SQL-String -
 */
-function sqlinboards($spalte,$r_and=NULL) {
+/**
+ * Constructs the best sql query.
+ * 
+ * If the second parameter is 0 then the 'AND' is added before the query.
+ * If the second parameter is 1 then the 'AND' is added after the query.
+ *
+ * @param string field name
+ * @param integer
+ * @return string part of sql query
+ */
+function sqlinboards($spalte, $r_and = 0) {
 	
 	if ($this->permissions['forum'] == 1 && count($this->negative) > 1) {
 		$ids = implode(',',$this->negative);
@@ -955,7 +1111,7 @@ function sqlinboards($spalte,$r_and=NULL) {
 		$sql = ' 1=0 ';
 	}
 	else {
-		die('Hacking Attempt: Groups (Positive/Negative)');
+		trigger_error('Hacking Attempt: Groups (Positive/Negative)', E_USER_ERROR);
 	}
 	
 	if ($r_and == 1) {
@@ -968,5 +1124,4 @@ function sqlinboards($spalte,$r_and=NULL) {
 }
 
 }
-
 ?>

@@ -29,7 +29,7 @@ if ($job == 'ftp') {
 	  <td class="mbox" width="50%"><input type="text" name="ftp_port" value="21" size="4" value="<?php echo $config['ftp_port']; ?>"></td> 
 	 </tr>
 	 <tr>
-	  <td class="mbox" width="50%">FTP-Startpath:<br /><span class="stext"> Path, from which the FTP-Program works. This path should be the relative FTP-path to your Viscacha-Installation. If the directory containing Viscacha is your FTP-account path, you just need an &quot;/&quot; under *nix-systems. Path determined by the script:<code><?php echo $path; ?></code></span></td>
+	  <td class="mbox" width="50%">FTP-Startpath:<br /><span class="stext">Path, from which the FTP-Program works. This path should be the relative FTP-path to your Viscacha-Installation. If the directory containing Viscacha is your FTP-account path, you just need an &quot;/&quot; under *nix-systems. Path determined by the script:<code><?php echo $path; ?></code></span></td>
 	  <td class="mbox" width="50%"><input type="text" name="ftp_path" value="<?php echo $config['ftp_path']; ?>" size="50"></td> 
 	 </tr>
 	 <tr> 
