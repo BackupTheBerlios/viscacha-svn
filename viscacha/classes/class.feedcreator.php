@@ -67,6 +67,14 @@ class FeedItem extends HtmlDescribable {
 	 */
 	var $additionalElements = Array();
 
+	// Added by Joseph LeBlanc, contact@jlleblanc.com
+	var $enclosures = Array();
+	function addEnclosure($url, $length = 0, $type)
+	{
+		$this->enclosures[] = array("url" => $url, "length" => $length, "type" => $type);
+	}
+	// end add, Joseph LeBlanc
+
 	// on hold
 	// var $source;
 }
@@ -508,7 +516,7 @@ class FeedCreator extends HtmlDescribable {
 		if ($filename=="") {
 			$filename = $this->_generateFilename();
 		}
-		$feedFile = fopen($filename, "w+");
+		$feedFile = fopen($filename, "w");
 		if ($feedFile) {
 			fputs($feedFile,$this->createFeed());
 			fclose($feedFile);

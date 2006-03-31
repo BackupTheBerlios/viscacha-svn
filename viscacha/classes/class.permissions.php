@@ -289,7 +289,7 @@ function updatelogged () {
  * @return boolean
  */
 function deleteOldSessions () {
-    global $config;
+    global $config, $db;
 	if ($this->SessionDel() == true) {
 	    $sessionsave = $config['sessionsave']*60;
 	    $old = time()-$sessionsave;
@@ -836,6 +836,18 @@ function construct_sid() {
 }
 
 /**
+ * Returns an array with board-ids the user has permissions for.
+ *
+ * @return array Board-IDs
+ */
+function getBoards() {
+	if (count($this->boards) == 0) {
+		$this->boards = array_keys(cache_cat_bid());
+	}
+	return $this->boards;
+}
+
+/**
  * Gets the permissions of a member in a specified board.
  *
  * @param integer Board-ID or 0 for all boards
@@ -956,18 +968,6 @@ function Permissions ($board = 0, $groups = null, $member = null) {
 		}
 	}
 	return $permissions;
-}
-
-/**
- * Returns an array with board-ids the user has permissions for.
- *
- * @return array Board-IDs
- */
-function getBoards() {
-	if (count($this->boards) == 0) {
-		$this->boards = array_keys(cache_cat_bid());
-	}
-	return $this->boards;
 }
 
 /**

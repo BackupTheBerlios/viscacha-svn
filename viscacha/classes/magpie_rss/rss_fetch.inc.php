@@ -159,7 +159,7 @@ function fetch_rss ($url, $maxage = 3600) {
         
         // setup headers
         if ( $cache_status == 'STALE' ) {
-            $rss = $cache->get( $url );
+            $rss = $cache->get( $cache_key );
             if (isset($rss->etag) && isset($rss->last_modified) && $rss->etag && $rss->last_modified) {
                 $request_headers['If-None-Match'] = $rss->etag;
                 $request_headers['If-Last-Modified'] = $rss->last_modified;
@@ -242,6 +242,7 @@ function error2 ($errormsg, $lvl=E_USER_WARNING) {
         if ( $errormsg ) {
             $errormsg = "MagpieRSS: $errormsg";
             $MAGPIE_ERROR = $errormsg;         
+            trigger_error( $errormsg, $lvl);                
         }
 }
 function debug ($debugmsg, $lvl=E_USER_NOTICE) {
