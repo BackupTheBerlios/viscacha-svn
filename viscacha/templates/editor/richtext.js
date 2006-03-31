@@ -1,4 +1,4 @@
-// RTE REVAMPED VERSION: 2006/01/13
+// RTE REVAMPED VERSION: 2006/03/21
 // This code is public domain. Redistribution and use of this code, with or without modification, is permitted.
 // Visit http://fieldspar.com for the latest release.
 // Visit the support forums at http://www.kevinroth.com/forums/index.php?c=2
@@ -9,12 +9,13 @@
 // Constants
 var minWidth = 640;					// minumum width
 var wrapWidth = 1245; 			//width at which all icons will appear on one bar
-var maxchar = 64000;		// maximum number of characters per save
+var maxchar = 64000;        // maximum number of characters per save
 var lang = "en"; 						//xhtml language
-var encoding = "utf-8";			//xhtml encoding, english only use "iso-8859-1"
+var lang_direction = "ltr"; //language direction : ltr = left-to-right, rtl = right-to-left 
+var encoding = "utf-8"; 		//xhtml encoding
 var zeroBorder = "#c0c0c0"; //guideline color - see showGuidelines()
 
-var keep_absolute = true; // !!!Disabled - see line 456 for details!!!!!
+var keep_absolute = true; // !!!Disabled - see line 456 for details!!!!!  
 // By default IE will try to convery all hyperlinks to absolute paths. By
 // setting this value to "false" it will retain the relative path.
 
@@ -33,6 +34,7 @@ var originalHTMLDesign;
 //Init Variables & Attributes
 var ua = navigator.userAgent.toLowerCase();
 var isIE = ((ua.indexOf("msie") != -1) && (ua.indexOf("opera") == -1) && (ua.indexOf("webtv") == -1))? true:false;
+var isIE7 = ((isIE) && (ua.indexOf("msie 7.") != -1))? true:false;
 var	isGecko = (ua.indexOf("gecko") != -1)? true:false;
 var	isSafari = (ua.indexOf("safari") != -1)? true:false;
 var	isKonqueror = (ua.indexOf("konqueror") != -1)? true:false;
@@ -51,6 +53,27 @@ var isRichText = false;
 if(document.getElementById && document.designMode && !isSafari && !isKonqueror) isRichText = true;
 //for testing standard textarea, uncomment the following line
 //isRichText = false;
+
+replacements = new Array (
+   //convert all types of single quotes
+   new RegExp(String.fromCharCode(145),'g'), "'",
+   new RegExp(String.fromCharCode(146),'g'), "'",
+   new RegExp("'"), "&#39;",
+   //convert all types of double quotes
+   new RegExp(String.fromCharCode(147),'g'), "\"",
+   new RegExp(String.fromCharCode(148),'g'), "\"",
+   //new RegExp("\""), "&#34;",
+   //replace carriage returns & line feeds
+   new RegExp("[\r\n]",'g'), " "
+);
+
+function rteSafe(html) {
+   html = trim(html);
+   for (i=0; i<replacements.length; i = i+2) {
+       html = html.replace(replacements[i], replacements[i+1]);
+   }
+   return html;
+}
 
 function initRTE(imgPath, incPath, css, genXHTML){
 	// CM 05/04/05 check args for compatibility with old RTE implementations
@@ -204,7 +227,9 @@ function insertImg(name, image, command, id){
 }
 
 function enableDesignMode(rte, html, css, readOnly) {
-	var frameHtml = "<html id=\"" + rte + "\"><head>\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\">\n";
+	var frameHtml = "<html dir='" + lang_direction + "' lang='" + lang + "' id='" + rte + "'>\n<head>\n";
+  frameHtml += "<meta http-equiv='Content-Type' content='text/html; charset=" + encoding + "'>\n";
+  frameHtml += "<meta http-equiv='Content-Language' content='" + lang + "'>\n";
 	//to reference your stylesheet, set href property below to your stylesheet path and uncomment
 	if(css.length > 0){
 		frameHtml += "<link media=\"all\" type=\"text/css\" href=\"" + css + "\" rel=\"stylesheet\">\n";
@@ -287,6 +312,13 @@ function updateRTE(rte) {
 	parseRTE(rte);
 }
 
+function updateRTEs(){
+	var vRTEs = allRTEs.split(";");
+	for(var i=0; i<vRTEs.length; i++){
+		updateRTE(vRTEs[i]);
+	}
+}
+
 function parseRTE(rte) {
 	if (!isRichText) {
 		 return false;
@@ -334,15 +366,12 @@ function setHiddenVal(rte){
 	// fix to replace special characters added here:
   	oHdnField.value = replaceSpecialChars(oHdnField.value);
   	//if there is no content (other than formatting) set value to nothing
-	if(stripHTML(oHdnField.value.replace("&nbsp;", " ")) == "" && oHdnField.value.toLowerCase().search("<hr") == -1 && oHdnField.value.toLowerCase().search("<img") == -1) oHdnField.value = "";
+	if(stripHTML(oHdnField.value.replace("&nbsp;", " ")) == "" &&
+		oHdnField.value.toLowerCase().search("<hr") == -1 &&
+		oHdnField.value.toLowerCase().search("<img") == -1) oHdnField.value = "";
 }
 
-function updateRTEs(){
-	var vRTEs = allRTEs.split(";");
-	for(var i=0; i<vRTEs.length; i++){
-		updateRTE(vRTEs[i]);
-	}
-}
+
 
 function rteCommand(rte, command, option){
 	dlgCleanUp();
@@ -522,8 +551,9 @@ function dlgColorPalette(rte, command) {
 	//get dialog position
 	var oDialog = document.getElementById('cp' + rte);
 	var buttonElement = document.getElementById(command+"_"+rte);
-	var iLeftPos = getOffsetLeft(buttonElement);
-	var iTopPos = getOffsetTop(buttonElement)+22;
+	var iLeftPos = buttonElement.offsetLeft+5; 
+  var iTopPos = buttonElement.offsetTop+53;
+  if (!document.getElementById('Buttons2_'+rte)) iTopPos = iTopPos-28;
 	oDialog.style.left = iLeftPos + "px";
 	oDialog.style.top = iTopPos + "px";
 	if((command == parent.command)&&(rte == currentRTE)){
@@ -855,24 +885,9 @@ function stripHTML(strU) {
 }
 
 function trim(inputString) {
-	if (typeof inputString != "string") return inputString;
-	var retValue = inputString;
-  	var ch = retValue.substring(0, 1);
-  	while(ch == " "){
-		retValue = retValue.substring(1, retValue.length);
-		ch = retValue.substring(0, 1);
-  	}
-  	ch = retValue.substring(retValue.length - 1, retValue.length);
-  	while(ch == " "){
-		retValue = retValue.substring(0, retValue.length - 1);
-		ch = retValue.substring(retValue.length - 1, retValue.length);
-  	}
-	// Note that there are two spaces in the string - look for multiple spaces within the string
-  	while (retValue.indexOf("  ") != -1) {
-		// Again, there are two spaces in each of the strings
-		retValue = retValue.substring(0, retValue.indexOf("  ")) + retValue.substring(retValue.indexOf("  ") + 1, retValue.length);
-  	}
-  	return retValue; // Return the trimmed string back to the user
+  if (typeof inputString != "string") return inputString;
+  inputString = inputString.replace(/^\s+|\s+$/g, "").replace(/\s{2,}/g, "");
+  return inputString;
 }
 
 function showGuidelines(rte) {
@@ -970,7 +985,7 @@ function countWords(rte){
   	chars = chars.length;
   	chars = maxchar - chars;
   	str = str+" a ";  // word added to avoid error
-  	str = str.replace(/&nbsp;/gi,' ').replace(/([\n\r\t])/g,' ').replace(/(  +)/g,' ').replace(/&(.*);/g,' ').replace(/^\s*|\s*$/g,'');
+  str = trim(str.replace(/&nbsp;/gi,' ').replace(/([\n\r\t])/g,' ').replace(/&(.*);/g,' '));
   	var count = 0;
   	for (x=0;x<str.length;x++) {
 		if (str.charAt(x)==" " && str.charAt(x-1)!=" ") count++;
