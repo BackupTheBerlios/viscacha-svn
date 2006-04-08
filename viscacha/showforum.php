@@ -156,7 +156,8 @@ if ($info['topics'] > 0) {
 		elseif ($row->mark == 'g') {
 			$pref .= $lang->phrase('forum_mark_g');
 		}
-		elseif ($row->status == '2') {
+		
+		if ($row->status == '2') {
 			$pref .= $lang->phrase('forum_moved');
 		}
 		elseif ($row->sticky == '1') {

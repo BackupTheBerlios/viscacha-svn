@@ -32,6 +32,7 @@ $zeitmessung1 = t1();
 
 $slog = new slog();
 $my = $slog->logged();
+$my->p = $slog->Permissions();
 $lang->init($my->language);
 
 function ImageHexColorAllocate(&$image, $string) {
@@ -72,16 +73,21 @@ if ($_GET['action'] == 'vote') {
 	
 	$PG->start();
 }
-elseif ($_GET['action'] == 'postrating' || $_GET['action'] == 'memberrating') {
+elseif ($_GET['action'] == 'postrating' || $_GET['action'] == 'memberrating' || $_GET['action'] == 'threadrating') {
 	$colors = array('FF0000', 'E44C00', 'E89A00', 'EBE700', '9EE800', '4DE400');
 
-	if ($_GET['action'] == 'memberrating' && $config['memberrating'] == 1) {
+	if ($_GET['action'] == 'memberrating' && ($config['postrating'] == 1 || $my->p['admin'] == 1)) {
 		$result = $db->query("SELECT rating FROM {$db->pre}postratings WHERE aid = '{$_GET['id']}'");
 		$width = 100;
 		$height = 8;
 	}
-	elseif ($_GET['action'] == 'postrating' && $config['postrating'] == 1) {
+	elseif ($_GET['action'] == 'postrating' && ($config['postrating'] == 1 || $my->p['admin'] == 1)) {
 		$result = $db->query("SELECT rating FROM {$db->pre}postratings WHERE pid = '{$_GET['id']}'");
+		$width = 50;
+		$height = 8;
+	}
+	elseif ($_GET['action'] == 'threadrating' && ($config['postrating'] == 1 || $my->p['admin'] == 1)) {
+		$result = $db->query("SELECT rating FROM {$db->pre}postratings WHERE tid = '{$_GET['id']}'");
 		$width = 50;
 		$height = 8;
 	}

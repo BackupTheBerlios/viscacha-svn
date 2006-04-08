@@ -94,7 +94,7 @@ elseif ($job == 'onlinestatus') {
 	echo head();
 	$b = file_get_contents('data/imservers.php');
 	?>
-<form name="form" method="post" action="admin.php?action=members&job=onlinestatus2">
+<form name="form" method="post" action="admin.php?action=misc&job=onlinestatus2">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr> 
    <td class="obox" colspan="2"><b>Onlinestatus-Server</b></td>
@@ -102,21 +102,41 @@ elseif ($job == 'onlinestatus') {
   <tr>
    <td class="mbox" width="30%">
    Server:<br />
-   <span class="stext">Pro Zeile ein Server.<br /><a href="http://www.onlinestatus.org/forum/usage.php" target="_blank">Onlinestatus-Server-Übersicht</a><br /></span>
+   <span class="stext">Pro Zeile ein Server.<br /><a href="http://osi.viscacha.org/" target="_blank">Onlinestatus-Server-Übersicht</a></span>
    </td>
-   <td class="mbox" width="70%"><textarea name="ips" rows="10" cols="90"><?php echo $b; ?></textarea></td> 
+   <td class="mbox" width="70%"><textarea name="servers" rows="10" cols="90"><?php echo $b; ?></textarea></td> 
   </tr>
   <tr> 
    <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="Submit"></td> 
   </tr>
  </table>
 </form>
+<br />
+ <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
+  <tr> 
+   <td class="obox" colspan="2"><b>Informationen bzgl. der Onlinestatus-Server</b></td>
+  </tr>
+  <tr>
+   <td class="mbox">
+   <p><strong>Was ist mit Onlinestatus gemeint?</strong><br />
+   In den Benutzerprofilen kann man Instant Messenger-Adressen angeben. Diese werden im Profil auf eine Seite verlinkt, die den aktuellen Status der angegebenen Adresse anzeigen.</p>
+   <p><strong>Woher werden die Onlinestatus-Daten genommen?</strong><br />
+   Die Daten der Messenger ICQ, Yahoo, AOL und Skype werden direkt von den Servern der jeweiligen Messenger-Betreiber geholt. Jabber und MSN bieten keinen solchen Service an und deswegen wird eine inoffizielle Quelle, den Service von <a href="http://www.onlinestatus.org" target="_blank">Onlinestatus.org</a>, zurückgegriffen.
+   Dieser Service stellt ein Programm zur Verfügung, das die Daten der Messenger auslesen kann und zurückgibt. Da dieses Programm jedoch auf mehrere verschiedene Server verteilt ist, die sich häufiger mal ändern kann, muss in das obige Feld eine Liste von Servern angegeben werden, von denen der Status ausgelesen werden kann.<br />
+   Eine Übersicht an zur Verfügung stehenden Servern und weitere Informationen sind hier einsehbar: <a href="http://osi.viscacha.org/" target="_blank">Onlinestatus-Server-Übersicht</a>.
+   </p>
+   </td> 
+  </tr>
+  <tr> 
+   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="Submit"></td> 
+  </tr>
+ </table>
 	<?php
 	echo foot();
 }
 elseif ($job == 'onlinestatus2') {
 	echo head();
-	$filesystem->file_put_contents('data/imservers.php', $gpc->get('template', none));
+	$filesystem->file_put_contents('data/imservers.php', $gpc->get('servers', none));
 	ok('admin.php?action=misc&job=onlinestatus', 'Daten wurden gespeichert');
 }
 elseif ($job == 'sessionmails') {

@@ -49,7 +49,7 @@ if ($job == 'menu') {
 	   <h3><img id="img_admin_menu17" name="collapse" src="admin/html/images/plus.gif" alt=""> Topics &amp; Posts</h3>
 	  <ul id="part_admin_menu17">
 	   <!-- <li>&raquo; <a href="admin.php?action=posts&job=moderate" target="Main">Moderate Topics &amp; Posts</a></li> -->
-	   <li>&raquo; <s><a href="admin.php?action=posts&job=postrating" target="Main">Postratings</a></s></li>
+	   <li>&raquo; <a href="admin.php?action=posts&job=postrating" target="Main">Postratings</a></li>
 	   <!-- <li>&raquo; <s><a href="admin.php?action=posts&job=attachments" target="Main">Attachment Manager</a></s></li> -->
 	  </ul>
 	 </div>
@@ -147,7 +147,7 @@ if ($job == 'menu') {
 	   <li>&raquo; <a href="admin.php?action=misc&job=spellcheck" target="Main">Spell Checker</a></li>
 	   <li>&raquo; <a href="admin.php?action=misc&job=feedcreator" target="Main">Feedcreator</a></li>
 	   <li>&raquo; <a href="admin.php?action=misc&job=sessionmails" target="Main">Trash-E-Mail adresses</a></li>
-	   <li>&raquo; <a href="admin.php?action=misc&job=onlinestatus" target="Main">Online Status Indication Servers</a></li>
+	   <li>&raquo; <a href="admin.php?action=misc&job=onlinestatus" target="Main">Online Status Indication</a></li>
       </ul>
      </div>
 	 <div class="border" border="0" cellspacing="1" cellpadding="2" align="center">
