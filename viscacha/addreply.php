@@ -124,7 +124,7 @@ if ($_GET['action'] == "save") {
 		$error[] = $lang->phrase('title_too_short');
 	}
 
-	$bbcode = initBBCodes();
+	BBProfile($bbcode);
 	$_POST['topic'] = $bbcode->parseTitle($_POST['topic']);
 
 	if (count($error) > 0 || !empty($_POST['Preview2'])) {
@@ -204,7 +204,7 @@ else {
 	
 	$my->mp = $slog->ModPermissions($info['board']);
 	
-	$bbcode = initBBCodes();
+	BBProfile($bbcode);
 
 	if (strlen($_GET['fid']) == 32) {
 		$data = $gpc->prepare(import_error_data($_GET['fid']));
@@ -252,7 +252,7 @@ else {
 					$row['name'] = $memberdata[$row['name']];
 				}
 				$row['comment'] = preg_replace('/\[hide\](.+?)\[\/hide\]/is', '', $row['comment']);
-				$row['comment'] = trim($row['comment']);
+				$row['comment'] = $bbcode->censor(trim($row['comment']));
 				$data['comment'] .= "[quote=".$row['name']."]".$row['comment']."[/quote]\r\n";
 			}
 		}

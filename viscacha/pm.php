@@ -45,7 +45,7 @@ $breadcrumb->Add($lang->phrase('editprofile_pm'), 'pm.php'.SID2URL_x);
 
 if ($_GET['action'] == 'show') {
 
-	$bbcode = initBBCodes();
+	BBProfile($bbcode);
 	
 	$result = $db->query("
 	SELECT p.dir, p.status, p.id, p.topic, p.comment, p.date, u.fullname, u.groups, u.hp, u.pic, u.mail, u.regdate, u.location, u.name, p.pm_from as mid 
@@ -192,7 +192,7 @@ elseif ($_GET['action'] == "save") {
 		}
 	}
 
-	$bbcode = initBBCodes();
+	BBProfile($bbcode);
 	$_POST['topic'] = $bbcode->parseTitle($_POST['topic']);
 
 	if (count($error) > 0 || !empty($_POST['Preview2'])) {
@@ -235,7 +235,7 @@ elseif ($_GET['action'] == "new" || $_GET['action'] == "preview" || $_GET['actio
 	$breadcrumb->Add($lang->phrase('pm_new_title'));
 	echo $tpl->parse("header");
 	
-    $bbcode = initBBCodes();
+    BBProfile($bbcode);
 	if (strlen($_GET['fid']) == 32) {
 		$data = $gpc->prepare(import_error_data($_GET['fid']));
 		if ($_GET['action'] == 'preview') {

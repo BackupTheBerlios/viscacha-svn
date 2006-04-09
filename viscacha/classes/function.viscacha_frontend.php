@@ -55,6 +55,7 @@ function DocCodePagination($cc) {
 }
 
 function DocCodeParser($syntax, $parser = 1) {
+	global $bbcode;
 	if ($parser == 2) {
 		ob_start();
 		$code = str_replace('<'.'?php','<'.'?',$syntax);
@@ -65,7 +66,7 @@ function DocCodeParser($syntax, $parser = 1) {
 		ob_end_clean();
 	}
 	elseif ($parser == 3) {
-		$bbcode = initBBCodes();
+		BBProfile($bbcode);
 		$syntax = $bbcode->parse($syntax);
 	}
 	elseif ($parser == 0) {

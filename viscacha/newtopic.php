@@ -210,7 +210,7 @@ elseif ($_GET['action'] == "save") {
 		$error[] = $lang->phrase('prefix_not_optional');
 	}
 
-	$bbcode = initBBCodes();
+	BBProfile($bbcode);
 	$_POST['topic'] = $bbcode->parseTitle($_POST['topic']);
 
 	if (count($error) > 0 || !empty($_POST['Preview2'])) {
@@ -315,7 +315,7 @@ else {
 	echo $tpl->parse("header");
 	echo $tpl->parse("menu");
 
-    $bbcode = initBBCodes();
+    BBProfile($bbcode);
 	$inner['smileys'] = $bbcode->getsmileyhtml($config['smileysperrow']);
 	$inner['bbhtml'] = $bbcode->getbbhtml();
 

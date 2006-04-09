@@ -2,7 +2,7 @@
 /*
 	Viscacha - A bulletin board solution for easily managing your content
 	Copyright (C) 2004-2006  Matthias Mohr, MaMo Net
-	
+
 	Author: Matthias Mohr
 	Publisher: http://www.mamo-net.de
 	Start Date: May 22, 2004
@@ -43,13 +43,12 @@ class BBCode {
 
 	function BBCode () {
 	    $this->benchmark = array(
-	    'smileys' => 0,
-	    'bbcode' => 0
+	    	'smileys' => 0,
+	    	'bbcode' => 0
 	    );
 		$this->cache_smileys();
 		$this->cache_bbcode();
 		$this->cache_custombb();
-		$this->setProfile('standard');
 		include('classes/class.convertroman.php');
 	}
 	function setName($name) {
@@ -101,7 +100,7 @@ class BBCode {
 		$code2 = str_replace("]", "&#93;", $code2);
 		$code2 = str_replace("[", "&#91;", $code2);
 		$code2 = str_replace("\t", "&nbsp;&nbsp;&nbsp;&nbsp;", $code2);
-	    
+
 	    if (count($rows) > 1) {
 	    	$a = 0;
 	    	$aa = array();
@@ -109,9 +108,9 @@ class BBCode {
 		        $a++;
 		        $aa[] = "$a:&nbsp;";
 		    }
-		
+
 			$aa = implode("<br>",$aa);
-		
+
 		    $this->noparse[$pid] = '<strong class="bb_blockcode_header">Quelltext:</strong><div class="bb_blockcode"><table><tr><td width="1%">'.$aa.'</td><td width="99%">'.$this->nl2br($code2).'</td></tr></table></div>';
 		}
 		else {
@@ -127,7 +126,7 @@ class BBCode {
 		$code2 = str_replace("]", "&#93;", $code2);
 		$code2 = str_replace("[", "&#91;", $code2);
 		$code2 = str_replace("\t", "&nbsp;&nbsp;&nbsp;&nbsp;", $code2);
-    
+
 	    if (count($rows) > 1) {
 		    $a = 0;
 		    $aa = array();
@@ -140,14 +139,14 @@ class BBCode {
 				);
 			    $scache->exportdata($export);
 			}
-		    
+
 		    foreach ($rows as $row) {
 		        $a++;
 		        $aa[] = "$a:&nbsp;";
 		    }
-			
+
 			$aa = implode("<br />",$aa);
-		
+
 		    $this->noparse[$pid] = '<strong class="bb_blockcode_header"><a target="_blank" href="popup.php?action=hlcode&amp;fid='.$unique.SID2URL_x.'">Erweiterter Quelltext</a>:</strong><div class="bb_blockcode"><table><tr><td width="1%">'.$aa.'</td><td width="99%">'.$this->nl2br($code2).'</td></tr></table></div>';
 		}
 		else {
@@ -198,7 +197,7 @@ class BBCode {
 			$content = $this->wordwrap($content, ceil($this->profile['wordwrap_wordlength']*0.75));
 			$o = "<span class=\"bb_size_extended\">{$content}</span>";
 		}
-		
+
 		return $o;
 	}
 	function cb_note ($desc, $word) {
@@ -218,7 +217,7 @@ class BBCode {
 		if (strtolower(substr($url, 0, 4)) == 'www.') {
 			$url = "http://".$url;
 		}
-		
+
 		$specialchars = array('&quot;','&gt;','&lt;','&#039;');
 		foreach ($specialchars as $char) {
 			$full = $url.$chop;
@@ -228,14 +227,14 @@ class BBCode {
 				break;
 			}
 		}
-		
+
 		$pid = $this->noparse_id();
 		$this->noparse[$pid] = $url;
-		
+
 		if ($title != false) {
 		    $ahref = '<a href="<!PID:'.$pid.'>" target="_blank">'.$title.'</a>';
 		    return $ahref;
-		}	
+		}
 		elseif ($this->profile['reduceUrl'] == 1 && strxlen($url) >= $config['maxurllength']) {
 			$prefix = ceil($config['maxurllength']/5);
 			$suffix = strpos($url, '/', 8);
@@ -247,10 +246,10 @@ class BBCode {
 			$this->noparse[$pid2] = $newurl;
 			$ahref = '<a href="<!PID:'.$pid.'>" target="_blank"><!PID:'.$pid2.'></a>';
 		}
-		else{  
+		else{
 		   $ahref = '<a href="<!PID:'.$pid.'>" target="_blank"><!PID:'.$pid.'></a>';
 		}
-		
+
 	    return $ahref.$chop;
 	}
 	function cb_pdf_list ($type,$pattern) {
@@ -301,7 +300,7 @@ class BBCode {
 		$code2 = str_replace("]", "&#93;", $code2);
 		$code2 = str_replace("[", "&#91;", $code2);
 		$code2 = str_replace("\t", "&nbsp;&nbsp;&nbsp;&nbsp;", $code2);
-	    
+
 	    if (count($rows) > 1) {
 	    	$a = 0;
 	    	$code = '';
@@ -310,7 +309,7 @@ class BBCode {
 		        $a++;
 		        $code .= "<tt>".leading_zero($a, $lines)."</tt>: <code>".$row."</code><br>";
 		    }
-		
+
 		    $this->noparse[$pid] = '<br><b>Quelltext:</b><br>'.htmlentities($code);
 		}
 		else {
@@ -344,7 +343,7 @@ class BBCode {
 			}
 			$content = "<font size=\"{$fontsize}\">{$content}</font>";
 		}
-		
+
 		return $content;
 	}
 	function cb_plain_list ($type,$pattern) {
@@ -393,7 +392,7 @@ class BBCode {
 	    $rows = explode("\n", $code);
 		$code2 = str_replace("]", "&#93;", $code);
 		$code2 = str_replace("[", "&#91;", $code2);
-	    
+
 	    if (count($rows) > 1) {
 	    	$a = 0;
 	    	$code = '';
@@ -402,7 +401,7 @@ class BBCode {
 		        $a++;
 		        $code .= leading_zero($a, $lines).": ".$row."\n";
 		    }
-		
+
 		    $this->noparse[$pid] = "\nQuelltext:\n".$code;
 		}
 		else {
@@ -431,12 +430,12 @@ class BBCode {
 			'[ot]', '[/ot]',
 			'[hr]'
 		);
-		
+
 		$replace = array_fill(0, count($search), '');
 		$text = str_ireplace($search, $replace, $text);
-		
+
 		$text = preg_replace('/\[code(=\w+?)?\](.+?)\[\/code\]\n?/ise', '\2', $text);
-			
+
 		while (preg_match('/\[list(?:=(a|A|I|i|OL|ol))?\](.+?)\[\/list\]/is',$text)) {
 			$text = preg_replace('/\[list(?:=(a|A|I|i|OL|ol))?\](.+?)\[\/list\]/ise', '\2', $text);
 		}
@@ -445,25 +444,25 @@ class BBCode {
 		$text = preg_replace('/\[align=(left|center|right|justify)\](.+?)\[\/align\]/is', "\\2", $text);
 		$text = preg_replace('/\n?\[h=(middle|small|large)\](.+?)\[\/h\]\n?/is', "\n\\2\n", $text);
 		$text = preg_replace('/\[size=(small|extended|large)\](.+?)\[\/size\]/is', "\\2", $text);
-		
+
 		while (preg_match('/\[quote=(.+?)\](.+?)\[\/quote\]/is',$text)) {
 			$text = preg_replace('/\[quote=(.+?)\](.+?)\[\/quote\]\n?/is', "\n\\2\n", $text);
 		}
 		while (preg_match('/\[edit=(.+?)\](.+?)\[\/edit\]/is',$text)) {
 			$text = preg_replace('/\[edit=(.+?)\](.+?)\[\/edit\]\n?/is', "\n\\2\n", $text);
 		}
-		
+
 		$text = str_ireplace('[tab]', "    ", $text);
 		$text = str_ireplace('[reader]', $this->reader, $text);
-		
+
 		$text = preg_replace('/\[[^\[\]]+?\](.+?)\[\/[^\[\]]+?\]/is', "\\1", $text);
-		
+
 		$text = $this->parseDoc($text);
 		$text = $this->nl2br($text, 'plain');
 		$text = $this->censor($text);
 		return $text;
 	}
-	
+
 	// Possible values for $type: html, pdf, plain (with linebreaks)
 	function parse ($text, $type = 'html') {
 		global $lang, $my; // Replace DE-Language with Variables
@@ -494,9 +493,9 @@ class BBCode {
 			);
 			$replace = array_fill(0, count($search), '');
 			$text = str_ireplace($search, $replace, $text);
-			
+
 			$text = preg_replace('/\[code(=\w+?)?\](.+?)\[\/code\]\n?/ise', '$this->cb_plain_code("\2")', $text);
-			
+
 			while (preg_match('/\[list(?:=(a|A|I|i|OL|ol))?\](.+?)\[\/list\]/is',$text)) {
 				$text = preg_replace('/\[list(?:=(a|A|I|i|OL|ol))?\](.+?)\[\/list\]/ise', '$this->cb_plain_list("\1", "\2")', $text);
 			}
@@ -505,7 +504,7 @@ class BBCode {
 			$text = preg_replace('/\[align=(left|center|right|justify)\](.+?)\[\/align\]/is', "\\2", $text);
 			$text = preg_replace('/\n?\[h=(middle|small|large)\](.+?)\[\/h\]\n?/is', "\\2", $text);
 			$text = preg_replace('/\[size=(small|extended|large)\](.+?)\[\/size\]/is', "\\2", $text);
-			
+
 			while (preg_match('/\[quote=(.+?)\](.+?)\[\/quote\]/is',$text)) {
 				$text = preg_replace('/\[quote=(.+?)\](.+?)\[\/quote\]\n?/is', "\nZitat von \\1:\n\\2\n", $text);
 			}
@@ -521,7 +520,7 @@ class BBCode {
 			while (preg_match('/\[ot\](.+?)\[\/ot\]/is',$text)) {
 				$text = preg_replace('/\[ot\](.+?)\[\/ot\]\n?/is', "\nOff-Topic:\n\\1\n", $text);
 			}
-			
+
 			$text = preg_replace('/(\[hr\]){1,}/is', "-------------------", $text);
 			$text = str_ireplace('[tab]', "    ", $text);
 		}
@@ -535,7 +534,7 @@ class BBCode {
 			$text = preg_replace("~\[url\]((telnet://|callto://|irc://|teamspeak://|http://|https://|ftp://|www.|mailto:|ed2k://|\w+?.\w{2,7})+:\/\/[a-z0-9;\/\?:@=\&\$\-_\.\+!\*'\(\),\~%#]+?)\[\/url\]~is", "<a href=\"\\1\">\\1</a>", $text);
 			$text = preg_replace("~\[url=((telnet://|callto://|irc://|teamspeak://|http://|https://|ftp://|www.|mailto:|ed2k://|\w+?.\w{2,7})[a-z0-9;\/\?:@=\&\$\-_\.\+!\*'\(\),\~%#]+?)\](.+?)\[\/url\]~is", "<a href=\"\\1\">\\3</a>", $text);
 			$text = preg_replace("/\[img\](([^?&=].*?)\.(png|gif|bmp|jpg|jpe|jpeg))\[\/img\]/is", "<img src=\"\\1\">", $text);
-			
+
 			$text = preg_replace('/\[color=\#?([0-9A-F]{3,6})\](.+?)\[\/color\]/is', "<font color=\"#\\1\">\\2</font>", $text);
 			$text = preg_replace('/\[align=(left|center|right|justify)\](.+?)\[\/align\]/is', "<p align=\"\\1\">\\2</p>", $text);
 
@@ -558,46 +557,46 @@ class BBCode {
 			while (preg_match('/\[ot\](.+?)\[\/ot\]/is',$text)) {
 				$text = preg_replace('/\[ot\](.+?)\[\/ot\]\n?/is', "<br><b>Off-Topic:</b><hr><span style=\"color: #999999\" size=\"7\">\\1</span><hr>", $text);
 			}
-			
+
 			$text = preg_replace('/\[b\](.+?)\[\/b\]/is', "<b>\\1</b>", $text);
 			$text = preg_replace('/\[i\](.+?)\[\/i\]/is', "<i>\\1</i>", $text);
 			$text = preg_replace('/\[u\](.+?)\[\/u\]/is', "<u>\\1</u>", $text);
 			$text = preg_replace('/\[tt\](.+?)\[\/tt\]/is', "<tt>\\1</tt>", $text);
 			$text = preg_replace('/\n?(\[hr\]){1,}\n?/is', "<hr>", $text);
-			
+
 			$text = preg_replace('/\[sub\](.+?)\[\/sub\]/is', "<sub>\\1</sub>", $text);
 			$text = preg_replace('/\[sup\](.+?)\[\/sup\]/is', "<sup>\\1</sup>", $text);
-			
+
 			$text = str_ireplace('[tab]', "\t", $text);
 			$text = preg_replace('/\[table\](.+?)\[\/table\]\n?/ise', '$this->cb_table("\1", "tt")', $text);
-			
+
 			$text = $this->tab2space($text);
 			$text = $this->parseSmileys($text);
 		}
 		else {
 			$text = preg_replace('/\[code\](.+?)\[\/code\]\n?/ise', '$this->cb_code("\1")', $text);
 			$text = preg_replace('/\[code=(\w+?)\](.+?)\[\/code\]\n?/ise', '$this->cb_hlcode(\'\1\',\'\2\')', $text);
-			
+
 			$char = chr(5);
 			$text = str_ireplace('[/list]', '[/list]'.$char, $text);
 			$text = str_ireplace('[list', $char.'[list', $text);
 			while (preg_match('/'.$char.'\[list(?:=(a|A|I|i|OL|ol))?\]([^'.$char.']+)\[\/list\]'.$char.'/is',$text, $treffer)) {
 				$text = preg_replace('/\n?'.$char.'\[list(?:=(a|A|I|i|OL|ol))?\]([^'.$char.']+)\[\/list\]'.$char.'\n?/ise', '$this->cb_list("\1", "\2")', $text);
 			}
-			
+
 			$text = preg_replace('/\[note=(.+?)\](.+?)\[\/note\]/ise', '$this->cb_note("\1", "\2")', $text);
-			
+
 			$text = preg_replace("~\[url\]((telnet://|callto://|irc://|teamspeak://|http://|https://|ftp://|www.|mailto:|ed2k://|\w+?.\w{2,7})+:\/\/[a-z0-9;\/\?:@=\&\$\-_\.\+!\*'\(\),\~%#]+?)\[\/url\]~ise", '$this->cb_url("\1")', $text);
 			$text = preg_replace("~\[url=((telnet://|callto://|irc://|teamspeak://|http://|https://|ftp://|www.|mailto:|ed2k://|\w+?.\w{2,7})[a-z0-9;\/\?:@=\&\$\-_\.\+!\*'\(\),\~%#]+?)\](.+?)\[\/url\]~ise", '$this->cb_url("\1", "\3")', $text);
 			$text = preg_replace("~((et://|svn://|telnet://|callto://|irc://|teamspeak://|http://|https://|ftp://|ed2k://|www.)[a-zA-Z0-9\-\.@]+\.[a-zA-Z0-9]{1,7}(:\d*)?/?([a-zA-Z0-9\-\.:;_\?\,/\\\+&%\$#\=\~]*)?([a-zA-Z0-9/\\\+\=\?]{1}))([^\"\>\s\=\,]{0,6})~ise", '$this->cb_url("\1", false, true, "\6")', $text);
-			
+
 			if ($this->profile['resizeImg'] > 0) {
 			    $text = preg_replace("/\[img\](([^?&=].*?)\.(png|gif|bmp|jpg|jpe|jpeg))\[\/img\]/is", "<img src='\\1' alt='' name='resize' />", $text);
 			}
 			else {
 			    $text = preg_replace("/\[img\](([^?&=].*?)\.(png|gif|bmp|jpg|jpe|jpeg))\[\/img\]/is", "<img src='\\1' alt=''>", $text);
 			}
-			
+
 			$text = preg_replace('/\[color=\#?([0-9A-F]{3,6})\](.+?)\[\/color\]/is', "<span style='color: #\\1'>\\2</span>", $text);
 			$text = preg_replace('/\[align=(left|center|right|justify)\](.+?)\[\/align\]/is', "<p style='text-align: \\1'>\\2</p>", $text);
 
@@ -620,7 +619,7 @@ class BBCode {
 			while (preg_match('/\[ot\](.+?)\[\/ot\]/is',$text)) {
 				$text = preg_replace('/\[ot\](.+?)\[\/ot\]\n?/is', "<div class='bb_ot'><strong>Off-Topic:</strong><br /><span>\\1</span></div>", $text);
 			}
-			
+
 			$text = preg_replace('/\[b\](.+?)\[\/b\]/is', "<strong>\\1</strong>", $text);
 			$text = preg_replace('/\[i\](.+?)\[\/i\]/is', "<em>\\1</em>", $text);
 			$text = preg_replace('/\[u\](.+?)\[\/u\]/is', "<u>\\1</u>", $text);
@@ -631,7 +630,7 @@ class BBCode {
 			$text = preg_replace('/\[tt\](.+?)\[\/tt\]/is', "<tt>\\1</tt>", $text);
 			$text = str_ireplace('[tab]', "\t", $text);
 			$text = preg_replace('/\[table\](.+?)\[\/table\]\n?/ise', '$this->cb_table("\1", "tt")', $text);
-			
+
 			$text = $this->tab2space($text);
 			$text = $this->parseSmileys($text);
 			$text = $this->wordwrap($text);
@@ -649,7 +648,7 @@ class BBCode {
 		$this->benchmark['bbcode'] += $thiszm2-$thiszm1;
 		return $text;
 	}
-	
+
 	function nl2br ($text, $type = 'html') {
 		if ($type == 'plain') {
 			$text = str_replace("\n", " \n", $text); // Evtl. Leerzeichen oder nur Zeilenumbruch...
@@ -675,6 +674,7 @@ class BBCode {
 	}
 	function parseTitle ($topic) {
 		$topic = str_replace("\t", ' ', $topic);
+		$topic = $this->censor($topic);
 		if($topic == strtoupper($topic) && $this->profile['topicuppercase'] == 1) {
 			return ucwords(strtolower($topic));
 		}
@@ -749,7 +749,7 @@ class BBCode {
 				$line   = $start . $tab . $end;
 			}
 			$result[] = $line;
-		} 
+		}
 		return str_replace($char, '&nbsp;', implode("\n", $result));
 	}
 	function getBenchmark($type='bbcode') {
@@ -774,6 +774,9 @@ class BBCode {
 	}
 	function getCustomBB () {
 		return $this->custombb;
+	}
+	function existsProfile($name) {
+	    return isset($this->cfg[$name]);
 	}
 	function setProfile ($name = 'standard', $new = SP_CHANGE) {
 		if ($new == SP_COPY) {
@@ -876,7 +879,7 @@ class BBCode {
 	function highlight($text) {
 		if (isset($this->profile['highlight']) && count($this->profile['highlight']) > 0) {
 			$class = $this->profile['highlight_class'];
-			foreach ($this->profile['highlight'] as $token) { 
+			foreach ($this->profile['highlight'] as $token) {
 				if (strlen($token) > 2) {
 					$text = str_replace('\"', '"', substr(preg_replace('#(\>(((?>([^><]+|(?R)))*)\<))#se', "preg_replace('#\b(" . $token . ")\b#i', '<span class=\"" . $class . "\">\\\\1</span>', '\\0')", '>' . $text . '<'), 1, -1));
 				}
@@ -891,11 +894,11 @@ class BBCode {
 			    $wr = $word['replace'];
 			    if ($type == 'pdf' || $type == 'plain') {
 			    	$text = str_replace(
-			    		'\"', 
-			    		'"', 
+			    		'\"',
+			    		'"',
 			    		substr(
 			    			preg_replace(
-			    				'#(\>(((?>([^><]+|(?R)))*)\<))#se', 
+			    				'#(\>(((?>([^><]+|(?R)))*)\<))#se',
 			    				"preg_replace(
 			    					'#\b(".$ws.")\b#i',
 			    					'\\\\1 (".$wr.")',
@@ -928,7 +931,7 @@ class BBCode {
 	            			-1
 	            		)
 	            	);
-	                // $text = str_ireplace($word['search'], "", $text);            
+	                // $text = str_ireplace($word['search'], "", $text);
 	            }
 			}
 		}
@@ -938,10 +941,11 @@ class BBCode {
 	    if ($this->profile['useCensor'] == 2) {
 	    	foreach ($this->bbcodes['censor'] as $word) {
 	            $letters = str_split($word['search']);
-	            $word['search'] = '';
+	            $word['search'] = array();
 	            foreach ($letters as $letter) {
-	                $word['search'] .= preg_quote($letter, '~')."(\s|\.|\[.+?\])?";
+	                $word['search'][] = preg_quote($letter, '~');
 	            }
+	            $word['search'] = implode("(\s|\.|\[[^\]]+?\])?", $word['search']); 
 	            $text = preg_replace("~".$word['search']."~is", $word['replace'], $text);
             }
         }
@@ -1092,51 +1096,56 @@ class BBCode {
 	}
 }
 
-function initBBCodes($signature = FALSE) {
+function BBProfile(&$bbcode, $profile = 'standard') {
 	global $config, $my;
-	$bbcode = new BBCode('standard', SP_NEW);
-	if ($config['resizebigimg'] == 0) {
-		$config['resizebigimgwidth'] = 0;
+	if (!$bbcode->existsProfile($profile)) {
+		if ($config['resizebigimg'] == 0) {
+			$config['resizebigimgwidth'] = 0;
+		}
+
+		if ($profile == 'signature') {
+			$bbcode->setProfile('signature', SP_NEW);
+			$bbcode->setProfile($profile, SP_NEW);
+			$bbcode->setMisc($config['dictstatus'], $config['censorstatus'], $config['resizebigimgwidth']);
+			$bbcode->setWordwrap($config['wordwrap'], $config['maxwordlength'], $config['maxwordlengthchar'], $config['asia']);
+			$bbcode->setDoc($config['reduce_endchars'], $config['reduce_nl'], $config['topicuppercase']);
+			$bbcode->setURL($config['reduce_url'], $config['maxurllength'], $config['maxurltrenner']);
+			$bbcode->setName($my->name);
+			$bbcode->setSmileyDir($config['smileyurl']);
+			$bbcode->setSmileys(1);
+			$bbcode->setReplace($config['wordstatus']);
+			if ($config['sig_bbimg'] == 1) {
+				$bbcode->setFunc('img');
+			}
+			if ($config['sig_bbcode'] == 1) {
+				$bbcode->setFunc('code');
+			}
+			if ($config['sig_bblist'] == 1) {
+				$bbcode->setFunc('list');
+			}
+			if ($config['sig_bbedit'] == 1) {
+				$bbcode->setFunc('edit');
+			}
+			if ($config['sig_bbot'] == 1) {
+				$bbcode->setFunc('ot');
+			}
+			if ($config['sig_bbh'] == 1) {
+				$bbcode->setFunc('h');
+			}
+		}
+		else {
+			$bbcode->setProfile($profile, SP_NEW);
+			$bbcode->setMisc($config['dictstatus'], $config['censorstatus'], $config['resizebigimgwidth']);
+			$bbcode->setWordwrap($config['wordwrap'], $config['maxwordlength'], $config['maxwordlengthchar'], $config['asia']);
+			$bbcode->setDoc($config['reduce_endchars'], $config['reduce_nl'], $config['topicuppercase']);
+			$bbcode->setURL($config['reduce_url'], $config['maxurllength'], $config['maxurltrenner']);
+			$bbcode->setName($my->name);
+			$bbcode->setSmileyDir($config['smileyurl']);
+		}
 	}
-	$bbcode->setMisc($config['dictstatus'], $config['censorstatus'], $config['resizebigimgwidth']);
-	$bbcode->setWordwrap($config['wordwrap'], $config['maxwordlength'], $config['maxwordlengthchar'], $config['asia']);
-	$bbcode->setDoc($config['reduce_endchars'], $config['reduce_nl'], $config['topicuppercase']);
-	$bbcode->setURL($config['reduce_url'], $config['maxurllength'], $config['maxurltrenner']);
-	$bbcode->setName($my->name);
-	$bbcode->setSmileyDir($config['smileyurl']);
-	if ($signature == TRUE) {
-		initSignatureBBCodes($bbcode);
+	else {
+		$bbcode->setProfile($profile, SP_CHANGE);
 	}
-	return $bbcode;
-}
-function initSignatureBBCodes($bbcode) {
-	global $config, $my;
-	$bbcode->setProfile('signature', SP_COPY);
-	if ($config['resizebigimg'] == 0) {
-		$config['resizebigimgwidth'] = 0;
-	}
-	$bbcode->setMisc($config['dictstatus'], $config['censorstatus'], $config['resizebigimgwidth']);
-	if ($config['sig_bbimg'] == 1) {
-		$bbcode->setFunc('img');
-	}
-	if ($config['sig_bbcode'] == 1) {
-		$bbcode->setFunc('code');
-	}
-	if ($config['sig_bblist'] == 1) {
-		$bbcode->setFunc('list');
-	}
-	if ($config['sig_bbedit'] == 1) {
-		$bbcode->setFunc('edit');
-	}
-	if ($config['sig_bbot'] == 1) {
-		$bbcode->setFunc('ot');
-	}
-	if ($config['sig_bbh'] == 1) {
-		$bbcode->setFunc('h');
-	}
-	$bbcode->setSmileys(1);
-	$bbcode->setReplace($config['wordstatus']);
-	$bbcode->setProfile('standard', SP_CHANGE);
 }
 
 ?>

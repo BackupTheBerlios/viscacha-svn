@@ -1,6 +1,5 @@
 <?php
-global $slog;
-global $gpc;
+global $slog, $bbcode, $gpc;
 
 $result = $db->query("
 SELECT r.dowords, r.dosmileys, t.posts, t.prefix, t.status, t.sticky, t.id, t.board, t.topic, r.comment, r.date, IF(r.email = '', u.name, r.name) AS name 
@@ -9,7 +8,7 @@ WHERE t.mark = 'n' AND (t.status = '0' OR t.status = '1') ".$slog->sqlinboards('
 ORDER BY r.date DESC
 LIMIT ".$ini['params']['num']
 ,__LINE__,__FILE__);
-	
+BBProfile($bbcode);
 while ($row = $gpc->prepare($db->fetch_assoc($result))) {
 	$row['pre'] = '';
 	if ($row['prefix'] > 0) {

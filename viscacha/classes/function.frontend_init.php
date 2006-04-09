@@ -92,8 +92,6 @@ include_once ("classes/function.cache.php");
 require_once ("classes/class.template.php");
 // Load Braedcrumb-Module
 include_once ("classes/class.breadcrumb.php");
-// BB-Code functions
-include_once ("classes/class.bbcode.php");
 // Global functions
 require_once ("classes/function.global.php");
 // Load Variables

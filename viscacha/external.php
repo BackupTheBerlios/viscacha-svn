@@ -63,7 +63,7 @@ define("TIME_ZONE", $posneg.$tz2.':'.$tz3);
 // Include the Feedcreator class
 include("classes/class.feedcreator.php"); 
 
-$bbcode = initBBCodes();
+BBProfile($bbcode);
 
 // Check if the user only wants some content (News/Articles)
 $statustype = '';

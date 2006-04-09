@@ -314,15 +314,13 @@ elseif ($is_member) {
 		
 		$vcard = ($config['vcard_dl'] == 1 && ((!$my->vlogin && $config['vcard_dl_guests'] == 1) || $my->vlogin));
 			
-		$bbcode = initBBCodes(TRUE);
-			
-		$bbcode->setProfile();
+		BBProfile($bbcode);
 		$bbcode->setSmileys(1);
 		$bbcode->setReplace(0);
 		$bbcode->setAuthor($row->id);
 		$row->about = $bbcode->parse($row->about);
 		
-		$bbcode->setProfile('signature');
+		BBProfile($bbcode, 'signature');
 		$row->signature = $bbcode->parse($row->signature);
 		
 		// Set the instant-messengers

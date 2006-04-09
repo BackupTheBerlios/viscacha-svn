@@ -81,7 +81,7 @@ else {
 	$searchsql = " LIMIT ".$speeder;
 }
 	
-$bbcode = initBBCodes();
+BBProfile($bbcode);
 $memberdata = cache_memberdata();
 
 $pdftitle = html_entity_decode($config['fname'].": ".$pre.$info['topic']);

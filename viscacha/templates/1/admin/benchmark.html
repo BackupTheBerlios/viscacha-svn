@@ -24,7 +24,7 @@
 	<td width="25%"><strong>Templates Time:</strong></td>
 	<td width="25%"><?php echo substr($this->benchmark['time'], 0, 7); ?> sec.</td>
 </tr>
-<?php if (isset($bbcode)) { ?>
+<?php if ($bbcode->existsProfile('standard')) { ?>
 <tr class="tbody">
 	<td width="25%"><strong>BB-Codes + Smileys:</strong></td>
 	<td width="25%"><?php echo $bbcode->getBenchmark('bbcode'); ?> sec.</td>

@@ -154,8 +154,6 @@ elseif ($_GET['action'] == "showpost") {
 	$last = $fc[$row->board];
 	
 	forum_opt($last['opt'], $last['optvalue'], $last['id']);
-		
-	$bbcode = initBBCodes(TRUE);
 	
 	if ($config['tpcallow'] == 1) {
 		$uploads = $db->query("SELECT id, tid, mid, file, hits FROM {$db->pre}uploads WHERE tid = ".$_GET['id'],__LINE__,__FILE__);
@@ -174,7 +172,7 @@ elseif ($_GET['action'] == "showpost") {
 	}
 	$new = iif($row->date > $my->clv, 'new', 'old');
 	
-	$bbcode->setProfile();
+	BBProfile($bbcode);
 	$bbcode->setSmileys($row->dosmileys);
 	if ($config['wordstatus'] == 0) {
 		$row->dowords = 0;
@@ -187,7 +185,7 @@ elseif ($_GET['action'] == "showpost") {
 	$row->comment = $bbcode->parse($row->comment);
 	
 	if ($my->opt_showsig == 1) {
-		$bbcode->setProfile('signature');
+		BBProfile($bbcode, 'signature');
 		$row->signature = $bbcode->parse($row->signature);
 	}
 	
@@ -220,6 +218,7 @@ elseif ($_GET['action'] == "showpost") {
 		$anz--;
 		$lastdata = explode("\t", $edits[$anz-1]);
 		$date = gmdate($lang->phrase('dformat1'), times($lastdata[1]));
+		BBProfile($bbcode);
 		$why = iif(empty($lastdata[2]), $lang->phrase('post_editinfo_na'), $bbcode->wordwrap($lastdata[2]));
 	}
 	

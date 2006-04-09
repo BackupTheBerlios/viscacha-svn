@@ -46,7 +46,7 @@ $my->pb = $slog->GlobalPermissions();
 $breadcrumb->Add($lang->phrase('portal_title'));
 echo $tpl->parse("header");
 
-$bbcode = initBBCodes();
+BBProfile($bbcode);
 
 $mymodules->load('portal');
 

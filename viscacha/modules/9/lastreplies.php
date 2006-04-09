@@ -1,5 +1,5 @@
 <?php
-global $info, $memberdata, $gpc;
+global $info, $memberdata, $gpc, $bbcode;
 if (!isset($memberdata) || !is_array($memberdata)) {
     $memberdata = cache_memberdata();
 }
@@ -8,6 +8,7 @@ $lang->assign("num", $ini['params']['num']);
 $lang->assign("tid", $info['id']);
 echo $tpl->parse($dir."last");
 $result = $db->query('SELECT board, dosmileys, dowords, id, topic, comment, date, name, email FROM '.$db->pre.'replies WHERE topic_id = "'.$info['id'].'" ORDER BY date DESC LIMIT '.$ini['params']['num'],__LINE__,__FILE__);
+BBProfile($bbcode);
 while ($row = $gpc->prepare($db->fetch_object($result))) {
     
 	if (empty($row->email) && isset($memberdata[$row->name])) {

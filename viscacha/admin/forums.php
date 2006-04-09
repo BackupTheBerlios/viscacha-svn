@@ -912,6 +912,9 @@ elseif ($job == 'cat_edit2') {
 	echo head();
 	
 	$boardname = $gpc->get('temp1', str);
+	$description = $gpc->get('temp2', str);
+	$id = $gpc->get('id', int);
+	
 	if (strlen($boardname) < 2) {
 		error('Name ist zu kurz ( < 2 chars)');
 	}
@@ -919,7 +922,7 @@ elseif ($job == 'cat_edit2') {
 		error('Name is too long( > 200 chars)');
 	}
 	
-	$db->query("UPDATE {$db->pre}categories SET name = '{$boardname}', desctxt = '".$gpc->get('temp2', str)."' WHERE id = ".$id);
+	$db->query("UPDATE {$db->pre}categories SET name = '{$boardname}', desctxt = '{$description}' WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 
 	$scache = new scache('categories');
 	$scache->deletedata();

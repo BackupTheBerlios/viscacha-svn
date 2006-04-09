@@ -49,8 +49,6 @@ require_once ("classes/class.permissions.php");
 include_once ("classes/class.template.php");
 // A class for Languages
 include_once ("classes/class.language.php");
-// BB-Code functions
-include_once ("classes/class.bbcode.php");
 // Global functions
 require_once ("classes/function.global.php");
 

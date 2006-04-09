@@ -39,7 +39,6 @@ $http_vars = array(
 'action' => str,
 'job' => str,
 'search' => str,
-'reply' => str,
 'name' => str,
 'email' => str,
 'topic' => str,

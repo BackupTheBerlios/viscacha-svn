@@ -96,7 +96,7 @@ if ($my->vlogin && $my->p['admin'] == 1) {
 	elseif ($_GET['action'] == 'edit') {
 		// About
 		$chars = numbers($config['maxaboutlength']);
-		$bbcode = initBBCodes();
+		BBProfile($bbcode);
 		$inner['bbhtml'] = $bbcode->getbbhtml();
 		$inner['smileys'] = $bbcode->getsmileyhtml($config['smileysperrow']);
 		

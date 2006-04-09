@@ -299,7 +299,7 @@ elseif ($_GET['action'] == "about") {
 		$data = $my->about;
 	}
 	$chars = numbers($config['maxaboutlength']);
-	$bbcode = initBBCodes();
+	BBProfile($bbcode);
 	$inner['bbhtml'] = $bbcode->getbbhtml();
 	$inner['smileys'] = $bbcode->getsmileyhtml($config['smileysperrow']);
 	$mymodules->load('editprofile_about_top');
@@ -640,13 +640,13 @@ elseif ($_GET['action'] == "copy") {
     }
     $row['date'] = gmdate($lang->phrase('dformat1'), times($row['date']));
 
-	$bbcode = initBBCodes();
+	BBProfile($bbcode);
 	$bbcode->setSmileys($row['dosmileys']);
 	$bbcode->setReplace($config['wordstatus']);
 	if ($topic['status'] == 2) {
 		$row['comment'] = $bbcode->ReplaceTextOnce($row['comment'], 'moved');
 	}
-    $text = $bbcode->parse($row['comment'],'plain');
+    $text = $bbcode->parse($row['comment'], 'plain');
 
 	if (!empty($my->notice)) {
 		$notes = explode('[VSEP]', $my->notice);

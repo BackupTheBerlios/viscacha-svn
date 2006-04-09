@@ -156,7 +156,7 @@ if (($info['name'] == $my->id || $my->mp[0] == 1) && $my->p['edit'] && ($edit_se
 				$error[] = $lang->phrase('prefix_not_optional');
 			}
 
-			$bbcode = initBBCodes();
+			BBProfile($bbcode);
 			$_POST['topic'] = $bbcode->parseTitle($_POST['topic']);
 
 			if (count($error) > 0 || !empty($_POST['Preview2'])) {
@@ -189,7 +189,7 @@ if (($info['name'] == $my->id || $my->mp[0] == 1) && $my->p['edit'] && ($edit_se
 	else {
 		echo $tpl->parse("menu");
 
-		$bbcode = initBBCodes();
+		BBProfile($bbcode);
 
 		if (strlen($_GET['fid']) == 32) {
 			$data = $gpc->prepare(import_error_data($_GET['fid']));

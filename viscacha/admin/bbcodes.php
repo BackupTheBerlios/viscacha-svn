@@ -451,7 +451,7 @@ elseif ($job == 'word') {
 }
 elseif ($job == 'censor') {
 	echo head();
-	$result = $db->query("SELECT * FROM {$db->pre}bbcode WHERE type = 'censor'",__LINE__,__FILE__);
+	$result = $db->query("SELECT * FROM {$db->pre}textparser WHERE type = 'censor'",__LINE__,__FILE__);
 ?>
 <form name="form" method="post" action="admin.php?action=bbcodes&job=del">
 <input name="temp4" value="censor" type="hidden">

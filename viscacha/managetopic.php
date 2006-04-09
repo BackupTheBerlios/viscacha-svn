@@ -408,7 +408,7 @@ if ($my->vlogin && $my->mp[0] == 1) {
 		$topic = array_unique($topic);
 		$comment = array_unique($comment);
 		
-		$bbcode = initBBCodes();
+		BBProfile($bbcode);
 		$inner['smileys'] = $bbcode->getsmileyhtml($config['smileysperrow']);
 		$inner['bbhtml'] = $bbcode->getbbhtml();
 

@@ -82,7 +82,7 @@ else {
 	$searchsql = " LIMIT ".$speeder;
 }
 	
-$bbcode = initBBCodes();
+BBProfile($bbcode);
 $memberdata = cache_memberdata();
 
 $inner['index_bit'] = '';

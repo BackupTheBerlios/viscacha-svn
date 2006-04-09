@@ -327,7 +327,7 @@ elseif ($_GET['action'] == "vote") {
 }
 elseif ($_GET['action'] == "bbhelp") {
 	$my->p = $slog->Permissions();
-	$bbcode = initBBCodes();
+	BBProfile($bbcode);
 	$smileys = $bbcode->getSmileys();
 	$cbb = $bbcode->getCustomBB();
 	$breadcrumb->Add($lang->phrase('bbhelp_title'));

@@ -32,13 +32,20 @@ require_once("classes/class.language.php");
 require_once("classes/class.plugins.php");
 // Gets a file with Output-functions
 require_once("classes/class.docoutput.php");
+// BB-Code Class
+include_once ("classes/class.bbcode.php");
+
 $myini = new INI();
 $lang = new lang();
 $mymodules = new MyModules();
+
 // Database functions
 require_once('classes/database/'.$config['dbsystem'].'.inc.php');
 $db = new DB($config['host'], $config['dbuser'], $config['dbpw'], $config['database'], $config['pconnect'], true, $config['dbprefix']);
 $db->pre = $db->prefix();
+
+// Construct base bb-code object
+$bbcode = new BBCode();
 
 function send_nocache_header() {
 	if (!empty($HTTP_SERVER_VARS['SERVER_SOFTWARE']) && strstr($HTTP_SERVER_VARS['SERVER_SOFTWARE'], 'Apache/2')) {
@@ -682,7 +689,7 @@ Params:
 */
 
 function xmail ($to, $from = array(), $topic, $comment, $type='plain', $attachment = array()) {
-	global $config, $my, $lang;
+	global $config, $my, $lang, $bbcode;
 	
 	require_once("classes/mail/class.phpmailer.php");
 	require_once('classes/mail/extended.phpmailer.php');
@@ -730,7 +737,7 @@ function xmail ($to, $from = array(), $topic, $comment, $type='plain', $attachme
 	$i = 0;
 	foreach ($to as $email) {
 		if ($type == 'bb') {
-			$bbcode = initBBCodes();
+			BBProfile($bbcode);
 			$bbcode->setSmileys(0);
 			$bbcode->setReplace($config['wordstatus']);
 			$row->comment = ($row->comment);

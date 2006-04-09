@@ -144,8 +144,7 @@ else {
 }
 
 $temp = pages($speeder, $config['topiczahl'], "showtopic.php?id=".$info['id']."&amp;", $_GET['page']);
-	
-$bbcode = initBBCodes(TRUE);
+
 $q = explode(' ', trim($q));
 $memberdata = cache_memberdata();
 
@@ -278,7 +277,7 @@ while ($row = $gpc->prepare($db->fetch_object($result))) {
 	}
 	$new = iif($row->date > $my->clv, 'new', 'old');
 	
-	$bbcode->setProfile();
+	BBProfile($bbcode);
 	$bbcode->setSmileys($row->dosmileys);
 	if ($config['wordstatus'] == 0) {
 		$row->dowords = 0;
@@ -294,7 +293,7 @@ while ($row = $gpc->prepare($db->fetch_object($result))) {
 	$row->comment = $bbcode->parse($row->comment);
 	
 	if ($my->opt_showsig == 1) {
-		$bbcode->setProfile('signature');
+		BBProfile($bbcode, 'signature');
 		$row->signature = $bbcode->parse($row->signature);
 	}
 
@@ -348,6 +347,7 @@ while ($row = $gpc->prepare($db->fetch_object($result))) {
 		$anz--;
 		$lastdata = explode("\t", $edits[$anz-1]);
 		$date = gmdate($lang->phrase('dformat1'), times($lastdata[1]));
+		BBProfile($bbcode);
 		$why = iif(empty($lastdata[2]), $lang->phrase('post_editinfo_na'), $bbcode->wordwrap($lastdata[2]));
 	}
 
