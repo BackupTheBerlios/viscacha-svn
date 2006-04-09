@@ -172,31 +172,11 @@ elseif ($_GET['action'] == 'confirm') {
 	}
 	
 }
-elseif ($_GET['action'] == 'veriword') {
-	include("classes/graphic/class.veriword.php");
-	$vword = new VeriWord();
-	if (isset($_GET['width'])) {
-	    $_GET['width'] = $gpc->save_int($_GET['width']);
-	}
-	else {
-	    $_GET['width'] = 150;
-	}
-	if (isset($_GET['height'])) {
-	    $_GET['height'] = $gpc->save_int($_GET['height']);
-	}
-	else {
-	    $_GET['height'] = 33;
-	}
-	$vword->set_filter($config['botgfxtest_filter']);
-	$vword->set_size($_GET['width'],$_GET['height']);
-	$vword->output_image($_GET['fid']);
-	exit;
-}
 else {
 	include("classes/graphic/class.veriword.php");
 	$vword = new VeriWord();
-	$veriid = $vword->set_veriword($config['register_text_verification']);
-	if ($config['register_text_verification'] == 1) {
+	$veriid = $vword->set_veriword($config['botgfxtest_text_verification']);
+	if ($config['botgfxtest_text_verification'] == 1) {
 		$code = $vword->output_word($veriid);
 	}
 	$breadcrumb->Add($lang->phrase('register_title'));

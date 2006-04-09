@@ -40,6 +40,17 @@ require_once('classes/database/'.$config['dbsystem'].'.inc.php');
 $db = new DB($config['host'], $config['dbuser'], $config['dbpw'], $config['database'], $config['pconnect'], true, $config['dbprefix']);
 $db->pre = $db->prefix();
 
+function send_nocache_header() {
+	if (!empty($HTTP_SERVER_VARS['SERVER_SOFTWARE']) && strstr($HTTP_SERVER_VARS['SERVER_SOFTWARE'], 'Apache/2')) {
+		header ('Cache-Control: no-cache, pre-check=0, post-check=0');
+	}
+	else {
+		header ('Cache-Control: private, pre-check=0, post-check=0, max-age=0');
+	}
+	header ('Expires: 0');
+	header ('Pragma: no-cache');
+}
+
 function doctypes() {
 	$data = file('data/documents.php');
 	$arr = array();

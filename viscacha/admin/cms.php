@@ -2,7 +2,7 @@
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "cms.php") die('Error: Hacking Attempt');
 
 if ($job == 'plugins') {
-	viscacha_header('Pragma: no-cache');
+	send_nocache_header();
 	echo head();
 ?>
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
@@ -139,7 +139,7 @@ elseif ($job == 'plugins_info') {
 	echo foot();
 }
 elseif ($job == 'nav') {
-	viscacha_header('Pragma: no-cache');
+	send_nocache_header();
 	echo head();
 ?>
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
@@ -670,7 +670,7 @@ $result = $db->query('SELECT id, title FROM '.$db->pre.'documents');
 echo foot();
 }
 elseif ($job == 'com') {
-	viscacha_header('Pragma: no-cache');
+	send_nocache_header();
 	echo head();
 ?>
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">

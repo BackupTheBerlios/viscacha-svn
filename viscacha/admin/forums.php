@@ -623,7 +623,7 @@ elseif ($job == 'addcat2') {
 	ok('admin.php?action=forums&job=addcat', 'Category was created sucessfully!');
 }
 elseif ($job == 'manage') {
-	viscacha_header('Pragma: no-cache');
+	send_nocache_header();
 	echo head();
 	?>
 	<table class="border">

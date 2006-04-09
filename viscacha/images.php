@@ -73,6 +73,23 @@ if ($_GET['action'] == 'vote') {
 	
 	$PG->start();
 }
+elseif ($_GET['action'] == 'captcha') {
+	if ($_GET['type'] == 'register') {
+		$width = $config['botgfxtest_width'];
+		$height = $config['botgfxtest_height'];
+	}
+	else {
+		$width = $gpc->get('width', int, 160);
+		$height = $gpc->get('height', int, 40);
+	}
+
+	include("classes/graphic/class.veriword.php");
+	$vword = new VeriWord();
+	$vword->set_filter($config['botgfxtest_filter']);
+	$vword->set_color($config['botgfxtest_colortext']);
+	$vword->set_size($width, $height, $config['botgfxtest_format'], $config['botgfxtest_quality']);
+	$vword->output_image($_GET['fid']);
+}
 elseif ($_GET['action'] == 'postrating' || $_GET['action'] == 'memberrating' || $_GET['action'] == 'threadrating') {
 	$colors = array('FF0000', 'E44C00', 'E89A00', 'EBE700', '9EE800', '4DE400');
 

@@ -1671,7 +1671,7 @@ elseif ($job == 'ips') {
 			</tr>
 			<tr>
 				<td class="ubox">
-				<a href="usertools.php?do=iphost&amp;ip=<?php echo $ipaddress; ?>"><?php echo $ipaddress; ?></a>: <b><?php echo $hostname; ?></b>
+				<a href="usertools.php?do=iphost&amp;ip=<?php echo $ipaddress; ?>"><?php echo $ipaddress; ?></a>: <b><?php echo htmlspecialchars($hostname); ?></b>
 				</td>
 			</tr>
 			<tr>
@@ -1757,7 +1757,7 @@ elseif ($job == 'iphost') {
 		$host = '<i>Not Available</i>';
 	}
 	else {
-		$host = $resolvedip;
+		$host = htmlspecialchars($resolvedip);
 	}
 	echo head();
 	?>

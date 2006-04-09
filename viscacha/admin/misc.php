@@ -340,6 +340,7 @@ elseif ($job == "captcha") {
    <ul>
    <li>Hintergrundbilder: <?php echo $noises; ?> [<a href="admin.php?action=misc&amp;job=captcha_noises">Verwalten</a>]</li>
    <li>Schriftarten: <?php echo $fonts; ?> [<a href="admin.php?action=misc&amp;job=captcha_fonts">Verwalten</a>]</li>
+   <li><a href="admin.php?action=settings&amp;job=captcha">Einstellungen</a></li>
    </ul>
    </td>
   </tr>

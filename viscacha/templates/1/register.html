@@ -39,14 +39,14 @@
     <span class="stext"><?php echo $lang->phrase('register_veriword'); ?></span>
 </label>
 <div class="label">
-    <?php if ($config['register_text_verification'] == 0) { ?>
-	  <img alt="" class="right" border="1" width="150" height="33" src="register.php?action=veriword&amp;fid=<?php echo $veriid; ?>" />
+    <?php if ($config['botgfxtest_text_verification'] == 0) { ?>
+	  <img alt="" class="right" border="1" width="<?php echo $config['botgfxtest_width']; ?>" height="<?php echo $config['botgfxtest_height']; ?>" src="images.php?action=captcha&amp;type=register&amp;fid=<?php echo $veriid; ?>" />
 	<?php } else { ?>
 	  <div class="right" style="padding: 2px; font-size: 7px; line-height:7px; font-family: Courier New, monospace">
 	    <?php echo $code; ?>
 	  </div>
     <?php } ?>
-    <input id="letter" name="letter" type="text" maxlength="5" size="6" />
+    <input id="letter" name="letter" type="text" size="6" />
 </div>
 <br class="newinput" />
 <?php } ?>

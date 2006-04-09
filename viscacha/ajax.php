@@ -39,7 +39,7 @@ $my->p = $slog->Permissions();
 $action = $gpc->get('action', str);
 
 viscacha_header("Content-type: text/plain");
-viscacha_header("Cache-Control: no-store, no-cache");
+send_nocache_header();
 
 // Schliesst oder oeffnet einen Beitrag mittels AJAX
 if ($action == 'openclosethread') {

@@ -761,6 +761,89 @@ elseif ($job == 'lang2') {
 
 	ok('admin.php?action=settings&job=lang');
 }
+elseif ($job == 'captcha') {
+	$config = $gpc->prepare($config);
+	echo head();
+	?>
+	<form name="form" method="post" action="admin.php?action=settings&job=captcha2">
+	 <table class="border" border="0" cellspacing="0" cellpadding="4">
+	  <tr> 
+	   <td class="obox" colspan="2"><b>Spam-Bot-Protection (CAPTCHA)</b></td>
+	  </tr>
+	  <tr> 
+	   <td class="mbox" width="50%">Activate Spam-Bot-Protection:</td>
+	   <td class="mbox" width="50%"><input type="checkbox" name="botgfxtest" value="1"<?php echo iif($config['botgfxtest'] == 1,' checked="checked"'); ?>></td> 
+	  </tr>
+	  <tr> 
+	   <td class="mbox" width="50%">Show Text-Code instead of CAPTCHA-Image:<br /><span class="stext">Examples: see below.</span></td>
+	   <td class="mbox" width="50%"><input type="checkbox" name="botgfxtest_text_verification" value="1"<?php echo iif($config['botgfxtest_text_verification'] == 1,' checked="checked"'); ?>></td> 
+	  </tr>
+	  <tr> 
+	   <td class="mbox" width="50%">CAPTCHA: Use "wave"-filter on Spam-Bot-Protection-Picture:</td>
+	   <td class="mbox" width="50%"><input type="checkbox" name="botgfxtest_filter" value="1"<?php echo iif($config['botgfxtest_filter'] == 1,' checked="checked"'); ?>></td> 
+	  </tr>
+	  <tr> 
+	   <td class="mbox" width="50%">CAPTCHA: Dyeing letters:<br /><span class="stext">If you choose this option, the letters are shown in different colors.</span></td>
+	   <td class="mbox" width="50%"><input type="checkbox" name="botgfxtest_colortext" value="1"<?php echo iif($config['botgfxtest_colortext'] == 1,' checked="checked"'); ?>></td> 
+	  </tr>
+	  <tr> 
+	   <td class="mbox" width="50%">CAPTCHA: File type:</td>
+	   <td class="mbox" width="50%">
+	   <select name="botgfxtest_format">
+	   <option value="jpg"<?php echo iif($config['botgfxtest_format'] != 'png',' selected="selected"'); ?>>JPEG</option>
+	   <option value="png"<?php echo iif($config['botgfxtest_format'] == 'png',' selected="selected"'); ?>>PNG</option>
+	   </select>
+	  </tr>
+	  <tr> 
+	   <td class="mbox" width="50%">CAPTCHA: Quality of the picture:<br /><span class="stext">In percent (100 = very good, 0 = impossible to read). Only possible when you use JPEG pictures.</span></td>
+	   <td class="mbox" width="50%"><input type="text" name="botgfxtest_quality" value="<?php echo $config['botgfxtest_quality']; ?>" size="5">%</td> 
+	  </tr>
+	  <tr> 
+	   <td class="mbox" width="50%">CAPTCHA: Standard image width:<br /><span class="stext">In Pixels.</span></td>
+	   <td class="mbox" width="50%"><input type="text" name="botgfxtest_width" value="<?php echo $config['botgfxtest_width']; ?>" size="5">px</td> 
+	  </tr>
+	  <tr> 
+	   <td class="mbox" width="50%">CAPTCHA: Standard image height:<br /><span class="stext">In Pixels.</span></td>
+	   <td class="mbox" width="50%"><input type="text" name="botgfxtest_height" value="<?php echo $config['botgfxtest_height']; ?>" size="5">px</td> 
+	  </tr>
+	   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="Submit"></td> 
+	  </tr>
+	 </table> 
+	</form><br />
+	 <table class="border" border="0" cellspacing="0" cellpadding="4">
+	  <tr> 
+	   <td class="obox" colspan="4"><b>Examples for CAPTCHA-Images and Text-Codes</b></td>
+	  </tr>
+	  <tr> 
+	   <td class="ubox" width="50%" colspan="2" align="center">CAPTCHA-Images</td>
+	   <td class="ubox" width="50%" colspan="2" align="center">Text-Codes</td> 
+	  </tr>
+	  <tr> 
+	   <td class="mbox" width="25%" align="center"><img src="admin/html/images/captcha.jpg" border="0" /></td>
+	   <td class="mbox" width="25%" align="center"><img src="admin/html/images/captcha2.jpg" border="0" /></td>
+	   <td class="mbox" width="25%"><div class="center" style="padding: 2px; font-size: 7px; line-height:7px; font-family: Courier New, monospace">&nbsp;########&nbsp;&nbsp;&nbsp;######&nbsp;&nbsp;&nbsp;&nbsp;########&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;########&nbsp;&nbsp;<br>&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;<br>&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;<br>&nbsp;########&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;######&nbsp;&nbsp;&nbsp;&nbsp;#####&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;########&nbsp;&nbsp;<br>&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;<br>&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;<br>&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;######&nbsp;&nbsp;&nbsp;&nbsp;########&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;########&nbsp;&nbsp;</div></td>
+	   <td class="mbox" width="25%"><div class="center" style="padding: 2px; font-size: 7px; line-height:7px; font-family: Courier New, monospace">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;######&nbsp;&nbsp;########&nbsp;&nbsp;#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;###&nbsp;&nbsp;&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;##&nbsp;&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;#####&nbsp;&nbsp;&nbsp;######&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;<br>&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;&nbsp;&nbsp;#&nbsp;&nbsp;&nbsp;#########&nbsp;<br>&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;#&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;<br>&nbsp;&nbsp;######&nbsp;&nbsp;&nbsp;#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;</div></td>
+	  </tr>
+	 </table>
+	<?php
+	echo foot();
+}
+elseif ($job == 'captcha2') {
+	echo head();
+
+	$c->getdata();
+	$c->updateconfig('botgfxtest',int);
+	$c->updateconfig('botgfxtest_filter', int);
+	$c->updateconfig('botgfxtest_colortext', int);
+	$c->updateconfig('botgfxtest_width', int);
+	$c->updateconfig('botgfxtest_height', int);
+	$c->updateconfig('botgfxtest_format', str);
+	$c->updateconfig('botgfxtest_quality', int);
+	$c->updateconfig('botgfxtest_text_verification',int);
+	$c->savedata();
+
+	ok('admin.php?action=settings&job=captcha');
+}
 elseif ($job == 'register') {
 	$config = $gpc->prepare($config);
 	echo head();
@@ -783,37 +866,10 @@ elseif ($job == 'register') {
 	   <td class="mbox" width="50%">User has to accept rules on registration:<br /><span class="stext">The behaviour conditions <!-- Ersetzen durch Link zu ACP -->(<a href="misc.php?action=rules" target="_blank">look up</a>) must be read and accepted.</span></td>
 	   <td class="mbox" width="50%"><input type="checkbox" name="acceptrules" value="1"<?php echo iif($config['acceptrules'] == 1,' checked="checked"'); ?>></td> 
 	  </tr>
-	  <tr> 
-	   <td class="mbox" width="50%">Activate Spam-Bot-Protection:</font></td>
-	   <td class="mbox" width="50%"><input type="checkbox" name="botgfxtest" value="1"<?php echo iif($config['botgfxtest'] == 1,' checked="checked"'); ?>></td> 
-	  </tr>
-	  <tr> 
-	   <td class="mbox" width="50%">Use filter on Spam-Bot-Protection-Picture:</font></td>
-	   <td class="mbox" width="50%"><input type="checkbox" name="botgfxtest_filter" value="1"<?php echo iif($config['botgfxtest_filter'] == 1,' checked="checked"'); ?>></td> 
-	  </tr>
-	  <tr> 
-	   <td class="mbox" width="50%">Spam-Bot-Schutz: Show Text-Code instead of CAPTCHA-Image:<br /><span class="stext">Examples see below.</span></td>
-	   <td class="mbox" width="50%"><input type="checkbox" name="register_text_verification" value="1"<?php echo iif($config['register_text_verification'] == 1,' checked="checked"'); ?>></td> 
-	  </tr>
 	   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="Submit"></td> 
 	  </tr>
 	 </table> 
-	</form><br />
-	 <table class="border" border="0" cellspacing="0" cellpadding="4">
-	  <tr> 
-	   <td class="obox" colspan="4"><b>Examples for CAPTCHA-Images and Text-Codes</b></td>
-	  </tr>
-	  <tr> 
-	   <td class="ubox" width="50%" colspan="2">CAPTCHA-Image</td>
-	   <td class="ubox" width="50%" colspan="2">Text-Code</td> 
-	  </tr>
-	  <tr> 
-	   <td class="mbox" width="25%" align="center"><img src="admin/html/images/captcha.jpg" border="0" /></td>
-	   <td class="mbox" width="25%" align="center"><img src="admin/html/images/captcha2.jpg" border="0" /></td>
-	   <td class="mbox" width="25%"><div class="center" style="padding: 2px; font-size: 7px; line-height:7px; font-family: Courier New, monospace">&nbsp;########&nbsp;&nbsp;&nbsp;######&nbsp;&nbsp;&nbsp;&nbsp;########&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;########&nbsp;&nbsp;<br>&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;<br>&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;<br>&nbsp;########&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;######&nbsp;&nbsp;&nbsp;&nbsp;#####&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;########&nbsp;&nbsp;<br>&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;<br>&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;<br>&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;######&nbsp;&nbsp;&nbsp;&nbsp;########&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;########&nbsp;&nbsp;</div></td>
-	   <td class="mbox" width="25%"><div class="center" style="padding: 2px; font-size: 7px; line-height:7px; font-family: Courier New, monospace">&nbsp;&nbsp;######&nbsp;&nbsp;&nbsp;######&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;######&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;###&nbsp;&nbsp;&nbsp;&nbsp;<br>&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;###&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;##&nbsp;&nbsp;&nbsp;<br>&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;####&nbsp;&nbsp;##&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;<br>&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;##&nbsp;##&nbsp;##&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;<br>&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;##&nbsp;&nbsp;####&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;#########&nbsp;<br>&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;###&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;<br>&nbsp;&nbsp;######&nbsp;&nbsp;&nbsp;######&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;######&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;</div></td>
-	  </tr>
-	 </table>
+	</form>
 	<?php
 	echo foot();
 }
@@ -823,9 +879,6 @@ elseif ($job == 'register2') {
 	$c->getdata();
 	$c->updateconfig('confirm_registration',str);
 	$c->updateconfig('acceptrules',int);
-	$c->updateconfig('botgfxtest',int);
-	$c->updateconfig('botgfxtest_filter', int);
-	$c->updateconfig('register_text_verification',int);
 	$c->savedata();
 
 	ok('admin.php?action=settings&job=register');
@@ -1888,7 +1941,7 @@ else {
  <tr class="mbox"><td>
   <a href="admin.php?action=settings&job=register">Registration</a>
  </td><td>
-  <span class="stext">Registration, <a href="admin.php?action=misc&job=captcha">CAPTCHA-verification</a> and Forum rules.</span>
+  <span class="stext">Registration and Forum rules.</span>
  </td></tr>
  <tr class="mbox"><td>
   <a href="admin.php?action=settings&job=email">E-Mails</a>
@@ -1934,6 +1987,11 @@ else {
   <a href="admin.php?action=settings&job=session">Sessionsystem</a>
  </td><td>
   <span class="stext">Flood blocking und Sessions in the Forum.</span>
+ </td></tr>
+ <tr class="mbox"><td>
+  <a href="admin.php?action=settings&job=captcha">Spam-Bot-Protection (CAPTCHA)</a>
+ </td><td>
+  <span class="stext">Image based verification to prevent automatic registration. Spam-Bot-Protection with <a href="admin.php?action=misc&job=captcha">CAPTCHA</a>-Images.</span>
  </td></tr>
  <tr class="mbox"><td>
   <a href="admin.php?action=settings&job=boardcat">Forums &amp; categories</a>
