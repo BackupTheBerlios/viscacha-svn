@@ -3,12 +3,12 @@ class slog {
 
 var $statusdata;
 var $ip;
+var $user_agent;
 var $sid;
 var $cookies;
 var $cookiedata;
 var $cookielastvisit;
 var $bots;
-var $bi;
 var $gFields;
 var $fFields;
 var $minFields;
@@ -32,13 +32,13 @@ function slog () {
 
 	$this->statusdata = array();
 	$this->ip = getip();
+	$this->user_agent = iif(isset($_SERVER['HTTP_USER_AGENT']), $_SERVER['HTTP_USER_AGENT'], getenv('HTTP_USER_AGENT'));
+	$this->bots = cache_spiders();
 	$this->sid = '';
 	$this->cookies = FALSE;
 	$this->cookiedata = array(0, '');
 	$this->cookielastvisit = 0;
 	$this->defineGID();
-	$this->bots = cache_spiders();
-	$this->bi = BotDetection($this->bots, $_SERVER['HTTP_USER_AGENT'], TRUE);
 	$this->gFields = array('downloadfiles', 'forum', 'posttopics', 'postreplies', 'addvotes', 'attachments', 'edit', 'voting','admin', 'gmod', 'guest', 'members', 'profile', 'pdf', 'pm', 'wwo', 'search', 'team', 'usepic', 'useabout', 'usesignature', 'docs');
 	$this->fFields = array('f_downloadfiles', 'f_forum', 'f_posttopics', 'f_postreplies', 'f_addvotes', 'f_attachments', 'f_edit', 'f_voting');
 	$this->minFields = array('flood');
@@ -74,6 +74,123 @@ function SessionDel () {
 	else {
 		return false;
 	}
+}
+
+function get_robot_type()  { 
+	global $db;
+
+	foreach ($this->bots as $row) {
+
+		// check for user agent match
+		foreach (explode('|', $row['user_agent']) as $bot_agent) {
+			if ($row['user_agent'] && !empty($bot_agent) && stristr($this->user_agent, $bot_agent) !== false) {
+				return $row['type'];
+			}
+		}
+
+		// check for ip match
+		foreach (explode('|', $row['bot_ip']) as $bot_ip) {
+			if ($row['bot_ip'] && !empty($bot_ip) && strpos($user_ip, $bot_ip) === 0) {
+				return $row['type'];
+			}
+		}
+	}
+	
+	return false;
+}
+
+function log_robot()  { 
+	global $db;
+
+	foreach ($this->bots as $row) {
+		// clear vars
+		$agent_match = 0;
+		$ip_match = 0;
+
+		// check for user agent match
+		foreach (explode('|', $row['user_agent']) as $bot_agent) {
+			if ($row['user_agent'] && !empty($bot_agent) && stristr($this->user_agent, $bot_agent) !== false) {
+				$agent_match = 1;
+				break;
+			}
+		}
+
+		// check for ip match
+		foreach (explode('|', $row['bot_ip']) as $bot_ip) {
+			if ($row['bot_ip'] && !empty($bot_ip) && strpos($this->ip, $bot_ip) !== false) {
+				$ip_match = 1;
+				break;
+			}
+		}
+		
+		$today = time();
+
+		// if both ip and agent matched update table and return true
+		if ($agent_match == 1 && $ip_match == 1) {
+			$result = $db->query("SELECT id, bot_visits, last_visit FROM {$db->pre}spider WHERE id = ".$row['id']);
+			$row = $db->fetch_assoc($result);
+			
+			$row['bot_visits']++;
+
+			$last_visits = explode('|', $row['last_visit']);
+			$last_visits[] = $today;
+			$last_visit = implode("|", array_empty_trim($last_visits));
+
+			$db->query("UPDATE {$db->pre}spider SET last_visit = '{$last_visit}', bot_visits = '{$row['bot_visits']}' WHERE id = ".$row['id']);
+
+			return $row['id'];
+
+		} 
+		else  {
+			if ($agent_match == 1 || $ip_match == 1) {
+
+				$column = ((!$agent_match) ? 'agent' : 'ip');
+				$column2 = ((!$agent_match) ? 'user_agent' : 'bot_ip');
+				$func = ((!$agent_match) ? 'stristr' : 'strpos');
+
+				$result = $db->query("SELECT id, pending_{$column}, bot_visits, last_visit, {$column2} FROM {$db->pre}spider WHERE id = ".$row['id']);
+				$row2 = $db->fetch_assoc($result);
+
+				$pending_array = (( $row2['pending_'.$column] ) ? explode('|', $row2['pending_'.$column]) : array());
+
+				$found = 0;
+
+				$count = count($pending_array);
+				if ($count > 0) {
+					for ($loop = 0; $loop < $count; $loop+=2) {
+						if ($pending_array[$loop] == ((!$agent_match) ? $this->user_agent : $this->ip)) {
+							$found = 1;
+							foreach (explode('|', $row2[$column2]) as $entry) {
+								if ($row2[$column2] && !empty($entry) && $func(((!$agent_match) ? $this->user_agent : $this->ip), $entry) !== false) {
+									$found = 0;
+									break;
+								}
+							}
+						}
+					}
+				}
+
+				if ($found == 0)  {
+					$pending_array[] = ((!$agent_match) ? str_replace("|", "&#124;", $this->user_agent) : $this->ip);
+					$pending_array[] = ((!$agent_match) ? $this->ip : str_replace("|", "&#124;", $this->user_agent));
+				}
+				$pending = implode("|", array_empty_trim($pending_array));
+
+				$row2['bot_visits']++;
+	
+				$last_visits = explode('|', $row2['last_visit']);
+				$last_visits[] = $today;
+				$last_visit = implode("|", array_empty_trim($last_visits));
+
+				$db->query("UPDATE {$db->pre}spider SET pending_{$column} = '{$pending}', last_visit = '{$last_visit}', bot_visits = '{$row2['bot_visits']}' WHERE id = ".$row['id']);
+				
+				return $row['id'];
+			}		
+		}
+
+	}
+
+	return 0;
 }
 
 /**
@@ -274,7 +391,7 @@ function updatelogged () {
 	$action = $gpc->get('action', str);
 	$qid = $gpc->get('id', int);
 	
-	$db->query ("UPDATE {$db->pre}session SET mark = '".$serialized."', wiw_script = '".SCRIPTNAME."', wiw_action = '".$action."', wiw_id = '".$qid."', active = '".time()."', pwfaccess = '".$serializedpwf."', settings = '".$serializedstg."' WHERE ".$sql." LIMIT 1",__LINE__,__FILE__);
+	$db->query ("UPDATE {$db->pre}session SET mark = '{$serialized}', wiw_script = '".SCRIPTNAME."', wiw_action = '{$action}', wiw_id = '{$qid}', active = '".time()."', pwfaccess = '{$serializedpwf}', settings = '{$serializedstg}' WHERE ".$sql." LIMIT 1",__LINE__,__FILE__);
 
 	if ($my->vlogin) {
 		// Eigentlich könnten wir uns das Updaten der User-Lastvisit-Spalte sparen, für alle User die Cookies nutzen. Einmal, am Anfang der Session würde dann reichen
@@ -473,12 +590,12 @@ function logged () {
 		$my->opt_showsig = 1;
 	}
 
-	// Ban this user...
-	if ($this->bi[1] == 'e') {
+	if (!empty($this->bots[$my->is_bot]['type']) && $this->bots[$my->is_bot]['type'] == 'e') {
+		// E-Mail-Collector - Ban this user...
 		$this->banish();
 	}
 
-	$this->sid2url();
+	$this->sid2url($my);
 
 	return $my;
 }
@@ -526,7 +643,7 @@ function sid_load() {
 	if (!empty($this->cookiedata[0]) && !empty($this->cookiedata[1])) {
 		$sql = 'u.id = "'.$this->cookiedata[0].'" AND u.pw = "'.$this->cookiedata[1].'"';
 	}
-	elseif ($this->bi[0] != FALSE) {
+	elseif ($this->get_robot_type() == 'b') {
 	    $sql = 's.ip = "'.$this->ip.'" AND s.mid = "0"';
 	}
 	else {
@@ -534,7 +651,7 @@ function sid_load() {
 	}
 
 	$result = $db->query('
-	SELECT u.*, f.*, s.lastvisit as clv, s.ip, s.mark, s.pwfaccess, s.sid, s.settings   
+	SELECT u.*, f.*, s.lastvisit as clv, s.ip, s.mark, s.pwfaccess, s.sid, s.settings, s.is_bot  
 	FROM '.$db->pre.'session AS s LEFT JOIN '.$db->pre.'user as u ON s.mid = u.id LEFT JOIN '.$db->pre.'userfields as f ON f.ufid = u.id
 	WHERE '.$sql.'
 	LIMIT 1
@@ -596,6 +713,8 @@ function sid_new() {
 	
 	makecookie($config['cookie_prefix'].'_vlastvisit', $lastvisit);
 	
+	$my->is_bot = $this->log_robot();
+	
 	$this->sid = $this->construct_sid();
 	$my->sid = &$this->sid;
 	$my->mark = serialize(array());
@@ -606,8 +725,8 @@ function sid_new() {
 	$qid = $gpc->get('id', int);
 
 	$db->query("INSERT INTO {$db->pre}session 
-	(sid, mid, wiw_script, wiw_action, wiw_id, active, ip, remoteaddr, lastvisit, mark, pwfaccess, settings) VALUES
-	('$this->sid', '$id','".SCRIPTNAME."','".$action."','".$qid."','".time()."','$this->ip','".$gpc->save_str(htmlspecialchars($_SERVER['HTTP_USER_AGENT']))."','$lastvisit','$my->mark','$my->pwfaccess','$my->settings')",__LINE__,__FILE__);
+	(sid, mid, wiw_script, wiw_action, wiw_id, active, ip, remoteaddr, lastvisit, mark, pwfaccess, settings, is_bot) VALUES
+	('{$this->sid}', '{$id}','".SCRIPTNAME."','{$action}','{$qid}','".time()."','{$this->ip}','".$gpc->save_str(htmlspecialchars($this->user_agent))."','{$lastvisit}','{$my->mark}','{$my->pwfaccess}','{$my->settings}','{$my->is_bot}')",__LINE__,__FILE__);
 
 	// ToDo: Ohne Refresh?!
 	if (!$this->cookies && !$this->querysid) {
@@ -760,9 +879,13 @@ function sid_login($remember = true) {
  * 'SID2URL_JS_1' contains '?s=' and the plain session id and
  * 'SID2URL_JS_x' contains '&amp;s=' and the plain session id.
  */
-function sid2url() {
+function sid2url($my = null) {
+	if ($my == null) {
+		$my = new stdClass();
+		$my->is_bot = 0;
+	}
 	if (!defined('SID2URL')) {
-    	if ($this->cookies || $this->bi[0] != false) {
+    	if ($this->cookies || $my->is_bot > 0) {
     		DEFINE('SID2URL_JS_x', '');
     		DEFINE('SID2URL_JS_1', '');
     		DEFINE('SID2URL_x', '');

@@ -120,7 +120,7 @@ class DB {
     }
 
 	function multi_query($lines, $die = true) {
-		$s = array('queries' => array(), 'ok' => 0);
+		$s = array('queries' => array(), 'ok' => 0, 'affected' => 0);
 		$lines = str_replace("\r", "\n", $lines);
 		$lines = explode("\n", $lines);
 		$lines = array_map("trim", $lines);
@@ -135,8 +135,9 @@ class DB {
 		$lines = explode(";\n", $line);
 		foreach ($lines as $h) {
 			if (strlen($h) > 10) {
+				unset($result);
 				$result = $this->query($h, __LINE__, __FILE__, $die);
-				if ($result) {
+				if (is_resource($result)) {
 					if ($this->num_rows($result) > 0) {
 						$x = array();
 						while ($row = $this->fetch_assoc($result)) {
@@ -144,6 +145,11 @@ class DB {
 						}
 						$s['queries'][] = $x;
 					}
+				}
+				if ($result == true) {
+					$s['affected'] = $this->affected_rows();
+				}
+				if ($result) {
 					$s['ok']++;
 				}
 			}

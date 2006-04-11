@@ -4,19 +4,19 @@
 class VeriWord {
 
     /* path to font directory*/
-    var $dir_font     = './classes/fonts/';
+    var $dir_font = './classes/fonts/';
     /* path to background image directory*/
-    var $dir_noise     = "./classes/graphic/noises/";
-    var $word         = "";
-    var $wordarray     = array();
-    var $im_width     = 0;
-    var $im_height     = 0;
-    var $im_type    = ""; //image type: jpeg, png
-    var $sess_file     = './data/captcha.php';
-    var $type         = 0;
-    var $noises        = array();
-    var $fonts         = array();
-    var $filter        = 0;
+    var $dir_noise = "./classes/graphic/noises/";
+    var $word = "";
+    var $wordarray = array();
+    var $im_width = 0;
+    var $im_height = 0;
+    var $im_type = ""; //image type: jpeg, png
+    var $sess_file = './data/captcha.php';
+    var $type = 0;
+    var $noises = array();
+    var $fonts = array();
+    var $filter = 0;
     var $colortext  = false;
     
     function VeriWord() {
@@ -44,6 +44,31 @@ class VeriWord {
                 }
             }
         }
+
+	    ImageTypes();
+	    
+		$lang = new lang();
+	    $lang->group("thumbnail.class");
+	    $this->lang = $lang->return_array();
+	    
+	    if (function_exists('imagejpeg') && IMG_JPEG) {
+	    	define('IMAGEJPEG', true);
+	    }
+	    else {
+	    	define('IMAGEJPEG', false);
+	    }
+	    if (function_exists('imagegif') && IMG_GIF) {
+	    	define('IMAGEGIF', true);
+	    }
+	    else {
+	    	define('IMAGEGIF', false);
+	    }
+	    if (function_exists('imagepng') && IMG_PNG) {
+	    	define('IMAGEPNG', true);
+	    }
+	    else {
+	    	define('IMAGEPNG', false);
+	    }
         
         srand((float)microtime()*time());
         mt_srand((double)microtime()*1000000); 
@@ -74,7 +99,7 @@ class VeriWord {
 
     function set_veriword($type=0) {
         if ($type == 0) {
-            $this->word = $this->pick_number();
+            $this->word = $this->pick_alnum();
         }
         else {
             $this->word = $this->pick_word();
@@ -228,6 +253,11 @@ class VeriWord {
         /* show the image  */            
         switch($this->im_type){
             case 'png' :
+                header("Content-type: image/gif");
+                imagegif($this->im);
+                imagedestroy($this->im);
+              break;
+            case 'png' :
                 header("Content-type: image/png");
                 imagepng($this->im);
                 imagedestroy($this->im);
@@ -241,9 +271,9 @@ class VeriWord {
         exit;
     }
 
-    function pick_number() {
+    function pick_alnum() {
         $newpass = ""; 
-        $string="1324657890";
+        $string="132465789ABCDEFGHIJKLMNPQRSTUVWXYZ";
 
         for ($i=1; $i <= rand(5,6); $i++) { 
             $newpass .= substr($string, mt_rand(0,strlen($string)-1), 1); 
@@ -312,8 +342,8 @@ class VeriWord {
             $bbox[$i * 2 + 1] = sin($angle) * $x + cos($angle) * $y;
         }
         
-        $bbox[2] += strlen($text)*$spacing;
-        $bbox[4] += strlen($text)*$spacing;
+        $bbox[2] += (strlen($text)-1)*$spacing;
+        $bbox[4] += (strlen($text)-1)*$spacing;
     
         return $bbox;
     }
@@ -338,15 +368,15 @@ class VeriWord {
         /* numeric means built-in font */
         if(is_numeric($text_font)) {
             $text_width        = imagefontwidth($text_font) * strlen($this->word);
-            $text_height     = imagefontheight($text_font);
-            $margin            = $text_width * 0.25; 
+            $text_height       = imagefontheight($text_font);
+            $margin            = ceil ($text_width * 0.5); 
             
             $im_string         = @imagecreatetruecolor( ceil($text_width + $margin), ceil($text_height + $margin) ); 
             if (!$im_string) { 
                 $im_string     = imagecreate( ceil($text_width + $margin), ceil($text_height + $margin) ); // For older Versions 
             }
             
-            $bg_color        = imagecolorallocate ($im_string, 255, 255, 255);
+            $bg_color          = imagecolorallocate ($im_string, 255, 255, 255);
             $text_color        = imagecolorallocate ($im_string, 0, 0, 0);
 
             imagefill($im_string, 0, 0, $bg_color); 
@@ -361,42 +391,55 @@ class VeriWord {
             
             $spacing = rand(-3,3);
             
-            $box         = $this->imagettfbbox( $text_size, $text_angle, $text_font, $this->word, $spacing);
+            $box         	= $this->imagettfbbox( $text_size, $text_angle, $text_font, $this->word, $spacing);
 
-            $text_width        = $this->math_diff($box[2], $box[0]);
+            $text_width     = $this->math_diff($box[2], $box[0]);
             $text_height    = $this->math_diff($box[5], $box[3]);
             
-            $margin        = ($text_width/strlen($this->word)) * 0.25;
+            $margin        	= ceil( ($text_width/strlen($this->word)) * 0.5);
             
-            $im_string         = @imagecreatetruecolor( ceil($text_width + $margin), ceil($text_height + $margin) ); 
+            $im_string      = @imagecreatetruecolor( ceil($text_width + $margin*2), ceil($text_height + $margin*2) ); 
             if (!$im_string) { 
-                $im_string     = imagecreate( ceil($text_width + $margin), ceil($text_height + $margin) ); // For older Versions 
+                $im_string  = imagecreate( ceil($text_width + $margin*2), ceil($text_height + $margin*2) ); // For older Versions 
             }
 
-            $bg_color        = imagecolorallocate ($im_string, 255, 255, 255); 
+            $bg_color       = imagecolorallocate ($im_string, 255, 255, 255); 
             if ($this->colortext) {
-                $text_color = array();
-                $text_color[]    = imagecolorallocate ($im_string, rand(200,255), rand(0,50), rand(0,50));
-                $text_color[]    = imagecolorallocate ($im_string, rand(0,50), rand(200,255), rand(0,50));
-                $text_color[]    = imagecolorallocate ($im_string, rand(0,50), rand(0,50), rand(200,255));
-                $text_color[]    = imagecolorallocate ($im_string, rand(0,50), rand(0,50), rand(0,50));
-                $text_color[]    = imagecolorallocate ($im_string, rand(0,30), rand(100,130), rand(220,255));
-                $text_color[]    = imagecolorallocate ($im_string, rand(220,255), rand(100,130), rand(0,30));
-                shuffle($text_color);
+				$color_array	= array();
+				$color_array[]  = array(rand(200,255), rand(0,50), rand(0,50)); // Rot
+				$color_array[]  = array(rand(0,50), rand(200,255), rand(0,50)); // Grün
+				$color_array[]  = array(rand(0,50), rand(0,50), rand(200,255)); // Blau
+				// $color_array[]  = array(rand(180,220), rand(180,220), rand(0,50)); // Gelb (darker) - Bad contrast
+				$color_array[]  = array(rand(200,255), rand(0,50), rand(200,255)); // Pink/Violett
+				$color_array[]  = array(rand(0,50), rand(170,230), rand(170,230)); // Türkis (darker)
+				$color_array[]  = array(rand(0,50), rand(0,50), rand(0,50)); // Grey (dark)
+				$color_array[]  = array(rand(150,200), rand(40,150), rand(0,40)); // Braun-ähnlich
+				
+				$text_color = array();
+				$entries = strlen($this->word);
+				$lastkey = $key = -1;
+				for($i = 0; $i < $entries; $i++) {
+					while ($lastkey == $key) {
+						$key = array_rand($color_array);
+					}
+					$rgb = $color_array[$key];
+					$text_color[] = imagecolorallocate ($im_string, $rgb[0], $rgb[1], $rgb[2]);
+					$lastkey = $key;
+				}
             }
             else {
                 $text_color        = imagecolorallocate ($im_string, 0, 0, 0);
             }
 
             imagefill($im_string, 0, 0, $bg_color); 
-            
+
             /* draw text into canvas */
             $this->imagettftext    (    
                 $im_string,
                 ceil($text_size*0.9),
                 $text_angle,
-                ceil($margin/2), 
-                ceil($margin/2)+$text_height,
+                ceil($margin), 
+                ceil($margin)+$text_height,
                 $text_color, 
                 $text_font, 
                 $this->word,
@@ -405,7 +448,7 @@ class VeriWord {
         }
 
         if ($this->filter == 1) {
-            $im_string = $this->wave($im_string, 3);
+            $im_string = $this->wave($im_string, rand(0,6), true);
         }       
 
         $im_text         = @imagecreatetruecolor($this->im_width, $this->im_height); 
@@ -420,8 +463,8 @@ class VeriWord {
                     0, 0, 0, 0, 
                     $this->im_width, 
                     $this->im_height, 
-                    ceil($text_width+$margin), 
-                    ceil($text_height+$margin)
+                    ceil($text_width+$margin*2), 
+                    ceil($text_height+$margin*2)
                 );
 
            if (!$done) {
@@ -430,8 +473,8 @@ class VeriWord {
                        0, 0, 0, 0, 
                        $this->im_width, 
                        $this->im_height, 
-                       ceil($text_width+$margin), 
-                       ceil($text_height+$margin)
+                       ceil($text_width+$margin*2), 
+                       ceil($text_height+$margin*2)
                );
            }
            
@@ -460,22 +503,22 @@ class VeriWord {
         if($img_file) {
             /* create "noise" background image from your image stock*/
             $im_noise     = @imagecreatefromjpeg ($img_file);
-        } else {
-
+        }
+        else {
             /* if fail to load image file, create it on the fly */
             $im_noise     = $this->draw_noise();
         }
 
-         $noise_width     = imagesx($im_noise); 
+        $noise_width      = imagesx($im_noise); 
         $noise_height     = imagesy($im_noise); 
         
         /* resize the background image to fit the size of image output */
         $this->im         = @imagecreatetruecolor($this->im_width,$this->im_height); 
         if (!$this->im) { 
-            $this->im     = imageCreate($this->im_width,$this->im_height); // For older Versions 
+            $this->im     = imagecreate($this->im_width,$this->im_height); // For older Versions 
         }
                             
-        $done = @imagecopyresampled (    $this->im, 
+        $done = @imagecopyresampled (   $this->im, 
                                         $im_noise, 
                                         0, 0, 0, 0, 
                                         $this->im_width, 
@@ -483,7 +526,7 @@ class VeriWord {
                                         $noise_width, 
                                         $noise_height);
         if (!$done) {
-            imagecopyresized (    $this->im, 
+            imagecopyresized (  $this->im, 
                                 $im_noise, 
                                 0, 0, 0, 0, 
                                 $this->im_width, 
@@ -492,57 +535,76 @@ class VeriWord {
                                 $noise_height);
         }
         /* put text image into background image */
-        imagecopymerge (     $this->im, 
+        imagecopymerge (    $this->im, 
                             $this->draw_text(), 
                             0, 0, 0, 0, 
                             $this->im_width, 
                             $this->im_height, 
-                            60 );
+                            rand(50,70) );
+
+		imagedestroy($im_noise);
 
         return $this->im;
     }
 
-    function draw_noise() {
+	function draw_noise() {
+		$im_noise = @imagecreatetruecolor($this->im_width, $this->im_height);
+		$bg_color = imagecolorallocate($im_noise, 255, 255, 255);
+		imagefill($im_noise, 0, 0, $bg_color);
 
-        /* create "noise" background image*/
-        $im_noise     = @imagecreate($this->im_width,$this->im_height); 
-        $bg_color     = imagecolorallocate ($im_noise, 255, 255, 255);
-        imagefill ( $im_noise, 0, 0, $bg_color );
+		for ($i = 0; $i < $this->im_height; $i++) {
+			$c = rand(100, 200);
+			$line_color = imagecolorallocate($im_noise, $c, $c, $c);
+			imagesetthickness($im_noise, rand(1, 5));
+			imageline(
+				$im_noise,
+				rand(0, 30),                     // x1
+				$i + rand(-10, 10),              // y1
+				$this->im_width - rand(0, 30),   // x2
+				$i + rand(-10, 10),              // y2
+				$line_color);                    // color
+		}
+		for ($i = 0; $i < 1000; $i++) {
+			$c = rand(100, 200);
+			$line_color = imagecolorallocate($im_noise, $c, $c, $c);
+			imagesetpixel(
+				$im_noise,
+				rand(0, $this->im_width),    // x
+				rand(0, $this->im_height),   // y
+				$line_color);                // color
+		}
 
-        for($i=0; $i < $this->im_height; $i++) {
-            $c = rand (0,255);
-            $line_color        = imagecolorallocate ($im_noise, $c, $c, $c);
-        }
+		return $im_noise;
+	}
 
-        return $im_noise;
-    }
 
     function validate_type() {
-        /* check image type availability*/
-        $is_available = FALSE;
-        
-        switch($this->im_type){
-            case 'jpeg' :
-            case 'jpg'     :
-                if(function_exists("imagejpeg"))
-                $is_available = TRUE;
-                break;
-            case 'png' :
-                if(function_exists("imagepng"))
-                $is_available = TRUE;
-                break;
-        }
-        if(!$is_available && function_exists("imagejpeg")){
-            /* if not available, cast image type to jpeg*/
-            $this->im_type = "jpeg";
-            return TRUE;
-        }
-        else if(!$is_available && !function_exists("imagejpeg")){
-           die("No image support on this PHP server");         
-        }
-        else
-            return TRUE;
+		if ($this->im_type == 'gif' AND IMAGEGIF) {
+			$this->im_type = 'gif';
+			return true;
+		}
+		elseif ($this->im_type == 'png' AND IMAGEPNG) {
+			$this->im_type = 'png';
+			return true;
+		}
+		elseif (IMAGEJPEG) {
+			$this->im_type = 'jpeg';
+			return true;
+		}
+		else {
+			$this->create_error($this->lang['tne_badtype']);
+			return false;
+		}
     }
+
+	function create_error($text) {
+		require('classes/graphic/class.text2image.php');
+		$img = new text2image();
+		$img->prepare(preg_replace("/<br>/is","\r\n",$text), 0, 8, '../fonts/trebuchet.ttf');
+		$img->build(4);
+		$img->output();
+		exit;
+	}
     
     /**
     * Apply a wave filter to an image
@@ -553,8 +615,7 @@ class VeriWord {
     *
     * @return    image
     */
-    function wave(&$image, $wave = 10, $randirection = true)
-    {
+    function wave(&$image, $wave = 10, $randirection = true) {
         $image_width = imagesx($image);
         $image_height = imagesy($image);
 
@@ -563,41 +624,34 @@ class VeriWord {
             $temp = imagecreate($image_width, $image_height); // For older Versions 
         }
 
-        if ($randirection)
-        {
+        if ($randirection) {
             $direction = (mt_rand(0, 1) == 1) ? true : false;
         }
 
         $middlex = floor($image_width / 2);
         $middley = floor($image_height / 2);
 
-        for ($x = 0; $x < $image_width; $x++)
-        {
-            for ($y = 0; $y < $image_height; $y++)
-            {
+        for ($x = 0; $x < $image_width; $x++) {
+            for ($y = 0; $y < $image_height; $y++) {
 
                 $xo = $wave * sin(2 * 3.1415 * $y / 128);
                 $yo = $wave * cos(2 * 3.1415 * $x / 128);
 
-                if ($direction)
-                {
+                if ($direction) {
                     $newx = $x - $xo;
                     $newy = $y - $yo;
                 }
-                else
-                {
+                else {
                     $newx = $x + $xo;
                     $newy = $y + $yo;
                 }
 
-                if (($newx > 0 AND $newx < $image_width) AND ($newy > 0 AND $newy < $image_height))
-                {
+                if (($newx > 0 AND $newx < $image_width) AND ($newy > 0 AND $newy < $image_height)) {
                     $index = imagecolorat($image, $newx, $newy);
                     $colors = imagecolorsforindex($image, $index);
                     $color = imagecolorresolve($temp, $colors['red'], $colors['green'], $colors['blue']);
                 }
-                else
-                {
+                else {
                     $color = imagecolorresolve($temp, 255, 255, 255);
                 }
 

@@ -62,7 +62,7 @@ font, span {
 	padding: 4px;
 }
 .border td table td {
-	border: 0px solid #839FBC;
+	border: 1px solid #839FBC;
 	padding: 3px;
 }
 .minibr {

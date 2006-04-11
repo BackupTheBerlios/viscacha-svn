@@ -112,6 +112,7 @@ if ($job == 'menu') {
 	   <h3><img id="img_admin_menu2" name="collapse" src="admin/html/images/plus.gif" alt=""> Crawler &amp; Robots</h3>
 	  <ul id="part_admin_menu2">
 	   <li>&raquo; <a href="admin.php?action=spider&job=manage" target="Main">Crawler &amp; Robot Manager</a></li>
+	   <li>&raquo; <a href="admin.php?action=spider&job=pending" target="Main">Pending Robots</a></li>
 	   <li>&raquo; <a href="admin.php?action=spider&job=add" target="Main">Add new Robot</a></li>
 	  </ul>
 	 </div>

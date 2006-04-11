@@ -9,6 +9,7 @@ CREATE TABLE `{:=DBPREFIX=:}session` (
   `lastvisit` int(10) unsigned NOT NULL default '0',
   `mark` longtext NOT NULL,
   `sid` varchar(128) NOT NULL default '',
+  `is_bot` mediumint(6) unsigned NOT NULL default '0',
   `pwfaccess` tinytext NOT NULL,
   `settings` tinytext NOT NULL,
   KEY `mid` (`mid`)

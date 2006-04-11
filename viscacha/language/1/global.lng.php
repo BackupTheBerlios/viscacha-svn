@@ -751,6 +751,7 @@ $lang = array(
 'wiw' => 'Wer ist online?',
 'wiw_b' => 'Suchmaschinenbots:',
 'wiw_g' => 'Gäste:',
+'wiw_guest' => 'Gast {@wwo->g}',
 'wiw_ip' => 'IP-Adresse:',
 'wiw_r' => 'Mitglieder:',
 'wiw_useragent' => 'User-Agent:',

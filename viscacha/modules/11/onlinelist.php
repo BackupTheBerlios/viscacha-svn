@@ -11,7 +11,7 @@ $wwo['g']=0;
 $wwo['b']=0;
 $wwo['list'] = array();
 
-$result = $db->query('SELECT mid, remoteaddr FROM '.$db->pre.'session',__LINE__,__FILE__);
+$result = $db->query('SELECT mid, remoteaddr, is_bot FROM '.$db->pre.'session',__LINE__,__FILE__);
 $count = $db->num_rows($result);
 $sep = $lang->phrase('listspacer');
 while ($row = $db->fetch_assoc($result)) {
@@ -23,7 +23,7 @@ while ($row = $db->fetch_assoc($result)) {
 		$row['sep'] = $sep;
 		$wwo['list'][] = $row;
 	}
-	elseif (BotDetection($slog->bots, $row['remoteaddr']) != false) {
+	elseif ($row['is_bot'] > 0) {
 		$wwo['b']++;
 	}
 	else {

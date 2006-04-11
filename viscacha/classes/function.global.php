@@ -47,6 +47,16 @@ $db->pre = $db->prefix();
 // Construct base bb-code object
 $bbcode = new BBCode();
 
+function array_empty_trim($arr) {
+	$array = array();
+	foreach($arr as $key => $val) {
+		$trimmed = trim($val);
+		if (!empty($trimmed)) {
+			$array[$key] = $val;
+		}
+	}
+	return $array;
+}
 function send_nocache_header() {
 	if (!empty($HTTP_SERVER_VARS['SERVER_SOFTWARE']) && strstr($HTTP_SERVER_VARS['SERVER_SOFTWARE'], 'Apache/2')) {
 		header ('Cache-Control: no-cache, pre-check=0, post-check=0');
@@ -494,25 +504,6 @@ function UpdateBoardStats ($board) {
 		$db->query("UPDATE {$db->pre}cat SET topics = '".$topics."', replys = '".$replies."', last_topic = '".$last[0]."' WHERE id = '".$board."'",__LINE__,__FILE__);
 		$scache = new scache('cat_bid');
 		$scache->deletedata();
-	}
-}
-
-function BotDetection ($source, $bot, $type=FALSE) {
-	foreach ($source as $spider) {
-		if (stristr($bot, $spider['user_agent']) !== FALSE) {
-			if ($type == TRUE) {
-				return array($spider['name'], $spider['type']);
-			}
-			else {
-				return $spider['name'];
-			}
-		}
-	}
-	if ($type == TRUE) {
-		return array(false, false);
-	}
-	else {
-		return false;
 	}
 }
 

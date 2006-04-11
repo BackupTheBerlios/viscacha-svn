@@ -219,19 +219,19 @@ function cache_wraps() {
 
 function cache_spiders() {
 	global $db;
-	$s3cache = new scache('spiders');
-	if ($s3cache->existsdata() == TRUE) {
-	    $botua = $s3cache->importdata();
+	$scache = new scache('spiders');
+	if ($scache->existsdata() == TRUE) {
+	    $bot = $scache->importdata();
 	}
 	else {
-	    $cresult = $db->query("SELECT user_agent, name, type FROM {$db->pre}spider",__LINE__,__FILE__);
-	    $botua = array();
-	    while ($catc = $db->fetch_assoc($cresult)) {
-	        $botua[] = $catc;
+	    $result = $db->query("SELECT id, user_agent, bot_ip, name, type FROM {$db->pre}spider",__LINE__,__FILE__);
+	    $bot = array();
+	    while ($row = $db->fetch_assoc($result)) {
+	        $bot[$row['id']] = $row;
 	    }
-	    $s3cache->exportdata($botua);
+	    $scache->exportdata($bot);
 	}
-	return $botua;
+	return $bot;
 }
 
 ?>

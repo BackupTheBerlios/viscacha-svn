@@ -584,7 +584,9 @@ elseif ($job == 'query2') {
 			<?php
 		}
 		else {
-			echo '<table class="border" border="0" cellspacing="0" cellpadding="4" align="center"><tr><td class="obox">'.$q['ok'].' Queries executed</td></tr></table>';
+			echo '<table class="border" border="0" cellspacing="0" cellpadding="4" align="center"><tr><td class="obox">'.$q['ok'].' Queries executed';
+			echo iif($q['affected'] > 0, ' - '.$q['affected'].' Rows affected');
+			echo '</td></tr></table>';
 			foreach ($q['queries'] as $num) {
 				if (count($num) > 0) {
 					$keys = array_keys($num[0]);

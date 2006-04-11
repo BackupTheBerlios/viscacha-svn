@@ -94,7 +94,7 @@ elseif ($_GET['action'] == "wwo") {
 
     $mymodules->load('misc_wwo_top');
 
-	$result=$db->query("SELECT ip, mid, active, wiw_script, wiw_action, wiw_id, remoteaddr FROM {$db->pre}session ORDER BY active DESC",__LINE__,__FILE__);
+	$result=$db->query("SELECT ip, mid, active, wiw_script, wiw_action, wiw_id, remoteaddr, is_bot FROM {$db->pre}session ORDER BY active DESC",__LINE__,__FILE__);
 	while ($row = $gpc->prepare($db->fetch_object($result))) {
 		$wwo['i']++;
 		$bot = 0;
@@ -279,9 +279,9 @@ elseif ($_GET['action'] == "wwo") {
 			$wwo['r']++;
 			$inner['wwo_bit_member'] .= $tpl->parse("misc/wwo_bit");
 		}
-		elseif (($botdetect = BotDetection($slog->bots, $row->remoteaddr)) != false) {
+		elseif ($row->is_bot > 0 && isset($slog->bots[$row->is_bot])) {
 			$wwo['b']++;
-			$bot = 1;
+			$bot = $slog->bots[$row->is_bot];
 			$inner['wwo_bit_bot'] .= $tpl->parse("misc/wwo_bit");
 		}
 		else {
