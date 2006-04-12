@@ -51,7 +51,7 @@ elseif ($job == 'l_mysqlerror') {
 	else {
    ?>
    <tr class="ubox">
-    <td>Errormessage</td>
+    <td>Error report</td>
     <td>Query</td>
     <td>Information</td>
     <td>Date</td>
@@ -78,7 +78,7 @@ URL: <?php echo $data[5]; ?></textarea>
    </td>
   </tr>
   <tr> 
-   <td class="ubox" align="center" colspan="8"><input type="submit" name="Submit" value="Log-Datei jetzt leeren!"></td> 
+   <td class="ubox" align="center" colspan="8"><input type="submit" name="Submit" value="Delete the log file now!"></td> 
   </tr>
  </table>
 </form> 
@@ -98,13 +98,13 @@ elseif ($job == 'l_cron') {
 <form name="form" method="post" action="admin.php?action=slog&file=l_cron&job=empty">
  <table class="border">
   <tr> 
-   <td class="obox">Scheduled Tasks: Logfile</td>
+   <td class="obox">Scheduled Tasks: Log file</td>
   </tr>
   <tr> 
    <td class="mbox"><?php echo $log; ?></td>
   </tr>
   <tr> 
-   <td class="ubox" align="center"><input type="submit" name="Submit" value="Log-Datei jetzt leeren!"></td> 
+   <td class="ubox" align="center"><input type="submit" name="Submit" value="Delete the log file now!"></td> 
   </tr>
  </table>
 </form> 
@@ -125,23 +125,23 @@ elseif ($job == 's_general_image') {
 		case 1: 
 			$table = $db->pre."user";
 			$datefield = "regdate";
-			$stats_name = 'Registrierungen';
+			$stats_name = 'Registration';
 		break;
 		case 2: 
 			$table = $db->pre."topics";
 			$datefield = "date";
-			$stats_name = 'Themen';
+			$stats_name = 'Topics';
 		break;
 		case 3: 
 			$table = $db->pre."replies";
 			$datefield = "date";
-			$stats_name = 'Beiträge';
+			$stats_name = 'Posts';
 		break;
 		default: 
 			$table = $db->pre."pm";
 			$datefield = "date";
 			$sql = ' AND dir != "2" ';
-			$stats_name = 'Private Nachrichten';
+			$stats_name = 'Private Messages';
 		break;
 	}
 	
@@ -230,19 +230,19 @@ elseif ($job == 's_general') {
 <form method="post" action="admin.php?action=slog&job=s_general&show=1">
  <table border="0" class="border">
   <tr class="obox">
-   <td colspan="2">Statistik-Filter</td>
+   <td colspan="2">Generate Statistics</td>
   </tr>
   <tr class="mbox">
-   <td>Art der Statistik</td>
+   <td>Contents of the statistics:</td>
    <td><select name="dtype">
-    <option value="1"<?php echo iif($type == 1,' selected="selected"'); ?>>Registrierungen</option>
-    <option value="2"<?php echo iif($type == 2,' selected="selected"'); ?>>Themen</option>
-    <option value="3"<?php echo iif($type == 3,' selected="selected"'); ?>>Beitr&auml;ge</option>
-    <option value="4"<?php echo iif($type == 4,' selected="selected"'); ?>>Private Nachrichten</option>
+    <option value="1"<?php echo iif($type == 1,' selected="selected"'); ?>>Registration</option>
+    <option value="2"<?php echo iif($type == 2,' selected="selected"'); ?>>Topics</option>
+    <option value="3"<?php echo iif($type == 3,' selected="selected"'); ?>>Posts</option>
+    <option value="4"<?php echo iif($type == 4,' selected="selected"'); ?>>Private Messages</option>
    </select></td>
   </tr>
   <tr class="mbox">
-   <td>Statistik von</td>
+   <td>Statistics starting at the...</td>
    <td>
    <select name="from_day">
 	<?php
@@ -277,7 +277,7 @@ elseif ($job == 's_general') {
    </td>
   </tr>
   <tr class="mbox">
-   <td>Statistik bis</td>
+   <td>Statistics ending at the...</td>
    <td>
    <select name="to_day">
 	<?php
@@ -312,7 +312,7 @@ elseif ($job == 's_general') {
    </td>
   </tr>
   <tr class="mbox">
-   <td>Zeitliche Ordnung</td>
+   <td>Time interval:</td>
    <td><select name="timeorder">
     <option value="1"<?php echo iif($timeorder == 1,' selected="selected"'); ?>>T&auml;glich</option>
     <option value="2"<?php echo iif($timeorder == 2,' selected="selected"'); ?>>W&ouml;chentlich</option>
@@ -320,10 +320,10 @@ elseif ($job == 's_general') {
    </select></td>
   </tr>
   <tr class="mbox">
-   <td>Sortierung</td>
+   <td>Sorting</td>
    <td><select name="sortorder">
-    <option value="asc"<?php echo iif($sortorder == 'asc',' selected="selected"'); ?>>Aufsteigend</option>
-    <option value="desc"<?php echo iif($sortorder == 'desc',' selected="selected"'); ?>>Absteigend</option>
+    <option value="asc"<?php echo iif($sortorder == 'asc',' selected="selected"'); ?>>Ascending</option>
+    <option value="desc"<?php echo iif($sortorder == 'desc',' selected="selected"'); ?>>Descending</option>
    </select></td>
   </tr>
   <tr class="mbox">
@@ -335,7 +335,7 @@ elseif ($job == 's_general') {
 </select></td>
   </tr>
   <tr class="mbox">
-   <td>Design</td>
+   <td>Skin</td>
    <td><select name="skin">
 <?php foreach ($PG->available_skins as $code => $color) { ?>
     <option value="<?php echo $code; ?>"<?php echo iif($code == $skin, ' selected="selected"'); ?>><?php echo $color; ?></option>
@@ -343,7 +343,7 @@ elseif ($job == 's_general') {
 </select></td>
   </tr>
   <tr class="ubox">
-   <td colspan="2" align="center"><input type="submit" value="Create" /></td>
+   <td colspan="2" align="center"><input type="submit" value="Generate" /></td>
   </tr>
  </table>
 </form>
@@ -357,7 +357,7 @@ if ($show == 1) {
 ?>
 <table border="0" class="border">
   <tr class="obox">
-   <td>Statistik-Ausgabe</td>
+   <td>Generated Statistics</td>
   </tr>
   <tr class="mbox">
    <td><a href="<?php echo $url; ?>"><img src="<?php echo $url; ?>" style="border: 1px solid #000000;" alt="Statistics"></a></td>
@@ -418,8 +418,8 @@ if ($show == 1) {
 	  <td>Favourite threads:</td><td><code><?php echo $favs[0];?></code></td>
 	</tr>
 	<tr>
-	  <td width="25%">Polls:</td><td width="25%"><code><?php echo $vote[0];?></code></td>
-	  <td width="25%">Voter:</td><td width="25%"><code><?php echo $votes[0];?></code></td>
+	  <td width="25%">Votes:</td><td width="25%"><code><?php echo $vote[0];?></code></td>
+	  <td width="25%">Participants in the votes:</td><td width="25%"><code><?php echo $votes[0];?></code></td>
 	</tr>
 	</table>
    </td> 

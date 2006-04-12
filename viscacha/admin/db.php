@@ -39,7 +39,7 @@ function exec_query_form ($query = '') {
   <tr>
   	<td class="mbox">
   	<input type="file" name="upload" size="80" /><br />
-  	<span class="stext">Erlaubte Dateitypen: .sql, .zip - Maximale Dateigröße: <?php echo formatFilesize(ini_maxupload()); ?></span>
+  	<span class="stext">Allowed file types: .sql, .zip - Maximum file size: <?php echo formatFilesize(ini_maxupload()); ?></span>
   	</td>
   </tr>
   <tr> 
@@ -151,10 +151,10 @@ elseif ($job == 'backup') {
 	</select>
    </td>
    <td class="mbox" width="70%" valign="top">
-   <input type="checkbox" name="structure" value="1" checked="checked" /> <strong>Struktur exportieren</strong><br />
-   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="drop" value="1" checked="checked" /> Mit 'DROP TABLE IF EXISTS'<br /><br />
-   <input type="checkbox" name="data" value="1" checked="checked" /> <strong>Daten exportieren</strong>
-   <br /><br /><input type="checkbox" name="zip" value="1" /> <strong>Als ZIP-Datei speichern</strong>
+   <input type="checkbox" name="structure" value="1" checked="checked" /> <strong>Export structure</strong><br />
+   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="drop" value="1" checked="checked" /> Add 'DROP TABLE IF EXISTS'<br /><br />
+   <input type="checkbox" name="data" value="1" checked="checked" /> <strong>Dxport data</strong>
+   <br /><br /><input type="checkbox" name="zip" value="1" /> <strong>Save as ZIP file</strong>
    </td>
   </tr>
   <tr> 
@@ -295,7 +295,7 @@ elseif ($job == 'restore') {
    <td class="ubox" width="5%">Restore</td>
    <td class="ubox" width="5%">Delete</td>
    <td class="ubox" width="80%">Information</td>
-   <td class="ubox" width="10%">Gr&ouml;&szlig;e</td>
+   <td class="ubox" width="10%">File Size</td>
   </tr>
 	<?php foreach ($result as $row) { ?>
 		<tr>
@@ -316,12 +316,12 @@ elseif ($job == 'restore') {
 <form name="form" method="post" enctype="multipart/form-data" action="admin.php?action=explorer&job=upload&cfg=dbrestore">
  <table class="border">
   <tr> 
-   <td class="obox" colspan="4">Backup hochladen</td>
+   <td class="obox" colspan="4">Upload a Backup</td>
   </tr>
   <tr>
    <td class="mbox" width="50%">
-    Backupdatei (nur) hochladen:<br />
-    <span class="stext">Erlaubte Dateitypen: .sql, .zip - Maximale Dateigröße: <?php echo formatFilesize(ini_maxupload()); ?></span>
+    Upload a backup:<br />
+    <span class="stext">Allowed file types: .sql, .zip - Maximum file size: <?php echo formatFilesize(ini_maxupload()); ?></span>
    </td>
    <td class="mbox" width="50%"><input type="file" name="upload_0" size="40" /></td>
   </tr>

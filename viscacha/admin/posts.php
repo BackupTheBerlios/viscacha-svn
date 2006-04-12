@@ -70,11 +70,11 @@ elseif ($_GET['job'] == 'postrating2') {
 	<td class="ubox" colspan="5"><?php echo $pages; ?></td>
   </tr>
   <tr class="obox">
-    <th width="18%">Bewertung (Stimmen)</th>
-	<th width="38%">Thema</th>
-	<th width="18%">Themenstart</th>
-	<th width="8%">Antworten</th>
-	<th width="18%">Letzter Beitrag</th>
+    <th width="18%">Rating (Votes)</th>
+	<th width="38%">Topic</th>
+	<th width="18%">Creation</th>
+	<th width="8%">Replies</th>
+	<th width="18%">Last Post</th>
   </tr>
 	<?php
 	
@@ -110,19 +110,19 @@ elseif ($_GET['job'] == 'postrating2') {
 			$pref .= 'News: '; 
 		}
 		elseif ($row->mark == 'a') {
-			$pref .= 'Artikel: ';
+			$pref .= 'Artcle: ';
 		}
 		elseif ($row->mark == 'b') {
-			$pref .= 'Schlecht: ';
+			$pref .= 'Bad: ';
 		}
 		elseif ($row->mark == 'g') {
-			$pref .= 'Gut: ';
+			$pref .= 'Good: ';
 		}
 		if ($row->sticky == '1') {
-			$pref .= 'Ankündigung: ';
+			$pref .= 'Announcement: ';
 		}
 		if ($row->status == 1) {
-			$pref .= 'Geschlossen: ';
+			$pref .= 'Closed: ';
 		}
 		
 		$percent = round((($row->ravg*50)+50));
@@ -130,9 +130,9 @@ elseif ($_GET['job'] == 'postrating2') {
         <tr class="mbox">
         <td><img src="images.php?action=threadrating&id=<?php echo $row->id; ?>" alt="<?php echo $percent; ?>%" title="<?php echo $percent; ?>%"  /> <?php echo $percent; ?>% (<?php echo $row->rcount; ?>)</td>
         <td><?php echo $pref; ?><a target="_blank" href="showtopic.php?id=<?php echo $row->id; ?>"><?php echo iif($showprefix, '['.$prefix[$row->prefix].'] ').$row->topic; ?></a></td>
-        <td class="stext"><?php echo $rstart; ?><br />von <?php echo iif($row->mid, "<a href='admin.php?action=members&amp;job=edit&amp;id=".$row->mid."'>".$row->name."</a>", $row->name); ?></td>
+        <td class="stext"><?php echo $rstart; ?><br />by <?php echo iif($row->mid, "<a href='admin.php?action=members&amp;job=edit&amp;id=".$row->mid."'>".$row->name."</a>", $row->name); ?></td>
         <td align="center"><?php echo $row->posts; ?></td>
-        <td align="right" class="stext"><?php echo $rlast; ?><br />von <?php echo $row->last_name; ?></td>
+        <td align="right" class="stext"><?php echo $rlast; ?><br />by <?php echo $row->last_name; ?></td>
         </tr>
 		<?php
     }
