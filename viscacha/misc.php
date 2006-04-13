@@ -40,7 +40,8 @@ if ($_GET['action'] == "boardin") {
 	
 	$board = $gpc->get('board', int);
 
-	$fc = cache_cat_bid();
+	$catbid = $scache->load('cat_bid');
+	$fc = $catbid->get();
 	if (empty($board) || !isset($fc[$board])) {
 		error($lang->phrase('query_string_error'));
 	}
@@ -82,11 +83,14 @@ elseif ($_GET['action'] == "wwo") {
 	$inner['wwo_bit_guest'] = '';
 
 	// Foren cachen
-	$cat_cache =  cache_cat_bid();
+	$catbid = $scache->load('cat_bid');
+	$fc = $catbid->get();
 	// Documents cachen
-	$wrap_cache = cache_wraps();
+	$wraps_obj = $scache->load('wraps');
+	$wrap_cache = $wraps_obj->get();
 	// Mitglieder
-	$memberdata = cache_memberdata();
+	$memberdata_obj = $scache->load('memberdata');
+	$memberdata = $memberdata_obj->get();
 	// Cache
 	$cache = array();
 

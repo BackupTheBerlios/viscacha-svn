@@ -39,18 +39,8 @@ $my->p = $slog->Permissions();
 
 $cid = $gpc->get('cid', int);
 
-$scache = new scache('components');
-if ($scache->existsdata() == TRUE) {
-    $cache = $scache->importdata();
-}
-else {
-    $cresult = $db->query("SELECT id, file FROM {$db->pre}component WHERE active = '1'",__LINE__,__FILE__);
-    $cache = array();
-    while ($comp = $db->fetch_assoc($cresult)) {
-        $cache[$comp['id']] = $comp;
-    }
-    $scache->exportdata($cache);
-}
+$com = $scache->load('components');
+$cache = $com->get();
 
 if (isset($cache[$cid])) {
 	DEFINE('COM_ID', $cache[$_GET['cid']]['id']);

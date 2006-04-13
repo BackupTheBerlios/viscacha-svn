@@ -232,29 +232,12 @@ function count_nl($str='',$max=NULL) {
 }
 
 function get_mimetype($file) {
-    global $db;
+    global $db, $scache;
 
 	$ext = strtolower(get_extension($file, TRUE));
 
-    $scache = new scache('mimetype_headers');
-    if ($scache->existsdata() == TRUE) {
-        $mime = $scache->importdata();
-    }
-    else {
-        $result = $db->query("SELECT extension, mimetype, stream FROM {$db->pre}filetypes WHERE mimetype != 'application/octet-stream' AND stream != 'attachment'",__LINE__,__FILE__);
-        $mime = array();
-        while ($row = $db->fetch_assoc($result)) {
-        	$extensions = explode(',', $row['extension']);
-			foreach ($extensions as $extension) {
-            	$extension = strtolower($extension);
-				$mime[$extension] = array(
-				'mimetype' => $row['mimetype'],
-				'stream' => $row['stream']
-				);
-            }
-        }
-        $scache->exportdata($mime);
-    }
+	$mimetype_headers = $scache->load('mimetype_headers');
+	$mime = $mimetype_headers->get();
     
     if (isset($mime[$ext])) {
 		return array(
@@ -385,46 +368,34 @@ function SubStats($rtopics, $rreplys, $rid, $cat_cache,$bids=array()) {
 
 
 function BoardSelect($board = 0) {
-	global $config, $my, $tpl, $db, $gpc, $lang;
+	global $config, $my, $tpl, $db, $gpc, $lang, $scache;
 
-	$found = FALSE;
+	$found = false;
 	$sub_cache = array();
 	$sub_cache_last = array();
 	$cat_cache = array();
 	$mod_cache = array();
 	$forum_cache = array();
-	$cat_cache = cache_categories();
-	if (!isset($GLOBALS['memberdata']) || !is_array($GLOBALS['memberdata'])) {
-		$memberdata = cache_memberdata();
-	}
-	else {
-		$memberdata = $GLOBALS['memberdata'];
-	}
-	$scache = new scache('index-moderators');
-	if ($scache->existsdata() == TRUE) {
-	    $mod_cache = $scache->importdata();
-	}
-	else {
-	    $result = $db->query('SELECT mid, bid FROM '.$db->pre.'moderators WHERE time > '.time().' OR time IS NULL',__LINE__,__FILE__);
-	    $mod_cache = array();
-	    while($row = $db->fetch_assoc($result)) {
-	    	if (isset($memberdata[$row['mid']])) {
-	    		$row['name'] = $memberdata[$row['mid']];
-	    		$mod_cache[$row['bid']][] = $row;
-	    	}
-	    }
-		$scache->exportdata($mod_cache);
-	}
+	
+	$categories_obj = $scache->load('categories');
+	$cat_cache = $categories_obj->get();
+	
+	$memberdata_obj = $scache->load('memberdata');
+	$memberdata = $memberdata_obj->get();
+
+	$index_moderators = $scache->load('index_moderators');
+	$mod_cache = $index_moderators->get();
 
     // Fetch Forums
-    $sql = "SELECT 
+	$result = $db->query("SELECT 
     c.id, c.name, c.desc, c.opt, c.optvalue, c.bid, c.topics, c.replys, c.cid, c.last_topic, 
     t.topic as btopic, t.id as btopic_id, t.last as bdate, u.name AS uname, t.last_name AS bname
     FROM {$db->pre}cat AS c
         LEFT JOIN {$db->pre}topics AS t ON c.last_topic=t.id 
         LEFT JOIN {$db->pre}user AS u ON t.last_name=u.id 
-    ORDER BY c.cid, c.c_order, c.id";
-	$result=$db->query($sql,__LINE__,__FILE__);
+    ORDER BY c.cid, c.c_order, c.id"
+    ,__LINE__,__FILE__);
+	
 	if ($db->num_rows($result) == 0) {
 		$errormsg = array('There are currently no boards to show. Pleas visit the <a href="admin.php'.SID2URL_1.'">Admin Control Panel</a> and create some forums.');
 		$errorurl = '';
@@ -735,18 +706,22 @@ function forum_opt($opt, $optvalue, $bid, $check = 'forum') {
 }
 
 function import_error_data($fid) {
-	$scache = new scache('temp/errordata/'.$fid, '');
-	$data = $scache->importdata();
+	$cache = new CacheItem($fid, 'temp/errordata/');
+	$data = $cache->get();
 	return $data;
 }
 function save_error_data($fc) {
 	global $gpc;
 	$fid = md5(microtime());
-	$scache = new scache('temp/errordata/'.$fid, '');
-	foreach ($fc as $key => $row) {
-		$fc[$key] = $gpc->unescape($row);
+
+	$cache = new CacheItem($fid, 'temp/errordata/');
+	if ($cache->exists() == false) {
+		foreach ($fc as $key => $row) {
+			$fc[$key] = $gpc->unescape($row);
+		}
+	    $cache->set($fc);
+	    $cache->export();
 	}
-	$scache->exportdata($fc);
 	return $fid;
 }
 

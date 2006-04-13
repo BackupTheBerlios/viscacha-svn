@@ -1,8 +1,9 @@
 <?php
-global $info, $memberdata, $gpc, $bbcode;
-if (!isset($memberdata) || !is_array($memberdata)) {
-    $memberdata = cache_memberdata();
-}
+global $info, $scache, $gpc, $bbcode;
+
+$memberdata_obj = $scache->load('memberdata');
+$memberdata = $memberdata_obj->get();
+
 $tpl->globalvars(compact("row","info","ini"));
 $lang->assign("num", $ini['params']['num']);
 $lang->assign("tid", $info['id']);

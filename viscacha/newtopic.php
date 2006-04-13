@@ -39,7 +39,8 @@ $lang->init($my->language);
 $tpl = new tpl();
 $my->p = $slog->Permissions($board);
 
-$fc = cache_cat_bid();
+$catbid = $scache->load('cat_bid');
+$fc = $catbid->get();
 if (empty($board) || !isset($fc[$board])) {
 	error($lang->phrase('query_string_error'));
 }
@@ -205,7 +206,10 @@ elseif ($_GET['action'] == "save") {
 	if (strxlen($_POST['topic']) < $config['mintitlelength']) {
 		$error[] = $lang->phrase('title_too_short');
 	}
-	$prefix = cache_prefix($board);
+	
+	$prefix_obj = $scache->load('prefix');
+	$prefix = $prefix_obj->get($board);
+	
 	if (!isset($prefix[$_POST['opt_0']]) && $last['prefix'] == 1) {
 		$error[] = $lang->phrase('prefix_not_optional');
 	}
@@ -297,9 +301,9 @@ elseif ($_GET['action'] == "save") {
 	    }
 	    
 		
-		$db->query ("UPDATE {$db->pre}cat SET topics = topics+1, last_topic = '{$tredirect}' WHERE id = '{$board}'");
-		$scache = new scache('cat_bid');
-		$scache->deletedata();
+		$db->query ("UPDATE {$db->pre}cat SET topics = topics+1, last_topic = '{$tredirect}' WHERE id = '{$board}'");	
+		$catobj = $scache->load('cat_bid');
+		$catobj->delete();
 		if ($_POST['opt_2'] == '1') {
 			ok($lang->phrase('new_thread_vote_success'),"newtopic.php?action=startvote&amp;id={$board}&amp;topic_id={$tredirect}&amp;temp={$_POST['temp']}");
 		}
@@ -319,7 +323,8 @@ else {
 	$inner['smileys'] = $bbcode->getsmileyhtml($config['smileysperrow']);
 	$inner['bbhtml'] = $bbcode->getbbhtml();
 
-	$prefix = cache_prefix($board);
+	$prefix_obj = $scache->load('prefix');
+	$prefix = $prefix_obj->get($board);
 	
 	if (strlen($_GET['fid']) == 32) {
 		$data = $gpc->prepare(import_error_data($_GET['fid']));

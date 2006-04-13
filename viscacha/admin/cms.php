@@ -387,8 +387,8 @@ elseif ($job == 'nav_edit2') {
 	else {
 		$db->query("UPDATE {$db->pre}menu SET name = '{$title}', groups = '{$groups}' WHERE id = '{$id}' LIMIT 1");	
 	}
-	$scache = new scache('modules_navigation');
-	$scache->deletedata();
+	$delobj = $scache->load('modules_navigation');
+	$delobj->delete();
 	ok('admin.php?action=cms&job=nav', 'Link/Box wurde erfolgreich geändert');
 }
 elseif ($job == 'nav_delete') {
@@ -439,11 +439,13 @@ elseif ($job == 'nav_move') {
 	elseif ($pos > 0) {
 		$db->query('UPDATE '.$db->pre.'menu SET ordering = ordering+1 WHERE id = '.$id);
 	}
-	$scache = new scache('modules_navigation');
-	$scache->deletedata();
+	
+	$delobj = $scache->load('modules_navigation');
+	$delobj->delete();
+	
 	if ($gpc->get('plug', int) == 1) {
-		$scache = new scache('modules');
-		$scache->deletedata();
+		$delobj = $scache->load('modules');
+		$delobj->delete();
 		viscacha_header('Location: admin.php?action=cms&job=plugins');
 	}
 	else {
@@ -459,12 +461,12 @@ elseif ($job == 'nav_active') {
 	if ($pos != 0 && $pos != 1) {
 		error('admin.php?action=cms&job=nav', 'Ungültigen Status angegeben');
 	}
-	$scache = new scache('modules_navigation');
-	$scache->deletedata();
+	$delobj = $scache->load('modules_navigation');
+	$delobj->delete();
 	$db->query('UPDATE '.$db->pre.'menu SET active = "'.$pos.'" WHERE id = '.$id);
 	if ($gpc->get('plug', int) == 1) { 
-		$scache = new scache('modules');
-		$scache->deletedata();
+		$delobj = $scache->load('modules');
+		$delobj->delete();
 		viscacha_header('Location: admin.php?action=cms&job=plugins');
 	}
 	else {
@@ -586,8 +588,8 @@ elseif ($job == 'nav_add2') {
 		$groups = implode(',', $groups);
 	}
 	$db->query("INSERT INTO {$db->pre}menu (name, groups, ordering, link, param, sub) VALUES ('{$title}','{$groups}','{$sort}','{$url}','{$target}','{$sub}')");
-	$scache = new scache('modules_navigation');
-	$scache->deletedata();
+	$delobj = $scache->load('modules_navigation');
+	$delobj->delete();
 	ok('admin.php?action=cms&job=nav', 'Link wurde erfolgreich hinzugefügt');
 }
 elseif ($job == 'nav_addbox') {
@@ -647,8 +649,8 @@ elseif ($job == 'nav_addbox2') {
 		$groups = implode(',', $groups);
 	}
 	$db->query("INSERT INTO {$db->pre}menu (name, groups, ordering) VALUES ('{$title}','{$groups}','{$sort}')");
-	$scache = new scache('modules_navigation');
-	$scache->deletedata();
+	$delobj = $scache->load('modules_navigation');
+	$delobj->delete();
 	ok('admin.php?action=cms&job=nav', 'Box wurde erfolgreich hinzugefügt');
 }
 elseif ($job == 'nav_docslist') {
@@ -822,8 +824,8 @@ elseif ($job == 'com_active') {
 	if ($_GET['int1'] != 0 && $_GET['int1'] != 1) {
 		error('admin.php?action=cms&job=com'.SID2URL_x, 'Ungültigen Status angegeben');
 	}
-	$scache = new scache('components');
-	$scache->deletedata();
+	$delobj = $scache->load('components');
+	$delobj->delete();
 	$db->query('UPDATE '.$db->pre.'component SET active = "'.$_GET['int1'].'" WHERE id = '.$_GET['id']);
 	viscacha_header('Location: admin.php?action=cms&job=com'.SID2URL_x);
 }
@@ -929,8 +931,8 @@ elseif ($job == 'com_add2') {
 			$filesystem->copy($tdir.'/components.ini',"./components/$id/components.ini");
 			$filesystem->chmod("./components/$id/components.ini", 0666);
 
-			$scache = new scache('components');
-			$scache->deletedata();
+			$delobj = $scache->load('components');
+			$delobj->delete();
 			
 			rmdirr($tdir);
 			$filesystem->unlink('./temp/'.$my_uploader->file['name']);
@@ -1057,8 +1059,8 @@ elseif ($job == 'com_delete2') {
 	}
 	rmdirr("./components/$id");
 
-	$scache = new scache('components');
-	$scache->deletedata();
+	$delobj = $scache->load('components');
+	$delobj->delete();
 	
 	if (empty($cfg['config']['uninstall'])) {
 		ok('admin.php?action=cms&job=com', 'Komponente wurde deinstalliert!');
@@ -1098,7 +1100,9 @@ elseif ($job == 'doc') {
    <td class="ubox" width="10%">Action</td>
   </tr>
 <?php
-	$memberdata = cache_memberdata();
+	$memberdata_obj = $scache->load('memberdata');
+	$memberdata = $memberdata_obj->get();
+	
 	while ($row = $db->fetch_assoc($result)) {	
 		if(is_id($row['author']) && isset($memberdata[$row['author']])) {
 			$row['author'] = $memberdata[$row['author']];
@@ -1538,8 +1542,8 @@ elseif ($job == 'feed_add2') {
 	
 	$db->query('INSERT INTO '.$db->pre.'grab (title, file, entries) VALUES ("'.$_POST['temp1'].'","'.$_POST['temp2'].'","'.$_POST['int1'].'")');
 
-	$scache = new scache('grabrss');
-	$scache->deletedata();
+	$delobj = $scache->load('grabrss');
+	$delobj->delete();
 
 	ok('admin.php?action=cms&job=feed'.SID2URL_x, 'Newsfeed eingefügt');
 }
@@ -1556,8 +1560,8 @@ elseif ($job == 'feed_delete') {
 		$db->query($sql);
 		$anz = $db->affected_rows();
 		
-		$scache = new scache('grabrss');
-		$scache->deletedata();
+		$delobj = $scache->load('grabrss');
+		$delobj->delete();
 			
 		ok('admin.php?action=cms&job=feed'.SID2URL_x, $anz.' Newsfeeds gelöscht');
 	}
@@ -1617,8 +1621,8 @@ elseif ($job == 'feed_edit2') {
 	
 	$db->query('UPDATE '.$db->pre.'grab SET file = "'.$_POST['temp2'].'", title = "'.$_POST['temp1'].'", entries = "'.$_POST['int1'].'" WHERE id = '.$_GET['id']);
 
-	$scache = new scache('grabrss');
-	$scache->deletedata();
+	$delobj = $scache->load('grabrss');
+	$delobj->delete();
 
 	ok('admin.php?action=cms&job=feed'.SID2URL_x, 'Eintrag geändert');
 }

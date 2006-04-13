@@ -32,8 +32,9 @@ var $varcache;
 var $pos;
 
 function MyModules() {
-    $this->cache = &new scache('modules');
-    $this->buffer = $this->cache->importdata();
+	global $scache;
+	$this->cache = $scache->load('modules');
+    $this->buffer = $this->cache->get();
 	$this->varcache = array();
 }
 
@@ -51,7 +52,8 @@ function load($pos,$vars=NULL) {
         while ($row = $db->fetch_assoc($result)) {
             $this->buffer[$pos][] = $row;
         }
-        $this->cache->exportdata($this->buffer);
+        $this->cache->set($this->buffer);
+        $this->cache->export();
     }
 
     foreach ($this->buffer[$pos] as $row) {
@@ -76,23 +78,10 @@ function load($pos,$vars=NULL) {
 }
 
 function navigation() {
-	global $config,$my,$tpl,$db,$myini;
+	global $config, $my, $tpl, $db, $myini, $scache;
 
-	$scache = new scache('modules_navigation');
-	if ($scache->existsdata() == TRUE) {
-	    $menu = $scache->importdata();
-	}
-	else {
-	    $result = $db->query("SELECT id, name, link, param, groups, sub, module FROM {$db->pre}menu WHERE active = '1' AND FIND_IN_SET('navigation', position) ORDER BY ordering, id",__LINE__,__FILE__);
-	    $menu = array();
-	    while ($row = $db->fetch_assoc($result)) {
-	        if (!isset($menu[$row['sub']])) {
-	            $menu[$row['sub']] = array();
-	        }
-	        $menu[$row['sub']][] = $row;
-	    }
-	    $scache->exportdata($menu);
-	}
+	$modules_navigation_obj = $scache->load('modules_navigation');
+	$menu = $modules_navigation_obj->get();
 
     foreach ($menu[0] as $row) {
     	if ($row['module'] == 0 && isset($menu[$row['id']])) {

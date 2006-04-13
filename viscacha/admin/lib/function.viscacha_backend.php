@@ -34,8 +34,6 @@ $htmlhead = '';
 $months = array('January','February','March','April','May','June','July','August','September','October','November','December');
 $days = array('Sonntag','Montag','Dienstag','Mittwoch','Donenrstag','Freitag','Samstag');
 
-// A simple caching class for Arrays etc.
-include_once ("classes/function.cache.php");
 // Variables
 require_once ("classes/class.gpc.php");
 $gpc = new GPC();

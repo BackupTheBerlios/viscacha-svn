@@ -1,6 +1,5 @@
 <?php
-global $memberdata;
-global $gpc;
+global $gpc, $scache;
 
 $result = $db->query("
 SELECT t.id, t.board, t.topic, t.last AS date, t.last_name AS name
@@ -12,9 +11,8 @@ LIMIT 0,".$ini['params']['num']
 
 if ($db->num_rows($result) > 0) {
 
-	if (!isset($memberdata) || !is_array($memberdata)) {
-		$memberdata = cache_memberdata();
-	}
+	$memberdata_obj = $scache->load('memberdata');
+	$memberdata = $memberdata_obj->get();
 	
 	$lastbox = array();
 	while ($row = $gpc->prepare($db->fetch_assoc($result))) {

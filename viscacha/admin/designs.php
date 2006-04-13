@@ -82,8 +82,8 @@ elseif ($job == 'design_default') {
 		$c->getdata();
 		$c->updateconfig('templatedir', int, $id);
 		$c->savedata();
-		$scache = new scache('load-designs');
-		$scache->deletedata();
+		$delobj = $scache->load('load-designs');
+		$delobj->delete();
 		ok('admin.php?action=designs&job=design');
 	}
 	else {
@@ -196,8 +196,8 @@ elseif ($job == 'design_edit2') {
 			$use = 1;
 		}
 	}
-	$scache = new scache('load-designs');
-	$scache->deletedata();
+	$delobj = $scache->load('load-designs');
+	$delobj->delete();
 	$db->query("UPDATE {$db->pre}designs SET template = '{$template}', stylesheet = '{$stylesheet}', images = '{$images}', publicuse = '{$use}', name = '{$name}' WHERE id = '{$id}' LIMIT 1");
 
 	ok('admin.php?action=designs&job=design&id='.$id, 'Changes were successfully changed'.$error.'.');	
@@ -208,8 +208,8 @@ elseif ($job == 'design_delete') {
 	$info = $db->fetch_assoc($result);
 	
 	$db->query("DELETE FROM {$db->pre}designs WHERE id = '{$id}' LIMIT 1");
-	$scache = new scache('load-designs');
-	$scache->deletedata();
+	$delobj = $scache->load('load-designs');
+	$delobj->delete();
 
 // Do NOT removes data. That "feature" is terrible on account of loosing data!
 	
@@ -309,8 +309,8 @@ elseif ($job == 'design_add2') {
 		$name = 'Design '.$id;
 	}
 	
-	$scache = new scache('load-designs');
-	$scache->deletedata();
+	$delobj = $scache->load('load-designs');
+	$delobj->delete();
 	$db->query("INSERT INTO {$db->pre}designs SET template = '{$template}', stylesheet = '{$stylesheet}', images = '{$images}', publicuse = '{$use}', name = '{$name}'", __LINE__, __FILE__);
 
 	ok('admin.php?action=designs&job=design', 'Design was successfully added');	
@@ -449,8 +449,8 @@ elseif ($job == 'design_import2') {
 		
 		rmdirr($tempdir);
 	}
-	$scache = new scache('load-designs');
-	$scache->deletedata();
+	$delobj = $scache->load('load-designs');
+	$delobj->delete();
 	ok('admin.php?action=designs&job=design', 'Design "'.$ini['name'].'" erfolgreich importiert.');
 	
 }
@@ -571,8 +571,8 @@ elseif ($job == 'ajax_publicuse') {
 	}
 	$use = invert($use['publicuse']);
 	$db->query("UPDATE {$db->pre}designs SET publicuse = '{$use}' WHERE id = '{$id}' LIMIT 1");
-	$scache = new scache('load-designs');
-	$scache->deletedata();
+	$delobj = $scache->load('load-designs');
+	$delobj->delete();
 	die(strval($use));
 }
 elseif ($job == 'templates') {

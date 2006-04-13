@@ -135,8 +135,10 @@ elseif ($_GET['action'] == "abos") {
     ORDER BY a.id DESC
     ",__LINE__,__FILE__);
     
-	$prefix = cache_prefix();
-	$memberdata = cache_memberdata();
+	$prefix_obj = $scache->load('prefix');
+	$prefix = $prefix_obj->get();
+	$memberdata_obj = $scache->load('memberdata');
+	$memberdata = $memberdata_obj->get();
 
     $cache = array();
     while ($row = $db->fetch_assoc($result)) {
@@ -476,10 +478,14 @@ elseif ($_GET['action'] == "settings") {
 	$breadcrumb->Add($lang->phrase('editprofile_settings'));
 	echo $tpl->parse("header");
 	echo $tpl->parse("menu");
-	
-	$design = cache_loaddesign();
+
+
+	$loaddesign_obj = $scache->load('loaddesign');
+	$design = $loaddesign_obj->get();
 	$mydesign = $design[$my->template]['name'];
-	$language = cache_loadlanguage();
+	
+	$loadlanguage_obj = $scache->load('loadlanguage');
+	$language = $loadlanguage_obj->get();
 	$mylanguage = $language[$my->language]['language'];
 	
 	$customfields = editprofile_customfields(2, $my->id);
@@ -489,8 +495,11 @@ elseif ($_GET['action'] == "settings") {
 }
 elseif ($_GET['action'] == "settings2") {
 
-	$cache = cache_loaddesign();
-	$cache2 = cache_loadlanguage();
+	$loaddesign_obj = $scache->load('loaddesign');
+	$cache = $loaddesign_obj->get();
+
+	$loadlanguage_obj = $scache->load('loadlanguage');
+	$cache2 = $loadlanguage_obj->get();
 
     $error = array();
 	if (intval($_POST['location']) < -12 && intval($_POST['location']) > 12) {
@@ -541,7 +550,9 @@ elseif ($_GET['action'] == "mylast") {
 	$cache = array();
     $result = $db->query("SELECT t.last, t.posts, t.id, t.board, r.topic, r.date, r.name, t.prefix, r.id AS pid FROM {$db->pre}replies AS r LEFT JOIN {$db->pre}topics AS t ON t.id = r.topic_id WHERE r.name = '$my->id' GROUP BY r.topic_id ORDER BY r.date DESC LIMIT 0, ".$config['mylastzahl'],__LINE__,__FILE__);
     $anz = $db->num_rows($result);
-    $prefix = cache_prefix();
+    
+	$prefix_obj = $scache->load('prefix');
+	$prefix = $prefix_obj->get();
 
     while ($row = $db->fetch_assoc($result)) {
     	$row['topic'] = $gpc->prepare($row['topic']);
@@ -581,7 +592,8 @@ elseif ($_GET['action'] == "addabo") {
 	$info = $db->fetch_assoc($result);
 	$my->p = $slog->Permissions($info['board']);
 
-	$fc = cache_cat_bid();
+	$catbid = $scache->load('cat_bid');
+	$fc = $catbid->get();
 	$last = $fc[$info['board']];
 	forum_opt($last['opt'], $last['optvalue'], $last['id']);
 
@@ -629,11 +641,13 @@ elseif ($_GET['action'] == "copy") {
     $result = $db->query("SELECT status, prefix FROM {$db->pre}topics WHERE id = {$row['topic_id']} LIMIT 1");
 	$topic = $db->fetch_assoc($result);
 
-	$fc = cache_cat_bid();
+	$catbid = $scache->load('cat_bid');
+	$fc = $catbid->get();
 	$last = $fc[$row['board']];
 	forum_opt($last['opt'], $last['optvalue'], $last['id']);
 
-	$memberdata = cache_memberdata();
+	$memberdata_obj = $scache->load('memberdata');
+	$memberdata = $memberdata_obj->get();
 
     if (empty($row['email']) && isset($memberdata[$row['name']])) {
     	$row['name'] = $memberdata[$row['name']];

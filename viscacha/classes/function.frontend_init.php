@@ -86,8 +86,6 @@ $filesystem->set_wd($config['ftp_path']);
 @include_once("classes/function.chmod.php");
 // Permission and Logging Class
 require_once ("classes/class.permissions.php");
-// A simple caching class for Arrays etc.
-include_once ("classes/function.cache.php");
 // A class for Templates
 require_once ("classes/class.template.php");
 // Load Braedcrumb-Module

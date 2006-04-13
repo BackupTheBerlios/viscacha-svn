@@ -283,9 +283,12 @@ elseif ($_GET['action'] == "result") {
 	$pages = array_chunk($cache, $config['forumzahl']);
 
 	$temp = pages($count, $config['forumzahl'], "search.php?action=result&amp;fid=".$_GET['fid'].SID2URL_x."&amp;", $_GET['page']);
+
+	$catbid = $scache->load('cat_bid');
+	$forums = $catbid->get();
 	
-	$forums = cache_cat_bid();
-	$memberdata = cache_memberdata();
+	$memberdata_obj = $scache->load('memberdata');
+	$memberdata = $memberdata_obj->get();
 	
 	$inner['index_bit'] = '';
 
@@ -293,7 +296,9 @@ elseif ($_GET['action'] == "result") {
 		$pages[$_GET['page']-1] = array();
 	}
 	
-	$prefix = cache_prefix();
+	$prefix_obj = $scache->load('prefix');
+	$prefix = $prefix_obj->get();
+	
 	$mymodules->load('search_result_top');
 
 	foreach ($pages[$_GET['page']-1] as $row) {
@@ -441,11 +446,16 @@ elseif ($_GET['action'] == "active") {
     	if ($count > 0) {
     		$temp = pages($count, $config['forumzahl'], "search.php?action=active&amp;type=".$_GET['type'].SID2URL_x."&amp;", $_GET['page']);
     		
-    		$forums = cache_cat_bid();
-    		$prefix = cache_prefix();
-    		$memberdata = cache_memberdata();
+			$catbid = $scache->load('cat_bid');
+			$forums = $catbid->get();
+    		
+			$prefix_obj = $scache->load('prefix');
+			$prefix = $prefix_obj->get();
+			
+    		$memberdata_obj = $scache->load('memberdata');
+			$memberdata = $memberdata_obj->get();
+
     		$inner['index_bit'] = '';
-    	
     		while ($row = $gpc->prepare($db->fetch_object($result))) {
     			$pref = '';
     			$showprefix = '';

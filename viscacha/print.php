@@ -52,12 +52,14 @@ if (count($error) > 0) {
 	errorLogin($error);
 }
 
-$fc = cache_cat_bid();
+$catbid = $scache->load('cat_bid');
+$fc = $catbid->get();
 $last = $fc[$info['board']];
 
 $pre = '';
 if ($info['prefix'] > 0) {
-	$prefix = cache_prefix($info['board']);
+	$prefix_obj = $scache->load('prefix');
+	$prefix = $prefix_obj->get($info['board']);
 	if (isset($prefix[$info['prefix']])) {
 		$pre = $prefix[$info['prefix']];
 		$pre = $lang->phrase('showtopic_prefix_title');
@@ -83,7 +85,9 @@ else {
 }
 	
 BBProfile($bbcode);
-$memberdata = cache_memberdata();
+
+$memberdata_obj = $scache->load('memberdata');
+$memberdata = $memberdata_obj->get();
 
 $inner['index_bit'] = '';
 $inner['vote_result'] = '';

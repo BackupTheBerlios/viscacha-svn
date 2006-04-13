@@ -51,13 +51,15 @@ $info['topic'] = $gpc->prepare($info['topic']);
 
 $my->p = $slog->Permissions($info['board']);
 
-$fc = cache_cat_bid();
+$cat_bid_obj = $scache->load('cat_bid');
+$fc = $cat_bid_obj->get();
 $last = $fc[$info['board']];
 forum_opt($last['opt'], $last['optvalue'], $last['id'], 'postreplies');
 
 $pre = '';
 if ($info['prefix'] > 0) {
-	$prefix = cache_prefix($info['board']);
+	$prefix_obj = $scache->load('prefix');
+	$prefix = $prefix_obj->get($info['board']);
 	if (isset($prefix[$info['prefix']])) {
 		$pre = $prefix[$info['prefix']];
 		$pre = $lang->phrase('showtopic_prefix_title');
@@ -229,7 +231,8 @@ else {
 			'topic' => $lang->phrase('reply_prefix').$info['topic']
 		);
 
-		$memberdata = cache_memberdata();
+		$memberdata_obj = $scache->load('memberdata');
+		$memberdata = $memberdata_obj->get();
 		
 		// Multiquote
 		$qid = $gpc->get('qid', arr_int);

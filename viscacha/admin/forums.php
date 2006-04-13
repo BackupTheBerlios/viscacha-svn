@@ -163,8 +163,8 @@ elseif ($job == 'mods2') {
 		}
 		$db->query("DELETE FROM {$db->pre}moderators WHERE ".implode(' OR ',$deleteids));
 		$anz = $db->affected_rows();
-		$scache = new scache('index-moderators');
-		$scache->deletedata();
+		$delobj = $scache->load('index-moderators');
+		$delobj->delete();
 		ok('admin.php?action=forums&job=mods', $anz.' entries deleted!');
 	}
 	else {
@@ -227,12 +227,10 @@ elseif ($job == 'delete2') {
 	$db->query("DELETE FROM {$db->pre}prefix WHERE bid = '{$_GET['id']}'");
 	$db->query("DELETE FROM {$db->pre}cat WHERE id = '{$_GET['id']}' LIMIT 1");
 	
-	$scache = new scache('cat_bid');
-	$scache->deletedata();
-	$scache = new scache('cat_cid');
-	$scache->deletedata();
-	$scache = new scache('forumtree');
-	$scache->deletedata();
+	$delobj = $scache->load('cat_bid');
+	$delobj->delete();
+	$delobj = $scache->load('forumtree');
+	$delobj->delete();
 	
 	ok('admin.php?action=forums&job=manage', 'Board was successfully deleted!');
 }
@@ -264,9 +262,12 @@ elseif ($job == 'edit') {
    <select name="parent">
    <option value="NULL">Do not change</option>
    <?php
-	$tree = cache_forumtree();
-	$categories = cache_categories();
-	$boards = cache_cat_bid();
+	$forumtree = $scache->load('forumtree');
+	$tree = $forumtree->get();
+	$categories_obj = $scache->load('categories');
+	$categories = $categories_obj->get();
+	$catbid = $scache->load('cat_bid');
+	$boards = $catbid->get();
 	AdminSelectForum($tree, $categories, $boards);
    ?>
    </select>
@@ -277,7 +278,7 @@ elseif ($job == 'edit') {
    <td class="mbox" width="50%"><input type="text" value="<?php echo iif($row['opt'] == 're', $row['optvalue']); ?>" name="link" size="50" id="dis1" onmouseover="disable(this)" onmouseut="disable(this)"></td> 
   </tr>
   <tr> 
-   <td class="mbox" width="50%">Forum Password:</font><br><font class="stext">Attention: Subforums are not protected with this password!</td>
+   <td class="mbox" width="50%">Forum Password:</font><br><font class="stext">Subforums are protected with this password, too!</td>
    <td class="mbox" width="50%"><input type="text" value="<?php echo iif($row['opt'] == 'pw', $row['optvalue']); ?>" name="pw" size="50" id="dis2" onmouseover="disable(this)" onmouseut="disable(this)"></td> 
   </tr>
   <tr> 
@@ -348,14 +349,12 @@ elseif ($job == 'editforum2') {
 	
 	$db->query("UPDATE {$db->pre}cat SET name = '{$name}', `desc` = '{$desc}', opt = '{$opt}', optvalue = '{$optvalue}' {$option} WHERE id = '{$id}' LIMIT 1");
 	
-	$scache = new scache('categories');
-	$scache->deletedata();
-	$scache = new scache('cat_bid');
-	$scache->deletedata();
-	$scache = new scache('cat_cid');
-	$scache->deletedata();
-	$scache = new scache('forumtree');
-	$scache->deletedata();
+	$delobj = $scache->load('categories');
+	$delobj->delete();
+	$delobj = $scache->load('cat_bid');
+	$delobj->delete();
+	$delobj = $scache->load('forumtree');
+	$delobj->delete();
 	
 	ok('admin.php?action=forums&job=manage','Forum wurde editiert!');
 }
@@ -428,8 +427,8 @@ elseif ($job == 'add_mod2') {
 	
 	$db->query('INSERT INTO '.$db->pre.'moderators (mid, bid, s_rating, s_news, s_article, p_delete, p_mc, time) VALUES ('.$uid[0].', '.$id.', "'.$gpc->get('int1', int).'", "'.$gpc->get('int2', int).'", "'.$gpc->get('int3', int).'", "'.$gpc->get('int4', int).'", "'.$gpc->get('int5', int).'", '.$timestamp.')');
 	if ($db->affected_rows() == 1) {
-		$scache = new scache('index-moderators');
-		$scache->deletedata();
+		$delobj = $scache->load('index-moderators');
+		$delobj->delete();
 		ok('admin.php?action=forums&job=add_mod&id='.$id, 'Moderator was added!');
 	}
 	else {
@@ -457,9 +456,12 @@ elseif ($job == 'addforum') {
    <td class="mbox" width="50%">
 	<select name="parent" size="1">
 	 <?php
-	$tree = cache_forumtree();
-	$categories = cache_categories();
-	$boards = cache_cat_bid();
+	$forumtree = $scache->load('forumtree');
+	$tree = $forumtree->get();
+	$categories_obj = $scache->load('categories');
+	$categories = $categories_obj->get();
+	$catbid = $scache->load('cat_bid');
+	$boards = $catbid->get();
 	AdminSelectForum($tree, $categories, $boards);
 	 ?>
 	</select>
@@ -470,7 +472,7 @@ elseif ($job == 'addforum') {
    <td class="mbox" width="50%"><input type="text" name="link" size="50" id="dis1" onchange="disable(this)"></td> 
   </tr>
   <tr> 
-   <td class="mbox" width="50%">Forum Password:</font><br><font class="stext">Attention: Subforums are not protected with this password!</td>
+   <td class="mbox" width="50%">Forum Password:</font><br><font class="stext">Subforums are protected with this password, too!</td>
    <td class="mbox" width="50%"><input type="text" name="pw" size="50" id="dis2" onchange="disable(this)"></td> 
   </tr>
   <tr> 
@@ -551,21 +553,21 @@ elseif ($job == 'addforum2') {
 	
 	$db->query("INSERT INTO {$db->pre}cat (name, `desc`, bid, cid, c_order, opt, optvalue) VALUES ('{$name}', '{$desc}', '$bid', '$cid', '$sort', '$opt', '$optvalue')", __LINE__, __FILE__);
 
-	$scache = new scache('forumtree');
-	$scache->deletedata();
-	$scache = new scache('categories');
-	$scache->deletedata();
-	$scache = new scache('cat_bid');
-	$scache->deletedata();
-	$scache = new scache('cat_cid');
-	$scache->deletedata();
+	$delobj = $scache->load('cat_bid');
+	$delobj->delete();
+	$delobj = $scache->load('forumtree');
+	$delobj->delete();
+	$delobj = $scache->load('categories');
+	$delobj->delete();
 	
 	ok('admin.php?action=forums&job=addforum', 'Forum added!');
 }
 elseif ($job == 'addcat') {
 	echo head();
-	$cat = cache_forumtree();
-	$categories = cache_categories();
+	$forumtree = $scache->load('forumtree');
+	$cat = $forumtree->get();
+	$categories_obj = $scache->load('categories');
+	$categories = $categories_obj->get();
 	?>
 <form name="form" method="post" action="admin.php?action=forums&job=addcat2">
  <table class="border">
@@ -615,10 +617,10 @@ elseif ($job == 'addcat2') {
 	
 	$db->query("INSERT INTO ".$db->pre."categories (name, desctxt, c_order) VALUES ('{$boardname}', '".$gpc->get('temp2', str)."', '$sort')");
 
-	$scache = new scache('categories');
-	$scache->deletedata();
-	$scache = new scache('forumtree');
-	$scache->deletedata();
+	$delobj = $scache->load('categories');
+	$delobj->delete();
+	$delobj = $scache->load('forumtree');
+	$delobj->delete();
 
 	ok('admin.php?action=forums&job=addcat', 'Category was created sucessfully!');
 }
@@ -634,9 +636,12 @@ elseif ($job == 'manage') {
 	<td class="ubox" width="30%"><b>Action</b></td> 
 	</tr>
 	<?php
-	$tree = cache_forumtree();
-	$categories = cache_categories();
-	$boards = cache_cat_bid();
+	$forumtree = $scache->load('forumtree');
+	$tree = $forumtree->get();
+	$categories_obj = $scache->load('categories');
+	$categories = $categories_obj->get();
+	$catbid = $scache->load('cat_bid');
+	$boards = $catbid->get();
 	ForumSubs($tree, $categories, $boards);
 	?>
 	</table>
@@ -673,17 +678,15 @@ elseif ($job == 'move') {
 		error('admin.php?action=forums&job=manage','Invalid data sent!');
 	}
 
-    $scache = new scache('forumtree');
-    $scache->deletedata();
+	$delobj = $scache->load('forumtree');
+	$delobj->delete();
 	if ($type == 'c') {
-    	$scache = new scache('categories');
-    	$scache->deletedata();
+		$delobj = $scache->load('categories');
+		$delobj->delete();
 	}
 	else{
-    	$scache = new scache('cat_bid');
-    	$scache->deletedata();
-    	$scache = new scache('cat_cid');
-    	$scache->deletedata();
+		$delobj = $scache->load('cat_bid');
+		$delobj->delete();
 	}
 	
 	viscacha_header('Location: admin.php?action=forums&job=manage');
@@ -924,11 +927,11 @@ elseif ($job == 'cat_edit2') {
 	
 	$db->query("UPDATE {$db->pre}categories SET name = '{$boardname}', desctxt = '{$description}' WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 
-	$scache = new scache('categories');
-	$scache->deletedata();
-	$scache = new scache('forumtree');
-	$scache->deletedata();
-
+	$delobj = $scache->load('categories');
+	$delobj->delete();
+	$delobj = $scache->load('forumtree');
+	$delobj->delete();
+	
 	ok('admin.php?action=forums&job=manage', 'Category was edited successfully!');
 }
 elseif ($job == 'cat_delete') {
@@ -942,10 +945,10 @@ elseif ($job == 'cat_delete') {
 	
 	$db->query("DELETE FROM {$db->pre}categories WHERE id = '{$id}' LIMIT 1");
 
-	$scache = new scache('categories');
-	$scache->deletedata();
-	$scache = new scache('forumtree');
-	$scache->deletedata();
+	$delobj = $scache->load('categories');
+	$delobj->delete();
+	$delobj = $scache->load('forumtree');
+	$delobj->delete();
 
 	ok('admin.php?action=forums&job=manage', 'Category was successfully deleted!');
 }
@@ -996,8 +999,8 @@ elseif ($job == 'delete_prefix') {
 	$id = $gpc->get('id', int);
 	$did = $gpc->get('delete', arr_int);
 	$did = implode(',', $did);
-	$scache = new scache('prefix');
-	$scache->deletedata();
+	$delobj = $scache->load('prefix');
+	$delobj->delete();
 	$db->query('DELETE FROM '.$db->pre.'prefix WHERE id IN('.$did.') AND bid = "'.$id.'"');
 	$i = $db->affected_rows();
 	ok('admin.php?action=forums&job=prefix&id='.$id, $i.' values deleted!');
@@ -1006,8 +1009,8 @@ elseif ($job == 'add_prefix') {
 	echo head();
 	$id = $gpc->get('id', int);
 	$val = $gpc->get('name', str);
-	$scache = new scache('prefix');
-	$scache->deletedata();
+	$delobj = $scache->load('prefix');
+	$delobj->delete();
 	$result = $db->query('SELECT id FROM '.$db->pre.'prefix WHERE bid= "'.$id.'" AND value = "'.$val.'" LIMIT 1');
 	if ($db->num_rows() > 0) {
 		error('admin.php?action=forums&job=prefix&id='.$id, 'This value already exists!');

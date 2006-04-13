@@ -53,7 +53,8 @@ if (count($error) > 0) {
 	errorLogin($error,'forum.php'.SID2URL_1);
 }
 
-$fc = cache_cat_bid();
+$catbid = $scache->load('cat_bid');
+$fc = $catbid->get();
 $last = $fc[$info['board']];
 
 $q = urldecode($gpc->get('q', str));
@@ -114,7 +115,8 @@ $mymodules->load('showtopic_redirect');
 
 $pre = '';
 if ($info['prefix'] > 0) {
-	$prefix = cache_prefix($info['board']);
+	$prefix_obj = $scache->load('prefix');
+	$prefix = $prefix_obj->get($info['board']);
 	if (isset($prefix[$info['prefix']])) {
 		$pre = $prefix[$info['prefix']];
 		$pre = $lang->phrase('showtopic_prefix_title');
@@ -146,7 +148,9 @@ else {
 $temp = pages($speeder, $config['topiczahl'], "showtopic.php?id=".$info['id']."&amp;", $_GET['page']);
 
 $q = explode(' ', trim($q));
-$memberdata = cache_memberdata();
+
+$memberdata_obj = $scache->load('memberdata');
+$memberdata = $memberdata_obj->get();
 
 $inner['index_bit'] = '';
 $inner['vote_result'] = '';
@@ -233,7 +237,8 @@ if ($config['tpcallow'] == 1) {
 		$uploads[$row['tid']][] = $row;
 	}
 	if (count($uploads) > 0) {
-		$fileicons = cache_fileicons();
+		$fileicons_obj = $scache->load('fileicons');
+		$fileicons = $fileicons_obj->get();
 	}
 }
 

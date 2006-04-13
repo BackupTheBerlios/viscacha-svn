@@ -97,8 +97,8 @@ if ($job == 'ignore_pending' || $job == 'add_pending') {
 
 		$db->query("UPDATE {$db->pre}spider SET bot_{$pending_data} = '$pending' WHERE id = " . $id);
 		
-		$scache = new scache('spiders');
-		$scache->deletedata();
+		$delobj = $scache->load('spiders');
+		$delobj->delete();
 	}
 	
 	ok("admin.php?action=spider&job=pending", "Bot information successfully ".iif($job == 'add_pending', "added", "ignored").".");
@@ -113,8 +113,8 @@ elseif ($job == 'delete') {
 			error("admin.php?action=spider&job=manage", "No entries deleted.");
 		}
 		else {
-			$scache = new scache('spiders');
-			$scache->deletedata();
+			$delobj = $scache->load('spiders');
+			$delobj->delete();
 			ok("admin.php?action=spider&job=manage", "Bot data successfully deleted.");
 		}
 	}
@@ -157,8 +157,8 @@ elseif ($job == 'add2' || $job == 'edit2') {
 			error("admin.php?action=spider&job=".iif($job == 'edit2', 'edit', 'add').iif($id > 0, '&id='.$id), "No data changed.");
 		}
 		else {
-			$scache = new scache('spiders');
-			$scache->deletedata();
+			$delobj = $scache->load('spiders');
+			$delobj->delete();
 			ok("admin.php?action=spider&job=manage", "Bot settings successfully changed.");
 		}
 	}

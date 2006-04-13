@@ -4,6 +4,8 @@ if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "misc.php")
 if ($job == 'phpinfo') {
 	phpinfo();
 }
+// Cache-Manager is deprecated (written for 1.1, current version is 2.0)
+// It is functional but the solution is bad... (Build Cache instantly instead of waiting for next need)
 elseif ($job == 'cache') {
 	echo head();
 	$result = array();
@@ -52,8 +54,9 @@ elseif ($job == 'cache') {
 elseif ($job == 'cache_view') {
 	$file = $gpc->get('file', str);
 	echo head();
-	$cache = new scache($file);
-	$data = $cache->importdata();
+	$cache = new CacheItem($file);
+	$cache->import();
+	$data = $cache->get();
 	?>
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr> 
@@ -71,8 +74,8 @@ elseif ($job == 'cache_view') {
 elseif ($job == 'cache_refresh') {
 	$file = $gpc->get('file', str);
 	echo head();
-	$cache = new scache($file);
-	$cache->deletedata();
+	$cache = new CacheItem($file);
+	$data = $cache->delete();
 	ok('admin.php?action=misc&job=cache', 'Die Cache-Datei wurde gelöscht, deswegen wird diese Datei vorerst nicht mehr in der Übersicht aufgeführt. Wenn sie das nächste mal gebraucht wird, wird der Cache automatisch neu aufgebaut und in der Übersicht wieder angezeigt.');
 }
 elseif ($job == 'cache_refresh_all') {
@@ -82,8 +85,8 @@ elseif ($job == 'cache_refresh_all') {
 		while (($file = readdir($dh)) !== false) {
 			if (strpos($file, '.inc.php') !== false) {
 				$file = str_replace('.inc.php', '', $file);
-		    	$cache = new scache($file);
-				$cache->deletedata();
+				$cache = new CacheItem($file);
+				$data = $cache->delete();
 			}
 	    }
 		closedir($dh);

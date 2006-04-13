@@ -42,8 +42,8 @@ if ($_GET['action'] == "hlcode") {
 		error($lang->phrase('query_string_error'), 'javascript:parent.close();');
 	}
 
-	$scache = new scache('geshicode/'.$_GET['fid']);
-	$code = $scache->importdata();
+	$codeobj = new CacheItem($_GET['fid'], 'cache/geshicode/');
+	$codeobj->get();
 	
 	$code['source'] = @html_entity_decode($code['source'], ENT_QUOTES, $lang->phrase('charset'));
 	
@@ -96,26 +96,8 @@ elseif ($_GET['action'] == "filetypes") {
 }
 elseif ($_GET['action'] == "code") {
     include_once('classes/class.geshi.php');
-	$scache = new scache('syntax-highlight');
-	if ($scache->existsdata() == TRUE) {
-	    $clang = $scache->importdata();
-	}
-	else {
-        $clang = array();
-        $d = dir("classes/geshi");
-        while (false !== ($entry = $d->read())) {
-            if (get_extension($entry,TRUE) == 'php' && !is_dir("classes/geshi/".$entry)) {
-                include_once("classes/geshi/".$entry);
-                $short = str_replace('.php','',$entry);
-                $clang[$short]['file'] = $entry;
-                $clang[$short]['name'] = $language_data['LANG_NAME'];
-                $clang[$short]['short'] = $short;
-            }
-        }
-        $d->close();
-        asort($clang);
-	    $scache->exportdata($clang);
-	}
+	$codelang = $scache->load('syntax-highlight');
+	$clang = $codelang->get();
 	
 	echo $tpl->parse("popup/header");
 	$mymodules->load('popup_code_top');
@@ -150,7 +132,8 @@ elseif ($_GET['action'] == "showpost") {
 		errorLogin($error,'javascript:self.close();');
 	}
 	
-	$fc = cache_cat_bid();
+	$catbid = $scache->load('cat_bid');
+	$fc = $catbid->get();
 	$last = $fc[$row->board];
 	
 	forum_opt($last['opt'], $last['optvalue'], $last['id']);
@@ -247,7 +230,8 @@ elseif ($_GET['action'] == "edithistory") {
 		errorLogin($error,'javascript:self.close();');
 	}
 	
-	$fc = cache_cat_bid();
+	$catbid = $scache->load('cat_bid');
+	$fc = $catbid->get();
 	$last = $fc[$row['board']];
 	
 	forum_opt($last['opt'], $last['optvalue'], $last['id']);

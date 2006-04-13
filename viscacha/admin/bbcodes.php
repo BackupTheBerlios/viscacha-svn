@@ -5,8 +5,8 @@ if ($job == 'smileys_delete') {
 	$deleteid = $gpc->get('id', arr_int);
 	if (count($deleteid) > 0) {
 		echo head();
-	   	$scache = new scache('smileys');
-	   	$scache->deletedata();
+	   	$delobj = $scache->load('smileys');
+	   	$delobj->delete();
 	   	$result = $db->query('SELECT * FROM '.$db->pre.'smileys WHERE id IN ('.implode(',', $deleteid).')',__LINE__,__FILE__);
 	   	while ($row = $db->fetch_assoc($result)) {
 	   		$row['replace'] = str_replace('{folder}', $config['smileypath'], $row['replace']);
@@ -77,8 +77,8 @@ elseif ($job == 'smileys_edit2') {
 		$show = $gpc->get('show_'.$i, int);
 		$db->query("UPDATE {$db->pre}smileys AS s SET s.search = '{$search}', s.replace = '{$replace}', s.desc = '{$desc}', s.show = '{$show}' WHERE s.id = '{$i}' LIMIT 1",__LINE__,__FILE__);
 	}
-	$scache = new scache('smileys');
-	$scache->deletedata();
+	$delobj = $scache->load('smileys');
+	$delobj->delete();
 	ok('admin.php?action=bbcodes&job=smileys', count($id).' Smileys wurden editiert.');
 }
 elseif ($job == 'smileys_import') {
@@ -317,8 +317,8 @@ elseif ($job == 'smileys_ajax_pos') {
 	$use = $db->fetch_assoc($result);
 	$use = invert($use['show']);
 	$db->query("UPDATE {$db->pre}smileys AS b SET b.show = '{$use}' WHERE id = '{$id}' LIMIT 1",__LINE__,__FILE__);
-    $scache = new scache('smileys');
-    $scache->deletedata();
+	$delobj = $scache->load('smileys');
+	$delobj->delete();
 	die(strval($use));
 }
 elseif ($job == 'smileys_add') {
@@ -388,8 +388,8 @@ elseif ($job == 'smileys_add') {
 	}
 	$db->query("INSERT INTO {$db->pre}smileys (`search`,`replace`,`desc`,`show`) VALUES ('".$gpc->get('code', str)."','".$img."','".$gpc->get('desc', str)."','".$gpc->get('show', int)."')",__LINE__,__FILE__);
 
-    $scache = new scache('smileys');
-    $scache->deletedata();
+	$delobj = $scache->load('smileys');
+	$delobj->delete();
 
 	ok('admin.php?action=bbcodes&job=smileys', 'Smiley was successfully added');
 }
@@ -572,8 +572,8 @@ elseif ($job == 'add') {
 	
 	$db->query("INSERT INTO {$db->pre}textparser (`search`,`replace`,`type`,`desc`) VALUES ('".$gpc->get('temp1', str)."','".$gpc->get('temp2', str)."','{$type}','".$gpc->get('temp3', str)."')",__LINE__,__FILE__);
 
-	$scache = new scache('bbcode');
-	$scache->deletedata();
+	$delobj = $scache->load('bbcode');
+	$delobj->delete();
 
 	ok('admin.php?action=bbcodes&job='.$type, 'Daten wurden hinzugefügt');
 }
@@ -586,8 +586,8 @@ elseif ($job == 'del') {
 	}
 	$db->query('DELETE FROM '.$db->pre.'textparser WHERE id IN ('.implode(',',$delete).')',__LINE__,__FILE__);
 	$anz = $db->affected_rows();
-    $scache = new scache('bbcode');
-    $scache->deletedata();
+	$delobj = $scache->load('bbcode');
+	$delobj->delete();
 	ok('admin.php?action=bbcodes&job='.$type, $anz.' entries were deleted successfully!');
 }
 elseif ($job == 'codefiles') {
@@ -655,8 +655,8 @@ elseif ($job == 'del_codefiles') {
 			$filesystem->unlink($file);
 		}
 	}
-    $scache = new scache('syntax-highlight');
-    $scache->deletedata();
+	$delobj = $scache->load('syntax-highlight');
+	$delobj->delete();
     ok('admin.php?action=bbcodes&job=codefiles', 'Dateien wurden gelöscht');
 }
 elseif ($job == 'custombb_add') {
@@ -742,8 +742,8 @@ elseif ($job == 'custombb_add2') {
 	VALUES ('{$query['bbcodetag']}','{$query['bbcodereplacement']}','{$query['bbcodeexample']}','{$query['bbcodeexplanation']}','{$query['twoparams']}','{$query['title']}','{$query['buttonimage']}')
 	", __LINE__, __FILE__);
 
-    $scache = new scache('custombb');
-    $scache->deletedata();
+	$delobj = $scache->load('custombb');
+	$delobj->delete();
 
 	ok('admin.php?action=bbcodes&job=custombb');
 }
@@ -833,8 +833,8 @@ elseif ($job == 'custombb_edit2') {
 
 	$db->query("UPDATE {$db->pre}bbcode SET title = '{$query['title']}',bbcodetag = '{$query['bbcodetag']}',bbcodereplacement = '{$query['bbcodereplacement']}',bbcodeexample = '{$query['bbcodeexample']}',bbcodeexplanation = '{$query['bbcodeexplanation']}',twoparams = '{$query['twoparams']}',buttonimage = '{$query['buttonimage']}' WHERE id = '{$query['id']}'", __LINE__, __FILE__);
 
-    $scache = new scache('custombb');
-    $scache->deletedata();
+	$delobj = $scache->load('custombb');
+	$delobj->delete();
 
 	ok('admin.php?action=bbcodes&job=custombb');
 }
@@ -860,8 +860,8 @@ elseif ($job == 'custombb_delete2'){
 	echo head();
 	$id = $gpc->get('id', int);
 	$db->query("DELETE FROM {$db->pre}bbcode WHERE id = ".$id, __LINE__, __FILE__);
-    $scache = new scache('custombb');
-    $scache->deletedata();
+	$delobj = $scache->load('custombb');
+	$delobj->delete();
 	ok('admin.php?action=bbcodes&job=custombb', 'Custom BB Code successfully deleted');
 }
 elseif ($job == 'custombb') {

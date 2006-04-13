@@ -123,10 +123,10 @@ elseif ($job == 'ajax_changeperm') {
 	}
 	$perm = invert($perm[$key]);
 	$db->query("UPDATE {$db->pre}groups AS g SET g.{$key} = '{$perm}' WHERE id = '{$id}' LIMIT 1");
-	$scache = new scache('group_status');
-	$scache->deletedata();
-	$scache = new scache('team_ag');
-	$scache->deletedata();
+	$delobj = $scache->load('group_status');
+	$delobj->delete();
+	$delobj = $scache->load('team_ag');
+	$delobj->delete();
 	die(strval($perm));
 }
 elseif ($job == 'add') {
@@ -265,8 +265,8 @@ elseif ($job == 'add2') {
 		}
 	}
 	
-	$scache = new scache('group_status');
-	$scache->deletedata();
+	$delobj = $scache->load('group_status');
+	$delobj->delete();
 	if ($db->affected_rows()) {
 		ok('admin.php?action=groups&job=manage');
 	}
@@ -280,8 +280,8 @@ elseif ($job == 'delete') {
 	if (isset($_POST['submit_delete']) && count($del) > 0) {
 		$db->query("DELETE FROM {$db->pre}groups WHERE id IN (".implode(',',$del).")");
 		$anz = $db->affected_rows();
-		$scache = new scache('group_status');
-		$scache->deletedata();
+		$delobj = $scache->load('group_status');
+		$delobj->delete();
 		echo head();
 		ok('admin.php?action=groups&job=manage', $anz.' Einträge gelöscht');
 	}
@@ -358,8 +358,8 @@ elseif ($job == 'edit2') {
 	
 	$db->query('UPDATE '.$db->pre.'groups SET '.$sql_values.'flood = "'.$gpc->get('flood', int).'", title = "'.$gpc->get('title', str).'", name = "'.$gpc->get('name', str).'" WHERE id = "'.$id.'" LIMIT 1', __LINE__, __FILE__);
 	
-	$scache = new scache('group_status');
-	$scache->deletedata();
+	$delobj = $scache->load('group_status');
+	$delobj->delete();
 	
 	if ($db->affected_rows()) {
 		ok('admin.php?action=groups&job=manage');

@@ -1,5 +1,5 @@
 <?php
-global $slog, $bbcode, $gpc;
+global $slog, $bbcode, $gpc, $scache;
 
 $result = $db->query("
 SELECT r.dowords, r.dosmileys, t.posts, t.prefix, t.status, t.sticky, t.id, t.board, t.topic, r.comment, r.date, IF(r.email = '', u.name, r.name) AS name 
@@ -12,7 +12,8 @@ BBProfile($bbcode);
 while ($row = $gpc->prepare($db->fetch_assoc($result))) {
 	$row['pre'] = '';
 	if ($row['prefix'] > 0) {
-		$prefix = cache_prefix($row['board']);
+		$prefix_obj = $scache->load('prefix');
+		$prefix = $prefix_obj->get($row['board']);
 		if (isset($prefix[$row['prefix']])) {
 			$row['pre'] = $prefix[$row['prefix']];
 			$lang->assign('pre', $row['pre']);

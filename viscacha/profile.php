@@ -41,7 +41,9 @@ $is_member = false;
 $url_ext = '';
 $guest = $gpc->get('guest', int);
 
-$memberdata = cache_memberdata();
+$memberdata_obj = $scache->load('memberdata');
+$memberdata = $memberdata_obj->get();
+
 if (isset($memberdata[$_GET['id']])) {
 	$username = $memberdata[$_GET['id']];
 }

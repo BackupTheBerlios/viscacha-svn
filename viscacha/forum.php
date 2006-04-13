@@ -46,7 +46,9 @@ $my->pb = $slog->GlobalPermissions();
 echo $tpl->parse("header");
 echo $tpl->parse("menu");
 
-$memberdata = cache_memberdata();
+$memberdata_obj = $scache->load('memberdata');
+$memberdata = $memberdata_obj->get();
+
 $mymodules->load('forum_top');
 BoardSelect();
 $mymodules->load('forum_bottom');

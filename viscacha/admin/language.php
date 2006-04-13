@@ -64,8 +64,8 @@ elseif ($job == 'ajax_publicuse') {
 	}
 	$use = invert($use['publicuse']);
 	$db->query("UPDATE {$db->pre}language SET publicuse = '{$use}' WHERE id = '{$id}' LIMIT 1");
-	$scache = new scache('load-language');
-	$scache->deletedata();
+	$delobj = $scache->load('load-language');
+	$delobj->delete();
 	die(strval($use));
 }
 elseif ($job == 'import') {

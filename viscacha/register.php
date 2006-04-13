@@ -138,10 +138,10 @@ if ($_GET['action'] == "save") {
 			$from = array();
 			xmail($to, $from, $data['title'], $data['comment']);
 		}
-		$scache = new scache('memberdata');
-		if ($scache->existsdata() == TRUE) {
-			$cache = $scache->deletedata();
-		}
+		
+		$com = $scache->load('memberdata');
+		$cache = $com->delete();
+		
         ok($lang->phrase('register_confirm_'.$config['confirm_registration']), "log.php?action=login".SID2URL_x);
 	}
 

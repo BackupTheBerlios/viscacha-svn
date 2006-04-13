@@ -13,16 +13,19 @@ class tpl {
 	
 	
 	function tpl() {
-		global $config, $my, $gpc;
+		global $config, $my, $gpc, $scache;
 
 		$admin = $gpc->get('admin', str);
+		
 		if ($admin != $config['cryptkey']) {
 			$fresh = false;
 		}
 		else {
 			$fresh = true;
 		}
-		$cache = cache_loaddesign($fresh);
+		$loaddesign_obj = $scache->load('loaddesign');
+		$cache = $loaddesign_obj->get($fresh);
+		
 		$this->dir = '';
 		$this->altdir = './templates/'.$cache[$config['templatedir']]['template'].'/';
 		if (!empty($my->imagesid) && $my->imagesid != $cache[$config['templatedir']]['images']) {

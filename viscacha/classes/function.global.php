@@ -24,6 +24,8 @@
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "function.global.php") die('Error: Hacking Attempt');
 
+// Caching-Class
+require_once('classes/class.cache.php');
 // INI-File-Class
 include_once("classes/class.ini.php");
 // A class for Languages
@@ -35,6 +37,7 @@ require_once("classes/class.docoutput.php");
 // BB-Code Class
 include_once ("classes/class.bbcode.php");
 
+$scache = new CacheServer();
 $myini = new INI();
 $lang = new lang();
 $mymodules = new MyModules();
@@ -485,7 +488,7 @@ function get_extension($url, $leading=FALSE) {
 	}
 }
 function UpdateBoardStats ($board) {
-	global $config, $db;
+	global $config, $db, $scache;
 	if ($config['updateboardstats'] == '1') {
 		$result = $db->query("SELECT COUNT(*) FROM {$db->pre}replies WHERE board='$board'",__LINE__,__FILE__);
 		$count = $db->fetch_array ($result);
@@ -502,8 +505,8 @@ function UpdateBoardStats ($board) {
 			$last[0] = 0;
 		}
 		$db->query("UPDATE {$db->pre}cat SET topics = '".$topics."', replys = '".$replies."', last_topic = '".$last[0]."' WHERE id = '".$board."'",__LINE__,__FILE__);
-		$scache = new scache('cat_bid');
-		$scache->deletedata();
+		$delobj = $scache->load('cat_bid');
+		$delobj->delete();
 	}
 }
 
@@ -599,9 +602,17 @@ function CheckForumTree($tree, &$tree2, $board) {
 }
 
 function BoardSubs ($group = true) {
-	$tree = cache_forumtree();
-	$categories = cache_categories();
-	$boards = cache_cat_bid();
+	global $scache;
+	
+	$forumtree = $scache->load('forumtree');
+	$tree = $forumtree->get();
+	
+	$categories_obj = $scache->load('categories');
+	$categories = $categories_obj->get();
+	
+	$catbid = $scache->load('cat_bid');
+	$boards = $catbid->get();
+	
 	$tree2 = array();
 	$forums = SelectForums(array(), $tree, $categories, $boards, $group);
 	return implode("\n", $forums);
@@ -635,16 +646,22 @@ function SelectForums($html, $tree, $cat, $board, $group = true, $char = '&nbsp;
 
 // This function is simply for understanding the if-clauses better
 function check_forumperm($forum) {
-	global $my;
-	if ($forum['opt'] == 'pw') {
-		if (!isset($my->pwfaccess[$forum['id']]) || $forum['optvalue'] != $my->pwfaccess[$forum['id']]) {
-			return false;
-		}
-		else {
-			return true;
+	global $my, $scache;
+
+	$parent_forums = $scache->load('parent_forums');
+	$tree = $parent_forums->get();
+	
+	$catbid = $scache->load('cat_bid');
+	$forums = $catbid->get();
+
+	foreach ($tree[$forum['id']] as $id) {
+		if ($forums[$id]['opt'] == 'pw') {
+			if (!isset($my->pwfaccess[$id]) || $forums[$id]['optvalue'] != $my->pwfaccess[$id]) {
+				return false;
+			}
 		}
 	}
-	elseif ($my->p['forum'] == 0) {
+	if ($my->p['forum'] == 0) {
 		if (isset($my->pb[$forum['id']]) && $my->pb[$forum['id']]['forum'] == 1) {
 			return true;
 		}

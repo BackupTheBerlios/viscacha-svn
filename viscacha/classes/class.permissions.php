@@ -28,12 +28,13 @@ var $sidload;
  * This function does some initial work: caching search engine user agents, detects the spiders and gets the ip of the user.
  */
 function slog () {
-	global $config;
+	global $config, $scache;
 
 	$this->statusdata = array();
 	$this->ip = getip();
 	$this->user_agent = iif(isset($_SERVER['HTTP_USER_AGENT']), $_SERVER['HTTP_USER_AGENT'], getenv('HTTP_USER_AGENT'));
-	$this->bots = cache_spiders();
+	$spiders = $scache->load('spiders');
+	$this->bots = $spiders->get();
 	$this->sid = '';
 	$this->cookies = FALSE;
 	$this->cookiedata = array(0, '');
@@ -90,7 +91,7 @@ function get_robot_type()  {
 
 		// check for ip match
 		foreach (explode('|', $row['bot_ip']) as $bot_ip) {
-			if ($row['bot_ip'] && !empty($bot_ip) && strpos($user_ip, $bot_ip) === 0) {
+			if ($row['bot_ip'] && !empty($bot_ip) && strpos($this->ip, $bot_ip) === 0) {
 				return $row['type'];
 			}
 		}
@@ -200,24 +201,11 @@ function log_robot()  {
  * The ID for the guests is set to the constant 'GROUP_MEMBER'.
  */
 function defineGID() {
-	global $db;
-	$scache = new scache('groupstandard');
-	if ($scache->existsdata() == TRUE) {
-	    $data = $scache->importdata();
-	}
-	else {
-	    $cresult = $db->query("SELECT id, guest FROM {$db->pre}groups WHERE core = '1' AND admin != '1' LIMIT 2",__LINE__,__FILE__);
-	    $data = array();
-	    while ($id = $db->fetch_assoc($cresult)) {
-	    	if ($id['guest'] == 1) {
-	        	$data['group_guest'] = $id['id'];
-	        }
-	        else {
-	        	$data['group_member'] = $id['id'];
-	        }
-	    }
-	    $scache->exportdata($data);
-	}
+	global $db, $scache;
+
+	$groups_obj = $scache->load('groupstandard');
+	$data = $groups_obj->get();
+
 	if (!defined('GROUP_GUEST')) {
 	    DEFINE('GROUP_GUEST', $data['group_guest']);
 	}
@@ -236,25 +224,9 @@ function defineGID() {
  * @return array Array containing admin and g-mod ids
  */
 function getTeamID () {
-	global $db;
-	$scache = new scache('team_ag');
-	if ($scache->existsdata() == TRUE) {
-	    $data = $scache->importdata();
-	}
-	else {
-	    $cresult = $db->query("SELECT id, gmod, admin FROM {$db->pre}groups WHERE admin = '1' OR gmod = '1'",__LINE__,__FILE__);
-	    $data = array('gmod' => array(), 'admin' => array());
-	    while ($id = $db->fetch_assoc($cresult)) {
-	    	if ($id['admin'] == 1) {
-	        	$data['admin'][] = $id['id'];
-	        }
-	        elseif ($id['gmod'] == 1) {
-	        	$data['gmod'][] = $id['id'];
-	        }
-	    }
-	    $scache->exportdata($data);
-	}
-	return $data;
+	global $scache;
+	$team_ag = $scache->load('team_ag');
+	return $team_ag->get();
 }
 
 /**
@@ -333,20 +305,12 @@ function getStatus($groups, $implode = '') {
 
 /**
  * Caches the data used by method getStatus().
+ * This function is deprecated...
  */
 function getStatusData () {
-	global $db;
-	$scache = new scache('group_status');
-	if ($scache->existsdata() == TRUE) {
-	    $this->statusdata = $scache->importdata();
-	}
-	else {
-	    $cresult = $db->query("SELECT id, admin, guest, title, core FROM {$db->pre}groups ORDER BY core DESC",__LINE__,__FILE__);
-	    while ($row = $db->fetch_assoc($cresult)) {
-	        $this->statusdata[$row['id']] = $row;
-	    }
-	    $scache->exportdata($this->statusdata);
-	}
+	global $scache;
+	$group_status = $scache->load('group_status');
+	$this->statusdata = $group_status->get();
 }
 
 /**
@@ -424,7 +388,7 @@ function deleteOldSessions () {
  * @return object Data of the user who is calling this script
  */
 function logged () {
-	global $config, $db, $gpc;
+	global $config, $db, $gpc, $scache;
 
 	$this->deleteOldSessions();
 	
@@ -548,7 +512,10 @@ function logged () {
 	else {
 		$fresh = true;
 	}
-	$cache = cache_loaddesign($fresh);
+	
+	$loaddesign_obj = $scache->load('loaddesign');
+	$cache = $loaddesign_obj->get($fresh);
+
 	$q_tpl = $gpc->get('design', int);
 	if (isset($my->template) == false || isset($cache[$my->template]) == false) {
 		$my->template = $config['templatedir'];
@@ -566,7 +533,9 @@ function logged () {
 	$my->imagesid = $cache[$my->template]['images'];
 	$my->cssid = $cache[$my->template]['stylesheet'];
 
-	$cache2 = cache_loadlanguage();
+	$loadlanguage_obj = $scache->load('loadlanguage');
+	$cache2 = $loadlanguage_obj->get();
+
 	$q_lng = $gpc->get('lang', int);
 	if (isset($my->language) == false || isset($cache2[$my->language]) == false) {
 		$my->language = $config['langdir'];
@@ -803,7 +772,9 @@ function sid_login($remember = true) {
 			}
 		}
 
-		$cache = cache_loaddesign();
+		$loaddesign_obj = $scache->load('loaddesign');
+		$cache = $loaddesign_obj->get();
+	
 		$q_tpl = $gpc->get('design', int);
 		if (isset($my->template) == false || isset($cache[$my->template]) == false) {
 			$my->template = $config['templatedir'];
@@ -824,7 +795,9 @@ function sid_login($remember = true) {
 		$my->imagesid = $cache[$my->template]['images'];
 		$my->cssid = $cache[$my->template]['stylesheet'];
 
-		$cache2 = cache_loadlanguage();
+		$loadlanguage_obj = $scache->load('loadlanguage');
+		$cache2 = $loadlanguage_obj->get();
+
 		$q_lng = $gpc->get('lang', int);
 		if (isset($my->language) == false || isset($cache2[$my->language]) == false) {
 			$my->language = $config['langdir'];
@@ -965,7 +938,9 @@ function construct_sid() {
  */
 function getBoards() {
 	if (count($this->boards) == 0) {
-		$this->boards = array_keys(cache_cat_bid());
+		global $scache;
+		$catbid = $scache->load('cat_bid');
+		$this->boards = array_keys( $catbid->get() );
 	}
 	return $this->boards;
 }

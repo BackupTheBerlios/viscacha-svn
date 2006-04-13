@@ -60,7 +60,8 @@ Inline:
 */
 
 if ($my->p['docs'] == 1 && GroupCheck($info['groups'])) {
-	$memberdata = cache_memberdata();
+	$memberdata_obj = $scache->load('memberdata');
+	$memberdata = $memberdata_obj->get();
 	if(is_id($info['author']) && isset($memberdata[$info['author']])) {
 		$info['name'] = $memberdata[$info['author']];
 	}

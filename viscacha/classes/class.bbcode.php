@@ -131,13 +131,15 @@ class BBCode {
 		    $a = 0;
 		    $aa = array();
 			$unique = md5($code);
-			$scache = new scache('geshicode/'.$unique);
-			if ($scache->existsdata() == FALSE) {
+			
+			$cache = new CacheItem($unique, 'cache/geshicode/');
+			if ($cache->exists() == false) {
 				$export = array(
 				'language' => $lang,
 				'source' => trim($code)
 				);
-			    $scache->exportdata($export);
+			    $cache->set($export);
+			    $cache->export();
 			}
 
 		    foreach ($rows as $row) {
@@ -995,63 +997,19 @@ class BBCode {
 		return $text;
 	}
 	function cache_bbcode () {
-		global $db;
-		$scache = new scache('bbcode');
-		if ($scache->existsdata() == TRUE) {
-			$cache = $scache->importdata();
-		}
-		else {
-			$bbresult = $db->query("SELECT * FROM {$db->pre}textparser",__LINE__,__FILE__);
-			$cache = array(
-				'censor' => array(),
-				'bb' => array(),
-				'word' => array(),
-				'replace' => array()
-			);
-			while ($bb = $db->fetch_assoc($bbresult)) {
-				$cache[$bb['type']][] = $bb;
-			}
-			$scache->exportdata($cache);
-		}
-		$this->bbcodes = $cache;
+		global $scache;
+		$cache = $scache->load('bbcode');
+		$this->bbcodes = $cache->get();
 	}
 	function cache_custombb () {
-		global $db;
-		$scache = new scache('custombb');
-		if ($scache->existsdata() == TRUE) {
-			$cache = $scache->importdata();
-		}
-		else {
-			$bbresult = $db->query("SELECT * FROM {$db->pre}bbcode ORDER BY id",__LINE__,__FILE__);
-			while ($bb = $db->fetch_assoc($bbresult)) {
-				if ($bb['twoparams']) {
-					$bb['bbcodereplacement'] = str_replace('{param}', '\2', $bb['bbcodereplacement']);
-					$bb['bbcodereplacement'] = str_replace('{option}', '\1', $bb['bbcodereplacement']);
-				}
-				else {
-					$bb['bbcodereplacement'] = str_replace('{param}', '\1', $bb['bbcodereplacement']);
-				}
-				$cache[] = $bb;
-			}
-			$scache->exportdata($cache);
-		}
-		$this->custombb = $cache;
+		global $scache;
+		$cache = $scache->load('custombb');
+		$this->custombb = $cache->get();
 	}
 	function cache_smileys () {
-		global $db, $bbcode;
-		$scache = new scache('smileys');
-		if ($scache->existsdata() == TRUE) {
-			$cache = $scache->importdata();
-		}
-		else {
-			$bbresult = $db->query("SELECT * FROM {$db->pre}smileys",__LINE__,__FILE__);
-			$cache = array();
-			while ($bb = $db->fetch_assoc($bbresult)) {
-				$cache[] = $bb;
-			}
-			$scache->exportdata($cache);
-		}
-		$this->smileys = $cache;
+		global $scache;
+		$cache = $scache->load('smileys');
+		$this->smileys = $cache->get();
 	}
 	function getsmileyhtml ($perrow = 5) {
 	    global $tpl, $config;

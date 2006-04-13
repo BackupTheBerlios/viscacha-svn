@@ -14,9 +14,12 @@ if ($_GET['job'] == 'postrating') {
    <td class="mbox">
 	<select name="board" size="1">
 	 <?php
-	$tree = cache_forumtree();
-	$categories = cache_categories();
-	$boards = cache_cat_bid();
+	$forumtree = $scache->load('forumtree');
+	$tree = $forumtree->get();
+	$categories_obj = $scache->load('categories');
+	$categories = $categories_obj->get();
+	$catbid = $scache->load('cat_bid');
+	$boards = $catbid->get();
 	AdminSelectForum($tree, $categories, $boards);
 	 ?>
 	</select>
@@ -78,9 +81,12 @@ elseif ($_GET['job'] == 'postrating2') {
   </tr>
 	<?php
 	
-	$prefix = cache_prefix($board);
-	$memberdata = cache_memberdata();
-
+	$prefix_obj = $scache->load('prefix');
+	$prefix = $prefix_obj->get($board);
+	
+	$memberdata_obj = $scache->load('memberdata');
+	$memberdata = $memberdata_obj->get();
+	
 	while ($row = $gpc->prepare($db->fetch_object($result))) {
 		$pref = '';
 		$showprefix = FALSE;

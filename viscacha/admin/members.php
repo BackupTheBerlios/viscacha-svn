@@ -73,9 +73,11 @@ elseif ($job == 'newsletter2') {
 	
 	$db->query('INSERT INTO '.$db->pre.'newsletter (receiver, title, content, time) VALUES ("'.$int1.'","'.$gpc->get('temp1', str).'","'.$gpc->get('temp2', str).'","'.time().'")');
 	$lid = $db->affected_rows();
-	
-	$scache = new scache('newsletter_session');
-	$scache->exportdata($emails);
+
+	$cache = new CacheItem('newsletter_session');
+    $cache->set($emails);
+    $cache->export();
+
 	$htmlhead .= '<meta http-equiv="refresh" content="2; url=admin.php?action=members&job=newsletter3&id='.$lid.'&int2='.$int2.'&page=1">';
 	echo head();
 	?>
@@ -91,8 +93,8 @@ elseif ($job == 'newsletter2') {
 	echo foot();
 }
 elseif ($job == 'newsletter3') {
-	$scache = new scache('newsletter_session');
-	$emails = $scache->importdata();
+	$cache = new CacheItem('newsletter_session');
+    $emails = $cache->get();
 	
 	$int2 = $gpc->get('int2', int, 100);
 	$page = $gpc->get('page', int, 1);
@@ -555,10 +557,14 @@ elseif ($job == 'edit') {
 	}		
 	
 	// Settings
-	$design = cache_loaddesign();
+	$loaddesign_obj = $scache->load('loaddesign');
+	$design = $loaddesign_obj->get();
 	$mydesign = $design[$user['template']]['name'];
-	$language = cache_loadlanguage();
+	
+	$loadlanguage_obj = $scache->load('loadlanguage');
+	$language = $loadlanguage_obj->get();
 	$mylanguage = $language[$user['language']]['language'];
+	
 	// Profile
     $bday = explode('-',$user['birthday']);
     $year = gmdate('Y');
@@ -787,8 +793,11 @@ elseif ($job == 'edit2') {
 	include_once ("classes/function.profilefields.php");
 
 	echo head();
-	$cache = cache_loaddesign();
-	$cache2 = cache_loadlanguage();
+	$loaddesign_obj = $scache->load('loaddesign');
+	$cache = $loaddesign_obj->get();
+	
+	$loadlanguage_obj = $scache->load('loadlanguage');
+	$cache2 = $loadlanguage_obj->get();
 	
 	$keys_int = array('id', 'birthday', 'birthmonth', 'birthyear', 'opt_0', 'opt_1', 'opt_2', 'opt_3', 'opt_4', 'opt_5');
 	$keys_str = array('groups', 'fullname', 'email', 'location', 'icq', 'gender', 'hp', 'aol', 'yahoo', 'msn', 'jabber', 'signature', 'pic', 'temp', 'comment', 'skype');
@@ -1079,8 +1088,13 @@ elseif ($job == 'banned3') {
 }
 elseif ($job == 'search') {
 	echo head();
-	$design = cache_loaddesign();
-	$language = cache_loadlanguage();
+	
+	$loaddesign_obj = $scache->load('loaddesign');
+	$design = $loaddesign_obj->get();
+	
+	$loadlanguage_obj = $scache->load('loadlanguage');
+	$language = $loadlanguage_obj->get();
+	
 	$result = $db->query("SELECT id, title, name FROM {$db->pre}groups ORDER BY admin DESC , guest ASC , core ASC");
 	?>
 <form name="form" method="post" action="admin.php?action=members&job=search2">
@@ -1371,8 +1385,11 @@ elseif ($job == 'search2') {
 	);
 	$change = array('m' => 'male', 'w' => 'female', '' => '-');
 
-	$design = cache_loaddesign();
-	$language = cache_loadlanguage();
+	$loaddesign_obj = $scache->load('loaddesign');
+	$design = $loaddesign_obj->get();
+	
+	$loadlanguage_obj = $scache->load('loadlanguage');
+	$language = $loadlanguage_obj->get();
 	
 	$type = $gpc->get('type', int);
 	if ($type == 0) {

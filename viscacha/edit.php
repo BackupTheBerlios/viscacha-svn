@@ -46,11 +46,14 @@ $info = $gpc->prepare($db->fetch_assoc($result));
 $my->p = $slog->Permissions($info['board']);
 $my->mp = $slog->ModPermissions($info['board']);
 
-$fc = cache_cat_bid();
+$cat_bid_obj = $scache->load('cat_bid');
+$fc = $cat_bid_obj->get();
 $last = $fc[$info['board']];
 forum_opt($last['opt'], $last['optvalue'], $last['id'], 'edit');
 
-$prefix = cache_prefix($info['board']);
+$prefix_obj = $scache->load('prefix');
+$prefix = $prefix_obj->get($info['board']);
+
 $pre = '';
 if ($info['prefix'] > 0) {
 	if (isset($prefix[$info['prefix']])) {

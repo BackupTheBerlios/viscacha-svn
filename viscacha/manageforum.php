@@ -38,7 +38,9 @@ $my = $slog->logged();
 $lang->init($my->language);
 $tpl = new tpl();
 
-$fc = cache_cat_bid();
+$catbid = $scache->load('cat_bid');
+$fc = $catbid->get();
+
 if (empty($board) || !isset($fc[$board])) {
 	error($lang->phrase('query_string_error'));
 }
@@ -81,8 +83,11 @@ if ($my->vlogin && $my->mp[0] == 1) {
         	ORDER BY sticky DESC, last DESC LIMIT $start, ".$config['forumzahl']
         	,__LINE__,__FILE__);
         	
-        	$prefix = cache_prefix($board);
-        	$memberdata = cache_memberdata();
+			$memberdata_obj = $scache->load('memberdata');
+			$memberdata = $memberdata_obj->get();
+
+			$prefix_obj = $scache->load('prefix');
+			$prefix = $prefix_obj->get($board);
         
         	while ($row = $gpc->prepare($db->fetch_object($result))) {
         		$pref = '';

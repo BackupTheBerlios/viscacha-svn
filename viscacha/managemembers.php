@@ -109,10 +109,14 @@ if ($my->vlogin && $my->p['admin'] == 1) {
 		$user['icq'] = iif(empty($user['icq']), '', $user['icq']);
 		
 		// Settings
-		$design = cache_loaddesign();
+		$loaddesign_obj = $scache->load('loaddesign');
+		$design = $loaddesign_obj->get();
 		$mydesign = $design[$user['template']]['name'];
-		$language = cache_loadlanguage();
+		
+		$loadlanguage_obj = $scache->load('loadlanguage');
+		$language = $loadlanguage_obj->get();
 		$mylanguage = $language[$user['language']]['language'];
+		
 		// Profile
 	    $bday = explode('-',$user['birthday']);
 	    $year = gmdate('Y');
@@ -129,8 +133,11 @@ if ($my->vlogin && $my->p['admin'] == 1) {
 	}
 	elseif ($_GET['action'] == 'edit2') {
 	
-		$cache = cache_loaddesign();
-		$cache2 = cache_loadlanguage();
+		$loaddesign_obj = $scache->load('loaddesign');
+		$cache = $loaddesign_obj->get();
+
+		$loadlanguage_obj = $scache->load('loadlanguage');
+		$cache2 = $loadlanguage_obj->get();
 
 		$random = $gpc->get('random', none);
 		$name = $gpc->get('name_'.$random, str);

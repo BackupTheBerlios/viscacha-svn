@@ -1,8 +1,8 @@
 <?php
-global $memberdata, $gpc, $slog, $lang, $db, $tpl;
-if (!isset($memberdata) || !is_array($memberdata)) {
-    $memberdata = cache_memberdata();
-}
+global $scache, $gpc, $slog, $lang, $db, $tpl;
+
+$memberdata_obj = $scache->load('memberdata');
+$memberdata = $memberdata_obj->get();
 
 $wwo = array();
 $wwo['i']=0; 

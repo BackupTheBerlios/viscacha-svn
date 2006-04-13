@@ -63,7 +63,10 @@ if ($_GET['action'] == 'show') {
 	if (empty($row['name'])) {
 		$row['regdate'] = '-';
 		$row['groups'] = 'guest';
-		$memberdata = cache_memberdata();
+		
+		$memberdata_obj = $scache->load('memberdata');
+		$memberdata = $memberdata_obj->get();
+
 		if (isset($memberdata[$row['mid']])) {
 			$row['name'] = $memberdata[$row['mid']];
 		}
@@ -275,7 +278,8 @@ elseif ($_GET['action'] == "new" || $_GET['action'] == "preview" || $_GET['actio
 	}
 
 	if (is_id($data['name'])) {
-		$memberdata = cache_memberdata();
+		$memberdata_obj = $scache->load('memberdata');
+		$memberdata = $memberdata_obj->get();
 		if (isset($memberdata[$data['name']])) {
 			$showname = $memberdata[$data['name']];
 		}
@@ -302,7 +306,8 @@ elseif ($_GET['action'] == "browse") {
 	echo $tpl->parse("header");
 	echo $tpl->parse("menu");
 
-	$memberdata = cache_memberdata();
+	$memberdata_obj = $scache->load('memberdata');
+	$memberdata = $memberdata_obj->get();
 
     $count = $db->fetch_array($db->query("SELECT COUNT(*) FROM {$db->pre}pm WHERE pm_to = '".$my->id."' AND dir = '".$_GET['id']."'",__LINE__,__FILE__));
     $temp = pages($count[0], $config['pmzahl'], 'pm.php?action=browse&amp;id='.$_GET['id'].'&amp;', $_GET['page']);
@@ -345,7 +350,8 @@ else {
 	echo $tpl->parse("menu");
 	echo $tpl->parse("pm/menu");
 
-	$memberdata = cache_memberdata();
+	$memberdata_obj = $scache->load('memberdata');
+	$memberdata = $memberdata_obj->get();
 
 	$time = time()-60*60*24*7;
 	$timestamp = $time > $my->clv ? $my->clv : $time;
