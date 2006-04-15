@@ -469,6 +469,10 @@ elseif ($_GET['action'] == "profile2") {
 	    	$changename = '';
 	    }
 
+		if (strcasecmp(trim($_POST['email']), trim($my->mail)) != 0) {
+		    // Hier kann beliebiger Code eingesetzt werden, der nach dem Ändern der E-Mail-Adresse ausgeführt wird
+		}
+
 		$db->query("UPDATE {$db->pre}user SET skype = '{$_POST['skype']}', icq = '{$_POST['icq']}', yahoo = '{$_POST['yahoo']}', aol = '{$_POST['aol']}', msn = '{$_POST['msn']}', jabber = '{$_POST['jabber']}', birthday = '{$bday}', gender = '{$_POST['gender']}', hp = '{$_POST['hp']}', signature = '{$_POST['signature']}', location = '{$_POST['location']}', fullname = '{$_POST['fullname']}', mail = '{$_POST['email']}'{$changename} WHERE id = '{$my->id}' LIMIT 1",__LINE__,__FILE__);
 		ok($lang->phrase('data_success'), "editprofile.php?action=profile".SID2URL_x);
 	}

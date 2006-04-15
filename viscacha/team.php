@@ -47,7 +47,9 @@ echo $tpl->parse("menu");
 
 $mymodules->load('team_top');
 
-$team = $slog->getTeamID();
+$team_ag = $scache->load('team_ag');
+$team = $team_ag->get();
+
 $cache = array();
 $t = array_merge($team['admin'], $team['gmod']);
 foreach ($t as $row) {

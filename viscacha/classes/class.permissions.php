@@ -77,6 +77,14 @@ function SessionDel () {
 	}
 }
 
+/**
+ * Returns the type of the robot currently visiting this site.
+ *
+ * Returns 'e' for E-Mail-Collectors, 'v' for Validators (HTML, CSS, ...), 
+ * 'b' for crawlers/spiders (search engines) and false (boolean) if it is not a robot (or a robot not in database).
+ *
+ * @return mixed
+ */
 function get_robot_type()  { 
 	global $db;
 
@@ -100,6 +108,13 @@ function get_robot_type()  {
 	return false;
 }
 
+/**
+ * Checks if the visitor is a robot. 
+ * 
+ * The id of the robot (set in database) will be returned or 0 on failure/not finding a matching robot.
+ *
+ * @return integer
+ */
 function log_robot()  { 
 	global $db;
 
@@ -215,21 +230,6 @@ function defineGID() {
 }
 
 /**
- * Gets the IDs for the admin- and global moderator-groups.
- * 
- * This function returns an array containign two arrays with the group ids. 
- * The array with the key 'admin' contains the ids for the administrators and 
- * the array with the key 'gmod' contains the ids for the global moderators.
- *
- * @return array Array containing admin and g-mod ids
- */
-function getTeamID () {
-	global $scache;
-	$team_ag = $scache->load('team_ag');
-	return $team_ag->get();
-}
-
-/**
  * Returns the ip of the calling user. 
  * 
  * The ip is determined while constructing this class by function getip().
@@ -251,9 +251,11 @@ function getIP() {
  * @return mixed An array with the titles or a string (depends on second parameter)
  */
 function getStatus($groups, $implode = '') {
+	global $scache;
 	$titles = array();
 	if (count($this->statusdata) == 0) {
-		$this->getStatusData();
+		$group_status = $scache->load('group_status');
+		$this->statusdata = $group_status->get();
 	}
 	$groups = explode(',', $groups);
 	if (count($groups) == 1) {
@@ -301,16 +303,6 @@ function getStatus($groups, $implode = '') {
 			return implode($implode, $titles);
 		}
 	}
-}
-
-/**
- * Caches the data used by method getStatus().
- * This function is deprecated...
- */
-function getStatusData () {
-	global $scache;
-	$group_status = $scache->load('group_status');
-	$this->statusdata = $group_status->get();
 }
 
 /**
@@ -739,7 +731,7 @@ function sid_logout() {
  * @return boolean Returns 'true' on success, 'false' on failure.
  */
 function sid_login($remember = true) {
-	global $my, $config, $db, $gpc;
+	global $my, $config, $db, $gpc, $scache;
 	$result = $db->query('SELECT u.*, f.*, s.mid FROM '.$db->pre.'user AS u LEFT JOIN '.$db->pre.'session AS s ON s.mid = u.id LEFT JOIN '.$db->pre.'userfields as f ON f.ufid = u.id WHERE name="'.$_POST['name'].'" AND pw=MD5("'.$_POST['pw'].'") LIMIT 1',__LINE__,__FILE__);
 
 	$my2 = array();
@@ -909,22 +901,17 @@ function mark_read() {
  */
 function construct_sid() {
 	global $config;
+	srand((double)microtime()*1000000);
 	if ($config['sid_length'] == 64) {
-		srand((double)microtime()*1000000);
 		$sid = md5(uniqid(rand())).md5(uniqid($this->ip));
 	}
 	elseif ($config['sid_length'] == 96) {
-		srand((double)microtime()*1000000);
 		$sid = md5(uniqid(rand())).md5(uniqid($this->ip)).md5(rand());
 	}
 	elseif ($config['sid_length'] == 128) {
-		srand((double)microtime()*1000000);
-		$sid = md5(uniqid(rand())).md5(uniqid($this->ip));
-		srand((double)microtime()*2000000);
-		$sid .= md5(rand()).md5(uniqid(rand()));
+		$sid = md5(uniqid(rand())).md5(uniqid($this->ip)).md5(rand()).md5(microtime());
 	}
 	else {		// Falling back to 32 chars
-		srand((double)microtime()*1000000);
 		$sid = md5(uniqid(rand()));
 	}
 	$this->sid = str_shuffle($sid);
@@ -947,6 +934,7 @@ function getBoards() {
 
 /**
  * Gets the permissions of a member in a specified board.
+ * This has to be optimized!
  *
  * @param integer Board-ID or 0 for all boards
  * @param string Komma-separated list with group-ids
@@ -954,7 +942,7 @@ function getBoards() {
  * @return array Permissions
  */
 function Permissions ($board = 0, $groups = null, $member = null) {
-	global $db, $my;
+	global $db, $my, $scache;
 	
 	if ($groups == null && isset($my->groups)) {
 		$groups = $my->groups;
@@ -969,9 +957,12 @@ function Permissions ($board = 0, $groups = null, $member = null) {
 		$member = $my->vlogin;
 	}
 	$this->groups = explode(',', $groups);
+	
 	if (count($this->statusdata) == 0) {
-		$this->getStatusData();
+		$group_status = $scache->load('group_status');
+		$this->statusdata = $group_status->get();
 	}
+	
 	$groups = array();
 	foreach ($this->groups as $gid) {
 		if (isset($this->statusdata[$gid])) {
@@ -1026,36 +1017,71 @@ function Permissions ($board = 0, $groups = null, $member = null) {
 	}
 	
 	$this->permissions = $permissions;
+	
 	if ($board > 0) {
-		$result = $db->query("SELECT gid, ".implode(', ', $this->fFields)." FROM {$db->pre}fgroups WHERE gid IN ({$groups},0) AND bid = '{$board}'");
+
+		$parent_forums = $scache->load('parent_forums');
+		$parent = $parent_forums->get();
+		$boards = $parent[$board];
+		
+		if (count($boards) == 0) {
+			return $permissions;
+		}
+		elseif (count($boards) == 1) {
+			$sqlwherebid = "= '{$board}'";
+		}
+		else {
+			$sqlwherebid = "IN (".implode(',', $boards).")";
+		}
+
+		$result = $db->query("SELECT gid, bid, ".implode(', ', $this->fFields)." FROM {$db->pre}fgroups WHERE gid IN ({$groups},0) AND bid {$sqlwherebid}");
 		if ($db->num_rows() == 0) {
 			return $permissions;
 		}
-		$fpermission = array();
+		
+		$permissions2 = array();
+		$fpermissions = array_combine($boards, array_fill(0, count($boards), array()));
 		while ($row = $db->fetch_assoc($result)) {
 			$gid = $row['gid'];
-			unset($row['gid']);
-			$fpermissions[$gid] = $row;
+			$bid = $row['bid'];
+			unset($row['gid'], $row['bid']);
+			$fpermissions[$bid][$gid] = $row;
 		}
-		$gkeys = array_keys($fpermissions);
-		$gkeys = array_intersect($gkeys, $this->groups);
+
+		$gkeys = array();
+		foreach ($boards as $bid) {
+			$gkeys = array_merge($gkeys, array_intersect(array_keys($fpermissions[$bid]), $this->groups));
+		}
 		if (count($gkeys) == 0) {
 			$gkeys[] = 0;
 		}
-		$permissions2 = array_combine($this->fFields, array_fill(0, count($this->fFields), array()));
-		foreach ($gkeys as $gid) {
-			foreach ($fpermissions[$gid] as $key => $value) {
-				if ($value != -1) {
-					$permissions2[$key][] = $value;
+		
+		foreach ($boards as $bid) {	
+			$permissions2[$bid] = array_combine($this->fFields, array_fill(0, count($this->fFields), -1));
+			foreach ($gkeys as $gid) {
+				if (isset($fpermissions[$bid][$gid])) {
+					foreach ($fpermissions[$bid][$gid] as $key => $value) {
+						if ($value == -1 || $value > $permissions2[$bid][$key]) {
+							$permissions2[$bid][$key] = $value;
+						}
+					}
 				}
 			}
 		}
-		foreach ($permissions2 as $key => $value) {
-			$key = substr($key, 2, strlen($key));
-			if (count($value) > 0) {
-				$permissions[$key] = max($value);
+
+		$permissions3 = array();
+		foreach ($this->fFields as $key) {
+			$orig_key = substr($key, 2, strlen($key));
+			foreach ($permissions2 as $bid => $arr) {
+				if (isset($permissions2[$bid][$key]) && $permissions2[$bid][$key] != -1 && !isset($permissions3[$orig_key])) {
+					$permissions3[$orig_key] = $arr[$key];
+				}
+			}
+			if (isset($permissions3[$orig_key])) {
+				$permissions[$orig_key] = $permissions3[$orig_key];
 			}
 		}
+		
 		if (isset($this->positive[$board]) && $permissions['forum'] == 0) {
 			unset($this->positive[$board]);
 			$this->negative[$board] = $board;
@@ -1064,6 +1090,7 @@ function Permissions ($board = 0, $groups = null, $member = null) {
 			unset($this->negative[$board]);
 			$this->positive[$board] = $board;
 		}
+
 	}
 	return $permissions;
 }
@@ -1072,26 +1099,30 @@ function Permissions ($board = 0, $groups = null, $member = null) {
  * Determines the permissions of an user for all forums.
  * 
  * Returns an array ($array[Board-ID][Permission-Key]) with permissions. It is required to call $this->Permissions() before!
+ * This has to be extremely optimized!
  *
  * @return array Permissions
  */
 function GlobalPermissions() {
-	global $db, $my;
-	$boardid = $this->getBoards();
-	if (count($boardid) > 0) {
-		$fpermissions = array_combine($boardid, array_fill(0, count($boardid), array()));
-	}
-	else {
-		$fpermissions = array();
-	}
+	global $db, $my, $scache;
+	$parent_forums = $scache->load('parent_forums');
+	$parent = $parent_forums->get();
+	$boardid = array_keys($parent);
+	
 	$groups = implode(',', $this->groups);
-	$result = $db->query("SELECT bid, gid,".implode(', ', $this->fFields)." FROM {$db->pre}fgroups WHERE gid IN ({$groups},0)");
+	$result = $db->query("SELECT gid, bid, ".implode(', ', $this->fFields)." FROM {$db->pre}fgroups WHERE gid IN ({$groups},0)");
+	if ($db->num_rows() == 0) {
+		return $permissions;
+	}
+	
+	$fpermissions = array_combine($boardid, array_fill(0, count($parent), array()));
 	while ($row = $db->fetch_assoc($result)) {
 		$gid = $row['gid'];
 		$bid = $row['bid'];
 		unset($row['gid'], $row['bid']);
 		$fpermissions[$bid][$gid] = $row;
 	}
+
 	$fFieldValues = array();
 	foreach ($this->fFields as $key) {
 		$key = substr($key, 2, strlen($key));
@@ -1103,37 +1134,55 @@ function GlobalPermissions() {
 	else {
 		$permissions = array();
 	}
-	foreach ($fpermissions as $bid => $array) {
-		$gkeys = array_keys($array);
-		$gkeys = array_intersect($gkeys, $this->groups);
+
+	foreach ($parent as $board => $boards) {
+
+		$gkeys = array();
+		foreach ($boards as $bid) {
+			$gkeys = array_merge($gkeys, array_intersect(array_keys($fpermissions[$bid]), $this->groups));
+		}
 		if (count($gkeys) == 0) {
 			$gkeys[] = 0;
 		}
-		$permissions2 = array_combine($this->fFields, array_fill(0, count($this->fFields), array()));
-		if (count($array) > 0) {
+
+		$permissions2 = array();
+		foreach ($boards as $bid) {	
+			$permissions2[$bid] = array_combine($this->fFields, array_fill(0, count($this->fFields), -1));
 			foreach ($gkeys as $gid) {
-				foreach ($array[$gid] as $key => $value) {
-					if ($value != -1) {
-						$permissions2[$key][] = $value;
+				if (isset($fpermissions[$bid][$gid])) {
+					foreach ($fpermissions[$bid][$gid] as $key => $value) {
+						if ($value == -1 || $value > $permissions2[$bid][$key]) {
+							$permissions2[$bid][$key] = $value;
+						}
 					}
 				}
 			}
-			foreach ($permissions2 as $key => $value) {
-				$key = substr($key, 2, strlen($key));
-				if (count($value) > 0) {
-					$permissions[$bid][$key] = max($value);
+		}
+	
+		$permissions3 = array();
+		foreach ($this->fFields as $key) {
+			$orig_key = substr($key, 2, strlen($key));
+			foreach ($permissions2 as $bid => $arr) {
+				if (isset($permissions2[$bid][$key]) && $permissions2[$bid][$key] != -1 && !isset($permissions3[$orig_key])) {
+					$permissions3[$orig_key] = $arr[$key];
 				}
 			}
-			if (isset($this->positive[$bid]) && $permissions[$bid]['forum'] == 0) {
-				unset($this->positive[$bid]);
-				$this->negative[$bid] = $bid;
-			}
-			elseif (isset($this->negative[$bid]) && $permissions[$bid]['forum'] == 1) {
-				unset($this->negative[$bid]);
-				$this->positive[$bid] = $bid;
+			if (isset($permissions3[$orig_key])) {
+				$permissions[$board][$orig_key] = $permissions3[$orig_key];
 			}
 		}
+		
+		if (isset($this->positive[$board]) && $permissions[$board]['forum'] == 0) {
+			unset($this->positive[$board]);
+			$this->negative[$board] = $board;
+		}
+		elseif (isset($this->negative[$board]) && $permissions[$board]['forum'] == 1) {
+			unset($this->negative[$board]);
+			$this->positive[$board] = $board;
+		}
+	
 	}
+	
 	return $permissions;
 }
 
