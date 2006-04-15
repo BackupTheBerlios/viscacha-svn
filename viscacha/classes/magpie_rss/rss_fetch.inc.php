@@ -33,7 +33,10 @@ require_once( MAGPIE_DIR . 'rss_cache.inc.php' );
 // for including 3rd party libraries
 define('MAGPIE_EXTLIB', MAGPIE_DIR . 'extlib' . DIR_SEP);
 require_once( MAGPIE_EXTLIB . 'Snoopy.class.inc.php');
-require_once( MAGPIE_EXTLIB . 'sqlcache.inc.php');
+
+$grabrss = $scache->load('grabrss');
+$grabrss_cache = $grabrss->get();
+// require_once( MAGPIE_EXTLIB . 'sqlcache.inc.php');
 
 
 /* 

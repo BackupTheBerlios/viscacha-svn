@@ -2,6 +2,7 @@
 class cache_grabrss extends CacheItem {
 
 	function load() {
+		global $db;
 		if ($this->exists() == true) {
 		    $this->import();
 		}
