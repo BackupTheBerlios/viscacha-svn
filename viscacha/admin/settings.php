@@ -1645,7 +1645,7 @@ elseif ($job == 'syndication') {
 	   <td class="mbox" width="50%"><input type="text" name="syndication_klipfolio_icon" value="<?php echo $config['syndication_klipfolio_icon']; ?>" size="50"></td> 
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">Clipfolio newsfeeds banner:<br /><span class="stext">Size: 234x60 Pixel; Formats: gif, jp(e)g</span></td>
+	   <td class="mbox" width="50%">Klipfolio newsfeeds banner:<br /><span class="stext">Size: 234x60 Pixel; Formats: gif, jp(e)g</span></td>
 	   <td class="mbox" width="50%"><input type="text" name="syndication_klipfolio_banner" value="<?php echo $config['syndication_klipfolio_banner']; ?>" size="50"></td> 
 	  </tr>
 	  <tr> 
@@ -1668,6 +1668,41 @@ elseif ($job == 'syndication2') {
 	$c->savedata();
 
 	ok('admin.php?action=settings&job=syndication');
+}
+elseif ($job == 'spiders') {
+	$config = $gpc->prepare($config);
+	echo head();
+	?>
+	<form name="form" method="post" action="admin.php?action=settings&job=spiders2">
+	 <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
+	  <tr> 
+	   <td class="obox" colspan="2"><b>Crawler &amp; Robots</b></td>
+	  </tr>
+	  <tr> 
+	   <td class="mbox" width="50%">Activate logging of visits and last visits:<br /><span class="stext">The Crawler and Robots can be administered <a href="admin.php?action=spider&amp;job=manage">here</a>.</span></td>
+	   <td class="mbox" width="50%"><input type="checkbox" name="spider_logvisits" value="1"<?php echo iif($config['spider_logvisits'],' checked'); ?>></td> 
+	  </tr>
+	  <tr> 
+	   <td class="mbox" width="50%">Activate logging of missing IPs or User Agents:<br /><span class="stext">The pending Crawler and Robots can be administered <a href="admin.php?action=spider&amp;job=pending">here</a>.</span></td>
+	   <td class="mbox" width="50%"><input type="checkbox" name="spider_pendinglist" value="1"<?php echo iif($config['spider_pendinglist'],' checked'); ?>></td> 
+	  </tr>
+	  <tr> 
+	   <td class="ubox" width="100%" colspan="2" align="center"><input type="submit" name="Submit" value="Submit"></td> 
+	  </tr>
+	 </table>
+	</form> 
+	<?php
+	echo foot();
+}
+elseif ($job == 'spiders2') {
+	echo head();
+
+	$c->getdata();
+	$c->updateconfig('spider_pendinglist',int);
+	$c->updateconfig('spider_logvisits',int);
+	$c->savedata();
+
+	ok('admin.php?action=settings&job=spiders');
 }
 elseif ($job == 'version') {
 	echo head();
@@ -1989,11 +2024,6 @@ else {
   <span class="stext">Flood blocking und Sessions in the Forum.</span>
  </td></tr>
  <tr class="mbox"><td>
-  <a href="admin.php?action=settings&job=captcha">Spam-Bot-Protection (CAPTCHA)</a>
- </td><td>
-  <span class="stext">Image based verification to prevent automatic registration. Spam-Bot-Protection with <a href="admin.php?action=misc&job=captcha">CAPTCHA</a>-Images.</span>
- </td></tr>
- <tr class="mbox"><td>
   <a href="admin.php?action=settings&job=boardcat">Forums &amp; categories</a>
  </td><td>
   <span class="stext">Forums, subforums, statistics and categories.</span>
@@ -2007,6 +2037,16 @@ else {
   <a href="admin.php?action=settings&job=pm">Private Messaging</a>
  </td><td>
   <span class="stext">Private Messaging settings.</span>
+ </td></tr>
+ <tr class="mbox"><td>
+  <a href="admin.php?action=settings&job=captcha">Spam-Bot-Protection (CAPTCHA)</a>
+ </td><td>
+  <span class="stext">Image based verification to prevent automatic registration. Spam-Bot-Protection with <a href="admin.php?action=misc&job=captcha">CAPTCHA</a>-Images.</span>
+ </td></tr>
+ <tr class="mbox"><td>
+  <a href="admin.php?action=settings&job=spiders">Crawler &amp; Robots</a>
+ </td><td>
+  <span class="stext">Logging of Crawlers and Robots that have visited the site.</span>
  </td></tr>
  <tr class="mbox"><td>
   <a href="admin.php?action=settings&job=cmsp">CMS &amp; Portal</a>

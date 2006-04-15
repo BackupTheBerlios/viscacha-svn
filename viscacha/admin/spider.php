@@ -229,7 +229,11 @@ elseif ($job == 'pending') {
 	?>
 	<table border="0" align="center" class="border">
 	<tr><td class="obox">Pending Bots</td></tr>
-	<tr><td class="mbox"><p>Listed below are users that matched some but not all of your bot criteria. In other words the user only matched either the user agent or ip. The mismatched data is the highlighted next to the bot name. You can choose to either add this info which will then appear as part of that bots criteria or ignore it.</p>
+	<tr><td class="mbox">
+	<?php if ($config['spider_pendinglist'] == 0) { ?>
+	<p><strong>This function is currently disabled. You can turn it on in your <a href="admin.php?action=settings&amp;job=spiders">Viscacha Settings</a>!</strong></p>
+	<?php } ?>
+	<p>Listed below are users that matched some but not all of your bot criteria. In other words the user only matched either the user agent or ip. The mismatched data is the highlighted next to the bot name. You can choose to either add this info which will then appear as part of that bots criteria or ignore it.</p>
 	<?php
 	while ($row = $db->fetch_assoc($result)) {
 		$pending_agent_array = array();
@@ -290,7 +294,7 @@ elseif ($job == 'pending') {
 			<?php
 		}
 	}
-	if ($pending_bots == 0) {
+	if ($pending_bots == 0 && $config['spider_pendinglist'] == 1) {
 	?>
 		<p align="center"><b>Sorry there are currently no pending bots in the database</b></p>
 	<?php } ?>
@@ -304,6 +308,9 @@ else {
 	<tr><td class="obox">Manage Bots</td></tr>
 	<tr><td class="mbox">
 	<p>Bots (also known as crawlers or spiders) are automated agents most commonly used to index information on the internet. Very few of these bots support sessions and can therefore fail to index your site correctly. Here you can define the assigning of session ids to these bots to solve this problem.</p>
+	<?php if ($config['spider_logvisits'] == 0) { ?>
+	<p><em>The logging of visits and last visits is currently disabled, but old data may be shown. You can turn it on in your <a href="admin.php?action=settings&amp;job=spiders">Viscacha Settings</a>!</em></p>
+	<?php } ?>
 	<form action="admin.php?action=spider" method="post">
 	<table border="0" align="center" class="border">
 	<?php

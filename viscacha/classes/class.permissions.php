@@ -116,10 +116,9 @@ function get_robot_type()  {
  * @return integer
  */
 function log_robot()  { 
-	global $db;
+	global $db, $config;
 
 	foreach ($this->bots as $row) {
-		// clear vars
 		$agent_match = 0;
 		$ip_match = 0;
 
@@ -141,18 +140,19 @@ function log_robot()  {
 		
 		$today = time();
 
-		// if both ip and agent matched update table and return true
 		if ($agent_match == 1 && $ip_match == 1) {
-			$result = $db->query("SELECT id, bot_visits, last_visit FROM {$db->pre}spider WHERE id = ".$row['id']);
-			$row = $db->fetch_assoc($result);
-			
-			$row['bot_visits']++;
-
-			$last_visits = explode('|', $row['last_visit']);
-			$last_visits[] = $today;
-			$last_visit = implode("|", array_empty_trim($last_visits));
-
-			$db->query("UPDATE {$db->pre}spider SET last_visit = '{$last_visit}', bot_visits = '{$row['bot_visits']}' WHERE id = ".$row['id']);
+			if ($config['spider_logvisits'] == 1) {
+				$result = $db->query("SELECT id, bot_visits, last_visit FROM {$db->pre}spider WHERE id = ".$row['id']);
+				$row = $db->fetch_assoc($result);
+				
+				$row['bot_visits']++;
+	
+				$last_visits = explode('|', $row['last_visit']);
+				$last_visits[] = $today;
+				$last_visit = implode("|", array_empty_trim($last_visits));
+	
+				$db->query("UPDATE {$db->pre}spider SET last_visit = '{$last_visit}', bot_visits = '{$row['bot_visits']}' WHERE id = ".$row['id']);
+			}
 
 			return $row['id'];
 
@@ -162,43 +162,67 @@ function log_robot()  {
 
 				$column = ((!$agent_match) ? 'agent' : 'ip');
 				$column2 = ((!$agent_match) ? 'user_agent' : 'bot_ip');
-				$func = ((!$agent_match) ? 'stristr' : 'strpos');
+				$sqlselect = array("id");
+				if ($config['spider_pendinglist'] == 1) {
+					$sqlselect[] = "pending_{$column}";
+					$sqlselect[] = $column2;
+				}
+				if ($config['spider_logvisits'] == 1) {
+					$sqlselect[] = "bot_visits";
+					$sqlselect[] = "last_visit";
+				}
+				if ($config['spider_logvisits'] == 1 || $config['spider_pendinglist'] == 1) {
+					$result = $db->query("SELECT ".implode(', ', $sqlselect)." FROM {$db->pre}spider WHERE id = ".$row['id']);
+					$row2 = $db->fetch_assoc($result);
+				}
 
-				$result = $db->query("SELECT id, pending_{$column}, bot_visits, last_visit, {$column2} FROM {$db->pre}spider WHERE id = ".$row['id']);
-				$row2 = $db->fetch_assoc($result);
-
-				$pending_array = (( $row2['pending_'.$column] ) ? explode('|', $row2['pending_'.$column]) : array());
-
-				$found = 0;
-
-				$count = count($pending_array);
-				if ($count > 0) {
-					for ($loop = 0; $loop < $count; $loop+=2) {
-						if ($pending_array[$loop] == ((!$agent_match) ? $this->user_agent : $this->ip)) {
-							$found = 1;
-							foreach (explode('|', $row2[$column2]) as $entry) {
-								if ($row2[$column2] && !empty($entry) && $func(((!$agent_match) ? $this->user_agent : $this->ip), $entry) !== false) {
-									$found = 0;
-									break;
+				if ($config['spider_pendinglist'] == 1 && isset($row2)) {
+					$func = ((!$agent_match) ? 'stristr' : 'strpos');
+	
+					$pending_array = (( $row2['pending_'.$column] ) ? explode('|', $row2['pending_'.$column]) : array());
+	
+					$found = 0;
+	
+					$count = count($pending_array);
+					if ($count > 0) {
+						for ($loop = 0; $loop < $count; $loop+=2) {
+							if ($pending_array[$loop] == ((!$agent_match) ? $this->user_agent : $this->ip)) {
+								$found = 1;
+								foreach (explode('|', $row2[$column2]) as $entry) {
+									if ($row2[$column2] && !empty($entry) && $func(((!$agent_match) ? $this->user_agent : $this->ip), $entry) !== false) {
+										$found = 0;
+										break;
+									}
 								}
 							}
 						}
 					}
-				}
-
-				if ($found == 0)  {
-					$pending_array[] = ((!$agent_match) ? str_replace("|", "&#124;", $this->user_agent) : $this->ip);
-					$pending_array[] = ((!$agent_match) ? $this->ip : str_replace("|", "&#124;", $this->user_agent));
-				}
-				$pending = implode("|", array_empty_trim($pending_array));
-
-				$row2['bot_visits']++;
 	
-				$last_visits = explode('|', $row2['last_visit']);
-				$last_visits[] = $today;
-				$last_visit = implode("|", array_empty_trim($last_visits));
-
-				$db->query("UPDATE {$db->pre}spider SET pending_{$column} = '{$pending}', last_visit = '{$last_visit}', bot_visits = '{$row2['bot_visits']}' WHERE id = ".$row['id']);
+					if ($found == 0)  {
+						$pending_array[] = ((!$agent_match) ? str_replace("|", "&#124;", $this->user_agent) : $this->ip);
+						$pending_array[] = ((!$agent_match) ? $this->ip : str_replace("|", "&#124;", $this->user_agent));
+					}
+					$pending = implode("|", array_empty_trim($pending_array));
+				}
+				if ($config['spider_logvisits'] == 1 && isset($row2)) {
+					$row2['bot_visits']++;
+		
+					$last_visits = explode('|', $row2['last_visit']);
+					$last_visits[] = $today;
+					$last_visit = implode("|", array_empty_trim($last_visits));
+				}
+				
+				$sqlset = array();
+				if ($config['spider_pendinglist'] == 1) {
+					$sqlset[] = "pending_{$column} = '{$pending}'";
+				}
+				if ($config['spider_logvisits'] == 1) {
+					$sqlset[] = "last_visit = '{$last_visit}'";
+					$sqlset[] = "bot_visits = '{$row2['bot_visits']}'";
+				}
+				if (count($sqlset) > 0 && ($config['spider_logvisits'] == 1 || $config['spider_pendinglist'] == 1)) {
+					$db->query("UPDATE {$db->pre}spider SET ".implode(', ', $sqlset)." WHERE id = '{$row['id']}' LIMIT 1");
+				}
 				
 				return $row['id'];
 			}		
