@@ -400,7 +400,7 @@ elseif ($_GET['action'] == "profile2") {
 		$_POST['hp'] = "http://".$_POST['hp'];
 	}
     $error = array();
-	if (check_mail($_POST['email']) == FALSE) {
+	if (check_mail($_POST['email']) == false) {
 		 $error[] = $lang->phrase('illegal_mail');
 	}
 	if (strxlen($_POST['name']) > $config['maxnamelength'] && $config['changename_allowed'] == 1) {
@@ -628,7 +628,7 @@ elseif ($_GET['action'] == "addabo") {
 }
 elseif ($_GET['action'] == "copy") {
 
-	$result = $db->query("SELECT board, id, topic_id, topic, comment, date, name, email, dosmileys FROM {$db->pre}replies WHERE id = '{$_GET['id']}'",__LINE__,__FILE__);
+	$result = $db->query("SELECT board, id, topic_id, topic, comment, date, name, email, dosmileys, guest FROM {$db->pre}replies WHERE id = '{$_GET['id']}'",__LINE__,__FILE__);
     $row = $gpc->prepare($db->fetch_assoc($result));
 	$error = array();
 	if ($db->num_rows($result) < 1) {
@@ -653,7 +653,7 @@ elseif ($_GET['action'] == "copy") {
 	$memberdata_obj = $scache->load('memberdata');
 	$memberdata = $memberdata_obj->get();
 
-    if (empty($row['email']) && isset($memberdata[$row['name']])) {
+    if ($row['guest'] == 0 && isset($memberdata[$row['name']])) {
     	$row['name'] = $memberdata[$row['name']];
     }
     $row['date'] = gmdate($lang->phrase('dformat1'), times($row['date']));

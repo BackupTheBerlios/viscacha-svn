@@ -8,11 +8,11 @@ $tpl->globalvars(compact("row","info","ini"));
 $lang->assign("num", $ini['params']['num']);
 $lang->assign("tid", $info['id']);
 echo $tpl->parse($dir."last");
-$result = $db->query('SELECT board, dosmileys, dowords, id, topic, comment, date, name, email FROM '.$db->pre.'replies WHERE topic_id = "'.$info['id'].'" ORDER BY date DESC LIMIT '.$ini['params']['num'],__LINE__,__FILE__);
+$result = $db->query('SELECT board, dosmileys, dowords, id, topic, comment, date, name, email, guest FROM '.$db->pre.'replies WHERE topic_id = "'.$info['id'].'" ORDER BY date DESC LIMIT '.$ini['params']['num'],__LINE__,__FILE__);
 BBProfile($bbcode);
 while ($row = $gpc->prepare($db->fetch_object($result))) {
     
-	if (empty($row->email) && isset($memberdata[$row->name])) {
+	if ($row->guest == 0 && isset($memberdata[$row->name])) {
     	$row->name = $memberdata[$row->name];
 	}
 	$bbcode->setSmileys($row->dosmileys);

@@ -4,6 +4,7 @@ CREATE TABLE `{:=DBPREFIX=:}replies` (
   `topic` varchar(255) NOT NULL default '',
   `topic_id` int(10) unsigned NOT NULL default '0',
   `name` varchar(50) NOT NULL default '',
+  `guest` enum('0','1') NOT NULL default '0',
   `comment` longtext NOT NULL,
   `dosmileys` enum('0','1') NOT NULL default '1',
   `dowords` enum('0','1') NOT NULL default '1',

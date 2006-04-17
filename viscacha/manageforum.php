@@ -182,7 +182,7 @@ if ($my->vlogin && $my->mp[0] == 1) {
 	    }
 	    $anz = 0;
 	    foreach ($_POST['delete'] as $id) {
-    	    $result = $db->query("SELECT r.date, r.topic, r.name, r.email, u.name AS uname, u.mail AS uemail FROM {$db->pre}replies AS r LEFT JOIN {$db->pre}user AS u ON u.id = r.name WHERE topic_id = '{$id}' AND tstart = '1'",__LINE__,__FILE__);
+    	    $result = $db->query("SELECT r.date, r.topic, r.name, r.guest, r.email, u.name AS uname, u.mail AS uemail FROM {$db->pre}replies AS r LEFT JOIN {$db->pre}user AS u ON u.id = r.name WHERE topic_id = '{$id}' AND tstart = '1'",__LINE__,__FILE__);
     	    $old = $db->fetch_assoc($result);
     	    $db->query("UPDATE {$db->pre}topics SET board = '{$_POST['opt_0']}' WHERE id = '{$id}' LIMIT 1",__LINE__,__FILE__); 	    
     	    $anz += $db->affected_rows();
@@ -193,10 +193,10 @@ if ($my->vlogin && $my->mp[0] == 1) {
     		    // Prefix wird nicht übernommen!
     	    	$db->query("INSERT INTO {$db->pre}topics SET status = '2', topic = '{$old['topic']}', board='{$board}', name = '{$old['name']}', date = '{$old['date']}', last_name = '{$old['name']}', last = '{$old['date']}'",__LINE__,__FILE__);	
     	    	$tid = $db->insert_id();
-    	    	$db->query("INSERT INTO {$db->pre}replies SET tstart = '1', topic_id = '{$tid}', comment = '{$id}', topic = '{$old['topic']}', board='{$board}', name = '{$old['name']}', email = '{$old['email']}', date = '{$old['date']}'",__LINE__,__FILE__);	
+    	    	$db->query("INSERT INTO {$db->pre}replies SET tstart = '1', topic_id = '{$tid}', comment = '{$id}', topic = '{$old['topic']}', board='{$board}', name = '{$old['name']}', email = '{$old['email']}', date = '{$old['date']}', guest = '{$old['guest']}'",__LINE__,__FILE__);	
     		}
     	    if ($_POST['temp2'] == 1) {
-    	    	if (empty($old['email'])) {
+    	    	if ($old['guest'] == 0) {
     	    		$old['email'] = $old['uemail'];
     	    		$old['name'] = $old['uname'];
     	    	}

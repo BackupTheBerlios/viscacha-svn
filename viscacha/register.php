@@ -81,7 +81,7 @@ if ($_GET['action'] == "save") {
 	if (strxlen($_POST['email']) > 200) {
 		$error[] = $lang->phrase('email_too_long');
 	}
-	if (check_mail($_POST['email']) == FALSE) {
+	if (check_mail($_POST['email']) == false) {
 		$error[] = $lang->phrase('illegal_mail');
 	}
 	if ($_POST['pw'] != $_POST['pwx']) {

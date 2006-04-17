@@ -13,13 +13,15 @@
 </div>
 <div class="inlineheader h3">
   <div class="viewmembername">
-    <a href="profile.php?id=<?php echo $row->mid.SID2URL_x.iif(empty($row->mail), "&amp;guest=".$row->id); ?>"><?php echo $row->name; ?></a><br />
+    <a href="profile.php?id=<?php echo $row->mid.SID2URL_x.iif($row->guest == 1, "&amp;guest=".$row->id); ?>"><?php echo $row->name; ?></a><br />
     <span class="stext"><?php echo $row->level; ?></span>
   </div>
+  <?php if ($row->guest == 0) { ?>
   <div class="viewmemberdetails stext">
     <?php echo $lang->phrase('post_info_registered_since').$row->regdate; ?><br />
     <?php echo $lang->phrase('post_info_location').$row->location; ?>
   </div>
+  <?php } ?>
   <br class="invclear" /><br class="iefix_br" />
 </div>
 <div class="bbody iefix_left">

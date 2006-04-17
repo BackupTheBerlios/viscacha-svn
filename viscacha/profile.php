@@ -56,7 +56,7 @@ if ($my->p['profile'] != 1) {
 }
 
 if ($guest > 0) {
-	$result = $db->query('SELECT email, name FROM '.$db->pre.'replies WHERE id = "'.$guest.'" AND email != "" LIMIT 1');
+	$result = $db->query("SELECT email, name, guest FROM {$db->pre}replies WHERE id = '{$guest}' AND guest = '1' LIMIT 1");
 	$guest_data = $db->fetch_assoc($result);
 	if ($db->num_rows($result) == 1) {
 		$is_guest = true;
@@ -271,12 +271,11 @@ elseif ($_GET['action'] == "ims" && $is_member) {
 	}
 }
 elseif ($_GET['action'] == 'emailimage' && $is_guest) {
-	if (headers_sent()) exit;
+	if (headers_sent()) {
+		exit;
+	}
 	include('classes/graphic/class.text2image.php');
 	$img = new text2image();
-	if (!isset($_REQUEST['angle'])) {
-		$_REQUEST['angle'] = 0;
-	}
 	$img->prepare($email, 0, 10, 'classes/fonts/trebuchet.ttf');
 	$img->build();
 	$img->output();

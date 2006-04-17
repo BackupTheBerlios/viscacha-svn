@@ -74,7 +74,7 @@ if ($my->vlogin && $my->p['admin'] == 1) {
 		// Step 5: Delete all pms
 		$db->query("DELETE FROM {$db->pre}pm WHERE pm_to = '{$user['id']}'");
 		// Step 6: Search all old posts by an user, and update to guests post
-		$db->query("UPDATE {$db->pre}replies SET name = '".$user['name']."', email = '".$user['mail']."' WHERE name = '{$user['id']}' AND email = ''");
+		$db->query("UPDATE {$db->pre}replies SET name = '".$user['name']."', email = '".$user['mail']."', guest = '1' WHERE name = '{$user['id']}' AND email = ''");
 		// Step 7: Search all old topics by an user, and update to guests post
 		$db->query("UPDATE {$db->pre}topics SET name = '".$user['name']."' WHERE name = '{$user['id']}'");
 		$db->query("UPDATE {$db->pre}topics SET last_name = '".$user['name']."' WHERE last_name = '{$user['id']}'");
@@ -153,7 +153,7 @@ if ($my->vlogin && $my->p['admin'] == 1) {
 		if (strxlen($_POST['comment']) > $config['maxaboutlength']) {
 			$error[] = $lang->phrase('about_too_long');
 		}
-		if (check_mail($_POST['email']) == FALSE) {
+		if (check_mail($_POST['email']) == false) {
 			 $error[] = $lang->phrase('illegal_mail');
 		}
 		if (strxlen($_POST['name']) > $config['maxnamelength']) {

@@ -95,8 +95,7 @@ elseif ($_GET['action'] == "filetypes") {
 	
 }
 elseif ($_GET['action'] == "code") {
-    include_once('classes/class.geshi.php');
-	$codelang = $scache->load('syntax-highlight');
+	$codelang = $scache->load('syntaxhighlight');
 	$clang = $codelang->get();
 	
 	echo $tpl->parse("popup/header");
@@ -107,7 +106,7 @@ elseif ($_GET['action'] == "showpost") {
 	echo $tpl->parse("popup/header");
 
 	$result = $db->query("
-	SELECT t.status, t.prefix, r.topic_id, r.board, r.edit, r.dosmileys, r.dowords, r.id, r.topic, r.comment, r.date, u.name as uname, r.name as gname, u.id as mid, u.groups, u.fullname, u.hp, u.pic, r.email as gmail, u.signature, u.regdate, u.location 
+	SELECT t.status, t.prefix, r.topic_id, r.board, r.edit, r.dosmileys, r.dowords, r.id, r.topic, r.comment, r.date, u.name as uname, r.name as gname, u.id as mid, u.groups, u.fullname, u.hp, u.pic, r.email as gmail, r.guest, u.signature, u.regdate, u.location 
 	FROM {$db->pre}replies AS r LEFT JOIN {$db->pre}user AS u ON r.name=u.id LEFT JOIN {$db->pre}topics AS t ON t.id = r.topic_id
 	WHERE r.id = '{$_GET['id']}' LIMIT 1",__LINE__,__FILE__);
 
@@ -143,7 +142,7 @@ elseif ($_GET['action'] == "showpost") {
 	}
 	$inner['upload_box'] = '';
 	
-	if (empty($row->gmail)) {
+	if ($row->guest == 0) {
 		$row->mail = '';
 		$row->name = $row->uname;
 	}
@@ -213,7 +212,7 @@ elseif ($_GET['action'] == "showpost") {
 elseif ($_GET['action'] == "edithistory") {
 	echo $tpl->parse("popup/header");
 
-	$result = $db->query("SELECT r.ip, r.topic_id, r.board, r.edit, r.id, r.topic, r.date, u.name as uname, r.name as gname, u.id as mid, u.groups, r.email as gmail FROM {$db->pre}replies AS r LEFT JOIN {$db->pre}user AS u ON r.name=u.id WHERE r.id = '{$_GET['id']}' LIMIT 1",__LINE__,__FILE__);
+	$result = $db->query("SELECT r.ip, r.topic_id, r.board, r.edit, r.id, r.topic, r.date, u.name as uname, r.name as gname, u.id as mid, u.groups, r.email as gmail, r.guest FROM {$db->pre}replies AS r LEFT JOIN {$db->pre}user AS u ON r.name=u.id WHERE r.id = '{$_GET['id']}' LIMIT 1",__LINE__,__FILE__);
 	$found = $db->num_rows($result);
 	if ($found == 1) {
 		$row = $gpc->prepare($db->fetch_assoc($result));
@@ -236,7 +235,7 @@ elseif ($_GET['action'] == "edithistory") {
 	
 	forum_opt($last['opt'], $last['optvalue'], $last['id']);
 	
-	if (empty($row['gmail'])) {
+	if ($row['guest'] == 0) {
 		$row['mail'] = '';
 		$row['name'] = $row['uname'];
 	}
@@ -286,9 +285,9 @@ elseif ($_GET['action'] == "postrating") {
 
 		if ($post['name'] != $my->id) {
 			if (!empty($rtg) && $rating['rating'] != 1 && $rating['rating'] != -1) {
-				$result = $db->query("SELECT topic_id, name, email FROM {$db->pre}replies WHERE id = '{$_GET['id']}'", __LINE__, __FILE__);
+				$result = $db->query("SELECT topic_id, name, email, guest FROM {$db->pre}replies WHERE id = '{$_GET['id']}'", __LINE__, __FILE__);
 				$topic = $db->fetch_assoc($result);
-				if (empty($topic['email']) && is_id($topic['name'])) {
+				if ($topic['guest'] == 0) {
 					$aid = $topic['name'];
 				}
 				else {

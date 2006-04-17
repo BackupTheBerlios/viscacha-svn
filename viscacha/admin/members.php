@@ -828,7 +828,7 @@ elseif ($job == 'edit2') {
 	if (strxlen($query['comment']) > $config['maxaboutlength']) {
 		$error[] = 'Perönliche Seite ist zu lang';
 	}
-	if (check_mail($query['email']) == FALSE) {
+	if (check_mail($query['email']) == false) {
 		 $error[] = 'Keine gültige Emailadresse angegeben';
 	}
 	if (strxlen($query['name']) > $config['maxnamelength']) {

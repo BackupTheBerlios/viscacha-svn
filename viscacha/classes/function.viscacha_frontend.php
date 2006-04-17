@@ -707,6 +707,7 @@ function forum_opt($opt, $optvalue, $bid, $check = 'forum') {
 
 function import_error_data($fid) {
 	$cache = new CacheItem($fid, 'temp/errordata/');
+	$cache->import();
 	$data = $cache->get();
 	return $data;
 }

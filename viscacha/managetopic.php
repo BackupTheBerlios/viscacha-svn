@@ -130,7 +130,7 @@ if ($my->vlogin && $my->mp[0] == 1) {
 			errorLogin($lang->phrase('not_allowed'), 'showtopic.php?id='.$info['id'].SID2URL_x);
 		}
 		
-		$result = $db->query("SELECT r.date, r.topic, r.name, r.email, u.name AS uname, u.mail AS uemail FROM {$db->pre}replies AS r LEFT JOIN {$db->pre}user AS u ON u.id = r.name WHERE topic_id = '{$info['id']}' AND tstart = '1'",__LINE__,__FILE__);
+		$result = $db->query("SELECT r.date, r.topic, r.name, r.email, r.guest, u.name AS uname, u.mail AS uemail FROM {$db->pre}replies AS r LEFT JOIN {$db->pre}user AS u ON u.id = r.name WHERE topic_id = '{$info['id']}' AND tstart = '1'",__LINE__,__FILE__);
 		$old = $db->fetch_assoc($result);
 		
 		$board = $gpc->get('board', int);
@@ -143,10 +143,10 @@ if ($my->vlogin && $my->mp[0] == 1) {
 		if ($_POST['temp'] == 1) {
 			$db->query("INSERT INTO {$db->pre}topics SET status = '2', topic = '{$old['topic']}', board='{$info['board']}', name = '{$old['name']}', date = '{$old['date']}', last_name = '{$info['last_name']}', prefix = '{$info['prefix']}', last = '{$old['date']}'",__LINE__,__FILE__);	
 			$tid = $db->insert_id();
-			$db->query("INSERT INTO {$db->pre}replies SET tstart = '1', topic_id = '{$tid}', comment = '{$info['id']}', topic = '{$old['topic']}', board='{$info['board']}', name = '{$old['name']}', email = '{$old['email']}', date = '{$old['date']}'",__LINE__,__FILE__);	
+			$db->query("INSERT INTO {$db->pre}replies SET tstart = '1', topic_id = '{$tid}', comment = '{$info['id']}', topic = '{$old['topic']}', board='{$info['board']}', name = '{$old['name']}', email = '{$old['email']}', date = '{$old['date']}', guest = '{$old['guest']}'",__LINE__,__FILE__);	
 		}
 		if ($_POST['temp2'] == 1) {
-			if (empty($old['email'])) {
+			if ($old['guest'] == 0) {
 				$old['email'] = $old['uemail'];
 				$old['name'] = $old['uname'];
 			}
@@ -395,7 +395,7 @@ if ($my->vlogin && $my->mp[0] == 1) {
 		$posts = array();
 		$topic = array();
 		while ($row = $gpc->prepare($db->fetch_assoc($result))) {
-			if (!empty($row['email'])) {
+			if ($row['guest'] == 1) {
 				$row['uid'] = 0;
 				$row['uname'] = $row['name'];
 				$row['umail'] = $row['email'];
@@ -438,7 +438,7 @@ if ($my->vlogin && $my->mp[0] == 1) {
 			$base = array('date' => time());
 			$result = $db->query("SELECT r.*, u.name AS uname FROM {$db->pre}replies AS r LEFT JOIN {$db->pre}user AS u ON r.name = u.id WHERE r.id IN ({$iids})", __LINE__, __FILE__);
 			while ($row = $db->fetch_assoc($result)) {
-				if (!empty($row['email'])) {
+				if ($row['guest'] == 1) {
 					$row['uname'] = $row['name'];
 				}
 				$cache[$row['id']] = $row;
@@ -459,6 +459,12 @@ if ($my->vlogin && $my->mp[0] == 1) {
 			$name = $cache[$author]['name'];
 			$email = $cache[$author]['email'];
 			$ip = $cache[$author]['ip'];
+			if (is_id($name)) {
+				$guest = '0';
+			}
+			else {
+				$guest = '1';
+			}
 			
 			$rev = array();
 			foreach ($cache as $row) {
@@ -505,7 +511,7 @@ if ($my->vlogin && $my->mp[0] == 1) {
 			$db->query ("UPDATE {$db->pre}uploads SET tid = '{$base['id']}' WHERE tid IN ({$iold})",__LINE__,__FILE__);
 			$db->query ("UPDATE {$db->pre}vote SET tid = '{$base['id']}' WHERE tid IN ({$iold})",__LINE__,__FILE__);
 			
-			$db->query ("UPDATE {$db->pre}replies SET topic = '{$topic}', name = '{$name}', comment = '{$_POST['comment']}', dosmileys = '{$_POST['dosmileys']}', dowords = '{$_POST['dowords']}', email = '{$email}', ip = '{$ip}', edit = '{$edit}' WHERE id = '{$base['id']}'",__LINE__,__FILE__);
+			$db->query ("UPDATE {$db->pre}replies SET topic = '{$topic}', name = '{$name}', comment = '{$_POST['comment']}', dosmileys = '{$_POST['dosmileys']}', dowords = '{$_POST['dowords']}', email = '{$email}', ip = '{$ip}', edit = '{$edit}', guest = '{$guest}' WHERE id = '{$base['id']}'",__LINE__,__FILE__);
 			$db->query ("DELETE FROM {$db->pre}replies WHERE id IN ({$iold})",__LINE__,__FILE__);
 			
 			UpdateTopicStats($info['id']);

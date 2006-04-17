@@ -17,11 +17,11 @@
 </div>
 <div class="inlineheader h3">
   <div class="viewmembername">
-    <a href="profile.php?id=<?php echo $row->mid.SID2URL_x.iif(!empty($row->mail), "&amp;guest=".$row->id); ?>"><?php echo $row->name; ?></a><br />
+    <a href="profile.php?id=<?php echo $row->mid.SID2URL_x.iif($row->guest == 1, "&amp;guest=".$row->id); ?>"><?php echo $row->name; ?></a><br />
     <span class='stext'><?php echo $row->level; ?></span>
   </div>
   <div class="viewmemberdetails stext">
-    <?php if (empty($row->mail)) { ?>
+    <?php if ($row->guest == 0) { ?>
        <?php echo $lang->phrase('post_info_registered_since').$row->regdate; ?><br />
        <?php echo $lang->phrase('post_info_location').$row->location; ?>
     <?php } ?>

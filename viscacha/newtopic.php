@@ -164,7 +164,7 @@ elseif ($_GET['action'] == "save") {
     $error = array();
 
     if (!$my->vlogin) {
-		if (!check_mail($_POST['email'])) {
+		if (!check_mail($_POST['email']) && ($config['guest_email_optional'] == 0 || !empty($_POST['email']))) {
 			$error[] = $lang->phrase('illegal_mail');
 		}
 		if (double_udata('name',$_POST['name']) == false) {
@@ -217,7 +217,7 @@ elseif ($_GET['action'] == "save") {
 	BBProfile($bbcode);
 	$_POST['topic'] = $bbcode->parseTitle($_POST['topic']);
 
-	if (count($error) > 0 || !empty($_POST['Preview2'])) {
+	if (count($error) > 0 || !empty($_POST['Preview'])) {
 		$data = array(
 			'topic' => $_POST['topic'],
 			'comment' => $_POST['comment'],
@@ -225,14 +225,21 @@ elseif ($_GET['action'] == "save") {
 			'dosmileys' => $_POST['dosmileys'],
 			'dowords' => $_POST['dowords'],
 			'vote' => $_POST['opt_2'],
-			'replies' => $_POST['temp']
+			'replies' => $_POST['temp'],
+			'guest' => 1
 		);
 		if (!$my->vlogin) {
-			$data['email'] = $_POST['email'];
+			if ($config['guest_email_optional'] == 0 && empty($_POST['email'])) {
+				$data['email'] = '';
+			}
+			else {
+				$data['email'] = $_POST['email'];
+			}
 			$data['name'] = $_POST['name'];
+			$data['guest'] = 1;
 		}
 		$fid = save_error_data($data);
-		if (!empty($_POST['Preview2'])) {
+		if (!empty($_POST['Preview'])) {
 			viscacha_header("Location: newtopic.php?action=preview&id={$board}&fid=".$fid.SID2URL_JS_x);
 		}
 		else {
@@ -241,8 +248,15 @@ elseif ($_GET['action'] == "save") {
 	}
 	else {
 		set_flood();
-	
+
 		$date = time();
+
+		if ($my->vlogin) {
+			$guest = 0;
+		}
+		else {
+			$guest = 1;
+		}
 
 		$db->query("
 		INSERT INTO {$db->pre}topics  
@@ -254,9 +268,9 @@ elseif ($_GET['action'] == "save") {
 		
 		$db->query("
 		INSERT INTO {$db->pre}replies 
-		(board,topic,topic_id,name,comment,dosmileys,dowords,email,date,tstart,ip) 
+		(board,topic,topic_id,name,comment,dosmileys,dowords,email,date,tstart,ip,guest) 
 		VALUES 
-		('{$board}','{$_POST['topic']}','{$tredirect}','{$pnameid}','{$_POST['comment']}','{$_POST['dosmileys']}','{$_POST['dowords']}','{$_POST['email']}','{$date}','1','{$my->ip}')"
+		('{$board}','{$_POST['topic']}','{$tredirect}','{$pnameid}','{$_POST['comment']}','{$_POST['dosmileys']}','{$_POST['dowords']}','{$_POST['email']}','{$date}','1','{$my->ip}','{$guest}')"
 		,__LINE__,__FILE__);
 		$rredirect = $db->insert_id();
 

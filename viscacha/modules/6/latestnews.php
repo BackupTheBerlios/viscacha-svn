@@ -2,7 +2,7 @@
 global $slog, $bbcode, $gpc, $scache;
 
 $result = $db->query("
-SELECT r.dowords, r.dosmileys, t.posts, t.prefix, t.status, t.sticky, t.id, t.board, t.topic, r.comment, r.date, IF(r.email = '', u.name, r.name) AS name 
+SELECT r.dowords, r.dosmileys, t.posts, t.prefix, t.status, t.sticky, t.id, t.board, t.topic, r.comment, r.date, r.guest, IF(r.guest = '0', u.name, r.name) AS name 
 FROM {$db->pre}topics AS t LEFT JOIN {$db->pre}replies AS r ON t.id = r.topic_id LEFT JOIN {$db->pre}user AS u ON r.name=u.id 
 WHERE t.mark = 'n' AND (t.status = '0' OR t.status = '1') ".$slog->sqlinboards('r.board')." AND r.tstart = '1' 
 ORDER BY r.date DESC

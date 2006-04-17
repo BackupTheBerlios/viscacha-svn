@@ -83,7 +83,7 @@ if ($config['tpcallow'] == 1 && $my->p['attachments'] == 1) {
 if ($_GET['action'] == "save") {
     $error = array();
     if (!$my->vlogin) {
-		if (!check_mail($_POST['email'])) {
+		if (!check_mail($_POST['email']) && ($config['guest_email_optional'] == 0 || !empty($_POST['email']))) {
 			$error[] = $lang->phrase('illegal_mail');
 		}
 		if (double_udata('name',$_POST['name']) == false) {
@@ -129,20 +129,27 @@ if ($_GET['action'] == "save") {
 	BBProfile($bbcode);
 	$_POST['topic'] = $bbcode->parseTitle($_POST['topic']);
 
-	if (count($error) > 0 || !empty($_POST['Preview2'])) {
+	if (count($error) > 0 || !empty($_POST['Preview'])) {
 		$data = array(
 			'topic' => $_POST['topic'],
 			'comment' => $_POST['comment'],
 			'dosmileys' => $_POST['dosmileys'],
 			'dowords' => $_POST['dowords'],
-			'id' => $_POST['id']
+			'id' => $_POST['id'],
+			'guest' => 0
 		);
 		if (!$my->vlogin) {
-			$data['email'] = $_POST['email'];
+			if ($config['guest_email_optional'] == 0 && empty($_POST['email'])) {
+				$data['email'] = '';
+			}
+			else {
+				$data['email'] = $_POST['email'];
+			}
+			$data['guest'] = 1;
 			$data['name'] = $_POST['name'];
 		}
 		$fid = save_error_data($data);
-		if (!empty($_POST['Preview2'])) {
+		if (!empty($_POST['Preview'])) {
 			viscacha_header("Location: addreply.php?action=preview&id={$_POST['id']}&fid=".$fid.SID2URL_JS_x);
 		}
 		else {
@@ -152,10 +159,17 @@ if ($_GET['action'] == "save") {
 	else {
 		set_flood();
 
+		if ($my->vlogin) {
+			$guest = 0;
+		}
+		else {
+			$guest = 1;
+		}
+
 		$date = time();
 		
 		$db->query("UPDATE {$db->pre}topics SET last_name = '".$pnameid."', last = '".$date."', posts = posts+1 WHERE id = '{$_POST['id']}'",__LINE__,__FILE__);
-		$db->query("INSERT INTO {$db->pre}replies (board,topic,topic_id,name,comment,dosmileys,dowords,email,date,ip) VALUES ('{$info['board']}','{$_POST['topic']}','{$_POST['id']}','{$pnameid}','{$_POST['comment']}','{$_POST['dosmileys']}','{$_POST['dowords']}','{$_POST['email']}','{$date}','{$my->ip}')",__LINE__,__FILE__); 
+		$db->query("INSERT INTO {$db->pre}replies (board,topic,topic_id,name,comment,dosmileys,dowords,email,date,ip,guest) VALUES ('{$info['board']}','{$_POST['topic']}','{$_POST['id']}','{$pnameid}','{$_POST['comment']}','{$_POST['dosmileys']}','{$_POST['dowords']}','{$_POST['email']}','{$date}','{$my->ip}','{$guest}')",__LINE__,__FILE__); 
 		$redirect = $db->insert_id();
 		// Set uploads to correct reply
 		$db->query("UPDATE {$db->pre}uploads SET tid = '{$redirect}' WHERE mid = '{$pid}' AND topic_id = '{$_POST['id']}' AND tid = '0'",__LINE__,__FILE__);
@@ -249,14 +263,21 @@ else {
 		}
 		
 		if (count($qids) > 0) {
-			$result = $db->query('SELECT name, comment, email FROM '.$db->pre.'replies WHERE id IN('.implode(',',$qids).') LIMIT '.$config['maxmultiquote'],__LINE__,__FILE__);
+			$result = $db->query('SELECT name, comment, guest FROM '.$db->pre.'replies WHERE id IN('.implode(',',$qids).') LIMIT '.$config['maxmultiquote'],__LINE__,__FILE__);
 			while($row = $gpc->prepare($db->fetch_assoc($result))) {
-				if (empty($row['email']) && isset($memberdata[$row['name']])) {
-					$row['name'] = $memberdata[$row['name']];
+				if ($row['guest'] == 0) {
+					if (isset($memberdata[$row['name']])) {
+						$row['name'] = $memberdata[$row['name']];
+					}
+					else {
+						$row['name'] = '';
+					}
 				}
 				$row['comment'] = preg_replace('/\[hide\](.+?)\[\/hide\]/is', '', $row['comment']);
 				$row['comment'] = $bbcode->censor(trim($row['comment']));
-				$data['comment'] .= "[quote=".$row['name']."]".$row['comment']."[/quote]\r\n";
+				$data['comment'] .= "[quote".iif(!empty($row['name']), "=".$row['name'])."]";
+				$data['comment'] .= $row['comment'];
+				$data['comment'] .= "[/quote]\r\n";
 			}
 		}
 	}

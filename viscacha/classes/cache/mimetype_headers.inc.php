@@ -2,6 +2,7 @@
 class cache_mimetype_headers extends CacheItem {
 
 	function load() {
+		global $db;
 	    if ($this->exists() == true) {
 	        $this->import();
 	    }

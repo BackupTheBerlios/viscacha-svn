@@ -198,7 +198,7 @@ elseif ($_GET['action'] == "save") {
 	BBProfile($bbcode);
 	$_POST['topic'] = $bbcode->parseTitle($_POST['topic']);
 
-	if (count($error) > 0 || !empty($_POST['Preview2'])) {
+	if (count($error) > 0 || !empty($_POST['Preview'])) {
 		$data = array(
 			'topic' => $_POST['topic'],
 			'comment' => $_POST['comment'],
@@ -206,7 +206,7 @@ elseif ($_GET['action'] == "save") {
 			'outgoing' => $_POST['temp']
 		);
 		$fid = save_error_data($data);
-		if (!empty($_POST['Preview2'])) {
+		if (!empty($_POST['Preview'])) {
 			viscacha_header("Location: pm.php?action=preview&fid=".$fid.SID2URL_JS_x);
 		}
 		else {

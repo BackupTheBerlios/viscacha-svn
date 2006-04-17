@@ -162,7 +162,7 @@ if (($info['name'] == $my->id || $my->mp[0] == 1) && $my->p['edit'] && ($edit_se
 			BBProfile($bbcode);
 			$_POST['topic'] = $bbcode->parseTitle($_POST['topic']);
 
-			if (count($error) > 0 || !empty($_POST['Preview2'])) {
+			if (count($error) > 0 || !empty($_POST['Preview'])) {
 				$data = array(
 					'topic' => $_POST['topic'],
 					'comment' => $_POST['comment'],
@@ -172,7 +172,7 @@ if (($info['name'] == $my->id || $my->mp[0] == 1) && $my->p['edit'] && ($edit_se
 					'about' => $_POST['about']
 				);
 				$fid = save_error_data($data);
-				if (!empty($_POST['Preview2'])) {
+				if (!empty($_POST['Preview'])) {
 					viscacha_header("Location: edit.php?action=preview&id={$info['id']}&fid=".$fid.SID2URL_JS_x);
 				}
 				else {

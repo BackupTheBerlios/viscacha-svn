@@ -71,6 +71,10 @@ elseif ($job == 'posts') {
 	   <td class="obox" colspan="2"><b>Topics &amp; Posts</b></td>
 	  </tr>
 	  <tr> 
+	   <td class="mbox" width="50%">Allow guests to post without specifying an e-mail-address:</td>
+	   <td class="mbox" width="50%"><input type="checkbox" name="guest_email_optional" value="1"<?php echo iif($config['guest_email_optional'] == 1,' checked="checked"'); ?>></td> 
+	  </tr>
+	  <tr> 
 	   <td class="mbox" width="50%">Threads per Topic:</td>
 	   <td class="mbox" width="50%"><input type="text" name="topiczahl" value="<?php echo $config['topiczahl']; ?>" size="4"></td> 
 	  </tr>
@@ -152,6 +156,7 @@ elseif ($job == 'posts2') {
 	$c->updateconfig('topiczahl', int);
 	$c->updateconfig('postrating', int);
 	$c->updateconfig('postrating_counter', int);
+	$c->updateconfig('guest_email_optional', int);
 	$c->savedata();
 
 	ok('admin.php?action=settings&job=posts');
@@ -857,9 +862,9 @@ elseif ($job == 'register') {
 	   <td class="mbox" width="50%">User activation:<br /><span class="stext"></span></td>
 	   <td class="mbox" width="50%"><select name="confirm_registration">
 	   <option value="11"<?php echo iif($config['confirm_registration'] == '11', ' selected="selected"'); ?>>Users are activated immediately</option>
-	   <option value="10"<?php echo iif($config['confirm_registration'] == '10', ' selected="selected"'); ?>>Activation per E-Mail</option>
+	   <option value="10"<?php echo iif($config['confirm_registration'] == '10', ' selected="selected"'); ?>>Activation per e-mail</option>
 	   <option value="01"<?php echo iif($config['confirm_registration'] == '01', ' selected="selected"'); ?>>Activation through Administrator</option>
-	   <option value="00"<?php echo iif($config['confirm_registration'] == '00', ' selected="selected"'); ?>>Activation per E-Mail and through Administrator</option>
+	   <option value="00"<?php echo iif($config['confirm_registration'] == '00', ' selected="selected"'); ?>>Activation per e-mail and through Administrator</option>
 	   </select></td> 
 	  </tr>
 	  <tr> 
@@ -1230,11 +1235,11 @@ elseif ($job == 'cron') {
 	   <td class="mbox" width="50%"><input type="checkbox" name="pccron_uselog" value="1"<?php echo iif($config['pccron_uselog'],' checked'); ?>></td> 
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">Send reports by Mail:</td>
+	   <td class="mbox" width="50%">Send reports per e-mail:</td>
 	   <td class="mbox" width="50%"><input type="checkbox" name="pccron_sendlog" value="1"<?php echo iif($config['pccron_sendlog'],' checked'); ?>></td> 
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">E-Mail Adress for reports:</td>
+	   <td class="mbox" width="50%">E-mail-address for reports:</td>
 	   <td class="mbox" width="50%"><input type="text" name="pccron_sendlog_email" value="<?php echo $config['pccron_sendlog_email']; ?>" size="50"></td> 
 	  </tr>
 	  <tr> 
@@ -1292,7 +1297,7 @@ elseif ($job == 'general') {
 	   <td class="mbox" width="50%"><input type="text" name="fpath" value="<?php echo $config['fpath']; ?>" size="50"></td> 
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">Forum E-Mail address:<br /><font class="stext">Will be used for every outgoing e-mail.</font></td>
+	   <td class="mbox" width="50%">Forum e-mail-address:<br /><font class="stext">Will be used for every outgoing e-mail.</font></td>
 	   <td class="mbox" width="50%"><input type="text" name="forenmail" value="<?php echo $config['forenmail']; ?>" size="50"></td> 
 	  </tr>
 	  <tr> 
@@ -1979,9 +1984,9 @@ else {
   <span class="stext">Registration and Forum rules.</span>
  </td></tr>
  <tr class="mbox"><td>
-  <a href="admin.php?action=settings&job=email">E-Mails</a>
+  <a href="admin.php?action=settings&job=email">E-mails</a>
  </td><td>
-  <span class="stext">E-Mail-delivery (PHP, SMTP, Sendmail).</span>
+  <span class="stext">E-mail-delivery (PHP, SMTP, Sendmail).</span>
  </td></tr>
  <tr class="mbox"><td>
   <a href="admin.php?action=settings&job=lang">Internationalization &amp; Languages</a>
