@@ -50,6 +50,7 @@ $config = array(
 'ftp_user' => '',
 'furl' => '',
 'gdversion' => 2,
+'guest_email_optional' => 0,
 'gzcompression' => 3,
 'gzip' => 0,
 'host' => 'localhost',

@@ -83,11 +83,9 @@ function Out($skip = 1){
 		print $Contents;
 		print pack('V',$Crc);
 		print pack('V',$Size);
-		exit;
 	}
 	else{
-		print $Contents;		
-		exit;
+		print $Contents;
 	}
 }
 function Start($compression = 0){
