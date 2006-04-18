@@ -654,10 +654,12 @@ function check_forumperm($forum) {
 	$catbid = $scache->load('cat_bid');
 	$forums = $catbid->get();
 
-	foreach ($tree[$forum['id']] as $id) {
-		if ($forums[$id]['opt'] == 'pw') {
-			if (!isset($my->pwfaccess[$id]) || $forums[$id]['optvalue'] != $my->pwfaccess[$id]) {
-				return false;
+	if (isset($tree[$forum['id']]) && is_array($tree[$forum['id']])) {
+		foreach ($tree[$forum['id']] as $id) {
+			if ($forums[$id]['opt'] == 'pw') {
+				if (!isset($my->pwfaccess[$id]) || $forums[$id]['optvalue'] != $my->pwfaccess[$id]) {
+					return false;
+				}
 			}
 		}
 	}

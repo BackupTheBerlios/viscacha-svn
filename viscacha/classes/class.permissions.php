@@ -1046,7 +1046,12 @@ function Permissions ($board = 0, $groups = null, $member = null) {
 
 		$parent_forums = $scache->load('parent_forums');
 		$parent = $parent_forums->get();
-		$boards = $parent[$board];
+		if (isset($parent[$board]) && is_array($parent[$board])) {
+			$boards = $parent[$board];
+		}
+		else {
+			$boards = array();
+		}
 		
 		if (count($boards) == 0) {
 			return $permissions;
@@ -1136,7 +1141,7 @@ function GlobalPermissions() {
 	$groups = implode(',', $this->groups);
 	$result = $db->query("SELECT gid, bid, ".implode(', ', $this->fFields)." FROM {$db->pre}fgroups WHERE gid IN ({$groups},0)");
 	if ($db->num_rows() == 0) {
-		return $permissions;
+		return array_combine($boardid, array_fill(0, count($boardid), $this->permissions));
 	}
 	
 	$fpermissions = array_combine($boardid, array_fill(0, count($parent), array()));

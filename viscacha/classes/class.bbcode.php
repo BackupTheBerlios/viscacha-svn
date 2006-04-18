@@ -598,8 +598,7 @@ class BBCode {
 			else {
 			    $text = preg_replace("/\[img\](([^?&=].*?)\.(png|gif|bmp|jpg|jpe|jpeg))\[\/img\]/is", "<img src='\\1' alt=''>", $text);
 			}
-
-			$text = preg_replace('/\[color=\#?([0-9A-F]{3,6})\](.+?)\[\/color\]/is', "<span style='color: #\\1'>\\2</span>", $text);
+			$text = preg_replace('/\[color=\#?([0-9A-F]{3,6})\](.+?)\[\/color\]/is', '<span style="color: #\1">\2</span>', $text);
 			$text = preg_replace('/\[align=(left|center|right|justify)\](.+?)\[\/align\]/is', "<p style='text-align: \\1'>\\2</p>", $text);
 
 			$text = preg_replace("/\[email\]([a-z0-9\-_\.\+]+)@([a-z0-9\-]+\.[a-z0-9\-\.]+?)\[\/email\]/ise", '$this->cb_mail("\1","\2")', $text);
