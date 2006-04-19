@@ -71,7 +71,7 @@ class CacheItem {
 				$last = filemtime($this->file);
 				$expired = time()-$max_age;
 				if ($last < $expired) {
-					$this->deletedata();
+					$this->delete();
 					return false;
 				}
 			}

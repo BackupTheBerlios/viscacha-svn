@@ -61,7 +61,7 @@ function array_empty_trim($arr) {
 	return $array;
 }
 function send_nocache_header() {
-	if (!empty($HTTP_SERVER_VARS['SERVER_SOFTWARE']) && strstr($HTTP_SERVER_VARS['SERVER_SOFTWARE'], 'Apache/2')) {
+	if (!empty($_SERVER['SERVER_SOFTWARE']) && strstr($_SERVER['SERVER_SOFTWARE'], 'Apache/2')) {
 		header ('Cache-Control: no-cache, pre-check=0, post-check=0');
 	}
 	else {
@@ -210,16 +210,22 @@ function serverload($int = false) {
 		if(!$serverload) {
 			$load = @exec("uptime");
 			$load = split("load averages?: ", $load);
-			$serverload = @explode(",", $load[1]);
+			if (isset($load[1])) {
+				$serverload = @explode(",", $load[1]);
+			}
 		}
 	}
 	else {
 		$load = @exec("uptime");
 		$load = split("load averages?: ", $load);
-		$serverload = @explode(",", $load[1]);
+		if (isset($load[1])) {
+			$serverload = @explode(",", $load[1]);
+		}
 	}
-	$returnload = trim($serverload[0]);
-	if(!$returnload) {
+	if (isset($serverload[0])) {
+		$returnload = trim($serverload[0]);
+	}
+	if(empty($returnload)) {
 		$returnload = $unknown;
 	}
 	return $returnload;

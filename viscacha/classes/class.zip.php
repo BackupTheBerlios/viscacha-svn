@@ -2621,7 +2621,7 @@
         else {
           //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 2, "File will be compressed");
           // ----- Read the file content
-          $v_content = @fread($v_file, $p_header['size']);
+          $v_content = @fread($v_file, ($p_header['size'] == 0 ? 1 : $p_header['size']) ); // MOD: fread can not be 0 error fixed
 
           // ----- Calculate the CRC
           $p_header['crc'] = @crc32($v_content);
