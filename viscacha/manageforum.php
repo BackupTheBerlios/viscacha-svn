@@ -45,6 +45,9 @@ if (empty($board) || !isset($fc[$board])) {
 	error($lang->phrase('query_string_error'));
 }
 $info = $fc[$board];
+if ($info['forumzahl'] < 1) {
+	$info['forumzahl'] = $config['forumzahl'];
+}
 
 $my->p = $slog->Permissions($info['id']);
 $my->mp = $slog->ModPermissions($info['id']);
@@ -72,15 +75,15 @@ if ($my->vlogin && $my->mp[0] == 1) {
         	$info['topics'] = $vlasttopics[0];
         }
         
-        $pages = pages($info['topics'], $config['forumzahl'], 'manageforum.php?action=index&amp;id='.$board.'&amp;type='.$_GET['type'].'&amp;', $_GET['page']);
+        $pages = pages($info['topics'], $info['forumzahl'], 'manageforum.php?action=index&amp;id='.$board.'&amp;type='.$_GET['type'].'&amp;', $_GET['page']);
         $inner['index_bit'] = '';
         if ($info['topics'] > 0) {
-        	$start = $_GET['page']*$config['forumzahl'];
-        	$start = $start-$config['forumzahl'];
+        	$start = $_GET['page']*$info['forumzahl'];
+        	$start = $start-$info['forumzahl'];
         	$result = $db->query("
         	SELECT prefix, vquestion, posts, mark, id, board, topic, date, status, last, last_name, sticky, name 
         	FROM {$db->pre}topics WHERE board = '$board' $marksql
-        	ORDER BY sticky DESC, last DESC LIMIT $start, ".$config['forumzahl']
+        	ORDER BY sticky DESC, last DESC LIMIT $start, ".$info['forumzahl']
         	,__LINE__,__FILE__);
         	
 			$memberdata_obj = $scache->load('memberdata');

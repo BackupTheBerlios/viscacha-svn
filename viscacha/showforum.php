@@ -63,11 +63,11 @@ forum_opt($info['opt'], $info['optvalue'], $info['id']);
 echo $tpl->parse("header");
 echo $tpl->parse("menu");
 
-$mymodules->load('showforum_top');
+$plugins->load('showforum_top');
 
 $subforums = BoardSelect($board);
 
-$mymodules->load('showforum_middle');
+$plugins->load('showforum_middle');
 
 $filter = $gpc->get('sort', int);
 if ($filter == 2) {
@@ -106,20 +106,23 @@ if (!empty($marksql)) {
 	$info['topics'] = $vlasttopics[0];
 }
 
-$pages = pages($info['topics'], $config['forumzahl'], 'showforum.php?id='.$board.'sort='.$_GET['sort'].'&amp;', $_GET['page']);
+if ($info['forumzahl'] < 1) {
+	$info['forumzahl'] = $config['forumzahl'];
+}
+$pages = pages($info['topics'], $info['forumzahl'], 'showforum.php?id='.$board.'sort='.$_GET['sort'].'&amp;', $_GET['page']);
+
 $inner['index_bit'] = '';
 if ($info['topics'] > 0) {
-	$start = $_GET['page']*$config['forumzahl'];
-	$start = $start-$config['forumzahl'];
+	$start = $_GET['page']*$info['forumzahl'];
+	$start = $start-$info['forumzahl'];
 	$result = $db->query("
 	SELECT prefix, vquestion, posts, mark, id, board, topic, date, status, last, last_name, sticky, name 
 	FROM {$db->pre}topics WHERE board = '{$board}' $marksql
-	ORDER BY sticky DESC, last DESC LIMIT {$start}, ".$config['forumzahl']
+	ORDER BY sticky DESC, last DESC LIMIT {$start}, {$info['forumzahl']}"
 	,__LINE__,__FILE__);
 	
 	$prefix_obj = $scache->load('prefix');
 	$prefix = $prefix_obj->get($board);
-	
 	$memberdata_obj = $scache->load('memberdata');
 	$memberdata = $memberdata_obj->get();
 
@@ -132,6 +135,8 @@ if ($info['topics'] > 0) {
 		else {
 			$prefix[$row->prefix] = '';
 		}
+		
+		$last = $fc[$row->board];
 		
 		if(is_id($row->name) && isset($memberdata[$row->name])) {
 			$row->mid = $row->name;
@@ -190,9 +195,13 @@ if ($info['topics'] > 0) {
 				$src = $tpl->img('dir_open2');
 			}
 		}
-		
-		if ($row->posts > $config['topiczahl']) {
-			$topic_pages = pages($row->posts+1, $config['topiczahl'], "showtopic.php?id=".$row->id."&amp;", 0, '_small');
+
+		if ($last['topiczahl'] < 1) {
+			$last['topiczahl'] = $config['topiczahl'];
+		}
+	
+		if ($row->posts > $last['topiczahl']) {
+			$topic_pages = pages($row->posts+1, $last['topiczahl'], "showtopic.php?id=".$row->id."&amp;", 0, '_small');
 		}
 		else {
 			$topic_pages = '';
@@ -207,7 +216,7 @@ else {
 
 echo $tpl->parse("showforum/index");
 
-$mymodules->load('showforum_bottom');
+$plugins->load('showforum_bottom');
 
 $slog->updatelogged();
 $zeitmessung = t2();

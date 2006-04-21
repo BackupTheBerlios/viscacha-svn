@@ -72,11 +72,11 @@ if ($_GET['action'] == "hlcode") {
 		
 		echo $tpl->parse("popup/header");
 		
-		$mymodules->load('popup_hlcode_top');
+		$plugins->load('popup_hlcode_top');
 		$code['hl'] = $geshi->parse_code();
 		
 		echo $tpl->parse("popup/hlcode");
-		$mymodules->load('popup_hlcode_bottom');
+		$plugins->load('popup_hlcode_bottom');
 	}
 }
 elseif ($_GET['action'] == "filetypes") {
@@ -91,7 +91,7 @@ elseif ($_GET['action'] == "filetypes") {
 
 	echo $tpl->parse("popup/header");
 	echo $tpl->parse("popup/filetypes");
-	$mymodules->load('popup_filetypes_bottom');
+	$plugins->load('popup_filetypes_bottom');
 	
 }
 elseif ($_GET['action'] == "code") {
@@ -99,7 +99,7 @@ elseif ($_GET['action'] == "code") {
 	$clang = $codelang->get();
 	
 	echo $tpl->parse("popup/header");
-	$mymodules->load('popup_code_top');
+	$plugins->load('popup_code_top');
 	echo $tpl->parse("popup/code");
 }
 elseif ($_GET['action'] == "showpost") {
@@ -204,9 +204,9 @@ elseif ($_GET['action'] == "showpost") {
 		$why = iif(empty($lastdata[2]), $lang->phrase('post_editinfo_na'), $bbcode->wordwrap($lastdata[2]));
 	}
 	
-	$mymodules->load('popup_showpost_top');
+	$plugins->load('popup_showpost_top');
 	echo $tpl->parse("popup/showpost");
-	$mymodules->load('popup_showpost_bottom');
+	$plugins->load('popup_showpost_bottom');
 
 }
 elseif ($_GET['action'] == "edithistory") {

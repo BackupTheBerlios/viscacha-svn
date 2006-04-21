@@ -48,7 +48,7 @@ echo $tpl->parse("header");
 
 BBProfile($bbcode);
 
-$mymodules->load('portal');
+$plugins->load('portal');
 
 $slog->updatelogged();
 $zeitmessung = t2();

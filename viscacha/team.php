@@ -45,7 +45,7 @@ $breadcrumb->Add($lang->phrase('team'));
 echo $tpl->parse("header");
 echo $tpl->parse("menu");
 
-$mymodules->load('team_top');
+$plugins->load('team_top');
 
 $team_ag = $scache->load('team_ag');
 $team = $team_ag->get();
@@ -115,7 +115,7 @@ if ($db->num_rows() > 0) {
 }
 
 echo $tpl->parse("team/index");
-$mymodules->load('team_bottom');
+$plugins->load('team_bottom');
 
 $slog->updatelogged();
 $zeitmessung = t2();

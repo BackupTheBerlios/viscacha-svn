@@ -49,9 +49,9 @@ echo $tpl->parse("menu");
 $memberdata_obj = $scache->load('memberdata');
 $memberdata = $memberdata_obj->get();
 
-$mymodules->load('forum_top');
+$plugins->load('forum_top');
 BoardSelect();
-$mymodules->load('forum_bottom');
+$plugins->load('forum_bottom');
 
 $slog->updatelogged();
 $zeitmessung = t2();

@@ -55,6 +55,9 @@ if (count($error) > 0) {
 $catbid = $scache->load('cat_bid');
 $fc = $catbid->get();
 $last = $fc[$info['board']];
+if ($last['topiczahl'] < 1) {
+	$last['topiczahl'] = $config['topiczahl'];
+}
 
 $pre = '';
 if ($info['prefix'] > 0) {
@@ -72,13 +75,13 @@ $breadcrumb->Add($pre.$info['topic'], "showtopic.php?id={$_GET['id']}&amp;page="
 
 forum_opt($last['opt'], $last['optvalue'], $last['id']);
 
-$start = $_GET['page']*$config['topiczahl'];
-$start = $start-$config['topiczahl'];
+$start = $_GET['page']*$last['topiczahl'];
+$start = $start-$last['topiczahl'];
 
 // Some speed optimisation
 $speeder = $info['posts']+1;
-if ($speeder > $config['topiczahl']) {
-	$searchsql = " LIMIT ".$start.",".$config['topiczahl'];
+if ($speeder > $last['topiczahl']) {
+	$searchsql = " LIMIT ".$start.",".$last['topiczahl'];
 }
 else {
 	$searchsql = " LIMIT ".$speeder;
@@ -204,14 +207,14 @@ while ($row = $gpc->prepare($db->fetch_object($result))) {
 	$inner['index_bit'] .= $tpl->parse("print/index_bit");
 } 
 
-$mymodules->load('print_top');
+$plugins->load('print_top');
 
 $slog->updatelogged();
 $zeitmessung = t2();
 
 echo $tpl->parse("print/index");
 
-$mymodules->load('print_bottom');
+$plugins->load('print_bottom');
 
 $phpdoc->Out();
 $db->close();

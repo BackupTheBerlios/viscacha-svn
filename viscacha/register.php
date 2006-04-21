@@ -183,10 +183,10 @@ else {
 	echo $tpl->parse("header");
 	echo $tpl->parse("menu");
 	$customfields = addprofile_customfields();
-	$mymodules->load('register_top');
+	$plugins->load('register_top');
 	$rules = $lang->get_words('rules');
 	echo $tpl->parse("register");
-	$mymodules->load('register_bottom');
+	$plugins->load('register_bottom');
 }
 
 $slog->updatelogged();

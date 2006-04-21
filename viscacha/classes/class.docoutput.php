@@ -64,13 +64,13 @@ function CanGZIP() {
 	return FALSE;
 }
 function Out($skip = 1){
-	global $breadcrumb, $config, $mymodules;
+	global $breadcrumb, $config, $plugins;
 	$this->sid = SID2URL;
 	$Contents = ob_get_contents();
 	ob_end_clean();
 	$Contents = $this->AddSid($Contents);
-	if (isset($mymodules)) {
-		extract($mymodules->load('docout_parse', get_defined_vars()), EXTR_SKIP);
+	if (isset($plugins)) {
+		extract($plugins->load('docout_parse', get_defined_vars()), EXTR_SKIP);
 	}
 	
 	if ($this->enc != FALSE && $skip == 1 && $this->cfg == 1) {

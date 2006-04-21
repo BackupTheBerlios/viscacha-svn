@@ -244,7 +244,7 @@ if (($info['name'] == $my->id || $my->mp[0] == 1) && $my->p['edit'] && ($edit_se
 		$inner['bbhtml'] = $bbcode->getbbhtml();
 
 		echo $tpl->parse("edit");
-		$mymodules->load('edit_bottom');
+		$plugins->load('edit_bottom');
 	}
 }
 else {

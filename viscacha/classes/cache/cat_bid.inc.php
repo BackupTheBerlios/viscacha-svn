@@ -7,7 +7,7 @@ class cache_cat_bid extends CacheItem {
 		    $this->import();
 		}
 		else {
-		    $result = $db->query("SELECT name, id, bid, opt, optvalue, topics, prefix, c_order FROM {$db->pre}cat ORDER BY bid",__LINE__,__FILE__);
+		    $result = $db->query("SELECT name, id, bid, opt, optvalue, topics, prefix, c_order, topiczahl, forumzahl FROM {$db->pre}cat ORDER BY bid",__LINE__,__FILE__);
 		    $this->data = array();
 		    while ($row = $db->fetch_assoc($result)) {
 		        $this->data[$row['id']] = $row;

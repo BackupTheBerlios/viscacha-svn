@@ -24,14 +24,14 @@
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "class.plugins.php") die('Error: Hacking Attempt');
 
-class MyModules {
+class PluginSystem {
 
 var $buffer;
 var $cache;
 var $varcache;
 var $pos;
 
-function MyModules() {
+function PluginSystem() {
 	global $scache;
 	$this->cache = $scache->load('modules');
     $this->buffer = $this->cache->get();

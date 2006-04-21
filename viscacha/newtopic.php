@@ -397,11 +397,11 @@ else {
 		$inner['index_prefix'] = '';
 	}
 	
-	$mymodules->load('newtopic_top');
+	$plugins->load('newtopic_top');
 	
 	echo $tpl->parse("newtopic/index");
 	
-	$mymodules->load('newtopic_bottom');
+	$plugins->load('newtopic_bottom');
 }
 
 $slog->updatelogged();

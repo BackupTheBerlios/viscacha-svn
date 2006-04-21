@@ -40,7 +40,7 @@ include_once ("classes/class.bbcode.php");
 $scache = new CacheServer();
 $myini = new INI();
 $lang = new lang();
-$mymodules = new MyModules();
+$plugins = new PluginSystem();
 
 // Database functions
 require_once('classes/database/'.$config['dbsystem'].'.inc.php');

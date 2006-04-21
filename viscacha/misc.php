@@ -96,7 +96,7 @@ elseif ($_GET['action'] == "wwo") {
 
 	$lang->group('wwo');
 
-    $mymodules->load('misc_wwo_top');
+    $plugins->load('misc_wwo_top');
 
 	$result=$db->query("SELECT ip, mid, active, wiw_script, wiw_action, wiw_id, remoteaddr, is_bot FROM {$db->pre}session ORDER BY active DESC",__LINE__,__FILE__);
 	while ($row = $gpc->prepare($db->fetch_object($result))) {
@@ -277,7 +277,7 @@ elseif ($_GET['action'] == "wwo") {
 			$loc = $lang->phrase('wwo_default');
 		}
 		
-		$mymodules->load('misc_wwo_bit');
+		$plugins->load('misc_wwo_bit');
 
 		if ($row->mid >= 1) {
 			$wwo['r']++;
@@ -294,7 +294,7 @@ elseif ($_GET['action'] == "wwo") {
 		}
 	}
 	echo $tpl->parse("misc/wwo");
-    $mymodules->load('misc_wwo_bottom');
+    $plugins->load('misc_wwo_bottom');
 }
 elseif ($_GET['action'] == "vote") {
 

@@ -58,6 +58,9 @@ if (count($error) > 0) {
 $catbid = $scache->load('cat_bid');
 $fc = $catbid->get();
 $last = $fc[$info['board']];
+if ($last['topiczahl'] < 1) {
+	$last['topiczahl'] = $config['topiczahl'];
+}
 
 $pre = '';
 if ($info['prefix'] > 0) {
@@ -71,13 +74,13 @@ if ($info['prefix'] > 0) {
 
 forum_opt($last['opt'], $last['optvalue'], $last['id'], 'pdf');
 
-$start = $_GET['page']*$config['topiczahl'];
-$start = $start-$config['topiczahl'];
+$start = $_GET['page']*$last['topiczahl'];
+$start = $start-$last['topiczahl'];
 
 // Some speed optimisation
 $speeder = $info['posts']+1;
-if ($speeder > $config['topiczahl']) {
-	$searchsql = " LIMIT ".$start.",".$config['topiczahl'];
+if ($speeder > $last['topiczahl']) {
+	$searchsql = " LIMIT ".$start.",".$last['topiczahl'];
 }
 else {
 	$searchsql = " LIMIT ".$speeder;

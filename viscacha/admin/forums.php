@@ -281,7 +281,19 @@ elseif ($job == 'edit') {
   </tr>
   <tr> 
    <td class="mbox" width="50%">Forum Password:</font><br><font class="stext">Subforums are protected with this password, too!</td>
-   <td class="mbox" width="50%"><input type="text" value="<?php echo iif($row['opt'] == 'pw', $row['optvalue']); ?>" name="pw" size="50" id="dis2" onmouseover="disable(this)" onmouseut="disable(this)"></td> 
+   <td class="mbox" width="50%"><input type="text" value="<?php echo iif($row['opt'] == 'pw', $row['optvalue']); ?>" name="text" size="50" id="dis2" onmouseover="disable(this)" onmouseut="disable(this)"></td> 
+  </tr>
+  <tr> 
+   <td class="mbox" width="50%">Number of Posts per Page:<br><span class="stext">0 = Use default value (<?php echo $config['topiczahl']; ?>)</span></td>
+   <td class="mbox" width="50%"><input type="text" name="topiczahl" size="5" value="<?php echo $row['topiczahl']; ?>" /></td> 
+  </tr>
+  <tr> 
+   <td class="mbox" width="50%">Number of Topics per Forumpage:<br><span class="stext">0 = Use default value (<?php echo $config['forumzahl']; ?>)</span></td>
+   <td class="mbox" width="50%"><input type="text" name="forumzahl" size="5" value="<?php echo $row['forumzahl']; ?>" /></td> 
+  </tr>
+  <tr> 
+   <td class="mbox" width="50%">Hide forum from users without authorization:<br><span class="stext">Forum will not appear if it is locked and option is checked. This only affects forums without password.</span></td>
+   <td class="mbox" width="50%"><input type="checkbox" name="invisible" value="1"<?php echo iif($row['invisible'] == 1, ' checked="checked"'); ?> /></td> 
   </tr>
   <tr> 
    <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="Submit"></td> 
@@ -300,6 +312,9 @@ elseif ($job == 'editforum2') {
 	$pw = $gpc->get('pw', str);
 	$link = $gpc->get('link', str);
 	$parent = $gpc->get('parent', str);
+	$invisible = $gpc->get('invisible', int);
+	$topiczahl = $gpc->get('topiczahl', int);
+	$forumzahl = $gpc->get('forumzahl', int);
 
 	if (!$id) {
 		error('admin.php?action=forums&job=edit&id='.$id, 'Es wurde keine gültige ID angegeben');
@@ -342,14 +357,14 @@ elseif ($job == 'editforum2') {
 	}
 	elseif (strlen($pw) > 0) {
 		$opt = 'pw';
-		$optvalue = $pw;	
+		$optvalue = $pw;
+		$invisible = 0;
 	}
 	else {
 		$opt = '';
 		$optvalue = '';	
 	}
-	
-	$db->query("UPDATE {$db->pre}cat SET name = '{$name}', `desc` = '{$desc}', opt = '{$opt}', optvalue = '{$optvalue}' {$option} WHERE id = '{$id}' LIMIT 1");
+	$db->query("UPDATE {$db->pre}cat SET name = '{$name}', `desc` = '{$desc}', forumzahl = '{$forumzahl}', topiczahl = '{$topiczahl}', invisible = '{$invisible}', opt = '{$opt}', optvalue = '{$optvalue}' {$option} WHERE id = '{$id}' LIMIT 1");
 	
 	$delobj = $scache->load('categories');
 	$delobj->delete();
@@ -449,7 +464,7 @@ elseif ($job == 'addforum') {
   </tr>
   <tr> 
    <td class="mbox" width="50%">Title:</td>
-   <td class="mbox" width="50%"><input type="text" name="name" size="50"></td> 
+   <td class="mbox" width="50%"><input type="text" name="name" size="50" /></td> 
   </tr>
   <tr> 
    <td class="mbox" width="50%">Description:</font><br><font class="stext">Optional. HTML allowed.</td>
@@ -472,12 +487,24 @@ elseif ($job == 'addforum') {
    </td> 
   </tr>
   <tr> 
-   <td class="mbox" width="50%">Forum Link :</font><br><font class="stext">Entering a URL here will cause anyone clicking the forum link to be redirected to that URL</td>
-   <td class="mbox" width="50%"><input type="text" name="link" size="50" id="dis1" onchange="disable(this)"></td> 
+   <td class="mbox" width="50%">Forum Link :<br><span class="stext">Entering a URL here will cause anyone clicking the forum link to be redirected to that URL.</span></td>
+   <td class="mbox" width="50%"><input type="text" name="link" size="50" id="dis1" onchange="disable(this)" /></td> 
   </tr>
   <tr> 
-   <td class="mbox" width="50%">Forum Password:</font><br><font class="stext">Subforums are protected with this password, too!</td>
-   <td class="mbox" width="50%"><input type="text" name="pw" size="50" id="dis2" onchange="disable(this)"></td> 
+   <td class="mbox" width="50%">Forum Password:<br><span class="stext">Subforums are protected with this password, too!</span></td>
+   <td class="mbox" width="50%"><input type="text" name="pw" size="50" id="dis2" onchange="disable(this)" /></td> 
+  </tr>
+  <tr> 
+   <td class="mbox" width="50%">Number of Posts per Page:<br><span class="stext">0 = Use default value (<?php echo $config['topiczahl']; ?>)</span></td>
+   <td class="mbox" width="50%"><input type="text" name="topiczahl" size="5" value="0" /></td> 
+  </tr>
+  <tr> 
+   <td class="mbox" width="50%">Number of Topics per Forumpage:<br><span class="stext">0 = Use default value (<?php echo $config['forumzahl']; ?>)</span></td>
+   <td class="mbox" width="50%"><input type="text" name="forumzahl" size="5" value="0" /></td> 
+  </tr>
+  <tr> 
+   <td class="mbox" width="50%">Hide forum from users without authorization:<br><span class="stext">Forum will not appear if it is locked and option is checked. This only affects forums without password.</span></td>
+   <td class="mbox" width="50%"><input type="checkbox" name="invisible" value="1" /></td> 
   </tr>
   <tr> 
    <td class="mbox" width="50%">Sort Order:</font></td>
@@ -487,7 +514,7 @@ elseif ($job == 'addforum') {
    </select></td> 
   </tr>
   <tr> 
-   <td class="ubox" width="100%" colspan="2" align="center"><input type="submit" name="Submit" value="Submit"></td> 
+   <td class="ubox" width="100%" colspan="2" align="center"><input type="submit" name="Submit" value="Submit" /></td> 
   </tr>
  </table>
 </form> 
@@ -503,6 +530,9 @@ elseif ($job == 'addforum2') {
 	$pw = $gpc->get('pw', str);
 	$link = $gpc->get('link', str);
 	$parent = $gpc->get('parent', str);
+	$invisible = $gpc->get('invisible', int);
+	$topiczahl = $gpc->get('topiczahl', int);
+	$forumzahl = $gpc->get('forumzahl', int);
 	
 	if (preg_match("/c_\d{1,}/", $parent) == 1) {
 		$cid = str_replace("c_", "", $parent);
@@ -548,14 +578,18 @@ elseif ($job == 'addforum2') {
 	}
 	elseif (strlen($pw) > 0) {
 		$opt = 'pw';
-		$optvalue = $pw;	
+		$optvalue = $pw;
+		$invisible = 0;
 	}
 	else {
 		$opt = '';
 		$optvalue = '';	
 	}
 	
-	$db->query("INSERT INTO {$db->pre}cat (name, `desc`, bid, cid, c_order, opt, optvalue) VALUES ('{$name}', '{$desc}', '$bid', '$cid', '$sort', '$opt', '$optvalue')", __LINE__, __FILE__);
+	$db->query("
+	INSERT INTO {$db->pre}cat (name, `desc`, bid, cid, c_order, opt, optvalue, forumzahl, topiczahl, invisible)
+	VALUES ('{$name}', '{$desc}', '{$bid}', '{$cid}', '{$sort}', '{$opt}', '{$optvalue}','{$forumzahl}','{$topiczahl}','{$invisible}')
+	", __LINE__, __FILE__);
 
 	$delobj = $scache->load('cat_bid');
 	$delobj->delete();

@@ -12,5 +12,5 @@ CREATE TABLE `{:=DBPREFIX=:}documents` (
   PRIMARY KEY  (`id`)
 ) TYPE=MyISAM AUTO_INCREMENT=3 ;
 
-INSERT INTO `{:=DBPREFIX=:}documents` (`id`, `title`, `content`, `author`, `date`, `update`, `type`, `groups`, `active`, `file`) VALUES (1, 'Impressum', '', 3, 1139678039, 1139678039, 5, '0', '1', 'docs/impressum.php'),
-(2, 'Credits', '', 3, 1139678141, 1139678141, 5, '0', '1', 'docs/credits.php');
+INSERT INTO `{:=DBPREFIX=:}documents` (`id`, `title`, `content`, `author`, `date`, `update`, `type`, `groups`, `active`, `file`) VALUES (1, 'Impressum', '', 1, 1139678039, 1139678039, 5, '0', '1', 'docs/impressum.php'),
+(2, 'Credits', '', 1, 1139678141, 1139678141, 5, '0', '1', 'docs/credits.php');

@@ -590,7 +590,7 @@ class BBCode {
 
 			$text = preg_replace("~\[url\]((telnet://|callto://|irc://|teamspeak://|http://|https://|ftp://|www.|mailto:|ed2k://|\w+?.\w{2,7})+:\/\/[a-z0-9;\/\?:@=\&\$\-_\.\+!\*'\(\),\~%#]+?)\[\/url\]~ise", '$this->cb_url("\1")', $text);
 			$text = preg_replace("~\[url=((telnet://|callto://|irc://|teamspeak://|http://|https://|ftp://|www.|mailto:|ed2k://|\w+?.\w{2,7})[a-z0-9;\/\?:@=\&\$\-_\.\+!\*'\(\),\~%#]+?)\](.+?)\[\/url\]~ise", '$this->cb_url("\1", "\3")', $text);
-			$text = preg_replace("~((et://|svn://|telnet://|callto://|irc://|teamspeak://|http://|https://|ftp://|ed2k://|www.)[a-zA-Z0-9\-\.@]+\.[a-zA-Z0-9]{1,7}(:\d*)?/?([a-zA-Z0-9\-\.:;_\?\,/\\\+&%\$#\=\~]*)?([a-zA-Z0-9/\\\+\=\?]{1}))([^\"\>\s\=\,]{0,6})~ise", '$this->cb_url("\1", false, true, "\6")', $text);
+			$text = preg_replace("~((et://|svn://|telnet://|callto://|irc://|teamspeak://|http://|https://|ftp://|ed2k://|www.)[a-zA-Z0-9\-\.@]+\.[a-zA-Z0-9]{1,7}(:\d*)?/?([a-zA-Z0-9\-\.:;_\?\,/\\\+&%\$#\=\~]*)?([a-zA-Z0-9/\\\+\=\?]{1}))([^\"\>\s\=\,\r\n\t]{0,6})~ise", '$this->cb_url("\1", false, true, "\6")', $text);
 
 			if ($this->profile['resizeImg'] > 0) {
 			    $text = preg_replace("/\[img\](([^?&=].*?)\.(png|gif|bmp|jpg|jpe|jpeg))\[\/img\]/is", "<img src='\\1' alt='' name='resize' />", $text);

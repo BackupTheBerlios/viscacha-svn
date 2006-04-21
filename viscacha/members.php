@@ -44,7 +44,7 @@ $breadcrumb->Add($lang->phrase('members'));
 echo $tpl->parse("header");
 echo $tpl->parse("menu");
 
-$mymodules->load('members_top');
+$plugins->load('members_top');
 
 $letter = $lang->phrase('members_all');
 $row = array('letter' => '');
@@ -95,7 +95,7 @@ while ($row = $gpc->prepare($db->fetch_object($result))) {
 } 
 echo $tpl->parse("members/index");
 
-$mymodules->load('members_bottom');
+$plugins->load('members_bottom');
 
 $slog->updatelogged();
 $zeitmessung = t2();

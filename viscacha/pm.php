@@ -92,9 +92,9 @@ if ($_GET['action'] == 'show') {
 	echo $tpl->parse("header");
 	echo $tpl->parse("menu");
 	echo $tpl->parse("pm/menu");
-	$mymodules->load('pm_show_top');
+	$plugins->load('pm_show_top');
 	echo $tpl->parse("pm/show");
-	$mymodules->load('pm_show_bottom');
+	$plugins->load('pm_show_bottom');
 }
 elseif ($_GET['action'] == "massmanage") {
 	$breadcrumb->Add($lang->phrase('pm_massmanage'));
@@ -292,9 +292,9 @@ elseif ($_GET['action'] == "new" || $_GET['action'] == "preview" || $_GET['actio
 	$inner['smileys'] = $bbcode->getsmileyhtml($config['smileysperrow']);
 	$inner['bbhtml'] = $bbcode->getbbhtml();
 	echo $tpl->parse("pm/menu");
-	$mymodules->load('pm_new_top');
+	$plugins->load('pm_new_top');
 	echo $tpl->parse("pm/new");
-    $mymodules->load('pm_new_bottom');
+    $plugins->load('pm_new_bottom');
 }
 elseif ($_GET['action'] == "browse") {
 
@@ -318,7 +318,7 @@ elseif ($_GET['action'] == "browse") {
 	$result = $db->query("SELECT id, pm_from, topic, date, status, pm_to FROM {$db->pre}pm WHERE pm_to = '".$my->id."' AND dir = '".$_GET['id']."' ORDER BY date DESC LIMIT $start, ".$config['pmzahl'],__LINE__,__FILE__);
 	
 	echo $tpl->parse("pm/menu");
-    $mymodules->load('pm_browse_top');
+    $plugins->load('pm_browse_top');
 	
 	
 	while ($row = $db->fetch_assoc($result)) {
@@ -338,11 +338,11 @@ elseif ($_GET['action'] == "browse") {
 		else {
 			$row['name'] = $lang->phrase('fallback_no_username');
 		}
-		$mymodules->load('pm_browse_top');
+		$plugins->load('pm_browse_top');
 		$inner['index_bit'] .= $tpl->parse("pm/browse_bit");
 	}
 	echo $tpl->parse("pm/browse");
-	$mymodules->load('pm_browse_bottom');
+	$plugins->load('pm_browse_bottom');
 }
 else {
 	$breadcrumb->resetUrl();
@@ -362,7 +362,7 @@ else {
 	$inner['index_bit_old'] = '';
 	$ib = 0;
 	$ibo = 0;
-	$mymodules->load('pm_index_top');
+	$plugins->load('pm_index_top');
 	while ($row = $db->fetch_assoc($result)) {
 		$row['topic'] = $gpc->prepare($row['topic']);
 		$row['date_str'] = str_date($lang->phrase('dformat1'), times($row['date']));
@@ -380,7 +380,7 @@ else {
 		else {
 			$row['name'] = $lang->phrase('fallback_no_username');
 		}
-		$mymodules->load('pm_index_bit');
+		$plugins->load('pm_index_bit');
 		if ($row['date'] >= $my->clv || $row['status'] == '0') {
 			$ib++;
 			$inner['index_bit'] .= $tpl->parse("pm/index_bit");
@@ -392,7 +392,7 @@ else {
 	}
 	
 	echo $tpl->parse("pm/index");
-	$mymodules->load('pm_index_bottom');
+	$plugins->load('pm_index_bottom');
 }
 
 $slog->updatelogged();

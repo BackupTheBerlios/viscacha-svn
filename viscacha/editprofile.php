@@ -139,9 +139,15 @@ elseif ($_GET['action'] == "abos") {
 	$prefix = $prefix_obj->get();
 	$memberdata_obj = $scache->load('memberdata');
 	$memberdata = $memberdata_obj->get();
+	$catbid = $scache->load('cat_bid');
+	$fc = $catbid->get();
 
     $cache = array();
     while ($row = $db->fetch_assoc($result)) {
+    	$info = $fc[$row['board']];
+    	if ($info['topiczahl'] < 1) {
+    		$info['topiczahl'] = $config['topiczahl'];
+    	}
     	if (!empty($row['prefix']) && isset($prefix[$row['board']][$row['prefix']])) {
     		$row['prefix'] = '['.$prefix[$row['board']][$row['prefix']].']';
     	}
@@ -169,8 +175,9 @@ elseif ($_GET['action'] == "abos") {
 
 		$row['last'] = str_date($lang->phrase('dformat1'),times($row['last']));
 
-		if ($row['posts'] > $config['topiczahl']) {
-			$row['topic_pages'] = pages($row['posts']+1, $config['topiczahl'], "showtopic.php?id=".$row['id']."&amp;", 0, '_small');
+		
+		if ($row['posts'] > $info['topiczahl']) {
+			$row['topic_pages'] = pages($row['posts']+1, $info['topiczahl'], "showtopic.php?id=".$row['id']."&amp;", 0, '_small');
 		}
 		else {
 			$row['topic_pages'] = '';
@@ -180,8 +187,8 @@ elseif ($_GET['action'] == "abos") {
 	}
 
 	$count = count($cache);
-	$pages = pages($count, $config['topiczahl'], 'editprofile.php?action=abos&amp;type='.$_GET['type'].'&amp;', $_GET['page']);
-	$cache = array_chunk($cache, $config['topiczahl']);
+	$pages = pages($count, $config['abozahl'], 'editprofile.php?action=abos&amp;type='.$_GET['type'].'&amp;', $_GET['page']);
+	$cache = array_chunk($cache, $config['abozahl']);
 	if (!isset($cache[$p])) {
 		$count = 0;
 	}
@@ -227,7 +234,7 @@ elseif ($_GET['action'] == "pw") {
 	echo $tpl->parse("header");
 	echo $tpl->parse("menu");
 	echo $tpl->parse("editprofile/pw");
-	$mymodules->load('editprofile_pw_bottom');
+	$plugins->load('editprofile_pw_bottom');
 }
 elseif ($_GET['action'] == "notice2") {
 
@@ -270,7 +277,7 @@ elseif ($_GET['action'] == "notice") {
 	$notes = count($notices);
 	$used_chars = numbers(strxlen(str_replace('[VSEP]', '', $my->notice)));
 	$chars = numbers($config['maxnoticelength']);
-	$mymodules->load('editprofile_notice_top');
+	$plugins->load('editprofile_notice_top');
 	echo $tpl->parse("editprofile/notice");
 }
 elseif ($_GET['action'] == "about2") {
@@ -304,7 +311,7 @@ elseif ($_GET['action'] == "about") {
 	BBProfile($bbcode);
 	$inner['bbhtml'] = $bbcode->getbbhtml();
 	$inner['smileys'] = $bbcode->getsmileyhtml($config['smileysperrow']);
-	$mymodules->load('editprofile_about_top');
+	$plugins->load('editprofile_about_top');
 	echo $tpl->parse("editprofile/about");
 }
 elseif ($_GET['action'] == "pic2") {
@@ -365,7 +372,7 @@ elseif ($_GET['action'] == "pic") {
 		$size .= $lang->phrase('editprofile_pic_h2');
 	}
 
-	$mymodules->load('editprofile_pic_top');
+	$plugins->load('editprofile_pic_top');
     echo $tpl->parse("editprofile/pic");
 }
 elseif ($_GET['action'] == "profile") {
@@ -390,7 +397,7 @@ elseif ($_GET['action'] == "profile") {
     
 	$customfields = editprofile_customfields(1, $my->id);
     
-    $mymodules->load('editprofile_profile_top');
+    $plugins->load('editprofile_profile_top');
     echo $tpl->parse("editprofile/profile");
 }
 elseif ($_GET['action'] == "profile2") {
@@ -493,7 +500,7 @@ elseif ($_GET['action'] == "settings") {
 	$mylanguage = $language[$my->language]['language'];
 	
 	$customfields = editprofile_customfields(2, $my->id);
-	$mymodules->load('editprofile_settings_top');
+	$plugins->load('editprofile_settings_top');
 	
     echo $tpl->parse("editprofile/settings");
 }
@@ -557,8 +564,15 @@ elseif ($_GET['action'] == "mylast") {
     
 	$prefix_obj = $scache->load('prefix');
 	$prefix = $prefix_obj->get();
+	$catbid = $scache->load('cat_bid');
+	$fc = $catbid->get();
 
     while ($row = $db->fetch_assoc($result)) {
+    	$info = $fc[$row['board']];
+    	if ($info['topiczahl'] < 1) {
+    		$info['topiczahl'] = $config['topiczahl'];
+    	}
+
     	$row['topic'] = $gpc->prepare($row['topic']);
     	$row['name'] = $gpc->prepare($row['name']);
 		if ((isset($my->mark['t'][$row['id']]) && $my->mark['t'][$row['id']] > $row['last']) || $row['last'] < $my->clv) {
@@ -577,19 +591,19 @@ elseif ($_GET['action'] == "mylast") {
 		else {
 			$row['pre'] = '';
 		}
-		if ($row['posts'] > $config['topiczahl']) {
-			$row['topic_pages'] = pages($row['posts']+1, $config['topiczahl'], "showtopic.php?id=".$row['id']."&amp;", 0, '_small');
+		if ($row['posts'] > $info['topiczahl']) {
+			$row['topic_pages'] = pages($row['posts']+1, $info['topiczahl'], "showtopic.php?id=".$row['id']."&amp;", 0, '_small');
 		}
 		else {
 			$row['topic_pages'] = '';
 		}
 		$row['posts'] = numbers($row['posts']);
-		$mymodules->load('editprofile_mylast_prepare');
+		$plugins->load('editprofile_mylast_prepare');
 		$cache[] = $row;
     }
-    $mymodules->load('editprofile_mylast_top');
+    $plugins->load('editprofile_mylast_top');
     echo $tpl->parse("editprofile/mylast");
-    $mymodules->load('editprofile_mylast_bottom');
+    $plugins->load('editprofile_mylast_bottom');
 }
 elseif ($_GET['action'] == "addabo") {
 	$result = $db->query('SELECT id, board FROM '.$db->pre.'topics WHERE id = '.$_GET['id'],__LINE__,__FILE__);
@@ -691,7 +705,7 @@ else {
 	echo $tpl->parse("header");
 	echo $tpl->parse("menu");
 	echo $tpl->parse("editprofile/index");
-    $mymodules->load('editprofile_index_bottom');
+    $plugins->load('editprofile_index_bottom');
 }
 
 $slog->updatelogged();

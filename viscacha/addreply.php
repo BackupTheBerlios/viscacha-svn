@@ -293,9 +293,9 @@ else {
 	echo $tpl->parse("header");
 	echo $tpl->parse("menu");
 	
-	$mymodules->load('addreply_top');
+	$plugins->load('addreply_top');
 	echo $tpl->parse("addreply");
-	$mymodules->load('addreply_bottom');
+	$plugins->load('addreply_bottom');
 }
 
 $slog->updatelogged();

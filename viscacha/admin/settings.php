@@ -75,7 +75,7 @@ elseif ($job == 'posts') {
 	   <td class="mbox" width="50%"><input type="checkbox" name="guest_email_optional" value="1"<?php echo iif($config['guest_email_optional'] == 1,' checked="checked"'); ?>></td> 
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">Threads per Topic:</td>
+	   <td class="mbox" width="50%">Number of Posts per Page:</td>
 	   <td class="mbox" width="50%"><input type="text" name="topiczahl" value="<?php echo $config['topiczahl']; ?>" size="4"></td> 
 	  </tr>
 	  <tr> 
@@ -91,20 +91,18 @@ elseif ($job == 'posts') {
 	   <td class="mbox" width="50%"><input type="text" name="maxmultiquote" value="<?php echo $config['maxmultiquote']; ?>" size="4"></td> 
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">Minimum titlelength:</td>
-	   <td class="mbox" width="50%"><input type="text" name="mintitlelength" value="<?php echo $config['mintitlelength']; ?>" size="4"></td> 
+	   <td class="mbox" width="50%">Length of Titles:</td>
+	   <td class="mbox" width="50%">
+	    Minimum <input type="text" name="mintitlelength" value="<?php echo $config['mintitlelength']; ?>" size="4">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	    Maximum <input type="text" name="maxtitlelength" value="<?php echo $config['maxtitlelength']; ?>" size="8">
+	   </td> 
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">Maximum titlelength:</td>
-	   <td class="mbox" width="50%"><input type="text" name="maxtitlelength" value="<?php echo $config['maxtitlelength']; ?>" size="5"></td> 
-	  </tr>
-	  <tr> 
-	   <td class="mbox" width="50%">Minimum threadlength:</td>
-	   <td class="mbox" width="50%"><input type="text" name="minpostlength" value="<?php echo $config['minpostlength']; ?>" size="4"></td> 
-	  </tr>
-	  <tr> 
-	   <td class="mbox" width="50%">Maximum threadlength:</td>
-	   <td class="mbox" width="50%"><input type="text" name="maxpostlength" value="<?php echo $config['maxpostlength']; ?>" size="8"></td> 
+	   <td class="mbox" width="50%">Length of Posts:</td>
+	   <td class="mbox" width="50%">
+	    Minimum <input type="text" name="minpostlength" value="<?php echo $config['minpostlength']; ?>" size="4">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	    Maximum <input type="text" name="maxpostlength" value="<?php echo $config['maxpostlength']; ?>" size="8">
+	   </td> 
 	  </tr>
 	  <tr> 
 	   <td class="mbox" width="50%">Automatic resizing of too big pictures:<br /><span class="stext">Pictures pasted in through [img]-BB-Code and which are too big for the design, can automatically be resized by using Javascript. A click on the picture will show it  in original size.</span></td>
@@ -115,12 +113,34 @@ elseif ($job == 'posts') {
 	   <td class="mbox" width="50%"><input type="text" name="resizebigimgwidth" value="<?php echo $config['resizebigimgwidth']; ?>" size="6"></td> 
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">Activate PDF-output for Documents:<br /><span class="stext">Independent from group- or rightsettings.</span></td>
+	   <td class="mbox" width="50%">Number of Subscriptions/Favorites per Page:</td>
+	   <td class="mbox" width="50%"><input type="text" name="topiczahl" value="<?php echo $config['topiczahl']; ?>" size="4"></td> 
+	  </tr>
+	  <tr>
+	   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="Submit"></td> 
+	  </tr>
+	 </table>
+	 <br class="minibr" />
+	 <table class="border" border="0" cellspacing="0" cellpadding="4">
+	  <tr> 
+	   <td class="obox" colspan="2"><b>Topics &amp; Posts &raquo; PDF</b></td>
+	  </tr>
+	  <tr> 
+	   <td class="mbox" width="50%">Activate PDF-output for Topics:<br /><span class="stext">Independent from Usergroupsettings.</span></td>
 	   <td class="mbox" width="50%"><input type="checkbox" name="pdfdownload" value="1"<?php echo iif($config['pdfdownload'] == 1,' checked="checked"'); ?>></td> 
 	  </tr>
 	  <tr> 
 	   <td class="mbox" width="50%">Compress PDF-Output:<br /><span class="stext">If the output is compressed, the file can be downloaded much faster, but it will need more server performance.</span></td>
 	   <td class="mbox" width="50%"><input type="checkbox" name="pdfcompress" value="1"<?php echo iif($config['pdfcompress'] == 1,' checked="checked"'); ?>></td> 
+	  </tr>
+	  <tr>
+	   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="Submit"></td> 
+	  </tr>
+	 </table>
+	 <br class="minibr" />
+	 <table class="border" border="0" cellspacing="0" cellpadding="4">
+	  <tr> 
+	   <td class="obox" colspan="2"><b>Topics &amp; Posts &raquo; Postrating</b></td>
 	  </tr>
 	  <tr> 
 	   <td class="mbox" width="50%">Enable and show Postrating:</td>
@@ -340,6 +360,14 @@ elseif ($job == 'search') {
 	   <td class="mbox" width="50%">Activate Floodblocking for Search:<br /><span class="stext">Flooding is a command which when very fast repeated in extreme case can inhibit normal work or bring the server down.</span></td>
 	   <td class="mbox" width="50%"><input type="checkbox" name="floodsearch" value="1"<?php echo iif($config['floodsearch'] == 1,' checked="checked"'); ?>></td> 
 	  </tr>
+	  <tr> 
+	   <td class="mbox" width="50%">Number of Search results per Page:</td>
+	   <td class="mbox" width="50%"><input type="text" name="searchzahl" value="<?php echo $config['searchzahl']; ?>" size="4"></td> 
+	  </tr>
+	  <tr> 
+	   <td class="mbox" width="50%">Number of active Topics per Page:</td>
+	   <td class="mbox" width="50%"><input type="text" name="activezahl" value="<?php echo $config['activezahl']; ?>" size="4"></td> 
+	  </tr>
 	  <tr>
 	   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="Submit"></td> 
 	  </tr>
@@ -355,6 +383,8 @@ elseif ($job == 'search2') {
 	$c->updateconfig('floodsearch', int);
 	$c->updateconfig('maxsearchresults', int);
 	$c->updateconfig('searchminlength', int);
+	$c->updateconfig('searchzahl', int);
+	$c->updateconfig('activezahl', int);
 	$c->savedata();
 
 	ok('admin.php?action=settings&job=search');
@@ -509,7 +539,7 @@ elseif ($job == 'boardcat') {
 	  </tr>
 	  <tr> 
 	   <td class="mbox" width="50%">Number of Topics per Forumpage:<br /><span class="stext">Number of topics that in the topic overview are shown per page.</span></td>
-	   <td class="mbox" width="50%"><input type="text" name="forumzahl" value="<?php echo $config['forumzahl']; ?>" size="50"></td> 
+	   <td class="mbox" width="50%"><input type="text" name="forumzahl" value="<?php echo $config['forumzahl']; ?>" size="4"></td> 
 	  </tr>
 	  <tr> 
 	   <td class="mbox" width="50%">Show Subforums in Forumoverview:</font></td>

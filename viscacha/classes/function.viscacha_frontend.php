@@ -388,7 +388,7 @@ function BoardSelect($board = 0) {
 
     // Fetch Forums
 	$result = $db->query("SELECT 
-    c.id, c.name, c.desc, c.opt, c.optvalue, c.bid, c.topics, c.replys, c.cid, c.last_topic, 
+    c.id, c.name, c.desc, c.opt, c.optvalue, c.bid, c.topics, c.replys, c.cid, c.last_topic, c.invisible,  
     t.topic as btopic, t.id as btopic_id, t.last as bdate, u.name AS uname, t.last_name AS bname
     FROM {$db->pre}cat AS c
         LEFT JOIN {$db->pre}topics AS t ON c.last_topic=t.id 
@@ -427,8 +427,9 @@ function BoardSelect($board = 0) {
             continue;
         }
         foreach ($forum_cache[$cat['id']] as $forum) {
-            $found = TRUE;
-    		$forum['new'] = false;  
+            $found = true;
+    		$forum['new'] = false;
+    		$forum['show'] = true;
     		
             $forum['mbdate'] = $forum['bdate'];
     	    
@@ -489,10 +490,13 @@ function BoardSelect($board = 0) {
             // Rechte und Gelesensystem
     		if ($forum['opt'] != 're') {
     			if (!check_forumperm($forum)) {
+    				if ($forum['invisible'] == 1) {
+    					$forum['show'] = false;
+    				}
 					$forum['foldimg'] = $tpl->img('cat_locked');
     				$forum['topics'] = '-';
     				$forum['replys'] = '-';
-    				$forum['btopic'] = FALSE;
+    				$forum['btopic'] = false;
     			}
     			else {
     				if ((isset($my->mark['f'][$forum['id']]) && $my->mark['f'][$forum['id']] > $forum['bdate']) || $forum['bdate'] < $my->clv || $forum['topics'] < 1) {
@@ -535,11 +539,17 @@ function BoardSelect($board = 0) {
 				if(isset($sub_cache[$forum['id']])) {
 					$anz2 = count($sub_cache[$forum['id']]);
 					$sub = array();
-					for($i = 0; $i < $anz2; $i++) { 
+					for($i = 0; $i < $anz2; $i++) {
+						$show = true;
 						$sub_cache[$forum['id']][$i]['new'] = false;
 			    		if ($sub_cache[$forum['id']][$i]['opt'] != 're') {
 			    			if (!check_forumperm($sub_cache[$forum['id']][$i])) {
-								$sub_cache[$forum['id']][$i]['foldimg'] = $tpl->img('subcat_locked');
+			    				if ($sub_cache[$forum['id']][$i]['invisible'] == 1) {
+			    					$show = false;
+			    				}
+			    				else {
+									$sub_cache[$forum['id']][$i]['foldimg'] = $tpl->img('subcat_locked');
+								}
 			    			}
 			    			else {
 			    				if ((isset($my->mark['f'][$sub_cache[$forum['id']][$i]['id']]) && $my->mark['f'][$sub_cache[$forum['id']][$i]['id']] > $sub_cache[$forum['id']][$i]['bdate']) || $sub_cache[$forum['id']][$i]['bdate'] < $my->clv || $sub_cache[$forum['id']][$i]['topics'] < 1) {
@@ -554,14 +564,20 @@ function BoardSelect($board = 0) {
 			    	    else {
 			    	    	$sub_cache[$forum['id']][$i]['foldimg'] = $tpl->img('subcat_redirect');
 			    	    }
-						$forum['sub'][] = $sub_cache[$forum['id']][$i];
+			    	    if ($show == true) {
+							$forum['sub'][] = $sub_cache[$forum['id']][$i];
+						}
 					}
 				}
 			}
-            $forums[] = $forum;
+			if ($forum['show'] == true) {
+            	$forums[] = $forum;
+            }
         }
-        $tpl->globalvars(compact("cat","forums"));
-        echo $tpl->parse("categories");
+        if (count($forums) > 0) {
+	        $tpl->globalvars(compact("cat","forums"));
+	        echo $tpl->parse("categories");
+	    }
     }
     return $found;
 }

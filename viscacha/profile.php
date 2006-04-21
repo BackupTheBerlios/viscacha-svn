@@ -182,9 +182,9 @@ elseif (($_GET['action'] == 'mail' || $_GET['action'] == 'sendmail') && $is_memb
 				);
 			}
 			echo $tpl->parse("header");
-			$mymodules->load('profile_mail_top');
+			$plugins->load('profile_mail_top');
 			echo $tpl->parse("profile/mail");
-			$mymodules->load('profile_mail_bottom');
+			$plugins->load('profile_mail_bottom');
 			
 		}
 	}
@@ -267,7 +267,7 @@ elseif ($_GET['action'] == "ims" && $is_member) {
 			$imstatus = $lang->phrase('im_no_connection').'<!-- Error #'.$imstatus->error(IM_ERRNO).' occurred during query: '.$imstatus->error(IM_ERRSTR).' -->';
 		}
 		echo $tpl->parse("profile/ims");
-		$mymodules->load('profile_ims_bottom');
+		$plugins->load('profile_ims_bottom');
 	}
 }
 elseif ($_GET['action'] == 'emailimage' && $is_guest) {
@@ -470,9 +470,9 @@ elseif ($is_member) {
 			}
 		}
 
-		$mymodules->load('profile_top');
+		$plugins->load('profile_top');
 		echo $tpl->parse("profile/index");
-		$mymodules->load('profile_bottom');
+		$plugins->load('profile_bottom');
 
 	}
 	else {

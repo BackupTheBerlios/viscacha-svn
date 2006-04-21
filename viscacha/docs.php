@@ -133,7 +133,7 @@ if ($my->p['docs'] == 1 && GroupCheck($info['groups'])) {
 		}
 
 	}
-	$mymodules->load('docs_bottom');
+	$plugins->load('docs_bottom');
 }
 else {
 	errorLogin();

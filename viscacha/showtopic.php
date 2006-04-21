@@ -56,6 +56,9 @@ if (count($error) > 0) {
 $catbid = $scache->load('cat_bid');
 $fc = $catbid->get();
 $last = $fc[$info['board']];
+if ($last['topiczahl'] < 1) {
+	$last['topiczahl'] = $config['topiczahl'];
+}
 
 $q = urldecode($gpc->get('q', str));
 if (strlen($q) > 2) {
@@ -69,7 +72,7 @@ if ($_GET['action'] == 'firstnew') {
 		$result = $db->query('SELECT COUNT(*) AS count FROM '.$db->pre.'replies WHERE topic_id = '.$info['id'].' AND date > '.$my->clv,__LINE__,__FILE__);
 		$new = $db->fetch_assoc($result);
 		$tp = ($info['posts']+1) - $new['count'];
-		$pgs = ceil($tp/$config['topiczahl']);
+		$pgs = ceil($tp/$last['topiczahl']);
 		if ($pgs < 1) {
 			$pgs = 1;
 		}
@@ -80,7 +83,7 @@ if ($_GET['action'] == 'firstnew') {
 elseif ($_GET['action'] == 'last') {
 	$result = $db->query('SELECT id FROM '.$db->pre.'replies WHERE topic_id = '.$info['id'].' ORDER BY date DESC LIMIT 1',__LINE__,__FILE__);
 	$new = $db->fetch_array($result);
-	$pgs = ceil(($info['posts']+1)/$config['topiczahl']);
+	$pgs = ceil(($info['posts']+1)/$last['topiczahl']);
 	viscacha_header('Location: showtopic.php?id='.$info['id'].'&page='.$pgs.$qUrl.SID2URL_JS_x.'#p'.$new[0]);
 	exit;
 }
@@ -90,7 +93,7 @@ elseif ($_GET['action'] == 'mylast') {
 	$result = $db->query('SELECT COUNT(*) AS count FROM '.$db->pre.'replies WHERE topic_id = '.$info['id'].' AND date > '.$mylast[0],__LINE__,__FILE__);
 	$new = $db->fetch_assoc($result);
 	$tp = ($info['posts']+1) - $new['count'];
-	$pgs = ceil($tp/$config['topiczahl']);
+	$pgs = ceil($tp/$last['topiczahl']);
 	if ($pgs < 1) {
 		$pgs = 1;
 	}
@@ -103,7 +106,7 @@ elseif ($_GET['action'] == 'jumpto') {
 	$result = $db->query('SELECT COUNT(*) AS count FROM '.$db->pre.'replies WHERE topic_id = "'.$info['id'].'" AND date > "'.$mylast[0].'"',__LINE__,__FILE__);
 	$new = $db->fetch_assoc($result);
 	$tp = ($info['posts']+1) - $new['count'];
-	$pgs = ceil($tp/$config['topiczahl']);
+	$pgs = ceil($tp/$last['topiczahl']);
 	if ($pgs < 1) {
 		$pgs = 1;
 	}
@@ -111,7 +114,7 @@ elseif ($_GET['action'] == 'jumpto') {
 	exit;
 }
 
-$mymodules->load('showtopic_redirect');
+$plugins->load('showtopic_redirect');
 
 $pre = '';
 if ($info['prefix'] > 0) {
@@ -132,20 +135,20 @@ forum_opt($last['opt'], $last['optvalue'], $last['id']);
 echo $tpl->parse("header");
 echo $tpl->parse("menu");
 
-$start = $_GET['page']*$config['topiczahl'];
-$start = $start-$config['topiczahl'];
+$start = $_GET['page']*$last['topiczahl'];
+$start = $start-$last['topiczahl'];
 
 // Some speed optimisation
 $speeder = $info['posts']+1;
 // Speed up the first pages with less than 10 posts
-if ($speeder > $config['topiczahl']) {
-	$searchsql = " LIMIT ".$start.",".$config['topiczahl'];
+if ($speeder > $last['topiczahl']) {
+	$searchsql = " LIMIT ".$start.",".$last['topiczahl'];
 }
 else {
 	$searchsql = " LIMIT ".$speeder;
 }
 
-$temp = pages($speeder, $config['topiczahl'], "showtopic.php?id=".$info['id']."&amp;", $_GET['page']);
+$temp = pages($speeder, $last['topiczahl'], "showtopic.php?id=".$info['id']."&amp;", $_GET['page']);
 
 $q = explode(' ', trim($q));
 
@@ -156,7 +159,7 @@ $inner['index_bit'] = '';
 $inner['vote_result'] = '';
 $inner['related'] = '';
 
-$mymodules->load('showtopic_top');
+$plugins->load('showtopic_top');
 
 // prepare for vote
 if (!empty($info['vquestion'])) {
@@ -197,7 +200,7 @@ if (!empty($info['vquestion'])) {
 		}
 		
 		if (!$showresults) {
-		    $mymodules->load('showtopic_vote_top');
+		    $plugins->load('showtopic_vote_top');
 			$inner['vote_result'] = $tpl->parse("showtopic/vote");
 		}
 		else {
@@ -224,7 +227,7 @@ if (!empty($info['vquestion'])) {
 				    $voter[$row['id']][0] = '-';
 				}
 			}
-			$mymodules->load('showtopic_vote_result_top');
+			$plugins->load('showtopic_vote_result_top');
 			$inner['vote_result'] = $tpl->parse("showtopic/vote_result");
 		}
 	}
@@ -373,12 +376,12 @@ while ($row = $gpc->prepare($db->fetch_object($result))) {
 		}
 	}
 	
-	$mymodules->load('showtopic_bit');
+	$plugins->load('showtopic_bit');
 	$inner['index_bit'] .= $tpl->parse("showtopic/index_bit");
 } 
 
 echo $tpl->parse("showtopic/index");
-$mymodules->load('showtopic_bottom');
+$plugins->load('showtopic_bottom');
 
 
 $my->mark['t'][$info['id']] = time();

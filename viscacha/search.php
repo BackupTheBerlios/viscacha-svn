@@ -224,8 +224,8 @@ elseif ($_GET['action'] == "result") {
 	    }
 	}
 
-	$start = $_GET['page']*$config['forumzahl'];
-	$start = $start-$config['forumzahl'];
+	$start = $_GET['page']*$config['searchzahl'];
+	$start = $start-$config['searchzahl'];
 	
 	if (!file_exists($resfile)) {
 		switch ($data['sort']) {
@@ -280,26 +280,24 @@ elseif ($_GET['action'] == "result") {
 	}
 
 	$count = count($cache);
-	$pages = array_chunk($cache, $config['forumzahl']);
+	$pages = array_chunk($cache, $config['searchzahl']);
 
-	$temp = pages($count, $config['forumzahl'], "search.php?action=result&amp;fid=".$_GET['fid'].SID2URL_x."&amp;", $_GET['page']);
+	$temp = pages($count, $config['searchzahl'], "search.php?action=result&amp;fid=".$_GET['fid'].SID2URL_x."&amp;", $_GET['page']);
 
 	$catbid = $scache->load('cat_bid');
 	$forums = $catbid->get();
-	
 	$memberdata_obj = $scache->load('memberdata');
 	$memberdata = $memberdata_obj->get();
+	$prefix_obj = $scache->load('prefix');
+	$prefix = $prefix_obj->get();
 	
 	$inner['index_bit'] = '';
+	
+	$plugins->load('search_result_top');
 
 	if (!isset($pages[$_GET['page']-1])) {
 		$pages[$_GET['page']-1] = array();
 	}
-	
-	$prefix_obj = $scache->load('prefix');
-	$prefix = $prefix_obj->get();
-	
-	$mymodules->load('search_result_top');
 
 	foreach ($pages[$_GET['page']-1] as $row) {
 		$pref = '';
@@ -310,6 +308,7 @@ elseif ($_GET['action'] == "result") {
 		else {
 			$showprefix = null;
 		}
+		$info = $forums[$row->board];
 		
 		if(is_id($row->name) && isset($memberdata[$row->name])) {
 			$row->mid = $row->name;
@@ -362,20 +361,24 @@ elseif ($_GET['action'] == "result") {
 			}
 		}
 		$qhighlight = urlencode(implode(' ', $data['used']));
-		
-		if ($row->posts > $config['topiczahl']) {
-			$topic_pages = pages($row->posts+1, $config['topiczahl'], "showtopic.php?id=".$row->id."&amp;", 0, '_small');
+
+		if ($info['topiczahl'] < 1) {
+			$info['topiczahl'] = $config['topiczahl'];
+		}
+
+		if ($row->posts > $info['topiczahl']) {
+			$topic_pages = pages($row->posts+1, $info['topiczahl'], "showtopic.php?id=".$row->id."&amp;", 0, '_small');
 		}
 		else {
 			$topic_pages = '';
 		}
 		
-		$mymodules->load('search_result_bit');
+		$plugins->load('search_result_bit');
 		$inner['index_bit'] .= $tpl->parse("search/result_bit");
 	}
 	echo $tpl->parse("search/result");
 	
-	$mymodules->load('search_result_bottom');
+	$plugins->load('search_result_bottom');
 	
 }
 elseif ($_GET['action'] == "active") {
@@ -431,7 +434,7 @@ elseif ($_GET['action'] == "active") {
 		$timestamp = $my->clv;
 	}
 	
-	$mymodules->load('search_active_top');
+	$plugins->load('search_active_top');
 	
 	if (!isset($count)) {
     	$sqlwhere = " last > '{$timestamp}' ";
@@ -444,14 +447,12 @@ elseif ($_GET['action'] == "active") {
     	$count = $db->num_rows($result);
     		
     	if ($count > 0) {
-    		$temp = pages($count, $config['forumzahl'], "search.php?action=active&amp;type=".$_GET['type'].SID2URL_x."&amp;", $_GET['page']);
+    		$temp = pages($count, $config['activezahl'], "search.php?action=active&amp;type=".$_GET['type'].SID2URL_x."&amp;", $_GET['page']);
     		
 			$catbid = $scache->load('cat_bid');
 			$forums = $catbid->get();
-    		
 			$prefix_obj = $scache->load('prefix');
 			$prefix = $prefix_obj->get();
-			
     		$memberdata_obj = $scache->load('memberdata');
 			$memberdata = $memberdata_obj->get();
 
@@ -462,6 +463,8 @@ elseif ($_GET['action'] == "active") {
     			if ($row->prefix > 0 && isset($prefix[$row->board][$row->prefix])) {
     				$showprefix = $prefix[$row->board][$row->prefix];
     			}
+    			
+    			$info = $forums[$row->board];
     			
     			if(is_id($row->name) && isset($memberdata[$row->name])) {
     				$row->mid = $row->name;
@@ -513,29 +516,33 @@ elseif ($_GET['action'] == "active") {
     					$src = $tpl->img('dir_open2');
     				}
     			}
-    			
-				if ($row->posts > $config['topiczahl']) {
-					$topic_pages = pages($row->posts+1, $config['topiczahl'], "showtopic.php?id=".$row->id."&amp;", 0, '_small');
+
+				if ($info['topiczahl'] < 1) {
+					$info['topiczahl'] = $config['topiczahl'];
+				}
+			
+				if ($row->posts > $info['topiczahl']) {
+					$topic_pages = pages($row->posts+1, $info['topiczahl'], "showtopic.php?id=".$row->id."&amp;", 0, '_small');
 				}
 				else {
 					$topic_pages = '';
 				}
     			
-    			$mymodules->load('search_active_bit');
+    			$plugins->load('search_active_bit');
     			$inner['index_bit'] .= $tpl->parse("search/active_bit");
     		}
     	}
     	echo $tpl->parse("search/active");
-    	$mymodules->load('search_active_bottom');
+    	$plugins->load('search_active_bottom');
 	}
 }
 else {
 	$forums = BoardSubs();
 	echo $tpl->parse("header");
 	echo $tpl->parse("menu");
-	$mymodules->load('search_top');
+	$plugins->load('search_top');
 	echo $tpl->parse("search/index");
-	$mymodules->load('search_bottom');
+	$plugins->load('search_bottom');
 }
 
 $slog->updatelogged();
