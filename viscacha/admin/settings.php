@@ -114,7 +114,7 @@ elseif ($job == 'posts') {
 	  </tr>
 	  <tr> 
 	   <td class="mbox" width="50%">Number of Subscriptions/Favorites per Page:</td>
-	   <td class="mbox" width="50%"><input type="text" name="topiczahl" value="<?php echo $config['topiczahl']; ?>" size="4"></td> 
+	   <td class="mbox" width="50%"><input type="text" name="abozahl" value="<?php echo $config['abozahl']; ?>" size="4"></td> 
 	  </tr>
 	  <tr>
 	   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="Submit"></td> 
@@ -177,6 +177,7 @@ elseif ($job == 'posts2') {
 	$c->updateconfig('postrating', int);
 	$c->updateconfig('postrating_counter', int);
 	$c->updateconfig('guest_email_optional', int);
+	$c->updateconfig('abozahl', int);
 	$c->savedata();
 
 	ok('admin.php?action=settings&job=posts');

@@ -149,9 +149,18 @@ elseif ($job == 'add2' || $job == 'edit2') {
 				$result = $db->query("SELECT last_visit FROM {$db->pre}spider WHERE id = '{$id}'");
 				$lvdat = $db->fetch_assoc($result);
 				$lastvisits = explode('|', $lvdat['last_visit']);
-				$last = max(array_empty_trim($lastvisits));
+				$lastvisits = array_empty_trim($lastvisits);
+				if (count($lastvisits) > 0) {
+					$last = max($lastvisits);
+				}
+				else {
+					$last = '';
+				}
 			}
-			$db->query("UPDATE {$db->pre}spider SET name='{$bot_name}', user_agent='{$bot_agent}', bot_ip='{$bot_ip}', bot_visits='{$bot_visits}'".iif($reset_lastvisit == 1, ", last_visit = '{$last}'")." WHERE id = '{$id}'");
+			else {
+				$last = '';
+			}
+			$db->query("UPDATE {$db->pre}spider SET name='{$bot_name}', user_agent='{$bot_agent}', bot_ip='{$bot_ip}', bot_visits='{$bot_visits}'".iif($reset_lastvisit > 0, ", last_visit = '{$last}'")." WHERE id = '{$id}'");
 		}
 		if ($db->affected_rows() <> 1) {
 			error("admin.php?action=spider&job=".iif($job == 'edit2', 'edit', 'add').iif($id > 0, '&id='.$id), "No data changed.");
@@ -211,8 +220,12 @@ elseif ($job == 'add' || $job == 'edit') {
 			<td class="mbox"><input type="text" name="visits" size="10" value="<?php echo $row['bot_visits']; ?>" /></td>
 		</tr>
 		<tr>
-			<td class="mbox" width="40%">Reset Last Visits:<br /><span class="stext">The Last Visits isits will be deleted except for the really last visit.</span></td>
-			<td class="mbox"><input type="checkbox" name="reset_lastvisit" value="1" /></td>
+			<td class="mbox" width="40%">Reset Last Visits:<br /><span class="stext"></span></td>
+			<td class="mbox">
+			<input type="radio" name="reset_lastvisit" value="0" />Keep the "Last Vists". Don't change them!<br />
+			<input type="radio" name="reset_lastvisit" value="1" />The "Last Visits" will be deleted except for the really last visit.<br />
+			<input type="radio" name="reset_lastvisit" value="2" />The "Last Visits" will be completely deleted.
+			</td>
 		</tr>
 		<?php } ?>
 		<tr>
@@ -314,7 +327,7 @@ else {
 	<form action="admin.php?action=spider" method="post">
 	<table border="0" align="center" class="border">
 	<?php
-	$result = $db->query("SELECT id, name, last_visit, bot_visits, type FROM {$db->pre}spider ORDER BY type, name");
+	$result = $db->query("SELECT id, name, last_visit, bot_visits, type, user_agent FROM {$db->pre}spider ORDER BY type, name");
 	if ($db->num_rows($result) > 0) {
 		$category = '';
 		while ($row = $db->fetch_assoc($result)) {
@@ -337,10 +350,11 @@ else {
 				<?php } ?>
 				<table border="0" align="center" class="border">
 				<tr>
-					<td class="obox" colspan="5"><?php echo $row['type']; ?></td>
+					<td class="obox" colspan="6"><?php echo $row['type']; ?></td>
 				</tr>
 				<tr>
 					<td class="ubox" nowrap="nowrap">Name</td>
+					<td class="ubox" nowrap="nowrap">User Agents</td>
 					<td class="ubox" nowrap="nowrap">Visits</td>
 					<td class="ubox" nowrap="nowrap">Last Visit</td>
 					<td class="ubox" nowrap="nowrap">Actions</td>
@@ -348,9 +362,20 @@ else {
 				</tr>
 				<?php
 			}
+
+			$useragents = explode('|', $row['user_agent']);
+			if (empty($useragents[0])) {
+				$useragent = 'Not specified!';
+			}
+			else {
+				$useragent = "<select style=\"width: 100%;\">";
+				foreach ($useragents as $ua) {
+					$useragent .= "<option>".htmlspecialchars($ua)."</option>";
+				}
+				$useragent .= "</select>";
+			}
 			
 			$last_visits = explode('|', $row['last_visit']);
-		
 			if (empty($last_visits[0])) {
 				$last_visit = 'Never';
 			}
@@ -365,9 +390,10 @@ else {
 			
 			?>
 			<tr>
-				<td class="mbox" width="40%"><?php echo $row['name']; ?></td>
+				<td class="mbox" width="25%"><?php echo $row['name']; ?></td>
+				<td class="mbox" width="20%"><?php echo $useragent; ?></td>
 				<td class="mbox" width="10%" align="center" nowrap="nowrap"><?php echo $row['bot_visits']; ?></td>
-				<td class="mbox" width="20%" align="center" nowrap="nowrap"><?php echo $last_visit; ?></td>
+				<td class="mbox" width="15%" align="center"><?php echo $last_visit; ?></td>
 				<td class="mbox" width="3%" align="center">[<a href="admin.php?action=spider&id=<?php echo $row['id']; ?>&job=edit">Edit</a>]&nbsp;[<a href="admin.php?action=spider&id=<?php echo $row['id']; ?>&job=delete">Delete</a>]</td>
 				<td class="mbox" width="3%" align="center"><input type="checkbox" name="mark[]" value="<?php echo $row['id']; ?>" /></td>	
 			</tr>
@@ -389,7 +415,7 @@ else {
 	else {
 		?>
 		<tr>
-			<td class="mbox" align="center" colspan="8"><p align="center"><b>Sorry there are currently no bots in the database!</b></p></td>
+			<td class="mbox" align="center" colspan="6"><p align="center"><b>Sorry there are currently no bots in the database!</b></p></td>
 		</tr>
 		<?php
 	}

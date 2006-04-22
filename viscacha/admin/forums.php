@@ -259,7 +259,7 @@ elseif ($job == 'edit') {
    <td class="mbox" width="50%"><textarea name="desc" rows="4" cols="50"><?php echo $row['desc']; ?></textarea></td> 
   </tr>
   <tr> 
-   <td class="mbox" width="50%">Parent Forum:</font></td>
+   <td class="mbox" width="50%">Parent Forum/Category:</font></td>
    <td class="mbox" width="50%">
    <select name="parent">
    <option value="NULL">Do not change</option>
@@ -456,6 +456,14 @@ elseif ($job == 'add_mod2') {
 }
 elseif ($job == 'addforum') {
 	echo head();
+	
+	$forumtree = $scache->load('forumtree');
+	$tree = $forumtree->get();
+	$categories_obj = $scache->load('categories');
+	$categories = $categories_obj->get();
+	$catbid = $scache->load('cat_bid');
+	$boards = $catbid->get();
+	
 	?>
 <form name="form" method="post" action="admin.php?action=forums&job=addforum2">
  <table class="border">
@@ -471,18 +479,10 @@ elseif ($job == 'addforum') {
    <td class="mbox" width="50%"><textarea name="desc" rows="4" cols="50"></textarea></td> 
   </tr>
   <tr> 
-   <td class="mbox" width="50%">Parent Forum:</font></td>
+   <td class="mbox" width="50%">Parent Forum/Category:</font></td>
    <td class="mbox" width="50%">
 	<select name="parent" size="1">
-	 <?php
-	$forumtree = $scache->load('forumtree');
-	$tree = $forumtree->get();
-	$categories_obj = $scache->load('categories');
-	$categories = $categories_obj->get();
-	$catbid = $scache->load('cat_bid');
-	$boards = $catbid->get();
-	AdminSelectForum($tree, $categories, $boards);
-	 ?>
+	 <?php AdminSelectForum($tree, $categories, $boards); ?>
 	</select>
    </td> 
   </tr>
@@ -505,6 +505,15 @@ elseif ($job == 'addforum') {
   <tr> 
    <td class="mbox" width="50%">Hide forum from users without authorization:<br><span class="stext">Forum will not appear if it is locked and option is checked. This only affects forums without password.</span></td>
    <td class="mbox" width="50%"><input type="checkbox" name="invisible" value="1" /></td> 
+  </tr>
+  <tr> 
+   <td class="mbox" width="50%">Copy permissions from:<br><span class="stext">The forum will have the same permissions as the one you select here. If no forum is selected the default default settings are used. <em>This is experimental</em>!</span></td>
+   <td class="mbox" width="50%">
+	<select name="copypermissions">
+   		<option value="0">Default</option>
+   		<?php AdminSelectForum($tree, $categories, $boards); ?>
+   	</select>
+   </td> 
   </tr>
   <tr> 
    <td class="mbox" width="50%">Sort Order:</font></td>
@@ -533,15 +542,16 @@ elseif ($job == 'addforum2') {
 	$invisible = $gpc->get('invisible', int);
 	$topiczahl = $gpc->get('topiczahl', int);
 	$forumzahl = $gpc->get('forumzahl', int);
+	$perm = $gpc->get('copypermissions', str);
 	
 	if (preg_match("/c_\d{1,}/", $parent) == 1) {
 		$cid = str_replace("c_", "", $parent);
-		$array = $db->fetch_array($db->query("SELECT bid FROM {$db->pre}cat WHERE cid = $cid LIMIT 1"));
+		$array = $db->fetch_array($db->query("SELECT bid FROM {$db->pre}cat WHERE cid = '{$cid}' LIMIT 1"));
 		$bid = $array[0];
 	}
 	elseif (preg_match("/f_\d{1,}/", $parent) == 1) {
 		$bid = str_replace("f_", "", $parent);
-		$array = $db->fetch_array($db->query("SELECT cid FROM {$db->pre}cat WHERE bid = $bid LIMIT 1"));
+		$array = $db->fetch_array($db->query("SELECT cid FROM {$db->pre}cat WHERE bid = '{$bid}' LIMIT 1"));
 		if ($array[0] < 1) {
 			$array2 = $db->fetch_array($db->query("SELECT name, c.desc FROM {$db->pre}cat AS c WHERE id = $bid LIMIT 1"));
 			$db->query("INSERT INTO {$db->pre}categories (name, desctxt, c_order) VALUES ('{$array2[0]}', '{$array2[1]}', 0)");
@@ -590,6 +600,21 @@ elseif ($job == 'addforum2') {
 	INSERT INTO {$db->pre}cat (name, `desc`, bid, cid, c_order, opt, optvalue, forumzahl, topiczahl, invisible)
 	VALUES ('{$name}', '{$desc}', '{$bid}', '{$cid}', '{$sort}', '{$opt}', '{$optvalue}','{$forumzahl}','{$topiczahl}','{$invisible}')
 	", __LINE__, __FILE__);
+
+	if (preg_match("/f_\d{1,}/", $perm) == 1) {
+		$newid = $db->insert_id();
+		$fid = str_replace("f_", "", $perm);
+		$result = $db->query("SELECT * FROM {$db->pre}fgroups WHERE bid = '{$fid}'");
+		while($row = $db->fetch_assoc($result)) {
+			unset($row['bid'], $row['fid']);
+			$keys = array_keys($row);
+			sort($keys, SORT_STRING);
+			ksort($row, SORT_STRING);
+			$row_str = implode("','", $row);
+			$keys_str = implode(',', $keys);
+			$db->query("INSERT INTO {$db->pre}fgroups (".$keys_str.", bid) VALUES ('".$row_str."', '{$newid}')");
+		}
+	}
 
 	$delobj = $scache->load('cat_bid');
 	$delobj->delete();

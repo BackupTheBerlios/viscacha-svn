@@ -66,7 +66,7 @@ function create_image(&$image) {
 			imagedestroy($image);
 		}
 		elseif (IMAGEJPEG) {
-			imagejpeg($image, $this->path, 60);
+			imagejpeg($image, $this->path, 70);
 			imagedestroy($image);
 		}
 		else {
@@ -93,7 +93,7 @@ function create_thumbnail($attachment) {
 			switch($imageinfo[2]) {
 				case 1:
 					if (!(function_exists('imagecreatefromgif') AND $image = @imagecreatefromgif($attachment))) {
-						$this->create_error($this->lang['tne__giferror']);
+						$this->create_error($this->lang['tne_giferror']);
 					}
 					break;
 				case 2:
