@@ -158,7 +158,7 @@ if (count($bannedip) > 0) {
 	}
 }
 
-if ($config['foffline'] && DEFINED('TEMPSHOWLOG') == FALSE && SCRIPTNAME != 'external') {
+if ($config['foffline'] && defined('TEMPSHOWLOG') == false && SCRIPTNAME != 'external') {
 	$slog = new slog();
 	$my = $slog->logged();
 	$my->p = $slog->Permissions();
@@ -167,10 +167,7 @@ if ($config['foffline'] && DEFINED('TEMPSHOWLOG') == FALSE && SCRIPTNAME != 'ext
 		$lang->init($my->language);
 		$tpl = new tpl();
         
-        ob_start();
-		include('data/offline.php');
-		$offline = ob_get_contents();
-		ob_end_clean();
+		$offline = file_get_contents('data/offline.php');
         echo $tpl->parse("offline");
         
         $phpdoc->Out();

@@ -1367,11 +1367,11 @@ elseif ($job == 'sitestatus') {
 	   <td class="obox" colspan="2">Switch Viscacha on and off</td>
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">Switch off:<br><font class="stext">If your page is switched off, your users will get the changeable message indicated under this option, however administrators can use the site as usual.</font></td>
+	   <td class="mbox" width="50%">Switch off:<br><span class="stext">From time to time, you may want to turn your site off to the public while you perform maintenance, update versions, etc. When you turn your forum off, visitors will receive a message that states that the forum is temporarily unavailable. However administrators can use the site as usual.</span></td>
 	   <td class="mbox" width="50%"><input type="checkbox" name="foffline" value="1"<?php echo iif($config['foffline'],' checked'); ?>></td> 
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">Offline message:<br><font class="stext">This message will be shown if page is switched off.<br>HTML and PHP are allowed!</font></td>
+	   <td class="mbox" width="50%">Offline message:<br><span class="stext">This message will be shown if page is switched off.<br />HTML is allowed!</span></td>
 	   <td class="mbox" width="50%"><textarea class="texteditor" name="template" rows="5" cols="60"><?php echo $obox; ?></textarea></td> 
 	  </tr>
 	   <td class="ubox" width="100%" colspan="2" align="center"><input type="submit" name="Submit" value="Submit"></td> 
@@ -1469,6 +1469,14 @@ elseif ($job == 'datetime2') {
 }
 elseif ($job == 'http') {
 	$config = $gpc->prepare($config);
+	
+	if (!extension_loaded("zlib") || !function_exists('gzcompress')) {
+		$gzip = '<span style="color: #aa0000;">not enabled</span>';
+	}
+	else {
+		$gzip = '<span style="color: #00aa00;">enabled</span>';
+	}
+	
 	echo head();
 	?>
 	<form name="form" method="post" action="admin.php?action=settings&job=http2">
@@ -1477,11 +1485,11 @@ elseif ($job == 'http') {
 	   <td class="obox" colspan="2">Headers, Cookies &amp; GZIP</td>
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">Activate GZip-compression:<br><font class="stext">The pages can be compressed with GZip for faster transmission.</font></td>
+	   <td class="mbox" width="50%">Activate GZip-compression:<br><span class="stext">Selecting yes will enable GZIP to reduce bandwidth requirements, but there will be a small performance overhead instead. This feature requires the Zlib library, which is <?php echo $gzip; ?>! If you are already using mod_gzip on your server, do not enable this option.</font></td>
 	   <td class="mbox" width="50%"><input type="checkbox" name="gzip" value="1"<?php echo iif($config['gzip'],' checked'); ?>></td> 
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">GZip-compression grade:<br><font class="stext">Value has to be between 0(minimum) and 9(maximum). A value around 2-3 is recommended!</font></td>
+	   <td class="mbox" width="50%">GZip Compression Level:<br><span class="stext">The Compression Level has to be between 0 (minimum) and 9 (maximum). It is strongly recommend that you use a level between 1 and 3 for optimum results.</span></td>
 	   <td class="mbox" width="50%"><select size="1" name="gzcompression">
 	   <?php 
 	   	for($i=0;$i<10;$i++) {
@@ -1496,7 +1504,7 @@ elseif ($job == 'http') {
   		</select></td> 
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">Prevent browser caching:</font></td>
+	   <td class="mbox" width="50%">Prevent browser caching:<br /><span class="stext">Send no-cache HTTP headers. These are very effective, so adding them may cause server load to increase due to an increase in page requests.</span></td>
 	   <td class="mbox" width="50%"><input type="checkbox" name="nocache" value="1"<?php echo iif($config['nocache'],' checked'); ?>></td> 
 	  </tr>
 	  <tr> 
