@@ -500,13 +500,19 @@ elseif ($job == 'session') {
 	   <td class="mbox" width="50%">Time after users will be set inactive:<br /><span class="stext">in minutes</span></td>
 	   <td class="mbox" width="50%"><input type="text" name="sessionsave" value="<?php echo $config['sessionsave']; ?>" size="4"></td> 
 	  </tr>
-	  <tr> 
+	  <tr>
 	   <td class="mbox" width="50%">Activate Floodblocking:<br /><span class="stext">Flooding is a command which when very fast repeated in extreme case can inhibit normal work or bring the server down.</span></td>
 	   <td class="mbox" width="50%"><input type="checkbox" name="enableflood" value="1"<?php echo iif($config['enableflood'] == 1,' checked="checked"'); ?>></td> 
 	  </tr>
-	  <tr> 
-	   <td class="mbox" width="50%">Check IP if Session-ID is used:<br /><span class="stext">Makes a take over more difficult</span></td>
-	   <td class="mbox" width="50%"><input type="checkbox" name="session_checkip" value="1"<?php echo iif($config['session_checkip'] == 1,' checked="checked"'); ?>></td> 
+	  <tr>
+	   <td class="mbox" width="50%">Session IP validation:<br /><span class="stext">Makes a take over more difficult. Determines how much of the users IP is used to validate a session. All compares the complete address (this is not recommended), A.B.C the first x.x.x (recommended), A.B the first x.x, None disables checking.</span></td>
+	   <td class="mbox" width="50%">
+	   <select name="session_checkip">
+	    <option value="4"<?php echo iif($config['session_checkip'] == 4,' selected="selected"'); ?>>All</option>
+	    <option value="3"<?php echo iif($config['session_checkip'] == 3,' selected="selected"'); ?>>A.B.C</option>
+	    <option value="2"<?php echo iif($config['session_checkip'] == 2,' selected="selected"'); ?>>A.B</option>
+	    <option value="0"<?php echo iif($config['session_checkip'] == 0,' selected="selected"'); ?>>None</option>
+	   </select>
 	  </tr>
 	  <tr>
 	   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="Submit"></td> 

@@ -36,7 +36,7 @@ function slog () {
 	$spiders = $scache->load('spiders');
 	$this->bots = $spiders->get();
 	$this->sid = '';
-	$this->cookies = FALSE;
+	$this->cookies = false;
 	$this->cookiedata = array(0, '');
 	$this->cookielastvisit = 0;
 	$this->defineGID();
@@ -46,7 +46,7 @@ function slog () {
 	$this->maxFields = array();
 	$this->groups = array();
 	$this->permissions = array();
-	$this->querysid = TRUE;
+	$this->querysid = true;
 	$this->positive = array();
 	$this->negative = array();
 	$this->boards = array();
@@ -617,12 +617,18 @@ function banish() {
  */
 function sid_load() {
 	global $config, $db, $gpc;
-	if ($config['session_checkip']) {
-		$short_ip = ext_iptrim ($this->ip, 3);
-		$sid_checkip = '(s.sid = "'.$this->sid.'" AND s.ip LIKE "'.$short_ip.'%")';
+	if ($config['session_checkip'] > 0) {
+		$short_ip = ext_iptrim($this->ip, $config['session_checkip']);
+		if ($config['session_checkip'] != 4) {
+			$sqliplike = "LIKE '{$short_ip}%'";
+		}
+		else {
+			$sqliplike = "= '{$short_ip}'";
+		}
+		$sid_checkip = "(s.sid = '{$this->sid}' AND s.ip {$sqliplike})";
 	}
 	else {
-		$sid_checkip = 's.sid = "'.$this->sid.'"';
+		$sid_checkip = "s.sid = '{$this->sid}'";
 	}
 
 	if (!empty($this->cookiedata[0]) && !empty($this->cookiedata[1])) {
@@ -712,18 +718,6 @@ function sid_new() {
 	$db->query("INSERT INTO {$db->pre}session 
 	(sid, mid, wiw_script, wiw_action, wiw_id, active, ip, remoteaddr, lastvisit, mark, pwfaccess, settings, is_bot) VALUES
 	('{$this->sid}', '{$id}','".SCRIPTNAME."','{$action}','{$qid}','".time()."','{$this->ip}','".$gpc->save_str(htmlspecialchars($this->user_agent))."','{$lastvisit}','{$my->mark}','{$my->pwfaccess}','{$my->settings}','{$my->is_bot}')",__LINE__,__FILE__);
-
-	// ToDo: Ohne Refresh?!
-	if (!$this->cookies && !$this->querysid) {
-		$arr = parse_url($_SERVER['REQUEST_URI']);
-		if (empty($arr['query'])) {
-			$url = $_SERVER['REQUEST_URI'].'?s='.$this->sid;
-		}
-		else {
-			$url = $_SERVER['REQUEST_URI'].'&s='.$this->sid;
-		}
-		viscacha_header('Location: '.$url);
-	}
 
 	return $my;
 }

@@ -523,42 +523,66 @@ function iif($if, $true, $false = '') {
 function getip($dots = 4) {
 	$ips = array();
 
-	if (@getenv("HTTP_CLIENT_IP")) {
-		$ips[] = getenv("HTTP_CLIENT_IP");
+	// $_SERVER is sometimes for a windows server which can't handle getenv()
+	if(@getenv("REMOTE_ADDR")) {
+		$ips[] = @getenv("REMOTE_ADDR");
+	}
+	if(isset($_SERVER["REMOTE_ADDR"])) {
+		$ips[] = $_SERVER["REMOTE_ADDR"];
 	}
 	if(@getenv("HTTP_X_FORWARDED_FOR")) {
 		$ips[] = getenv("HTTP_X_FORWARDED_FOR");
 	}
-	if(@getenv("REMOTE_ADDR")) {
-		$ips[] = getenv("REMOTE_ADDR");
-	}
-	// sometimes for a windows server which can't handle getenv()
-	if(isset($_SERVER["REMOTE_ADDR"])) {
-		$ips[] = $_SERVER["REMOTE_ADDR"];
-	}
 	if(isset($_SERVER["HTTP_X_FORWARDED_FOR"])) {
 		$ips[] = $_SERVER["HTTP_X_FORWARDED_FOR"];
+	}
+	if (@getenv("HTTP_CLIENT_IP")) {
+		$ips[] = getenv("HTTP_CLIENT_IP");
 	}
 	if (isset($_SERVER["HTTP_CLIENT_IP"])) {
 		$ips[] = $_SERVER["HTTP_CLIENT_IP"];
 	}
 
-   	$private_ips = array("/^0\./", "/^127\.0\.0\.1/", "/^192\.168\..*/", "/^172\.16\..*/", "/^10..*/", "/^224..*/", "/^240..*/");
+   	$private_ips = array("/^0\..+$/", "/^127\.0\.0\..+$/", "/^192\.168\..+$/", "/^172\.16\..+$/", "/^10..+$/", "/^224..+$/", "/^240..+$/", "/[^\d\.]*/");
 	$ips = array_unique($ips);
 
 	foreach ($ips as $ip) {
+		$found = false;
 		foreach ($private_ips as $pip) {
-			if (!preg_match($pip, $ip)) {
-				return ext_iptrim($ip, $dots);
+			if (preg_match($pip, trim($ip)) == 1) {
+				$found = true;
 			}
 		}
+		if ($found == false) {
+			return ext_iptrim(trim($ip), $dots);
+		}
 	}
-	if(empty($ips[0])) {
-		srand((double)microtime()*1000000);
-		$randval = rand(0,255);
-		$ips[0] = '0.'.$r.'.'.$r.'.'.$r;
+
+	$b = _EnvValToInt('HTTP_USER_AGENT');
+	$c = _EnvValToInt('HTTP_ACCEPT');
+	$d = _EnvValToInt('HTTP_ACCEPT_LANGUAGE');
+	$ip = "0.{$b}.{$c}.{$d}";
+	return ext_iptrim($ip, $dots);
+}
+
+function _EnvValToInt($x) {
+	$y = getenv($x);
+	if (empty($y)) {
+		if (isset($_SERVER[$y])) {
+			$y = $_SERVER[$y];
+		}
+		else {
+			$y = 7;
+		}
 	}
-	return ext_iptrim($ips[0], $dots);
+	$length = strlen($y)-1;
+	if ($length > 0) {
+		$i = ord($y{$length});
+	}
+	else {
+		$i = 5;
+	}
+	return $i;
 }
 
 function ext_iptrim ($text, $peaces) {
