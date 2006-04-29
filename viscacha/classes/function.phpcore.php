@@ -16,7 +16,9 @@ file_get_contents, str_ireplace, str_split, version_compare, is_a, http_build_qu
 if (isset($config['error_reporting']) && $config['error_reporting'] > 0) {
 	error_reporting($config['error_reporting']);
 }
-set_error_handler('msg_handler');
+if ($config['error_handler'] == 1) {
+	set_error_handler('msg_handler');
+}
 
 function get_backtrace() {
 	global $config;
@@ -124,7 +126,9 @@ function msg_handler($errno, $errtext, $errfile, $errline) {
 			if (isset($db)) {
 				$db->close();
 			}
-			@ob_clean();
+			if (function_exists('ob_clean')) {
+				@ob_clean();
+			}
 			?>
 			<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 			<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr">
@@ -159,7 +163,6 @@ function msg_handler($errno, $errtext, $errfile, $errline) {
 		break;
 	}
 }
-
 
 /* Fixed php functions */
 
@@ -201,22 +204,6 @@ function lcfirst($p) {
 }
 
 /* Missing constants from PHP-Compat */
-
-/**
- * Replace constant DIRECTORY_SEPARATOR
- *
- * @category    PHP
- * @package     PHP_Compat
- * @link        http://php.net/reserved.constants.standard
- * @author      Aidan Lister <aidan@php.net>
- * @version     $Revision: 1.1 $
- * @since       PHP 4.0.6
- */
-if (!defined('DIRECTORY_SEPARATOR')) {
-    define('DIRECTORY_SEPARATOR',
-        strtoupper(substr(PHP_OS, 0, 3) == 'WIN') ? '\\' : '/'
-    );
-}
 
 /**
  * Replace constant E_STRICT
@@ -1063,168 +1050,6 @@ if (!function_exists('str_split')) {
     }
 }
 
-
-/**
-/**
- * Replace version_compare()
- *
- * @category    PHP
- * @package     PHP_Compat
- * @link        http://php.net/function.version_compare
- * @author      Philippe Jausions <Philippe.Jausions@11abacus.com>
- * @author      Aidan Lister <aidan@php.net>
- * @version     $Revision: 1.13 $
- * @since       PHP 4.1.0
- * @require     PHP 4.0.5 ()
- */
-if (!function_exists('version_compare')) {
-    function version_compare($version1, $version2, $operator = '<')
-    {
-        // Check input
-        if (!is_scalar($version1)) {
-            trigger_error('version_compare() expects parameter 1 to be string, ' .
-                gettype($version1) . ' given', E_USER_WARNING);
-            return;
-        }
-
-        if (!is_scalar($version2)) {
-            trigger_error('version_compare() expects parameter 2 to be string, ' .
-                gettype($version2) . ' given', E_USER_WARNING);
-            return;
-        }
-
-        if (!is_scalar($operator)) {
-            trigger_error('version_compare() expects parameter 3 to be string, ' .
-                gettype($operator) . ' given', E_USER_WARNING);
-            return;
-        }
-
-        // Standardise versions
-        $v1 = explode('.',
-            str_replace('..', '.',
-                preg_replace('/([^0-9\.]+)/', '.$1.',
-                    str_replace(array('-', '_', '+'), '.',
-                        trim($version1)))));
-
-        $v2 = explode('.',
-            str_replace('..', '.',
-                preg_replace('/([^0-9\.]+)/', '.$1.',
-                    str_replace(array('-', '_', '+'), '.',
-                        trim($version2)))));
-
-        // Replace empty entries at the start of the array
-        while (empty($v1[0]) && array_shift($v1)) {}
-        while (empty($v2[0]) && array_shift($v2)) {}
-
-        // Release state order
-        // '#' stands for any number
-        $versions = array(
-            'dev'   => 0,
-            'alpha' => 1,
-            'a'     => 1,
-            'beta'  => 2,
-            'b'     => 2,
-            'RC'    => 3,
-            '#'     => 4,
-            'p'     => 5,
-            'pl'    => 5);
-
-        // Loop through each segment in the version string
-        $compare = 0;
-        for ($i = 0, $x = min(count($v1), count($v2)); $i < $x; $i++) {
-            if ($v1[$i] == $v2[$i]) {
-                continue;
-            }
-            $i1 = $v1[$i];
-            $i2 = $v2[$i];
-            if (is_numeric($i1) && is_numeric($i2)) {
-                $compare = ($i1 < $i2) ? -1 : 1;
-                break;
-            }
-
-            // We use the position of '#' in the versions list
-            // for numbers... (so take care of # in original string)
-            if ($i1 == '#') {
-                $i1 = '';
-            } elseif (is_numeric($i1)) {
-                $i1 = '#';
-            }
-
-            if ($i2 == '#') {
-                $i2 = '';
-            } elseif (is_numeric($i2)) {
-                $i2 = '#';
-            }
-
-            if (isset($versions[$i1]) && isset($versions[$i2])) {
-                $compare = ($versions[$i1] < $versions[$i2]) ? -1 : 1;
-            } elseif (isset($versions[$i1])) {
-                $compare = 1;
-            } elseif (isset($versions[$i2])) {
-                $compare = -1;
-            } else {
-                $compare = 0;
-            }
-
-            break;
-        }
-
-        // If previous loop didn't find anything, compare the "extra" segments
-        if ($compare == 0) {
-            if (count($v2) > count($v1)) {
-                if (isset($versions[$v2[$i]])) {
-                    $compare = ($versions[$v2[$i]] < 4) ? 1 : -1;
-                } else {
-                    $compare = -1;
-                }
-            } elseif (count($v2) < count($v1)) {
-                if (isset($versions[$v1[$i]])) {
-                    $compare = ($versions[$v1[$i]] < 4) ? -1 : 1;
-                } else {
-                    $compare = 1;
-                }
-            }
-        }
-
-        // Compare the versions
-        if (func_num_args() > 2) {
-            switch ($operator) {
-                case '>':
-                case 'gt':
-                    return (bool) ($compare > 0);
-                    break;
-                case '>=':
-                case 'ge':
-                    return (bool) ($compare >= 0);
-                    break;
-                case '<=':
-                case 'le':
-                    return (bool) ($compare <= 0);
-                    break;
-                case '==':
-                case '=':
-                case 'eq':
-                    return (bool) ($compare == 0);
-                    break;
-                case '<>':
-                case '!=':
-                case 'ne':
-                    return (bool) ($compare != 0);
-                    break;
-                case '':
-                case '<':
-                case 'lt':
-                    return (bool) ($compare < 0);
-                    break;
-                default:
-                    return;
-            }
-        }
-
-        return $compare;
-    }
-}
-
 /**
  * Replace array_fill()
  *
@@ -1399,40 +1224,4 @@ if (!function_exists('http_build_query')) {
         return implode($separator, $tmp);
     }
 }
-
-/**
- * Replace array_key_exists()
- *
- * @category    PHP
- * @package     PHP_Compat
- * @link        http://php.net/function.array_key_exists
- * @author      Aidan Lister <aidan@php.net>
- * @version     $Revision: 1.7 $
- * @since       PHP 4.1.0
- * @require     PHP 4.0.0 ()
- */
-if (!function_exists('array_key_exists')) {
-    function array_key_exists($key, $search)
-    {
-        if (!is_scalar($key)) {
-            trigger_error('array_key_exists() The first argument should be either a string or an integer',
-                E_USER_WARNING);
-            return false;
-        }
-
-        if (is_object($search)) {
-            $search = get_object_vars($search);
-        }
-
-        if (!is_array($search)) {
-            trigger_error('array_key_exists() The second argument should be either an array or an object',
-                E_USER_WARNING);
-            return false;
-        }
-
-        return in_array($key, array_keys($search));
-    }
-}
-
-
 ?>

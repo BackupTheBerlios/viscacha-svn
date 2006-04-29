@@ -730,4 +730,6 @@ elseif ($job == 'license') {
 	<?php
 	echo foot();
 }
+
+($code = $plugins->load('admin_misc_jobs')) ? eval($code) : null;
 ?>

@@ -159,6 +159,7 @@ if ($job == 'menu') {
 	    <li>&raquo; <a href="admin.php?action=slog&job=l_mysqlerror" target="Main">MySQL Error Log</a></li>
 	   </ul>
 	 </div>
+	 <?php ($code = $plugins->load('admin_navigation')) ? eval($code) : null; ?>
 	 <div class="border" border="0" cellspacing="1" cellpadding="2" align="center">
 	   <h3><img id="img_admin_menu7" name="collapse" src="admin/html/images/plus.gif" alt=""> Useful Links</h3>
 	  <ul id="part_admin_menu7">

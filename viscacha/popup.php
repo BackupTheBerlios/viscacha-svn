@@ -36,6 +36,8 @@ $my = $slog->logged();
 $lang->init($my->language);
 $tpl = new tpl();
 
+($code = $plugins->load('popup_start')) ? eval($code) : null;
+
 if ($_GET['action'] == "hlcode") {
 	if (strlen($_GET['fid']) != 32) {
 		echo $tpl->parse("popup/header");
@@ -46,7 +48,9 @@ if ($_GET['action'] == "hlcode") {
 	$codeobj->get();
 	
 	$code['source'] = @html_entity_decode($code['source'], ENT_QUOTES, $lang->phrase('charset'));
-	
+
+	($code = $plugins->load('popup_hlcode_start')) ? eval($code) : null;
+
 	if ($_GET['temp'] == 1) {
 		viscacha_header('Cache-control: private');
 		viscacha_header('Content-Type: text/plain');
@@ -63,23 +67,26 @@ if ($_GET['action'] == "hlcode") {
 		$geshi->enable_classes();
 		// Output in a div instead in a pre-element
 		$geshi->set_header_type(GESHI_HEADER_DIV);
-		// Linenumbers on  - echt 5th element is bold
+		// Linenumbers on  - each 5th element is bold
 		$geshi->enable_line_numbers(GESHI_FANCY_LINE_NUMBERS, 5); 
-		// Print Stylesheet
-		$htmlhead .= '<style type="text/css"><!-- '.$geshi->get_stylesheet().' --></style>';
-		
 		$lang_name = $geshi->get_language_name();
 		
+		// Print Stylesheet
+		$htmlhead .= '<style type="text/css"><!-- '.$geshi->get_stylesheet().' --></style>';
 		echo $tpl->parse("popup/header");
 		
-		$plugins->load('popup_hlcode_top');
-		$code['hl'] = $geshi->parse_code();
+		($code = $plugins->load('popup_hlcode_initialized')) ? eval($code) : null;
 		
+		$code['hl'] = $geshi->parse_code();
 		echo $tpl->parse("popup/hlcode");
-		$plugins->load('popup_hlcode_bottom');
+		
+		($code = $plugins->load('popup_hlcode_end')) ? eval($code) : null;
 	}
 }
 elseif ($_GET['action'] == "filetypes") {
+
+	($code = $plugins->load('popup_filetypes_query')) ? eval($code) : null;
+	
 	$result = $db->query("SELECT * FROM {$db->pre}filetypes WHERE extension LIKE '%{$_GET['type']}%'",__LINE__,__FILE__);
 	$nr = $db->num_rows($result);
 
@@ -90,25 +97,30 @@ elseif ($_GET['action'] == "filetypes") {
 	}
 
 	echo $tpl->parse("popup/header");
+	($code = $plugins->load('popup_filetypes_prepared')) ? eval($code) : null;
 	echo $tpl->parse("popup/filetypes");
-	$plugins->load('popup_filetypes_bottom');
-	
+	($code = $plugins->load('popup_filetypes_end')) ? eval($code) : null;
 }
 elseif ($_GET['action'] == "code") {
 	$codelang = $scache->load('syntaxhighlight');
 	$clang = $codelang->get();
-	
+	($code = $plugins->load('popup_code_start')) ? eval($code) : null;	
 	echo $tpl->parse("popup/header");
-	$plugins->load('popup_code_top');
 	echo $tpl->parse("popup/code");
+	($code = $plugins->load('popup_code_end')) ? eval($code) : null;
 }
 elseif ($_GET['action'] == "showpost") {
 	echo $tpl->parse("popup/header");
 
+	($code = $plugins->load('popup_showpost_query')) ? eval($code) : null;
 	$result = $db->query("
 	SELECT t.status, t.prefix, r.topic_id, r.board, r.edit, r.dosmileys, r.dowords, r.id, r.topic, r.comment, r.date, u.name as uname, r.name as gname, u.id as mid, u.groups, u.fullname, u.hp, u.pic, r.email as gmail, r.guest, u.signature, u.regdate, u.location 
-	FROM {$db->pre}replies AS r LEFT JOIN {$db->pre}user AS u ON r.name=u.id LEFT JOIN {$db->pre}topics AS t ON t.id = r.topic_id
-	WHERE r.id = '{$_GET['id']}' LIMIT 1",__LINE__,__FILE__);
+	FROM {$db->pre}replies AS r 
+		LEFT JOIN {$db->pre}user AS u ON r.name=u.id 
+		LEFT JOIN {$db->pre}topics AS t ON t.id = r.topic_id 
+	WHERE r.id = '{$_GET['id']}' 
+	LIMIT 1
+	",__LINE__,__FILE__);
 
 	$found = $db->num_rows($result);
 	if ($found == 1) {
@@ -137,6 +149,7 @@ elseif ($_GET['action'] == "showpost") {
 	
 	forum_opt($last['opt'], $last['optvalue'], $last['id']);
 	
+	($code = $plugins->load('popup_showpost_start')) ? eval($code) : null;
 	if ($config['tpcallow'] == 1) {
 		$uploads = $db->query("SELECT id, tid, mid, file, hits FROM {$db->pre}uploads WHERE tid = ".$_GET['id'],__LINE__,__FILE__);
 	}
@@ -190,6 +203,7 @@ elseif ($_GET['action'] == "showpost") {
 			$uppath = 'uploads/topics/'.$file['file'];
 			$fsize = filesize($uppath);
 			$fsize = formatFilesize($fsize);
+			($code = $plugins->load('popup_showpost_attachments_prepared')) ? eval($code) : null;
 			$inner['upload_box'] .= $tpl->parse("popup/showpost_upload");
 		}
 	}
@@ -204,15 +218,23 @@ elseif ($_GET['action'] == "showpost") {
 		$why = iif(empty($lastdata[2]), $lang->phrase('post_editinfo_na'), $bbcode->wordwrap($lastdata[2]));
 	}
 	
-	$plugins->load('popup_showpost_top');
+	($code = $plugins->load('popup_showpost_prepared')) ? eval($code) : null;
 	echo $tpl->parse("popup/showpost");
-	$plugins->load('popup_showpost_bottom');
+	($code = $plugins->load('popup_showpost_end')) ? eval($code) : null;
 
 }
 elseif ($_GET['action'] == "edithistory") {
 	echo $tpl->parse("popup/header");
 
-	$result = $db->query("SELECT r.ip, r.topic_id, r.board, r.edit, r.id, r.topic, r.date, u.name as uname, r.name as gname, u.id as mid, u.groups, r.email as gmail, r.guest FROM {$db->pre}replies AS r LEFT JOIN {$db->pre}user AS u ON r.name=u.id WHERE r.id = '{$_GET['id']}' LIMIT 1",__LINE__,__FILE__);
+	($code = $plugins->load('popup_edithistory_query')) ? eval($code) : null;
+	$result = $db->query("
+	SELECT r.ip, r.topic_id, r.board, r.edit, r.id, r.topic, r.date, u.name as uname, r.name as gname, u.id as mid, u.groups, r.email as gmail, r.guest 
+	FROM {$db->pre}replies AS r 
+		LEFT JOIN {$db->pre}user AS u ON r.name=u.id 
+	WHERE r.id = '{$_GET['id']}' 
+	LIMIT 1
+	",__LINE__,__FILE__);
+	
 	$found = $db->num_rows($result);
 	if ($found == 1) {
 		$row = $gpc->prepare($db->fetch_assoc($result));
@@ -235,6 +257,8 @@ elseif ($_GET['action'] == "edithistory") {
 	
 	forum_opt($last['opt'], $last['optvalue'], $last['id']);
 	
+	($code = $plugins->load('popup_edithistory_start')) ? eval($code) : null;
+	
 	if ($row['guest'] == 0) {
 		$row['mail'] = '';
 		$row['name'] = $row['uname'];
@@ -251,26 +275,33 @@ elseif ($_GET['action'] == "edithistory") {
 	$edit = array();
 	if (!empty($row['edit'])) {
 		$edits = explode("\n", $row['edit']);
+		$i = 0;
 		foreach ($edits as $e) {
 			$e = trim($e);
 			if (empty($e)) {
 				continue;
 			}
 			$data = explode("\t", $e);
-			$edit[] = array(
+			$edit[$i] = array(
 				'date' => str_date($lang->phrase('dformat1'), times($data[1])),
 				'reason' => @iif(empty($data[2]), $lang->phrase('post_editinfo_na'), $data[2]),
 				'name' => $data[0],
 				'ip' => @iif(isset($data[3]), $data[3])
 			);
+			($code = $plugins->load('popup_edithistory_entry_prepared')) ? eval($code) : null;
+			$i++;
 		}
 	}
-	
+	($code = $plugins->load('popup_edithistory_prepared')) ? eval($code) : null;
 	echo $tpl->parse("popup/edithistory");
+	($code = $plugins->load('popup_edithistory_end')) ? eval($code) : null;
 }
 elseif ($_GET['action'] == "postrating") {
+	$rtg = $gpc->get('rating', int);
+
+	($code = $plugins->load('popup_postrating_start')) ? eval($code) : null;
+
 	if ($my->vlogin) {
-		$rtg = $gpc->get('rating', int);
 		
 		$result = $db->query("SELECT * FROM {$db->pre}replies WHERE id = '{$_GET['id']}'", __LINE__, __FILE__);
 		$post = $db->fetch_assoc($result);
@@ -279,7 +310,11 @@ elseif ($_GET['action'] == "postrating") {
 			$error = $lang->phrase('postrating_you_posted');
 		}
 		
-		$result = $db->query("SELECT mid, pid, tid, rating FROM {$db->pre}postratings WHERE mid = '{$my->id}' AND pid = '{$_GET['id']}'", __LINE__, __FILE__);
+		$result = $db->query("
+		SELECT mid, pid, tid, rating 
+		FROM {$db->pre}postratings 
+		WHERE mid = '{$my->id}' AND pid = '{$_GET['id']}'
+		", __LINE__, __FILE__);
 		$rating = $db->fetch_assoc($result);
 		$rating['rating'] = intval($rating['rating']);
 
@@ -323,13 +358,13 @@ elseif ($_GET['action'] == "postrating") {
 	}
 
 	echo $tpl->parse("popup/header");
+	($code = $plugins->load('popup_postrating_prepared')) ? eval($code) : null;
 	echo $tpl->parse("popup/postrating");
+	($code = $plugins->load('popup_postrating_end')) ? eval($code) : null;
 	echo $tpl->parse("popup/footer");
 }
-else {
-	echo $tpl->parse("popup/header");
-	error($lang->phrase('query_string_error'), 'javascript:parent.close();');
-}
+
+($code = $plugins->load('popup_end')) ? eval($code) : null;
 
 $slog->updatelogged();
 $zeitmessung = t2();

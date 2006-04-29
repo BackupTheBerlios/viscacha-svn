@@ -45,7 +45,7 @@ $breadcrumb->Add($lang->phrase('team'));
 echo $tpl->parse("header");
 echo $tpl->parse("menu");
 
-$plugins->load('team_top');
+($code = $plugins->load('team_top')) ? eval($code) : null;
 
 $team_ag = $scache->load('team_ag');
 $team = $team_ag->get();
@@ -56,7 +56,13 @@ foreach ($t as $row) {
 	$cache[] = "FIND_IN_SET($row,groups)";
 }
 
-$result=$db->query('SELECT id, name, mail, hp, location, fullname, groups FROM '.$db->pre.'user WHERE '.implode(' OR ',$cache).' ORDER BY name ASC',__LINE__,__FILE__);
+$result = $db->query('
+SELECT id, name, mail, hp, location, fullname, groups 
+FROM '.$db->pre.'user 
+WHERE '.implode(' OR ',$cache).' 
+ORDER BY name ASC
+',__LINE__,__FILE__);
+
 $admin_cache = array();
 $gmod_cache = array();
 
@@ -74,9 +80,12 @@ while($row = $gpc->prepare($db->fetch_object($result))) {
 	
 $result = $db->query('
 SELECT m.time, m.mid, u.name as member, m.bid, c.name as board, u.mail, u.hp, u.location, u.fullname 
-FROM '.$db->pre.'moderators AS m LEFT JOIN '.$db->pre.'user AS u ON u.id = m.mid LEFT JOIN '.$db->pre.'cat AS c ON c.id = m.bid
+FROM '.$db->pre.'moderators AS m 
+	LEFT JOIN '.$db->pre.'user AS u ON u.id = m.mid 
+	LEFT JOIN '.$db->pre.'cat AS c ON c.id = m.bid
 ORDER BY u.name ASC
-',__LINE__,__FILE__); 
+',__LINE__,__FILE__);
+
 $inner['moderator_bit'] = '';
 if ($db->num_rows() > 0) {
 	$mod_cache = array();
@@ -107,15 +116,18 @@ if ($db->num_rows() > 0) {
 					if ($i != $forschleife) {
 						continue;
 					}
+					($code = $plugins->load('team_moderator_prepared')) ? eval($code) : null;
 					$inner['moderator_bit'] .= $tpl->parse("team/moderator_bit");
 				}
 			}
 		}
 	}
 }
+($code = $plugins->load('team_prepared')) ? eval($code) : null;
 
 echo $tpl->parse("team/index");
-$plugins->load('team_bottom');
+
+($code = $plugins->load('team_end')) ? eval($code) : null;
 
 $slog->updatelogged();
 $zeitmessung = t2();

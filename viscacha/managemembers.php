@@ -43,6 +43,8 @@ $breadcrumb->Add($lang->phrase('teamcp'));
 
 echo $tpl->parse("header");
 
+($code = $plugins->load('managemembers_start')) ? eval($code) : null;
+
 if ($my->vlogin && $my->p['admin'] == 1) { 
 	
 	$result = $db->query('SELECT * FROM '.$db->pre.'user WHERE id = '.$_GET['id']);
@@ -50,6 +52,8 @@ if ($my->vlogin && $my->p['admin'] == 1) {
 		error($lang->phrase('no_id_given'), 'members.php'.SID2URL_1);
 	}
 	$user = $gpc->prepare($db->fetch_assoc($result));
+	
+	($code = $plugins->load('managemembers_prepare')) ? eval($code) : null;
 	
 	if ($_GET['action'] == 'delete') {
 		if ($my->id == $user['id']) {
@@ -90,6 +94,8 @@ if ($my->vlogin && $my->p['admin'] == 1) {
 		$db->query("DELETE FROM {$db->pre}user WHERE id = '{$user['id']}'");
 		// Step 13: Delete user's custom profilefields
 		$db->query("DELETE FROM {$db->pre}userfields WHERE ufid = '{$user['id']}'");
+		
+		($code = $plugins->load('managemembers_delete_end')) ? eval($code) : null;
 
 		ok($lang->phrase('member_deleted'),'members.php'.SID2URL_1);
 	}
@@ -99,6 +105,8 @@ if ($my->vlogin && $my->p['admin'] == 1) {
 		BBProfile($bbcode);
 		$inner['bbhtml'] = $bbcode->getbbhtml();
 		$inner['smileys'] = $bbcode->getsmileyhtml($config['smileysperrow']);
+		
+		($code = $plugins->load('managemembers_edit_start')) ? eval($code) : null;
 		
 		if (empty($user['template'])) {
 		    $user['template'] = $config['templatedir'];
@@ -129,7 +137,9 @@ if ($my->vlogin && $my->p['admin'] == 1) {
 		$customfields = admin_customfields($user['id']);
 		
 		echo $tpl->parse("menu");
+		($code = $plugins->load('managemembers_edit_prepared')) ? eval($code) : null;
 		echo $tpl->parse("admin/members/edit");
+		($code = $plugins->load('managemembers_edit_end')) ? eval($code) : null;
 	}
 	elseif ($_GET['action'] == 'edit2') {
 	
@@ -213,8 +223,10 @@ if ($my->vlogin && $my->p['admin'] == 1) {
 		if (!isset($cache2[$_POST['opt_5']])) {
 			$error[] = $lang->phrase('editprofile_settings_error').$lang->phrase('editprofile_language');
 		}
+		($code = $plugins->load('managemembers_edit2_errorhandling')) ? eval($code) : null;
 	
-		if (count($error) > 0) {	
+		if (count($error) > 0) {
+			($code = $plugins->load('managemembers_edit2_errordata')) ? eval($code) : null;
 			error($error);
 		}
 		else {
@@ -250,14 +262,18 @@ if ($my->vlogin && $my->p['admin'] == 1) {
 			
 			admin_customsave($user['id']);
 
-			$db->query("UPDATE {$db->pre}user SET groups = '".$_POST['groups']."', timezone = '".$_POST['temp']."', opt_textarea = '".$_POST['opt_0']."', opt_pmnotify = '".$_POST['opt_1']."', opt_hidebad = '".$_POST['opt_2']."', opt_hidemail = '".$_POST['opt_3']."', template = '".$_POST['opt_4']."', language = '".$_POST['opt_5']."', pic = '".$_POST['pic']."', about = '".$_POST['comment']."', icq = '".$_POST['icq']."', yahoo = '".$_POST['yahoo']."', aol = '".$_POST['aol']."', msn = '".$_POST['msn']."', jabber = '".$_POST['jabber']."', skype = '{$_POST['skype']}', birthday = '".$bday."', gender = '".$_POST['gender']."', hp = '".$_POST['hp']."', signature = '".$_POST['signature']."', location = '".$_POST['location']."', fullname = '".$_POST['fullname']."', mail = '".$_POST['email']."', name = '".$_POST['name']."'".$update_sql." WHERE id = '".$user['id']."' LIMIT 1",__LINE__,__FILE__); 
+			($code = $plugins->load('managemembers_edit2_savedata')) ? eval($code) : null;
+			$db->query("
+			UPDATE {$db->pre}user 
+			SET groups = '".$_POST['groups']."', timezone = '".$_POST['temp']."', opt_textarea = '".$_POST['opt_0']."', opt_pmnotify = '".$_POST['opt_1']."', opt_hidebad = '".$_POST['opt_2']."', opt_hidemail = '".$_POST['opt_3']."', template = '".$_POST['opt_4']."', language = '".$_POST['opt_5']."', pic = '".$_POST['pic']."', about = '".$_POST['comment']."', icq = '".$_POST['icq']."', yahoo = '".$_POST['yahoo']."', aol = '".$_POST['aol']."', msn = '".$_POST['msn']."', jabber = '".$_POST['jabber']."', skype = '{$_POST['skype']}', birthday = '".$bday."', gender = '".$_POST['gender']."', hp = '".$_POST['hp']."', signature = '".$_POST['signature']."', location = '".$_POST['location']."', fullname = '".$_POST['fullname']."', mail = '".$_POST['email']."', name = '".$_POST['name']."' {$update_sql} 
+			WHERE id = '".$user['id']."' 
+			LIMIT 1
+			",__LINE__,__FILE__); 
 			ok($lang->phrase('data_success'), "profile.php?id=".$user['id']);
 		}
 	}
 }
-else {
-    errorLogin($lang->phrase('not_allowed'));
-}
+($code = $plugins->load('managemembers_end')) ? eval($code) : null;
 
 $slog->updatelogged();
 $zeitmessung = t2();

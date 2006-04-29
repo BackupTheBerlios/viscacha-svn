@@ -41,6 +41,8 @@ $action = $gpc->get('action', str);
 viscacha_header("Content-type: text/plain");
 send_nocache_header();
 
+($code = $plugins->load('ajax_start')) ? eval($code) : null;
+
 // Schliesst oder oeffnet einen Beitrag mittels AJAX
 if ($action == 'openclosethread') {
     $result = $db->query("SELECT status, board FROM {$db->pre}topics WHERE id = '{$_GET['id']}'",__LINE__,__FILE__);
@@ -146,6 +148,8 @@ elseif ($action == 'search') {
 		echo 1;
 	}
 }
+
+($code = $plugins->load('ajax_end')) ? eval($code) : null;
 
 $phpdoc->Out(0);
 $db->close();

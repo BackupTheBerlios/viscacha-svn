@@ -352,7 +352,7 @@ function setlang($l1, $l2) {
  * Function that updates the user and session data after the script finished.
  */
 function updatelogged () {
-	global $my, $db, $gpc;
+	global $my, $db, $gpc, $plugins;
 	$serialized = serialize($my->mark);
 	if (!is_array($my->pwfaccess)) {
 		$my->pwfaccess = array();
@@ -362,20 +362,32 @@ function updatelogged () {
 	}
 	$serializedpwf = serialize($my->pwfaccess);
 	$serializedstg = serialize($my->settings);
+	$sqlwhere = $sqlset = $sqluserset = '';
 	if ($my->id > 0) {
-		$sql = "mid = '".$my->id."'";
+		$sqlwhere = "mid = '".$my->id."'";
 	}
 	else {
-		$sql = "sid = '".$my->sid."'";
+		$sqlwhere = "sid = '".$my->sid."'";
 	}
 	$action = $gpc->get('action', str);
 	$qid = $gpc->get('id', int);
 	
-	$db->query ("UPDATE {$db->pre}session SET mark = '{$serialized}', wiw_script = '".SCRIPTNAME."', wiw_action = '{$action}', wiw_id = '{$qid}', active = '".time()."', pwfaccess = '{$serializedpwf}', settings = '{$serializedstg}' WHERE ".$sql." LIMIT 1",__LINE__,__FILE__);
+	($code = $plugins->load('permissions_updatelogged_query')) ? eval($code) : null;
+	
+	$db->query ("
+	UPDATE {$db->pre}session 
+	SET mark = '{$serialized}', wiw_script = '".SCRIPTNAME."', wiw_action = '{$action}', wiw_id = '{$qid}', active = '".time()."', pwfaccess = '{$serializedpwf}', settings = '{$serializedstg}' {$sqlset} 
+	WHERE {$sqlwhere} 
+	LIMIT 1
+	",__LINE__,__FILE__);
 
 	if ($my->vlogin) {
 		// Eigentlich könnten wir uns das Updaten der User-Lastvisit-Spalte sparen, für alle User die Cookies nutzen. Einmal, am Anfang der Session würde dann reichen
-		$db->query("UPDATE {$db->pre}user SET lastvisit = '".time()."' WHERE id = '".$my->id."'",__LINE__,__FILE__);
+		$db->query("
+		UPDATE {$db->pre}user 
+		SET lastvisit = '".time()."' {$sqluserset}  
+		WHERE id = '{$my->id}'
+		",__LINE__,__FILE__);
 	}
 
 }
@@ -390,7 +402,7 @@ function deleteOldSessions () {
 	if ($this->SessionDel() == true) {
 	    $sessionsave = $config['sessionsave']*60;
 	    $old = time()-$sessionsave;
-	    $db->query ("DELETE FROM {$db->pre}session WHERE active <= '".$old."'",__LINE__,__FILE__);
+	    $db->query ("DELETE FROM {$db->pre}session WHERE active <= '{$old}'",__LINE__,__FILE__);
 	    return true;
 	}
 	else {
@@ -404,14 +416,14 @@ function deleteOldSessions () {
  * @return object Data of the user who is calling this script
  */
 function logged () {
-	global $config, $db, $gpc, $scache;
+	global $config, $db, $gpc, $scache, $plugins;
 
 	$this->deleteOldSessions();
 	
 	$sessionid = $gpc->get('s', str);
 	if (empty($sessionid) || strlen($sessionid) != $config['sid_length']) {
-		$sessionid = FALSE;
-		$this->querysid = FALSE;
+		$sessionid = false;
+		$this->querysid = false;
 	}
 
     $vdata = $gpc->save_str(getcookie('vdata'));
@@ -419,21 +431,21 @@ function logged () {
     $vhash = $gpc->save_str(getcookie('vhash'));
 	// Read additional data
 	if (!empty($vdata)) {
-		$this->cookies = TRUE;
+		$this->cookies = true;
 		$this->cookiedata = explode("|", $vdata);
 	}
 	else {
 		$this->cookiedata = array(0,'');
 	}
 	if (!empty($vlastvisit)) {
-		$this->cookies = TRUE;
+		$this->cookies = true;
 		$this->cookielastvisit = $vlastvisit;
 	}
 	else {
 		$this->cookielastvisit = 0;
 	}
 	if (isset($vhash)) {
-		$this->cookies = TRUE;
+		$this->cookies = true;
 	    if (strlen($vhash) != $config['sid_length']) {
 	    	$this->sid = '';
 	    }
@@ -453,7 +465,7 @@ function logged () {
 		if ($db->num_rows() == 1) {
 			$sidrow = $db->fetch_assoc($result);
 			$this->sid = $sidrow['sid'];
-			$this->querysid = TRUE;
+			$this->querysid = true;
 		}
 	}
 	
@@ -463,7 +475,7 @@ function logged () {
 			$my = $this->sid_new();
 		}
 		else {
-			$my->vlogin = FALSE;
+			$my->vlogin = false;
 		}
 	}
 	else {
@@ -574,6 +586,8 @@ function logged () {
 	if (!isset($my->opt_showsig)) {
 		$my->opt_showsig = 1;
 	}
+	
+	($code = $plugins->load('permissions_logged_end')) ? eval($code) : null;
 
 	if (!empty($this->bots[$my->is_bot]['type']) && $this->bots[$my->is_bot]['type'] == 'e') {
 		// E-Mail-Collector - Ban this user...
@@ -593,7 +607,7 @@ function logged () {
  * Error Message is loaded from 'data/banned.php'-file.
  */
 function banish() {
-	global $config, $db, $phpdoc, $gpc, $lang;
+	global $config, $db, $phpdoc, $gpc, $lang, $plugins;
 	$slog = new slog();
 	$my = $slog->logged();
 	$lang->init($my->language);
@@ -604,6 +618,7 @@ function banish() {
 	$banned = ob_get_contents();
 	ob_end_clean();
 	
+	($code = $plugins->load('permissions_banish')) ? eval($code) : null;
 	echo $tpl->parse("banned");
     $phpdoc->Out();
 	$db->close();

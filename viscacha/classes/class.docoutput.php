@@ -69,9 +69,8 @@ function Out($skip = 1){
 	$Contents = ob_get_contents();
 	ob_end_clean();
 	$Contents = $this->AddSid($Contents);
-	if (isset($plugins)) {
-		extract($plugins->load('docout_parse', get_defined_vars()), EXTR_SKIP);
-	}
+	
+	($code = $plugins->load('docout_parse')) ? eval($code) : null;
 	
 	if ($this->enc != FALSE && $skip == 1 && $this->cfg == 1) {
 		viscacha_header("Content-Encoding: ".$this->enc);

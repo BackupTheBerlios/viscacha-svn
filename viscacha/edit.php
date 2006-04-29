@@ -35,9 +35,17 @@ $slog = new slog();
 $my = $slog->logged();
 $lang->init($my->language);
 $tpl = new tpl();
+
+($code = $plugins->load('edit_post_query')) ? eval($code) : null;
+
 $result = $db->query('
 SELECT r.topic, r.board, r.name, r.comment, r.topic_id, r.dosmileys, r.dowords, t.posts, r.topic_id, r.date, t.prefix, r.id, r.edit, t.vquestion, r.tstart, t.status
-FROM '.$db->pre.'replies AS r LEFT JOIN '.$db->pre.'topics AS t ON r.topic_id = t.id WHERE r.id = "'.$_GET['id'].'" LIMIT 1',__LINE__,__FILE__);
+FROM '.$db->pre.'replies AS r 
+	LEFT JOIN '.$db->pre.'topics AS t ON r.topic_id = t.id 
+WHERE r.id = "'.$_GET['id'].'" 
+LIMIT 1
+',__LINE__,__FILE__);
+
 if ($db->num_rows($result) != 1) {
 	error(array($lang->phrase('query_string_error')));
 }
@@ -98,7 +106,11 @@ else {
 	$p_upload = FALSE;
 }
 
-if (($info['name'] == $my->id || $my->mp[0] == 1) && $my->p['edit'] && ($edit_seconds >= $diff || $my->mp[0] == 1)) {
+$allowed = (($info['name'] == $my->id || $my->mp[0] == 1) && $my->p['edit'] && ($edit_seconds >= $diff || $my->mp[0] == 1)) ? true : false;
+
+($code = $plugins->load('edit_start')) ? eval($code) : null;
+
+if ($allowed == true) {
 	
 	if ($_GET['action'] == "save") {
 		
@@ -124,6 +136,7 @@ if (($info['name'] == $my->id || $my->mp[0] == 1) && $my->p['edit'] && ($edit_se
 					}
 					$db->query ("DELETE FROM {$db->pre}vote WHERE tid = '{$info['id']}'",__LINE__,__FILE__);
 				}
+				($code = $plugins->load('edit_save_delete')) ? eval($code) : null;
 				UpdateBoardStats($info['board']);
 				UpdateTopicStats($info['topic_id']);
 				if ($info['tstart'] == 1) {
@@ -158,6 +171,7 @@ if (($info['name'] == $my->id || $my->mp[0] == 1) && $my->p['edit'] && ($edit_se
 			if (!isset($prefix[$_POST['opt_0']]) && $last['prefix'] == 1) {
 				$error[] = $lang->phrase('prefix_not_optional');
 			}
+			($code = $plugins->load('edit_save_errorhandling')) ? eval($code) : null;
 
 			BBProfile($bbcode);
 			$_POST['topic'] = $bbcode->parseTitle($_POST['topic']);
@@ -171,6 +185,7 @@ if (($info['name'] == $my->id || $my->mp[0] == 1) && $my->p['edit'] && ($edit_se
 					'dowords' => $_POST['dowords'],
 					'about' => $_POST['about']
 				);
+				($code = $plugins->load('edit_save_errordata')) ? eval($code) : null;
 				$fid = save_error_data($data);
 				if (!empty($_POST['Preview'])) {
 					viscacha_header("Location: edit.php?action=preview&id={$info['id']}&fid=".$fid.SID2URL_JS_x);
@@ -181,9 +196,22 @@ if (($info['name'] == $my->id || $my->mp[0] == 1) && $my->p['edit'] && ($edit_se
 			}
 			else {
 				$info['edit'] .= $my->name."\t".time()."\t".$_POST['about']."\t".$my->ip."\n";
-				$db->query ("UPDATE {$db->pre}replies SET edit = '{$info['edit']}', topic = '{$_POST['topic']}', comment = '{$_POST['comment']}', dosmileys = '{$_POST['dosmileys']}', dowords = '{$_POST['dowords']}' WHERE id = '{$_GET['id']}'",__LINE__,__FILE__);
+				($code = $plugins->load('edit_save_queries')) ? eval($code) : null;
+				
+				$db->query ("
+				UPDATE {$db->pre}replies 
+				SET edit = '{$info['edit']}', topic = '{$_POST['topic']}', comment = '{$_POST['comment']}', dosmileys = '{$_POST['dosmileys']}', dowords = '{$_POST['dowords']}' 
+				WHERE id = '{$_GET['id']}'
+				",__LINE__,__FILE__);
+				
 				if ($info['tstart'] == '1') {
-					$db->query ("UPDATE {$db->pre}topics SET prefix = '{$_POST['opt_0']}', topic = '{$_POST['topic']}' WHERE id = '{$info['topic_id']}'",__LINE__,__FILE__);
+				
+					$db->query ("
+					UPDATE {$db->pre}topics 
+					SET prefix = '{$_POST['opt_0']}', topic = '{$_POST['topic']}' 
+					WHERE id = '{$info['topic_id']}'
+					",__LINE__,__FILE__);
+					
 				}
 				ok($lang->phrase('data_success'),'showtopic.php?action=jumpto&id='.$info['topic_id'].'&topic_id='.$info['id']);
 			}
@@ -193,6 +221,8 @@ if (($info['name'] == $my->id || $my->mp[0] == 1) && $my->p['edit'] && ($edit_se
 		echo $tpl->parse("menu");
 
 		BBProfile($bbcode);
+
+		($code = $plugins->load('edit_form_start')) ? eval($code) : null;
 
 		if (strlen($_GET['fid']) == 32) {
 			$data = $gpc->prepare(import_error_data($_GET['fid']));
@@ -243,8 +273,11 @@ if (($info['name'] == $my->id || $my->mp[0] == 1) && $my->p['edit'] && ($edit_se
 		$inner['smileys'] = $bbcode->getsmileyhtml($config['smileysperrow']);
 		$inner['bbhtml'] = $bbcode->getbbhtml();
 
+		($code = $plugins->load('edit_form_prepared')) ? eval($code) : null;
+
 		echo $tpl->parse("edit");
-		$plugins->load('edit_bottom');
+		
+		($code = $plugins->load('edit_form_end')) ? eval($code) : null;
 	}
 }
 else {
@@ -255,6 +288,7 @@ else {
 		errorLogin();
 	}
 }
+($code = $plugins->load('edit_end')) ? eval($code) : null;
 
 $slog->updatelogged();
 $zeitmessung = t2();

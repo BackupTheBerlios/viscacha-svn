@@ -42,6 +42,8 @@ $cid = $gpc->get('cid', int);
 $com = $scache->load('components');
 $cache = $com->get();
 
+($code = $plugins->load('components_start')) ? eval($code) : null;
+
 if (isset($cache[$cid])) {
 	DEFINE('COM_ID', $cache[$_GET['cid']]['id']);
 	DEFINE('COM_DIR', 'components/'.COM_ID.'/');
@@ -62,6 +64,7 @@ if (isset($cache[$cid])) {
 	else {
 		define('COM_LANG_OLD_DIR', $lang->getdir(true));
         $lang->setdir(COM_LANG_OLD_DIR.DIRECTORY_SEPARATOR.COM_DIR);
+        ($code = $plugins->load('components_prepared')) ? eval($code) : null;
 	    if (COM_MODULE == 'frontpage') {
             include(COM_DIR.COM_FILE);
         }
@@ -70,6 +73,7 @@ if (isset($cache[$cid])) {
         }
         $lang->setdir(COM_LANG_OLD_DIR);
 	}
+	($code = $plugins->load('components_end')) ? eval($code) : null;
 }
 else {
 	error($lang->phrase('component_na'));

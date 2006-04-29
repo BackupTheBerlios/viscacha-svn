@@ -135,6 +135,8 @@ else {
 	$gzbenchval = 'Off';
 }
 
+($code = $plugins->load('frontend_init')) ? eval($code) : null;
+
 $bannedip = file('data/bannedip.php');
 $bannedip = array_map('trim', $bannedip);
 if (count($bannedip) > 0) {
@@ -149,6 +151,7 @@ if (count($bannedip) > 0) {
 			include('data/banned.php');
 			$banned = ob_get_contents();
 			ob_end_clean();
+			($code = $plugins->load('frontend_init_banned')) ? eval($code) : null;
             echo $tpl->parse("banned");
             
             $phpdoc->Out();
@@ -168,7 +171,8 @@ if ($config['foffline'] && defined('TEMPSHOWLOG') == false && SCRIPTNAME != 'ext
 		$tpl = new tpl();
         
 		$offline = file_get_contents('data/offline.php');
-        echo $tpl->parse("offline");
+        ($code = $plugins->load('frontent_init_offline')) ? eval($code) : null;
+		echo $tpl->parse("offline");
         
         $phpdoc->Out();
 		$db->close();

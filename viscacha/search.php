@@ -49,6 +49,8 @@ $breadcrumb->Add($lang->phrase('search'));
 // * GooglifyMe
 // * Modularer Aufbau!!
 
+($code = $plugins->load('search_start')) ? eval($code) : null;
+
 if ($_GET['action'] == "search") {
 
 	if ($config['floodsearch'] == 1) {
@@ -177,8 +179,15 @@ if ($_GET['action'] == "search") {
 		$having = " LEFT JOIN {$db->pre}topics AS t ON t.id = r.topic_id";
 	}
 
-	$sql = "SELECT r.topic_id FROM {$db->pre}replies AS r{$having} WHERE {$sql_where} GROUP BY r.topic_id LIMIT {$config['maxsearchresults']}";
-	$result = $db->query($sql,__LINE__,__FILE__);
+	($code = $plugins->load('search_search_query')) ? eval($code) : null;
+	$sql = ;
+	$result = $db->query("
+	SELECT r.topic_id 
+	FROM {$db->pre}replies AS r {$having} 
+	WHERE {$sql_where} 
+	GROUP BY r.topic_id 
+	LIMIT {$config['maxsearchresults']}
+	",__LINE__,__FILE__);
 	
 	$searchresult = array();
 	while ($row = $db->fetch_assoc($result)) {
@@ -250,14 +259,18 @@ elseif ($_GET['action'] == "result") {
 		else {
 			$order .= ' DESC';
 		}
+		
+		($code = $plugins->load('search_result_query')) ? eval($code) : null;
 		$result = $db->query("
 		SELECT prefix, vquestion, posts, mark, id, board, topic, date, status, last, last_name, sticky, name 
-		FROM {$db->pre}topics WHERE id IN (".implode(',', $data['ids']).") ".$slog->sqlinboards('board')." 
+		FROM {$db->pre}topics 
+		WHERE id IN (".implode(',', $data['ids']).") ".$slog->sqlinboards('board')." 
 		ORDER BY {$order}"
 		,__LINE__,__FILE__);
 		
 		$cache = array();
 		while ($row = $gpc->prepare($db->fetch_object($result))) {
+			($code = $plugins->load('search_result_prepare')) ? eval($code) : null;
 			$cache[] = $row;
 		}
 
@@ -292,8 +305,6 @@ elseif ($_GET['action'] == "result") {
 	$prefix = $prefix_obj->get();
 	
 	$inner['index_bit'] = '';
-	
-	$plugins->load('search_result_top');
 
 	if (!isset($pages[$_GET['page']-1])) {
 		$pages[$_GET['page']-1] = array();
@@ -373,13 +384,14 @@ elseif ($_GET['action'] == "result") {
 			$topic_pages = '';
 		}
 		
-		$plugins->load('search_result_bit');
+		($code = $plugins->load('search_result_entry_prepared')) ? eval($code) : null;
 		$inner['index_bit'] .= $tpl->parse("search/result_bit");
 	}
+	
+	($code = $plugins->load('search_result_prepared')) ? eval($code) : null;
 	echo $tpl->parse("search/result");
-	
-	$plugins->load('search_result_bottom');
-	
+	($code = $plugins->load('search_result_end')) ? eval($code) : null;
+
 }
 elseif ($_GET['action'] == "active") {
 
@@ -434,14 +446,16 @@ elseif ($_GET['action'] == "active") {
 		$timestamp = $my->clv;
 	}
 	
-	$plugins->load('search_active_top');
+	($code = $plugins->load('search_actiev_start')) ? eval($code) : null;
 	
 	if (!isset($count)) {
     	$sqlwhere = " last > '{$timestamp}' ";
     	
+    	($code = $plugins->load('search_actiev_query')) ? eval($code) : null;
     	$result = $db->query("
     	SELECT prefix, vquestion, posts, mark, id, board, topic, date, status, last, last_name, sticky, name 
-    	FROM {$db->pre}topics WHERE".$sqlwhere.$slog->sqlinboards('board')." 
+    	FROM {$db->pre}topics 
+    	WHERE ".$sqlwhere.$slog->sqlinboards('board')." 
     	ORDER BY last DESC"
     	,__LINE__,__FILE__);
     	$count = $db->num_rows($result);
@@ -528,22 +542,26 @@ elseif ($_GET['action'] == "active") {
 					$topic_pages = '';
 				}
     			
-    			$plugins->load('search_active_bit');
+    			($code = $plugins->load('search_active_entry_prepared')) ? eval($code) : null;
     			$inner['index_bit'] .= $tpl->parse("search/active_bit");
     		}
     	}
+    	
+    	($code = $plugins->load('search_active_prepared')) ? eval($code) : null;
     	echo $tpl->parse("search/active");
-    	$plugins->load('search_active_bottom');
+    	($code = $plugins->load('search_active_end')) ? eval($code) : null;
 	}
 }
 else {
 	$forums = BoardSubs();
 	echo $tpl->parse("header");
 	echo $tpl->parse("menu");
-	$plugins->load('search_top');
+	($code = $plugins->load('search_form_start')) ? eval($code) : null;
 	echo $tpl->parse("search/index");
-	$plugins->load('search_bottom');
+	($code = $plugins->load('search_from_end')) ? eval($code) : null;
 }
+
+($code = $plugins->load('search_end')) ? eval($code) : null;
 
 $slog->updatelogged();
 $zeitmessung = t2();

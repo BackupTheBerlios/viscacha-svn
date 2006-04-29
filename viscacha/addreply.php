@@ -42,7 +42,16 @@ if (!empty($_POST['id'])) {
 if (!empty($_GET['id'])) {
 	$_POST['id'] = $_GET['id'];
 }
-$result = $db->query('SELECT id, prefix, topic, board, posts, status FROM '.$db->pre.'topics WHERE id = "'.$_GET['id'].'" LIMIT 1',__LINE__,__FILE__);
+
+($code = $plugins->load('addreply_topic_query')) ? eval($code) : null;
+
+$result = $db->query('
+SELECT id, prefix, topic, board, posts, status 
+FROM '.$db->pre.'topics 
+WHERE id = "'.$_GET['id'].'" 
+LIMIT 1
+',__LINE__,__FILE__);
+
 $info = $db->fetch_assoc($result);
 if ($info['id'] < 1 || $db->num_rows($result) != 1) {
 	error($lang->phrase('query_string_error'));
@@ -79,6 +88,8 @@ $p_upload = 0;
 if ($config['tpcallow'] == 1 && $my->p['attachments'] == 1) { 
 	$p_upload = 1;
 }
+
+($code = $plugins->load('addreply_start')) ? eval($code) : null;
 
 if ($_GET['action'] == "save") {
     $error = array();
@@ -125,6 +136,7 @@ if ($_GET['action'] == "save") {
 	if (strxlen($_POST['topic']) < $config['mintitlelength']) {
 		$error[] = $lang->phrase('title_too_short');
 	}
+	($code = $plugins->load('addreply_save_errorhandling')) ? eval($code) : null;
 
 	BBProfile($bbcode);
 	$_POST['topic'] = $bbcode->parseTitle($_POST['topic']);
@@ -148,6 +160,7 @@ if ($_GET['action'] == "save") {
 			$data['guest'] = 1;
 			$data['name'] = $_POST['name'];
 		}
+		($code = $plugins->load('addreply_save_errordata')) ? eval($code) : null;
 		$fid = save_error_data($data);
 		if (!empty($_POST['Preview'])) {
 			viscacha_header("Location: addreply.php?action=preview&id={$_POST['id']}&fid=".$fid.SID2URL_JS_x);
@@ -168,11 +181,26 @@ if ($_GET['action'] == "save") {
 
 		$date = time();
 		
-		$db->query("UPDATE {$db->pre}topics SET last_name = '".$pnameid."', last = '".$date."', posts = posts+1 WHERE id = '{$_POST['id']}'",__LINE__,__FILE__);
-		$db->query("INSERT INTO {$db->pre}replies (board,topic,topic_id,name,comment,dosmileys,dowords,email,date,ip,guest) VALUES ('{$info['board']}','{$_POST['topic']}','{$_POST['id']}','{$pnameid}','{$_POST['comment']}','{$_POST['dosmileys']}','{$_POST['dowords']}','{$_POST['email']}','{$date}','{$my->ip}','{$guest}')",__LINE__,__FILE__); 
+		($code = $plugins->load('addreply_save_queries')) ? eval($code) : null;
+		
+		$db->query("
+		UPDATE {$db->pre}topics 
+		SET last_name = '".$pnameid."', last = '".$date."', posts = posts+1 
+		WHERE id = '{$_POST['id']}'
+		",__LINE__,__FILE__);
+		
+		$db->query("
+		INSERT INTO {$db->pre}replies (board,topic,topic_id,name,comment,dosmileys,dowords,email,date,ip,guest) 
+		VALUES ('{$info['board']}','{$_POST['topic']}','{$_POST['id']}','{$pnameid}','{$_POST['comment']}','{$_POST['dosmileys']}','{$_POST['dowords']}','{$_POST['email']}','{$date}','{$my->ip}','{$guest}')
+		",__LINE__,__FILE__); 
 		$redirect = $db->insert_id();
+		
 		// Set uploads to correct reply
-		$db->query("UPDATE {$db->pre}uploads SET tid = '{$redirect}' WHERE mid = '{$pid}' AND topic_id = '{$_POST['id']}' AND tid = '0'",__LINE__,__FILE__);
+		$db->query("
+		UPDATE {$db->pre}uploads 
+		SET tid = '{$redirect}' 
+		WHERE mid = '{$pid}' AND topic_id = '{$_POST['id']}' AND tid = '0'
+		",__LINE__,__FILE__);
 
 		if ($_POST['page'] && $my->vlogin) {
 			$type = NULL;
@@ -186,16 +214,27 @@ if ($_GET['action'] == "save") {
 				$type='w';
 			}
 			if ($type != NULL) {
-				$db->query("INSERT INTO {$db->pre}abos (mid,tid,type) VALUES ('{$my->id}','{$_POST['id']}','{$type}')",__LINE__,__FILE__);
+				$db->query("
+				INSERT INTO {$db->pre}abos (mid,tid,type) 
+				VALUES ('{$my->id}','{$_POST['id']}','{$type}')
+				",__LINE__,__FILE__);
 			}
 		}
 		
-		$db->query ('UPDATE '.$db->pre.'cat SET replys = replys+1, last_topic = "'.$_POST['id'].'" WHERE id = '.$info['board'],__LINE__,__FILE__);
+		$db->query ('
+		UPDATE '.$db->pre.'cat 
+		SET replys = replys+1, last_topic = "'.$_POST['id'].'" 
+		WHERE id = '.$info['board']
+		,__LINE__,__FILE__);
 
-		$sql = 'SELECT t.id, t.topic, u.name, u.mail 
-        FROM '.$db->pre.'abos AS a LEFT JOIN '.$db->pre.'user AS u ON u.id = a.mid LEFT JOIN '.$db->pre.'topics AS t ON t.id = a.tid 
-        WHERE a.type = "" AND a.tid = "'.$_POST['id'].'" AND a.mid != "'.$my->id.'"';
-        $result = $db->query($sql,__LINE__,__FILE__);
+        $result = $db->query('
+        SELECT t.id, t.topic, u.name, u.mail 
+        FROM '.$db->pre.'abos AS a 
+        	LEFT JOIN '.$db->pre.'user AS u ON u.id = a.mid 
+        	LEFT JOIN '.$db->pre.'topics AS t ON t.id = a.tid 
+        WHERE a.type = "" AND a.tid = "'.$_POST['id'].'" AND a.mid != "'.$my->id.'"
+        ',__LINE__,__FILE__);
+        
 	    while ($row = $db->fetch_assoc($result)) {
 			$data = $lang->get_mail('digest_s');
 			$to = array('0' => array('name' => $row['name'], 'mail' => $row['mail']));
@@ -211,16 +250,18 @@ if ($_GET['action'] == "save") {
 	    	}
 	    }
 
+		($code = $plugins->load('addreply_save_end')) ? eval($code) : null;
+
 		ok($lang->phrase('data_success'),"showtopic.php?id={$_POST['id']}&amp;action=last".SID2URL_x);
 	}
 }
 else {
 
 	$qids = array();
-	
 	$my->mp = $slog->ModPermissions($info['board']);
-	
 	BBProfile($bbcode);
+	
+	($code = $plugins->load('addreply_form_start')) ? eval($code) : null;
 
 	if (strlen($_GET['fid']) == 32) {
 		$data = $gpc->prepare(import_error_data($_GET['fid']));
@@ -263,7 +304,14 @@ else {
 		}
 		
 		if (count($qids) > 0) {
-			$result = $db->query('SELECT name, comment, guest FROM '.$db->pre.'replies WHERE id IN('.implode(',',$qids).') LIMIT '.$config['maxmultiquote'],__LINE__,__FILE__);
+		
+			$result = $db->query('
+			SELECT name, comment, guest 
+			FROM '.$db->pre.'replies 
+			WHERE id IN('.implode(',',$qids).') 
+			LIMIT '.$config['maxmultiquote']
+			,__LINE__,__FILE__);
+			
 			while($row = $gpc->prepare($db->fetch_assoc($result))) {
 				if ($row['guest'] == 0) {
 					if (isset($memberdata[$row['name']])) {
@@ -273,6 +321,7 @@ else {
 						$row['name'] = '';
 					}
 				}
+				($code = $plugins->load('addreply_form_quotes')) ? eval($code) : null;
 				$row['comment'] = preg_replace('/\[hide\](.+?)\[\/hide\]/is', '', $row['comment']);
 				$row['comment'] = $bbcode->censor(trim($row['comment']));
 				$data['comment'] .= "[quote".iif(!empty($row['name']), "=".$row['name'])."]";
@@ -293,10 +342,15 @@ else {
 	echo $tpl->parse("header");
 	echo $tpl->parse("menu");
 	
-	$plugins->load('addreply_top');
+	($code = $plugins->load('addreply_form_prepared')) ? eval($code) : null;
+	
 	echo $tpl->parse("addreply");
-	$plugins->load('addreply_bottom');
+
+	($code = $plugins->load('addreply_form_end')) ? eval($code) : null;
+
 }
+
+($code = $plugins->load('addreply_end')) ? eval($code) : null;
 
 $slog->updatelogged();
 $zeitmessung = t2();

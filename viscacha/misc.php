@@ -96,9 +96,14 @@ elseif ($_GET['action'] == "wwo") {
 
 	$lang->group('wwo');
 
-    $plugins->load('misc_wwo_top');
+    ($code = $plugins->load('misc_wwo_start')) ? eval($code) : null;
 
-	$result=$db->query("SELECT ip, mid, active, wiw_script, wiw_action, wiw_id, remoteaddr, is_bot FROM {$db->pre}session ORDER BY active DESC",__LINE__,__FILE__);
+	$result=$db->query("
+	SELECT ip, mid, active, wiw_script, wiw_action, wiw_id, remoteaddr, is_bot 
+	FROM {$db->pre}session 
+	ORDER BY active DESC
+	",__LINE__,__FILE__);
+	
 	while ($row = $gpc->prepare($db->fetch_object($result))) {
 		$wwo['i']++;
 		$bot = 0;
@@ -109,8 +114,6 @@ elseif ($_GET['action'] == "wwo") {
 		else {
 			$row->name = NULL;
 		}
-		
-		// Für Plugins ein Modul-Standort zum einfügen von anderen Positionen
 		
 		switch (strtolower($row->wiw_script)) {
 		case 'members':
@@ -274,10 +277,14 @@ elseif ($_GET['action'] == "wwo") {
 			}
 			break;
 		default:
-			$loc = $lang->phrase('wwo_default');
+			$default = true;
+			($code = $plugins->load('misc_wwo_location')) ? eval($code) : null;
+			if ($default == true) {
+				$loc = $lang->phrase('wwo_default');
+			}
 		}
 		
-		$plugins->load('misc_wwo_bit');
+		($code = $plugins->load('misc_wwo_entry')) ? eval($code) : null;
 
 		if ($row->mid >= 1) {
 			$wwo['r']++;
@@ -293,13 +300,24 @@ elseif ($_GET['action'] == "wwo") {
 			$inner['wwo_bit_guest'] .= $tpl->parse("misc/wwo_bit");
 		}
 	}
+
+	($code = $plugins->load('misc_wwo_prepared')) ? eval($code) : null;
 	echo $tpl->parse("misc/wwo");
-    $plugins->load('misc_wwo_bottom');
+    ($code = $plugins->load('misc_wwo_end')) ? eval($code) : null;
 }
 elseif ($_GET['action'] == "vote") {
-
 	$allow = TRUE;
-	$result = $db->query("SELECT v.id FROM {$db->pre}vote AS v LEFT JOIN {$db->pre}votes AS r ON v.id=r.aid WHERE v.tid = '{$_GET['id']}' AND r.mid = '".$my->id."' LIMIT 1",__LINE__,__FILE__);
+
+	($code = $plugins->load('misc_vote_start')) ? eval($code) : null;
+
+	$result = $db->query("
+	SELECT v.id 
+	FROM {$db->pre}vote AS v 
+		LEFT JOIN {$db->pre}votes AS r ON v.id=r.aid 
+	WHERE v.tid = '{$_GET['id']}' AND r.mid = '".$my->id."' 
+	LIMIT 1
+	",__LINE__,__FILE__);
+
 	if ($db->num_rows() > 0) {
 		$allow = FALSE;
 	}
@@ -321,10 +339,12 @@ elseif ($_GET['action'] == "vote") {
 	if ($my->p['forum'] == 0 || $my->p['voting'] == 0 || !$my->vlogin) {
 		$error[] = $lang->phrase('not_allowed');
 	}
+	($code = $plugins->load('misc_vote_errorhandling')) ? eval($code) : null;
 	if (count($error) > 0) {
 		errorLogin($error);
 	}
 	else {
+		($code = $plugins->load('misc_vote_savedata')) ? eval($code) : null;
 		$db->query("INSERT INTO {$db->pre}votes (mid, aid) VALUES ('{$my->id}','{$_POST['temp']}')",__LINE__,__FILE__);
 		ok($lang->phrase('data_success'), 'showtopic.php?id='.$_GET['id'].SID2URL_x);
 	}
@@ -337,7 +357,9 @@ elseif ($_GET['action'] == "bbhelp") {
 	$breadcrumb->Add($lang->phrase('bbhelp_title'));
 	echo $tpl->parse("header");
 	echo $tpl->parse("menu");
+	($code = $plugins->load('misc_bbhelp_prepared')) ? eval($code) : null;
 	echo $tpl->parse("misc/bbhelp");
+	($code = $plugins->load('misc_bbhelp_end')) ? eval($code) : null;
 }
 elseif ($_GET['action'] == "markasread") {
 	$my->p = $slog->Permissions();
@@ -359,7 +381,7 @@ elseif ($_GET['action'] == "markforumasread") {
 	if (!is_id($board) || $my->p['forum'] == 0) {
 		errorLogin();
 	}
-	
+
 	$result = $db->query('SELECT id FROM '.$db->pre.'topics WHERE board = '.$board.' AND last > '.$my->clv,__LINE__,__FILE__);
 	while ($row = $db->fetch_assoc($result)) {
 		$my->mark['t'][$row['id']] = time();
@@ -376,21 +398,23 @@ elseif ($_GET['action'] == "rules") {
 	echo $tpl->parse("header");
 	echo $tpl->parse("menu");
 	$rules = $lang->get_words('rules');
+	($code = $plugins->load('misc_rules_prepared')) ? eval($code) : null;
 	echo $tpl->parse("misc/rules");
+	($code = $plugins->load('misc_rules_end')) ? eval($code) : null;
 }
 elseif ($_GET['action'] == "error") {
 	$my->p = $slog->Permissions();
 	$errid = $gpc->get('id', int);
-	$breadcrumb->Add($lang->phrase('htaccess_error_'.$_GET['id']));
-	echo $tpl->parse("header");
 	if ($errid != 400 && $errid != 404 && $errid != 401 && $errid != 403  && $errid != 500) {
 		$errid = 0;
 	}
+	($code = $plugins->load('misc_error_prepared')) ? eval($code) : null;
+	$breadcrumb->Add($lang->phrase('htaccess_error_'.$_GET['id']));
+	echo $tpl->parse("header");
 	echo $tpl->parse("misc/error");
 }
-else {
-	error($lang->phrase('query_string_error'));
-}
+
+($code = $plugins->load('misc_end')) ? eval($code) : null;
 
 $slog->updatelogged();
 $zeitmessung = t2();

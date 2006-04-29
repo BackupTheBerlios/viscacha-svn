@@ -38,7 +38,12 @@ $tpl = new tpl();
 
 $action = $gpc->get('action', none);
 
-$result = $db->query('SELECT board, mark, id, last_name, prefix, topic FROM '.$db->pre.'topics WHERE id = "'.$_GET['id'].'" LIMIT 1',__LINE__,__FILE__);
+$result = $db->query('
+SELECT board, mark, id, last_name, prefix, topic 
+FROM '.$db->pre.'topics 
+WHERE id = "'.$_GET['id'].'" 
+LIMIT 1
+',__LINE__,__FILE__);
 if ($db->num_rows($result) != 1) {
 	error($lang->phrase('query_string_error'));
 }
@@ -72,7 +77,10 @@ echo $tpl->parse("header");
 
 forum_opt($last['opt'], $last['optvalue'], $last['id']);
 
-if ($my->vlogin && $my->mp[0] == 1) { 
+if ($my->vlogin && $my->mp[0] == 1) {
+
+	($code = $plugins->load('managetopic_start')) ? eval($code) : null;
+
 	if ($action == "delete") {
 		if ($my->mp[0] == 1 && $my->mp[4] == 0) {
 			errorLogin($lang->phrase('not_allowed'), 'showtopic.php?id='.$info['id'].SID2URL_x);
@@ -112,6 +120,8 @@ if ($my->vlogin && $my->mp[0] == 1) {
 		}
 		$db->query ("DELETE FROM {$db->pre}vote WHERE tid = '{$info['id']}'",__LINE__,__FILE__);
 		$anz += $db->affected_rows();
+		
+		($code = $plugins->load('managetopic_delete2_end')) ? eval($code) : null;
 		
 		UpdateBoardStats($info['board']);
 		ok($lang->phrase('x_entries_deleted'),"showforum.php?id=".$info['board'].SID2URL_x);
@@ -378,6 +388,8 @@ if ($my->vlogin && $my->mp[0] == 1) {
 			$redirect = "showtopic.php?id=".$info['id'].SID2URL_x;
 		}
 		
+		($code = $plugins->load('managetopic_pdelete_end')) ? eval($code) : null;
+		
 		UpdateBoardStats($info['board']);
 		ok($lang->phrase('x_entries_deleted'),$redirect);
 	}
@@ -412,6 +424,8 @@ if ($my->vlogin && $my->mp[0] == 1) {
 		BBProfile($bbcode);
 		$inner['smileys'] = $bbcode->getsmileyhtml($config['smileysperrow']);
 		$inner['bbhtml'] = $bbcode->getbbhtml();
+		
+		($code = $plugins->load('managetopic_pmerge_prepared')) ? eval($code) : null;
 
 		echo $tpl->parse("admin/topic/post_merge");
 	}
@@ -514,6 +528,8 @@ if ($my->vlogin && $my->mp[0] == 1) {
 			$db->query ("UPDATE {$db->pre}replies SET topic = '{$topic}', name = '{$name}', comment = '{$_POST['comment']}', dosmileys = '{$_POST['dosmileys']}', dowords = '{$_POST['dowords']}', email = '{$email}', ip = '{$ip}', edit = '{$edit}', guest = '{$guest}' WHERE id = '{$base['id']}'",__LINE__,__FILE__);
 			$db->query ("DELETE FROM {$db->pre}replies WHERE id IN ({$iold})",__LINE__,__FILE__);
 			
+			($code = $plugins->load('managetopic_pmerge_end')) ? eval($code) : null;
+			
 			UpdateTopicStats($info['id']);
 			UpdateBoardStats($info['board']);
 			
@@ -521,6 +537,8 @@ if ($my->vlogin && $my->mp[0] == 1) {
 			ok($lang->phrase('x_entries_merged'),"showtopic.php?topic_id=".$base['id']."&action=jumpto&id=".$base['topic_id'].SID2URL_x);
 		}
 	}
+	
+	($code = $plugins->load('managetopic_end')) ? eval($code) : null;
 }
 else {
 	errorLogin($lang->phrase('not_allowed'));

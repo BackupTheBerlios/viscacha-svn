@@ -40,8 +40,15 @@ function ImageHexColorAllocate(&$image, $string) {
 	return ImageColorAllocate($image,$red,$green,$blue);
 }
 
+($code = $plugins->load('images_start')) ? eval($code) : null;
+
 if ($_GET['action'] == 'vote') {
-	$result = $db->query('SELECT id, topic, posts, sticky, status, last, board, vquestion, prefix FROM '.$db->pre.'topics WHERE id = '.$_GET['id'].' LIMIT 1',__LINE__,__FILE__);
+	$result = $db->query('
+	SELECT id, topic, posts, sticky, status, last, board, vquestion, prefix 
+	FROM '.$db->pre.'topics 
+	WHERE id = '.$_GET['id'].' 
+	LIMIT 1
+	',__LINE__,__FILE__);
 	$info = $db->fetch_assoc($result);
 
 	require_once('classes/class.charts.php');
@@ -109,13 +116,18 @@ elseif ($_GET['action'] == 'postrating' || $_GET['action'] == 'memberrating' || 
 		$height = 8;
 	}
 	else {
-		header ("Content-type: image/png");
-		$image = imagecreate(1, 1);
-		$back = ImageColorAllocate($image,0,0,0);
-		imagecolortransparent($image, $back);
-		imagePNG($image);
-		imagedestroy($image);
+		$error = true;
+		($code = $plugins->load('images_rating_error')) ? eval($code) : null;
+		if ($error == true) {
+			header("Content-type: image/png");
+			$image = imagecreate(1, 1);
+			$back = ImageColorAllocate($image,0,0,0);
+			imagecolortransparent($image, $back);
+			imagePNG($image);
+			imagedestroy($image);
+		}
 	}
+	($code = $plugins->load('images_rating_start')) ? eval($code) : null;
 	
 	$ratings = array();
 	while ($row = $db->fetch_assoc($result)) {
@@ -144,7 +156,7 @@ elseif ($_GET['action'] == 'postrating' || $_GET['action'] == 'memberrating' || 
 	imagePNG($image);
 	imagedestroy($image);
 }
-
+($code = $plugins->load('images_end')) ? eval($code) : null;
 
 $slog->updatelogged();
 $zeitmessung = t2();

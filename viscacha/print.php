@@ -36,7 +36,13 @@ $my = $slog->logged();
 $lang->init($my->language);
 $tpl = new tpl();
 
-$result = $db->query('SELECT topic, posts, sticky, status, last, board, vquestion, prefix FROM '.$db->pre.'topics WHERE id = '.$_GET['id'].' LIMIT 1',__LINE__,__FILE__);
+($code = $plugins->load('print_topic_query')) ? eval($code) : null;
+$result = $db->query('
+SELECT topic, posts, sticky, status, last, board, vquestion, prefix 
+FROM '.$db->pre.'topics 
+WHERE id = '.$_GET['id'].' 
+LIMIT 1
+',__LINE__,__FILE__);
 $info = $gpc->prepare($db->fetch_assoc($result));
 
 $my->p = $slog->Permissions($info['board']);
@@ -75,6 +81,8 @@ $breadcrumb->Add($pre.$info['topic'], "showtopic.php?id={$_GET['id']}&amp;page="
 
 forum_opt($last['opt'], $last['optvalue'], $last['id']);
 
+($code = $plugins->load('print_start')) ? eval($code) : null;
+
 $start = $_GET['page']*$last['topiczahl'];
 $start = $start-$last['topiczahl'];
 
@@ -103,8 +111,12 @@ if (!empty($info['vquestion']) && $_GET['page'] == 1) {
 	$aids = array();
 	$vresult = $db->query("
 	SELECT COUNT(r.id) as votes, v.id, v.answer
-	FROM {$db->pre}vote AS v LEFT JOIN {$db->pre}votes AS r ON r.aid=v.id 
-	WHERE v.tid = '{$_GET['id']}' GROUP BY v.id ORDER BY v.id",__LINE__,__FILE__);
+	FROM {$db->pre}vote AS v 
+		LEFT JOIN {$db->pre}votes AS r ON r.aid=v.id 
+	WHERE v.tid = '{$_GET['id']}' 
+	GROUP BY v.id 
+	ORDER BY v.id
+	",__LINE__,__FILE__);
 	while ($row = $db->fetch_assoc($vresult)) {
 		$row['answer'] = $gpc->prepare($row['answer']);
 		$cachev[] = $row;
@@ -141,6 +153,7 @@ if (!empty($info['vquestion']) && $_GET['page'] == 1) {
 		}
 		$voter[$row['id']][0] = implode(', ', $voter[$row['id']]);
 	}
+	($code = $plugins->load('print_vote_prepared')) ? eval($code) : null;
 	$inner['vote_result'] = $tpl->parse("print/vote");
 }
 
@@ -152,10 +165,13 @@ if ($config['tpcallow'] == 1) {
 	}
 }
 
+($code = $plugins->load('showtopic_query')) ? eval($code) : null;
 $result = $db->query("
 SELECT r.edit, r.dosmileys, r.dowords, r.id, r.topic, r.comment, r.date, u.name as uname, r.name as gname, u.id as mid, u.groups, u.fullname, r.email as gmail, r.guest
-FROM {$db->pre}replies AS r LEFT JOIN {$db->pre}user AS u ON r.name=u.id 
-WHERE r.topic_id = '{$_GET['id']}'  ".$searchsql,__LINE__,__FILE__);
+FROM {$db->pre}replies AS r 
+	LEFT JOIN {$db->pre}user AS u ON r.name=u.id 
+WHERE r.topic_id = '{$_GET['id']}' {$searchsql}
+",__LINE__,__FILE__);
 
 while ($row = $gpc->prepare($db->fetch_object($result))) {
 	$inner['upload_box'] = '';
@@ -192,6 +208,7 @@ while ($row = $gpc->prepare($db->fetch_object($result))) {
 			$fsize = filesize($uppath);
 			$fsize = formatFilesize($fsize);
 			
+			($code = $plugins->load('print_attachments_prepared')) ? eval($code) : null;
 			$inner['upload_box'] .= $tpl->parse("print/upload_box");
 		}
 	}
@@ -204,18 +221,17 @@ while ($row = $gpc->prepare($db->fetch_object($result))) {
 		$date = gmdate($lang->phrase('dformat1'), times($lastdata[1]));
 		$why = iif(empty($lastdata[2]), $lang->phrase('post_editinfo_na'), $bbcode->wordwrap($lastdata[2]));
 	}
+	
+	($code = $plugins->load('print_entry_prepared')) ? eval($code) : null;
 	$inner['index_bit'] .= $tpl->parse("print/index_bit");
 } 
 
-$plugins->load('print_top');
+($code = $plugins->load('print_prepared')) ? eval($code) : null;
+echo $tpl->parse("print/index");
+($code = $plugins->load('print_end')) ? eval($code) : null;
 
 $slog->updatelogged();
 $zeitmessung = t2();
-
-echo $tpl->parse("print/index");
-
-$plugins->load('print_bottom');
-
 $phpdoc->Out();
 $db->close();
 ?>

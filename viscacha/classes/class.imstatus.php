@@ -12,7 +12,7 @@ define ("IM_UNKNOWN", 3);
 define ("IM_AWAY", 4);
 
 define ("IM_ICQ", "icq");
-define ("IM_AIM", "aim");
+define ("IM_AIM", "aol");
 define ("IM_JABBER", "jabber");
 define ("IM_MSN", "msn");
 define ("IM_YAHOO", "yahoo");
@@ -138,7 +138,7 @@ class IMStatus {
 		}
 	}
 	
-	function aim ($account) {
+	function aol ($account) {
 
 		$host = "big.oscar.aol.com";
 		$path = "/{$account}?on_url=true&off_url=false";

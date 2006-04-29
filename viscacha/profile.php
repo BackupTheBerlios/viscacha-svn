@@ -75,6 +75,7 @@ if (isset($memberdata[$_GET['id']])) {
 	$is_member = true;
 }
 
+($code = $plugins->load('profile_start')) ? eval($code) : null;
 
 $breadcrumb->Add($lang->phrase('members'), 'members.php'.SID2URL_1);
 $breadcrumb->Add($lang->phrase('profile_title'), 'profile.php?id='.$_GET['id'].$url_ext.SID2URL_x);
@@ -82,7 +83,13 @@ $breadcrumb->Add($lang->phrase('profile_title'), 'profile.php?id='.$_GET['id'].$
 if ($_GET['action'] == "vcard" && $is_member && $config['vcard_dl'] == 1 && ((!$my->vlogin && $config['vcard_dl_guests'] == 1) || $my->vlogin)) {
 	require ("classes/class.vCard.inc.php");
 
-	$result = $db->query("SELECT id, name, mail, hp, birthday, location, fullname, groups FROM {$db->pre}user WHERE id = ".$_GET['id'],__LINE__,__FILE__);
+	($code = $plugins->load('profile_vcard_start')) ? eval($code) : null;
+
+	$result = $db->query("
+	SELECT id, name, mail, hp, birthday, location, fullname, groups 
+	FROM {$db->pre}user 
+	WHERE id = '{$_GET['id']}'
+	",__LINE__,__FILE__);
 	$row = $gpc->prepare($db->fetch_object($result));
 	$row->level = $slog->getStatus($row->groups, ', ');
 	
@@ -117,11 +124,14 @@ if ($_GET['action'] == "vcard" && $is_member && $config['vcard_dl'] == 1 && ((!$
 	}
 		
 	$filename = $row->id . '.vcf';
+	
+	($code = $plugins->load('profile_vcard_prepared')) ? eval($code) : null;
 	$text = $vCard->getCardOutput();
 	viscacha_header("Content-Disposition: attachment; filename=$filename");
 	viscacha_header('Content-Length: '. strlen($text));
 	viscacha_header("Content-Type: text/x-vcard; name=$filename");
 	echo $text;
+	$db->close();
 	exit();
 }
 elseif (($_GET['action'] == 'mail' || $_GET['action'] == 'sendmail') && $is_member) {
@@ -131,7 +141,7 @@ elseif (($_GET['action'] == 'mail' || $_GET['action'] == 'sendmail') && $is_memb
 
 	if ($my->vlogin && $row->opt_hidemail != 1) {
 		if ($_GET['action'] == 'sendmail') {
-		
+
 			$error = array();
 			if (flood_protect() == FALSE) {
 				$error[] = $lang->phrase('flood_control');
@@ -148,11 +158,13 @@ elseif (($_GET['action'] == 'mail' || $_GET['action'] == 'sendmail') && $is_memb
 			if (strxlen($_POST['topic']) < $config['mintitlelength']) {
 				$error[] = $lang->phrase('title_too_short');
 			}
+			($code = $plugins->load('profile_mail_errorhandling')) ? eval($code) : null;
 			if (count($error) > 0) {
 				$data = array(
 					'topic' => $_POST['topic'],
 					'comment' => $_POST['comment']
 				);
+				($code = $plugins->load('profile_mail_errordata')) ? eval($code) : null;
 				$fid = save_error_data($data);
 				error($error,"profile.php?action=mail&amp;id={$_GET['id']}&amp;fid=".$fid.SID2URL_x);
 			}
@@ -182,9 +194,9 @@ elseif (($_GET['action'] == 'mail' || $_GET['action'] == 'sendmail') && $is_memb
 				);
 			}
 			echo $tpl->parse("header");
-			$plugins->load('profile_mail_top');
+			($code = $plugins->load('profile_mail_prepared')) ? eval($code) : null;
 			echo $tpl->parse("profile/mail");
-			$plugins->load('profile_mail_bottom');
+			($code = $plugins->load('profile_mail_end')) ? eval($code) : null;
 			
 		}
 	}
@@ -227,21 +239,32 @@ elseif ($_GET['action'] == "sendjabber" && $is_member) {
 }
 elseif ($_GET['action'] == "ims" && $is_member) {
 	$error = array();
+	if ($my->p['profile'] == 0) {
+		$error[] = $lang->phrase('not_allowed');
+	}
+	
+	$sqlfields = '';
+	
+	($code = $plugins->load('profile_ims_start')) ? eval($code) : null;
+	
 	if ($_GET['type'] == 'icq' || $_GET['type'] == 'aol' || $_GET['type'] == 'yahoo' || $_GET['type'] == 'msn' || $_GET['type'] == 'jabber' || $_GET['type'] == 'skype') {
 		$imtext = $lang->phrase('im_'.$_GET['type']);
 	}
 	else {
 		$error[] = $lang->phrase('query_string_error');
 	}
-	if ($my->p['profile'] == 0) {
-		$error[] = $lang->phrase('not_allowed');
-	}
-		
-	$result = $db->query('SELECT id, name, icq, aol, yahoo, msn, jabber, skype FROM '.$db->pre.'user WHERE id = "'.$_GET['id'].'"',__LINE__,__FILE__);
+
+	$result = $db->query('
+	SELECT id, name, icq, aol, yahoo, msn, jabber, skype {$sqlfields} 
+	FROM '.$db->pre.'user 
+	WHERE id = "'.$_GET['id'].'"
+	',__LINE__,__FILE__);
+	
 	$row = $gpc->prepare($db->fetch_assoc($result));
 	if ($row[$_GET['type']] == NULL || $row[$_GET['type']] == '') {
 		$error[] = $lang->phrase('im_no_data');
 	}
+	
 	if (count($error) > 0) {
 		errorLogin($error, 'profile.php?id='.$_GET['id'].SID2URL_x);
 	}
@@ -254,20 +277,16 @@ elseif ($_GET['action'] == "ims" && $is_member) {
 		echo $tpl->parse("menu");
 		include("classes/class.imstatus.php");
 		$imstatus = new IMStatus();
-		if ($t == 'aol') {
-			$status = $imstatus->aim($d);
-		}
-		else {
-			$status = $imstatus->$t($d);
-		}
+		$status = $imstatus->$t($d);
 		if ($status) {
 			$imstatus = $lang->phrase('im_status_'.$status);	
 		}
 		else {
 			$imstatus = $lang->phrase('im_no_connection').'<!-- Error #'.$imstatus->error(IM_ERRNO).' occurred during query: '.$imstatus->error(IM_ERRSTR).' -->';
 		}
+		($code = $plugins->load('profile_ims_prepared')) ? eval($code) : null;
 		echo $tpl->parse("profile/ims");
-		$plugins->load('profile_ims_bottom');
+		($code = $plugins->load('profile_ims_start')) ? eval($code) : null;
 	}
 }
 elseif ($_GET['action'] == 'emailimage' && $is_guest) {
@@ -286,10 +305,20 @@ elseif ($is_guest) {
 	echo $tpl->parse("header");
 	echo $tpl->parse("menu");
 	$group = 'fallback_no_username';
+	($code = $plugins->load('profile_guest_prepared')) ? eval($code) : null;
 	echo $tpl->parse("profile/guest");
 }
 elseif ($is_member) {
-	$result = $db->query("SELECT u.*, f.* FROM {$db->pre}user AS u LEFT JOIN {$db->pre}userfields AS f ON u.id = f.ufid WHERE id = {$_GET['id']} LIMIT 1",__LINE__,__FILE__);
+	($code = $plugins->load('profile_member_start')) ? eval($code) : null;
+
+	$result = $db->query("
+	SELECT u.*, f.* 
+	FROM {$db->pre}user AS u 
+		LEFT JOIN {$db->pre}userfields AS f ON u.id = f.ufid 
+	WHERE id = {$_GET['id']} 
+	LIMIT 1
+	",__LINE__,__FILE__);
+	
 	if ($db->num_rows($result) == 1) {
 		$row = $gpc->prepare($db->fetch_object($result));
 	
@@ -470,19 +499,21 @@ elseif ($is_member) {
 			}
 		}
 
-		$plugins->load('profile_top');
+		($code = $plugins->load('profile_member_prepared')) ? eval($code) : null;
 		echo $tpl->parse("profile/index");
-		$plugins->load('profile_bottom');
-
+		($code = $plugins->load('profile_member_end')) ? eval($code) : null;
 	}
 	else {
 		$group = 'fallback_no_username_group';
+		($code = $plugins->load('profile_member_fallback')) ? eval($code) : null;
 		echo $tpl->parse("profile/guest");
 	}
 }
 else {
 	viscacha_header('Location: members.php');
 }
+
+($code = $plugins->load('profile_end')) ? eval($code) : null;
 
 $slog->updatelogged();
 $zeitmessung = t2();

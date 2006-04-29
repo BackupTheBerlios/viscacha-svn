@@ -1,11 +1,11 @@
 Minimale Systemvorraussetzungen: 
- - PHP ab Version 4.0.6 
+ - PHP ab Version 4.1.0 
  - PHP-Erweiterungen: mysql, pcre, gd, zlib
  - MySQL ab Version 3.23.57 
   
 Normale Systemvorraussetzungen: 
  - PHP ab Version 4.2.0 
- - PHP-Erweiterungen: mysql, pcre, gd, zlib, xml 
+ - PHP-Erweiterungen: mysql, pcre, gd, zlib, xml
  - MySQL ab Version 4 
   
 Optimale Systemvorraussetzungen: 

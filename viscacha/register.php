@@ -43,6 +43,8 @@ if ($my->vlogin) {
 	error($lang->phrase('already_registered'));
 }
 
+($code = $plugins->load('register_start')) ? eval($code) : null;
+
 if ($_GET['action'] == "save") {
 	$error = array();
 	if ($config['botgfxtest'] == 1) {
@@ -90,7 +92,7 @@ if ($_GET['action'] == "save") {
 
 	// Custom profile fields
 	$upquery = array();
-	$query = $db->query("SELECT * FROM ".$db->pre."profilefields WHERE editable != '0' AND required = '1' ORDER BY disporder");
+	$query = $db->query("SELECT * FROM {$db->pre}profilefields WHERE editable != '0' AND required = '1' ORDER BY disporder");
 	while($profilefield = $db->fetch_assoc($query)) {
 		$profilefield['type'] = $gpc->prepare($profilefield['type']);
 		$thing = explode("\n", $profilefield['type'], 2);
@@ -115,16 +117,22 @@ if ($_GET['action'] == "save") {
 		$options = $gpc->save_str($options);
 		$upquery[] = "`{$field}` = '{$options}'";
 	}
-	
+
+	($code = $plugins->load('register_save_errorhandling')) ? eval($code) : null;
+
 	if (count($error) > 0) {
-		error($error,"register.php?name=".$_POST['name']."&amp;email=".$_POST['email'].SID2URL_x);
+		// ToDo: Save error data...
+		($code = $plugins->load('register_save_errordata')) ? eval($code) : null;
+		error($error,"register.php?name={$_POST['name']}&amp;email=".$_POST['email'].SID2URL_x);
 	}
 	else {
 	    $reg = time();
-	    $_POST['pwx'] = md5($_POST['pwx']);
-		$db->query("INSERT INTO {$db->pre}user (name, pw, mail, regdate, confirm) VALUES ('{$_POST['name']}', '{$_POST['pwx']}', '{$_POST['email']}', '{$reg}', '{$config['confirm_registration']}')",__LINE__,__FILE__); 
+	    $confirmcode = md5($config['cryptkey'].$reg);
+	    $pw_md5 = md5($_POST['pwx']);
+	    
+	    ($code = $plugins->load('register_save_queries')) ? eval($code) : null;
+		$db->query("INSERT INTO {$db->pre}user (name, pw, mail, regdate, confirm) VALUES ('{$_POST['name']}', '{$pw_md5}', '{$_POST['email']}', '{$reg}', '{$config['confirm_registration']}')",__LINE__,__FILE__); 
         $redirect = $db->insert_id();
-        $confirmcode = md5($config['cryptkey'].$reg);
 
 		// Custom profile fields
 		if (count($upquery) > 0) {
@@ -142,21 +150,27 @@ if ($_GET['action'] == "save") {
 		$com = $scache->load('memberdata');
 		$cache = $com->delete();
 		
+		($code = $plugins->load('register_save_end')) ? eval($code) : null;
+		
         ok($lang->phrase('register_confirm_'.$config['confirm_registration']), "log.php?action=login".SID2URL_x);
 	}
 
 }
 elseif ($_GET['action'] == 'confirm') {
 	
-	$result = $db->query("SELECT id, name, regdate, confirm FROM {$db->pre}user WHERE id = '{$_GET['id']}' AND confirm != '01' AND confirm != '11' LIMIT 1",__LINE__,__FILE__);
-	$row = $db->fetch_assoc($result);
-	$row['name'] = $gpc->prepare($row['name']);
+	($code = $plugins->load('register_confirm_start')) ? eval($code) : null;
 	
+	$result = $db->query("SELECT id, name, regdate, confirm FROM {$db->pre}user WHERE id = '{$_GET['id']}' AND confirm != '01' AND confirm != '11' LIMIT 1",__LINE__,__FILE__);
 	if ($db->num_rows($result) != 1) {
 		error($lang->phrase('register_code_no_user'), "log.php?action=login".SID2URL_x);
 	}
 	
+	$row = $db->fetch_assoc($result);
+	$row['name'] = $gpc->prepare($row['name']);
 	$confirmcode = md5($config['cryptkey'].$row['regdate']);
+	
+	($code = $plugins->load('register_confirm_check')) ? eval($code) : null;
+	
 	if ($confirmcode == $_GET['fid']) {
 		if ($row['confirm'] == '00') {
 			$cn = '01';
@@ -164,6 +178,7 @@ elseif ($_GET['action'] == 'confirm') {
 		else {
 			$cn = '11';
 		}
+		($code = $plugins->load('register_confirm_query')) ? eval($code) : null;
 		$result = $db->query("UPDATE {$db->pre}user SET confirm = '{$cn}' WHERE id = '{$_GET['id']}' LIMIT 1",__LINE__,__FILE__);
 		ok($lang->phrase('register_code_validated'), "log.php?action=login".SID2URL_x);
 	}
@@ -173,20 +188,26 @@ elseif ($_GET['action'] == 'confirm') {
 	
 }
 else {
+
+	($code = $plugins->load('register_form_start')) ? eval($code) : null;
+
 	include("classes/graphic/class.veriword.php");
 	$vword = new VeriWord();
 	$veriid = $vword->set_veriword($config['botgfxtest_text_verification']);
 	if ($config['botgfxtest_text_verification'] == 1) {
 		$code = $vword->output_word($veriid);
 	}
+	
 	$breadcrumb->Add($lang->phrase('register_title'));
 	echo $tpl->parse("header");
 	echo $tpl->parse("menu");
+
 	$customfields = addprofile_customfields();
-	$plugins->load('register_top');
 	$rules = $lang->get_words('rules');
+
+	($code = $plugins->load('register_form_prepared')) ? eval($code) : null;
 	echo $tpl->parse("register");
-	$plugins->load('register_bottom');
+	($code = $plugins->load('register_form_end')) ? eval($code) : null;
 }
 
 $slog->updatelogged();

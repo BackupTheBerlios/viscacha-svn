@@ -35,12 +35,15 @@ if (is_dir('install/')) {
 	die('For your security please completely remove the installation directory ('.realpath('install/').') including all files and sub-folders - then refresh this page');
 }
 
+$job = $gpc->get('job', str);
+
 $slog = new slog();
 $my = $slog->logged();
 $my->p = $slog->Permissions();
 
+($code = $plugins->load('admin_start')) ? eval($code) : null;
+
 if ($my->p['admin'] == 1) {
-	$job = $gpc->get('job', str);
 
 	if ($action == "frames") {
 		include('admin/frames.php');
@@ -114,18 +117,25 @@ if ($my->p['admin'] == 1) {
 			include('admin/frames.php');
 		}
 		else {
-			echo head();
-			error('admin.php?action=index'.SID2URL_x, 'The page you have requested does not exist.');
+			$error = true;
+			($code = $plugins->load('admin_include')) ? eval($code) : null;
+			if ($error == true) {
+				echo head();
+				error('admin.php?action=index'.SID2URL_x, 'The page you have requested does not exist.');
+			}
 		}
 	}
 }
 else {
+	($code = $plugins->load('admin_notallowed')) ? eval($code) : null;
 	if ($my->p['admin'] == 0 && $my->vlogin) {
 		echo head();
 		error('index.php'.SID2URL_1, 'You are not allowed to view this page!');
 	}
     viscacha_header('Location: log.php?redirect=admin.php'.SID2URL_JS_x);
 }
+
+($code = $plugins->load('admin_end')) ? eval($code) : null;
 
 $db->close();	
 ?>

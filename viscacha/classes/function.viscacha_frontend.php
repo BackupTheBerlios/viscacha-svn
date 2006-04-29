@@ -368,7 +368,7 @@ function SubStats($rtopics, $rreplys, $rid, $cat_cache,$bids=array()) {
 
 
 function BoardSelect($board = 0) {
-	global $config, $my, $tpl, $db, $gpc, $lang, $scache;
+	global $config, $my, $tpl, $db, $gpc, $lang, $scache, $plugins;
 
 	$found = false;
 	$sub_cache = array();
@@ -386,10 +386,11 @@ function BoardSelect($board = 0) {
 	$index_moderators = $scache->load('index_moderators');
 	$mod_cache = $index_moderators->get();
 
+	($code = $plugins->load('forums_query')) ? eval($code) : null;
     // Fetch Forums
 	$result = $db->query("SELECT 
-    c.id, c.name, c.desc, c.opt, c.optvalue, c.bid, c.topics, c.replys, c.cid, c.last_topic, c.invisible,  
-    t.topic as btopic, t.id as btopic_id, t.last as bdate, u.name AS uname, t.last_name AS bname
+    	c.id, c.name, c.desc, c.opt, c.optvalue, c.bid, c.topics, c.replys, c.cid, c.last_topic, c.invisible,  
+    	t.topic as btopic, t.id as btopic_id, t.last as bdate, u.name AS uname, t.last_name AS bname
     FROM {$db->pre}cat AS c
         LEFT JOIN {$db->pre}topics AS t ON c.last_topic=t.id 
         LEFT JOIN {$db->pre}user AS u ON t.last_name=u.id 
@@ -418,6 +419,7 @@ function BoardSelect($board = 0) {
 	    if ($row['bid'] == $board) {
 	        $forum_cache[$row['cid']][] = $row;
 	    }
+	    ($code = $plugins->load('forums_caching')) ? eval($code) : null;
 	}
 	
 	// Work with the chached data!
@@ -570,12 +572,14 @@ function BoardSelect($board = 0) {
 					}
 				}
 			}
+			($code = $plugins->load('forums_entry_prepared')) ? eval($code) : null;
 			if ($forum['show'] == true) {
             	$forums[] = $forum;
             }
         }
         if (count($forums) > 0) {
 	        $tpl->globalvars(compact("cat","forums"));
+	        ($code = $plugins->load('forums_prepared')) ? eval($code) : null;
 	        echo $tpl->parse("categories");
 	    }
     }
@@ -584,8 +588,9 @@ function BoardSelect($board = 0) {
 
 
 function GoBoardPW ($bpw, $bid) {
-	global $my, $config, $tpl, $db, $slog, $phpdoc, $zeitmessung;
+	global $my, $config, $tpl, $db, $slog, $phpdoc, $zeitmessung, $plugins;
 	if(!isset($my->pwfaccess[$bid]) || $my->pwfaccess[$bid] != $bpw) {
+		($code = $plugins->load('frontend_goboardpw')) ? eval($code) : null;
         echo $tpl->parse("main/boardpw");
 		$slog->updatelogged();
 		$zeitmessung = t2();
@@ -597,7 +602,7 @@ function GoBoardPW ($bpw, $bid) {
 }
 
 function errorLogin($errormsg=NULL,$errorurl=NULL,$EOS = NULL) {
-	global $config, $my, $tpl, $zeitmessung, $db, $slog, $phpdoc, $lang, $breadcrumb;
+	global $config, $my, $tpl, $zeitmessung, $db, $slog, $phpdoc, $lang, $breadcrumb, $plugins;
 	if ($errormsg == NULL) {
 		$errormsg = $lang->phrase('not_allowed');
 	}
@@ -614,7 +619,8 @@ function errorLogin($errormsg=NULL,$errorurl=NULL,$EOS = NULL) {
 	if (!$tpl->tplsent('header') && !$tpl->tplsent('popup/header')) {
 		echo $tpl->parse('header');
 	}
-
+	
+	($code = $plugins->load('frontend_errorlogin')) ? eval($code) : null;
 	$tpl->globalvars(compact("errormsg","errorurl"));
     echo $tpl->parse("main/not_allowed");
 
@@ -649,7 +655,8 @@ function error ($errormsg=NULL,$errorurl='javascript:history.back(-1);', $EOS = 
 	if (!$tpl->tplsent('header') && !$tpl->tplsent('popup/header')) {
 		echo $tpl->parse('header');
 	}
-
+	
+	($code = $plugins->load('frontend_error')) ? eval($code) : null;
 	$tpl->globalvars(compact("errormsg","errorurl"));
     echo $tpl->parse("main/error");
 
@@ -682,6 +689,7 @@ function ok ($errormsg = NULL, $errorurl = "javascript:history.back(-1)", $EOS =
 		echo $tpl->parse('header');
 	}
 	
+	($code = $plugins->load('frontend_ok')) ? eval($code) : null;
 	$tpl->globalvars(compact("errormsg","errorurl"));
     echo $tpl->parse("main/ok");
 
@@ -753,7 +761,7 @@ function count_filled($array) {
 }
 
 function get_pmdir ($dir) {
-	global $lang;
+	global $lang, $plugins;
 
 	if ($dir == '1') {
 		$dir_name = $lang->phrase('pm_dirs_inbox');
@@ -765,7 +773,7 @@ function get_pmdir ($dir) {
 		$dir_name = $lang->phrase('pm_dirs_archive');
 	}
 	else {
-		$dir_name = FALSE;
+		$dir_name = false;
 	}
 	return $dir_name;
 }

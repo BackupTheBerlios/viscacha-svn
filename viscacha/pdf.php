@@ -39,7 +39,13 @@ $my = $slog->logged();
 $lang->init($my->language);
 $tpl = new tpl();
 
-$result = $db->query('SELECT id, topic, posts, sticky, status, last, board, vquestion, prefix FROM '.$db->pre.'topics WHERE id = "'.$_GET['id'].'" LIMIT 1',__LINE__,__FILE__);
+($code = $plugins->load('pdf_topic_query')) ? eval($code) : null;
+$result = $db->query('
+SELECT id, topic, posts, sticky, status, last, board, vquestion, prefix 
+FROM '.$db->pre.'topics 
+WHERE id = "'.$_GET['id'].'" 
+LIMIT 1
+',__LINE__,__FILE__);
 $info = $gpc->prepare($db->fetch_assoc($result));
 
 $my->p = $slog->Permissions($info['board']);
@@ -90,16 +96,17 @@ BBProfile($bbcode);
 
 $memberdata_obj = $scache->load('memberdata');
 $memberdata = $memberdata_obj->get();
-
-$pdftitle = html_entity_decode($config['fname'].": ".$pre.$info['topic']);
 $pdf = new PDF();
+$pdftitle = html_entity_decode($config['fname'].": ".$pre.$info['topic']);
 $pdf->SetCompression($config['pdfcompress']);
 $pdf->AliasNbPages('[Pages]');
 $pdf->SetCreator('Viscacha '.$config['version']);
 $pdf->SetAuthor($config['fname']);
 $pdf->SetSubject($pre.$info['topic']);
 $pdf->SetTitle($pre.$info['topic']);
-$pdf->AddPage(); 
+$pdf->AddPage();
+
+($code = $plugins->load('pdf_start')) ? eval($code) : null;
 
 $inner['body'] = '';
 // prepare for vote
@@ -144,6 +151,7 @@ if (!empty($info['vquestion']) && $_GET['page'] == 1) {
 		$inner['body'] .= "- ".$row['answer']." <i>".$lang->phrase('pdf_vote_result')."</i><br>";
 	}
 	$inner['foot'] = $lang->phrase('pdf_vote_voters').$votes;
+	($code = $plugins->load('pdf_vote_prepared')) ? eval($code) : null;
 	$pdf->Bookmark($inner['head'],0,-1);
 	$pdf->PrintVote($inner['head'], $inner['body'], $inner['foot']);
 }
@@ -156,10 +164,13 @@ if ($config['tpcallow'] == 1) {
 	}
 }
 
+($code = $plugins->load('pdf_query')) ? eval($code) : null;
 $result = $db->query("
 SELECT r.edit, r.dosmileys, r.dowords, r.id, r.topic, r.comment, r.date, u.name as uname, r.name as gname, u.id as mid, u.groups, u.fullname, r.email as gmail, r.guest
-FROM {$db->pre}replies AS r LEFT JOIN {$db->pre}user AS u ON r.name=u.id 
-WHERE r.topic_id = '{$info['id']}' ".$searchsql,__LINE__,__FILE__);
+FROM {$db->pre}replies AS r 
+	LEFT JOIN {$db->pre}user AS u ON r.name=u.id 
+WHERE r.topic_id = '{$info['id']}' {$searchsql}
+",__LINE__,__FILE__);
 
 while ($row = $gpc->prepare($db->fetch_object($result))) {
 	$inner['upload_box'] = '';	
@@ -197,15 +208,18 @@ while ($row = $gpc->prepare($db->fetch_object($result))) {
 			$fsize = filesize($uppath);
 			$fsize = formatFilesize($fsize);
 			
+			($code = $plugins->load('pdf_attachments_prepared')) ? eval($code) : null;
 			// Ausgabe
 			$row->comment .= '<a href="'.$config['furl'].'/misc.php?action=attachment&id='.$file['id'].'">'.$file['file'].'</a> '.$lang->phrase('pdf_attachments_filesize').'<br>';
 		}
 	}
 	
+	($code = $plugins->load('pdf_entry_prepared')) ? eval($code) : null;
 	$pdf->Bookmark($row->topic, 0, -1);
 	$pdf->PrintTopic($row->topic, $lang->phrase('pdf_postinfo'), $row->comment);
 }
 
+($code = $plugins->load('pdf_prepared')) ? eval($code) : null;
 $pdf->Output($info['id'].'-'.$_GET['page'].'.pdf','D');
 
 $slog->updatelogged();
