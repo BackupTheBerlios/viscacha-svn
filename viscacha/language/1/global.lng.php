@@ -373,7 +373,6 @@ $lang = array(
 'index_headline' => 'Wichtige Ankündigung',
 'jump_to_last_post' => 'Zum neusten beitrag springen',
 'last_post' => 'Letzter Beitrag',
-'last_x_forumposts' => 'Letzte {$num} aktive Themen',
 'listspacer' => ', ',
 'location_no_data' => '-',
 'logged_in_as' => 'Angemeldet als:',

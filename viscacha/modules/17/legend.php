@@ -1,3 +1,1 @@
-<?php
-echo $tpl->parse($dir."legend");
-?>
+echo $tpl->parse("modules/{$pluginid}/legend");

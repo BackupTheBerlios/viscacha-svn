@@ -1808,12 +1808,19 @@ elseif ($job == 'version') {
 }
 elseif ($job == 'custom') {
 	echo head();
-	$result = $db->query("SELECT * FROM {$db->pre}settings ORDER BY name");
+	$id = $gpc->get('id', int);
+	$result = $db->query("
+	SELECT s.*, g.name AS groupname
+	FROM {$db->pre}settings AS s
+		LEFT JOIN {$db->pre}settings_groups AS g ON s.sgroup = g.id
+	WHERE s.sgroup = '{$id}'
+	ORDER BY s.name
+	", __LINE__, __FILE__);
 	?>
-	<form name="form" method="post" action="admin.php?action=settings&job=custom2">
+	<form name="form" method="post" action="admin.php?action=settings&job=custom2&id=<?php echo $id; ?>">
 	 <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
 	  <tr> 
-	   <td class="obox" colspan="3"><b>Custom Settings</b></td>
+	   <td class="obox" colspan="4"><b>Custom Settings</b></td>
 	  </tr>
 	<?php
 	if ($db->num_rows() > 0) {
@@ -1824,13 +1831,13 @@ elseif ($job == 'custom') {
 	else {
 	?>
 	  <tr> 
-	   <td class="mbox" colspan="3" align="center">No custom settings added. You can add a new setting <a href="admin.php?action=settings&job=new">here</a>.</td>
+	   <td class="mbox" colspan="4" align="center">No custom settings added for this category. You can add a new setting <a href="admin.php?action=settings&job=new">here</a>.</td>
 	  </tr>
 	<?php
 	}
 	?>
 	  <tr> 
-	   <td class="ubox" colspan="3" align="center"><input type="submit" name="Submit" value="Submit"></td> 
+	   <td class="ubox" colspan="4" align="center"><input type="submit" name="Submit" value="Submit"></td> 
 	  </tr>
 	 </table>
 	</form> 	
@@ -1839,34 +1846,106 @@ elseif ($job == 'custom') {
 }
 elseif ($job == 'custom2') {
 	echo head();
-
+	$id = $gpc->get('id', int);
 	$c->getdata();
-	
-	$result = $db->query("SELECT * FROM {$db->pre}settings ORDER BY name");
+
+	$result = $db->query("
+	SELECT s.*, g.name AS groupname
+	FROM {$db->pre}settings AS s
+		LEFT JOIN {$db->pre}settings_groups AS g ON s.sgroup = g.id
+	WHERE s.sgroup = '{$id}'
+	ORDER BY s.name
+	", __LINE__, __FILE__);
 	while ($row = $db->fetch_assoc($result)) {
-		$c->updateconfig($row['name'], str);
+		$c->updateconfig(array($row['groupname'], $row['name']), str);
 	}
 	
 	$c->savedata();
 
-	ok('admin.php?action=settings&job=custom');
+	ok('admin.php?action=settings&job=custom&id='.$id);
 }
 elseif ($job == 'delete') {
+	echo head();
 	$name = $gpc->get('name', str);
-	$db->query("DELETE FROM {$db->pre}settings WHERE name = '{$name}' LIMIT 1");
+	$id = $gpc->get('id', int);
+	$db->query("DELETE FROM {$db->pre}settings WHERE name = '{$name}' AND sgroup = '{$id}' LIMIT 1");
 	$upd = $db->affected_rows();
 	if ($upd == 1) {
+		$result = $db->query("SELECT name FROM {$db->pre}settings_groups WHERE id = '{$id}'");
+		$row = $db->fetch_assoc($result);
 		$c->getdata();
-		$c->delete($name);
+		$c->delete(array($row['name'], $name));
 		$c->savedata();
-		ok('admin.php?action=settings&job=custom','Custom Setting deleted!');
+		ok('admin.php?action=settings&job=custom&id='.$id,'Custom Setting deleted!');
 	}
 	else {
-		error('admin.php?action=settings&job=custom','Custom setting not available or belongs to core settings.');
+		error('admin.php?action=settings&job=custom&id='.$id,'Custom setting not available.');
 	}
 }
-elseif ($job == 'new') {
+elseif ($job == 'delete_group') {
+	echo head();
+	$id = $gpc->get('id', int);
+	$result = $db->query("
+	SELECT s.name, g.name AS groupname
+	FROM {$db->pre}settings AS s
+		LEFT JOIN {$db->pre}settings_groups AS g ON s.sgroup = g.id
+	WHERE s.sgroup = '{$id}'");
+	while ($row = $db->fetch_assoc($result)) {
+		$c->getdata();
+		$c->delete(array($row['groupname'], $row['name']));
+		$c->savedata();
+	}
+	$db->query("DELETE FROM {$db->pre}settings WHERE sgroup = '{$id}'");
+	$db->query("DELETE FROM {$db->pre}settings_groups WHERE id = '{$id}' LIMIT 1");
+	
+	ok('admin.php?action=settings','Custom Setting Group deleted!');
+}
+elseif ($job == 'new_group') {
 	echo head()
+	?>
+<form action="admin.php?action=settings&job=new_group2" method="post">
+<table border="0" align="center" class="border">
+<tr>
+<td class="obox" colspan="2">Add Setting group</td>
+</tr>
+<tr>
+<td class="mbox" width="40%">Title</td>
+<td class="mbox" width="60%"><input type="text" name="title" value="" size="40"></td>
+</tr>
+<tr>
+<td class="mbox" width="40%">Group Name<br /><span class="stext">This will be the name of the setting group as used in scripts and templates. If the name is "<code>value</code>", the variable is <code>$config['value']['entries']</code>.  You can use only alphanumerical characters and the underscore.</span></td>
+<td class="mbox" width="60%"><input type="text" name="name" value="" size="40"></td>
+</tr>
+<tr>
+<td class="mbox" width="40%">Description</td>
+<td class="mbox" width="60%"><textarea name="description" rows="4" cols="50"></textarea></td>
+</tr>
+<tr><td class="ubox" colspan="2" align="center"><input type="submit" value="Add Group"></td></tr>
+</table>
+</form>
+	<?php
+	echo foot();
+}
+elseif ($job == 'new_group2') {
+	echo head();
+	$title = $gpc->get('title', str);
+	$name = $gpc->get('name', str);
+	$desc = $gpc->get('description', str);
+	
+	if (strlen($title) < 3 || strlen($title) > 120) {
+		error('admin.php?action=settings&job=custom','Title is too short or too long.');
+	}
+	if (strlen($name) < 3 || strlen($name) > 120) {
+		error('admin.php?action=settings&job=custom','Group Name is too short or too long.');
+	}
+	
+	$db->query("INSERT INTO {$db->pre}settings_groups (title, name, description) VALUES ('{$title}', '{$name}', '{$desc}')");
+	
+	ok('admin.php?action=settings&job=custom', 'Group inserted!');
+}
+elseif ($job == 'new') {
+	echo head();
+	$result = $db->query("SELECT id, title FROM {$db->pre}settings_groups ORDER BY title");
 	?>
 <form action="admin.php?action=settings&job=new2" method="post">
 <table border="0" align="center" class="border">
@@ -1882,7 +1961,15 @@ elseif ($job == 'new') {
 <td class="mbox" width="60%"><textarea name="description" rows="4" cols="50"></textarea></td>
 </tr>
 <tr>
-<td class="mbox" width="40%">Setting Name<br /><span class="stext">This will be the name of the setting as used in scripts and templates. If the name is "<code>value</code>", the variable is <code>$config['value']</code></span></td>
+<td class="mbox" width="40%">Group</td>
+<td class="mbox" width="60%"><select name="group">
+<?php while ($row = $db->fetch_assoc($result)) { ?>
+<option value="<?php echo $row['id']; ?>"><?php echo $row['title']; ?></option>
+<?php } ?>
+</select></td>
+</tr>
+<tr>
+<td class="mbox" width="40%">Setting Name<br /><span class="stext">This will be the name of the setting as used in scripts and templates. If the name is "<code>value</code>", the variable is <code>$config['groupname']['value']</code>. You can use only alphanumerical characters and the underscore.</span></td>
 <td class="mbox" width="60%"><input type="text" name="name" value="" size="40"></td>
 </tr>
 <tr>
@@ -1925,8 +2012,12 @@ elseif ($job == 'new2') {
 	$type = $gpc->get('type', str);
 	$typevalue = $gpc->get('typevalue', none);
 	$value = $gpc->get('value', str);
+	$group = $gpc->get('group', int);
 	
-	if (isset($config[$name]) || strlen($name) < 3 || strlen($name) > 120) {
+	$result = $db->query("SELECT name FROM {$db->pre}settings_groups WHERE id = '{$group}'");
+	$row = $db->fetch_assoc($result);
+	
+	if (isset($config[$row['name']][$name]) || strlen($name) < 3 || strlen($name) > 120) {
 		error('admin.php?action=settings&job=custom','Name already exists.');
 	}
 	if ($type != 'checkbox' && $type != 'text' && $type != 'textarea' && $type != 'select') {
@@ -1938,7 +2029,7 @@ elseif ($job == 'new2') {
 		$arr_value = prepare_custom($typevalue);
 		$typevalue = $gpc->save_str($typevalue);
 		if (empty($arr_value[$value])) {
-			error('admin.php?action=settings&job=custom','Value is not given in Setting Type Values.');
+			error('admin.php?action=settings&job=new','Value is not given in Setting Type Values.');
 		}
 	}
 	else {
@@ -1946,26 +2037,27 @@ elseif ($job == 'new2') {
 	}
 	
 	$db->query("
-INSERT INTO {$db->pre}settings (name, title, description, type, optionscode, value) 
-VALUES ('{$name}', '{$title}', '{$desc}', '{$type}', '{$typevalue}', '{$value}')
+INSERT INTO {$db->pre}settings (name, title, description, type, optionscode, value, sgroup) 
+VALUES ('{$name}', '{$title}', '{$desc}', '{$type}', '{$typevalue}', '{$value}', '{$group}')
 ");
 	
 	$c->getdata();
-	$c->updateconfig($name, str, $value);
+	$c->updateconfig(array($row['name'], $name), str, $value);
 	$c->savedata();
 	
-	ok('admin.php?action=settings&job=custom', 'Setting inserted!');
+	ok('admin.php?action=settings&job=custom&id='.$group, 'Setting inserted!');
 }
 else {
 	echo head();
+	$result = $db->query("SELECT id, title, description FROM {$db->pre}settings_groups ORDER BY title");
 	?>
 <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
  <tr> 
-  <td class="obox" colspan="2"><b>Forum Settings</b></td>
+  <td class="obox" colspan="2"><b>Viscacha Settings</b></td>
  </tr>
- <tr class="mbox"><td>
+ <tr class="mbox"><td width="30%">
   <a href="admin.php?action=settings&job=sitestatus">Switch Viscacha on or off</a>
- </td><td>
+ </td><td width="70%">
   <span class="stext">Here you can temporarily deactivate the system for non-administrators to do maintenance work or updates.</span>
  </td></tr>
  <tr class="mbox"><td>
@@ -2103,13 +2195,23 @@ else {
  </td><td>
   <span class="stext">Portal, homepage and site administration.</span>
  </td></tr>
- <tr class="mbox"><td>
-  <a href="admin.php?action=settings&job=custom">Custom Settings</a>
- </td><td>
-  <span class="stext">Self provided settings.</span>
- </td></tr>
+</table>
+<?php if ($db->num_rows($result)) { ?>
+</table><br class="minibr" />
+<table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
+ <tr> 
+  <td class="obox" colspan="3"><b>Custom Settings</b></td>
+ </tr>
+ <?php while ($row = $db->fetch_assoc($result)) { ?>
+ <tr class="mbox">
+  <td width="30%"><a href="admin.php?action=settings&job=custom&id=<?php echo $row['id']; ?>"><?php echo $row['title']; ?></a></td>
+  <td width="60%" class="stext"><?php echo $row['description']; ?></td>
+  <td width="10%"><a href="admin.php?action=settings&job=delete_group&id=<?php echo $row['id']; ?>">Delete Group</a></td>
+ </tr>
+ <?php } ?>
 </table>
 	<?php
+	}
 	echo foot();
 }
 
@@ -2118,15 +2220,16 @@ function custom_select($arr) {
 	$val = prepare_custom($arr['optionscode']);
 ?>
 <tr> 
- <td class="mbox" width="45%"><?php echo $arr['title']; ?><br /><span class="stext"><?php echo $arr['description']; ?></span></td>
+ <td class="mbox" width="35%"><?php echo $arr['title']; ?><br /><span class="stext"><?php echo $arr['description']; ?></span></td>
  <td class="mbox" width="45%">
  <select name="<?php echo $arr['name']; ?>">
  <?php foreach ($val as $key => $value) { ?>
-  <option value="<?php echo $key; ?>"<?php echo iif($config[$arr['name']] == $key, ' selected="selected"'); ?>><?php echo $value; ?></option>
+  <option value="<?php echo $key; ?>"<?php echo iif($config[$arr['groupname']][$arr['name']] == $key, ' selected="selected"'); ?>><?php echo $value; ?></option>
  <?php } ?>
  </select>
  </td>
- <td class="mbox" width="10%"><a href="admin.php?action=settings&job=delete&name=<?php echo $arr['name']; ?>">Delete Setting</a></td>
+ <td class="mbox" width="10%"><a href="admin.php?action=settings&job=delete&name=<?php echo $arr['name']; ?>&id=<?php echo $arr['sgroup']; ?>">Delete Setting</a></td>
+ <td class="mbox" width="10%"><code>$config['<?php echo $arr['groupname']; ?>']['<?php echo $arr['name']; ?>']</code></td>
 </tr>
 <?php
 }
@@ -2134,9 +2237,10 @@ function custom_checkbox($arr) {
 	global $config;
 ?>
 <tr> 
- <td class="mbox" width="45%"><?php echo $arr['title']; ?><br /><span class="stext"><?php echo $arr['description']; ?></span></td>
- <td class="mbox" width="45%"><input type="checkbox" name="<?php echo $arr['name']; ?>" value="<?php echo $config[$arr['name']]; ?>"<?php echo iif($config[$arr['name']],' checked="checked"'); ?> /></td>
- <td class="mbox" width="10%"><a href="admin.php?action=settings&job=delete&name=<?php echo $arr['name']; ?>">Delete Setting</a></td>
+ <td class="mbox" width="35%"><?php echo $arr['title']; ?><br /><span class="stext"><?php echo $arr['description']; ?></span></td>
+ <td class="mbox" width="45%"><input type="checkbox" name="<?php echo $arr['name']; ?>" value="<?php echo $config[$arr['groupname']][$arr['name']]; ?>"<?php echo iif($config[$arr['name']],' checked="checked"'); ?> /></td>
+ <td class="mbox" width="10%"><a href="admin.php?action=settings&job=delete&name=<?php echo $arr['name']; ?>&id=<?php echo $arr['sgroup']; ?>">Delete Setting</a></td>
+ <td class="mbox" width="10%"><code>$config['<?php echo $arr['groupname']; ?>']['<?php echo $arr['name']; ?>']</code></td>
 </tr>
 <?php
 }
@@ -2144,9 +2248,10 @@ function custom_text($arr) {
 	global $config;
 ?>
 <tr> 
- <td class="mbox" width="45%"><?php echo $arr['title']; ?><br /><span class="stext"><?php echo $arr['description']; ?></span></td>
- <td class="mbox" width="45%"><input type="text" name="<?php echo $arr['name']; ?>" value="<?php echo $config[$arr['name']]; ?>" /></td>
- <td class="mbox" width="10%"><a href="admin.php?action=settings&job=delete&name=<?php echo $arr['name']; ?>">Delete Setting</a></td>
+ <td class="mbox" width="35%"><?php echo $arr['title']; ?><br /><span class="stext"><?php echo $arr['description']; ?></span></td>
+ <td class="mbox" width="45%"><input type="text" name="<?php echo $arr['name']; ?>" value="<?php echo $config[$arr['groupname']][$arr['name']]; ?>" /></td>
+ <td class="mbox" width="10%"><a href="admin.php?action=settings&job=delete&name=<?php echo $arr['name']; ?>&id=<?php echo $arr['sgroup']; ?>">Delete Setting</a></td>
+ <td class="mbox" width="10%"><code>$config['<?php echo $arr['groupname']; ?>']['<?php echo $arr['name']; ?>']</code></td>
 </tr>
 <?php
 }
@@ -2154,9 +2259,10 @@ function custom_textarea($arr) {
 	global $config;
 ?>
 <tr> 
- <td class="mbox" width="45%"><?php echo $arr['title']; ?><br /><span class="stext"><?php echo $arr['description']; ?></span></td>
- <td class="mbox" width="45%"><textarea cols="50" rows="4" name="<?php echo $arr['name']; ?>"><?php echo $config[$arr['name']]; ?></textarea></td>
- <td class="mbox" width="10%"><a href="admin.php?action=settings&job=delete&name=<?php echo $arr['name']; ?>">Delete Setting</a></td>
+ <td class="mbox" width="35%"><?php echo $arr['title']; ?><br /><span class="stext"><?php echo $arr['description']; ?></span></td>
+ <td class="mbox" width="45%"><textarea cols="50" rows="4" name="<?php echo $arr['name']; ?>"><?php echo $config[$arr['groupname']][$arr['name']]; ?></textarea></td>
+ <td class="mbox" width="10%"><a href="admin.php?action=settings&job=delete&name=<?php echo $arr['name']; ?>&id=<?php echo $arr['sgroup']; ?>">Delete Setting</a></td>
+ <td class="mbox" width="10%"><code>$config['<?php echo $arr['groupname']; ?>']['<?php echo $arr['name']; ?>']</code></td>
 </tr>
 <?php
 }

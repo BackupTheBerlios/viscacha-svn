@@ -1,12 +1,12 @@
-<?php
-global $slog, $bbcode, $gpc, $scache;
+$anznews = $config['module_'.$pluginid]['items'];
+$teaserlength = $config['module_'.$pluginid]['teaserlength'];
 
 $result = $db->query("
 SELECT r.dowords, r.dosmileys, t.posts, t.prefix, t.status, t.sticky, t.id, t.board, t.topic, r.comment, r.date, r.guest, IF(r.guest = '0', u.name, r.name) AS name 
 FROM {$db->pre}topics AS t LEFT JOIN {$db->pre}replies AS r ON t.id = r.topic_id LEFT JOIN {$db->pre}user AS u ON r.name=u.id 
 WHERE t.mark = 'n' AND (t.status = '0' OR t.status = '1') ".$slog->sqlinboards('r.board')." AND r.tstart = '1' 
 ORDER BY r.date DESC
-LIMIT ".$ini['params']['num']
+LIMIT 0,{$anznews}"
 ,__LINE__,__FILE__);
 BBProfile($bbcode);
 while ($row = $gpc->prepare($db->fetch_assoc($result))) {
@@ -23,8 +23,8 @@ while ($row = $gpc->prepare($db->fetch_assoc($result))) {
 	
 	// Verbessern: Es wird mitten in BB-Codes angeschnitten
 	$row['date'] = str_date($lang->phrase('dformat1'), times($row['date']));
-	if (strlen($row['comment']) > $ini['params']['len'] && strpos($row['comment'], '. ', $ini['params']['len']) !== FALSE) {
-		$row['comment'] = substr($row['comment'],0,strpos($row['comment'], '. ', $ini['params']['len'])).'.';
+	if (strlen($row['comment']) > $teaserlength && strpos($row['comment'], '. ', $teaserlength) !== false) {
+		$row['comment'] = substr($row['comment'],0,strpos($row['comment'], '. ', $teaserlength)).'.';
 	}
 	else {
 		$complete = 1;
@@ -38,8 +38,5 @@ while ($row = $gpc->prepare($db->fetch_assoc($result))) {
 	$row['comment'] = $bbcode->parse($row['comment']);
 
 	$row['posts'] = numbers($row['posts']);
-	$tpl->globalvars(compact("row","complete"));
-	$lang->assign('posts',$row['posts']);
-	echo $tpl->parse($dir."news");
+	echo $tpl->parse("modules/{$pluginid}/news");
 }
-?>

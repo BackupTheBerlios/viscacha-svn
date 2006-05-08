@@ -3,6 +3,12 @@
 -- Implemented Hooks (329) --
 -----------------------------
 
+Special Hooks
+ - install
+ - uninstall
+ - source
+ - navigation
+
 addreply.php
  - addreply_topic_query
  - addreply_start
@@ -234,8 +240,8 @@ pdf.php
 
 pm.php
  - pm_show_query
- - editprofile_show_prepared
- - editprofile_show_end
+ - pm_show_prepared
+ - pm_show_end
  - pm_massmanage_move
  - pm_massmanage_delete
  - pm_massdelete_query
@@ -342,7 +348,7 @@ search.php
  - search_active_prepared
  - search_active_end
  - search_form_start
- - search_from_end
+ - search_form_end
  - search_end
 
 showforum.php

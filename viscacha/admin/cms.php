@@ -20,16 +20,13 @@ if ($job == 'plugins') {
    <td class="ubox">Aktion</td>
   </tr>
 <?php
-	$result = $db->query("SELECT * FROM {$db->pre}menu WHERE module = '1' ORDER BY ordering, id");
+	$result = $db->query("SELECT * FROM {$db->pre}plugins ORDER BY ordering");
 	$cat = array();
 	while ($row = $db->fetch_assoc($result)) {
-		$position = explode(',', $row['position']);
-		foreach ($position as $pos) {
-			if (!isset($cat[$pos])) {
-				$cat[$pos] = array();
-			}
-			$cat[$pos][] = $row;
+		if (!isset($cat[$row['position']])) {
+			$cat[$row['position']] = array();
 		}
+		$cat[$row['position']][] = $row;
 	}
 	$positions = array_keys($cat);
 	natsort($positions);
@@ -49,24 +46,22 @@ if ($job == 'plugins') {
 		<td width="10%">
 		<?php 
 		if ($head['active'] == 1) {
-			echo '<a href="admin.php?action=cms&plug=1&job=nav_active&id='.$head['id'].'&int1=0">Deaktivieren</a>';
+			echo '<a href="admin.php?action=cms&job=plugins_active&id='.$head['id'].'&int1=0">Deaktivieren</a>';
 		}
 		else {
-			echo '<a href="admin.php?action=cms&plug=1&job=nav_active&id='.$head['id'].'&int1=1">Aktivieren</a>';
+			echo '<a href="admin.php?action=cms&job=plugins_active&id='.$head['id'].'&int1=1">Aktivieren</a>';
 		}
 		?>
 		</td>
 		<td width="15%" align="right"><?php echo $head['ordering']; ?>&nbsp;&nbsp;
-		 <a href="admin.php?action=cms&plug=1&job=nav_move&id=<?php echo $head['id']; ?>&int1=-1"><img src="admin/html/images/asc.gif" border="0" alt="Hoch"></a>&nbsp;
-		 <a href="admin.php?action=cms&plug=1&job=nav_move&id=<?php echo $head['id']; ?>&int1=1"><img src="admin/html/images/desc.gif" border="0" alt="Runter"></a>
+		 <a href="admin.php?action=cms&job=plugins_move&id=<?php echo $head['id']; ?>&int1=-1"><img src="admin/html/images/asc.gif" border="0" alt="Hoch"></a>&nbsp;
+		 <a href="admin.php?action=cms&job=plugins_move&id=<?php echo $head['id']; ?>&int1=1"><img src="admin/html/images/desc.gif" border="0" alt="Runter"></a>
 		</td>
 		<td width="45%">
 		 [<a href="admin.php?action=cms&job=plugins_info&id=<?php echo $head['id']; ?>">Informationen</a>] 
-		 <!--
 		 [<a href="admin.php?action=cms&job=plugins_config&id=<?php echo $head['id']; ?>" style="text-decoration:line-through;">Konfiguration</a>] 
 		 [<a href="admin.php?action=cms&job=plugins_edit&id=<?php echo $head['id']; ?>" style="text-decoration:line-through;">&Auml;ndern</a>] 
 		 [<a href="admin.php?action=cms&job=plugins_delete&id=<?php echo $head['id']; ?>" style="text-decoration:line-through;">L&ouml;schen</a>]
-		 -->
 		</td>
 		</tr>
 		<?php
@@ -75,30 +70,43 @@ if ($job == 'plugins') {
 	?></table><?php
 	echo foot();
 }
-elseif ($job == 'plugins_edit') {
-	$nav = $gpc->get('nav', int);
-	echo head();
-	?>
-	<input type="hidden" name="nav" value="<?php echo $nav; ?>">
-	<?php
-	echo foot();
+elseif ($job == 'plugins_move') {
+	$id = $gpc->get('id', int);
+	$pos = $gpc->get('int1', int);
+	if ($id < 1) {
+		error('admin.php?action=cms&job=nav', 'Ungültige ID angegeben');
+	}
+	if ($pos < 0) {
+		$db->query('UPDATE '.$db->pre.'plugins SET ordering = ordering-1 WHERE id = '.$id);
+	}
+	elseif ($pos > 0) {
+		$db->query('UPDATE '.$db->pre.'plugins SET ordering = ordering+1 WHERE id = '.$id);
+	}
+
+	$result = $db->query("SELECT position FROM {$db->pre}plugins WHERE id = '{$id}'");
+	$row = $db->fetch_assoc($result);
+	$filesystem->unlink('cache/modules/'.$plugins->_group($row['position']).'.php');
+	viscacha_header('Location: admin.php?action=cms&job=plugins');
 }
-elseif ($job == 'plugins_edit2') {
-	echo head();
-	$nav = $gpc->get('nav', int);
-	if ($nav == 1) {
-		$url = 'admin.php?action=cms&job=nav';
+elseif ($job == 'plugins_active') {
+	$id = $gpc->get('id', int);
+	$active = $gpc->get('int1', int);
+	if ($active != 0 && $active != 1) {
+		error('admin.php?action=cms&job=nav', 'Ungültiger Status angegeben');
 	}
-	else {
-		$url = 'admin.php?action=cms&job=plugins';
-	}
-	ok($url);
+
+	$db->query('UPDATE '.$db->pre.'plugins SET active = "'.$active.'" WHERE id = '.$id);
+	
+	$result = $db->query("SELECT position FROM {$db->pre}plugins WHERE id = '{$id}'");
+	$row = $db->fetch_assoc($result);
+	$filesystem->unlink('cache/modules/'.$plugins->_group($row['position']).'.php');
+	viscacha_header('Location: admin.php?action=cms&job=plugins');
 }
 elseif ($job == 'plugins_info') {
 	$id = $gpc->get('id', int);
-	$result = $db->query("SELECT * FROM {$db->pre}menu WHERE id = '{$id}' AND module = '1' LIMIT 1");
+	$result = $db->query("SELECT * FROM {$db->pre}plugins WHERE id = '{$id}' LIMIT 1");
 	$row = $db->fetch_assoc($result);
-	$cfg = $myini->read('modules/'.$row['link'].'/config.ini');
+	$cfg = $myini->read('modules/'.$row['module'].'/config.ini');
 	$cfg = array_merge($row, $cfg);
 	
 	echo head();

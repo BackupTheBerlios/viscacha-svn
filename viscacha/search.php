@@ -180,7 +180,6 @@ if ($_GET['action'] == "search") {
 	}
 
 	($code = $plugins->load('search_search_query')) ? eval($code) : null;
-	$sql = ;
 	$result = $db->query("
 	SELECT r.topic_id 
 	FROM {$db->pre}replies AS r {$having} 
@@ -558,7 +557,7 @@ else {
 	echo $tpl->parse("menu");
 	($code = $plugins->load('search_form_start')) ? eval($code) : null;
 	echo $tpl->parse("search/index");
-	($code = $plugins->load('search_from_end')) ? eval($code) : null;
+	($code = $plugins->load('search_form_end')) ? eval($code) : null;
 }
 
 ($code = $plugins->load('search_end')) ? eval($code) : null;

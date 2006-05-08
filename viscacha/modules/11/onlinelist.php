@@ -1,6 +1,3 @@
-<?php
-global $scache, $gpc, $slog, $lang, $db, $tpl;
-
 $memberdata_obj = $scache->load('memberdata');
 $memberdata = $memberdata_obj->get();
 
@@ -35,7 +32,4 @@ if ($wwo['r'] > 0) {
 	$wwo['list'][$wwo['r']-1]['sep'] = '';
 }
 
-$tpl->globalvars(compact("wwo"));
-$lang->assign('wwo', $wwo);
-echo $tpl->parse($dir."wwo");
-?>
+echo $tpl->parse("modules/{$pluginid}/wwo");

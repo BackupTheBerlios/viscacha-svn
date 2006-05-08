@@ -1,13 +1,10 @@
-<?php
-global $info;
-global $gpc;
+$relatednum = $config['module_'.$pluginid]['relatednum'];
+
 $ignorewords = $lang->get_words();
-	
-$searchdata = array();
-	
+$ignorewords = array_map("strtolower", $ignorewords);
+
 $word_seperator = "0-9\\.,;:!\\?\\-\\|\n\r\s\"'\\[\\]\\{\\}\\(\\)\\/\\\\";
 $searchtopic = preg_split('/['.$word_seperator.']+?/', strtolower($info['topic']), -1, PREG_SPLIT_NO_EMPTY);
-$ignorewords = array_map("strtolower", $ignorewords);
 
 $sqltopic = array();
 foreach ($searchtopic as $val) {
@@ -19,17 +16,23 @@ foreach ($searchtopic as $val) {
 	}
 }
 $sqltopic = array_unique($sqltopic);
+
+$searchdata = array();
 $rows = array();
+
 if (count($sqltopic) > 0) {
 	$matchsql = implode(' ', $sqltopic);
 	
 	$slog->GlobalPermissions();
+	$boardsql = $slog->sqlinboards('board', 1);
 	
 	$result = $db->query("
-	SELECT id, board, topic, MATCH (topic) AGAINST ('$matchsql') AS af
+	SELECT id, board, topic, MATCH (topic) AGAINST ('{$matchsql}') AS af
 	FROM {$db->pre}topics
-	WHERE ".$slog->sqlinboards('board', 1)." id != '{$_GET['id']}' AND status != '2' AND MATCH (topic) AGAINST ('$matchsql') > 0.1
-	ORDER BY af DESC LIMIT ".$ini['params']['num'],__LINE__,__FILE__);
+	WHERE {$boardsql} id != '{$_GET['id']}' AND status != '2' AND MATCH (topic) AGAINST ('$matchsql') > 0.5
+	ORDER BY af DESC 
+	LIMIT {$relatednum}"
+	,__LINE__,__FILE__);
 	
 	if ($db->num_rows($result) > 0) {
 		while ($line = $db->fetch_assoc($result)) {
@@ -38,6 +41,5 @@ if (count($sqltopic) > 0) {
 		}
 	}
 }
-$tpl->globalvars(compact("rows"));
-echo $tpl->parse($dir."related");
-?>
+
+echo $tpl->parse("modules/{$pluginid}/related");

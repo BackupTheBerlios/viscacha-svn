@@ -1,5 +1,5 @@
 <?php 
-define('VISCACHA_VERSION', '0.8 Beta 1');
+define('VISCACHA_VERSION', '0.8 Beta 2');
 error_reporting(E_ERROR);
 
 if (!isset($_REQUEST) || !is_array($_REQUEST)) {

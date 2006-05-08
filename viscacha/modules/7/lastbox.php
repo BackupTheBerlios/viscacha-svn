@@ -1,12 +1,11 @@
-<?php
-global $gpc, $scache;
+$topicnum = $config['module_'.$pluginid]['topicnum'];
 
 $result = $db->query("
 SELECT t.id, t.board, t.topic, t.last AS date, t.last_name AS name
 FROM {$db->pre}topics AS t LEFT JOIN {$db->pre}cat AS c ON t.board = c.id 
 WHERE c.opt != 'pw' AND t.status != '2' ".$slog->sqlinboards('t.board')."
 ORDER BY t.last DESC 
-LIMIT 0,".$ini['params']['num']
+LIMIT 0,{$topicnum}"
 ,__LINE__,__FILE__);
 
 if ($db->num_rows($result) > 0) {
@@ -27,9 +26,6 @@ if ($db->num_rows($result) > 0) {
 		$lastbox[] = $row;
 		
 	}
-	$tpl->globalvars(compact("lastbox"));
-	$lang->assign('num', $ini['params']['num']);
-	echo $tpl->parse($dir."last");
+	echo $tpl->parse("modules/{$pluginid}/last");
 
 }
-?>

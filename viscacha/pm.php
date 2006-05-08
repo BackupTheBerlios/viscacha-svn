@@ -89,7 +89,7 @@ if ($_GET['action'] == 'show') {
 	$row['read'] = iif($row['status'] == 1,'old','new');
 	$row['level'] = $slog->getStatus($row['groups'], ', ');
 
-	($code = $plugins->load('editprofile_show_prepared')) ? eval($code) : null;
+	($code = $plugins->load('pm_show_prepared')) ? eval($code) : null;
 
 	$breadcrumb->Add(get_pmdir($row['dir']), 'pm.php?action=browse&amp;id='.$row['dir'].SID2URL_x);
 	$breadcrumb->Add($lang->phrase('pm_show'));
@@ -98,7 +98,7 @@ if ($_GET['action'] == 'show') {
 	echo $tpl->parse("menu");
 	echo $tpl->parse("pm/menu");
 	echo $tpl->parse("pm/show");
-	($code = $plugins->load('editprofile_show_end')) ? eval($code) : null;
+	($code = $plugins->load('pm_show_end')) ? eval($code) : null;
 }
 elseif ($_GET['action'] == "massmanage") {
 	$breadcrumb->Add($lang->phrase('pm_massmanage'));

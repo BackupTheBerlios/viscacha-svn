@@ -1,14 +1,18 @@
-<?php
-global $info, $scache, $gpc, $bbcode;
+$num = $config['module_'.$pluginid]['repliesnum'];
 
 $memberdata_obj = $scache->load('memberdata');
 $memberdata = $memberdata_obj->get();
 
-$tpl->globalvars(compact("row","info","ini"));
-$lang->assign("num", $ini['params']['num']);
-$lang->assign("tid", $info['id']);
-echo $tpl->parse($dir."last");
-$result = $db->query('SELECT board, dosmileys, dowords, id, topic, comment, date, name, email, guest FROM '.$db->pre.'replies WHERE topic_id = "'.$info['id'].'" ORDER BY date DESC LIMIT '.$ini['params']['num'],__LINE__,__FILE__);
+echo $tpl->parse("modules/{$pluginid}/last");
+
+$result = $db->query('
+SELECT board, dosmileys, dowords, id, topic, comment, date, name, email, guest 
+FROM '.$db->pre.'replies 
+WHERE topic_id = "'.$info['id'].'" 
+ORDER BY date DESC 
+LIMIT '.$num
+,__LINE__,__FILE__);
+
 BBProfile($bbcode);
 while ($row = $gpc->prepare($db->fetch_object($result))) {
     
@@ -26,7 +30,5 @@ while ($row = $gpc->prepare($db->fetch_object($result))) {
 	$row->comment = $bbcode->parse($row->comment);
 	
 	$row->date = str_date($lang->phrase('dformat1'), times($row->date));
-	$tpl->globalvars(compact("row"));
-	echo $tpl->parse($dir."last_bit");
+	echo $tpl->parse("modules/{$pluginid}/last_bit");
 }
-?>

@@ -1150,6 +1150,9 @@ function GlobalPermissions() {
 	$groups = implode(',', $this->groups);
 	$result = $db->query("SELECT gid, bid, ".implode(', ', $this->fFields)." FROM {$db->pre}fgroups WHERE gid IN ({$groups},0)");
 	if ($db->num_rows() == 0) {
+		if (count($boardid) == 0) {
+			return array();
+		}
 		return array_combine($boardid, array_fill(0, count($boardid), $this->permissions));
 	}
 	

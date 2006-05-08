@@ -1,11 +1,11 @@
 <?php
 $lang['related_topics'] = 'Verwandte Themen';
 $lang['related_no_results'] = 'Keine verwandten Themen gefunden';
-$lang['x_comments'] = 'Kommentare ({$posts})';
+$lang['x_comments'] = 'Kommentare ({@row->posts})';
 $lang['new_pms'] = 'Neue private Nachricht(en)';
 $lang['new_pms_since_last_visit'] = 'Sie haben seit Ihrem letzten Besuch {%my->cnpms} neue private Nachricht(en):';
 $lang['last_posts_reply'] = 'Die letzten {$num} Beiträge in diesem Thema';
-$lang['last_posts_info_reply'] = 'Dieses Thema enthält mehr als {$num} Antworten. Klicken Sie <a href="showtopic.php?id={$tid}" target="_blank">hier</a>, um das ganze Thema zu lesen.';
+$lang['last_posts_info_reply'] = 'Dieses Thema enthält mehr als {$num} Antworten. Klicken Sie <a href="showtopic.php?id={@info->id}" target="_blank">hier</a>, um das ganze Thema zu lesen.';
 $lang['mymenu'] = 'Persönliches Menü';
 $lang['mymenu_newpm_1'] = 'Du hast';
 $lang['mymenu_newpm_2'] = 'neue PN';
@@ -22,4 +22,5 @@ $lang['legend_topic_new_closed'] = "Thema geschlossen - Neuen Beiträge";
 $lang['legend_topic_old_closed'] = "Thema geschlossen - Keine neuen Beiträge";
 $lang['legend_pm_new'] = "Neue Nachricht";
 $lang['legend_pm_old'] = "Gelesene Nachrichten";
+$lang['last_x_forumposts'] = 'Letzte {$topicnum} aktive Themen';
 ?>

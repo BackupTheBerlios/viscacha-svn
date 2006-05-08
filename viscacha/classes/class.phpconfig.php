@@ -39,54 +39,63 @@ class manageconfig {
 		$top = '<?php'."\n".'if (isset($_SERVER[\'PHP_SELF\']) && basename($_SERVER[\'PHP_SELF\']) == "'.basename($file).'") die(\'Error: Hacking Attempt\');'."\n";
 		$top .= '$'.$varname.' = array();'."\n".'?>';
 	
-		$this->data = $filesystem->file_put_contents($file, $top);
+		$filesystem->file_put_contents($file, $top);
 	
 	}
 	
-	function savedata($add = false) {
+	function savedata() {
 		global $filesystem;
 		$top = '<?php'."\n".'if (isset($_SERVER[\'PHP_SELF\']) && basename($_SERVER[\'PHP_SELF\']) == "'.basename($this->file).'") die(\'Error: Hacking Attempt\');'."\n";
-		if ($add == false) {
-			$top .= '$'.$this->varname.' = array('."\n";
-		}
+		$top .= '$'.$this->varname.' = array();'."\n";
 
 		$cfg = array();
 		while (list($key, $val) = each($this->data)) {
-			if ((isset($this->opt[$key]) && $this->opt[$key] == int) || is_int($val)) {
-				$val = intval($val+0);
-			}
-			elseif (isset($this->opt[$key]) && $this->opt[$key] == null) {
-				// Fall through
+			if (is_array($val)) {
+				foreach ($val as $key2 => $val2) {
+					if ((isset($this->opt[$key][$key2]) && $this->opt[$key][$key2] == int) || is_int($val2)) {
+						$val2 = intval($val2);
+					}
+					elseif (isset($this->opt[$key][$key2]) && $this->opt[$key][$key2] == null) {
+						// Fall through
+					}
+					else {
+						$val2 = str_replace("'", "\\'", $val2);
+						$val2 = "'{$val2}'";
+					}
+					$cfg[] = '$'.$this->varname."['{$key}']['{$key2}'] = {$val2};";
+				}
 			}
 			else {
-				$val = str_replace("'", "\\'", $val);
-				$val = "'{$val}'";
-			}
-			if ($add == false) {
-				$cfg[] = "'".$key."' => ".$val;
-			}
-			else {
-				$cfg[] = '$'.$this->varname."['".$key."'] = ".$val.";";
-			
+				if ((isset($this->opt[$key]) && $this->opt[$key] == int) || is_int($val)) {
+					$val = intval($val);
+				}
+				elseif (isset($this->opt[$key]) && $this->opt[$key] == null) {
+					// Fall through
+				}
+				else {
+					$val = str_replace("'", "\\'", $val);
+					$val = "'{$val}'";
+				}
+				$cfg[] = '$'.$this->varname."['{$key}'] = {$val};";
 			}
 		}
 		natcasesort($cfg);		
 
-		if ($add == false) {
-			$newdata = implode(",\n", $cfg);
-			$bottom = "\n".');'."\n".'?>';
-		}
-		else {
-			$newdata = implode("\n", $cfg);
-			$bottom = "\n".'?>';
-		}
+		$newdata = implode("\n", $cfg);
+		$bottom = "\n".'?>';
 	
-		$this->data = $filesystem->file_put_contents($this->file,$top.$newdata.$bottom);
-	
+		$filesystem->file_put_contents($this->file,$top.$newdata.$bottom);
 	}
 
 	function updateconfig($key, $type = str, $val = null) {
-		$key = trim($key);		
+		if (is_array($key)) {
+			$key = array_map('trim', $key);
+			$group = $key[0];
+			$key = $key[1];
+		}
+		else {
+			$key = trim($key);
+		}
 		if ($val == null) {
 			global $gpc;
 			if (isset($gpc)) {
@@ -98,7 +107,7 @@ class manageconfig {
 		                $val = trim($_REQUEST[$key]);
 		            }
 		            elseif ($type == int) {
-		                $val = trim($_REQUEST[$key])+0;
+		                $val = intval(trim($_REQUEST[$key]));
 		            }
 		            else {
 		                $val = $_REQUEST[$key];
@@ -114,15 +123,27 @@ class manageconfig {
 		        }
 			}
 		}
-		$this->opt[$key] = $type;
-		$this->data[$key] = $val;
-		
-		
+
+		if (isset($group)) {
+			$this->opt[$group][$key] = $type;
+			$this->data[$group][$key] = $val;
+		}
+		else {
+			$this->opt[$key] = $type;
+			$this->data[$key] = $val;
+		}
+
 	}
 
 	function delete($key) {
-		$key = trim($key);
-		unset($this->opt[$key], $this->data[$key]);
+		if (is_array($key)) {
+			$key = array_map('trim', $key);
+			unset($this->opt[$key[0]][$key[1]], $this->data[$key[0]][$key[1]]);
+		}
+		else {
+			$key = trim($key);
+			unset($this->opt[$key], $this->data[$key]);
+		}
 	}
 
 }

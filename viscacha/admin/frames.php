@@ -22,6 +22,7 @@ if ($job == 'menu') {
 	  <ul id="part_admin_menu1">
 		<li>&raquo; <a href="admin.php?action=settings" target="Main">Change Settings</a></li>
 		<li>&raquo; <a href="admin.php?action=settings&job=new" target="Main">Add new Setting</a></li>
+		<li>&raquo; <a href="admin.php?action=settings&job=new_group" target="Main">Add Setting Group</a></li>
 		<li>&raquo; <a href="admin.php?action=settings&job=version" target="Main">Version Check</a></li>
       </ul>
      </div>

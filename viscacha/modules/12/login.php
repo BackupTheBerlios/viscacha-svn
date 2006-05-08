@@ -1,5 +1,4 @@
-<?php
 if (!$my->vlogin) {
-    echo $tpl->parse($dir."login");
+	$request_uri = htmlspecialchars($_SERVER['REQUEST_URI']);
+    echo $tpl->parse("modules/{$pluginid}/login");
 }
-?>

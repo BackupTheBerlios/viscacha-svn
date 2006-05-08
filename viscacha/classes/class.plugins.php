@@ -26,108 +26,111 @@ if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "class.plug
 
 class PluginSystem {
 
-var $buffer;
-var $cache;
-var $varcache;
-var $pos;
-
-function PluginSystem() {
-	global $scache;
-	$this->cache = $scache->load('modules');
-    $this->buffer = $this->cache->get();
-	$this->varcache = array();
-}
-
-function load($pos,$vars=NULL) {
-	global $config,$my,$db,$tpl,$slog,$lang,$bbcode,$myini;
-
-	if ($vars != NULL) {
-		$this->varcache = array_keys($vars);
-		extract($vars, EXTR_SKIP);
+	var $cache;
+	var $pos;
+	var $sqlcache;
+	
+	function PluginSystem() {
+		$this->cache = array();
+		$this->pos = array();
+		$this->sqlcache = null;
 	}
 
-	if (!isset($this->buffer[$pos])) {
-        $result = $db->query("SELECT id, name, link, param, groups FROM {$db->pre}menu WHERE active = '1' AND FIND_IN_SET('{$pos}', position) AND module = '1' ORDER BY ordering, id",__LINE__,__FILE__);
-        $this->buffer[$pos] = array();
-        while ($row = $db->fetch_assoc($result)) {
-            $this->buffer[$pos][] = $row;
-        }
-        $this->cache->set($this->buffer);
-        $this->cache->export();
-    }
+	function load($pos) {
+		$group = $this->_group($pos);
+		$this->_load_group($pos);
+		if (isset($this->cache[$group][$pos])) {
+			return $this->cache[$group][$pos];
+		}
+		else {
+			return '';
+		}
+	}
+	
+	function navigation() {
+		return '';
+	}
+	
+	function _load_group($pos) {
+		$group = $this->_group($pos);
+		$file = 'cache/modules/'.$group.'.php';
+		
+		if (file_exists($file) == true) {
+			$code = file_get_contents($file);
+			$code = unserialize($code);
+		}
+		else {
+			$code = $this->_build_code($pos);
+		}
+		$this->cache[$group] = $code;
+	}
+	
+	function _build_code($pos) {
+		global $myini, $db;
+		$group = $this->_group($pos);
+		$file = 'cache/modules/'.$group.'.php';
 
-    foreach ($this->buffer[$pos] as $row) {
-      	if ($row['groups'] == NULL || $this->GroupCheck($row['groups']) == TRUE) {
-    		$dir = 'modules/'.$row['link'].'/';
+		if ($this->sqlcache == null) {
+			$this->sqlcache = array();
+			$this->sqlcache[$group] = array();
+	        $result = $db->query("SELECT module, position FROM {$db->pre}plugins WHERE active = '1' ORDER BY ordering",__LINE__,__FILE__);
+	        while ($row = $db->fetch_assoc($result)) {
+	        	$row['group'] = $this->_group($row['position']);
+	            $this->sqlcache[$row['group']][$row['position']][] = $row['module'];
+	        }
+	    }
+	    if (!isset($this->sqlcache[$group])) {
+	    	$this->sqlcache[$group] = array();
+	    }
 
-    		$ini = $myini->read($dir."config.ini");
-			$this->pos = $pos;
-    		if (count($ini) > 0 && isset($ini['php'][0]) && file_exists($dir.$ini['php'][0])) {
-    			include($dir.$ini['php'][0]);
-    		}
-    		unset($dir, $ini);
-    	}
-    }
-    
-    if ($vars != NULL) {
-    	if (!isset($this->varcache) || !is_array($this->varcache)) {
-    		$this->varcache = array();
-    	}
-    	return compact($this->varcache);
-    }
+	    $cfgdata = array();
+	    $code = array();
+	    foreach ($this->sqlcache[$group] as $position => $mods) {
+	    	$code[$position] = '';
+	    	foreach ($mods as $plugin) {
+	    		if (!isset($cfgdata[$plugin])) {
+		    		$inifile = 'modules/'.$plugin.'/config.ini';
+		    		$cfgdata[$plugin] = $myini->read($inifile);
+	    		}
+	    		if (isset($cfgdata[$plugin]['php'])) {
+		    		foreach ($cfgdata[$plugin]['php'] as $phpposition => $phpfile) {
+		    			if ($position == $phpposition) {
+				    		$sourcefile = 'modules/'.$plugin.'/'.$phpfile;
+				    		if (file_exists($sourcefile)) {
+					    		$source = file_get_contents($sourcefile);
+					    		$code[$position] .= '$pluginid = "'.$plugin.'";'."\r\n".$source."\r\n";
+				    		}
+			    		}
+			    	}
+	    		}
+	    	}
+	    }
+
+		$save = serialize($code);		
+		$save = file_put_contents($file, $save);
+		
+		return $code;
+	}
+	
+	function _group($pos) {
+		$offset = strpos ($pos, '_');
+		if ($offset === false) {
+			return $pos;
+		}
+		else {
+			return substr($pos, 0, $offset);
+		}
+	}
+	
+	function _check_permissions($groups) {
+	    global $slog;
+	    if ($groups == 0 || count(array_intersect(explode(',', $groups), $slog->groups)) > 0) {
+	        return true;
+	    }
+	    else {
+	        return false;
+	    }
+	}
+
 }
-
-function navigation() {
-	global $config, $my, $tpl, $db, $myini, $scache;
-
-	$modules_navigation_obj = $scache->load('modules_navigation');
-	$menu = $modules_navigation_obj->get();
-
-    foreach ($menu[0] as $row) {
-    	if ($row['module'] == 0 && isset($menu[$row['id']])) {
-    	    if ($this->GroupCheck($row['groups'])) {
-        	    $nav_s = array();
-            	foreach ($menu[$row['id']] as $sub) {
-            	    if ($this->GroupCheck($sub['groups'])) {
-                        $sub['sub'] = array();
-                		if (isset($menu[$sub['id']])) {
-                		    foreach ($menu[$sub['id']] as $subsub) {
-                		        if ($this->GroupCheck($subsub['groups'])) {
-                			        $sub['sub'][] = $subsub;
-                			    }
-                		    }
-                		}
-                        $nav_s[] = $sub;
-
-            		}
-            	}
-            	$tpl->globalvars(compact("row","nav_s","nav_ss"));
-            	echo $tpl->parse("modules/navigation");
-        	}
-        }
-        else {
-            if ($row['module'] == 1 && ($row['groups'] == NULL || $this->GroupCheck($row['groups']) == TRUE)) {
-                $dir = 'modules/'.$row['link'].'/';
-                $ini = 	$myini->read($dir."config.ini");
-            	if (count($ini) > 0 && file_exists($dir.$ini['php'][0])) {
-            		include($dir.$ini['php'][0]);
-            	}
-            	unset($dir, $ini);
-        	}
-        }
-    }
-}
-
-function GroupCheck ($groups) {
-    global $slog;
-    if ($groups == 0 || count(array_intersect(explode(',', $groups), $slog->groups)) > 0) {
-        return true;
-    }
-    else {
-        return false;
-    }
-}
-
-}
-
 ?>

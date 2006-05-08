@@ -1,14 +1,12 @@
 <?php
 require_once('classes/magpie_rss/rss_fetch.inc.php');
-$newsbox_js_loaded = TRUE;
+$newsbox_js_loaded = true;
+$feed = $config['module_'.$pluginid]['feed'];
 
-if (isset($grabrss_cache[$ini['params']['feed']])) {
-	$thisfeed = &$grabrss_cache[$ini['params']['feed']];
+if (isset($grabrss_cache[$feed])) {
+	$thisfeed = &$grabrss_cache[$feed];
 }
-if (!isset($thisfeed)) {
-	return FALSE;
-}
-else {
+if (isset($thisfeed)) {
 	$rss = fetch_rss($thisfeed['file']);
 	if (!$rss) {
 		return FALSE;
@@ -47,7 +45,6 @@ else {
 		$items[$key] = $crow;
 	}
 	$a = 0;
-	$tpl->globalvars(compact("items","slide","item","a","row","ini"));
-	echo $tpl->parse($dir."grabrss");
+	echo $tpl->parse("modules/{$pluginid}/grabrss");
 }
 ?>

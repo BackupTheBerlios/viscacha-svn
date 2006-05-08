@@ -37,6 +37,7 @@ $config = array(
 'edit_edit_time' => 0,
 'enableflood' => 1,
 'enable_jabber' => 1,
+'error_handler' = 0,
 'error_reporting' => 2047,
 'fdesc' => 'Your Viscacha Installation!',
 'floodsearch' => 1,
@@ -161,4 +162,11 @@ $config = array(
 'wordstatus' => 1,
 'wordwrap' => 1
 );
+$config['module_5']['text'] = 'Willkommen in Ihrem neuen Forum.<br />Das <a href="http://www.viscacha.org">Viscacha</a>-Team';
+$config['module_5']['title'] = 'Ankündigung';
+$config['module_6']['items'] = '5';
+$config['module_6']['teaserlength'] = '300';
+$config['module_7']['topicnum'] = '10';
+$config['module_9']['repliesnum'] = '5';
+$config['module_10']['relatednum'] = '5';
 ?>
