@@ -149,6 +149,11 @@ if ($my->vlogin && $my->p['admin'] == 1) {
 		$loadlanguage_obj = $scache->load('loadlanguage');
 		$cache2 = $loadlanguage_obj->get();
 
+		$_POST['hp'] = trim($_POST['hp']);
+		if (strtolower(substr($_POST['hp'], 0, 4)) == 'www.') {
+			$_POST['hp'] = "http://{$_POST['hp']}";
+		}
+
 		$random = $gpc->get('random', none);
 		$name = $gpc->get('name_'.$random, str);
 		if (empty($name)) {

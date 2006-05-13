@@ -367,10 +367,10 @@ function secure_path($path) {
 
 function check_hp($hp) {
 	if (preg_match("~^https?://[a-zA-Z0-9\-\.@]+\.[a-zA-Z0-9]{1,7}(:[A-Za-z0-9]*)?/?([a-zA-Z0-9\-\.:_\?\,;/\\\+&%\$#\=\~]*)?$~i", $hp)) {
-		return TRUE;
+		return true;
 	}
 	else {
-		return FALSE;
+		return false;
 	}
 }
 function check_mail($email) {

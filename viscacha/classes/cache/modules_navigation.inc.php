@@ -7,7 +7,7 @@ class cache_modules_navigation extends CacheItem {
 		    $this->import();
 		}
 		else {
-		    $result = $db->query("SELECT id, name, link, param, groups, sub, module FROM {$db->pre}menu WHERE active = '1' AND FIND_IN_SET('navigation', position) ORDER BY ordering, id",__LINE__,__FILE__);
+		    $result = $db->query("SELECT id, name, link, param, groups, sub, module FROM {$db->pre}menu WHERE active = '1' ORDER BY ordering, id",__LINE__,__FILE__);
 		    $this->data = array();
 		    while ($row = $db->fetch_assoc($result)) {
 		        if (!isset($this->data[$row['sub']])) {

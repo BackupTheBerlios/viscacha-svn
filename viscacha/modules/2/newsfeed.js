@@ -1,9 +1,9 @@
 // Newsfeeds-Navbox
-var nf_index=new Array()
-var nf_delay=new Array()
-var nf_timeout=new Array()
-var nf_hover=new Array()
-var nf_content=new Array()
+var nf_index = new Array();
+var nf_delay = new Array();
+var nf_timeout = new Array();
+var nf_hover = new Array();
+var nf_content = new Array();
 
 function registerNF(id, delay) {
     nf_index[id] = 0;

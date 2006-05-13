@@ -50,7 +50,7 @@
 <div id="container">
     <h1><a href="index.php"><?php echo $config['fname']; ?></a></h1>
     <div id="navigation">
-	<?php echo $plugins->navigation(); ?>
+	<?php ($code = $plugins->navigation()) ? eval($code) : null; ?>
 	</div>
     <div class="breadcrumb">
     <?php echo $breadcrumb->outputHTML(' &raquo; '); ?>

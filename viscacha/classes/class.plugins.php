@@ -29,18 +29,20 @@ class PluginSystem {
 	var $cache;
 	var $pos;
 	var $sqlcache;
+	var $menu;
 	
 	function PluginSystem() {
 		$this->cache = array();
 		$this->pos = array();
 		$this->sqlcache = null;
+		$this->menu = null;
 	}
 
 	function load($pos) {
 		$group = $this->_group($pos);
 		$this->_load_group($pos);
 		if (isset($this->cache[$group][$pos])) {
-			return $this->cache[$group][$pos];
+			return implode("\r\n", $this->cache[$group][$pos]);
 		}
 		else {
 			return '';
@@ -48,7 +50,56 @@ class PluginSystem {
 	}
 	
 	function navigation() {
-		return '';
+		global $tpl;
+		
+		$group = 'navigation';
+		$this->_load_group($group);
+		$this->_cache_navigation();
+		
+		$code = '';
+		
+		if (isset($this->menu[0])) {
+			foreach ($this->menu[0] as $row) {
+				if ($row['module'] > 0) {
+					if (isset($this->cache[$group]['navigation'][$row['module']]) && $this->_check_permissions($row['groups'])) {
+						$code .= $this->cache[$group]['navigation'][$row['module']];
+					}
+				}
+				else {
+					if ($this->_check_permissions($row['groups'])) {
+						$navigation = $this->_prepare_navigation($row['id']);
+						$tpl->globalvars(compact("row","navigation"));
+						$html = $tpl->parse("modules/navigation");
+						$code .= " ?".">{$html}<"."?php \r\n";
+					}
+				}
+			}
+		}
+		return $code;
+	}
+	
+	function _cache_navigation() {
+		global $scache;
+		if ($this->menu == null) {
+			$cache = $scache->load('modules_navigation');
+			$this->menu = $cache->get();
+		}
+	}
+	
+	function _prepare_navigation($id) {
+		if (!isset($this->menu[$id])) {
+			return array();
+		}
+		else {
+			$navigation = array();
+			foreach ($this->menu[$id] as $row) {
+				if ($this->_check_permissions($row['groups'])) {
+					$row['navigation'] = $this->_prepare_navigation($row['id']);
+					$navigation[] = $row;
+				}
+			}
+			return $navigation;
+		}
 	}
 	
 	function _load_group($pos) {
@@ -73,10 +124,10 @@ class PluginSystem {
 		if ($this->sqlcache == null) {
 			$this->sqlcache = array();
 			$this->sqlcache[$group] = array();
-	        $result = $db->query("SELECT module, position FROM {$db->pre}plugins WHERE active = '1' ORDER BY ordering",__LINE__,__FILE__);
+	        $result = $db->query("SELECT id, module, position FROM {$db->pre}plugins WHERE active = '1' ORDER BY ordering",__LINE__,__FILE__);
 	        while ($row = $db->fetch_assoc($result)) {
 	        	$row['group'] = $this->_group($row['position']);
-	            $this->sqlcache[$row['group']][$row['position']][] = $row['module'];
+	            $this->sqlcache[$row['group']][$row['position']][$row['id']] = $row['module'];
 	        }
 	    }
 	    if (!isset($this->sqlcache[$group])) {
@@ -87,7 +138,7 @@ class PluginSystem {
 	    $code = array();
 	    foreach ($this->sqlcache[$group] as $position => $mods) {
 	    	$code[$position] = '';
-	    	foreach ($mods as $plugin) {
+	    	foreach ($mods as $id => $plugin) {
 	    		if (!isset($cfgdata[$plugin])) {
 		    		$inifile = 'modules/'.$plugin.'/config.ini';
 		    		$cfgdata[$plugin] = $myini->read($inifile);
@@ -98,7 +149,10 @@ class PluginSystem {
 				    		$sourcefile = 'modules/'.$plugin.'/'.$phpfile;
 				    		if (file_exists($sourcefile)) {
 					    		$source = file_get_contents($sourcefile);
-					    		$code[$position] .= '$pluginid = "'.$plugin.'";'."\r\n".$source."\r\n";
+					    		if (!isset($code[$position][$id])) {
+					    			$code[$position][$id] = '';
+					    		}
+					    		$code[$position][$id] .= '$pluginid = "'.$plugin.'";'."\r\n".$source."\r\n";
 				    		}
 			    		}
 			    	}

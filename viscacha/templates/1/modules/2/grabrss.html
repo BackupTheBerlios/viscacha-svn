@@ -1,7 +1,7 @@
-<?php echo iif(!isset($newsbox_js_loaded), '<script type="text/javascript" src="modules/{$pluginid}/newsfeed.js"></script>'); ?>
 <div class="navigation_cat">
-<h3><?php echo $row['name']; ?></h3>
+<h3><?php echo $title; ?></h3>
 	<?php if ($slide == 1) { ?>
+		<?php echo iif(!defined('newsbox_js_loaded'), '<script type="text/javascript" src="modules/'.$pluginid.'/newsfeed.js"></script>'); ?>
 		<script type="text/javascript">
 		<!--
 		nf_content[<?php echo $feed; ?>] = new Array();

@@ -824,6 +824,11 @@ elseif ($job == 'edit2') {
 	}
 	$query['pw'] = $gpc->get('pw_'.$random, str);
 	
+	$query['hp'] = trim($query['hp']);
+	if (strtolower(substr($query['hp'], 0, 4)) == 'www.') {
+		$query['hp'] = "http://{$query['hp']}";
+	}
+	
 	$error = array();
 	if (strxlen($query['comment']) > $config['maxaboutlength']) {
 		$error[] = 'Perönliche Seite ist zu lang';

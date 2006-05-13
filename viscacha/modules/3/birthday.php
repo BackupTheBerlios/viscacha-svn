@@ -34,5 +34,6 @@ $birthday_module = $scache->load('birthday_module');
 $data = $birthday_module->get($today);
 
 if (count($data) > 0) {
+	$tpl->globalvars(compact("data"));
 	echo $tpl->parse("modules/{$pluginid}/birthday_box");
 }

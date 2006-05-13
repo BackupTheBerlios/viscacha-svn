@@ -30,7 +30,7 @@ DEFINE('SP_NEW', 4);
 
 class BBCode {
 
-	var $smileys = array();
+	var $smileys = null;
 	var $bbcodes = array();
 	var $custombb = array();
 	var $profile = '';
@@ -46,7 +46,6 @@ class BBCode {
 	    	'smileys' => 0,
 	    	'bbcode' => 0
 	    );
-		$this->cache_smileys();
 		$this->cache_bbcode();
 		$this->cache_custombb();
 		include('classes/class.convertroman.php');
@@ -757,16 +756,14 @@ class BBCode {
 	    return substr($this->benchmark[$type], 0, 7);
 	}
 	function parseSmileys ($text, $type = 'html') {
-	    $thiszm1=benchmarktime();
+	    $thiszm1 = benchmarktime();
+	    $this->cache_smileys();
 		if ($type != 'plain') {
 			foreach ($this->smileys as $smiley) {
-				$smiley['search'] = htmlentities($smiley['search'], ENT_QUOTES);
-				$smiley['desc'] = htmlspecialchars($smiley['desc']);
-				$smiley['replace'] = str_replace('{folder}', $this->profile['SmileyUrl'], $smiley['replace']);
 				$text = str_replace(' '.$smiley['search'], ' <img src="'.$smiley['replace'].'" border="0" alt="'.$smiley['desc'].'" />', $text);
 			}
 		}
-		$thiszm2=benchmarktime();
+		$thiszm2 = benchmarktime();
 		$this->benchmark['smileys'] += $thiszm2-$thiszm1;
 		return $text;
 	}
@@ -1006,16 +1003,18 @@ class BBCode {
 		$this->custombb = $cache->get();
 	}
 	function cache_smileys () {
-		global $scache;
-		$cache = $scache->load('smileys');
-		$this->smileys = $cache->get();
+		if ($this->smileys == null) {
+			global $scache;
+			$cache = $scache->load('smileys');
+			$cache->seturl($this->profile['SmileyUrl']);
+			$this->smileys = $cache->get();
+		}
 	}
 	function getsmileyhtml ($perrow = 5) {
 	    global $tpl, $config;
+	    $this->cache_smileys();
 		$smileys = array(0 => array(), 1 => array());
 		foreach ($this->smileys as $bb) {
-			$bb['replace'] = str_replace('{folder}', $this->profile['SmileyUrl'], $bb['replace']);
-			$bb['jssearch'] = addslashes($bb['search']);
 		   	if ($bb['show'] == 1) {
 				$smileys[1][] = $bb;
 			}

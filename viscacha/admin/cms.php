@@ -20,7 +20,7 @@ if ($job == 'plugins') {
    <td class="ubox">Aktion</td>
   </tr>
 <?php
-	$result = $db->query("SELECT * FROM {$db->pre}plugins ORDER BY ordering");
+	$result = $db->query("SELECT * FROM {$db->pre}plugins ORDER BY ordering", __LINE__, __FILE__);
 	$cat = array();
 	while ($row = $db->fetch_assoc($result)) {
 		if (!isset($cat[$row['position']])) {
@@ -77,13 +77,13 @@ elseif ($job == 'plugins_move') {
 		error('admin.php?action=cms&job=nav', 'Ungültige ID angegeben');
 	}
 	if ($pos < 0) {
-		$db->query('UPDATE '.$db->pre.'plugins SET ordering = ordering-1 WHERE id = '.$id);
+		$db->query('UPDATE '.$db->pre.'plugins SET ordering = ordering-1 WHERE id = '.$id, __LINE__, __FILE__);
 	}
 	elseif ($pos > 0) {
-		$db->query('UPDATE '.$db->pre.'plugins SET ordering = ordering+1 WHERE id = '.$id);
+		$db->query('UPDATE '.$db->pre.'plugins SET ordering = ordering+1 WHERE id = '.$id, __LINE__, __FILE__);
 	}
 
-	$result = $db->query("SELECT position FROM {$db->pre}plugins WHERE id = '{$id}'");
+	$result = $db->query("SELECT position FROM {$db->pre}plugins WHERE id = '{$id}'", __LINE__, __FILE__);
 	$row = $db->fetch_assoc($result);
 	$filesystem->unlink('cache/modules/'.$plugins->_group($row['position']).'.php');
 	viscacha_header('Location: admin.php?action=cms&job=plugins');
@@ -95,16 +95,16 @@ elseif ($job == 'plugins_active') {
 		error('admin.php?action=cms&job=nav', 'Ungültiger Status angegeben');
 	}
 
-	$db->query('UPDATE '.$db->pre.'plugins SET active = "'.$active.'" WHERE id = '.$id);
+	$db->query('UPDATE '.$db->pre.'plugins SET active = "'.$active.'" WHERE id = '.$id, __LINE__, __FILE__);
 	
-	$result = $db->query("SELECT position FROM {$db->pre}plugins WHERE id = '{$id}'");
+	$result = $db->query("SELECT position FROM {$db->pre}plugins WHERE id = '{$id}'", __LINE__, __FILE__);
 	$row = $db->fetch_assoc($result);
 	$filesystem->unlink('cache/modules/'.$plugins->_group($row['position']).'.php');
 	viscacha_header('Location: admin.php?action=cms&job=plugins');
 }
 elseif ($job == 'plugins_info') {
 	$id = $gpc->get('id', int);
-	$result = $db->query("SELECT * FROM {$db->pre}plugins WHERE id = '{$id}' LIMIT 1");
+	$result = $db->query("SELECT * FROM {$db->pre}plugins WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	$row = $db->fetch_assoc($result);
 	$cfg = $myini->read('modules/'.$row['module'].'/config.ini');
 	$cfg = array_merge($row, $cfg);
@@ -167,7 +167,7 @@ elseif ($job == 'nav') {
    <td class="ubox">Aktion</td>
   </tr>
 <?php
-	$result = $db->query("SELECT * FROM {$db->pre}menu WHERE FIND_IN_SET('navigation', position) ORDER BY ordering, id");
+	$result = $db->query("SELECT * FROM {$db->pre}menu ORDER BY ordering, id", __LINE__, __FILE__);
 	$sqlcache = array();
 	$cat = array();
 	$sub = array();
@@ -185,18 +185,25 @@ elseif ($job == 'nav') {
 	}
 
 	foreach ($cat as $head) {
+		$type = array();
+		if ($head['module'] > 0) {
+			$type[] = '<em>PlugIn</em>';
+		}
+		if ($head['active'] == 0) {
+			$type[] = '<em>Inaktiv</em>';
+		}
 	?>
 	<tr class="mmbox">
 	<td width="50%">
-	<?php echo $head['name']; ?><?php echo iif ($head['module'] == 1, ' (<em>PlugIn</em>)').iif ($head['active'] == 0, ' (<em>Inaktiv</em>)'); ?>
+	<?php echo $head['name']; ?><?php echo iif(count($type) > 0, ' ('.implode('; ', $type).')' ); ?>
 	</td>
 	<td width="10%">
 	<?php 
 	if ($head['active'] == 1) {
-		echo '<a href="admin.php?action=cms&job=nav_active&id='.$head['id'].'&int1=0">Deaktivieren</a>';
+		echo '<a href="admin.php?action=cms&job=nav_active&id='.$head['id'].iif($head['module'] > 0, '&plug='.$head['module']).'&act=0">Deaktivieren</a>';
 	}
 	else {
-		echo '<a href="admin.php?action=cms&job=nav_active&id='.$head['id'].'&int1=1">Aktivieren</a>';
+		echo '<a href="admin.php?action=cms&job=nav_active&id='.$head['id'].iif($head['module'] > 0, '&plug='.$head['module']).'&act=1">Aktivieren</a>';
 	}
 	?>
 	</td>
@@ -205,17 +212,8 @@ elseif ($job == 'nav') {
 	<a href="admin.php?action=cms&job=nav_move&id=<?php echo $head['id']; ?>&int1=1"><img src="admin/html/images/desc.gif" border="0" alt="Runter"></a>
 	</td>
 	<td width="35%">
-	 <?php if ($head['module'] == 1) { ?>
-	 [<a href="admin.php?action=cms&job=plugins_info&id=<?php echo $head['id']; ?>">Informationen</a>] 
-	 <!--
-	 [<a href="admin.php?action=cms&job=plugins_config&nav=1&id=<?php echo $head['id']; ?>" style="text-decoration:line-through;">Konfiguration</a>] 
-	 [<a href="admin.php?action=cms&job=plugins_edit&nav=1&id=<?php echo $head['id']; ?>" style="text-decoration:line-through;">&Auml;ndern</a>] 
-	 [<a href="admin.php?action=cms&job=plugins_delete&nav=1&id=<?php echo $head['id']; ?>" style="text-decoration:line-through;">L&ouml;schen</a>]
-	 -->
-	 <?php } else { ?>
 	 [<a href="admin.php?action=cms&job=nav_edit&id=<?php echo $head['id']; ?>">Ändern</a>] 
 	 [<a href="admin.php?action=cms&job=nav_delete&id=<?php echo $head['id']; ?>">Löschen</a>]	
-	 <?php } ?>
 	</td>
 	</tr>
 	<?php
@@ -230,20 +228,20 @@ elseif ($job == 'nav') {
 			}
 			else {
 				?>
-				<a href='<?php echo $link['link']; ?>' target='<?php echo $link['param']; ?>'><?php echo $link['name']; ?></a>			
-				<?php } echo iif ($link['active'] == '0', ' (<i>Inaktiv</i>)'); ?></font><br>
+				<a href="<?php echo $link['link']; ?>" target="<?php echo $link['param']; ?>"><?php echo $link['name']; ?></a>			
+				<?php } echo iif ($link['active'] == '0', ' (<em>Inaktiv</em>)'); ?><br />
 				</td>
 				<td class="mbox" width="10%">
 				<?php 
 				if ($link['active'] == 1) {
-					echo '<a href="admin.php?action=cms&job=nav_active&id='.$link['id'].'&int1=0">Deaktivieren</a>';
+					echo '<a href="admin.php?action=cms&job=nav_active&id='.$link['id'].'&act=0">Deaktivieren</a>';
 				}
 				else {
-					echo '<a href="admin.php?action=cms&job=nav_active&id='.$link['id'].'&int1=1">Aktivieren</a>';
+					echo '<a href="admin.php?action=cms&job=nav_active&id='.$link['id'].'&act=1">Aktivieren</a>';
 				}
 				?>
 				</td>
-				<td class="mbox" width="15%" align="right"><?php echo $link['ordering']; ?>&nbsp;&nbsp;
+				<td class="mbox" width="15%" nowrap="nowrap" align="center"><?php echo $link['ordering']; ?>&nbsp;&nbsp;
 				<a href="admin.php?action=cms&job=nav_move&id=<?php echo $link['id']; ?>&int1=-1"><img src="admin/html/images/asc.gif" border="0" alt="Hoch"></a>&nbsp;
 				<a href="admin.php?action=cms&job=nav_move&id=<?php echo $link['id']; ?>&int1=1"><img src="admin/html/images/desc.gif" border="0" alt="Runter"></a>
 				</font></td>			
@@ -270,14 +268,14 @@ elseif ($job == 'nav') {
 							<td class="mbox" width="10%">
 							<?php 
 							if ($sublink['active'] == 1) {
-								echo '<a href="admin.php?action=cms&job=nav_active&id='.$sublink['id'].'&int1=0">Deaktivieren</a>';
+								echo '<a href="admin.php?action=cms&job=nav_active&id='.$sublink['id'].'&act=0">Deaktivieren</a>';
 							}
 							else {
-								echo '<a href="admin.php?action=cms&job=nav_active&id='.$sublink['id'].'&int1=1">Aktivieren</a>';
+								echo '<a href="admin.php?action=cms&job=nav_active&id='.$sublink['id'].'&act=1">Aktivieren</a>';
 							}
 							?>
 							</td>
-							<td class="mbox" width="15%" align="right"><?php echo $sublink['ordering']; ?>&nbsp;&nbsp;
+							<td class="mbox" width="15%" nowrap="nowrap" align="right"><?php echo $sublink['ordering']; ?>&nbsp;&nbsp;
 							<a href="admin.php?action=cms&job=nav_move&id=<?php echo $sublink['id']; ?>&int1=-1"><img src="admin/html/images/asc.gif" border="0" alt="Hoch"></a>&nbsp;
 							<a href="admin.php?action=cms&job=nav_move&id=<?php echo $sublink['id']; ?>&int1=1"><img src="admin/html/images/desc.gif" border="0" alt="Runter"></a>
 							</td>			
@@ -298,14 +296,14 @@ elseif ($job == 'nav') {
 elseif ($job == 'nav_edit') {
 	echo head();
 	$id = $gpc->get('id', int);
-	$result = $db->query("SELECT * FROM {$db->pre}menu WHERE id = '{$id}' LIMIT 1");
+	$result = $db->query("SELECT * FROM {$db->pre}menu WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	$data = $db->fetch_assoc($result);
 	$data['group_array'] = explode(',', $data['groups']);
 	
-	$groups = $db->query("SELECT id, name FROM {$db->pre}groups");
+	$groups = $db->query("SELECT id, name FROM {$db->pre}groups", __LINE__, __FILE__);
 	
 	if ($data['sub'] > 0) {
-		$result = $db->query("SELECT id, name, sub FROM {$db->pre}menu WHERE FIND_IN_SET('navigation', position) AND module != '1' ORDER BY ordering, id");
+		$result = $db->query("SELECT id, name, sub FROM {$db->pre}menu WHERE module = '0' ORDER BY ordering, id", __LINE__, __FILE__);
 		$cache = array(0 => array());
 		while ($row = $db->fetch_assoc($result)) {
 			if (!isset($cache[$row['sub']]) || !is_array($cache[$row['sub']])) {
@@ -314,11 +312,15 @@ elseif ($job == 'nav_edit') {
 			$cache[$row['sub']][] = $row;
 		}
 	}
+	
+	if ($data['module'] > 0) {
+		$plugs = $db->query("SELECT * FROM {$db->pre}plugins WHERE position = 'navigation' ORDER BY ordering", __LINE__, __FILE__);
+	}
 	?>
 <form name="form" method="post" action="admin.php?action=cms&job=nav_edit2&id=<?php echo $id; ?>">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr> 
-   <td class="obox" colspan="2">Box/Link ändern</td>
+   <td class="obox" colspan="2"><?php echo iif ($data['sub'] > 0, 'Link', 'Box'); ?> ändern</td>
   </tr>
   <tr> 
    <td class="mbox" width="50%">Titel:</td>
@@ -338,27 +340,41 @@ elseif ($job == 'nav_edit') {
    <td class="mbox" width="50%">
    <select name="sub">
    <?php foreach ($cache[0] as $row) { ?>
-   <option style="font-weight: bold;" value="<?php echo $row['id']; ?>"<?php echo iif($row['id'] == $data['sub'], 'selected="selected"'); ?>><?php echo $row['name']; ?></option>
+   <option style="font-weight: bold;" value="<?php echo $row['id']; ?>"<?php echo iif($row['id'] == $data['sub'], ' selected="selected"'); ?>><?php echo $row['name']; ?></option>
    <?php
    if (isset($cache[$row['id']])) {
    foreach ($cache[$row['id']] as $row) {
    ?>
-   <option value="<?php echo $row['id']; ?>"<?php echo iif($row['id'] == $data['sub'], 'selected="selected"'); ?>>+&nbsp;<?php echo $row['name']; ?></option>
+   <option value="<?php echo $row['id']; ?>"<?php echo iif($row['id'] == $data['sub'], ' selected="selected"'); ?>>+&nbsp;<?php echo $row['name']; ?></option>
    <?php }}} ?>
    </select>
    </td>
   </tr>
-<?php } ?>
+<?php } if ($data['module'] > 0) { ?>
+  <tr>
+   <td class="mbox" width="50%">PlugIn:</td>
+   <td class="mbox" width="50%">
+   <select name="plugin">
+   <?php while ($row = $db->fetch_assoc($plugs)) { ?>
+   <option value="<?php echo $row['id']; ?>"<?php echo iif($row['id'] == $data['module'], ' selected="selected"'); ?>><?php echo $row['name']; ?></option>
+   <?php } ?>
+   </select>
+   </td>
   </tr>
+<?php } ?>
   <tr> 
    <td class="mbox" width="50%">Gruppen:<br /><span class="stext">Gruppen denen es erlaubt ist, die Box zu betrachten.</span></td>
    <td class="mbox" width="50%">
    <?php while ($row = $db->fetch_assoc($groups)) { ?>
-    <input type="checkbox" name="groups[]"<?php echo iif($data['groups'] == 0 || in_array($row['id'], $data['group_array']), 'checked="checked"'); ?> value="<?php echo $row['id']; ?>"> <?php echo $row['name']; ?><br />
+    <input type="checkbox" name="groups[]"<?php echo iif($data['groups'] == 0 || in_array($row['id'], $data['group_array']), ' checked="checked"'); ?> value="<?php echo $row['id']; ?>"> <?php echo $row['name']; ?><br />
    <?php } ?>
    </td>
   </tr>
   <tr> 
+   <td class="mbox" width="50%">Aktiv:</td>
+   <td class="mbox" width="50%"><input type="checkbox" name="active" value="1"<?php echo iif($data['active'] == 1, ' checked="checked"'); ?> /></td>
+  </tr>
+  <tr>
    <td class="ubox" colspan="2" align="center"><input type="submit" value="Save" /></td>
   </tr>
  </table>
@@ -370,15 +386,17 @@ elseif ($job == 'nav_edit2') {
 	echo head();
 	
 	$id = $gpc->get('id', int);
-	$result = $db->query("SELECT * FROM {$db->pre}menu WHERE id = '{$id}' LIMIT 1");
+	$result = $db->query("SELECT * FROM {$db->pre}menu WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	$data = $db->fetch_assoc($result);
 	
 	$title = $gpc->get('title', str);
-	$groups = $gpc->get('groups', arr_int);
+	$title = trim($title);
 	if (empty($title)) {
 		error('admin.php?action=cms&job=nav_addbox', 'Sie haben keinen Titel angegeben.');
 	}
-	$result = $db->query('SELECT COUNT(*) FROM '.$db->pre.'groups');
+	$active = $gpc->get('active', int);
+	$groups = $gpc->get('groups', arr_int);
+	$result = $db->query('SELECT COUNT(*) FROM '.$db->pre.'groups', __LINE__, __FILE__);
 	$count = $db->fetch_array($result);
 	if (count($groups) == $count[0]) {
 		$groups = 0;
@@ -390,14 +408,27 @@ elseif ($job == 'nav_edit2') {
 		$target = $gpc->get('target', str);
 		$url = $gpc->get('url', str);
 		$sub = $gpc->get('sub', int);
-		$db->query("UPDATE {$db->pre}menu SET name = '{$title}', link = '{$url}', param = '{$target}', groups = '{$groups}', sub = '{$sub}' WHERE id = '{$id}' LIMIT 1");	
+		$db->query("UPDATE {$db->pre}menu SET name = '{$title}', link = '{$url}', param = '{$target}', groups = '{$groups}', sub = '{$sub}', active = '{$active}' WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);	
 	}
 	else {
-		$db->query("UPDATE {$db->pre}menu SET name = '{$title}', groups = '{$groups}' WHERE id = '{$id}' LIMIT 1");	
+		if ($data['module'] > 0) {
+			$plug = $gpc->get('plugin', int);
+			$result = $db->query("SELECT position FROM {$db->pre}plugins WHERE id = '{$plug}'", __LINE__, __FILE__);
+			if ($db->num_rows($result) > 0) {
+				$module_sql = ", module = '{$plug}'";
+				$row = $db->fetch_assoc($result);
+				$filesystem->unlink('cache/modules/'.$plugins->_group($row['position']).'.php');
+				$db->query("UPDATE {$db->pre}plugins SET active = '{$active}' WHERE id = '{$plug}' LIMIT 1", __LINE__, __FILE__);
+			}
+			$db->query("UPDATE {$db->pre}menu SET name = '{$title}', groups = '{$groups}', active = '{$active}'{$module_sql} WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
+		}
+		else {
+			$db->query("UPDATE {$db->pre}menu SET name = '{$title}', groups = '{$groups}', active = '{$active}' WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
+		}
 	}
 	$delobj = $scache->load('modules_navigation');
 	$delobj->delete();
-	ok('admin.php?action=cms&job=nav', 'Link/Box wurde erfolgreich geändert');
+	ok('admin.php?action=cms&job=nav', 'Datensatz wurde erfolgreich geändert');
 }
 elseif ($job == 'nav_delete') {
 	echo head();
@@ -406,7 +437,7 @@ elseif ($job == 'nav_delete') {
 	<table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
 	<tr><td class="obox">Komponente löschen</td></tr>
 	<tr><td class="mbox">
-	<p align="center">Wollen Sie diese Box/diesen Link mit allen evtl. vorhandenen untergeordneten Links wirklich löschen?</p>
+	<p align="center">Wollen Sie diese Box/diesen Link/diesen Verweis auf ein Plugin mit allen evtl. vorhandenen untergeordneten Links wirklich löschen?</p>
 	<p align="center">
 	<a href="admin.php?action=cms&job=nav_delete2&id=<?php echo $id; ?>"><img border="0" align="middle" alt="" src="admin/html/images/yes.gif"> Ja</a>
 	&nbsp&nbsp;&nbsp;&nbsp&nbsp;&nbsp;
@@ -421,19 +452,25 @@ elseif ($job == 'nav_delete2') {
 	echo head();
 	$id = $gpc->get('id', int);
 	$delete = array($id);
-	$result = $db->query("SELECT id, sub FROM {$db->pre}menu WHERE sub = '{$id}'");
+	
+	$result = $db->query("SELECT id, sub FROM {$db->pre}menu WHERE sub = '{$id}'", __LINE__, __FILE__);
 	while($row = $db->fetch_assoc($result)) {
 		$delete[] = $row['id'];
-		$result2 = $db->query("SELECT id FROM {$db->pre}menu WHERE sub = '{$row['id']}'");
+		$result2 = $db->query("SELECT id FROM {$db->pre}menu WHERE sub = '{$row['id']}'", __LINE__, __FILE__);
 		while($row2 = $db->fetch_assoc($result2)) {
 			$delete[] = $row2['id'];
 		}
 	}
+	
 	$count = count($delete);
 	$ids = implode(',', $delete);
-	$db->query("DELETE FROM {$db->pre}menu WHERE id IN ({$ids}) LIMIT {$count}");
+	$db->query("DELETE FROM {$db->pre}menu WHERE id IN ({$ids}) LIMIT {$count}", __LINE__, __FILE__);
 	$anz = $db->affected_rows();
-	ok('admin.php?action=cms&job=nav', $anz.' Links/Boxen wurden erfolgreich gelöscht.');
+	
+	$delobj = $scache->load('modules_navigation');
+	$delobj->delete();
+	
+	ok('admin.php?action=cms&job=nav', $anz.' Einträge wurden erfolgreich gelöscht.');
 }
 elseif ($job == 'nav_move') {
 	$id = $gpc->get('id', int);
@@ -442,63 +479,123 @@ elseif ($job == 'nav_move') {
 		error('admin.php?action=cms&job=nav', 'Ungültige ID angegeben');
 	}
 	if ($pos < 0) {
-		$db->query('UPDATE '.$db->pre.'menu SET ordering = ordering-1 WHERE id = '.$id);
+		$db->query('UPDATE '.$db->pre.'menu SET ordering = ordering-1 WHERE id = '.$id, __LINE__, __FILE__);
 	}
 	elseif ($pos > 0) {
-		$db->query('UPDATE '.$db->pre.'menu SET ordering = ordering+1 WHERE id = '.$id);
+		$db->query('UPDATE '.$db->pre.'menu SET ordering = ordering+1 WHERE id = '.$id, __LINE__, __FILE__);
 	}
 	
 	$delobj = $scache->load('modules_navigation');
 	$delobj->delete();
-	
-	if ($gpc->get('plug', int) == 1) {
-		$delobj = $scache->load('modules');
-		$delobj->delete();
-		viscacha_header('Location: admin.php?action=cms&job=plugins');
-	}
-	else {
-		viscacha_header('Location: admin.php?action=cms&job=nav');
-	}
+
+	viscacha_header('Location: admin.php?action=cms&job=nav');
 }
 elseif ($job == 'nav_active') {
 	$id = $gpc->get('id', int);
-	$pos = $gpc->get('int1', int);
+	$pos = $gpc->get('act', int);
 	if ($id < 1) {
 		error('admin.php?action=cms&job=nav', 'Ungültige ID angegeben');
 	}
 	if ($pos != 0 && $pos != 1) {
 		error('admin.php?action=cms&job=nav', 'Ungültigen Status angegeben');
 	}
+	$db->query('UPDATE '.$db->pre.'menu SET active = "'.$pos.'" WHERE id = '.$id, __LINE__, __FILE__);
+	
+	$plug = $gpc->get('plug', int);
+	if ($plug > 0) { 
+		$result = $db->query("SELECT position FROM {$db->pre}plugins WHERE id = '{$plug}'", __LINE__, __FILE__);
+		if ($db->num_rows($result) > 0) {
+			$module_sql = ", module = '{$plug}'";
+			$row = $db->fetch_assoc($result);
+			$filesystem->unlink('cache/modules/'.$plugins->_group($row['position']).'.php');
+			$db->query("UPDATE {$db->pre}plugins SET active = '{$pos}' WHERE id = '{$plug}' LIMIT 1", __LINE__, __FILE__);
+		}
+	}
+	
 	$delobj = $scache->load('modules_navigation');
 	$delobj->delete();
-	$db->query('UPDATE '.$db->pre.'menu SET active = "'.$pos.'" WHERE id = '.$id);
-	if ($gpc->get('plug', int) == 1) { 
-		$delobj = $scache->load('modules');
-		$delobj->delete();
-		viscacha_header('Location: admin.php?action=cms&job=plugins');
-	}
-	else {
-		viscacha_header('Location: admin.php?action=cms&job=nav');
-	}
+	viscacha_header('Location: admin.php?action=cms&job=nav');
 }
 elseif ($job == 'nav_addplugin') {
 	echo head();
-?>
+	$sort = $db->query("SELECT ordering, name FROM {$db->pre}menu WHERE sub = '0' ORDER BY ordering, id", __LINE__, __FILE__);
+	$plugs = $db->query("SELECT id, name FROM {$db->pre}plugins WHERE position = 'navigation' ORDER BY ordering", __LINE__, __FILE__);
+	$groups = $db->query("SELECT id, name FROM {$db->pre}groups", __LINE__, __FILE__);
+	?>
+<form name="form" method="post" action="admin.php?action=cms&job=nav_addplugin2">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr> 
-   <td class="obox">Neues PlugIn hinzufügen</td>
+   <td class="obox" colspan="2">Plugin in die Navigation aufnehmen</td>
   </tr>
   <tr> 
-   <td class="mbox">Um ein PlugIn hinzuzufügen, verfahren Sie wie mit normalen PlugIns. Evtl. müssen Sie das PlugIn beim Erstellen dem Hook "navigation" zuweisen, dann wird das PlugIn automatisch auch in die Navigation übernommen.<ul><li><a href="admin.php?action=cms&job=plugins_add" style="text-decoration:line-through;">Plugin hinzufügen</a></li></ul></td>
+   <td class="mbox" width="50%">Title:<br /><span class="stext">Leave empty to use default.</span></td>
+   <td class="mbox" width="50%"><input type="text" name="title" size="40" /></td>
+  </tr>
+  <tr>
+   <td class="mbox" width="50%">PlugIn:</td>
+   <td class="mbox" width="50%">
+   <select name="plugin">
+   <?php while ($row = $db->fetch_assoc($plugs)) { ?>
+   <option value="<?php echo $row['id']; ?>"><?php echo $row['name']; ?></option>
+   <?php } ?>
+   </select>
+   </td>
+  </tr>
+  <tr> 
+   <td class="mbox" width="50%">Einsortieren nach:</td>
+   <td class="mbox" width="50%">
+   <select name="sort">
+   <?php while ($row = $db->fetch_assoc($sort)) { ?>
+    <option value="<?php echo $row['ordering']; ?>"><?php echo $row['name']; ?></option>
+   <?php } ?>
+   </select>
+   </td>
+  </tr>
+  <tr> 
+   <td class="mbox" width="50%">Gruppen:<br /><span class="stext">Gruppen denen es erlaubt ist, das PlugIn zu betrachten.</span></td>
+   <td class="mbox" width="50%">
+   <?php while ($row = $db->fetch_assoc($groups)) { ?>
+    <input type="checkbox" name="groups[]" checked="checked" value="<?php echo $row['id']; ?>"> <?php echo $row['name']; ?><br />
+   <?php } ?>
+   </td>
+  </tr>
+  <tr> 
+   <td class="ubox" colspan="2" align="center"><input type="submit" value="Add" /></td>
   </tr>
  </table>
-<?php
+</form>
+	<?php
 	echo foot();
+}
+elseif ($job == 'nav_addplugin2') {
+	echo head();
+	$plug = $gpc->get('plugin', int);
+	$result = $db->query("SELECT id, name, active FROM {$db->pre}plugins WHERE id = '{$plug}' AND position = 'navigation'", __LINE__, __FILE__);
+	$data = $db->fetch_assoc();
+	$title = $gpc->get('title', str);
+	$title = trim($title);
+	if (empty($title)) {
+		$title = $data['name'];
+	}
+	$sort = $gpc->get('sort', int);
+	$groups = $gpc->get('groups', arr_int);
+	$result = $db->query('SELECT COUNT(*) FROM '.$db->pre.'groups', __LINE__, __FILE__);
+	$count = $db->fetch_array($result);
+	if (count($groups) == $count[0]) {
+		$groups = 0;
+	}
+	else {
+		$groups = implode(',', $groups);
+	}
+	$db->query("INSERT INTO {$db->pre}menu (name, groups, ordering, active, module) VALUES ('{$title}','{$groups}','{$sort}','{$data['active']}','{$data['id']}')", __LINE__, __FILE__);
+	$delobj = $scache->load('modules_navigation');
+	$delobj->delete();
+	ok('admin.php?action=cms&job=nav', 'Plugin wurde erfolgreich hinzugefügt');
 }
 elseif ($job == 'nav_add') {
 	echo head();
-	$groups = $db->query("SELECT id, name FROM {$db->pre}groups");
-	$result = $db->query("SELECT id, name, sub FROM {$db->pre}menu WHERE FIND_IN_SET('navigation', position) AND module != '1' ORDER BY ordering, id");
+	$groups = $db->query("SELECT id, name FROM {$db->pre}groups", __LINE__, __FILE__);
+	$result = $db->query("SELECT id, name, sub FROM {$db->pre}menu WHERE module = '0' ORDER BY ordering, id", __LINE__, __FILE__);
 	$cache = array(0 => array());
 	while ($row = $db->fetch_assoc($result)) {
 		if (!isset($cache[$row['sub']]) || !is_array($cache[$row['sub']])) {
@@ -577,17 +674,17 @@ elseif ($job == 'nav_add2') {
 		error('admin.php?action=cms&job=nav_addbox', 'Sie haben keinen Titel angegeben.');
 	}
 	if ($sort == 1) {
-		$sortx = $db->fetch_array($db->query("SELECT MAX(ordering) FROM {$db->pre}menu WHERE sub = '{$sub}' LIMIT 1"));
+		$sortx = $db->fetch_array($db->query("SELECT MAX(ordering) FROM {$db->pre}menu WHERE sub = '{$sub}' LIMIT 1", __LINE__, __FILE__));
 		$sort = $sortx[0]+1;
 	}
 	elseif ($sort == 0) {
-		$sortx = $db->fetch_array($db->query("SELECT MIN(ordering) FROM {$db->pre}menu WHERE sub = '{$sub}' LIMIT 1"));
+		$sortx = $db->fetch_array($db->query("SELECT MIN(ordering) FROM {$db->pre}menu WHERE sub = '{$sub}' LIMIT 1", __LINE__, __FILE__));
 		$sort = $sortx[0]-1;
 	}
 	else {
 		$sort = 0;
 	}
-	$result = $db->query('SELECT COUNT(*) FROM '.$db->pre.'groups');
+	$result = $db->query('SELECT COUNT(*) FROM '.$db->pre.'groups', __LINE__, __FILE__);
 	$count = $db->fetch_array($result);
 	if (count($groups) == $count[0]) {
 		$groups = 0;
@@ -595,15 +692,15 @@ elseif ($job == 'nav_add2') {
 	else {
 		$groups = implode(',', $groups);
 	}
-	$db->query("INSERT INTO {$db->pre}menu (name, groups, ordering, link, param, sub) VALUES ('{$title}','{$groups}','{$sort}','{$url}','{$target}','{$sub}')");
+	$db->query("INSERT INTO {$db->pre}menu (name, groups, ordering, link, param, sub) VALUES ('{$title}','{$groups}','{$sort}','{$url}','{$target}','{$sub}')", __LINE__, __FILE__);
 	$delobj = $scache->load('modules_navigation');
 	$delobj->delete();
 	ok('admin.php?action=cms&job=nav', 'Link wurde erfolgreich hinzugefügt');
 }
 elseif ($job == 'nav_addbox') {
 	echo head();
-	$sort = $db->query("SELECT ordering, name FROM {$db->pre}menu WHERE sub = '0' AND FIND_IN_SET('navigation', position) ORDER BY ordering, id");
-	$groups = $db->query("SELECT id, name FROM {$db->pre}groups");
+	$sort = $db->query("SELECT ordering, name FROM {$db->pre}menu WHERE sub = '0' ORDER BY ordering, id", __LINE__, __FILE__);
+	$groups = $db->query("SELECT id, name FROM {$db->pre}groups", __LINE__, __FILE__);
 	?>
 <form name="form" method="post" action="admin.php?action=cms&job=nav_addbox2">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
@@ -648,7 +745,7 @@ elseif ($job == 'nav_addbox2') {
 	}
 	$sort = $gpc->get('sort', int);
 	$groups = $gpc->get('groups', arr_int);
-	$result = $db->query('SELECT COUNT(*) FROM '.$db->pre.'groups');
+	$result = $db->query('SELECT COUNT(*) FROM '.$db->pre.'groups', __LINE__, __FILE__);
 	$count = $db->fetch_array($result);
 	if (count($groups) == $count[0]) {
 		$groups = 0;
@@ -656,7 +753,7 @@ elseif ($job == 'nav_addbox2') {
 	else {
 		$groups = implode(',', $groups);
 	}
-	$db->query("INSERT INTO {$db->pre}menu (name, groups, ordering) VALUES ('{$title}','{$groups}','{$sort}')");
+	$db->query("INSERT INTO {$db->pre}menu (name, groups, ordering) VALUES ('{$title}','{$groups}','{$sort}')", __LINE__, __FILE__);
 	$delobj = $scache->load('modules_navigation');
 	$delobj->delete();
 	ok('admin.php?action=cms&job=nav', 'Box wurde erfolgreich hinzugefügt');
@@ -694,7 +791,7 @@ elseif ($job == 'com') {
    <td class="ubox">Aktion</b></td>
   </tr>
 <?php
-	$result = $db->query("SELECT * FROM {$db->pre}component ORDER BY active DESC");
+	$result = $db->query("SELECT * FROM {$db->pre}component ORDER BY active DESC", __LINE__, __FILE__);
 	while ($row = $db->fetch_assoc($result)) {
 		$head = array();
 		$cfg = $myini->read('components/'.$row['id'].'/components.ini');
@@ -741,7 +838,7 @@ elseif ($job == 'com') {
 }
 elseif ($job == 'com_readme') {
 	$id = $gpc->get('cid', int);
-	$result = $db->query("SELECT * FROM {$db->pre}component WHERE id = {$id} LIMIT 1");
+	$result = $db->query("SELECT * FROM {$db->pre}component WHERE id = {$id} LIMIT 1", __LINE__, __FILE__);
 	$row = $db->fetch_assoc($result);
 	$cfg = $myini->read('components/'.$row['id'].'/components.ini');
 	$cfg = array_merge($row, $cfg);
@@ -763,7 +860,7 @@ elseif ($job == 'com_readme') {
 elseif ($job == 'com_admin') {
 	$id = $gpc->get('cid', int);
 	$mod = $gpc->get('file', str, 'frontpage');
-	$result = $db->query("SELECT * FROM {$db->pre}component WHERE id = {$id} LIMIT 1");
+	$result = $db->query("SELECT * FROM {$db->pre}component WHERE id = {$id} LIMIT 1", __LINE__, __FILE__);
 	$row = $db->fetch_assoc($result);
 	$cfg = $myini->read('components/'.$row['id'].'/components.ini');
 	$cfg = array_merge($row, $cfg);
@@ -783,7 +880,7 @@ elseif ($job == 'com_admin') {
 }
 elseif ($job == 'com_info') {
 	$id = $gpc->get('id', int);
-	$result = $db->query("SELECT * FROM {$db->pre}component WHERE id = {$id} LIMIT 1");
+	$result = $db->query("SELECT * FROM {$db->pre}component WHERE id = {$id} LIMIT 1", __LINE__, __FILE__);
 	$row = $db->fetch_assoc($result);
 	$cfg = $myini->read('components/'.$row['id'].'/components.ini');
 	$cfg = array_merge($row, $cfg);
@@ -826,15 +923,17 @@ elseif ($job == 'com_info') {
 	echo foot();
 }
 elseif ($job == 'com_active') {
-	if (!$_GET['id']) {
+	$id = $gpc->get('id', int);
+	$act = $gpc->get('int1', int);
+	if (!is_id($id)) {
 		error('admin.php?action=cms&job=com'.SID2URL_x, 'Ungültige ID angegeben');
 	}
-	if ($_GET['int1'] != 0 && $_GET['int1'] != 1) {
+	if ($act != 0 && $act != 1) {
 		error('admin.php?action=cms&job=com'.SID2URL_x, 'Ungültigen Status angegeben');
 	}
 	$delobj = $scache->load('components');
 	$delobj->delete();
-	$db->query('UPDATE '.$db->pre.'component SET active = "'.$_GET['int1'].'" WHERE id = '.$_GET['id']);
+	$db->query('UPDATE '.$db->pre.'component SET active = "'.$act.'" WHERE id = '.$id, __LINE__, __FILE__);
 	viscacha_header('Location: admin.php?action=cms&job=com'.SID2URL_x);
 }
 elseif ($job == 'com_add') {
@@ -892,7 +991,7 @@ elseif ($job == 'com_add2') {
 				$cfg['module']['frontpage'] = '';
 			}
 
-			$db->query("INSERT INTO {$db->pre}component (file) VALUES ('{$cfg['module']['frontpage']}')");
+			$db->query("INSERT INTO {$db->pre}component (file) VALUES ('{$cfg['module']['frontpage']}')", __LINE__, __FILE__);
 			$id = $db->insert_id();
 
 			$result = $db->query("SELECT template, stylesheet, images FROM {$db->pre}designs WHERE id = '{$config['templatedir']}'",__LINE__,__FILE__);
@@ -970,12 +1069,12 @@ elseif ($job == 'com_export') {
 	$id = $gpc->get('id', int);
 	$tempdir = 'temp/';
 	
-	$result = $db->query("SELECT * FROM {$db->pre}component WHERE id = {$id} LIMIT 1");
+	$result = $db->query("SELECT * FROM {$db->pre}component WHERE id = {$id} LIMIT 1", __LINE__, __FILE__);
 	$row = $db->fetch_assoc($result);
 	$ini = $myini->read('components/'.$row['id'].'/components.ini');
 	$info = array_merge($row, $ini);
 
-	$result = $db->query("SELECT * FROM {$db->pre}designs WHERE id = '{$config['templatedir']}' LIMIT 1");
+	$result = $db->query("SELECT * FROM {$db->pre}designs WHERE id = '{$config['templatedir']}' LIMIT 1", __LINE__, __FILE__);
 	$design = $db->fetch_assoc($result);
 	
 	$file = convert2adress($info['config']['name']).'.zip';
@@ -1048,7 +1147,7 @@ elseif ($job == 'com_delete2') {
 	
 	$cfg = $myini->read('components/'.$id.'/components.ini');
 
-	$db->query("DELETE FROM {$db->pre}component WHERE id = '".$id."' LIMIT 1");
+	$db->query("DELETE FROM {$db->pre}component WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 
 	$result = $db->query("SELECT template, stylesheet, images FROM {$db->pre}designs WHERE id = '{$config['templatedir']}'",__LINE__,__FILE__);
 	$design = $db->fetch_assoc($result);
@@ -1087,7 +1186,7 @@ elseif ($job == 'com_delete2') {
 	}
 }
 elseif ($job == 'doc') {
-	$result = $db->query('SELECT * FROM '.$db->pre.'documents');
+	$result = $db->query('SELECT * FROM '.$db->pre.'documents', __LINE__, __FILE__);
 	echo head();
 ?>
 <form name="form" method="post" action="admin.php?action=cms&job=doc_delete">
@@ -1143,10 +1242,10 @@ elseif ($job == 'doc') {
 }
 elseif ($job == 'doc_ajax_active') {
 	$id = $gpc->get('id', int);
-	$result = $db->query("SELECT active FROM {$db->pre}documents WHERE id = '{$id}' LIMIT 1");
+	$result = $db->query("SELECT active FROM {$db->pre}documents WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	$use = $db->fetch_assoc($result);
 	$use = invert($use['active']);
-	$db->query("UPDATE {$db->pre}documents SET active = '{$use}' WHERE id = '{$id}' LIMIT 1");
+	$db->query("UPDATE {$db->pre}documents SET active = '{$use}' WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	die(strval($use));
 }
 elseif ($job == 'doc_add') {
@@ -1191,7 +1290,7 @@ elseif ($job == 'doc_add2') {
 	$types = doctypes();
 	$format = $types[$type];
 	echo head();
-  	$groups = $db->query("SELECT id, name FROM {$db->pre}groups");
+  	$groups = $db->query("SELECT id, name FROM {$db->pre}groups", __LINE__, __FILE__);
 ?>
 <form id="form" method="post" action="admin.php?action=cms&job=doc_add3&type=<?php echo $type; ?>">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
@@ -1297,7 +1396,7 @@ elseif ($job == 'doc_add3') {
 		error('admin.php?action=cms&job=doc_add', 'Title is empty!');
 	}
 
-	$result = $db->query('SELECT COUNT(*) FROM '.$db->pre.'groups');
+	$result = $db->query('SELECT COUNT(*) FROM '.$db->pre.'groups', __LINE__, __FILE__);
 	$count = $db->fetch_array($result);
 	if (count($groups) == $count[0]) {
 		$groups = 0;
@@ -1308,7 +1407,7 @@ elseif ($job == 'doc_add3') {
 	
 	$time = time();
 	
-	$db->query("INSERT INTO {$db->pre}documents ( `title` , `content` , `author` , `date` , `update` , `type` , `groups` , `active` , `file` ) VALUES ('{$title}', '{$content}', '{$my->id}', '{$time}' , '{$time}' , '{$type}', '{$groups}', '{$active}', '{$file}')");
+	$db->query("INSERT INTO {$db->pre}documents ( `title` , `content` , `author` , `date` , `update` , `type` , `groups` , `active` , `file` ) VALUES ('{$title}', '{$content}', '{$my->id}', '{$time}' , '{$time}' , '{$type}', '{$groups}', '{$active}', '{$file}')", __LINE__, __FILE__);
 
 	ok('admin.php?action=cms&job=doc', 'Eintrag eingefügt');
 }
@@ -1320,7 +1419,7 @@ elseif ($job == 'doc_delete') {
 		foreach ($delete as $did) {
 			$deleteids[] = 'id = '.$did; 
 		}
-		$result = $db->query('SELECT file FROM '.$db->pre.'documents WHERE '.implode(' OR ',$deleteids));
+		$result = $db->query('SELECT file FROM '.$db->pre.'documents WHERE '.implode(' OR ',$deleteids), __LINE__, __FILE__);
 		while ($row = $db->fetch_array($result)) {
 			$rest = @substr(strtolower($row['file']), 0, 7);
 			if (!empty($row[0]) && $rest != 'http://') {
@@ -1328,7 +1427,7 @@ elseif ($job == 'doc_delete') {
 			}
 		}
 
-		$db->query('DELETE FROM '.$db->pre.'documents WHERE '.implode(' OR ',$deleteids));
+		$db->query('DELETE FROM '.$db->pre.'documents WHERE '.implode(' OR ',$deleteids), __LINE__, __FILE__);
 		$anz = $db->affected_rows();
 			
 		ok('admin.php?action=cms&job=doc', $anz.' Dokumente gelöscht');
@@ -1341,7 +1440,7 @@ elseif ($job == 'doc_edit') {
 	$tpl = new tpl();
 	$id = $gpc->get('id', int);
 	$types = doctypes();
-	$result = $db->query('SELECT * FROM '.$db->pre.'documents WHERE id = '.$id);
+	$result = $db->query('SELECT * FROM '.$db->pre.'documents WHERE id = '.$id, __LINE__, __FILE__);
 	$row = $db->fetch_assoc($result);
 	if ($db->num_rows() == 0) {
 		error('admin.php?action=cms&job=doc', 'Keine gültige ID übergeben');
@@ -1353,7 +1452,7 @@ elseif ($job == 'doc_edit') {
 			$row['content'] = file_get_contents($row['file']);
 		}
 	}
-	$groups = $db->query("SELECT id, name FROM {$db->pre}groups");
+	$groups = $db->query("SELECT id, name FROM {$db->pre}groups", __LINE__, __FILE__);
 	$garr = explode(',', $row['groups']);
 	echo head();
 	// ToDo: Autor ändern
@@ -1470,7 +1569,7 @@ elseif ($job == 'doc_edit2') {
 }
 
 elseif ($job == 'feed') {
-	$result = $db->query('SELECT * FROM '.$db->pre.'grab');
+	$result = $db->query('SELECT * FROM '.$db->pre.'grab', __LINE__, __FILE__);
 	echo head();
 ?>
 <form name="form" method="post" action="admin.php?action=cms&job=feed_delete">
@@ -1538,17 +1637,21 @@ echo head();
 elseif ($job == 'feed_add2') {
 	echo head();
 
-	if ($_POST['temp1'] == '') {
+	$title = $gpc->get('temp1', str);
+	$file = $gpc->get('temp2', str);
+	$entries = $gpc->get('int1', int);
+
+	if (empty($title)) {
 		error('admin.php?action=cms&job=feed_add'.SID2URL_x, 'Keinen Titel angegeben');
 	}
-	if ($_POST['temp2'] == '') {
+	if (empty($file)) {
 		error('admin.php?action=cms&job=feed_add'.SID2URL_x, 'Keine Newsfeed-URL angegeben');
 	}
-	if ($_POST['int1'] == '') {
-		$_POST['int1'] = 0;
+	if (empty($entries)) {
+		$entries = 0;
 	}
 	
-	$db->query('INSERT INTO '.$db->pre.'grab (title, file, entries) VALUES ("'.$_POST['temp1'].'","'.$_POST['temp2'].'","'.$_POST['int1'].'")');
+	$db->query('INSERT INTO '.$db->pre.'grab (title, file, entries) VALUES ("'.$title.'","'.$file.'","'.$entries.'")', __LINE__, __FILE__);
 
 	$delobj = $scache->load('grabrss');
 	$delobj->delete();
@@ -1564,8 +1667,7 @@ elseif ($job == 'feed_delete') {
 			$deleteids[] = 'id = '.$did; 
 		}
 
-		$sql = 'DELETE FROM '.$db->pre.'grab WHERE '.implode(' OR ',$deleteids);
-		$db->query($sql);
+		$db->query('DELETE FROM '.$db->pre.'grab WHERE '.implode(' OR ',$deleteids), __LINE__, __FILE__);
 		$anz = $db->affected_rows();
 		
 		$delobj = $scache->load('grabrss');
@@ -1579,14 +1681,15 @@ elseif ($job == 'feed_delete') {
 }
 elseif ($job == 'feed_edit') {
 echo head();
-if ($_GET['id'] < 1) {
+$id = $gpc->get('id', int);
+if (empty($id)) {
 	error('admin.php?action=cms&job=feed'.SID2URL_x, 'Keine gültige ID übergeben');
 }
-$result = $db->query('SELECT * FROM '.$db->pre.'grab WHERE id = '.$_GET['id']);
+$result = $db->query('SELECT * FROM '.$db->pre.'grab WHERE id = '.$id, __LINE__, __FILE__);
 $row = $db->fetch_assoc($result);
 
 ?>
-<form name="form" method="post" action="admin.php?action=cms&job=feed_edit2&id=<?php echo $_GET['id'].SID2URL_x; ?>">
+<form name="form" method="post" action="admin.php?action=cms&job=feed_edit2&id=<?php echo $id.SID2URL_x; ?>">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr> 
    <td class="obox" colspan="2">Dokument editieren</td>
@@ -1614,20 +1717,24 @@ $row = $db->fetch_assoc($result);
 elseif ($job == 'feed_edit2') {
 	echo head();
 
-	if ($_GET['id'] < 1) {
+	$title = $gpc->get('temp1', str);
+	$file = $gpc->get('temp2', str);
+	$entries = $gpc->get('int1', int);
+	$id = $gpc->get('id', int);
+	if (!is_id($id)) {
 		error('admin.php?action=cms&job=feed'.SID2URL_x, 'Keine gültige ID übergeben');
 	}
-	if ($_POST['temp1'] == '') {
-		error('admin.php?action=cms&job=feed_edit&id='.$_GET['id'].SID2URL_x, 'Keinen Titel angegeben');
+	if (empty($title)) {
+		error('admin.php?action=cms&job=feed_edit&id='.$id.SID2URL_x, 'Keinen Titel angegeben');
 	}
-	if ($_POST['temp2'] == '') {
-		error('admin.php?action=cms&job=feed_edit&id='.$_GET['id'].SID2URL_x, 'Keine Newsfeed-URL angegeben');
+	if (empty($file)) {
+		error('admin.php?action=cms&job=feed_edit&id='.$id.SID2URL_x, 'Keine Newsfeed-URL angegeben');
 	}
-	if ($_POST['int1'] == '') {
-		$_POST['int1'] = 0;
+	if (empty($entries)) {
+		$entries = 0;
 	}
 	
-	$db->query('UPDATE '.$db->pre.'grab SET file = "'.$_POST['temp2'].'", title = "'.$_POST['temp1'].'", entries = "'.$_POST['int1'].'" WHERE id = '.$_GET['id']);
+	$db->query('UPDATE '.$db->pre.'grab SET file = "'.$file.'", title = "'.$title.'", entries = "'.$entries.'" WHERE id = "'.$id.'"', __LINE__, __FILE__);
 
 	$delobj = $scache->load('grabrss');
 	$delobj->delete();

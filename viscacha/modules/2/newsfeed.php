@@ -1,7 +1,6 @@
-<?php
 require_once('classes/magpie_rss/rss_fetch.inc.php');
-$newsbox_js_loaded = true;
 $feed = $config['module_'.$pluginid]['feed'];
+$title = $config['module_'.$pluginid]['title'];
 
 if (isset($grabrss_cache[$feed])) {
 	$thisfeed = &$grabrss_cache[$feed];
@@ -45,6 +44,9 @@ if (isset($thisfeed)) {
 		$items[$key] = $crow;
 	}
 	$a = 0;
+	$tpl->globalvars(compact("a", "items", "feed", "slide", "row", "title", "pluginid"));
 	echo $tpl->parse("modules/{$pluginid}/grabrss");
+	if (!defined('newsbox_js_loaded')) {
+		define('newsbox_js_loaded', true);
+	}
 }
-?>

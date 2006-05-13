@@ -442,8 +442,9 @@ elseif ($_GET['action'] == "profile2") {
 
 	$_POST['hp'] = trim($_POST['hp']);
 	if (strtolower(substr($_POST['hp'], 0, 4)) == 'www.') {
-		$_POST['hp'] = "http://".$_POST['hp'];
+		$_POST['hp'] = "http://{$_POST['hp']}";
 	}
+
 	$error = array();
 	if (check_mail($_POST['email']) == false) {
 		 $error[] = $lang->phrase('illegal_mail');
