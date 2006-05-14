@@ -4,75 +4,145 @@ if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "cms.php") 
 if ($job == 'plugins') {
 	send_nocache_header();
 	echo head();
-?>
- <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
-  <tr> 
-   <td class="obox" colspan="4">
-   	<span style="float: right;">
-   	<a href="admin.php?action=cms&job=plugins_add">[<s>Plugin hinzuf&uuml;gen</s>]</a>
-   	</span>Plugins verwalten
-   </td>
-  </tr>
-  <tr> 
-   <td class="ubox">Plugin</td>
-   <td class="ubox">Status</td>
-   <td class="ubox">Reihenfolge</td>
-   <td class="ubox">Aktion</td>
-  </tr>
-<?php
-	$result = $db->query("SELECT * FROM {$db->pre}plugins ORDER BY ordering", __LINE__, __FILE__);
-	$cat = array();
-	while ($row = $db->fetch_assoc($result)) {
-		if (!isset($cat[$row['position']])) {
-			$cat[$row['position']] = array();
-		}
-		$cat[$row['position']][] = $row;
-	}
-	$positions = array_keys($cat);
-	natsort($positions);
-
-	foreach ($positions as $pos) {
+	$sort = $gpc->get('sort', int);
 	?>
-	<tr>
-		<td class="ubox" colspan="4">Hook: <strong><?php echo $pos; ?></strong></td>
-	</tr>
-		<?php
-		foreach ($cat[$pos] as $head) {
+	 <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
+	  <tr> 
+	   <td class="obox">Manage Plugins</td>
+	  </tr>
+	  <tr> 
+	   <td class="mbox">
+	   <ul>
+		   <li><a href="admin.php?action=cms&job=package_add">Package hinzuf&uuml;gen</a></li>
+		   <li><a href="admin.php?action=cms&job=plugins_add">Plugin hinzuf&uuml;gen</a></li>
+		   <li>
+			   <form method="get" name="admin.php" style="display: inline;">
+			   	Anzeige von: 
+			   	<select name="sort">
+			   		<option value="0"<?php echo iif($sort == 0, ' selected="selected"'); ?>>Hooks</option>
+			   		<option value="1"<?php echo iif($sort == 1, ' selected="selected"'); ?>>Packages</option>
+			   	</select>
+			   	<input type="submit" value="Go" />
+			   	<input type="hidden" name="action" value="cms" />
+			   	<input type="hidden" name="job" value="plugins" />
+			   </form>
+		   </li>
+	   </ul>
+	   </td>
+	  </tr>
+	 </table>
+	 <br class="minibr" />
+	<?php
+	if ($sort == 1) {
+		$package = null;
+		$result = $db->query("SELECT * FROM {$db->pre}plugins ORDER BY module, position", __LINE__, __FILE__);
 		?>
-		<tr class="mbox">
-		<td width="40%">
-		<?php echo $head['name']; ?><?php echo iif ($head['active'] == 0, ' (<em>Inaktiv</em>)'); ?>
-		</td>
-		<td width="10%">
-		<?php 
-		if ($head['active'] == 1) {
-			echo '<a href="admin.php?action=cms&job=plugins_active&id='.$head['id'].'&int1=0">Deaktivieren</a>';
-		}
-		else {
-			echo '<a href="admin.php?action=cms&job=plugins_active&id='.$head['id'].'&int1=1">Aktivieren</a>';
-		}
-		?>
-		</td>
-		<td width="15%" align="right"><?php echo $head['ordering']; ?>&nbsp;&nbsp;
-		 <a href="admin.php?action=cms&job=plugins_move&id=<?php echo $head['id']; ?>&int1=-1"><img src="admin/html/images/asc.gif" border="0" alt="Hoch"></a>&nbsp;
-		 <a href="admin.php?action=cms&job=plugins_move&id=<?php echo $head['id']; ?>&int1=1"><img src="admin/html/images/desc.gif" border="0" alt="Runter"></a>
-		</td>
-		<td width="45%">
-		 [<a href="admin.php?action=cms&job=plugins_info&id=<?php echo $head['id']; ?>">Informationen</a>] 
-		 [<a href="admin.php?action=cms&job=plugins_config&id=<?php echo $head['id']; ?>" style="text-decoration:line-through;">Konfiguration</a>] 
-		 [<a href="admin.php?action=cms&job=plugins_edit&id=<?php echo $head['id']; ?>" style="text-decoration:line-through;">&Auml;ndern</a>] 
-		 [<a href="admin.php?action=cms&job=plugins_delete&id=<?php echo $head['id']; ?>" style="text-decoration:line-through;">L&ouml;schen</a>]
-		</td>
-		</tr>
+		 <table class="border" border="0" cellspacing="0" cellpadding="4" align="center"> 
+		  <tr class="obox">
+		   <td>Plugin</td>
+		   <td>Hook</td>
+		   <td>Priority</td>
+		   <td>Aktion</td>
+		  </tr>
 		<?php
+		while ($head = $db->fetch_assoc($result)) {
+			if ($head['module'] != $package) {
+				$cfg = $myini->read('modules/'.$head['module'].'/config.ini');
+				?>
+				<tr>
+					<td class="ubox" colspan="2">Package: <strong><?php echo $cfg['info']['title']; ?></strong> (<?php echo $head['module']; ?>)</td>
+					<td class="ubox" colspan="2">
+					<!--
+					 [Alle aktivieren] 
+					 [Alle deaktivieren] 
+					-->
+					 [<a href="admin.php?action=cms&job=plugins_add&id=<?php echo $head['module']; ?>">Plugin hinzuf&uuml;gen</a>]
+					 [<a href="admin.php?action=cms&job=package_info&id=<?php echo $head['module']; ?>">Informationen</a>] 
+					 [<a href="admin.php?action=cms&job=package_config&id=<?php echo $head['module']; ?>">Konfiguration</a>]
+					 [<a href="admin.php?action=cms&job=package_delete&id=<?php echo $head['module']; ?>">Löschen</a>] 
+					</td>
+				</tr>
+				<?php
+				$package = $head['module'];
+			}
+			?>
+			<tr class="mbox">
+				<td><?php echo $head['name']; ?><?php echo iif ($head['active'] == 0, ' (<em>Inaktiv</em>)'); ?></td>
+				<td nowrap="nowrap"><?php echo $head['position']; ?></td>
+				<td nowrap="nowrap">
+					<?php 
+					if ($head['active'] == 1) {
+						echo '<a href="admin.php?action=cms&job=plugins_active&id='.$head['id'].'&value=0">Deaktivieren</a>';
+					}
+					else {
+						echo '<a href="admin.php?action=cms&job=plugins_active&id='.$head['id'].'&value=1">Aktivieren</a>';
+					}
+					?>
+				</td>
+				<td>
+				 [<a href="admin.php?action=cms&job=plugins_edit&id=<?php echo $head['id']; ?>">&Auml;ndern</a>] 
+				 [<a href="admin.php?action=cms&job=plugins_delete&id=<?php echo $head['id']; ?>">L&ouml;schen</a>]
+				</td>
+			</tr>
+			<?php
 		}
+		echo '</table>';
 	}
-	?></table><?php
+	else {
+		$pos = null;
+		$result = $db->query("SELECT * FROM {$db->pre}plugins ORDER BY position, ordering", __LINE__, __FILE__);
+		?>
+		 <table class="border" border="0" cellspacing="0" cellpadding="4" align="center"> 
+		  <tr class="obox">
+		   <td>Plugin</td>
+		   <td>Package</td>
+		   <td>Status</td>
+		   <td>Priority</td>
+		   <td>Aktion</td>
+		  </tr>
+		<?php
+		while ($head = $db->fetch_assoc($result)) {
+			if ($head['position'] != $pos) {
+				?>
+				<tr>
+					<td class="ubox" colspan="5">Hook: <strong><?php echo $head['position']; ?></strong></td>
+				</tr>
+				<?php
+				$pos = $head['position'];
+			}
+			?>
+			<tr class="mbox">
+				<td><?php echo $head['name']; ?><?php echo iif ($head['active'] == 0, ' (<em>Inaktiv</em>)'); ?></td>
+				<td nowrap="nowrap"><?php echo $head['module']; ?></td>
+				<td nowrap="nowrap">
+					<?php 
+					if ($head['active'] == 1) {
+						echo '<a href="admin.php?action=cms&job=plugins_active&id='.$head['id'].'&value=0">Deaktivieren</a>';
+					}
+					else {
+						echo '<a href="admin.php?action=cms&job=plugins_active&id='.$head['id'].'&value=1">Aktivieren</a>';
+					}
+					?>
+				</td>
+				<td align="right" nowrap="nowrap">
+					<?php echo $head['ordering']; ?>&nbsp;&nbsp;
+		 			<a href="admin.php?action=cms&job=plugins_move&id=<?php echo $head['id']; ?>&value=-1"><img src="admin/html/images/asc.gif" border="0" alt="Up"></a>&nbsp;
+		 			<a href="admin.php?action=cms&job=plugins_move&id=<?php echo $head['id']; ?>&value=1"><img src="admin/html/images/desc.gif" border="0" alt="Down"></a>
+				</td>
+				<td>
+				 [<a href="admin.php?action=cms&job=plugins_edit&id=<?php echo $head['id']; ?>">&Auml;ndern</a>] 
+				 [<a href="admin.php?action=cms&job=plugins_delete&id=<?php echo $head['id']; ?>">L&ouml;schen</a>]
+				</td>
+			</tr>
+			<?php
+		}
+		echo '</table>';
+	}
 	echo foot();
 }
 elseif ($job == 'plugins_move') {
 	$id = $gpc->get('id', int);
-	$pos = $gpc->get('int1', int);
+	$pos = $gpc->get('value', int);
 	if ($id < 1) {
 		error('admin.php?action=cms&job=nav', 'Ungültige ID angegeben');
 	}
@@ -90,7 +160,7 @@ elseif ($job == 'plugins_move') {
 }
 elseif ($job == 'plugins_active') {
 	$id = $gpc->get('id', int);
-	$active = $gpc->get('int1', int);
+	$active = $gpc->get('value', int);
 	if ($active != 0 && $active != 1) {
 		error('admin.php?action=cms&job=nav', 'Ungültiger Status angegeben');
 	}
@@ -102,49 +172,44 @@ elseif ($job == 'plugins_active') {
 	$filesystem->unlink('cache/modules/'.$plugins->_group($row['position']).'.php');
 	viscacha_header('Location: admin.php?action=cms&job=plugins');
 }
-elseif ($job == 'plugins_info') {
-	$id = $gpc->get('id', int);
-	$result = $db->query("SELECT * FROM {$db->pre}plugins WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
-	$row = $db->fetch_assoc($result);
-	$cfg = $myini->read('modules/'.$row['module'].'/config.ini');
-	$cfg = array_merge($row, $cfg);
-	
-	echo head();
-	?>
- <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
-  <tr> 
-   <td class="obox" colspan="2">Informationen</b></td>
-  </tr>
-    <?php
-    foreach ($cfg as $key => $row) {
-    	if (is_array($row)) {
-    	?>
-		  <tr> 
-		   <td class="ubox" colspan="2"><?php echo $key; ?></td> 
-		  </tr>
-    	<?php
-    		foreach ($row as $subkey => $subrow) {
-			?>
-			  <tr> 
-			   <td class="mbox" width="25%"><?php echo $subkey; ?></td>
-			   <td class="mbox" width="75%"><?php echo $subrow; ?></td> 
-			  </tr>
-		    <?php
-	    	}
-    	} 
-    	else {
-	    ?>
-		  <tr> 
-		   <td class="mbox" width="25%"><?php echo ucfirst($key); ?></td>
-		   <td class="mbox" width="75%"><?php echo $row; ?></td> 
-		  </tr>
-	    <?php
-    	}
-    }
-    ?>
-    </table>
-    <?php
-	echo foot();
+elseif ($job == 'plugins_delete') {
+
+}
+elseif ($job == 'plugins_delete2') {
+
+}
+elseif ($job == 'plugins_add') {
+
+}
+elseif ($job == 'plugins_add2') {
+
+}
+elseif ($job == 'plugins_edit') {
+
+}
+elseif ($job == 'plugins_edit2') {
+
+}
+elseif ($job == 'package_add') {
+
+}
+elseif ($job == 'package_add2') {
+
+}
+elseif ($job == 'package_info') {
+
+}
+elseif ($job == 'package_config') {
+
+}
+elseif ($job == 'package_config2') {
+
+}
+elseif ($job == 'package_delete') {
+
+}
+elseif ($job == 'package_delete2') {
+
 }
 elseif ($job == 'nav') {
 	send_nocache_header();
@@ -208,8 +273,8 @@ elseif ($job == 'nav') {
 	?>
 	</td>
 	<td width="15%"><?php echo $head['ordering']; ?>&nbsp;&nbsp;
-	<a href="admin.php?action=cms&job=nav_move&id=<?php echo $head['id']; ?>&int1=-1"><img src="admin/html/images/asc.gif" border="0" alt="Hoch"></a>&nbsp;
-	<a href="admin.php?action=cms&job=nav_move&id=<?php echo $head['id']; ?>&int1=1"><img src="admin/html/images/desc.gif" border="0" alt="Runter"></a>
+	<a href="admin.php?action=cms&job=nav_move&id=<?php echo $head['id']; ?>&value=-1"><img src="admin/html/images/asc.gif" border="0" alt="Hoch"></a>&nbsp;
+	<a href="admin.php?action=cms&job=nav_move&id=<?php echo $head['id']; ?>&value=1"><img src="admin/html/images/desc.gif" border="0" alt="Runter"></a>
 	</td>
 	<td width="35%">
 	 [<a href="admin.php?action=cms&job=nav_edit&id=<?php echo $head['id']; ?>">Ändern</a>] 
@@ -242,8 +307,8 @@ elseif ($job == 'nav') {
 				?>
 				</td>
 				<td class="mbox" width="15%" nowrap="nowrap" align="center"><?php echo $link['ordering']; ?>&nbsp;&nbsp;
-				<a href="admin.php?action=cms&job=nav_move&id=<?php echo $link['id']; ?>&int1=-1"><img src="admin/html/images/asc.gif" border="0" alt="Hoch"></a>&nbsp;
-				<a href="admin.php?action=cms&job=nav_move&id=<?php echo $link['id']; ?>&int1=1"><img src="admin/html/images/desc.gif" border="0" alt="Runter"></a>
+				<a href="admin.php?action=cms&job=nav_move&id=<?php echo $link['id']; ?>&value=-1"><img src="admin/html/images/asc.gif" border="0" alt="Hoch"></a>&nbsp;
+				<a href="admin.php?action=cms&job=nav_move&id=<?php echo $link['id']; ?>&value=1"><img src="admin/html/images/desc.gif" border="0" alt="Runter"></a>
 				</font></td>			
 				<td class="mbox" width="25%">
 				 [<a href="admin.php?action=cms&job=nav_edit&id=<?php echo $link['id'].SID2URL_x; ?>">Ändern</a>] 
@@ -276,8 +341,8 @@ elseif ($job == 'nav') {
 							?>
 							</td>
 							<td class="mbox" width="15%" nowrap="nowrap" align="right"><?php echo $sublink['ordering']; ?>&nbsp;&nbsp;
-							<a href="admin.php?action=cms&job=nav_move&id=<?php echo $sublink['id']; ?>&int1=-1"><img src="admin/html/images/asc.gif" border="0" alt="Hoch"></a>&nbsp;
-							<a href="admin.php?action=cms&job=nav_move&id=<?php echo $sublink['id']; ?>&int1=1"><img src="admin/html/images/desc.gif" border="0" alt="Runter"></a>
+							<a href="admin.php?action=cms&job=nav_move&id=<?php echo $sublink['id']; ?>&value=-1"><img src="admin/html/images/asc.gif" border="0" alt="Hoch"></a>&nbsp;
+							<a href="admin.php?action=cms&job=nav_move&id=<?php echo $sublink['id']; ?>&value=1"><img src="admin/html/images/desc.gif" border="0" alt="Runter"></a>
 							</td>			
 							<td class="mbox" width="25%">
 							 [<a href="admin.php?action=cms&job=nav_edit&id=<?php echo $sublink['id']; ?>">Ändern</a>] 
@@ -474,7 +539,7 @@ elseif ($job == 'nav_delete2') {
 }
 elseif ($job == 'nav_move') {
 	$id = $gpc->get('id', int);
-	$pos = $gpc->get('int1', int);
+	$pos = $gpc->get('value', int);
 	if ($id < 1) {
 		error('admin.php?action=cms&job=nav', 'Ungültige ID angegeben');
 	}
@@ -804,9 +869,9 @@ elseif ($job == 'com') {
 	<td class="mbox" width="15%">
 	<?php 
 	if ($head['active'] == 1) {
-		echo '<a href="admin.php?action=cms&job=com_active&id='.$head['id'].'&int1=0">Deaktivieren</a>';
+		echo '<a href="admin.php?action=cms&job=com_active&id='.$head['id'].'&value=0">Deaktivieren</a>';
 	} else {
-		echo '<a href="admin.php?action=cms&job=com_active&id='.$head['id'].'&int1=1">Aktivieren</a>';
+		echo '<a href="admin.php?action=cms&job=com_active&id='.$head['id'].'&value=1">Aktivieren</a>';
 	}
 	?>
 	</td>
@@ -924,7 +989,7 @@ elseif ($job == 'com_info') {
 }
 elseif ($job == 'com_active') {
 	$id = $gpc->get('id', int);
-	$act = $gpc->get('int1', int);
+	$act = $gpc->get('value', int);
 	if (!is_id($id)) {
 		error('admin.php?action=cms&job=com'.SID2URL_x, 'Ungültige ID angegeben');
 	}
@@ -1624,7 +1689,7 @@ echo head();
   </tr>
   <tr>
    <td class="mbox">Anzahl der Einträge:<br><span class="stext">Anzahl der Einträge die max. ausgegeben werden, 0 = alle. Newsfeed liefern nicht mehr als 15 Einträge!</td> 
-   <td class="mbox"><input type="text" name="int1" size="3"></td> 
+   <td class="mbox"><input type="text" name="value" size="3"></td> 
   </tr>
   <tr> 
    <td class="ubox" width="100%" colspan=2 align="center"><input type="submit" name="Submit" value="Abschicken"></td> 
@@ -1639,7 +1704,7 @@ elseif ($job == 'feed_add2') {
 
 	$title = $gpc->get('temp1', str);
 	$file = $gpc->get('temp2', str);
-	$entries = $gpc->get('int1', int);
+	$entries = $gpc->get('value', int);
 
 	if (empty($title)) {
 		error('admin.php?action=cms&job=feed_add'.SID2URL_x, 'Keinen Titel angegeben');
@@ -1704,7 +1769,7 @@ $row = $db->fetch_assoc($result);
   </tr>
   <tr>
    <td class="mbox">Anzahl der Einträge:<br><span class="stext">Anzahl der Einträge die max. ausgegeben werden, 0 = alle. Newsfeed liefern nicht mehr als 15 Einträge!</span></td> 
-   <td class="mbox"><input type="text" name="int1" size="3" value="<?php echo $row['entries']; ?>"></td> 
+   <td class="mbox"><input type="text" name="value" size="3" value="<?php echo $row['entries']; ?>"></td> 
   </tr>
   <tr> 
    <td class="ubox" width="100%" colspan=2 align="center"><input type="submit" name="Submit" value="Abschicken"></td> 
@@ -1719,7 +1784,7 @@ elseif ($job == 'feed_edit2') {
 
 	$title = $gpc->get('temp1', str);
 	$file = $gpc->get('temp2', str);
-	$entries = $gpc->get('int1', int);
+	$entries = $gpc->get('value', int);
 	$id = $gpc->get('id', int);
 	if (!is_id($id)) {
 		error('admin.php?action=cms&job=feed'.SID2URL_x, 'Keine gültige ID übergeben');

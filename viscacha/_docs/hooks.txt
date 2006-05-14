@@ -24,6 +24,7 @@ addreply.php
 
 admin.php
  - admin_start
+ - admin_start_tasks
  - admin_include
  - admin_notallowed
  - admin_end

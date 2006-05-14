@@ -51,7 +51,10 @@ else {
 		$tasks[] = '<li>'.$x1.' <a href="admin.php?action=db&job=backup">It is recommended to create a new backup of your database!</a></li>';
 	}
 	
+	$frontpage_content = '';
 	$webserver = get_webserver();
+	($code = $plugins->load('admin_start_tasks')) ? eval($code) : null;
+	
 	?>
 	 <table class="border">
 	  <tr> 
@@ -100,6 +103,7 @@ else {
 	  </tr>
 	 </table>
 	<br />
+	<?php echo $frontpage_content; ?>
 	<form action="admin.php?action=index&job=save_notes" method="post">
 	 <table class="border">
 	  <tr> 
