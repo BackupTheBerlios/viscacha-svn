@@ -1,10 +1,10 @@
 CREATE TABLE `{:=DBPREFIX=:}plugins` (
   `id` int(10) unsigned NOT NULL,
-  `name` varchar(255) NOT NULL default '',
+  `name` varchar(200) NOT NULL default '',
   `module` mediumint(7) unsigned NOT NULL,
   `ordering` smallint(4) NOT NULL default '0',
   `active` enum('0','1') NOT NULL default '0',
-  `position` varchar(255) NOT NULL default 'navigation',
+  `position` varchar(128) NOT NULL default 'navigation',
   PRIMARY KEY  (`id`)
 ) TYPE=MyISAM PACK_KEYS=0 AUTO_INCREMENT=17 ;
 

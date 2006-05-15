@@ -50,6 +50,27 @@ include_once ("classes/class.language.php");
 // Global functions
 require_once ("classes/function.global.php");
 
+function getHookArray() {
+	$data = file('admin/data/hooks.txt');
+	$data = array_map('trim', $data);
+	$hooks = array();
+	$group = null;
+	foreach ($data as $line) {
+		if (empty($line)) {
+			continue;
+		}
+		if ($line{0} != '-') {
+			$hooks[$line] = array();
+			$group = $line;
+			continue;
+		}
+		if ($group != null && $line{0} == '-') {
+			$hooks[$group][] = substr($line, 1);
+		}
+	}
+	return $hooks;
+}
+
 function array2sqlsetlist($array, $seperator = ', ') {
 	$sqlarray = array();
 	foreach ($array as $key => $value) {

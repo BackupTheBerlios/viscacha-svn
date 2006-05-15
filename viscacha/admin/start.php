@@ -2,8 +2,9 @@
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "start.php") die('Error: Hacking Attempt');
 
 if ($job == 'save_notes') {
+	$location = $gpc->get('location', str, 'admin.php?action=index');
 	$filesystem->file_put_contents('admin/data/notes.php', $gpc->get('notes', none));
-	header('Location: admin.php?action=index');
+	header('Location: '.$location);
 }
 else {
 	echo head();

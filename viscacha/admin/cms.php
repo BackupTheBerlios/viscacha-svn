@@ -13,8 +13,9 @@ if ($job == 'plugins') {
 	  <tr> 
 	   <td class="mbox">
 	   <ul>
-		   <li><a href="admin.php?action=cms&job=package_add">Package hinzuf&uuml;gen</a></li>
-		   <li><a href="admin.php?action=cms&job=plugins_add">Plugin hinzuf&uuml;gen</a></li>
+		   <li><a href="admin.php?action=cms&job=package_add">Add Package</a></li>
+		   <li><a href="admin.php?action=cms&job=package_import">Import Package</a></li>
+		   <li><a href="admin.php?action=cms&job=plugins_add">Add Plugin</a></li>
 		   <li>
 			   <form method="get" name="admin.php" style="display: inline;">
 			   	Anzeige von: 
@@ -35,7 +36,12 @@ if ($job == 'plugins') {
 	<?php
 	if ($sort == 1) {
 		$package = null;
-		$result = $db->query("SELECT * FROM {$db->pre}plugins ORDER BY module, position", __LINE__, __FILE__);
+		$result = $db->query("
+		SELECT p.*, m.title, m.id as module
+		FROM {$db->pre}packages AS m
+			LEFT JOIN {$db->pre}plugins AS p ON p.module = m.id 
+		ORDER BY m.id, p.position
+		", __LINE__, __FILE__);
 		?>
 		 <table class="border" border="0" cellspacing="0" cellpadding="4" align="center"> 
 		  <tr class="obox">
@@ -47,16 +53,16 @@ if ($job == 'plugins') {
 		<?php
 		while ($head = $db->fetch_assoc($result)) {
 			if ($head['module'] != $package) {
-				$cfg = $myini->read('modules/'.$head['module'].'/config.ini');
 				?>
 				<tr>
-					<td class="ubox" colspan="2">Package: <strong><?php echo $cfg['info']['title']; ?></strong> (<?php echo $head['module']; ?>)</td>
+					<td class="ubox" colspan="2">Package: <strong><?php echo $head['title']; ?></strong> (<?php echo $head['module']; ?>)</td>
 					<td class="ubox" colspan="2">
 					<!--
 					 [Alle aktivieren] 
 					 [Alle deaktivieren] 
 					-->
 					 [<a href="admin.php?action=cms&job=plugins_add&id=<?php echo $head['module']; ?>">Plugin hinzuf&uuml;gen</a>]
+					 [<a href="admin.php?action=cms&job=package_export&id=<?php echo $head['module']; ?>">Exportieren</a>]
 					 [<a href="admin.php?action=cms&job=package_info&id=<?php echo $head['module']; ?>">Informationen</a>] 
 					 [<a href="admin.php?action=cms&job=package_config&id=<?php echo $head['module']; ?>">Konfiguration</a>]
 					 [<a href="admin.php?action=cms&job=package_delete&id=<?php echo $head['module']; ?>">Löschen</a>] 
@@ -65,32 +71,45 @@ if ($job == 'plugins') {
 				<?php
 				$package = $head['module'];
 			}
-			?>
-			<tr class="mbox">
-				<td><?php echo $head['name']; ?><?php echo iif ($head['active'] == 0, ' (<em>Inaktiv</em>)'); ?></td>
-				<td nowrap="nowrap"><?php echo $head['position']; ?></td>
-				<td nowrap="nowrap">
-					<?php 
-					if ($head['active'] == 1) {
-						echo '<a href="admin.php?action=cms&job=plugins_active&id='.$head['id'].'&value=0">Deaktivieren</a>';
-					}
-					else {
-						echo '<a href="admin.php?action=cms&job=plugins_active&id='.$head['id'].'&value=1">Aktivieren</a>';
-					}
-					?>
-				</td>
-				<td>
-				 [<a href="admin.php?action=cms&job=plugins_edit&id=<?php echo $head['id']; ?>">&Auml;ndern</a>] 
-				 [<a href="admin.php?action=cms&job=plugins_delete&id=<?php echo $head['id']; ?>">L&ouml;schen</a>]
-				</td>
-			</tr>
-			<?php
+			if ($head['name'] != null) {
+				?>
+				<tr class="mbox">
+					<td><?php echo $head['name']; ?><?php echo iif ($head['active'] == 0, ' (<em>Inaktiv</em>)'); ?></td>
+					<td nowrap="nowrap"><?php echo $head['position']; ?></td>
+					<td nowrap="nowrap">
+						<?php 
+						if ($head['active'] == 1) {
+							echo '<a href="admin.php?action=cms&job=plugins_active&id='.$head['id'].'&value=0">Deaktivieren</a>';
+						}
+						else {
+							echo '<a href="admin.php?action=cms&job=plugins_active&id='.$head['id'].'&value=1">Aktivieren</a>';
+						}
+						?>
+					</td>
+					<td>
+					 [<a href="admin.php?action=cms&job=plugins_edit&id=<?php echo $head['id']; ?>">&Auml;ndern</a>] 
+					 [<a href="admin.php?action=cms&job=plugins_delete&id=<?php echo $head['id']; ?>">L&ouml;schen</a>]
+					</td>
+				</tr>
+				<?php
+			}
+			else {
+				?>
+				<tr class="mbox">
+					<td colspan="4"><em>For this package there is no plugin specified.</em></td>
+				</tr>
+				<?php
+			}
 		}
 		echo '</table>';
 	}
 	else {
 		$pos = null;
-		$result = $db->query("SELECT * FROM {$db->pre}plugins ORDER BY position, ordering", __LINE__, __FILE__);
+		$result = $db->query("
+		SELECT p.*, m.title 
+		FROM {$db->pre}plugins AS p
+			LEFT JOIN {$db->pre}packages AS m ON p.module = m.id 
+		ORDER BY p.position, p.ordering", __LINE__, __FILE__);
 		?>
 		 <table class="border" border="0" cellspacing="0" cellpadding="4" align="center"> 
 		  <tr class="obox">
@@ -113,7 +132,7 @@ if ($job == 'plugins') {
 			?>
 			<tr class="mbox">
 				<td><?php echo $head['name']; ?><?php echo iif ($head['active'] == 0, ' (<em>Inaktiv</em>)'); ?></td>
-				<td nowrap="nowrap"><?php echo $head['module']; ?></td>
+				<td nowrap="nowrap" title="<?php echo htmlspecialchars($head['title']); ?>"><?php echo $head['module']; ?></td>
 				<td nowrap="nowrap">
 					<?php 
 					if ($head['active'] == 1) {
@@ -178,22 +197,280 @@ elseif ($job == 'plugins_delete') {
 elseif ($job == 'plugins_delete2') {
 
 }
-elseif ($job == 'plugins_add') {
-
-}
-elseif ($job == 'plugins_add2') {
-
-}
 elseif ($job == 'plugins_edit') {
 
 }
 elseif ($job == 'plugins_edit2') {
 
 }
-elseif ($job == 'package_add') {
+elseif ($job == 'plugins_add') {
+	echo head();
+	$packageid = $gpc->get('id', int);
+	if ($packageid > 0) {
+		$result = $db->query("SELECT title FROM {$db->pre}packages WHERE id = '{$packageid}' LIMIT 1");
+		$package = $db->fetch_assoc($result);
+	}
+	else {
+		$result = $db->query("SELECT id, title FROM {$db->pre}packages");
+	}
+	$hooks = getHookArray();
+	?>
+	<form method="post" action="admin.php?action=cms&job=plugins_add2">
+	<table class="border" border="0" cellspacing="0" cellpadding="4" align="center"> 
+	 <tr>
+	  <td class="obox" colspan="2">Add Plugin - Step 1 of 3</td>
+	 </tr>
+	 <tr class="mbox">
+	  <td width="25%">Title for Plugin:<br /><span class="stext">Maximum number of characters: 200; Minimum number of characters: 4</span></td>
+	  <td width="75%"><input type="text" name="title" size="40" /></td>
+	 </tr>
+	 <tr class="mbox">
+	  <td>Package:</td>
+	  <td>
+	  <?php if ($packageid > 0) { ?>
+		<strong><?php echo $package['title']; ?></strong>
+		<input type="hidden" name="package" value="<?php echo $packageid; ?>" />
+	  <?php } else { ?>
+	  <select name="package">
+	  	<?php while ($row = $db->fetch_assoc($result)) { ?>
+	  	<option value="<?php echo $row['id']; ?>"><?php echo $row['title']; ?></option>
+	  	<?php } ?>
+	  </select>
+	  <?php } ?>
+	  </td>
+	 </tr>
+	 <tr class="mbox">
+	  <td>Hook:</td>
+	  <td><select name="hook">
+	  <?php foreach ($hooks as $group => $positions) { ?>
+	  <optgroup label="<?php echo $group; ?>">
+		  <?php foreach ($positions as $hook) { ?>
+		  <option value="<?php echo $hook; ?>"><?php echo $hook; ?></option>
+		  <?php } ?>
+	  </optgroup>
+	  <?php } ?>
+	  </select></td>
+	 </tr>
+	 <tr>
+	  <td class="ubox" colspan="2" align="center"><input type="submit" value="Save" /></td>
+	 </tr>
+	</table>
+	</form>
+	<?php
+	echo foot();
+}
+elseif ($job == 'plugins_add2') {
+	echo head();
+	$hook = $gpc->get('hook', str);
+	$packageid = $gpc->get('package', int);
+	$title = $gpc->get('title', str);
+	$result = $db->query("SELECT id, title FROM {$db->pre}packages WHERE id = '{$packageid}' LIMIT 1", __LINE__, __FILE__);
+	if ($db->num_rows() != 1) {
+		error('admin.php?action=cms&job=plugins_add', 'Specified package ('.$packageid.') does not exist.');
+	}
+	$package = $db->fetch_assoc($result);
+	if (strlen($title) < 4) {
+		error('admin.php?action=cms&job=plugins_add&id='.$package['id'], 'Minimum number of characters for title: 4');
+	}
+	if (strlen($title) > 200) {
+		error('admin.php?action=cms&job=plugins_add&id='.$package['id'], 'Maximum number of characters for title: 200');
+	}
+	
+	$hookPriority = $db->query("SELECT id, name, ordering FROM {$db->pre}plugins WHERE position = '{$hook}' ORDER BY ordering", __LINE__, __FILE__);
+	
+	$db->query("
+	INSERT INTO {$db->pre}plugins 
+	(`name`,`module`,`ordering`,`active`,`position`) 
+	VALUES 
+	('{$title}','{$package['id']}','-1','0','{$hook}')
+	", __LINE__, __FILE__);
+	$pluginid = $db->insert_id();
+
+	$filetitle = convert2adress($title);
+	$dir = "modules/{$package['id']}/";
+	$codefile = "{$filetitle}.php";
+	$i = 1;
+	while (file_exists($dir.$codefile)) {
+		$codefile = "{$filetitle}_{$i}.php";
+		$i++;
+	}
+	
+	$last = null;
+	?>
+	<form method="post" action="admin.php?action=cms&job=plugins_add3&id=<?php echo $pluginid; ?>">
+	<table class="border" border="0" cellspacing="0" cellpadding="4" align="center"> 
+	 <tr>
+	  <td class="obox" colspan="2">Add Plugin - Step 2 of 3</td>
+	 </tr>
+	 <tr class="mbox">
+	  <td width="25%">Title for Plugin:<br /><span class="stext">Maximum number of characters: 200; Minimum number of characters: 4</span></td>
+	  <td width="75%"><input type="text" name="title" size="40" value="<?php echo htmlspecialchars($title); ?>" /></td>
+	 </tr>
+	 <tr class="mbox">
+	  <td>Package:</td>
+	  <td><strong><?php echo $package['title']; ?></strong> (<?php echo $package['id']; ?>)</td>
+	 </tr>
+	 <tr class="mbox">
+	  <td>Hook:</td>
+	  <td><strong><?php echo $hook; ?></strong></td>
+	 </tr>
+	 <tr class="mbox">
+	  <td>
+	  Code:<br /><br />
+	  <ul>
+	    <li><a href="admin.php?action=cms&amp;job=plugins_template&amp;id=<?php echo $package['id']; ?>" target="_blank">Add Template</a></li>
+	    <li><a href="admin.php?action=cms&amp;job=plugins_language&amp;id=<?php echo $package['id']; ?>" target="_blank">Add Phrase</a></li>
+	  </ul>
+	  </td>
+	  <td><textarea name="code" rows="10" cols="80" class="texteditor"></textarea></td>
+	 </tr>
+	 <tr class="mbox">
+	  <td width="25%">File for Code:<br /><span class="stext">In this file the code will be saved. This file is located in the folder <code><?php echo $config['fpath']; ?>/modules/<?php echo $package['id']; ?>/</code>.</span></td>
+	  <td width="75%"><input type="text" name="file" size="40" value="<?php echo $codefile; ?>" /></td>
+	 </tr>
+	 <tr class="mbox">
+	  <td>Priority:</td>
+	  <td><select name="priority">
+	  <?php while ($row = $db->fetch_assoc($hookPriority)) { $last = $row['name']; ?>
+	  <option value="<?php echo $row['id']; ?>">Before <?php echo $row['name']; ?></option>
+	  <?php } ?>
+	  <option value="max">After <?php echo $last; ?></option>
+	  </select></td>
+	 </tr>
+	 <tr class="mbox">
+	  <td>Active:</td>
+	  <td><input type="checkbox" name="active" value="1" /></td>
+	 </tr>
+	 <tr>
+	  <td class="ubox" colspan="2" align="center"><input type="submit" value="Save" /></td>
+	 </tr>
+	</table>
+	</form>
+	<?php
+}
+elseif ($job == 'plugins_add3') {
+	echo head();
+	$id = $gpc->get('id', int);
+	$title = $gpc->get('title', str);
+	$code = $gpc->get('code', none);
+	$file = $gpc->get('file', none);
+	$priority = $gpc->get('priority', none);
+	$active = $gpc->get('active', int);
+	
+	$result = $db->query("SELECT module, name, position FROM {$db->pre}plugins WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
+	$data = $db->fetch_assoc($result);
+	$dir = "modules/{$data['module']}/";
+	
+	if (strlen($title) < 4 || strlen($title) > 200) {
+		$title = $data['title'];
+	}
+
+	if (is_id($priority)) {
+		$result = $db->query("SELECT id, ordering FROM {$db->pre}plugins WHERE id = '{$priority}' LIMIT 1", __LINE__, __FILE__);
+		$row = $db->fetch_assoc($result);
+		$priority = $row['ordering']-1;
+		$result = $db->query("UPDATE {$db->pre}plugins SET ordering = ordering-1 WHERE ordering < '{$priority}' AND position = '{$data['position']}'", __LINE__, __FILE__);
+	}
+	else {
+		$result = $db->query("SELECT MAX(ordering) AS maximum FROM {$db->pre}plugins WHERE position = '{$data['position']}'", __LINE__, __FILE__);
+		$row = $db->fetch_assoc($result);
+		$priority = $row['maximum']+1;
+	}
+	
+
+	$db->query("UPDATE {$db->pre}plugins SET `name` = '{$title}', `ordering` = '{$priority}', `active` = '{$active}' WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
+	
+	$filesystem->chmod($dir, 0777);
+	$filesystem->file_put_contents($dir.$file, $code);
+	$filesystem->chmod($dir.$file, 0666);
+	
+	$ini = $myini->read($dir."config.ini");
+	$ini['php'][$data['position']] = $file;
+	$myini->write($dir."config.ini", $ini);
+
+	$filesystem->unlink('cache/modules/'.$plugins->_group($data['position']).'.php');
+
+	ok('admin.php?action=cms&job=plugins_add&id='.$data['module'], 'Step 3 of 3: Plugin successfully added!');
+}
+elseif ($job == 'plugins_template') {
 
 }
+elseif ($job == 'plugins_template_add') {
+
+}
+elseif ($job == 'plugins_language') {
+
+}
+elseif ($job == 'plugins_language_add') {
+
+}
+elseif ($job == 'package_add') {
+	echo head();
+	?>
+	<form method="post" action="admin.php?action=cms&job=package_add2">
+	<table class="border" border="0" cellspacing="0" cellpadding="4" align="center"> 
+	 <tr>
+	  <td class="obox" colspan="2">Add Package</td>
+	 </tr>
+	 <tr class="mbox">
+	  <td>Title:<br /><span class="stext">Maximum number of characters: 200; Minimum number of characters: 4</span></td>
+	  <td><input type="text" name="title" size="40" /></td>
+	 </tr>
+	 <tr class="mbox">
+	  <td>Version:<br /><span class="stext">Optional</span></td>
+	  <td><input type="text" name="version" size="40" value="1.0" /></td>
+	 </tr>
+	 <tr class="mbox">
+	  <td>Copyright:<br /><span class="stext">Optional</span></td>
+	  <td><input type="text" name="copyright" size="40" /></td>
+	 </tr>
+	 <tr>
+	  <td class="ubox" colspan="2" align="center"><input type="submit" value="Add" /></td>
+	 </tr>
+	</table>
+	</form>
+	<?php
+	echo foot();
+}
 elseif ($job == 'package_add2') {
+	echo head();
+	$title = $gpc->get('title', str);
+	$version = $gpc->get('version', str);
+	$copyright = $gpc->get('copyright', str);
+	if (strlen($title) < 4) {
+		error('admin.php?action=cms&job=package_add', 'Minimum number of characters for title: 4');
+	}
+	if (strlen($title) > 200) {
+		error('admin.php?action=cms&job=package_add', 'Maximum number of characters for title: 200');
+	}
+
+	$db->query("INSERT INTO {$db->pre}packages (`title`) VALUES ('{$title}')");
+	$packageid = $db->insert_id();
+	
+	$filesystem->mkdir("modules/{$packageid}/");
+	
+	$ini = array(
+		'info' => array(
+			'title' => $title,
+			'version' => $version,
+			'copyright' => $copyright
+		),
+		'php' => array()
+	);
+	$myini->write("modules/{$packageid}/config.ini", $ini);
+	
+	ok('admin.php?action=cms&job=plugin_add&id='.$packageid, 'Package successfully added.');
+}
+elseif ($job == 'package_import') {
+
+}
+elseif ($job == 'package_import2') {
+
+}
+elseif ($job == 'package_export') {
+
+}
+elseif ($job == 'package_export2') {
 
 }
 elseif ($job == 'package_info') {
