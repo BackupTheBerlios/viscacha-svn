@@ -191,17 +191,135 @@ elseif ($job == 'plugins_active') {
 	$filesystem->unlink('cache/modules/'.$plugins->_group($row['position']).'.php');
 	viscacha_header('Location: admin.php?action=cms&job=plugins');
 }
-elseif ($job == 'plugins_delete') {
-
+elseif ($job == 'plugins_delete') { // ToDo
+	
 }
-elseif ($job == 'plugins_delete2') {
+elseif ($job == 'plugins_delete2') { // ToDo
 
 }
 elseif ($job == 'plugins_edit') {
-
+	echo head();
+	$pluginid = $gpc->get('id', int);
+	$result = $db->query("
+	SELECT p.*, m.title 
+	FROM {$db->pre}plugins AS p
+		LEFT JOIN {$db->pre}packages AS m ON p.module = m.id
+	WHERE p.id = '{$pluginid}' 
+	LIMIT 1
+	", __LINE__, __FILE__);
+	if ($db->num_rows($result) != 1) {
+		error("admin.php?action=cms&job=plugins", "Plugin not found");
+	}
+	$package = $db->fetch_assoc($result);
+	$dir = "modules/{$package['module']}/";
+	$ini = $myini->read($dir.'config.ini');
+	$hooks = getHookArray();
+	$codefile = $ini['php'][$package['position']];
+	$code = file_get_contents($dir.$codefile);
+	$cp = array();
+	foreach ($ini['php'] as $ihook => $ifile) {
+		if ($ifile == $codefile) {
+			$cp[] = $ihook;
+		}
+	}
+	sort($cp);
+	?>
+	<form method="post" action="admin.php?action=cms&job=plugins_edit2&id=<?php echo $pluginid; ?>">
+	<table class="border" border="0" cellspacing="0" cellpadding="4" align="center"> 
+	 <tr>
+	  <td class="obox" colspan="2">Edit Plugin</td>
+	 </tr>
+	 <tr class="mbox">
+	  <td width="25%">Title for Plugin:<br /><span class="stext">Maximum number of characters: 200; Minimum number of characters: 4</span></td>
+	  <td width="75%"><input type="text" name="title" size="40" value="<?php echo $package['title']; ?>" /></td>
+	 </tr>
+	 <tr class="mbox">
+	  <td>Package:</td>
+	  <td><strong><?php echo $package['title']; ?></strong></td>
+	 </tr>
+	 <tr class="mbox">
+	  <td>Hook:</td>
+	  <td><select name="hook">
+	  <?php foreach ($hooks as $group => $positions) { ?>
+	  <optgroup label="<?php echo $group; ?>">
+		  <?php foreach ($positions as $hook) { ?>
+		  <option value="<?php echo $hook; ?>"<?php echo iif($hook == $package['position'], ' selected="selected"'); ?>><?php echo $hook; ?></option>
+		  <?php } ?>
+	  </optgroup>
+	  <?php } ?>
+	  </select></td>
+	 </tr>
+	 <tr class="mbox">
+	  <td>
+	  Code:<br /><br />
+	  <ul>
+	    <li><a href="admin.php?action=cms&amp;job=plugins_template&amp;id=<?php echo $package['id']; ?>" target="_blank">Add Template</a></li>
+	    <li><a href="admin.php?action=cms&amp;job=plugins_language&amp;id=<?php echo $package['id']; ?>" target="_blank">Add Phrase</a></li>
+	  </ul>
+	  <?php if (count($cp) > 0) { ?>
+	  <br /><br /><span class="stext"><strong>Caution</strong>: Changes to the code also affect the following hooks:</span>
+	  <ul>
+	  <?php foreach ($cp as $ihook) { ?>
+	  	<li class="stext"><?php echo $ihook; ?></li>
+	  <?php } ?>
+	  </ul>
+	  <?php } ?>
+	  </td>
+	  <td><textarea name="code" rows="10" cols="80" class="texteditor"><?php echo htmlspecialchars($code); ?></textarea></td>
+	 </tr>
+	 <tr class="mbox">
+	  <td width="25%">File for Code:<br /><span class="stext">This file is located in the folder <code><?php echo $config['fpath']; ?>/modules/<?php echo $package['id']; ?>/</code>.</span></td>
+	  <td width="75%"><?php echo $codefile; ?></td>
+	 </tr>
+	 <tr class="mbox">
+	  <td>Active:</td>
+	  <td><input type="checkbox" name="active" value="1"<?php echo iif($package['active'] == 1, ' checked="checked"'); ?> /></td>
+	 </tr>
+	 <tr>
+	  <td class="ubox" colspan="2" align="center"><input type="submit" value="Save" /></td>
+	 </tr>
+	</table>
+	</form>
+	<?php
+	echo foot();
 }
 elseif ($job == 'plugins_edit2') {
+	echo head();
+	$id = $gpc->get('id', int);
+	$title = $gpc->get('title', str);
+	$hook = $gpc->get('hook', str);
+	$code = $gpc->get('code', none);
+	$active = $gpc->get('active', int);
+	
+	$result = $db->query("SELECT module, position FROM {$db->pre}plugins WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
+	$data = $db->fetch_assoc($result);
+	$dir = "modules/{$data['module']}/";
 
+	if (strlen($title) < 4) {
+		error('admin.php?action=cms&job=plugins_edit&id='.$package['id'], 'Minimum number of characters for title: 4');
+	}
+	if (strlen($title) > 200) {
+		error('admin.php?action=cms&job=plugins_edit&id='.$package['id'], 'Maximum number of characters for title: 200');
+	}
+
+	$db->query("UPDATE {$db->pre}plugins SET `name` = '{$title}', `active` = '{$active}', `position` = '{$hook}' WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
+
+	$ini = $myini->read($dir."config.ini");
+	$file = $ini['php'][$data['position']];
+
+	$filesystem->chmod($dir.$file, 0666);
+	$filesystem->file_put_contents($dir.$file, $code);
+
+	if ($data['position'] != $hook) {
+		$ini['php'][$hook] == $file;
+		unset($ini['php'][$data['position']]);
+		$myini->write($dir."config.ini", $ini);
+		$filesystem->unlink('cache/modules/'.$plugins->_group($hook).'.php');
+	}
+
+	$filesystem->unlink('cache/modules/'.$plugins->_group($data['position']).'.php');
+
+	ok('admin.php?action=cms&job=plugins', 'Plugin successfully edited!');
 }
 elseif ($job == 'plugins_add') {
 	echo head();
@@ -392,16 +510,16 @@ elseif ($job == 'plugins_add3') {
 
 	ok('admin.php?action=cms&job=plugins_add&id='.$data['module'], 'Step 3 of 3: Plugin successfully added!');
 }
-elseif ($job == 'plugins_template') {
+elseif ($job == 'plugins_template') { // ToDo
 
 }
-elseif ($job == 'plugins_template_add') {
+elseif ($job == 'plugins_template_add') { // ToDo
 
 }
-elseif ($job == 'plugins_language') {
+elseif ($job == 'plugins_language') { // ToDo
 
 }
-elseif ($job == 'plugins_language_add') {
+elseif ($job == 'plugins_language_add') { // ToDo
 
 }
 elseif ($job == 'package_add') {
@@ -461,31 +579,31 @@ elseif ($job == 'package_add2') {
 	
 	ok('admin.php?action=cms&job=plugin_add&id='.$packageid, 'Package successfully added.');
 }
-elseif ($job == 'package_import') {
+elseif ($job == 'package_import') { // ToDo
 
 }
-elseif ($job == 'package_import2') {
+elseif ($job == 'package_import2') { // ToDo
 
 }
-elseif ($job == 'package_export') {
+elseif ($job == 'package_export') { // ToDo
 
 }
-elseif ($job == 'package_export2') {
+elseif ($job == 'package_export2') { // ToDo
 
 }
-elseif ($job == 'package_info') {
+elseif ($job == 'package_info') { // ToDo
 
 }
-elseif ($job == 'package_config') {
+elseif ($job == 'package_config') { // ToDo
 
 }
-elseif ($job == 'package_config2') {
+elseif ($job == 'package_config2') { // ToDo
 
 }
-elseif ($job == 'package_delete') {
+elseif ($job == 'package_delete') { // ToDo
 
 }
-elseif ($job == 'package_delete2') {
+elseif ($job == 'package_delete2') { // ToDo
 
 }
 elseif ($job == 'nav') {
