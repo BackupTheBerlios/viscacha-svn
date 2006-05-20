@@ -1,6 +1,6 @@
 if (!$my->vlogin) {
-    $request_uri = htmlspecialchars($_SERVER['REQUEST_URI']);
-    $tpl->globalvars(compact("request_uri"));
+	$request_uri = htmlspecialchars($_SERVER['REQUEST_URI']);
+	$tpl->globalvars(compact("request_uri"));
 	echo $tpl->parse("modules/{$pluginid}/login_guest");
 } 
 else {

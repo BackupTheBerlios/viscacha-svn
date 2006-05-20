@@ -18,6 +18,7 @@ class cache_loaddesign extends CacheItem {
 	
 	function get ($fresh = false) {
 		if ($fresh == true) {
+			global $db;
 			$result = $db->query("SELECT id, template, stylesheet, images, name FROM {$db->pre}designs",__LINE__,__FILE__);
 			$design = array();
 			while ($row = $db->fetch_assoc($result)) {

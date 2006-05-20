@@ -249,12 +249,12 @@ elseif ($job == 'plugins_edit') {
 	  <?php } ?>
 	  </select></td>
 	 </tr>
-	 <tr class="mbox">
+	 <tr class="mbox" valign="top">
 	  <td>
 	  Code:<br /><br />
 	  <ul>
-	    <li><a href="admin.php?action=cms&amp;job=plugins_template&amp;id=<?php echo $package['id']; ?>" target="_blank">Add Template</a></li>
-	    <li><a href="admin.php?action=cms&amp;job=plugins_language&amp;id=<?php echo $package['id']; ?>" target="_blank">Add Phrase</a></li>
+	    <li><a href="admin.php?action=cms&amp;job=package_template&amp;id=<?php echo $package['module']; ?>" target="_blank">Add Template</a></li>
+	    <li><a href="admin.php?action=cms&amp;job=package_language&amp;id=<?php echo $package['module']; ?>" target="_blank">Add Phrase</a></li>
 	  </ul>
 	  <?php if (count($cp) > 0) { ?>
 	  <br /><br /><span class="stext"><strong>Caution</strong>: Changes to the code also affect the following hooks:</span>
@@ -432,12 +432,12 @@ elseif ($job == 'plugins_add2') {
 	  <td>Hook:</td>
 	  <td><strong><?php echo $hook; ?></strong></td>
 	 </tr>
-	 <tr class="mbox">
+	 <tr class="mbox" valign="top">
 	  <td>
 	  Code:<br /><br />
 	  <ul>
-	    <li><a href="admin.php?action=cms&amp;job=plugins_template&amp;id=<?php echo $package['id']; ?>" target="_blank">Add Template</a></li>
-	    <li><a href="admin.php?action=cms&amp;job=plugins_language&amp;id=<?php echo $package['id']; ?>" target="_blank">Add Phrase</a></li>
+	    <li><a href="admin.php?action=cms&amp;job=package_template&amp;id=<?php echo $package['id']; ?>" target="_blank">Add Template</a></li>
+	    <li><a href="admin.php?action=cms&amp;job=package_language&amp;id=<?php echo $package['id']; ?>" target="_blank">Add Phrase</a></li>
 	  </ul>
 	  </td>
 	  <td><textarea name="code" rows="10" cols="80" class="texteditor"></textarea></td>
@@ -497,8 +497,7 @@ elseif ($job == 'plugins_add3') {
 	
 
 	$db->query("UPDATE {$db->pre}plugins SET `name` = '{$title}', `ordering` = '{$priority}', `active` = '{$active}' WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
-	
-	$filesystem->chmod($dir, 0777);
+
 	$filesystem->file_put_contents($dir.$file, $code);
 	$filesystem->chmod($dir.$file, 0666);
 	
@@ -510,17 +509,248 @@ elseif ($job == 'plugins_add3') {
 
 	ok('admin.php?action=cms&job=plugins_add&id='.$data['module'], 'Step 3 of 3: Plugin successfully added!');
 }
-elseif ($job == 'plugins_template') { // ToDo
+elseif ($job == 'package_template') {
+	$id = $gpc->get('id', int);
+	
+	$result = $db->query("SELECT id, title FROM {$db->pre}packages WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
+	if ($db->num_rows() != 1) {
+		error('javascript: self.close();', 'Specified package ('.$id.') does not exist.');
+	}
+	$data = $db->fetch_assoc($result);
+	$dir = "modules/{$data['id']}/";
+	$ini = $myini->read($dir."config.ini");
+	
+	$designObj = $scache->load('loaddesign');
+	$designs = $designObj->get(true);
+	$standardDesign = $designs[$config['templatedir']]['template'];
+	$tpldir = "templates/{$standardDesign}/modules/{$data['id']}/";
 
+	$filetitle = convert2adress($data['title']);
+	$codefile = "{$filetitle}.html";
+	$i = 1;
+	while (file_exists($tpldir.$codefile)) {
+		$codefile = "{$filetitle}_{$i}.html";
+		$i++;
+	}
+
+	echo head();
+	?>
+	<form method="post" action="admin.php?action=cms&job=package_template_edit&id=<?php echo $data['id']; ?>">
+	<table class="border" border="0" cellspacing="0" cellpadding="4" align="center"> 
+	 <tr>
+	  <td class="obox" colspan="3">
+	  <span style="float: right;">[<a href="javascript: self.close();">Close Window</a>]</span>
+	  Manage Templates for Package: <?php echo $data['title']; ?></td>
+	 </tr>
+	 <?php if (isset($ini['template']) && count($ini['template']) > 0) { ?>
+	 <tr class="mbox">
+	  <td width="10%">Edit</td>
+	  <td width="10%">Delete</td>
+	  <td width="80%">File</td>
+	 </tr>
+	 <?php foreach ($ini['template'] as $key => $file) { ?>
+	 <tr class="mbox">
+	  <td><input type="radio" name="edit" value="<?php echo $key; ?>" /></td>
+	  <td><input type="checkbox" name="delete[]" value="<?php echo $key; ?>" /></td>
+	  <td><?php echo $file; ?></td>
+	 </tr>
+	 <?php } ?>
+	 <tr>
+	  <td class="ubox" colspan="3" align="center"><input type="submit" value="Submit" /></td>
+	 </tr>
+	 <?php } else { ?>
+	 <tr class="mbox">
+	  <td colspan="3">No Template available for this Package.</td>
+	 </tr>
+	 <?php } ?>
+	</table>
+	</form>
+	<br class="minibr" />
+	<form method="post" action="admin.php?action=cms&job=package_template_add&id=<?php echo $data['id']; ?>">
+	<table class="border" border="0" cellspacing="0" cellpadding="4" align="center"> 
+	 <tr>
+	  <td class="obox" colspan="2">Add Template to Package</td>
+	 </tr>
+	 <tr class="mbox" valign="top">
+	  <td>
+	  Code:<br /><br />
+	  <ul>
+	    <li><a href="admin.php?action=cms&amp;job=package_language&amp;id=<?php echo $data['id']; ?>" target="_blank">Add Phrase</a></li>
+	  </ul>
+	  </td>
+	  <td><textarea name="code" rows="8" cols="80" class="texteditor"></textarea></td>
+	 </tr>
+	 <tr class="mbox">
+	  <td width="25%">File for Code:<br /><span class="stext">In this file the code will be saved. This file is located in the folder <code><?php echo $config['fpath']; ?>/<?php echo $tpldir; ?></code>.</span></td>
+	  <td width="75%"><input type="text" name="file" size="40" value="<?php echo $codefile; ?>" /></td>
+	 </tr>
+	 <tr>
+	  <td class="ubox" colspan="2" align="center"><input type="submit" value="Save" /></td>
+	 </tr>
+	</table>
+	</form>
+	<?php
+	echo foot();
 }
-elseif ($job == 'plugins_template_add') { // ToDo
+elseif ($job == 'package_template_add') {
+	$id = $gpc->get('id', int);
+	$code = $gpc->get('code', none);
+	$file = $gpc->get('file', none);
+	
+	$result = $db->query("SELECT id, title FROM {$db->pre}packages WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
+	if ($db->num_rows() != 1) {
+		error('javascript: self.close();', 'Specified package ('.$id.') does not exist.');
+	}
+	$data = $db->fetch_assoc($result);
+	$dir = "modules/{$data['id']}/";
 
+	$designObj = $scache->load('loaddesign');
+	$designs = $designObj->get(true);
+	$standardDesign = $designs[$config['templatedir']]['template'];
+	$tpldir = "templates/{$standardDesign}/modules/{$data['id']}/";
+	if (!is_dir($tpldir)) {
+		$filesysten->mkdir($tpldir, 0777);
+	}
+	$filesystem->file_put_contents($tpldir.$file, $code);
+	$filesystem->chmod($tpldir.$file, 0666);
+	
+	$ini = $myini->read($dir."config.ini");
+	$ini['template'][] = $file;
+	$myini->write($dir."config.ini", $ini);
+
+	echo head();	
+	ok('admin.php?action=cms&job=package_template&id='.$data['id']);
 }
-elseif ($job == 'plugins_language') { // ToDo
+elseif ($job == 'package_template_edit') {
+	echo head();
+	
+	$id = $gpc->get('id', int);
+	$editId = $gpc->get('edit', int, -1);
+	$deleteId = $gpc->get('delete', arr_int);
+	$output = -1;
+	
+	$result = $db->query("SELECT id, title FROM {$db->pre}packages WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
+	if ($db->num_rows() != 1) {
+		error('javascript: self.close();', 'Specified package ('.$id.') does not exist.');
+	}
+	$data = $db->fetch_assoc($result);
+	$dir = "modules/{$data['id']}/";
+	$ini = $myini->read($dir."config.ini");
 
+	if (count($deleteId) > 0) {
+		$designObj = $scache->load('loaddesign');
+		$designs = $designObj->get(true);
+		
+		foreach ($deleteId as $key) {
+			if (!isset($ini['template'][$key])) {
+				continue;
+			}
+			$file = $ini['template'][$key];
+			foreach ($designs as $row) {
+				$tplfile = "templates/{$row['template']}/modules/{$data['id']}/{$file}";
+				if (file_exists($tplfile)) {
+					$filesystem->unlink($tplfile);
+				}
+			}
+			unset($ini['template'][$key]);
+		}
+		
+		$myini->write($dir."config.ini", $ini);
+		$output = 0;
+	}
+	
+	if ($editId > -1 && isset($ini['template'][$editId])) {
+		if ($output == 0) {
+			?>
+			<table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
+			  <tr><td class="obox">Confirmation:</td></tr>
+			  <tr><td class="mbox" align="center">Template(s) successfully deleted</td></tr>
+			</table><br class="minibr" />
+			<?php
+		}
+		$codefile = $ini['template'][$editId];
+		$designObj = $scache->load('loaddesign');
+		$designs = $designObj->get(true);
+		
+		$tpldirs = array();
+		foreach ($designs as $designId => $row) {
+			$dir = "templates/{$row['template']}/modules/{$data['id']}/";
+			if (file_exists($dir.$codefile)) {
+				$tpldirs[$row['template']]['names'][] = $row['name'];
+				$tpldirs[$row['template']]['ids'][] = $row['id'];
+			}
+		}
+		
+		?>
+		<form method="post" action="admin.php?action=cms&job=package_template_edit2&id=<?php echo $data['id']; ?>&edit=<?php echo $editId; ?>">
+		<table class="border" border="0" cellspacing="0" cellpadding="4" align="center"> 
+		 <tr>
+		  <td class="obox" colspan="2">Add Template to Package</td>
+		 </tr>
+		 <tr class="mbox" valign="top">
+		  <td rowspan="<?php echo count($tpldirs); ?>">
+		    Code:<br /><br />
+		    <ul><li><a href="admin.php?action=cms&amp;job=package_language&amp;id=<?php echo $data['id']; ?>" target="_blank">Add Phrase</a></li></ul>
+		  </td>
+		  <?php
+		  $first = true;
+		  foreach ($tpldirs as $tplid => $designId) {
+		  	if ( in_array($config['templatedir'], $designId['ids']) ) {
+		  		$affected = 'All designs that have not defined an own template';
+		  	}
+		  	else {
+		  		$affected = implode(', ', $designId['names']);
+		  	}
+		  	$dir = "templates/{$tplid}/modules/{$data['id']}/";
+		  	$content = file_get_contents($dir.$codefile);
+		  	if ($first == false) {
+		  		echo '<tr>';
+		  		$first = false;
+		  	}
+		  	echo '<td>';
+		  	echo 'Template Group: <b>'.$tplid.'</b><br />';
+		  	echo 'Design(s) affected by changes: '.$affected.'<br />';
+		  	echo '<textarea name="code['.$tplid.']" rows="8" cols="80" class="texteditor">'.$content.'</textarea>';
+		  	echo '</td></tr>';
+		  }
+		  ?>
+		 <tr class="mbox">
+		  <td width="25%">File for Code:</td>
+		  <td width="75%"><?php echo $codefile; ?></td>
+		 </tr>
+		 <tr>
+		  <td class="ubox" colspan="2" align="center"><input type="submit" value="Save" /></td>
+		 </tr>
+		</table>
+		</form>
+		<?php
+		$output = 1;
+	}
+	
+	if ($output == -1) {
+		error('admin.php?action=cms&job=package_template&id='.$data['id'], 'Please choose at least one template...');
+	}
+	elseif ($output == 0) {
+		ok('admin.php?action=cms&job=package_template&id='.$data['id'], 'Template(s) successfully deleted');
+	}
 }
-elseif ($job == 'plugins_language_add') { // ToDo
-
+elseif ($job == 'package_template_edit2') { // Currently in work...
+	$id = $gpc->get('id', int);
+//	$editId = $gpc->get('edit', int, -1);
+	$code = $gpc->get('code', arr_none);
+	foreach ($code as $tpldir => $html) {
+		//$filesystem->file_put_contents();
+	}
+	echo head();
+	ok('admin.php?action=cms&job=package_template&id='.$id);
+}
+elseif ($job == 'package_language') { // ToDo
+	$id = $gpc->get('id', int);
+}
+elseif ($job == 'package_language_add') { // ToDo
+	$id = $gpc->get('id', int);
+	$key = $gpc->get('key', none);
+	$value = $gpc->get('value', none);
 }
 elseif ($job == 'package_add') {
 	echo head();
@@ -565,7 +795,7 @@ elseif ($job == 'package_add2') {
 	$db->query("INSERT INTO {$db->pre}packages (`title`) VALUES ('{$title}')");
 	$packageid = $db->insert_id();
 	
-	$filesystem->mkdir("modules/{$packageid}/");
+	$filesystem->mkdir("modules/{$packageid}/", 0777);
 	
 	$ini = array(
 		'info' => array(
@@ -576,6 +806,7 @@ elseif ($job == 'package_add2') {
 		'php' => array()
 	);
 	$myini->write("modules/{$packageid}/config.ini", $ini);
+	$filesystem->chmod("modules/{$packageid}/config.ini", 0666);
 	
 	ok('admin.php?action=cms&job=plugin_add&id='.$packageid, 'Package successfully added.');
 }
