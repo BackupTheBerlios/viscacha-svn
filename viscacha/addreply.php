@@ -92,6 +92,7 @@ if ($config['tpcallow'] == 1 && $my->p['attachments'] == 1) {
 ($code = $plugins->load('addreply_start')) ? eval($code) : null;
 
 if ($_GET['action'] == "save") {
+	$digest = $gpc->get('digest', int);
     $error = array();
     if (!$my->vlogin) {
 		if (!check_mail($_POST['email']) && ($config['guest_email_optional'] == 0 || !empty($_POST['email']))) {
@@ -148,6 +149,7 @@ if ($_GET['action'] == "save") {
 			'dosmileys' => $_POST['dosmileys'],
 			'dowords' => $_POST['dowords'],
 			'id' => $_POST['id'],
+			'digest' => $digest,
 			'guest' => 0
 		);
 		if (!$my->vlogin) {
@@ -202,18 +204,18 @@ if ($_GET['action'] == "save") {
 		WHERE mid = '{$pid}' AND topic_id = '{$_POST['id']}' AND tid = '0'
 		",__LINE__,__FILE__);
 
-		if ($_POST['page'] && $my->vlogin) {
-			$type = NULL;
-			if ($_POST['page'] == '1') {
-				$type='';
+		if ($digest > 0 && $my->vlogin) {
+			$type = -1;
+			if ($digest == 1) {
+				$type = '';
 			}
-			elseif ($_POST['page'] == '2') {
-				$type='d';
+			elseif ($digest == 2) {
+				$type = 'd';
 			}
-			elseif ($_POST['page'] == '3') {
+			elseif ($digest == 3) {
 				$type='w';
 			}
-			if ($type != NULL) {
+			if ($type != -1) {
 				$db->query("
 				INSERT INTO {$db->pre}abos (mid,tid,type) 
 				VALUES ('{$my->id}','{$_POST['id']}','{$type}')
@@ -283,6 +285,7 @@ else {
 			'comment' => '',
 			'dosmileys' => 1,
 			'dowords' => 1,
+			'digest' => 0,
 			'topic' => $lang->phrase('reply_prefix').$info['topic']
 		);
 
