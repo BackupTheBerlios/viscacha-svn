@@ -380,7 +380,7 @@ elseif ($_GET['action'] == "browse") {
 		$inner['index_bit'] .= $tpl->parse("pm/browse_bit");
 	}
 	echo $tpl->parse("pm/browse");
-	($code = $plugins->load('pm_bowse_end')) ? eval($code) : null;
+	($code = $plugins->load('pm_browse_end')) ? eval($code) : null;
 }
 else {
 	$breadcrumb->resetUrl();

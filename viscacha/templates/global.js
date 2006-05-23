@@ -84,7 +84,7 @@ function confirmdelete(box) {
 
 // Bilder an Forum anpassen
 function ResizeImg(img,maxwidth) {
-	if(img.width >= maxwidth) {
+	if(img.width >= maxwidth && maxwidth != 0) {
 		var owidth = img.width;
 		var oheight = img.height;
 		img.width = maxwidth;

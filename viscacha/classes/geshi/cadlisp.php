@@ -4,10 +4,10 @@
  * -----------
  * Author: Roberto Rossi (rsoftware@altervista.org)
  * Copyright: (c) 2004 Roberto Rossi (http://rsoftware.altervista.org), Nigel McNie (http://qbnz.com/blog)
- * Release Version: 1.0.7.9
- * CVS Revision Version: $Revision: 1.10 $
+ * Release Version: 1.0.7.10
+ * CVS Revision Version: $Revision: 1.12 $
  * Date Started: 2004/08/30
- * Last Modified: $Date: 2006/04/23 01:14:42 $
+ * Last Modified: $Date: 2006/05/19 11:40:15 $
  *
  * AutoCAD/IntelliCAD Lisp language file for GeSHi.
  *
@@ -44,7 +44,7 @@
  ************************************************************************************/
 
 $language_data = array (
-	'LANG_NAME' => 'CAD Lisp',
+	'LANG_NAME' => 'CADLISP',
 	'COMMENT_SINGLE' => array(1 => ";"),
 	'COMMENT_MULTI' => array(";|" => "|;"),
 	'CASE_KEYWORDS' => GESHI_CAPS_NO_CHANGE,

@@ -109,7 +109,8 @@ if ($job == 'plugins') {
 		SELECT p.*, m.title 
 		FROM {$db->pre}plugins AS p
 			LEFT JOIN {$db->pre}packages AS m ON p.module = m.id 
-		ORDER BY p.position, p.ordering", __LINE__, __FILE__);
+		ORDER BY p.position, p.ordering
+		", __LINE__, __FILE__);
 		?>
 		 <table class="border" border="0" cellspacing="0" cellpadding="4" align="center"> 
 		  <tr class="obox">
@@ -214,8 +215,14 @@ elseif ($job == 'plugins_edit') {
 	$dir = "modules/{$package['module']}/";
 	$ini = $myini->read($dir.'config.ini');
 	$hooks = getHookArray();
-	$codefile = $ini['php'][$package['position']];
-	$code = file_get_contents($dir.$codefile);
+	if (!isset($ini['php'][$package['position']])) {
+		$code = '';
+		$codefile = 'Unknown';
+	}
+	else {
+		$codefile = $ini['php'][$package['position']];
+		$code = file_get_contents($dir.$codefile);
+	}
 	$cp = array();
 	foreach ($ini['php'] as $ihook => $ifile) {
 		if ($ifile == $codefile) {
@@ -736,10 +743,25 @@ elseif ($job == 'package_template_edit') {
 }
 elseif ($job == 'package_template_edit2') { // Currently in work...
 	$id = $gpc->get('id', int);
-//	$editId = $gpc->get('edit', int, -1);
+	$editId = $gpc->get('edit', int, -1);
 	$code = $gpc->get('code', arr_none);
+	
+	$result = $db->query("SELECT id FROM {$db->pre}packages WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
+	if ($db->num_rows() != 1) {
+		error('javascript: self.close();', 'Specified package ('.$id.') does not exist.');
+	}
+	$data = $db->fetch_assoc($result);
+	$ini = $myini->read($dir."config.ini");
+	if (!isset($ini['template'][$editId])) {
+		error('javascript: self.close();', 'Specified template ('.$id.') does not exist in INI-File.');
+	}
+	$file = $ini['template'][$editId];
+	
 	foreach ($code as $tpldir => $html) {
-		//$filesystem->file_put_contents();
+		$filepath = "templates/{$tpldir}/modules/{$data['id']}/";
+		if (is_dir($filepath)) {
+			$filesystem->file_put_contents($filepath.$file, $html);
+		}
 	}
 	echo head();
 	ok('admin.php?action=cms&job=package_template&id='.$id);

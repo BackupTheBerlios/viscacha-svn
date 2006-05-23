@@ -260,7 +260,7 @@ pm.php
  - pm_browse_start
  - pm_browse_query
  - pm_browse_entry_prepared
- - pm_bowse_end
+ - pm_browse_end
  - pm_index_start
  - pm_index_entry_prepared
  - pm_index_prepared
@@ -299,7 +299,7 @@ print.php
  - print_topic_query
  - print_start
  - print_vote_prepared
- - showtopic_query
+ - print_query
  - print_attachments_prepared
  - print_entry_prepared
  - print_prepared
