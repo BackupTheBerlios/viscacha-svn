@@ -1,6 +1,9 @@
 <?php
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "cms.php") die('Error: Hacking Attempt');
 
+require('classes/class.phpconfig.php');
+require('lib/language.inc.php');
+
 if ($job == 'plugins') {
 	send_nocache_header();
 	echo head();
@@ -741,7 +744,7 @@ elseif ($job == 'package_template_edit') {
 		ok('admin.php?action=cms&job=package_template&id='.$data['id'], 'Template(s) successfully deleted');
 	}
 }
-elseif ($job == 'package_template_edit2') { // Currently in work...
+elseif ($job == 'package_template_edit2') {
 	$id = $gpc->get('id', int);
 	$editId = $gpc->get('edit', int, -1);
 	$code = $gpc->get('code', arr_none);
@@ -751,7 +754,7 @@ elseif ($job == 'package_template_edit2') { // Currently in work...
 		error('javascript: self.close();', 'Specified package ('.$id.') does not exist.');
 	}
 	$data = $db->fetch_assoc($result);
-	$ini = $myini->read($dir."config.ini");
+	$ini = $myini->read("modules/{$data['id']}/config.ini");
 	if (!isset($ini['template'][$editId])) {
 		error('javascript: self.close();', 'Specified template ('.$id.') does not exist in INI-File.');
 	}
@@ -766,13 +769,230 @@ elseif ($job == 'package_template_edit2') { // Currently in work...
 	echo head();
 	ok('admin.php?action=cms&job=package_template&id='.$id);
 }
-elseif ($job == 'package_language') { // ToDo
+elseif ($job == 'package_language') {
+	echo head();
+	
 	$id = $gpc->get('id', int);
+	$result = $db->query("SELECT id, title FROM {$db->pre}packages WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
+	if ($db->num_rows() != 1) {
+		error('javascript: self.close();', 'Specified package ('.$id.') does not exist.');
+	}
+	$data = $db->fetch_assoc($result);
+	
+	$dir = "modules/{$data['id']}/";
+	$ini = $myini->read($dir."config.ini");
+	if (!isset($ini['language'])) {
+		$ini['language'] = array();
+	}
+	
+	$file = 'modules.lng.php';
+	$group = substr($file, 0, strlen($file)-8);
+	$page = $gpc->get('page', int, 1);
+	$cache = array();
+	$diff = array();
+	$complete = array();
+	$result = $db->query('SELECT * FROM '.$db->pre.'language ORDER BY language',__LINE__,__FILE__);
+	while($row = $db->fetch_assoc($result)) {
+		$cache[$row['id']] = $row;
+		$diff[$row['id']] = array_keys(return_array($group, $row['id']));
+		$complete = array_merge($complete, array_diff($diff[$row['id']], $complete) );
+	}
+	sort($complete);
+	$width = floor(75/count($cache));
+	?>
+<form name="form" method="post" action="admin.php?action=cms&job=package_language_delete&id=<?php echo $id; ?>">
+ <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
+  <tr> 
+   <td class="obox" colspan="<?php echo count($cache)+1; ?>">
+   <span style="float: right;">[<a href="admin.php?action=cms&job=package_language_add&id=<?php echo $id; ?>">Add new Phrase</a>]</span>
+   Phrase Manager</td>
+  </tr>
+  <?php if (count($ini['language']) == 0) { ?>
+  <tr>
+   <td class="mbox" colspan="<?php echo count($cache)+1; ?>">Es wurden noch keine Phrasen angelegt. [<a href="admin.php?action=cms&job=package_language_add&id=<?php echo $id; ?>">Add new Phrase</a>]</td> 
+  </tr>
+  <?php } else { ?>
+  <tr>
+   <td class="mmbox" width="25%">&nbsp;</td>
+   <?php foreach ($cache as $row) { ?>
+   <td class="mmbox" align="center" width="<?php echo $width; ?>%"><?php echo $row['language']; ?></td>
+   <?php } ?>
+  </tr>
+  <?php foreach ($ini['language'] as $phrase => $value) { ?>
+  <tr>
+   <td class="mmbox"><input type="checkbox" name="delete[]" value="<?php echo $phrase; ?>">&nbsp;<?php echo $phrase; ?></td>
+   <?php
+   foreach ($cache as $row) {
+   	$status = in_array($phrase, $diff[$row['id']]);
+   ?>
+   <td class="mbox" align="center"><?php echo noki($status).iif(!$status, ' [<a href="admin.php?action=cms&job=package_language_copy&language='.$row['id'].'&phrase='.$phrase.'&id='.$id.'">Add</a>]', ' [<a href="admin.php?action=cms&job=package_language_edit&language='.$row['id'].'&phrase='.$phrase.'&id='.$id.'">Edit</a>]'); ?></td>
+   <?php } ?>
+  </tr>
+  <?php } ?>
+  <tr> 
+   <td class="ubox" align="center" colspan="<?php echo count($cache)+1; ?>"><input type="submit" value="Delete selected phrases"></td>
+  </tr>
+  <?php } ?>
+ </table>
+</form>
+	<?php
+	echo foot();
 }
 elseif ($job == 'package_language_add') { // ToDo
+	echo head();
+	
 	$id = $gpc->get('id', int);
-	$key = $gpc->get('key', none);
-	$value = $gpc->get('value', none);
+	$result = $db->query("SELECT id, title FROM {$db->pre}packages WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
+	if ($db->num_rows() != 1) {
+		error('javascript: self.close();', 'Specified package ('.$id.') does not exist.');
+	}
+	$data = $db->fetch_assoc($result);
+	
+	$dir = "modules/{$data['id']}/";
+	$ini = $myini->read($dir."config.ini");
+	if (!isset($ini['language'])) {
+		$ini['language'] = array();
+	}
+	
+
+}
+elseif ($job == 'package_language_add2') { // ToDo
+	echo head();
+	
+	$id = $gpc->get('id', int);
+	$result = $db->query("SELECT id, title FROM {$db->pre}packages WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
+	if ($db->num_rows() != 1) {
+		error('javascript: self.close();', 'Specified package ('.$id.') does not exist.');
+	}
+	$data = $db->fetch_assoc($result);
+	
+	$dir = "modules/{$data['id']}/";
+	$ini = $myini->read($dir."config.ini");
+	if (!isset($ini['language'])) {
+		$ini['language'] = array();
+	}
+}
+elseif ($job == 'package_language_delete') { // ToDo
+	echo head();
+	
+	$id = $gpc->get('id', int);
+	$result = $db->query("SELECT id, title FROM {$db->pre}packages WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
+	if ($db->num_rows() != 1) {
+		error('javascript: self.close();', 'Specified package ('.$id.') does not exist.');
+	}
+	$data = $db->fetch_assoc($result);
+	
+	$dir = "modules/{$data['id']}/";
+	$ini = $myini->read($dir."config.ini");
+	if (!isset($ini['language'])) {
+		$ini['language'] = array();
+	}
+}
+elseif ($job == 'package_language_copy') {
+	echo head();
+	
+	$id = $gpc->get('id', int);
+	$result = $db->query("SELECT id, title FROM {$db->pre}packages WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
+	if ($db->num_rows() != 1) {
+		error('javascript: self.close();', 'Specified package ('.$id.') does not exist.');
+	}
+	$data = $db->fetch_assoc($result);
+
+	$file = 'modules.lng.php';
+	$language = $gpc->get('language', int);
+	$phrase = $gpc->get('phrase', str);
+	$result = $db->query('SELECT * FROM '.$db->pre.'language ORDER BY language',__LINE__,__FILE__);
+	echo head();
+	?>
+<form name="form" method="post" action="admin.php?action=cms&job=package_language_copy2&phrase=<?php echo $phrase; ?>&language=<?php echo $language; ?>&id=<?php echo $id; ?>">
+ <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
+  <tr> 
+   <td class="obox" colspan="2">Phrase Manager &raquo; Copy</td>
+  </tr>
+  <tr>
+   <td class="mbox" width="50%">Sprache die als Vorlage dienen soll:<br />
+   <span class="stext">Geben Sie hier an, aus welchem Verzeichnis/von welcher Sprache die Phrase kopiert werden soll.</span></td>
+   <td class="mbox" width="50%"><select name="dir">
+	<?php
+	while($row = $db->fetch_assoc($result)) {
+		if (file_exists('language/'.$row['id'].'/'.$file)) {
+			$file = substr($file, 0, strlen($file)-8);
+			$langarr = return_array($file, $row['id']);
+			if (isset($langarr[$phrase])) {
+	?>
+   	<option value="<?php echo $row['id']; ?>"><?php echo $row['language']; ?> (ID: <?php echo $row['id']; ?>)</option>
+	<?php } } } ?>
+   </select></td>
+  </tr>
+  <tr> 
+   <td class="ubox" align="center" colspan="2"><input type="submit" value="Copy phrase"></td>
+  </tr>
+ </table>
+</form>
+	<?php
+	echo foot();
+}
+elseif ($job == 'package_language_copy2') {
+	echo head();
+	
+	$id = $gpc->get('id', int);
+	$result = $db->query("SELECT id, title FROM {$db->pre}packages WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
+	if ($db->num_rows() != 1) {
+		error('javascript: self.close();', 'Specified package ('.$id.') does not exist.');
+	}
+	$data = $db->fetch_assoc($result);
+	
+	$dest = $gpc->get('language', int);
+	$source = $gpc->get('dir', int);
+	$file = 'modules.lng.php';
+	$phrase = $gpc->get('phrase', str);
+	$destpath = 'language/'.$dest.'/'.$file;
+	$c = new manageconfig();
+	if (!file_exists($destpath)) {
+		createParentDir($file, 'language/'.$dest);
+		$c->createfile($destpath, 'lang');
+	}
+	$file = substr($file, 0, strlen($file)-8);
+	$langarr = return_array($file, $source);
+	if (!isset($langarr[$phrase])) {
+		error('admin.php?action=language&job=phrase_file&file='.$file, 'Phrase not found!');
+	}
+	$c->getdata($destpath, 'lang');
+	$c->updateconfig($phrase, str, $langarr[$phrase]);
+	$c->savedata();
+	ok('admin.php?action=cms&job=package_language&id='.$id);
+}
+elseif ($job == 'package_language_edit') { // ToDo
+	echo head();
+	
+	$id = $gpc->get('id', int);
+	$result = $db->query("SELECT id, title FROM {$db->pre}packages WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
+	if ($db->num_rows() != 1) {
+		error('javascript: self.close();', 'Specified package ('.$id.') does not exist.');
+	}
+	$data = $db->fetch_assoc($result);
+	
+	$dir = "modules/{$data['id']}/";
+	$ini = $myini->read($dir."config.ini");
+	if (!isset($ini['language'])) {
+		$ini['language'] = array();
+	}
+}
+elseif ($job == 'package_language_edit2') { // ToDo
+	echo head();
+	
+	$id = $gpc->get('id', int);
+	$result = $db->query("SELECT id, title FROM {$db->pre}packages WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
+	if ($db->num_rows() != 1) {
+		error('javascript: self.close();', 'Specified package ('.$id.') does not exist.');
+	}
+	$data = $db->fetch_assoc($result);
+	
+	$dir = "modules/{$data['id']}/";
+	$ini = $myini->read($dir."config.ini");
+	if (!isset($ini['language'])) {
+		$ini['language'] = array();
+	}
 }
 elseif ($job == 'package_add') {
 	echo head();

@@ -1098,7 +1098,7 @@ elseif ($job == 'phrase_file_copy') {
 <form name="form" method="post" action="admin.php?action=language&job=phrase_file_copy2&phrase=<?php echo $phrase; ?>&file=<?php echo $file; ?>&id=<?php echo $lang; ?>">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr> 
-   <td class="obox" colspan="2">Phrase Manager &raquo; <?php echo $encfile; ?> &raquo; Copy file</td>
+   <td class="obox" colspan="2">Phrase Manager &raquo; <?php echo $encfile; ?> &raquo; Copy phrase</td>
   </tr>
   <tr>
    <td class="mbox" width="50%">Sprache die als Vorlage dienen soll:<br />
@@ -1116,7 +1116,7 @@ elseif ($job == 'phrase_file_copy') {
    </select></td>
   </tr>
   <tr> 
-   <td class="ubox" align="center" colspan="2"><input type="submit" value="Copy file"></td>
+   <td class="ubox" align="center" colspan="2"><input type="submit" value="Copy phrase"></td>
   </tr>
  </table>
 </form>
