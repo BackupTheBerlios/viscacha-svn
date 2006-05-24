@@ -67,6 +67,7 @@ $http_vars = array(
 'fid' => str,
 'file' => str,
 'groups' => str,
+'captcha' => str,
 'board' => int,
 'topic_id' => int,
 'id' => int,

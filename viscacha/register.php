@@ -51,14 +51,14 @@ if ($_GET['action'] == "save") {
 		include("classes/graphic/class.veriword.php");
 		$vword = new VeriWord();
 	    if($_POST['letter']) {
-	        if ($vword->check_session($_POST['fid'], $_POST['letter']) == FALSE) {
+	        if ($vword->check_session($_POST['captcha'], $_POST['letter']) == FALSE) {
 	        	$error[] = $lang->phrase('veriword_mistake');
 	        }
 	    }
 	    else {
 	        $error[] = $lang->phrase('veriword_failed');
 	    }
-	}       
+	}
     if ($config['acceptrules'] == 1 && $_POST['temp'] != 1) {
     	$error[] = $lang->phrase('you_had_to_accept_agb');
     }
@@ -191,11 +191,13 @@ else {
 
 	($code = $plugins->load('register_form_start')) ? eval($code) : null;
 
-	include("classes/graphic/class.veriword.php");
-	$vword = new VeriWord();
-	$veriid = $vword->set_veriword($config['botgfxtest_text_verification']);
-	if ($config['botgfxtest_text_verification'] == 1) {
-		$code = $vword->output_word($veriid);
+	if ($config['botgfxtest'] == 1) {
+		include("classes/graphic/class.veriword.php");
+		$vword = new VeriWord();
+		$veriid = $vword->set_veriword($config['botgfxtest_text_verification']);
+		if ($config['botgfxtest_text_verification'] == 1) {
+			$code = $vword->output_word($veriid);
+		}
 	}
 	
 	$breadcrumb->Add($lang->phrase('register_title'));

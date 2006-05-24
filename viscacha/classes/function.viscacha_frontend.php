@@ -641,7 +641,7 @@ function errorLogin($errormsg=NULL,$errorurl=NULL,$EOS = NULL) {
 }
 
 function error ($errormsg=NULL,$errorurl='javascript:history.back(-1);', $EOS = NULL) {
-	global $config, $my, $tpl, $zeitmessung, $db, $slog, $phpdoc, $lang, $breadcrumb;
+	global $config, $my, $tpl, $zeitmessung, $db, $slog, $phpdoc, $lang, $breadcrumb, $plugins;
 	if ($errormsg == NULL) {
 		$errormsg = $lang->phrase('unknown_error');
 	}

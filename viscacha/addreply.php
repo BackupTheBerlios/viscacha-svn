@@ -95,6 +95,18 @@ if ($_GET['action'] == "save") {
 	$digest = $gpc->get('digest', int);
     $error = array();
     if (!$my->vlogin) {
+		if ($config['botgfxtest_posts'] == 1) {
+			include("classes/graphic/class.veriword.php");
+			$vword = new VeriWord();
+		    if($_POST['letter']) {
+		        if ($vword->check_session($_POST['captcha'], $_POST['letter']) == FALSE) {
+		        	$error[] = $lang->phrase('veriword_mistake');
+		        }
+		    }
+		    else {
+		        $error[] = $lang->phrase('veriword_failed');
+		    }
+		}
 		if (!check_mail($_POST['email']) && ($config['guest_email_optional'] == 0 || !empty($_POST['email']))) {
 			$error[] = $lang->phrase('illegal_mail');
 		}
@@ -331,6 +343,15 @@ else {
 				$data['comment'] .= $row['comment'];
 				$data['comment'] .= "[/quote]\r\n";
 			}
+		}
+	}
+
+	if ($config['botgfxtest_posts'] == 1) {
+		include("classes/graphic/class.veriword.php");
+		$vword = new VeriWord();
+		$veriid = $vword->set_veriword($config['botgfxtest_text_verification']);
+		if ($config['botgfxtest_text_verification'] == 1) {
+			$code = $vword->output_word($veriid);
 		}
 	}
 	

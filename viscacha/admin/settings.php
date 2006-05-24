@@ -813,10 +813,6 @@ elseif ($job == 'captcha') {
 	   <td class="obox" colspan="2"><b>Spam-Bot-Protection (CAPTCHA)</b></td>
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">Activate Spam-Bot-Protection:</td>
-	   <td class="mbox" width="50%"><input type="checkbox" name="botgfxtest" value="1"<?php echo iif($config['botgfxtest'] == 1,' checked="checked"'); ?>></td> 
-	  </tr>
-	  <tr> 
 	   <td class="mbox" width="50%">Show Text-Code instead of CAPTCHA-Image:<br /><span class="stext">Examples: see below.</span></td>
 	   <td class="mbox" width="50%"><input type="checkbox" name="botgfxtest_text_verification" value="1"<?php echo iif($config['botgfxtest_text_verification'] == 1,' checked="checked"'); ?>></td> 
 	  </tr>
@@ -840,6 +836,19 @@ elseif ($job == 'captcha') {
 	   <td class="mbox" width="50%">CAPTCHA: Quality of the picture:<br /><span class="stext">In percent (100 = very good, 0 = impossible to read). Only possible when you use JPEG pictures.</span></td>
 	   <td class="mbox" width="50%"><input type="text" name="botgfxtest_quality" value="<?php echo $config['botgfxtest_quality']; ?>" size="5">%</td> 
 	  </tr>
+	  <tr>
+	   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="Submit"></td> 
+	  </tr>
+	 </table>
+	<br class="minibr" />
+	 <table class="border" border="0" cellspacing="0" cellpadding="4">
+	  <tr> 
+	   <td class="obox" colspan="2"><b>Spam-Bot-Protection (CAPTCHA) &raquo; Registration</b></td>
+	  </tr>
+	  <tr> 
+	   <td class="mbox" width="50%">Activate Spam-Bot-Protection at Registration:</td>
+	   <td class="mbox" width="50%"><input type="checkbox" name="botgfxtest" value="1"<?php echo iif($config['botgfxtest'] == 1,' checked="checked"'); ?>></td> 
+	  </tr>
 	  <tr> 
 	   <td class="mbox" width="50%">CAPTCHA: Standard image width:<br /><span class="stext">In Pixels.</span></td>
 	   <td class="mbox" width="50%"><input type="text" name="botgfxtest_width" value="<?php echo $config['botgfxtest_width']; ?>" size="5">px</td> 
@@ -847,6 +856,26 @@ elseif ($job == 'captcha') {
 	  <tr> 
 	   <td class="mbox" width="50%">CAPTCHA: Standard image height:<br /><span class="stext">In Pixels.</span></td>
 	   <td class="mbox" width="50%"><input type="text" name="botgfxtest_height" value="<?php echo $config['botgfxtest_height']; ?>" size="5">px</td> 
+	  </tr>
+	   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="Submit"></td> 
+	  </tr>
+	 </table>
+	<br class="minibr" />
+	 <table class="border" border="0" cellspacing="0" cellpadding="4">
+	  <tr> 
+	   <td class="obox" colspan="2"><b>Spam-Bot-Protection (CAPTCHA) &raquo; Posting</b></td>
+	  </tr>
+	  <tr> 
+	   <td class="mbox" width="50%">Activate Spam-Bot-Protection at Posting of guests</td>
+	   <td class="mbox" width="50%"><input type="checkbox" name="botgfxtest_posts" value="1"<?php echo iif($config['botgfxtest_posts'] == 1,' checked="checked"'); ?>></td> 
+	  </tr>
+	  <tr> 
+	   <td class="mbox" width="50%">CAPTCHA: Standard image width:<br /><span class="stext">In Pixels.</span></td>
+	   <td class="mbox" width="50%"><input type="text" name="botgfxtest_posts_width" value="<?php echo $config['botgfxtest_posts_width']; ?>" size="5">px</td> 
+	  </tr>
+	  <tr> 
+	   <td class="mbox" width="50%">CAPTCHA: Standard image height:<br /><span class="stext">In Pixels.</span></td>
+	   <td class="mbox" width="50%"><input type="text" name="botgfxtest_posts_height" value="<?php echo $config['botgfxtest_posts_height']; ?>" size="5">px</td> 
 	  </tr>
 	   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="Submit"></td> 
 	  </tr>
@@ -875,10 +904,13 @@ elseif ($job == 'captcha2') {
 
 	$c->getdata();
 	$c->updateconfig('botgfxtest',int);
+	$c->updateconfig('botgfxtest_posts', int);
 	$c->updateconfig('botgfxtest_filter', int);
 	$c->updateconfig('botgfxtest_colortext', int);
 	$c->updateconfig('botgfxtest_width', int);
 	$c->updateconfig('botgfxtest_height', int);
+	$c->updateconfig('botgfxtest_posts_width', int);
+	$c->updateconfig('botgfxtest_posts_height', int);
 	$c->updateconfig('botgfxtest_format', str);
 	$c->updateconfig('botgfxtest_quality', int);
 	$c->updateconfig('botgfxtest_text_verification',int);
@@ -2183,7 +2215,7 @@ else {
  <tr class="mbox"><td>
   <a href="admin.php?action=settings&job=captcha">Spam-Bot-Protection (CAPTCHA)</a>
  </td><td>
-  <span class="stext">Image based verification to prevent automatic registration. Spam-Bot-Protection with <a href="admin.php?action=misc&job=captcha">CAPTCHA</a>-Images.</span>
+  <span class="stext">Image based verification to prevent automatic registration or posting. Spam-Bot-Protection with <a href="admin.php?action=misc&job=captcha">CAPTCHA</a>-Images.</span>
  </td></tr>
  <tr class="mbox"><td>
   <a href="admin.php?action=settings&job=spiders">Crawler &amp; Robots</a>

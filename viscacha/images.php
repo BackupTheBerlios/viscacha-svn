@@ -85,6 +85,10 @@ elseif ($_GET['action'] == 'captcha') {
 		$width = $config['botgfxtest_width'];
 		$height = $config['botgfxtest_height'];
 	}
+	if ($_GET['type'] == 'post') {
+		$width = $config['botgfxtest_posts_width'];
+		$height = $config['botgfxtest_posts_height'];
+	}
 	else {
 		$width = $gpc->get('width', int, 160);
 		$height = $gpc->get('height', int, 40);
@@ -95,7 +99,7 @@ elseif ($_GET['action'] == 'captcha') {
 	$vword->set_filter($config['botgfxtest_filter']);
 	$vword->set_color($config['botgfxtest_colortext']);
 	$vword->set_size($width, $height, $config['botgfxtest_format'], $config['botgfxtest_quality']);
-	$vword->output_image($_GET['fid']);
+	$vword->output_image($_GET['captcha']);
 }
 elseif ($_GET['action'] == 'postrating' || $_GET['action'] == 'memberrating' || $_GET['action'] == 'threadrating') {
 	$colors = array('FF0000', 'E44C00', 'E89A00', 'EBE700', '9EE800', '4DE400');

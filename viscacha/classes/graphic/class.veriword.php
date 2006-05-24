@@ -231,6 +231,7 @@ class VeriWord {
 
     function output_image($fid, $type='jpeg', $quality = 90) {
         $floods = file($this->sess_file);
+        $this->word = ' ';
         foreach ($floods as $row) {
             if (strlen($row) < 47) {
                 continue;
@@ -252,7 +253,7 @@ class VeriWord {
         
         /* show the image  */            
         switch($this->im_type){
-            case 'png' :
+            case 'gif' :
                 header("Content-type: image/gif");
                 imagegif($this->im);
                 imagedestroy($this->im);
@@ -395,7 +396,7 @@ class VeriWord {
 
             $text_width     = $this->math_diff($box[2], $box[0]);
             $text_height    = $this->math_diff($box[5], $box[3]);
-            
+
             $margin        	= ceil( ($text_width/strlen($this->word)) * 0.5);
             
             $im_string      = @imagecreatetruecolor( ceil($text_width + $margin*2), ceil($text_height + $margin*2) ); 
