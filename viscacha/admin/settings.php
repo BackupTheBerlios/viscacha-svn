@@ -8,7 +8,7 @@ $c = new manageconfig();
 if ($job == 'ftp') {
 	$config = $gpc->prepare($config);
 	
-	$path = '--';
+	$path = 'N/A';
 	if (isset($_SERVER['DOCUMENT_ROOT'])) {
 		$path = str_replace(realpath($_SERVER['DOCUMENT_ROOT']).DIRECTORY_SEPARATOR, '', realpath('../'));
 	}
@@ -426,7 +426,7 @@ elseif ($job == 'server') {
 	   </select></td> 
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">PHP-Error reporting:<br /><span class="stext">Names the PHP-Errors shown by the parser. More information: <a href="http://www.php.net/manual/ref.errorfunc.php#errorfunc.constants" target="_blank">Error Handling: Constants</a> und <a href="http://www.php.net/error-reporting" target="_blank">error_reporting()</a>.</span></td>
+	   <td class="mbox" width="50%">PHP-Error reporting:<br /><span class="stext">Types of Errors shown by the parser. More information: <a href="http://www.php.net/manual/ref.errorfunc.php#errorfunc.constants" target="_blank">Error Handling: Constants</a> und <a href="http://www.php.net/error-reporting" target="_blank">error_reporting()</a>.</span></td>
 	   <td class="mbox" width="50%"><select name="error_reporting">
 	   <option value="-1"<?php echo iif($config['error_reporting'] == -1, ' selected="selected"'); ?>>PHP-Standard</option>
 	   <option value="1"<?php echo iif($config['error_reporting'] == 1, ' selected="selected"'); ?>>E_ERROR: Fatal Runtime-Error</option>
@@ -440,7 +440,15 @@ elseif ($job == 'server') {
 	   </select></td> 
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">Test the filesystem for correctly set CHMODS:<br /><span class="stext">Activating this option will check at every call if CHMOD for files and folders are right set. This option should be deactivated, if changes were made on the filesystem before, for example after the installation or updates.</span></td>
+	   <td class="mbox" width="50%">Use own Error-Handler:<br /><span class="stext">Activate this option to use custom error handler (see: <a href="http://www.php.net/manual/function.set-error-handler.php" target="_blank">set_error_handler</a>).</span></td>
+	   <td class="mbox" width="50%"><input type="checkbox" name="error_handler" value="1"<?php echo iif($config['error_handler'] == 1,' checked="checked"'); ?>></td> 
+	  </tr>
+	  <tr> 
+	   <td class="mbox" width="50%">Save PHP-Errors to log-file:<br /><span class="stext">Only if &quot;Use own Error-Handler&quot; is activated! This option should be activated only for debugging purposes!</span></td>
+	   <td class="mbox" width="50%"><input type="checkbox" name="error_log" value="1"<?php echo iif($config['error_log'] == 1,' checked="checked"'); ?>></td> 
+	  </tr>
+	  <tr> 
+	   <td class="mbox" width="50%">Test the filesystem for correctly set CHMODS:<br /><span class="stext">Activating this option will check at every call if CHMOD for files and folders are right set. This option should be activated oly if changes were made on the filesystem before, for example after installation or update.</span></td>
 	   <td class="mbox" width="50%"><input type="checkbox" name="check_filesystem" value="1"<?php echo iif($config['check_filesystem'] == 1,' checked="checked"'); ?>></td> 
 	  </tr>
 	  <tr> 
@@ -464,6 +472,8 @@ elseif ($job == 'server2') {
 
 	$c->getdata();
 	$c->updateconfig('gdversion', int);
+	$c->updateconfig('error_handler', int);
+	$c->updateconfig('error_log', int);
 	$c->updateconfig('error_reporting', int);
 	$c->updateconfig('correctsubdomains', int);
 	$c->updateconfig('hterrordocs', int);
@@ -1336,7 +1346,7 @@ elseif ($job == 'general') {
 	echo head();
 	
 	if (!empty($_SERVER['HTTP_HOST']) && !empty($_SERVER['PHP_SELF'])) {
-		$furl = "http://".$_SERVER['HTTP_HOST'].rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
+		$furl = "http://".$_SERVER['HTTP_HOST'].rtrim(viscacha_dirname($_SERVER['PHP_SELF']), '/\\');
 	}
 	else {
 		$furl = "Unable to analyze URL.";
@@ -1573,7 +1583,7 @@ elseif ($job == 'textprocessing') {
 	$config = $gpc->prepare($config);
 	
 	if (!empty($_SERVER['HTTP_HOST']) && !empty($_SERVER['PHP_SELF'])) {
-		$surl = "http://".$_SERVER['HTTP_HOST'].rtrim(dirname($_SERVER['PHP_SELF']), '/\\').'/images/smileys';
+		$surl = "http://".$_SERVER['HTTP_HOST'].rtrim(viscacha_dirname($_SERVER['PHP_SELF']), '/\\').'/images/smileys';
 	}
 	else {
 		$surl = "Unable to analyze URL.";

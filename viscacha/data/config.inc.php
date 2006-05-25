@@ -41,6 +41,7 @@ $config['edit_edit_time'] = 0;
 $config['enableflood'] = 1;
 $config['enable_jabber'] = 1;
 $config['error_handler'] = 0;
+$config['error_log'] = 0;
 $config['error_reporting'] = 2047;
 $config['fdesc'] = 'Your Viscacha Installation!';
 $config['floodsearch'] = 1;

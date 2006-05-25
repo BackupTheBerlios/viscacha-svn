@@ -1,4 +1,5 @@
 <?php
+global $scache;
 
 $i = 0;
 

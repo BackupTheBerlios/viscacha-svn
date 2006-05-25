@@ -1,6 +1,6 @@
 <?php
 if (!empty($_SERVER['HTTP_HOST']) && !empty($_SERVER['PHP_SELF'])) {
-	$source = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
+	$source = rtrim(viscacha_dirname($_SERVER['PHP_SELF']), '/\\');
 	$pos = strrpos($source, '/');
 	if ($pos === false) {
 		$pos = strrpos($source, '\\');

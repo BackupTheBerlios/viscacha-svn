@@ -266,16 +266,10 @@ class DB {
 			}
 			$errno = mysql_errno();
 			$errmsg = mysql_error();
-			$errcomment = str_replace("\n", " ", $errcomment);
-			$errcomment = str_replace("\r", " ", $errcomment);
-			$errcomment = str_replace("\t", "   ", $errcomment);
-			$errmsg = str_replace("\n", " ", $errmsg);
-			$errmsg = str_replace("\r", " ", $errmsg);
-			$errmsg = str_replace("\t", "   ", $errmsg);
-			$_SERVER['REQUEST_URI'] = str_replace("\n", " ", $_SERVER['REQUEST_URI']);
-			$_SERVER['REQUEST_URI'] = str_replace("\r", " ", $_SERVER['REQUEST_URI']);
-			$_SERVER['REQUEST_URI'] = str_replace("\t", "   ", $_SERVER['REQUEST_URI']);
-			$new[] = $errno."\t".$errmsg."\t".$errfile."\t".$errline."\t".$errcomment."\t".$_SERVER['REQUEST_URI']."\t".time()."\t".PHP_VERSION." (".PHP_OS.")";
+			$errcomment = str_replace(array("\r\n","\n","\r","\t"), " ", $errcomment);
+			$errmsg = str_replace(array("\r\n","\n","\r","\t"), " ", $errmsg);
+			$sru = str_replace(array("\r\n","\n","\r","\t"), " ", $_SERVER['REQUEST_URI']);
+			$new[] = $errno."\t".$errmsg."\t".$errfile."\t".$errline."\t".$errcomment."\t".$sru."\t".time()."\t".PHP_VERSION." (".PHP_OS.")";
 			file_put_contents($this->errlogfile, implode("\n", $new));
 		}
 	    return "$errno: $errmsg - File: $errfile on line $errline";

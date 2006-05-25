@@ -421,7 +421,7 @@ elseif ($job == "extract2") {
 			$temp = realpath($temp);
 			include('classes/class.tar.php');
 			$tar = new tar();
-			$tar->new_tar(dirname($temp), basename($temp));
+			$tar->new_tar(viscacha_dirname($temp), basename($temp));
 			$tar->extract_files(realpath($dir));
 			$err = $tar->error;
 			$filesystem->unlink($temp);
@@ -433,7 +433,7 @@ elseif ($job == "extract2") {
 			include('classes/class.tar.php');
 			$tar = new tar();
 			$file = realpath($file);
-			$tar->new_tar(dirname($file), basename($file));
+			$tar->new_tar(viscacha_dirname($file), basename($file));
 			$tar->extract_files($dir);
 		}
 		elseif ($extension == 'gz') {

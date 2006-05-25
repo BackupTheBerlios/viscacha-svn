@@ -50,6 +50,13 @@ if (version_compare(PHP_VERSION, '4.1.0', '<')) {
 	$_REQUEST = array_merge($_GET, $_POST, $_COOKIE);
 }
 
+// You should use viscacha_dirname instead of dirname
+// Written by Manuel Lemos
+function viscacha_dirname($path) {
+	$end=strrpos($path,"/");
+	return((gettype($end)=="integer" && $end>1) ? substr($path,0,$end) : "");
+}
+
 function array_stripslashes($array) {
 	if(is_array($array)) {
 		return array_map('stripslashes', $array); 

@@ -62,12 +62,14 @@ function array_empty_trim($arr) {
 }
 function send_nocache_header() {
 	if (!empty($_SERVER['SERVER_SOFTWARE']) && strstr($_SERVER['SERVER_SOFTWARE'], 'Apache/2')) {
-		header ('Cache-Control: no-cache, pre-check=0, post-check=0');
+		header ('Cache-Control: no-cache, no-store, must-revalidate, pre-check=0, post-check=0');
 	}
 	else {
-		header ('Cache-Control: private, pre-check=0, post-check=0, max-age=0');
+		header ('Cache-Control: private, no-store, must-revalidate, pre-check=0, post-check=0, max-age=0');
 	}
-	header ('Expires: 0');
+	$now = gmdate('D, d M Y H:i:s').' GMT'; // rfc2616 - Section 14.21
+	header ('Expires: '.$now);
+	header ('Last-Modified: '.$now);
 	header ('Pragma: no-cache');
 }
 
