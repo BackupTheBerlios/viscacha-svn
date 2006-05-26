@@ -39,6 +39,14 @@ if ($job == 'plugins') {
 	<?php
 	if ($sort == 1) {
 		$package = null;
+		
+		$configs = array();
+		$result = $db->query("SELECT id, name FROM {$db->pre}settings_groups WHERE LEFT(name, 7) = 'module_'");
+		while ($row = $db->fetch_assoc($result)) {
+			$id = substr($row['name'], 7);
+			$configs[$id] = $row['id'];
+		}
+
 		$result = $db->query("
 		SELECT p.*, m.title, m.id as module
 		FROM {$db->pre}packages AS m
@@ -67,7 +75,9 @@ if ($job == 'plugins') {
 					 [<a href="admin.php?action=cms&job=plugins_add&id=<?php echo $head['module']; ?>">Plugin hinzuf&uuml;gen</a>]
 					 [<a href="admin.php?action=cms&job=package_export&id=<?php echo $head['module']; ?>">Exportieren</a>]
 					 [<a href="admin.php?action=cms&job=package_info&id=<?php echo $head['module']; ?>">Informationen</a>] 
-					 [<a href="admin.php?action=cms&job=package_config&id=<?php echo $head['module']; ?>">Konfiguration</a>]
+					 <?php if (isset($configs[$head['module']]) == true) { ?>
+					 [<a href="admin.php?action=settings&job=custom&id=<?php echo $configs[$head['module']]; ?>">Konfiguration</a>]
+					 <?php } ?>
 					 [<a href="admin.php?action=cms&job=package_delete&id=<?php echo $head['module']; ?>">Löschen</a>] 
 					</td>
 				</tr>
@@ -195,11 +205,51 @@ elseif ($job == 'plugins_active') {
 	$filesystem->unlink('cache/modules/'.$plugins->_group($row['position']).'.php');
 	viscacha_header('Location: admin.php?action=cms&job=plugins');
 }
-elseif ($job == 'plugins_delete') { // ToDo
-	
+elseif ($job == 'plugins_delete') {
+	echo head();
+	$id = $gpc->get('id', int);
+	?>
+	<table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
+	<tr><td class="obox">Package löschen</td></tr>
+	<tr><td class="mbox">
+	<p align="center">Wollen Sie dieses Plugin wirklich löschen?</p>
+	<p align="center">
+	<a href="admin.php?action=cms&job=plugins_delete2&id=<?php echo $id; ?>"><img border="0" align="middle" alt="" src="admin/html/images/yes.gif"> Yes</a>
+	&nbsp&nbsp;&nbsp;&nbsp&nbsp;&nbsp;
+	<a href="javascript: history.back(-1);"><img border="0" align="middle" alt="" src="admin/html/images/no.gif"> No</a>
+	</p>
+	</td></tr>
+	</table>
+	<?php
+	echo foot();
 }
-elseif ($job == 'plugins_delete2') { // ToDo
+elseif ($job == 'plugins_delete2') {
+	$id = $gpc->get('id', int);
 
+	$result = $db->query("SELECT * FROM {$db->pre}plugins WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
+	$data = $db->fetch_assoc($result);
+	
+	$dir = "modules/{$data['module']}/";
+	$ini = $myini->read($dir."config.ini");
+	$delete = true;
+	$file = $ini['php'][$data['position']];
+	foreach ($ini['php'] as $pos => $val) {
+		if ($pos != $data['position'] && $file == $val) {
+			$delete = false;
+		}
+	}
+	unset($ini['php'][$data['position']]);
+	if (file_exists($dir.$file) && $delete == true) {
+		$filesystem->unlink($dir.$file);
+	}
+	$myini->write($dir."config.ini", $ini);
+
+	$db->query("DELETE FROM {$db->pre}plugins WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
+
+	$filesystem->unlink('cache/modules/'.$plugins->_group($data['position']).'.php');
+	
+	echo head();
+	ok('admin.php?action=cms&job=plugins', 'Plugin successfully deleted!');
 }
 elseif ($job == 'plugins_edit') {
 	echo head();
@@ -453,7 +503,7 @@ elseif ($job == 'plugins_add2') {
 	  <td><textarea name="code" rows="10" cols="80" class="texteditor"></textarea></td>
 	 </tr>
 	 <tr class="mbox">
-	  <td width="25%">File for Code:<br /><span class="stext">In this file the code will be saved. This file is located in the folder <code><?php echo $config['fpath']; ?>/modules/<?php echo $package['id']; ?>/</code>.</span></td>
+	  <td width="25%">File for Code:<br /><span class="stext">In this file the code will be saved. This file is located in the folder <code><?php echo $config['fpath']; ?>/modules/<?php echo $package['id']; ?>/</code>. If the file exists, the code above will be ignored.</span></td>
 	  <td width="75%"><input type="text" name="file" size="40" value="<?php echo $codefile; ?>" /></td>
 	 </tr>
 	 <tr class="mbox">
@@ -508,8 +558,10 @@ elseif ($job == 'plugins_add3') {
 
 	$db->query("UPDATE {$db->pre}plugins SET `name` = '{$title}', `ordering` = '{$priority}', `active` = '{$active}' WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 
-	$filesystem->file_put_contents($dir.$file, $code);
-	$filesystem->chmod($dir.$file, 0666);
+	if (file_exists($dir.$file) == false) {
+		$filesystem->file_put_contents($dir.$file, $code);
+		$filesystem->chmod($dir.$file, 0666);
+	}
 	
 	$ini = $myini->read($dir."config.ini");
 	$ini['php'][$data['position']] = $file;
@@ -619,7 +671,7 @@ elseif ($job == 'package_template_add') {
 	$standardDesign = $designs[$config['templatedir']]['template'];
 	$tpldir = "templates/{$standardDesign}/modules/{$data['id']}/";
 	if (!is_dir($tpldir)) {
-		$filesysten->mkdir($tpldir, 0777);
+		$filesystem->mkdir($tpldir, 0777);
 	}
 	$filesystem->file_put_contents($tpldir.$file, $code);
 	$filesystem->chmod($tpldir.$file, 0666);
@@ -1153,7 +1205,7 @@ elseif ($job == 'package_add2') {
 	$myini->write("modules/{$packageid}/config.ini", $ini);
 	$filesystem->chmod("modules/{$packageid}/config.ini", 0666);
 	
-	ok('admin.php?action=cms&job=plugin_add&id='.$packageid, 'Package successfully added.');
+	ok('admin.php?action=cms&job=plugins_add&id='.$packageid, 'Package successfully added.');
 }
 elseif ($job == 'package_import') { // ToDo
 
@@ -1167,20 +1219,149 @@ elseif ($job == 'package_export') { // ToDo
 elseif ($job == 'package_export2') { // ToDo
 
 }
-elseif ($job == 'package_info') { // ToDo
-
+elseif ($job == 'package_info') {
+	echo head();
+	$id = $gpc->get('id', int);
+	$result = $db->query("SELECT * FROM {$db->pre}plugins WHERE module = '{$id}'", __LINE__, __FILE__);
+	$plugin = array();
+	while ($row = $db->fetch_assoc()) {
+		$plugin[] = $row;
+	}
+	$ini = $myini->read("modules/{$id}/config.ini");
+	?>
+	<table class="border">
+	 <tr>
+	  <td class="obox" colspan="2">Package</td>
+	 </tr>
+	 <tr class="mbox">
+	  <td width="30%">Package:</td>
+	  <td width="70%"><?php echo $ini['info']['title']; ?></td>
+	 </tr>
+	 <tr class="mbox">
+	  <td width="30%">Version:</td>
+	  <td width="70%"><?php echo $ini['info']['version']; ?></td>
+	 </tr>
+	 <tr class="mbox">
+	  <td width="30%">Copyright:</td>
+	  <td width="70%"><?php echo $ini['info']['copyright']; ?></td>
+	 </tr>
+	 <tr class="mbox">
+	  <td width="30%">Templates:</td>
+	  <td width="70%"><?php echo (isset($ini['template']) && count($ini['template']) > 0) ? implode('<br />', $ini['template']) : '-'; ?></td>
+	 </tr>
+	 <tr class="mbox">
+	  <td width="30%">Phrases:</td>
+	  <td width="70%"><?php echo (isset($ini['language']) && count($ini['language']) > 0) ? implode('<br />', array_keys($ini['language'])) : '-'; ?></td>
+	 </tr>
+	 <tr class="mbox">
+	  <td width="30%">Hooks:</td>
+	  <td width="70%"><?php echo (isset($ini['php']) && count($ini['php']) > 0) ? implode('<br />', array_unique(array_keys($ini['php']))) : '-'; ?></td>
+	 </tr>
+	</table>
+	<br class="minibr" />
+	<table class="border">
+	 <tr>
+	  <td class="obox" colspan="2">Plugins</td>
+	 </tr>
+	 <?php
+	 foreach ($plugin as $row) {
+		?>
+		<tr class="ubox">
+		 <td colspan="2"><b><?php echo $row['name']; ?></b></td>
+		</tr>
+		<tr class="mbox">
+		 <td width="30%">Hook:</td>
+		 <td width="70%"><?php echo $row['position']; ?></td>
+		</tr>
+		<tr class="mbox">
+		 <td width="30%">File:</td>
+		 <td width="70%"><?php echo $ini['php'][$row['position']]; ?></td>
+		</tr>
+		<tr class="mbox">
+		 <td width="30%">Active:</td>
+		 <td width="70%"><?php echo noki($row['active']); ?></td>
+		</tr>
+		<?php
+	 }
+	 if (count($plugin) == 0) {
+	 	?>
+		<tr class="mbox">
+			<td colspan="2"><em>For this package there is no plugin specified.</em></td>
+		</tr>
+	 	<?php
+	 }
+	 ?>
+	</table>
+	<?php
+	echo foot();
 }
-elseif ($job == 'package_config') { // ToDo
-
+elseif ($job == 'package_delete') {
+	echo head();
+	$id = $gpc->get('id', int);
+	?>
+	<table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
+	<tr><td class="obox">Package löschen</td></tr>
+	<tr><td class="mbox">
+	<p align="center">Wollen Sie dieses Package mit allen enthaltenen Plugins wirklich löschen?</p>
+	<p align="center">
+	<a href="admin.php?action=cms&job=package_delete2&id=<?php echo $id; ?>"><img border="0" align="middle" alt="" src="admin/html/images/yes.gif"> Yes</a>
+	&nbsp&nbsp;&nbsp;&nbsp&nbsp;&nbsp;
+	<a href="javascript: history.back(-1);"><img border="0" align="middle" alt="" src="admin/html/images/no.gif"> No</a>
+	</p>
+	</td></tr>
+	</table>
+	<?php
+	echo foot();
 }
-elseif ($job == 'package_config2') { // ToDo
+elseif ($job == 'package_delete2') {
+	$id = $gpc->get('id', int);
+	
+	$dir = "modules/{$id}/";
+	$ini = $myini->read($dir."config.ini");
+	
+	$confirm = true;
+	($code = $plugins->uninstall($id)) ? eval($code) : null;
 
-}
-elseif ($job == 'package_delete') { // ToDo
+	$result = $db->query("SELECT * FROM {$db->pre}plugins WHERE module = '{$id}' LIMIT 1", __LINE__, __FILE__);
+	while ($data = $db->fetch_assoc($result)) {
+		$filesystem->unlink('cache/modules/'.$plugins->_group($data['position']).'.php');
+	}
+	$db->query("DELETE FROM {$db->pre}plugins WHERE module = '{$id}' LIMIT 1", __LINE__, __FILE__);
+	$db->query("DELETE FROM {$db->pre}packages WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 
-}
-elseif ($job == 'package_delete2') { // ToDo
-
+	// Delete templates
+	$designObj = $scache->load('loaddesign');
+	$designs = $designObj->get(true);
+	foreach ($designs as $row) {
+		$tpldir = "templates/{$row['template']}/modules/{$id}/";
+		if (file_exists($tpldir)) {
+			rmdirr($tpldir);
+		}
+	}
+	// Delete phrases
+	if (isset($ini['language']) && count($ini['language']) > 0) {
+		$result = $db->query('SELECT * FROM '.$db->pre.'language',__LINE__,__FILE__);
+		$c = new manageconfig();
+		while($row = $db->fetch_assoc($result)) {
+			$path = "language/{$row['id']}/modules.lng.php";
+			if (file_exists($path)) {
+				$c->getdata($path, 'lang');
+				foreach ($ini['language'] as $phrase) {
+					$c->delete($phrase);
+				}
+				$c->savedata();
+			}
+		}
+	}
+	// Delete modules
+	if (file_exists($dir)) {
+		rmdirr($dir);
+	}
+	
+	if ($confirm) {
+		echo head();
+		ok('admin.php?action=cms&job=plugins&sort=1', 'Package successfully deleted!');
+	}
 }
 elseif ($job == 'nav') {
 	send_nocache_header();

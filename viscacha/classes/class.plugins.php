@@ -48,6 +48,14 @@ class PluginSystem {
 			return '';
 		}
 	}
+
+	function uninstall($id) {
+		return $this->_setup('uninstall', $id);
+	}
+
+	function install($id) {
+		return $this->_setup('install', $id);
+	}
 	
 	function navigation() {
 		global $tpl;
@@ -78,6 +86,23 @@ class PluginSystem {
 		return $code;
 	}
 	
+	function _setup($hook, $id) {
+		global $myini;
+
+		$source = '';
+		$inifile = 'modules/'.$id.'/config.ini';
+		$ini = $myini->read($inifile);
+	    if (isset($ini['php'][$hook])) {
+	    	$file = $ini['php'][$hook];
+		  	$sourcefile = 'modules/'.$id.'/'.$file;
+		  	if (file_exists($sourcefile)) {
+			   	$source = file_get_contents($sourcefile);
+    		}
+    	}
+		
+		return $source;
+	}
+
 	function _cache_navigation() {
 		global $scache;
 		if ($this->menu == null) {

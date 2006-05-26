@@ -57,7 +57,10 @@ class filesystem {
 	}
 	
 	function unlink($file) {
-		if (!@unlink($file)) {
+		if (!file_exists($file)) {
+			return false;
+		}
+		if (@unlink($file) == false) {
 			if ($this->init()) {
 				return $this->ftp->delete($file);
 			}
