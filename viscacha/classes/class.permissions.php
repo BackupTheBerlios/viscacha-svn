@@ -564,14 +564,14 @@ function logged () {
 	$loadlanguage_obj = $scache->load('loadlanguage');
 	$cache2 = $loadlanguage_obj->get();
 
-	$q_lng = $gpc->get('lang', int);
+	$q_lng = $gpc->get('language', int);
 	if (isset($my->language) == false || isset($cache2[$my->language]) == false) {
 		$my->language = $config['langdir'];
 	}
-	if (isset($my->settings['q_lng']) && isset($cache2[$my->settings['q_lng']]) != false) {
+	if (isset($my->settings['q_lng']) && isset($cache2[$my->settings['q_lng']])) {
 		$my->language = $my->settings['q_lng'];
 	}
-	if (isset($cache2[$q_lng]) != false) {
+	if (isset($cache2[$q_lng])) {
 		$my->settings['q_lng'] = $q_lng;
 		$my->language = $q_lng;
 	}
@@ -823,14 +823,14 @@ function sid_login($remember = true) {
 		$loadlanguage_obj = $scache->load('loadlanguage');
 		$cache2 = $loadlanguage_obj->get();
 
-		$q_lng = $gpc->get('lang', int);
+		$q_lng = $gpc->get('language', int);
 		if (isset($my->language) == false || isset($cache2[$my->language]) == false) {
 			$my->language = $config['langdir'];
 		}
-		if (isset($my->settings['q_lng']) && isset($cache2[$my->settings['q_lng']]) != false) {
+		if (isset($my->settings['q_lng']) && isset($cache2[$my->settings['q_lng']])) {
 			$my->language = $my->settings['q_lng'];
 		}
-		if (isset($cache2[$q_lng]) != false) {
+		if (isset($cache2[$q_lng])) {
 			$my->settings['q_lng'] = $q_lng;
 			$my->language = $q_lng;
 		}

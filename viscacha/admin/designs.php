@@ -82,7 +82,7 @@ elseif ($job == 'design_default') {
 		$c->getdata();
 		$c->updateconfig('templatedir', int, $id);
 		$c->savedata();
-		$delobj = $scache->load('load-designs');
+		$delobj = $scache->load('loaddesign');
 		$delobj->delete();
 		ok('admin.php?action=designs&job=design');
 	}
@@ -196,7 +196,7 @@ elseif ($job == 'design_edit2') {
 			$use = 1;
 		}
 	}
-	$delobj = $scache->load('load-designs');
+	$delobj = $scache->load('loaddesign');
 	$delobj->delete();
 	$db->query("UPDATE {$db->pre}designs SET template = '{$template}', stylesheet = '{$stylesheet}', images = '{$images}', publicuse = '{$use}', name = '{$name}' WHERE id = '{$id}' LIMIT 1");
 
@@ -208,7 +208,7 @@ elseif ($job == 'design_delete') {
 	$info = $db->fetch_assoc($result);
 	
 	$db->query("DELETE FROM {$db->pre}designs WHERE id = '{$id}' LIMIT 1");
-	$delobj = $scache->load('load-designs');
+	$delobj = $scache->load('loaddesign');
 	$delobj->delete();
 
 // Do NOT removes data. That "feature" is terrible on account of loosing data!
@@ -309,7 +309,7 @@ elseif ($job == 'design_add2') {
 		$name = 'Design '.$id;
 	}
 	
-	$delobj = $scache->load('load-designs');
+	$delobj = $scache->load('loaddesign');
 	$delobj->delete();
 	$db->query("INSERT INTO {$db->pre}designs SET template = '{$template}', stylesheet = '{$stylesheet}', images = '{$images}', publicuse = '{$use}', name = '{$name}'", __LINE__, __FILE__);
 
@@ -449,7 +449,7 @@ elseif ($job == 'design_import2') {
 		
 		rmdirr($tempdir);
 	}
-	$delobj = $scache->load('load-designs');
+	$delobj = $scache->load('loaddesign');
 	$delobj->delete();
 	ok('admin.php?action=designs&job=design', 'Design "'.$ini['name'].'" erfolgreich importiert.');
 	
@@ -571,7 +571,7 @@ elseif ($job == 'ajax_publicuse') {
 	}
 	$use = invert($use['publicuse']);
 	$db->query("UPDATE {$db->pre}designs SET publicuse = '{$use}' WHERE id = '{$id}' LIMIT 1");
-	$delobj = $scache->load('load-designs');
+	$delobj = $scache->load('loaddesign');
 	$delobj->delete();
 	die(strval($use));
 }

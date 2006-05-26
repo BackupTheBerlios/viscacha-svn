@@ -139,7 +139,7 @@ function cache_categories() {
 
 function cache_loadlanguage () {
 	global $db;
-	$scache2 = new scache('load-language');
+	$scache2 = new scache('loadlanguage');
 	if ($scache2->existsdata() == TRUE) {
 	    $cache2 = $scache2->importdata();
 	}
@@ -164,7 +164,7 @@ function cache_loaddesign ($fresh = false) {
 		}
 	}
 	else {
-		$scache = new scache('load-designs');
+		$scache = new scache('loaddesigns');
 		if ($scache->existsdata() == TRUE) {
 			$design = $scache->importdata();
 		}

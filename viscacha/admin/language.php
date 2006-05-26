@@ -64,7 +64,7 @@ elseif ($job == 'ajax_publicuse') {
 	}
 	$use = invert($use['publicuse']);
 	$db->query("UPDATE {$db->pre}language SET publicuse = '{$use}' WHERE id = '{$id}' LIMIT 1");
-	$delobj = $scache->load('load-language');
+	$delobj = $scache->load('loadlanguage');
 	$delobj->delete();
 	die(strval($use));
 }
@@ -169,6 +169,8 @@ elseif ($job == 'import2') {
 		if ($delete == 1) {
 			$filesystem->unlink($file);
 		}
+		$delobj = $scache->load('loadlanguage');
+		$delobj->delete();
 		ok('admin.php?action=language&job=manage', 'Languagepack erfolgreich importiert.');
 	}
 	else {
@@ -236,6 +238,8 @@ elseif ($job == 'lang_copy2') {
 	$newid = $db->insert_id();
 	$filesystem->mkdir("language/{$newid}/", 0755);
 	copyr("language/{$id}/", "language/{$newid}/");
+	$delobj = $scache->load('loadlanguage');
+	$delobj->delete();
 	ok('admin.php?action=language&job=manage', 'Sprachpaket wurde erfolgreich kopiert.');
 }
 elseif ($job == 'lang_delete') {
@@ -262,6 +266,8 @@ elseif ($job == 'lang_delete2') {
 	$db->query("DELETE FROM {$db->pre}language WHERE id = '{$id}' LIMIT 1");
 	if ($db->affected_rows() == 1) {
 		rmdirr("language/{$id}/");
+		$delobj = $scache->load('loadlanguage');
+		$delobj->delete();
 		ok('admin.php?action=language&job=manage', 'Sprachpaket wurde erfolgreich kopiert.');
 	}
 	else {
@@ -274,6 +280,13 @@ elseif ($job == 'lang_settings') {
 	$result = $db->query("SELECT language, detail, publicuse FROM {$db->pre}language WHERE id = '{$id}' LIMIT 1");
 	$data = $gpc->prepare($db->fetch_assoc($result));
 	$settings = $gpc->prepare(return_array('settings', $id));
+	if (empty($settings['html_read_direction'])) {
+		$settings['html_read_direction'] = 'ltr';
+	}
+	if (empty($settings['rss_language'])) {
+		$settings['rss_language'] = 'en';
+	}
+	
 	$rsslang = file2array('admin/data/rss_language.php');
 	?>
 <script language="JavaScript">
@@ -300,7 +313,7 @@ function errordefault(box) {
   </tr>
   <tr>
    <td class="mbox" width="50%">Kompatibel mit Version:<br /><span class="stext">Ihre derzeitige Viscacha-Version: <?php echo $config['version']; ?></span></td>
-   <td class="mbox" width="50%"><input type="text" name="compatible_version" size="20" value="<?php echo $settings['compatible_version']; ?>" /></td>
+   <td class="mbox" width="50%"><input type="text" name="compatible_version" size="20" value="<?php echo isset($settings['compatible_version']) ? $settings['compatible_version'] : $config['version']; ?>" /></td>
   </tr>
   <tr>
    <td class="mbox" width="50%">Sprachpaket öffentlich benutzbar:</td>
@@ -325,35 +338,35 @@ function errordefault(box) {
   </tr>
   <tr>
    <td class="mbox" width="50%">Kürzel für Rechtschreibprüfung:<br /><span class="stext">Bestehend aus dem zweibuchstabigen ISO 639-Sprachencode und, nach Unterstrich, einem optionalen zweibuchstabigen ISO 3166-Ländercode besteht.</span></td>
-   <td class="mbox" width="50%"><input type="text" name="spellcheck_dict" size="8" value="<?php echo $settings['spellcheck_dict']; ?>" /></td>
+   <td class="mbox" width="50%"><input type="text" name="spellcheck_dict" size="8" value="<?php echo isset($settings['spellcheck_dict']) ? $settings['spellcheck_dict'] : ''; ?>" /></td>
   </tr>
   <tr>
    <td class="mbox" width="50%">Tausendertrennzeichen:</td>
-   <td class="mbox" width="50%"><input type="text" name="thousandssep" size="2" value="<?php echo $settings['thousandssep']; ?>" /></td>
+   <td class="mbox" width="50%"><input type="text" name="thousandssep" size="2" value="<?php echo isset($settings['thousandssep']) ? $settings['thousandssep'] : ','; ?>" /></td>
   </tr>
   <tr>
    <td class="mbox" width="50%">Dezimalzeichen für Nachkommazahlen:</td>
-   <td class="mbox" width="50%"><input type="text" name="decpoint" size="2" value="<?php echo $settings['decpoint']; ?>" /></td>
+   <td class="mbox" width="50%"><input type="text" name="decpoint" size="2" value="<?php echo isset($settings['decpoint']) ? $settings['decpoint'] : '.'; ?>" /></td>
   </tr>
   <tr> 
    <td class="mbox" width="50%">Zeichensatz:</td>
-   <td class="mbox" width="50%"><input type="text" name="charset" value="<?php echo $settings['charset']; ?>" size="20"></td> 
+   <td class="mbox" width="50%"><input type="text" name="charset" value="<?php echo isset($settings['charset']) ? $settings['charset'] : 'ISO-8859-1'; ?>" size="20"></td> 
   </tr>
   <tr> 
    <td class="mbox" width="50%">Format für Beiträge:<br><span class="stext">Für Beiträge, letzten Besuch etc. Kürzel gemäß der PHP-Funktion: date(). Mehr Infos: <a href="http://www.php.net/manual-lookup.php?function=date" target="_blank">PHP: date()</a></span></td>
-   <td class="mbox" width="50%"><input type="text" name="dformat1" value="<?php echo $settings['dformat1']; ?>" size="20"></td> 
+   <td class="mbox" width="50%"><input type="text" name="dformat1" value="<?php echo isset($settings['dformat1']) ?  $settings['dformat1'] : 'd.m.Y, H:i'; ?>" size="20"></td> 
   </tr>
   <tr> 
    <td class="mbox" width="50%">Format für das Registerierdatum:</span><br><span class="stext">Kürzel gemäß der PHP-Funktion: date(). Mehr Infos: <a target="_blank" href="http://www.php.net/manual-lookup.php?function=date">PHP: date()</a></span></td>
-   <td class="mbox" width="50%"><input type="text" name="dformat2" value="<?php echo $settings['dformat2']; ?>" size="20"></td> 
+   <td class="mbox" width="50%"><input type="text" name="dformat2" value="<?php echo isset($settings['dformat2']) ? $settings['dformat2'] : 'd.m.Y, H:i'; ?>" size="20"></td> 
   </tr>
   <tr> 
    <td class="mbox" width="50%">Format für letzte Aktivität (in der Online-Liste):</span><br><span class="stext">Kürzel gemäß der PHP-Funktion: date(). Mehr Infos: <a target="_blank" href="http://www.php.net/manual-lookup.php?function=date">PHP: date()</a></span></td>
-   <td class="mbox" width="50%"><input type="text" name="dformat3" value="<?php echo $settings['dformat3']; ?>" size="20"></td> 
+   <td class="mbox" width="50%"><input type="text" name="dformat3" value="<?php echo isset($settings['dformat3']) ? $settings['dformat3'] : 'H:i'; ?>" size="20"></td> 
   </tr>
   <tr> 
    <td class="mbox" width="50%">Format, dass nach "Heute" und "Gestern" benutzt wird:</span><br><span class="stext">Nur wenn es oben aktiviert ist! Für Beiträge, letzten Besuch etc. Kürzel gemäß der PHP-Funktion: date(). Mehr Infos: <a target="_blank" href="http://www.php.net/manual-lookup.php?function=date">PHP: date()</a></span></td>
-   <td class="mbox" width="50%"><input type="text" name="dformat4" value="<?php echo $settings['dformat4']; ?>" size="20"></td> 
+   <td class="mbox" width="50%"><input type="text" name="dformat4" value="<?php echo isset($settings['dformat4']) ? $settings['dformat4'] : 'H:i'; ?>" size="20"></td> 
   </tr>
   <tr>
    <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="Save" /></td> 
@@ -404,12 +417,21 @@ elseif ($job == 'lang_settings2') {
 	$c->updateconfig('charset',str);
 	$c->savedata();
 	
+	$delobj = $scache->load('loadlanguage');
+	$delobj->delete();
+	
 	ok('admin.php?action=language&job=lang_edit&id='.$id, 'Changes were successfully changed'.$error.'.');	
 }
 elseif ($job == 'lang_ignore') {
 	echo head();
 	$id = $gpc->get('id', int);
-	$ignore = file_get_contents("language/{$id}/words/search.inc.php");
+	$file = "language/{$id}/words/search.inc.php";
+	if (!file_exists($file)) {
+		$ignore = '';
+	}
+	else {
+		$ignore = file_get_contents($file);
+	}
 	?>
 <form name="form" method="post" action="admin.php?action=language&job=lang_ignore2&id=<?php echo $id; ?>">
  <table class="border" border="0" cellspacing="0" cellpadding="4">
@@ -447,6 +469,9 @@ elseif ($job == 'lang_ignore2') {
 	$lines = array_map('strtolower', $lines);
 	$lines = array_unique($lines);
 	sort($lines);
+	if (!is_dir("language/{$id}/words/")) {
+		$filesystem->mkdir("language/{$id}/words/", 0777);
+	}
 	$filesystem->file_put_contents("language/{$id}/words/search.inc.php", implode("\n", $lines));
 	
 	ok('admin.php?action=language&job=lang_edit&id='.$id);	
@@ -457,7 +482,13 @@ elseif ($job == 'lang_rules') {
 	$rules = $gpc->get('rules', arr_str);
 	$delete = $gpc->get('delete', arr_int);
 	$c = $gpc->get('c', int);
-	$rules = file("language/{$id}/words/rules.inc.php");
+	$file = "language/{$id}/words/rules.inc.php";
+	if (!file_exists($file)) {
+		$rules = array();
+	}
+	else {
+		$rules = file($file);
+	}
 	$i = 1;
 	?>
 <form name="form" method="post" action="admin.php?action=language&job=lang_rules2&id=<?php echo $id; ?>">
@@ -472,8 +503,10 @@ elseif ($job == 'lang_rules') {
    <td class="mbox">
    <ol>
    <?php foreach ($rules as $rule) { ?>
-   <li><input type="text" name="rules[<?php echo $i; ?>]" size="110" value="<?php echo $gpc->prepare($rule); ?>" />&nbsp;&nbsp;<input type="checkbox" name="delete[<?php echo $i; ?>]" value="1"> Löschen</li>
-   <?php $i++; } ?>
+    <li><input type="text" name="rules[<?php echo $i; ?>]" size="110" value="<?php echo $gpc->prepare($rule); ?>" />&nbsp;&nbsp;<input type="checkbox" name="delete[<?php echo $i; ?>]" value="1"> Löschen</li>
+   <?php $i++; } if (count($rules) == 0) { ?>
+   	<li><em>Noch keine Regel erstellt!</em></li>
+   <?php } ?>
    </ol>
    </td>
   </tr>
@@ -515,6 +548,9 @@ elseif ($job == 'lang_rules2') {
 		}
 	}
 	ksort($newrules);
+	if (!is_dir("language/{$id}/words/")) {
+		$filesystem->mkdir("language/{$id}/words/", 0777);
+	}
 	$filesystem->file_put_contents("language/{$id}/words/rules.inc.php", implode("\n", $newrules));
 	
 	if ($c > 0) {
@@ -560,12 +596,14 @@ elseif ($job == 'lang_txttpl2') {
 	
 	$id = $gpc->get('id', int);
 	$file = $gpc->get('file', str);
+	if (!is_dir("language/{$id}/texts/")) {
+		$filesystem->mkdir("language/{$id}/texts/", 0777);
+	}
 	$path = "language/{$id}/texts/{$file}.php";
 	if (!file_exists($path)) {
 		error('admin.php?action=language&job=lang_edit&id='.$id, "The specified file does not exist: {$path}");
 	}
 	$tpl = $gpc->get('tpl', none);
-
 	$filesystem->file_put_contents($path, $tpl);
 	
 	ok('admin.php?action=language&job=lang_edit&id='.$id);	
@@ -611,6 +649,9 @@ elseif ($job == 'lang_emailtpl2') {
 	
 	$id = $gpc->get('id', int);
 	$file = $gpc->get('file', str);
+	if (!is_dir("language/{$id}/mails/")) {
+		$filesystem->mkdir("language/{$id}/mails/", 0777);
+	}
 	$path = "language/{$id}/mails/{$file}.php";
 	if (!file_exists($path)) {
 		error('admin.php?action=language&job=lang_emails&id='.$id, "The specified file does not exist: {$path}");
@@ -628,6 +669,9 @@ elseif ($job == 'lang_emails') {
 	echo head();
 	$id = $gpc->get('id', int);
 	$path = "language/{$id}/mails/";
+	if (!is_dir($path)) {
+		$filesystem->mkdir($path, 0777);
+	}
 	$help = file2array('admin/data/lang_email.php');
 	?>
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
@@ -638,11 +682,13 @@ elseif ($job == 'lang_emails') {
    <td class="mbox">
    <ul>
     <?php 
+    $i = 0;
 	$result = opendir($path);
 	while (($file = readdir($result)) !== false) {
 		$info = pathinfo($path.$file);
 		if ($info['extension'] == 'php') {
 			$n = substr($info['basename'], 0, -(strlen($info['extension']) + ($info['extension'] == '' ? 0 : 1)));
+			$i++;
 		?>
 	   	<li><a href="admin.php?action=language&job=lang_emailtpl&id=<?php echo $id; ?>&file=<?php echo $n; ?>">
 	   	<?php echo $n; ?></a><?php echo iif(isset($help[$n]), "<br /><span class=\"stext\">{$help[$n]}</span>"); ?>
@@ -651,6 +697,11 @@ elseif ($job == 'lang_emails') {
 	    }
     }
     closedir($result);
+    if ($i == 0) {
+    	?>
+    	<li><em>Nothing found...</em> :(</li>
+    	<?php
+    }
     ?>
    </ul>
    </td>
@@ -850,6 +901,9 @@ elseif ($job == 'lang_default') {
 	$c->getdata();
 	$c->updateconfig('langdir', int, $id);
 	$c->savedata();
+	
+	$delobj = $scache->load('loadlanguage');
+	$delobj->delete();
 	
 	ok('admin.php?action=language&job=manage');
 }
@@ -1178,7 +1232,7 @@ elseif ($job == 'phrase_file_delete') {
 			$c->savedata();
 		}
 	}
-	ok('admin.php?action=language&job=phrase_file&file='.$file, 'Selected files were successfully deleted.');
+	ok('admin.php?action=language&job=phrase_file&file='.$file, 'Selected phrases were successfully deleted.');
 }
 elseif ($job == 'phrase_add_lngfile') {
 	echo head();
@@ -1347,7 +1401,7 @@ elseif ($job == 'phrase_add') {
   if (file_exists('language/'.$row['id'].'/'.$file)) {
   ?>
   <tr>
-   <td class="mbox" width="50%"><em><?php echo $row['language']; ?></em> Translation:<br /><span class="stext">Optional. HTML is allowed.</span></td>
+   <td class="mbox" width="50%"><em><?php echo $row['language']; ?></em> Translation:<br /><span class="stext">Optional. HTML is allowed but not recommended.</span></td>
    <td class="mbox" width="50%"><input type="text" name="langt[<?php echo $row['id']; ?>]" size="50" /></td>
   </tr>
   <?php } } ?>

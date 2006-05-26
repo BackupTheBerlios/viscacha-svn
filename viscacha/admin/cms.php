@@ -820,12 +820,12 @@ elseif ($job == 'package_language') {
   </tr>
   <?php foreach ($ini['language'] as $phrase => $value) { ?>
   <tr>
-   <td class="mmbox"><input type="checkbox" name="delete[]" value="<?php echo $phrase; ?>">&nbsp;<?php echo $phrase; ?></td>
+   <td class="mmbox"><input type="checkbox" name="delete[]" value="<?php echo $phrase; ?>">&nbsp;[<a href="admin.php?action=cms&job=package_language_edit&phrase=<?php echo $phrase; ?>&id=<?php echo $id; ?>">Edit</a>]&nbsp;<?php echo $phrase; ?></td>
    <?php
    foreach ($cache as $row) {
    	$status = in_array($phrase, $diff[$row['id']]);
    ?>
-   <td class="mbox" align="center"><?php echo noki($status).iif(!$status, ' [<a href="admin.php?action=cms&job=package_language_copy&language='.$row['id'].'&phrase='.$phrase.'&id='.$id.'">Add</a>]', ' [<a href="admin.php?action=cms&job=package_language_edit&language='.$row['id'].'&phrase='.$phrase.'&id='.$id.'">Edit</a>]'); ?></td>
+   <td class="mbox" align="center"><?php echo noki($status).iif(!$status, ' [<a href="admin.php?action=cms&job=package_language_copy&language='.$row['id'].'&phrase='.$phrase.'&id='.$id.'">Add</a>]'); ?></td>
    <?php } ?>
   </tr>
   <?php } ?>
@@ -838,10 +838,69 @@ elseif ($job == 'package_language') {
 	<?php
 	echo foot();
 }
-elseif ($job == 'package_language_add') { // ToDo
+elseif ($job == 'package_language_add') {
 	echo head();
 	
 	$id = $gpc->get('id', int);
+	$result = $db->query("SELECT id, title FROM {$db->pre}packages WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
+	if ($db->num_rows() != 1) {
+		error('javascript: self.close();', 'Specified package ('.$id.') does not exist.');
+	}
+	$data = $db->fetch_assoc($result);
+	
+	$result = $db->query('SELECT * FROM '.$db->pre.'language ORDER BY language',__LINE__,__FILE__);
+	?>
+<form name="form" method="post" action="admin.php?action=cms&job=package_language_save2&id=<?php echo $id; ?>">
+ <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
+  <tr> 
+   <td class="obox" colspan="2">Phrase Manager &raquo; Add new Phrase to Package</td>
+  </tr>
+  <tr>
+   <td class="mbox" width="50%">Varname:<br />
+   <span class="stext">Varname is a value which can only contain letters, numbers and underscores.</span></td>
+   <td class="mbox" width="50%"><input type="text" name="varname" size="50" value="" /></td>
+  </tr>
+  <tr>
+   <td class="mbox" width="50%">Text:<br />
+   <span class="stext">This is the default language used also in the exported packages. It is recommended to write English here.</span></td>
+   <td class="mbox" width="50%"><input type="text" name="text" size="50" /></td>
+  </tr>
+  <tr> 
+   <td class="obox" colspan="2">Translations</td>
+  </tr>
+  <tr>
+   <td class="ubox" colspan="2"><ul>
+	<li>When inserting a custom phrase, you may also specify the translations into whatever languages you have installed.</li>
+	<li>If you do leave a translation box blank, it will inherit the text from the 'Text' box.</li>
+   </ul></td> 
+  </tr>
+  <?php
+  while($row = $db->fetch_assoc($result)) {
+  if (file_exists('language/'.$row['id'].'/modules.lng.php')) {
+  ?>
+  <tr>
+   <td class="mbox" width="50%"><em><?php echo $row['language']; ?></em> Translation:<br /><span class="stext">Optional. HTML is allowed but not recommended.</span></td>
+   <td class="mbox" width="50%"><input type="text" name="langt[<?php echo $row['id']; ?>]" size="50" /></td>
+  </tr>
+  <?php } } ?>
+  <tr>
+   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="Save" /></td> 
+  </tr>
+ </table>
+</form>
+	<?php
+	echo foot();
+}
+elseif ($job == 'package_language_save2') {
+	// This is used for adding AND editing!
+	
+	echo head();
+	
+	$id = $gpc->get('id', int);
+	$varname = $gpc->get('varname', none);
+	$text = $gpc->get('text', none);
+	$lang = $gpc->get('langt', none);
+	
 	$result = $db->query("SELECT id, title FROM {$db->pre}packages WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	if ($db->num_rows() != 1) {
 		error('javascript: self.close();', 'Specified package ('.$id.') does not exist.');
@@ -853,40 +912,53 @@ elseif ($job == 'package_language_add') { // ToDo
 	if (!isset($ini['language'])) {
 		$ini['language'] = array();
 	}
+	$ini['language'][$varname] = $text;
+	$myini->write($dir."config.ini", $ini);
 	
+	$c = new manageconfig();
+	foreach ($lang as $id => $t) {
+		if (empty($t)) {
+			$t = $text;
+		}
+		$c->getdata("language/{$id}/modules.lng.php", 'lang');
+		$c->updateconfig($varname, str, $t);
+		$c->savedata();
+	}
+	
+	ok('admin.php?action=cms&job=package_language&id='.$data['id']);	
+}
+elseif ($job == 'package_language_delete') {
+	echo head();
+	
+	$id = $gpc->get('id', int);
+	$delete = $gpc->get('delete', arr_str);
+	
+	$result = $db->query("SELECT id, title FROM {$db->pre}packages WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
+	if ($db->num_rows() != 1) {
+		error('javascript: self.close();', 'Specified package ('.$id.') does not exist.');
+	}
+	$data = $db->fetch_assoc($result);
+	
+	$dir = "modules/{$data['id']}/";
+	$ini = $myini->read($dir."config.ini");
+	foreach ($delete as $phrase) {
+		unset($ini['language'][$phrase]);
+	}
+	$myini->write($dir."config.ini", $ini);
 
-}
-elseif ($job == 'package_language_add2') { // ToDo
-	echo head();
-	
-	$id = $gpc->get('id', int);
-	$result = $db->query("SELECT id, title FROM {$db->pre}packages WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
-	if ($db->num_rows() != 1) {
-		error('javascript: self.close();', 'Specified package ('.$id.') does not exist.');
+	$result = $db->query('SELECT * FROM '.$db->pre.'language ORDER BY language',__LINE__,__FILE__);
+	$c = new manageconfig();
+	while($row = $db->fetch_assoc($result)) {
+		$path = "language/{$row['id']}/modules.lng.php";
+		if (file_exists($path)) {
+			$c->getdata($path, 'lang');
+			foreach ($delete as $phrase) {
+				$c->delete($phrase);
+			}
+			$c->savedata();
+		}
 	}
-	$data = $db->fetch_assoc($result);
-	
-	$dir = "modules/{$data['id']}/";
-	$ini = $myini->read($dir."config.ini");
-	if (!isset($ini['language'])) {
-		$ini['language'] = array();
-	}
-}
-elseif ($job == 'package_language_delete') { // ToDo
-	echo head();
-	
-	$id = $gpc->get('id', int);
-	$result = $db->query("SELECT id, title FROM {$db->pre}packages WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
-	if ($db->num_rows() != 1) {
-		error('javascript: self.close();', 'Specified package ('.$id.') does not exist.');
-	}
-	$data = $db->fetch_assoc($result);
-	
-	$dir = "modules/{$data['id']}/";
-	$ini = $myini->read($dir."config.ini");
-	if (!isset($ini['language'])) {
-		$ini['language'] = array();
-	}
+	ok('admin.php?action=cms&job=package_language&id='.$data['id'], 'Selected phrases were successfully deleted.');
 }
 elseif ($job == 'package_language_copy') {
 	echo head();
@@ -962,9 +1034,10 @@ elseif ($job == 'package_language_copy2') {
 	$c->savedata();
 	ok('admin.php?action=cms&job=package_language&id='.$id);
 }
-elseif ($job == 'package_language_edit') { // ToDo
+elseif ($job == 'package_language_edit') {
 	echo head();
 	
+	$phrase = $gpc->get('phrase', none);
 	$id = $gpc->get('id', int);
 	$result = $db->query("SELECT id, title FROM {$db->pre}packages WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	if ($db->num_rows() != 1) {
@@ -974,25 +1047,55 @@ elseif ($job == 'package_language_edit') { // ToDo
 	
 	$dir = "modules/{$data['id']}/";
 	$ini = $myini->read($dir."config.ini");
-	if (!isset($ini['language'])) {
-		$ini['language'] = array();
+	if (!isset($ini['language'][$phrase])) {
+		error('admin.php?action=cms&job=plugins_edit&id=7', 'Phrase not found!');
 	}
-}
-elseif ($job == 'package_language_edit2') { // ToDo
-	echo head();
 	
-	$id = $gpc->get('id', int);
-	$result = $db->query("SELECT id, title FROM {$db->pre}packages WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
-	if ($db->num_rows() != 1) {
-		error('javascript: self.close();', 'Specified package ('.$id.') does not exist.');
-	}
-	$data = $db->fetch_assoc($result);
-	
-	$dir = "modules/{$data['id']}/";
-	$ini = $myini->read($dir."config.ini");
-	if (!isset($ini['language'])) {
-		$ini['language'] = array();
-	}
+	$result = $db->query('SELECT * FROM '.$db->pre.'language ORDER BY language',__LINE__,__FILE__);
+	?>
+<form name="form" method="post" action="admin.php?action=cms&job=package_language_save2&id=<?php echo $id; ?>">
+ <table class="border" border="0" cellspacing="0" cellpediting="4" align="center">
+  <tr> 
+   <td class="obox" colspan="2">Phrase Manager &raquo; Edit new Phrase to Package</td>
+  </tr>
+  <tr>
+   <td class="mbox" width="50%">Varname:<br />
+   <span class="stext">Varname is a value which can only contain letters, numbers and underscores.</span></td>
+   <td class="mbox" width="50%"><input type="hidden" name="varname" size="50" value="<?php echo $phrase; ?>" /><code><?php echo $phrase; ?></code></td>
+  </tr>
+  <tr>
+   <td class="mbox" width="50%">Text:<br />
+   <span class="stext">This is the default language used also in the exported packages. It is recommended to write English here.</span></td>
+   <td class="mbox" width="50%"><input type="text" name="text" size="50" value="<?php echo htmlspecialchars($ini['language'][$phrase]); ?>" /></td>
+  </tr>
+  <tr> 
+   <td class="obox" colspan="2">Translations</td>
+  </tr>
+  <tr>
+   <td class="ubox" colspan="2"><ul>
+	<li>When editing a custom phrase, you may also specify the translations into whatever languages you have installed.</li>
+	<li>If you do leave a translation box blank, it will inherit the text from the 'Text' box.</li>
+   </ul></td> 
+  </tr>
+  <?php
+  while($row = $db->fetch_assoc($result)) {
+  	$phrases = return_array('modules', $row['id']);
+  	if (!isset($phrases[$phrase])) {
+  		$phrases[$phrase] = '';
+  	}
+  ?>
+  <tr>
+   <td class="mbox" width="50%"><em><?php echo $row['language']; ?></em> Translation:<br /><span class="stext">Optional. HTML is allowed but not recommended.</span></td>
+   <td class="mbox" width="50%"><input type="text" name="langt[<?php echo $row['id']; ?>]" size="50" value="<?php echo htmlspecialchars($phrases[$phrase]); ?>" /></td>
+  </tr>
+  <?php } ?>
+  <tr>
+   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="Save" /></td> 
+  </tr>
+ </table>
+</form>
+	<?php
+	echo foot();
 }
 elseif ($job == 'package_add') {
 	echo head();
