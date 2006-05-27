@@ -309,18 +309,65 @@ elseif ($_GET['action'] == "notice") {
 	echo $tpl->parse("editprofile/notice");
 	($code = $plugins->load('editprofile_end')) ? eval($code) : null;
 }
+elseif ($_GET['action'] == "signature") {
+	if (!empty($_POST['Submit'])) {
+		$error = array();
+		if (strxlen($_POST['signature']) > $config['maxsiglength']) {
+			$error[] = $lang->phrase('editprofile_signature_too_long');
+		}
+		($code = $plugins->load('editprofile_signature2_save')) ? eval($code) : null;
+		if (count($error) > 0) {
+			error($error, "editprofile.php?action=profile".SID2URL_x);
+		}
+		else {
+			$db->query("UPDATE {$db->pre}user SET signature = '{$_POST['signature']}' WHERE id = '{$my->id}' LIMIT 1",__LINE__,__FILE__);
+			ok($lang->phrase('data_success'), "editprofile.php?action=signature".SID2URL_x);
+		}
+	}
+	else {
+		$breadcrumb->Add($lang->phrase('editprofile_signature'));
+		echo $tpl->parse("header");
+		echo $tpl->parse("menu");
+		BBProfile($bbcode);
+		$inner['bbhtml'] = $bbcode->getbbhtml();
+		$inner['smileys'] = $bbcode->getsmileyhtml($config['smileysperrow']);
+		$chars = numbers($config['maxsiglength']);
+		if (empty($_POST['signature'])) {
+			$signature = $my->signature;
+			$preview = false;
+		}
+		else {
+			$signature = $_POST['signature'];
+			$preview = true;
+			BBProfile($bbcode, 'signature');
+			$parsedPreview = $bbcode->parse($signature);
+		}
+		($code = $plugins->load('editprofile_signature_start')) ? eval($code) : null;
+		echo $tpl->parse("editprofile/signature");
+		($code = $plugins->load('editprofile_signature_end')) ? eval($code) : null;
+	}
+}
 elseif ($_GET['action'] == "about2") {
 	if ($my->p['useabout'] == 0) {
 		errorLogin($lang->phrase('not_allowed'), "editprofile.php");
 	}
+	$error = array();
+	if (strxlen($_POST['about']) > $config['maxaboutlength']) {
+		$error[] = $lang->phrase('about_too_long');
+	}
 	($code = $plugins->load('editprofile_about2_start')) ? eval($code) : null;
-	if (strxlen($_POST['comment']) > $config['maxaboutlength']) {
-		$fid = save_error_data($_POST['comment']);
-		error($lang->phrase('about_too_long'), "editprofile.php?action=about&amp;fid=".$fid.SID2URL_x);
+	if (count($error) > 0 || !empty($_POST['Preview'])) {
+		$fid = save_error_data($_POST['about']);
+		if (!empty($_POST['Preview'])) {
+			viscacha_header("Location: editprofile.php?action=about&job=preview&fid=".$fid.SID2URL_JS_x);
+		}
+		else {
+			error($error, "editprofile.php?action=about&amp;fid=".$fid.SID2URL_x);
+		}
 	}
 	else {
 		($code = $plugins->load('editprofile_about2_query')) ? eval($code) : null;
-		$db->query("UPDATE {$db->pre}user SET about = '{$_POST['comment']}' WHERE id = '{$my->id}'");
+		$db->query("UPDATE {$db->pre}user SET about = '{$_POST['about']}' WHERE id = '{$my->id}'");
 		ok($lang->phrase('data_success'), "editprofile.php?action=about".SID2URL_x);
 	}
 
@@ -333,16 +380,27 @@ elseif ($_GET['action'] == "about") {
 	echo $tpl->parse("header");
 	echo $tpl->parse("menu");
 	($code = $plugins->load('editprofile_abos_Start')) ? eval($code) : null;
-	if (strlen($_GET['fid']) == 32) {
-		$data = $gpc->prepare(import_error_data($_GET['fid']));
-	}
-	else {
-		$data = $my->about;
-	}
-	$chars = numbers($config['maxaboutlength']);
+	
 	BBProfile($bbcode);
 	$inner['bbhtml'] = $bbcode->getbbhtml();
 	$inner['smileys'] = $bbcode->getsmileyhtml($config['smileysperrow']);
+	
+	if (strlen($_GET['fid']) == 32) {
+		$data = $gpc->prepare(import_error_data($_GET['fid']));
+		if ($_GET['job'] == 'preview') {
+			$preview = true;
+			$parsedPreview = $bbcode->parse($data);
+		}
+		else {
+			$preview = false;
+		}
+	}
+	else {
+		$data = $my->about;
+		$preview = false;
+	}
+	
+	$chars = numbers($config['maxaboutlength']);
 	
 	($code = $plugins->load('editprofile_abos_prepared')) ? eval($code) : null;
 	echo $tpl->parse("editprofile/about");
@@ -458,9 +516,6 @@ elseif ($_GET['action'] == "profile2") {
 	if (strxlen($_POST['email']) > 200) {
 		$error[] = $lang->phrase('email_too_long');
 	}
-	if (strxlen($_POST['signature']) > $config['maxsiglength']) {
-		$error[] = $lang->phrase('editprofile_signature_too_long');
-	}
 	if (strxlen($_POST['hp']) > 254) {
 		$error[] = $lang->phrase('editprofile_homepage_too_long');
 	}
@@ -523,7 +578,7 @@ elseif ($_GET['action'] == "profile2") {
 		
 		($code = $plugins->load('editprofile_profile2_query')) ? eval($code) : null;
 
-		$db->query("UPDATE {$db->pre}user SET skype = '{$_POST['skype']}', icq = '{$_POST['icq']}', yahoo = '{$_POST['yahoo']}', aol = '{$_POST['aol']}', msn = '{$_POST['msn']}', jabber = '{$_POST['jabber']}', birthday = '{$bday}', gender = '{$_POST['gender']}', hp = '{$_POST['hp']}', signature = '{$_POST['signature']}', location = '{$_POST['location']}', fullname = '{$_POST['fullname']}', mail = '{$_POST['email']}'{$changename} WHERE id = '{$my->id}' LIMIT 1",__LINE__,__FILE__);
+		$db->query("UPDATE {$db->pre}user SET skype = '{$_POST['skype']}', icq = '{$_POST['icq']}', yahoo = '{$_POST['yahoo']}', aol = '{$_POST['aol']}', msn = '{$_POST['msn']}', jabber = '{$_POST['jabber']}', birthday = '{$bday}', gender = '{$_POST['gender']}', hp = '{$_POST['hp']}', location = '{$_POST['location']}', fullname = '{$_POST['fullname']}', mail = '{$_POST['email']}'{$changename} WHERE id = '{$my->id}' LIMIT 1",__LINE__,__FILE__);
 		ok($lang->phrase('data_success'), "editprofile.php?action=profile".SID2URL_x);
 	}
 

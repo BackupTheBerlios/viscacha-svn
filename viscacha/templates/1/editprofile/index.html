@@ -31,13 +31,11 @@
 			<span class="stext"><?php echo $lang->phrase('editprofile_pic_desc'); ?></span>
 		</li>
 		<?php } ?>
-		<?php if ($config['tpcallow'] == 1) { ?>
 		<li>
-			<img src="<?php echo $tpl->img('ucp_attachments'); ?>" alt="" /><br />
-			<strong><a href="editprofile.php?action=attachments<?php echo SID2URL_x; ?>"><?php echo $lang->phrase('editprofile_attachments'); ?></a></strong><br />
-			<span class="stext"><?php echo $lang->phrase('editprofile_attachments_desc'); ?></span>
+			<img src="<?php echo $tpl->img('ucp_signature'); ?>" alt="" /><br />
+			<strong><a href="editprofile.php?action=signature<?php echo SID2URL_x; ?>"><?php echo $lang->phrase('editprofile_signature'); ?></a></strong><br />
+			<span class="stext"><?php echo $lang->phrase('editprofile_signature_desc'); ?></span>
 		</li>
-		<?php } ?>
 		</ul><ul>
 		<li>
 			<img src="<?php echo $tpl->img('ucp_abos'); ?>" alt="" /><br />
@@ -49,16 +47,23 @@
 			<strong><a href="editprofile.php?action=notice<?php echo SID2URL_x; ?>"><?php echo $lang->phrase('editprofile_notice'); ?></a></strong><br />
 			<span class="stext"><?php echo $lang->phrase('editprofile_notice_desc'); ?></span>
 		</li>
+		<?php if ($config['tpcallow'] == 1) { ?>
 		<li>
-			<img src="<?php echo $tpl->img('ucp_pm'); ?>" alt="" /><br />
-			<strong><a href="pm.php<?php echo SID2URL_1; ?>"><?php echo $lang->phrase('editprofile_pm'); ?></a></strong><br />
-			<span class="stext"><?php echo $lang->phrase('editprofile_pm_desc'); ?></span>
+			<img src="<?php echo $tpl->img('ucp_attachments'); ?>" alt="" /><br />
+			<strong><a href="editprofile.php?action=attachments<?php echo SID2URL_x; ?>"><?php echo $lang->phrase('editprofile_attachments'); ?></a></strong><br />
+			<span class="stext"><?php echo $lang->phrase('editprofile_attachments_desc'); ?></span>
 		</li>
+		<?php } ?>
 		</ul><ul>
 		<li>
 			<img src="<?php echo $tpl->img('ucp_mylast'); ?>" alt="" /><br />
 			<strong><a href="editprofile.php?action=mylast<?php echo SID2URL_x; ?>"><?php echo $lang->phrase('editprofile_mylast'); ?></a></strong><br />
 			<span class="stext"><?php echo $lang->phrase('editprofile_mylast_desc'); ?></span>
+		</li>
+		<li>
+			<img src="<?php echo $tpl->img('ucp_pm'); ?>" alt="" /><br />
+			<strong><a href="pm.php<?php echo SID2URL_1; ?>"><?php echo $lang->phrase('editprofile_pm'); ?></a></strong><br />
+			<span class="stext"><?php echo $lang->phrase('editprofile_pm_desc'); ?></span>
 		</li>
 		<li>
 			<img src="<?php echo $tpl->img('ucp_profile_php'); ?>" alt="" /><br />

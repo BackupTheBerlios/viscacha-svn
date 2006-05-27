@@ -79,6 +79,14 @@ elseif ($job == 'posts') {
 	   <td class="mbox" width="50%"><input type="text" name="topiczahl" value="<?php echo $config['topiczahl']; ?>" size="4"></td> 
 	  </tr>
 	  <tr> 
+	   <td class="mbox" width="50%">Maximum length for &quot;Reason for editing&quot;:</td>
+	   <td class="mbox" width="50%"><input type="text" name="maxeditlength" value="<?php echo $config['maxeditlength']; ?>" size="6"></td> 
+	  </tr>
+	  <tr> 
+	   <td class="mbox" width="50%">Minimum length for &quot;Reason for editing&quot;:<br /><span class="stext">0 = Makes field optional</span></td>
+	   <td class="mbox" width="50%"><input type="text" name="mineditlength" value="<?php echo $config['mineditlength']; ?>" size="6"></td> 
+	  </tr>
+	  <tr> 
 	   <td class="mbox" width="50%">Time Limit on Editing of Posts:<br /><span class="stext">Time limit (in minutes) to impose on editing of messages. After this time limit only moderators will be able to edit the message. 0 = Disabled.</span></td>
 	   <td class="mbox" width="50%"><input type="text" name="edit_edit_time" value="<?php echo $config['edit_edit_time']; ?>" size="5"></td> 
 	  </tr>
@@ -162,6 +170,8 @@ elseif ($job == 'posts2') {
 	echo head();
 
 	$c->getdata();
+	$c->updateconfig('maxeditlength', int);
+	$c->updateconfig('mineditlength', int);
 	$c->updateconfig('pdfdownload', int);
 	$c->updateconfig('pdfcompress', int);
 	$c->updateconfig('resizebigimg', int);
@@ -214,10 +224,6 @@ elseif ($job == 'profile') {
 	  <tr> 
 	   <td class="mbox" width="50%">Maximum memory for notes per user:<br /><span class="stext">in Bytes</span></td>
 	   <td class="mbox" width="50%"><input type="text" name="maxnoticelength" value="<?php echo $config['maxnoticelength']; ?>" size="8"></td> 
-	  </tr>
-	  <tr> 
-	   <td class="mbox" width="50%">Maximum length for &quot;Reason for editing&quot;:</td>
-	   <td class="mbox" width="50%"><input type="text" name="maxeditlength" value="<?php echo $config['maxeditlength']; ?>" size="6"></td> 
 	  </tr>
 	  <tr> 
 	   <td class="mbox" width="50%">Number of topics shown in the list of own topics:<br /><span class="stext">look for: &quot;<a href="editprofile.php?action=mylast" target="_blank">My last threads</a>&quot;</span></td>

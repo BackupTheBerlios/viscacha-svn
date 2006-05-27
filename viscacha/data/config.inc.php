@@ -69,6 +69,7 @@ $config['jabber_user'] = 'ViscachaIM';
 $config['langdir'] = 1;
 $config['maxaboutlength'] = 10000;
 $config['maxeditlength'] = 128;
+$config['mineditlength'] = 0;
 $config['maxmultiquote'] = 10;
 $config['maxnamelength'] = 50;
 $config['maxnoticelength'] = 100000;

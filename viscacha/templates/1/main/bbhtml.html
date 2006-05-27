@@ -44,7 +44,7 @@
 <a id="menu_help" href="misc.php?action=bbhelp<?php echo SID2URL_x; ?>" style="cursor: help;" target="_blank"><img src="<?php echo $tpl->img('bbcodes/help'); ?>" alt="" /> <strong><?php echo $lang->phrase('bbcodes_help'); ?></strong></a>
 <?php if ($config['spellcheck'] == 1) { ?>
 <script type="text/javascript" src="templates/spellChecker.js"></script>
-<a href="javascript:openSpellChecker('comment');"><img src="<?php echo $tpl->img('bbcodes/spellcheck'); ?>" alt="<?php echo $lang->phrase('spellcheck'); ?>" /></a>
+<a href="javascript:openSpellChecker(textfield);"><img src="<?php echo $tpl->img('bbcodes/spellcheck'); ?>" alt="<?php echo $lang->phrase('spellcheck'); ?>" /></a>
 <?php } ?>
 <br />
 <a href="javascript:InsertTags('[b]','[/b]');" title="<?php echo $lang->phrase('bbcodes_bold'); ?>"><img src="<?php echo $tpl->img('bbcodes/b'); ?>" alt="<?php echo $lang->phrase('bbcodes_bold'); ?>" /></a>

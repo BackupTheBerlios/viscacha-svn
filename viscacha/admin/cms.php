@@ -2409,7 +2409,7 @@ elseif ($job == 'com_active') {
 	$delobj = $scache->load('components');
 	$delobj->delete();
 	$db->query('UPDATE '.$db->pre.'component SET active = "'.$act.'" WHERE id = '.$id, __LINE__, __FILE__);
-	viscacha_header('Location: admin.php?action=cms&job=com'.SID2URL_x);
+	viscacha_header('Location: admin.php?action=cms&job=com');
 }
 elseif ($job == 'com_add') {
 	echo head();

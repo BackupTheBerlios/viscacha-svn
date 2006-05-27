@@ -168,6 +168,9 @@ if ($allowed == true) {
 			if (strxlen($_POST['about']) > $config['maxeditlength']) {
 				$error[] = $lang->phrase('edit_reason_too_long');
 			}
+			if (strxlen($_POST['about']) < $config['mineditlength']) {
+				$error[] = $lang->phrase('edit_reason_too_short');
+			}
 			if (!isset($prefix[$_POST['opt_0']]) && $last['prefix'] == 1) {
 				$error[] = $lang->phrase('prefix_not_optional');
 			}

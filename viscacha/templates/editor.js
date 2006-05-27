@@ -1,9 +1,15 @@
+var textfield = 'comment';
+
+function setTextfield(name) {
+	textfield = name;
+}
+
 function refreshElement(parentWindow) {
 	if (parentWindow == 1) {
-		return OpenerFetchElement('comment');
+		return OpenerFetchElement(textfield);
 	}
 	else {
-		return FetchElement('comment');
+		return FetchElement(textfield);
 	}
 }
 

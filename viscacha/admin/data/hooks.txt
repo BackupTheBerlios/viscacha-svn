@@ -79,6 +79,9 @@ edit.php
 
 editprofile.php
 -editprofile_start
+-editprofile_signature2_save
+-editprofile_signature_start
+-editprofile_signature_end
 -editprofile_pw2_errorhandling
 -editprofile_pw2_query
 -editprofile_attachments2_start
