@@ -440,10 +440,12 @@ elseif ($job == 'plugins_add') {
 elseif ($job == 'plugins_add2') {
 	echo head();
 	$hook = $gpc->get('hook', str);
+	$isInvisibleHook = isInvisibleHook($hook);
 	$packageid = $gpc->get('package', int);
 	$title = $gpc->get('title', str);
 	$result = $db->query("SELECT id, title FROM {$db->pre}packages WHERE id = '{$packageid}' LIMIT 1", __LINE__, __FILE__);
 	if ($db->num_rows() != 1) {
+		echo head();
 		error('admin.php?action=cms&job=plugins_add', 'Specified package ('.$packageid.') does not exist.');
 	}
 	$package = $db->fetch_assoc($result);
@@ -454,15 +456,17 @@ elseif ($job == 'plugins_add2') {
 		error('admin.php?action=cms&job=plugins_add&id='.$package['id'], 'Maximum number of characters for title: 200');
 	}
 	
-	$hookPriority = $db->query("SELECT id, name, ordering FROM {$db->pre}plugins WHERE position = '{$hook}' ORDER BY ordering", __LINE__, __FILE__);
+	if (!$isInvisibleHook) {
+		$hookPriority = $db->query("SELECT id, name, ordering FROM {$db->pre}plugins WHERE position = '{$hook}' ORDER BY ordering", __LINE__, __FILE__);
 	
-	$db->query("
-	INSERT INTO {$db->pre}plugins 
-	(`name`,`module`,`ordering`,`active`,`position`) 
-	VALUES 
-	('{$title}','{$package['id']}','-1','0','{$hook}')
-	", __LINE__, __FILE__);
-	$pluginid = $db->insert_id();
+		$db->query("
+		INSERT INTO {$db->pre}plugins 
+		(`name`,`module`,`ordering`,`active`,`position`) 
+		VALUES 
+		('{$title}','{$package['id']}','-1','0','{$hook}')
+		", __LINE__, __FILE__);
+		$pluginid = $db->insert_id();
+	}
 
 	$filetitle = convert2adress($title);
 	$dir = "modules/{$package['id']}/";
@@ -475,7 +479,7 @@ elseif ($job == 'plugins_add2') {
 	
 	$last = null;
 	?>
-	<form method="post" action="admin.php?action=cms&job=plugins_add3&id=<?php echo $pluginid; ?>">
+	<form method="post" action="admin.php?action=cms&job=plugins_add3&id=<?php echo $pluginid; ?>&package=<?php echo $package['id']; ?>">
 	<table class="border" border="0" cellspacing="0" cellpadding="4" align="center"> 
 	 <tr>
 	  <td class="obox" colspan="2">Add Plugin - Step 2 of 3</td>
@@ -506,6 +510,7 @@ elseif ($job == 'plugins_add2') {
 	  <td width="25%">File for Code:<br /><span class="stext">In this file the code will be saved. This file is located in the folder <code><?php echo $config['fpath']; ?>/modules/<?php echo $package['id']; ?>/</code>. If the file exists, the code above will be ignored.</span></td>
 	  <td width="75%"><input type="text" name="file" size="40" value="<?php echo $codefile; ?>" /></td>
 	 </tr>
+	 <?php if (!$isInvisibleHook) { ?>
 	 <tr class="mbox">
 	  <td>Priority:</td>
 	  <td><select name="priority">
@@ -519,6 +524,7 @@ elseif ($job == 'plugins_add2') {
 	  <td>Active:</td>
 	  <td><input type="checkbox" name="active" value="1" /></td>
 	 </tr>
+	 <?php } ?>
 	 <tr>
 	  <td class="ubox" colspan="2" align="center"><input type="submit" value="Save" /></td>
 	 </tr>
@@ -529,35 +535,42 @@ elseif ($job == 'plugins_add2') {
 elseif ($job == 'plugins_add3') {
 	echo head();
 	$id = $gpc->get('id', int);
+	$package = $gpc->get('package', int);
 	$title = $gpc->get('title', str);
 	$code = $gpc->get('code', none);
 	$file = $gpc->get('file', none);
 	$priority = $gpc->get('priority', none);
 	$active = $gpc->get('active', int);
 	
-	$result = $db->query("SELECT module, name, position FROM {$db->pre}plugins WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
-	$data = $db->fetch_assoc($result);
-	$dir = "modules/{$data['module']}/";
+	if (!$isInvisibleHook) {
+		$result = $db->query("SELECT module, name, position FROM {$db->pre}plugins WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
+		$data = $db->fetch_assoc($result);
+		$dir = "modules/{$data['module']}/";
+	}
+	else {
+		$dir = "modules/{$package}/";
+	}
 	
 	if (strlen($title) < 4 || strlen($title) > 200) {
 		$title = $data['title'];
 	}
 
-	if (is_id($priority)) {
-		$result = $db->query("SELECT id, ordering FROM {$db->pre}plugins WHERE id = '{$priority}' LIMIT 1", __LINE__, __FILE__);
-		$row = $db->fetch_assoc($result);
-		$priority = $row['ordering']-1;
-		$result = $db->query("UPDATE {$db->pre}plugins SET ordering = ordering-1 WHERE ordering < '{$priority}' AND position = '{$data['position']}'", __LINE__, __FILE__);
-	}
-	else {
-		$result = $db->query("SELECT MAX(ordering) AS maximum FROM {$db->pre}plugins WHERE position = '{$data['position']}'", __LINE__, __FILE__);
-		$row = $db->fetch_assoc($result);
-		$priority = $row['maximum']+1;
+	if (!$isInvisibleHook) {
+		if (is_id($priority)) {
+			$result = $db->query("SELECT id, ordering FROM {$db->pre}plugins WHERE id = '{$priority}' LIMIT 1", __LINE__, __FILE__);
+			$row = $db->fetch_assoc($result);
+			$priority = $row['ordering']-1;
+			$result = $db->query("UPDATE {$db->pre}plugins SET ordering = ordering-1 WHERE ordering < '{$priority}' AND position = '{$data['position']}'", __LINE__, __FILE__);
+		}
+		else {
+			$result = $db->query("SELECT MAX(ordering) AS maximum FROM {$db->pre}plugins WHERE position = '{$data['position']}'", __LINE__, __FILE__);
+			$row = $db->fetch_assoc($result);
+			$priority = $row['maximum']+1;
+		}
+
+		$db->query("UPDATE {$db->pre}plugins SET `name` = '{$title}', `ordering` = '{$priority}', `active` = '{$active}' WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	}
 	
-
-	$db->query("UPDATE {$db->pre}plugins SET `name` = '{$title}', `ordering` = '{$priority}', `active` = '{$active}' WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
-
 	if (file_exists($dir.$file) == false) {
 		$filesystem->file_put_contents($dir.$file, $code);
 		$filesystem->chmod($dir.$file, 0666);
@@ -567,7 +580,9 @@ elseif ($job == 'plugins_add3') {
 	$ini['php'][$data['position']] = $file;
 	$myini->write($dir."config.ini", $ini);
 
-	$filesystem->unlink('cache/modules/'.$plugins->_group($data['position']).'.php');
+	if (!$isInvisibleHook) {
+		$filesystem->unlink('cache/modules/'.$plugins->_group($data['position']).'.php');
+	}
 
 	ok('admin.php?action=cms&job=plugins_add&id='.$data['module'], 'Step 3 of 3: Plugin successfully added!');
 }
@@ -576,6 +591,7 @@ elseif ($job == 'package_template') {
 	
 	$result = $db->query("SELECT id, title FROM {$db->pre}packages WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	if ($db->num_rows() != 1) {
+		echo head();
 		error('javascript: self.close();', 'Specified package ('.$id.') does not exist.');
 	}
 	$data = $db->fetch_assoc($result);
@@ -661,6 +677,7 @@ elseif ($job == 'package_template_add') {
 	
 	$result = $db->query("SELECT id, title FROM {$db->pre}packages WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	if ($db->num_rows() != 1) {
+		echo head();
 		error('javascript: self.close();', 'Specified package ('.$id.') does not exist.');
 	}
 	$data = $db->fetch_assoc($result);
@@ -693,6 +710,7 @@ elseif ($job == 'package_template_edit') {
 	
 	$result = $db->query("SELECT id, title FROM {$db->pre}packages WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	if ($db->num_rows() != 1) {
+		echo head();
 		error('javascript: self.close();', 'Specified package ('.$id.') does not exist.');
 	}
 	$data = $db->fetch_assoc($result);
@@ -803,11 +821,13 @@ elseif ($job == 'package_template_edit2') {
 	
 	$result = $db->query("SELECT id FROM {$db->pre}packages WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	if ($db->num_rows() != 1) {
+		echo head();
 		error('javascript: self.close();', 'Specified package ('.$id.') does not exist.');
 	}
 	$data = $db->fetch_assoc($result);
 	$ini = $myini->read("modules/{$data['id']}/config.ini");
 	if (!isset($ini['template'][$editId])) {
+		echo head();
 		error('javascript: self.close();', 'Specified template ('.$id.') does not exist in INI-File.');
 	}
 	$file = $ini['template'][$editId];
@@ -827,6 +847,7 @@ elseif ($job == 'package_language') {
 	$id = $gpc->get('id', int);
 	$result = $db->query("SELECT id, title FROM {$db->pre}packages WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	if ($db->num_rows() != 1) {
+		echo head();
 		error('javascript: self.close();', 'Specified package ('.$id.') does not exist.');
 	}
 	$data = $db->fetch_assoc($result);
@@ -896,6 +917,7 @@ elseif ($job == 'package_language_add') {
 	$id = $gpc->get('id', int);
 	$result = $db->query("SELECT id, title FROM {$db->pre}packages WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	if ($db->num_rows() != 1) {
+		echo head();
 		error('javascript: self.close();', 'Specified package ('.$id.') does not exist.');
 	}
 	$data = $db->fetch_assoc($result);
@@ -926,15 +948,12 @@ elseif ($job == 'package_language_add') {
 	<li>If you do leave a translation box blank, it will inherit the text from the 'Text' box.</li>
    </ul></td> 
   </tr>
-  <?php
-  while($row = $db->fetch_assoc($result)) {
-  if (file_exists('language/'.$row['id'].'/modules.lng.php')) {
-  ?>
+  <?php while($row = $db->fetch_assoc($result)) { ?>
   <tr>
    <td class="mbox" width="50%"><em><?php echo $row['language']; ?></em> Translation:<br /><span class="stext">Optional. HTML is allowed but not recommended.</span></td>
    <td class="mbox" width="50%"><input type="text" name="langt[<?php echo $row['id']; ?>]" size="50" /></td>
   </tr>
-  <?php } } ?>
+  <?php } ?>
   <tr>
    <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="Save" /></td> 
   </tr>
@@ -955,6 +974,7 @@ elseif ($job == 'package_language_save2') {
 	
 	$result = $db->query("SELECT id, title FROM {$db->pre}packages WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	if ($db->num_rows() != 1) {
+		echo head();
 		error('javascript: self.close();', 'Specified package ('.$id.') does not exist.');
 	}
 	$data = $db->fetch_assoc($result);
@@ -987,6 +1007,7 @@ elseif ($job == 'package_language_delete') {
 	
 	$result = $db->query("SELECT id, title FROM {$db->pre}packages WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	if ($db->num_rows() != 1) {
+		echo head();
 		error('javascript: self.close();', 'Specified package ('.$id.') does not exist.');
 	}
 	$data = $db->fetch_assoc($result);
@@ -1018,6 +1039,7 @@ elseif ($job == 'package_language_copy') {
 	$id = $gpc->get('id', int);
 	$result = $db->query("SELECT id, title FROM {$db->pre}packages WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	if ($db->num_rows() != 1) {
+		echo head();
 		error('javascript: self.close();', 'Specified package ('.$id.') does not exist.');
 	}
 	$data = $db->fetch_assoc($result);
@@ -1062,6 +1084,7 @@ elseif ($job == 'package_language_copy2') {
 	$id = $gpc->get('id', int);
 	$result = $db->query("SELECT id, title FROM {$db->pre}packages WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	if ($db->num_rows() != 1) {
+		echo head();
 		error('javascript: self.close();', 'Specified package ('.$id.') does not exist.');
 	}
 	$data = $db->fetch_assoc($result);
@@ -1093,6 +1116,7 @@ elseif ($job == 'package_language_edit') {
 	$id = $gpc->get('id', int);
 	$result = $db->query("SELECT id, title FROM {$db->pre}packages WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	if ($db->num_rows() != 1) {
+		echo head();
 		error('javascript: self.close();', 'Specified package ('.$id.') does not exist.');
 	}
 	$data = $db->fetch_assoc($result);
@@ -1207,17 +1231,250 @@ elseif ($job == 'package_add2') {
 	
 	ok('admin.php?action=cms&job=plugins_add&id='.$packageid, 'Package successfully added.');
 }
-elseif ($job == 'package_import') { // ToDo
-
+elseif ($job == 'package_import') {
+	echo head();
+	?>
+<form name="form2" method="post" enctype="multipart/form-data" action="admin.php?action=cms&job=package_import2">
+ <table class="border" cellpadding="4" cellspacing="0" border="0">
+  <tr><td class="obox" colspan="2">Import new Design</td></tr>
+  <tr><td class="mbox"><em>Entweder</em> Datei hochladen:<br /><span class="stext">Erlaubte Dateitypen: .zip - Maximale Dateigröße: <?php echo formatFilesize(ini_maxupload()); ?></span></td>
+  <td class="mbox"><input type="file" name="upload" size="40" /></td></tr>
+  <tr><td class="mbox"><em>oder</em> Datei vom Server auswählen:<br /><span class="stext">Pfad ausgehend vom Viscacha-Hauptverzeichnis: <?php echo $config['fpath']; ?></span></td>
+  <td class="mbox"><input type="text" name="server" size="50" /></td></tr>
+  <tr><td class="mbox">Datei nach dem importieren löschen:</td>
+  <td class="mbox"><input type="checkbox" name="delete" value="1" /></td></tr>
+  <tr><td class="ubox" colspan="2" align="center"><input accesskey="s" type="submit" value="Send" /></td></tr>
+ </table>
+</form>
+	<?php
+	echo foot();
 }
-elseif ($job == 'package_import2') { // ToDo
+elseif ($job == 'package_import2') {
+	$dir = $gpc->get('dir', int);
+	$server = $gpc->get('server', none);
+	$del = $gpc->get('delete', int);
+	$inserterrors = array();
+	
+	if (!empty($_FILES['upload']['name'])) {
+		$filesize = ini_maxupload();
+		$filetypes = array('.zip');
+		$dir = realpath('temp/');
+	
+		$insertuploads = array();
+		require("classes/class.upload.php");
+		 
+		$my_uploader = new uploader();
+		$my_uploader->max_filesize($filesize);
+		if ($my_uploader->upload('upload', $filetypes)) {
+			$my_uploader->save_file($dir, 2);
+			if ($my_uploader->return_error()) {
+				array_push($inserterrors,$my_uploader->return_error());
+			}
+		}
+		else {
+			array_push($inserterrors,$my_uploader->return_error());
+		}
+		$file = $dir.'/'.$my_uploader->file['name'];
+		if (!file_exists($file)) {
+			$inserterrors[] = 'File ('.$file.') does not exist.';
+		}
+	}
+	elseif (file_exists($server)) {
+		$ext = get_extension($server, true);
+		if ($ext == 'zip') {
+			$file = $server;
+		}
+		else {
+			$inserterrors[] = 'Angegebene Datei ist keine ZIP-Datei.';
+		}
+	}
+	else {
+		$inserterrors[] = 'Keine gültige Datei angegeben.';
+	}
+	if (count($inserterrors) > 0) {
+		echo head();
+		error('admin.php?action=designs&job=design_import', $inserterrors);
+	}
+	$tempdir = 'temp/'.md5(microtime()).'/';
+	$filesystem->mkdir($tempdir, 0777);
+	require_once('classes/class.zip.php');
+	$archive = new PclZip($file);
+	$failure = $archive->extract($tempdir);
+	if ($failure < 1) {
+		rmdirr($tempdir);
+		echo head();
+		error('admin.php?action=designs&job=design_import', 'ZIP-Archiv konnte nicht gelesen werden oder ist leer.');
+	}
+	else {
+		$c = new manageconfig();
+		$ini = $myini->read("{$tempdir}config.ini");
+	
+		$db->query("INSERT INTO {$db->pre}packages (`title`) VALUES ('{$ini['info']['title']}')");
+		$packageid = $db->insert_id();
+		$dir = "modules/{$packageid}/";
+		$filesystem->mkdir($dir, 0777);
+		if (isset($ini['template']) && count($ini['template']) > 0) {
+			$desobj = $scache->load('loaddesign');
+			$designs = $desobj->get(true);
+			$tplid = $designs[$config['templatedir']]['template'];
+			$tpldir = "templates/{$tplid}/modules/{$packageid}/";
+			$filesystem->mkdir($tpldir, 0777);
+			$temptpldir = "{$tempdir}templates/";
+			copyr($temptpldir, $tpldir);
+			rmdirr($temptpldir);
+		}
+		copyr($tempdir, $dir);
 
+		if (isset($ini['language']) && count($ini['language']) > 0) {
+			$result = $db->query("SELECT id FROM {$db->pre}language",__LINE__,__FILE__);
+			while($row = $db->fetch_assoc($result)) {
+				$c->getdata("language/{$id}/modules.lng.php", 'lang');
+				foreach ($ini['language'] as $varname => $text) {
+					$c->updateconfig($varname, str, $text);
+				}
+				$c->savedata();
+			}
+		}
+		
+		if (isset($ini['php']) && count($ini['php']) > 0) {
+			foreach ($ini['php'] as $hook => $plugfile) {
+				if (isInvisibleHook($hook)) {
+					continue;
+				}
+				$result = $db->query("SELECT MAX(ordering) AS maximum FROM {$db->pre}plugins WHERE position = '{$hook}'", __LINE__, __FILE__);
+				$row = $db->fetch_assoc($result);
+				$priority = $row['maximum']+1;	
+				$db->query("
+				INSERT INTO {$db->pre}plugins 
+				(`name`,`module`,`ordering`,`active`,`position`) 
+				VALUES 
+				('{$ini['info']['title']}','{$packageid}','{$priority}','0','{$hook}')
+				", __LINE__, __FILE__);
+			}
+		}
+		
+		$confirm = true;
+		$pluginid = $packageid;
+		($code = $plugins->install($packageid)) ? eval($code) : null;
+		
+		rmdirr($tempdir);
+	}
+	if ($confirm) {
+		echo head();
+		ok('admin.php?action=cms&job=plugins&sort=1', 'Package successfully imported!');
+	}
 }
-elseif ($job == 'package_export') { // ToDo
-
+elseif ($job == 'package_export') {
+	echo head();
+	$id = $gpc->get('id', int);
+	$result = $db->query("SELECT id, title FROM {$db->pre}packages WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
+	if ($db->num_rows() != 1) {
+		echo head();
+		error('javascript: history.back(-1);', 'Specified package ('.$id.') does not exist.');
+	}
+	$data = $db->fetch_assoc($result);
+	$file = convert2adress($data['title']).'.zip';
+	$ini = $myini->read("modules/{$data['id']}/config.ini");
+	
+	$templates = array();
+	if (isset($ini['template']) && count($ini['template']) > 0) {
+		$desobj = $scache->load('loaddesign');
+		$designs = $desobj->get(true);
+		foreach ($designs as $row) {
+			if (!isset($templates[$row['template']])) {
+				$valid = true;
+				$dir = "templates/{$row['id']}/modules/{$data['id']}/";
+				foreach ($ini['template'] as $tplfile) {
+					if (!file_exists($dir.$tplfile)) {
+						$valid = false;
+					}
+				}
+				if ($valid == true) {
+					$templates[$row['template']] = ($row['id'] == $config['templatedir']) ? true : false;
+				}
+			}
+		}
+		if (count($templates) == 0) {
+			error('javascript: history.back(-1);', 'Package is corrupted: Templates are missing!');
+		}
+	}
+	?>
+<form name="form2" method="post" enctype="multipart/form-data" action="admin.php?action=cms&amp;job=package_export2&amp;id=<?php echo $id; ?>">
+ <table class="border" cellpadding="4" cellspacing="0" border="0">
+  <tr>
+   <td class="obox" colspan="2">Export Package</td>
+  </tr>
+  <?php if (count($templates) > 0) { ?>
+  <tr>
+   <td class="mbox">Export Templates of Package:</td>
+   <td class="mbox">
+    <select name="tpl">
+    <?php foreach ($templates as $id => $default) { ?>
+     <option value="<?php echo $id; ?>"<?php echo iif($default, ' selected="selected"'); ?>><?php echo $id.iif($default, ' (Default)'); ?></option>
+    <?php } ?>
+    </select>
+   </td>
+  </tr>
+  <?php } ?>
+  <tr>
+   <td class="mbox">Filename:</td>
+   <td class="mbox"><input type="text" name="file" size="50" value="<?php echo $file; ?>" /></td>
+  </tr><tr>
+   <td class="mbox">Datei nach dem exportieren löschen:</td>
+   <td class="mbox"><input type="checkbox" name="delete" value="1" checked="checked" /></td></tr>
+  <tr>
+   <td class="ubox" colspan="2" align="center"><input accesskey="s" type="submit" value="Export" /></td>
+  </tr>
+ </table>
+</form>
+	<?php
+	echo foot();
 }
-elseif ($job == 'package_export2') { // ToDo
-
+elseif ($job == 'package_export2') {
+	$id = $gpc->get('id', int);
+	$result = $db->query("SELECT id, title FROM {$db->pre}packages WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
+	if ($db->num_rows() != 1) {
+		echo head();
+		error('javascript: history.back(-1);', 'Specified package ('.$id.') does not exist.');
+	}
+	$data = $db->fetch_assoc($result);
+	$file = $gpc->get('file', none);
+	if (empty($file)) {
+		$file = convert2adress($data['title']).'.zip';
+	}
+	$ini = $myini->read("modules/{$data['id']}/config.ini");
+	$tpl = $gpc->get('tpl', int);
+	$tempdir = "temp/";
+	$error = false;
+	
+	require_once('classes/class.zip.php');
+	$archive = new PclZip($tempdir.$file);
+	$v_list = $archive->create(makeOSPath(array("modules", $id)), PCLZIP_OPT_REMOVE_PATH, makeOSPath(array("modules", $id)));
+	if ($v_list == 0) {
+		$error = true;
+	}
+	else {
+		if (isset($ini['template']) && count($ini['template']) > 0) {
+			$archive = new PclZip($tempdir.$file);
+			$v_list = $archive->add(makeOSPath(array('templates', $tpl, 'modules', $id)), PCLZIP_OPT_REMOVE_PATH, makeOSPath(array('templates', $tpl, 'modules', $id)), PCLZIP_OPT_ADD_PATH, makeOSPath(array("templates")));
+			if ($v_list == 0) {
+				$error = true;
+				break;
+			}
+		}
+	}
+	if ($error == true) {
+		echo head();
+		$filesystem->unlink($tempdir.$file);
+		error('admin.php?action=cms&job=package_export&id='.$id, $archive->errorInfo(true));
+	}
+	else {
+		viscacha_header('Content-Type: application/zip');
+		viscacha_header('Content-Disposition: attachment; filename="'.$file.'"');
+		viscacha_header('Content-Length: '.filesize($tempdir.$file));
+		readfile($tempdir.$file);
+		$filesystem->unlink($tempdir.$file);
+	}
 }
 elseif ($job == 'package_info') {
 	echo head();
@@ -1316,10 +1573,12 @@ elseif ($job == 'package_delete') {
 elseif ($job == 'package_delete2') {
 	$id = $gpc->get('id', int);
 	
+	$c = new manageconfig();
 	$dir = "modules/{$id}/";
 	$ini = $myini->read($dir."config.ini");
 	
 	$confirm = true;
+	$pluginid = $id;
 	($code = $plugins->uninstall($id)) ? eval($code) : null;
 
 	$result = $db->query("SELECT * FROM {$db->pre}plugins WHERE module = '{$id}' LIMIT 1", __LINE__, __FILE__);
@@ -1341,7 +1600,6 @@ elseif ($job == 'package_delete2') {
 	// Delete phrases
 	if (isset($ini['language']) && count($ini['language']) > 0) {
 		$result = $db->query('SELECT * FROM '.$db->pre.'language',__LINE__,__FILE__);
-		$c = new manageconfig();
 		while($row = $db->fetch_assoc($result)) {
 			$path = "language/{$row['id']}/modules.lng.php";
 			if (file_exists($path)) {

@@ -50,6 +50,44 @@ include_once ("classes/class.language.php");
 // Global functions
 require_once ("classes/function.global.php");
 
+function isInvisibleHook($hook) {
+	switch ($hook) {
+		case 'uninstall':
+		case 'install':
+		case 'source':
+			return true;
+		break;
+		default:
+			return false;
+		break;
+	}
+}
+
+function makeOSPath($array) {
+	$dir = implode(DIRECTORY_SEPARATOR, $array);
+	if (is_dir($dir)) {
+		$dir .= DIRECTORY_SEPARATOR;
+	}
+	return $dir;
+}
+
+function pluginSettingGroupUninstall($pluginid) {
+	global $db;
+	$result = $db->query("SELECT id, name FROM {$db->pre}settings_groups WHERE name = 'module_{$pluginid}' LIMIT 1");
+	$row = $db->fetch_assoc($result);
+	
+	$c = new manageconfig();
+	$c->getdata();
+	$result = $db->query("SELECT name FROM {$db->pre}settings WHERE sgroup = '{$row['id']}'");
+	while ($row2 = $db->fetch_assoc($result)) {
+		$c->delete(array($row['name'], $row2['name']));
+	}
+	$c->savedata();
+	
+	$db->query("DELETE FROM {$db->pre}settings WHERE sgroup = '{$row['id']}'", __LINE__, __FILE__);
+	$db->query("DELETE FROM {$db->pre}settings_groups WHERE id = '{$row['id']}'", __LINE__, __FILE__);
+}
+
 function getHookArray() {
 	$data = file('admin/data/hooks.txt');
 	$data = array_map('trim', $data);

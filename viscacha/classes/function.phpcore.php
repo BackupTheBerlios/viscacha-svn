@@ -225,40 +225,42 @@ function get_backtrace() {
 		}
 		
 		$args = array();
-		foreach ($trace['args'] as $argument) {
-			switch (gettype($argument)) {
-				case 'integer':
-				case 'double':
-					$args[] = $argument;
-				break;
-				
-				case 'string':
-					$argument = htmlspecialchars(substr($argument, 0, 64)) . ((strlen($argument) > 64) ? '...' : '');
-					$args[] = "'{$argument}'";
-				break;
-				
-				case 'array':
-					$args[] = 'Array(' . count($argument) . ')';
-				break;
-				
-				case 'object':
-					$args[] = 'Object(' . get_class($argument) . ')';
-				break;
-				
-				case 'resource':
-					$args[] = 'Resource(' . strstr($a, '#') . ')';
-				break;
-				
-				case 'boolean':
-					$args[] = ($argument) ? 'true' : 'false';
-				break;
-				
-				case 'NULL':
-					$args[] = 'NULL';
-				break;
-				
-				default:
-					$args[] = 'Unknown';
+		if (isset($trace['args']) && is_array($trace['args'])) {
+			foreach ($trace['args'] as $argument) {
+				switch (gettype($argument)) {
+					case 'integer':
+					case 'double':
+						$args[] = $argument;
+					break;
+					
+					case 'string':
+						$argument = htmlspecialchars(substr($argument, 0, 64)) . ((strlen($argument) > 64) ? '...' : '');
+						$args[] = "'{$argument}'";
+					break;
+					
+					case 'array':
+						$args[] = 'Array(' . count($argument) . ')';
+					break;
+					
+					case 'object':
+						$args[] = 'Object(' . get_class($argument) . ')';
+					break;
+					
+					case 'resource':
+						$args[] = 'Resource(' . strstr($a, '#') . ')';
+					break;
+					
+					case 'boolean':
+						$args[] = ($argument) ? 'true' : 'false';
+					break;
+					
+					case 'NULL':
+						$args[] = 'NULL';
+					break;
+					
+					default:
+						$args[] = 'Unknown';
+				}
 			}
 		}
 		

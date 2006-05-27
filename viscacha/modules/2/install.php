@@ -14,7 +14,21 @@ VALUES (
 	'1', 
 	'{$group}')
 ", __LINE__, __FILE__);
+$db->query("
+INSERT INTO {$db->pre}settings (
+	name, title, description, type, optionscode, value, sgroup
+) 
+VALUES (
+	'title', 
+	'Title for Newsfeed', 
+	'', 
+	'text', 
+	'', 
+	'Ticker', 
+	'{$group}')
+", __LINE__, __FILE__);
 	
 $c->getdata();
 $c->updateconfig(array("module_{$pluginid}", "feed"), int, 1);
+$c->updateconfig(array("module_{$pluginid}", "title"), str, 'Ticker');
 $c->savedata();
