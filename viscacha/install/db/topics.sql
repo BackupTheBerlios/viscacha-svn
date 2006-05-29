@@ -13,9 +13,7 @@ CREATE TABLE `{:=DBPREFIX=:}topics` (
   `vquestion` varchar(255) NOT NULL default '',
   `mark` enum('','b','g','a','n') NOT NULL default '',
   PRIMARY KEY  (`id`),
-  KEY `date` (`date`),
   KEY `last` (`last`),
-  KEY `mark` (`mark`),
   KEY `name` (`name`),
-  FULLTEXT KEY `topic` (`topic`)
+  KEY `board` (`board`)
 ) TYPE=MyISAM AUTO_INCREMENT=1 ;

@@ -87,7 +87,7 @@ elseif ($job == 'import') {
    <?php } ?>
   </select></td></tr>
   <tr><td class="mbox">Datei nach dem importieren löschen:</td>
-  <td class="mbox"><input type="checkbox" name="delete" value="1" /></td></tr>
+  <td class="mbox"><input type="checkbox" name="delete" value="1" checked="checked" /></td></tr>
   <tr><td class="ubox" colspan="2" align="center"><input accesskey="s" type="submit" value="Send" /></td></tr>
  </table>
 </form>
@@ -1025,6 +1025,7 @@ elseif ($job == 'phrase_file') {
 	$encfile = base64_decode($file);
 	$group = substr($encfile, 0, strlen($encfile)-8);
 	$page = $gpc->get('page', int, 1);
+	$show = $gpc->get('show', str);
 	$cache = array();
 	$diff = array();
 	$complete = array();
@@ -1034,9 +1035,19 @@ elseif ($job == 'phrase_file') {
 		$diff[$row['id']] = array_keys(return_array($group, $row['id']));
 		$complete = array_merge($complete, array_diff($diff[$row['id']], $complete) );
 	}
+	if ($show == 'diff') {
+		$same = call_user_func_array('array_intersect', $diff);
+		$complete = array_diff($complete, $same);
+	}
 	sort($complete);
 	$width = floor(75/count($cache));
-	$data = array_chunk($complete, 50);
+	if ($show == 'diff') {
+		$perpage = 100;
+	}
+	else {
+		$perpage = 50;
+	}
+	$data = array_chunk($complete, $perpage);
 	if (!isset($data[$page-1])) {
 		$page = 1;
 	}
@@ -1051,10 +1062,21 @@ elseif ($job == 'phrase_file') {
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr> 
    <td class="obox" colspan="<?php echo count($cache)+1; ?>">
-   <span style="float: right;">[<a href="admin.php?action=language&job=phrase_add&file=<?php echo $file; ?>">Add new Phrase</a>]</span>
+   <span style="float: right;">
+   <?php if ($show == 'diff') { ?>
+    [<a href="admin.php?action=language&job=phrase_file&file=<?php echo $file; ?>">Show all Phrases</a>] 
+   <?php } else { ?>
+    [<a href="admin.php?action=language&job=phrase_file&file=<?php echo $file; ?>&show=diff">Show only differences</a>] 
+   <?php } ?>
+    [<a href="admin.php?action=language&job=phrase_add&file=<?php echo $file; ?>">Add new Phrase</a>]
+   </span>
    Phrase Manager &raquo; <?php echo $encfile; ?></td>
   </tr>
-  <?php if (!isset($data[$page-1]) || count($data[$page-1]) == 0) { ?>
+  <?php if (count($cache) < 2 && $show == 'diff') { ?>
+  <tr>
+   <td class="mbox" colspan="<?php echo count($cache)+1; ?>">Nicht genügend Sprachen zum vergleichen gefunden. Es müssen mindestens 2 Sprachen installiert sein!</td> 
+  </tr>
+  <?php } elseif (!isset($data[$page-1]) || count($data[$page-1]) == 0) { ?>
   <tr>
    <td class="mbox" colspan="<?php echo count($cache)+1; ?>">Es wurden noch keine Phrasen angelegt. [<a href="admin.php?action=language&job=phrase_add&file=<?php echo $file; ?>">Add new Phrase</a>]</td> 
   </tr>
@@ -1146,7 +1168,7 @@ elseif ($job == 'phrase_file_copy') {
 	$file = $gpc->get('file', none);
 	$encfile = base64_decode($file);
 	$phrase = $gpc->get('phrase', str);
-	$result = $db->query('SELECT * FROM '.$db->pre.'language ORDER BY language',__LINE__,__FILE__);
+	$result = $db->query("SELECT * FROM {$db->pre}language WHERE id != '{$lang}' ORDER BY language",__LINE__,__FILE__);
 	echo head();
 	?>
 <form name="form" method="post" action="admin.php?action=language&job=phrase_file_copy2&phrase=<?php echo $phrase; ?>&file=<?php echo $file; ?>&id=<?php echo $lang; ?>">
@@ -1159,10 +1181,11 @@ elseif ($job == 'phrase_file_copy') {
    <span class="stext">Geben Sie hier an, aus welchem Verzeichnis/von welcher Sprache die Phrase kopiert werden soll.</span></td>
    <td class="mbox" width="50%"><select name="dir">
 	<?php
+	$basefile = substr($encfile, 0, strlen($encfile)-8);
 	while($row = $db->fetch_assoc($result)) {
+		echo 'language/'.$row['id'].'/'.$basefile;
 		if (file_exists('language/'.$row['id'].'/'.$encfile)) {
-			$encfile = substr($encfile, 0, strlen($encfile)-8);
-			$langarr = return_array($encfile, $row['id']);
+			$langarr = return_array($basefile, $row['id']);
 			if (isset($langarr[$phrase])) {
 	?>
    	<option value="<?php echo $row['id']; ?>"><?php echo $row['language']; ?> (ID: <?php echo $row['id']; ?>)</option>
@@ -1279,7 +1302,7 @@ elseif ($job == 'phrase_add_lngfile2') {
 		$c->createfile("language/{$row['id']}/{$dir}{$file}.lng.php", 'lang');
 	}
 	echo head();
-	ok('admin.php?action=language&job=phrase_file&file='.base64_decode("{$dir}{$file}.lng.php"), 'Language file sucessfully created.');
+	ok('admin.php?action=language&job=phrase_file&file='.base64_encode("{$dir}{$file}.lng.php"), 'Language file sucessfully created.');
 }
 elseif ($job == 'phrase_add_mailfile') {
 	echo head();

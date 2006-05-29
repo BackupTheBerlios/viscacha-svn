@@ -1,26 +1,21 @@
 CREATE TABLE `{:=DBPREFIX=:}packages` (
-  `id` mediumint(7) unsigned NOT NULL,
+  `id` mediumint(7) unsigned NOT NULL auto_increment,
   `title` varchar(200) NOT NULL,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=18 ;
+) TYPE=MyISAM PACK_KEYS=0 AUTO_INCREMENT=17 ;
 
--- 
--- Daten für Tabelle `v_packages`
--- 
-
-INSERT INTO `{:=DBPREFIX=:}packages` (`id`, `title`) VALUES 
-(1, 'Persönliche Box'),
-(2, 'Newsfeed-Ticker'),
-(3, 'Birthday-Reminder'),
-(5, 'Nachrichten-Box'),
-(6, 'News-Boxen'),
-(7, 'Letzte-Themen-Box'),
+INSERT INTO `{:=DBPREFIX=:}packages` (`id`, `title`) VALUES (1, 'Verwandte Themen'),
+(2, 'Wer-ist-Online-Box'),
+(3, 'News-Boxen'),
+(4, 'Newsfeed-Ticker'),
+(5, 'Persönliche Box'),
+(6, 'Neue-PN-Box'),
+(7, 'Nachrichten-Box'),
 (8, 'MS Word Druckansicht'),
-(9, 'Letzte-Antworten-Box'),
-(10, 'Verwandte Themen'),
-(11, 'Wer-ist-Online-Box'),
-(12, 'Login-Box'),
-(13, 'Neue-PN-Box'),
-(15, 'Legende (Foren)'),
-(16, 'Legende (Themen)'),
-(17, 'Legende (PM)');
+(9, 'Letzte-Themen-Box'),
+(10, 'Letzte-Antworten-Box'),
+(11, 'Legende (Themen)'),
+(12, 'Legende (PM)'),
+(13, 'Legende (Foren)'),
+(14, 'Birthday-Reminder'),
+(16, 'Login-Box');

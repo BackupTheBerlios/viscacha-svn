@@ -98,6 +98,9 @@ class PluginSystem {
 		  	if (file_exists($sourcefile)) {
 			   	$source = file_get_contents($sourcefile);
     		}
+			else {
+				trigger_error('Setup for Plugin not found! File '.$sourcefile.' could not be loaded while executing '.$hook.'.', E_USER_WARNING);
+			}
     	}
 		
 		return $source;

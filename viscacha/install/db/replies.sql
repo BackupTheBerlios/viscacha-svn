@@ -15,6 +15,5 @@ CREATE TABLE `{:=DBPREFIX=:}replies` (
   `tstart` enum('0','1') NOT NULL default '0',
   PRIMARY KEY  (`id`),
   KEY `topic_id` (`topic_id`),
-  KEY `date` (`date`),
-  KEY `name` (`name`)
+  KEY `date` (`date`)
 ) TYPE=MyISAM AUTO_INCREMENT=1 ;

@@ -16,6 +16,5 @@ CREATE TABLE `{:=DBPREFIX=:}cat` (
   `invisible` enum('0','1') NOT NULL default '0',
   PRIMARY KEY  (`id`),
   KEY `bid` (`bid`),
-  KEY `cid` (`cid`),
-  KEY `last_topic` (`last_topic`)
+  KEY `cid` (`cid`)
 ) TYPE=MyISAM AUTO_INCREMENT=1 ;

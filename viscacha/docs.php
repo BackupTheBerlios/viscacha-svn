@@ -70,8 +70,18 @@ if ($my->p['docs'] == 1 && GroupCheck($info['groups'])) {
 		$info['name'] = $lang->phrase('fallback_no_username');
 	}
 	($code = $plugins->load('docs_prepare')) ? eval($code) : null;
-	$info['date'] = str_date($lang->phrase('dformat1'), times($info['date']));
-	$info['update'] = str_date($lang->phrase('dformat1'), times($info['update']));
+	if ($info['date'] > 0 ) {
+		$info['date'] = str_date($lang->phrase('dformat1'), times($info['date']));
+	}
+	else {
+		$info['date'] = $lang->phrase('docs_date_na');
+	}
+	if ($info['update'] > 0) {
+		$info['update'] = str_date($lang->phrase('dformat1'), times($info['update']));
+	}
+	else {
+		$info['date'] = $lang->phrase('docs_date_na');
+	}
 	$type = doctypes();
 	if (isset($type[$info['type']])) {
 		$typedata = $type[$info['type']];

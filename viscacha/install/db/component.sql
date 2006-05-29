@@ -3,4 +3,4 @@ CREATE TABLE `{:=DBPREFIX=:}component` (
   `file` varchar(255) NOT NULL default '',
   `active` enum('0','1') NOT NULL default '0',
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=0 ;
+) TYPE=MyISAM AUTO_INCREMENT=1 ;

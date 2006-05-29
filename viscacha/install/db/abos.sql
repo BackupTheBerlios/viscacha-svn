@@ -4,6 +4,5 @@ CREATE TABLE `{:=DBPREFIX=:}abos` (
   `tid` int(10) unsigned NOT NULL default '0',
   `type` enum('','d','w','f') NOT NULL default '',
   PRIMARY KEY  (`id`),
-  KEY `tid` (`tid`),
   KEY `mid` (`mid`)
 ) TYPE=MyISAM AUTO_INCREMENT=1 ;

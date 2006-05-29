@@ -58,7 +58,7 @@ if ($job == 'plugins') {
 		  <tr class="obox">
 		   <td>Plugin</td>
 		   <td>Hook</td>
-		   <td>Priority</td>
+		   <td>Status</td>
 		   <td>Aktion</td>
 		  </tr>
 		<?php
@@ -66,20 +66,28 @@ if ($job == 'plugins') {
 			if ($head['module'] != $package) {
 				?>
 				<tr>
-					<td class="ubox" colspan="2">Package: <strong><?php echo $head['title']; ?></strong> (<?php echo $head['module']; ?>)</td>
-					<td class="ubox" colspan="2">
-					<!--
-					 [Alle aktivieren] 
-					 [Alle deaktivieren] 
-					-->
-					 [<a href="admin.php?action=cms&job=plugins_add&id=<?php echo $head['module']; ?>">Plugin hinzuf&uuml;gen</a>]
-					 [<a href="admin.php?action=cms&job=package_export&id=<?php echo $head['module']; ?>">Exportieren</a>]
-					 [<a href="admin.php?action=cms&job=package_info&id=<?php echo $head['module']; ?>">Informationen</a>] 
-					 <?php if (isset($configs[$head['module']]) == true) { ?>
-					 [<a href="admin.php?action=settings&job=custom&id=<?php echo $configs[$head['module']]; ?>">Konfiguration</a>]
-					 <?php } ?>
-					 [<a href="admin.php?action=cms&job=package_delete&id=<?php echo $head['module']; ?>">Löschen</a>] 
-					</td>
+				<td class="ubox" colspan="4">
+				  <form style="float: right;" name="act" action="admin.php?action=locate" method="post">
+				  	<select size="1" name="url" onchange="locate(this.value)">
+					 <option value="" selected="selected">Bitte w&auml;hlen</option>
+					 <optgroup label="Verwaltung">
+					  <option value="admin.php?action=cms&job=plugins_add&id=<?php echo $head['module']; ?>">Plugin hinzuf&uuml;gen</option>
+					  <option value="admin.php?action=cms&job=package_info&id=<?php echo $head['module']; ?>">Informationen</option> 
+					  <?php if (isset($configs[$head['module']]) == true) { ?>
+					   <option value="admin.php?action=settings&job=custom&id=<?php echo $configs[$head['module']]; ?>">Konfiguration</option>
+					  <?php } ?>
+					  <option value="admin.php?action=cms&job=package_export&id=<?php echo $head['module']; ?>">Exportieren</option>
+					  <option value="admin.php?action=cms&job=package_delete&id=<?php echo $head['module']; ?>">Löschen</option> 
+					 </optgroup>
+					 <optgroup label="Status">
+					  <option value="admin.php?action=cms&job=plugins_active_all&value=1&id=<?php echo $head['module']; ?>">Alle aktivieren</option> 
+					  <option value="admin.php?action=cms&job=plugins_active_all&value=0&id=<?php echo $head['module']; ?>">Alle deaktivieren</option>
+					 </optgroup>
+					</select>
+					<input type="submit" value="Go">
+				  </form>
+				  Package: <strong><?php echo $head['title']; ?></strong> (<?php echo $head['module']; ?>)
+				</td>
 				</tr>
 				<?php
 				$package = $head['module'];
@@ -204,6 +212,21 @@ elseif ($job == 'plugins_active') {
 	$row = $db->fetch_assoc($result);
 	$filesystem->unlink('cache/modules/'.$plugins->_group($row['position']).'.php');
 	viscacha_header('Location: admin.php?action=cms&job=plugins');
+}
+elseif ($job == 'plugins_active_all') {
+	$id = $gpc->get('id', int);
+	$active = $gpc->get('value', int);
+	if ($active != 0 && $active != 1) {
+		error('admin.php?action=cms&job=nav', 'Ungültiger Status angegeben');
+	}
+
+	$db->query('UPDATE '.$db->pre.'plugins SET active = "'.$active.'" WHERE module = '.$id, __LINE__, __FILE__);
+	
+	$result = $db->query("SELECT position FROM {$db->pre}plugins WHERE module = '{$id}'", __LINE__, __FILE__);
+	while ($row = $db->fetch_assoc($result)) {
+		$filesystem->unlink('cache/modules/'.$plugins->_group($row['position']).'.php');
+	}
+	viscacha_header('Location: admin.php?action=cms&job=plugins&sort=1');
 }
 elseif ($job == 'plugins_delete') {
 	echo head();
@@ -1242,7 +1265,7 @@ elseif ($job == 'package_import') {
   <tr><td class="mbox"><em>oder</em> Datei vom Server auswählen:<br /><span class="stext">Pfad ausgehend vom Viscacha-Hauptverzeichnis: <?php echo $config['fpath']; ?></span></td>
   <td class="mbox"><input type="text" name="server" size="50" /></td></tr>
   <tr><td class="mbox">Datei nach dem importieren löschen:</td>
-  <td class="mbox"><input type="checkbox" name="delete" value="1" /></td></tr>
+  <td class="mbox"><input type="checkbox" name="delete" value="1" checked="checked" /></td></tr>
   <tr><td class="ubox" colspan="2" align="center"><input accesskey="s" type="submit" value="Send" /></td></tr>
  </table>
 </form>
@@ -1296,7 +1319,12 @@ elseif ($job == 'package_import2') {
 		error('admin.php?action=designs&job=design_import', $inserterrors);
 	}
 	$tempdir = 'temp/'.md5(microtime()).'/';
-	$filesystem->mkdir($tempdir, 0777);
+	if (file_exists($tempdir)) {
+		$filesystem->chmod($tempdir, 0777);
+	}
+	else {
+		$filesystem->mkdir($tempdir, 0777);
+	}
 	require_once('classes/class.zip.php');
 	$archive = new PclZip($file);
 	$failure = $archive->extract($tempdir);
@@ -1312,13 +1340,23 @@ elseif ($job == 'package_import2') {
 		$db->query("INSERT INTO {$db->pre}packages (`title`) VALUES ('{$ini['info']['title']}')");
 		$packageid = $db->insert_id();
 		$dir = "modules/{$packageid}/";
-		$filesystem->mkdir($dir, 0777);
+		if (file_exists($dir)) {
+			$filesystem->chmod($dir, 0777);
+		}
+		else {
+			$filesystem->mkdir($dir, 0777);
+		}
 		if (isset($ini['template']) && count($ini['template']) > 0) {
 			$desobj = $scache->load('loaddesign');
 			$designs = $desobj->get(true);
 			$tplid = $designs[$config['templatedir']]['template'];
 			$tpldir = "templates/{$tplid}/modules/{$packageid}/";
-			$filesystem->mkdir($tpldir, 0777);
+			if (file_exists($tpldir)) {
+				$filesystem->chmod($tpldir, 0777);
+			}
+			else {
+				$filesystem->mkdir($tpldir, 0777);
+			}
 			$temptpldir = "{$tempdir}templates/";
 			copyr($temptpldir, $tpldir);
 			rmdirr($temptpldir);
@@ -1328,7 +1366,7 @@ elseif ($job == 'package_import2') {
 		if (isset($ini['language']) && count($ini['language']) > 0) {
 			$result = $db->query("SELECT id FROM {$db->pre}language",__LINE__,__FILE__);
 			while($row = $db->fetch_assoc($result)) {
-				$c->getdata("language/{$id}/modules.lng.php", 'lang');
+				$c->getdata("language/{$row['id']}/modules.lng.php", 'lang');
 				foreach ($ini['language'] as $varname => $text) {
 					$c->updateconfig($varname, str, $text);
 				}
@@ -1350,6 +1388,7 @@ elseif ($job == 'package_import2') {
 				VALUES 
 				('{$ini['info']['title']}','{$packageid}','{$priority}','0','{$hook}')
 				", __LINE__, __FILE__);
+				$filesystem->unlink('cache/modules/'.$plugins->_group($hook).'.php');
 			}
 		}
 		
@@ -1573,20 +1612,27 @@ elseif ($job == 'package_delete') {
 elseif ($job == 'package_delete2') {
 	$id = $gpc->get('id', int);
 	
+	if (!is_id($id)) {
+		echo head();
+		error('javascript: history.back(-1);', 'Specified package ('.$id.') does not exist.');
+	}
+
 	$c = new manageconfig();
 	$dir = "modules/{$id}/";
 	$ini = $myini->read($dir."config.ini");
-	
+
 	$confirm = true;
 	$pluginid = $id;
 	($code = $plugins->uninstall($id)) ? eval($code) : null;
 
-	$result = $db->query("SELECT * FROM {$db->pre}plugins WHERE module = '{$id}' LIMIT 1", __LINE__, __FILE__);
+	$result = $db->query("SELECT * FROM {$db->pre}plugins WHERE module = '{$id}' GROUP BY position", __LINE__, __FILE__);
 	while ($data = $db->fetch_assoc($result)) {
 		$filesystem->unlink('cache/modules/'.$plugins->_group($data['position']).'.php');
 	}
-	$db->query("DELETE FROM {$db->pre}plugins WHERE module = '{$id}' LIMIT 1", __LINE__, __FILE__);
+	$db->query("DELETE FROM {$db->pre}plugins WHERE module = '{$id}'", __LINE__, __FILE__);
 	$db->query("DELETE FROM {$db->pre}packages WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
+	// Delete references in navigation aswell
+	$db->query("DELETE FROM {$db->pre}menu WHERE module = '{$id}'", __LINE__, __FILE__);
 
 	// Delete templates
 	$designObj = $scache->load('loaddesign');
@@ -1604,7 +1650,7 @@ elseif ($job == 'package_delete2') {
 			$path = "language/{$row['id']}/modules.lng.php";
 			if (file_exists($path)) {
 				$c->getdata($path, 'lang');
-				foreach ($ini['language'] as $phrase) {
+				foreach ($ini['language'] as $phrase => $value) {
 					$c->delete($phrase);
 				}
 				$c->savedata();
@@ -2692,7 +2738,12 @@ elseif ($job == 'doc') {
 		else {
 			$row['author'] = 'Unknown';
 		}
-		$row['update'] = date('d.m.Y H:i', $row['update']);
+		if ($row['update'] > 0) {
+			$row['update'] = date('d.m.Y H:i', $row['update']);
+		}
+		else {
+			$row['update'] = 'Unknown';
+		}
 ?>
   <tr>
    <td class="mbox" width="5%"><input type="checkbox" name="delete[]" value="<?php echo $row['id']; ?>"></td>

@@ -7,8 +7,7 @@ CREATE TABLE `{:=DBPREFIX=:}smileys` (
   PRIMARY KEY  (`id`)
 ) TYPE=MyISAM AUTO_INCREMENT=32 ;
 
-INSERT INTO `{:=DBPREFIX=:}smileys` (`id`, `search`, `replace`, `desc`, `show`) VALUES 
-(1, ':D', '{folder}/biggrin.gif', 'Grinsender Smiley', '1'),
+INSERT INTO `{:=DBPREFIX=:}smileys` (`id`, `search`, `replace`, `desc`, `show`) VALUES (1, ':D', '{folder}/biggrin.gif', 'Grinsender Smiley', '1'),
 (2, ':}', '{folder}/cheesy.gif', 'Glücklicher Smiley', '1'),
 (3, '8-)', '{folder}/cool.gif', 'Cooler Smiley', '0'),
 (4, ':eek:', '{folder}/eek.gif', 'Erstaunter Smiley', '1'),

@@ -1,26 +1,31 @@
 CREATE TABLE `{:=DBPREFIX=:}plugins` (
-  `id` int(10) unsigned NOT NULL,
-  `name` varchar(200) NOT NULL default '',
+  `id` int(10) unsigned NOT NULL auto_increment,
+  `name` varchar(200) NOT NULL,
   `module` mediumint(7) unsigned NOT NULL,
   `ordering` smallint(4) NOT NULL default '0',
   `active` enum('0','1') NOT NULL default '0',
   `position` varchar(128) NOT NULL default 'navigation',
-  PRIMARY KEY  (`id`)
-) TYPE=MyISAM PACK_KEYS=0 AUTO_INCREMENT=17 ;
+  PRIMARY KEY  (`id`),
+  KEY `position` (`position`)
+) TYPE=MyISAM PACK_KEYS=0 AUTO_INCREMENT=22 ;
 
-INSERT INTO `{:=DBPREFIX=:}plugins` (`id`, `name`, `module`, `ordering`, `active`, `position`) VALUES (1, 'Hinweise zu dem neuen Forum', '5', 1, '1', 'portal');
-INSERT INTO `{:=DBPREFIX=:}plugins` (`id`, `name`, `module`, `ordering`, `active`, `position`) VALUES (2, 'Aktuelle Nachrichten aus dem Forum', '6', 0, '1', 'portal');
-INSERT INTO `{:=DBPREFIX=:}plugins` (`id`, `name`, `module`, `ordering`, `active`, `position`) VALUES (3, 'Die letzten aktiven Themen', '7', 3, '1', 'forum_end');
-INSERT INTO `{:=DBPREFIX=:}plugins` (`id`, `name`, `module`, `ordering`, `active`, `position`) VALUES (4, 'Die letzten aktiven Themen', '7', 2, '1', 'portal');
-INSERT INTO `{:=DBPREFIX=:}plugins` (`id`, `name`, `module`, `ordering`, `active`, `position`) VALUES (5, 'Druckausgabe für Word', '8', 0, '1', 'print_start');
-INSERT INTO `{:=DBPREFIX=:}plugins` (`id`, `name`, `module`, `ordering`, `active`, `position`) VALUES (6, 'Letzte Antworten', '9', 0, '1', 'addreply_form_end');
-INSERT INTO `{:=DBPREFIX=:}plugins` (`id`, `name`, `module`, `ordering`, `active`, `position`) VALUES (7, 'Verwandte Themen', '10', 0, '1', 'showtopic_end');
-INSERT INTO `{:=DBPREFIX=:}plugins` (`id`, `name`, `module`, `ordering`, `active`, `position`) VALUES (8, 'Wer ist Online', '11', 2, '1', 'forum_end');
-INSERT INTO `{:=DBPREFIX=:}plugins` (`id`, `name`, `module`, `ordering`, `active`, `position`) VALUES (9, 'Login-Box', '12', 0, '1', 'forum_end');
-INSERT INTO `{:=DBPREFIX=:}plugins` (`id`, `name`, `module`, `ordering`, `active`, `position`) VALUES (10, 'Neue PNs', '13', 1, '1', 'forum_end');
-INSERT INTO `{:=DBPREFIX=:}plugins` (`id`, `name`, `module`, `ordering`, `active`, `position`) VALUES (11, 'Legende (Forenübersicht)', '15', 4, '1', 'forum_end');
-INSERT INTO `{:=DBPREFIX=:}plugins` (`id`, `name`, `module`, `ordering`, `active`, `position`) VALUES (12, 'Legende (Themenübersichten)', '16', 0, '1', 'showforum_end');
-INSERT INTO `{:=DBPREFIX=:}plugins` (`id`, `name`, `module`, `ordering`, `active`, `position`) VALUES (13, 'Legende (Themenübersichten)', '16', 0, '1', 'search_result_end');
-INSERT INTO `{:=DBPREFIX=:}plugins` (`id`, `name`, `module`, `ordering`, `active`, `position`) VALUES (14, 'Legende (Themenübersichten)', '16', 0, '1', 'search_active_end');
-INSERT INTO `{:=DBPREFIX=:}plugins` (`id`, `name`, `module`, `ordering`, `active`, `position`) VALUES (15, 'Legende (PM)', '17', 0, '1', 'pm_browse_end');
-INSERT INTO `{:=DBPREFIX=:}plugins` (`id`, `name`, `module`, `ordering`, `active`, `position`) VALUES (16, 'Legende (PM)', '17', 0, '1', 'pm_index_end');
+INSERT INTO `{:=DBPREFIX=:}plugins` (`id`, `name`, `module`, `ordering`, `active`, `position`) VALUES (1, 'Verwandte Themen', 1, 1, '1', 'showtopic_end'),
+(2, 'Wer-ist-Online-Box', 2, 1, '1', 'forum_end'),
+(3, 'News-Boxen', 3, 1, '1', 'portal'),
+(4, 'Newsfeed-Ticker', 4, 1, '0', 'navigation'),
+(5, 'Persönliche Box', 5, 2, '1', 'navigation'),
+(6, 'Neue-PN-Box', 6, 2, '1', 'forum_end'),
+(7, 'Nachrichten-Box', 7, 1, '1', 'forum_start'),
+(8, 'Nachrichten-Box', 7, 2, '1', 'portal'),
+(9, 'MS Word Druckansicht', 8, 1, '1', 'print_start'),
+(10, 'Letzte-Themen-Box', 9, 3, '1', 'forum_end'),
+(11, 'Letzte-Themen-Box', 9, 3, '1', 'portal'),
+(12, 'Letzte-Antworten-Box', 10, 1, '1', 'addreply_form_end'),
+(13, 'Legende (Themen)', 11, 1, '1', 'showforum_end'),
+(14, 'Legende (Themen)', 11, 1, '1', 'search_result_end'),
+(15, 'Legende (Themen)', 11, 1, '1', 'search_active_end'),
+(16, 'Legende (PM)', 12, 1, '1', 'pm_browse_end'),
+(17, 'Legende (PM)', 12, 1, '1', 'pm_index_end'),
+(18, 'Legende (Foren)', 13, 4, '1', 'forum_end'),
+(19, 'Birthday-Reminder', 14, 3, '1', 'navigation'),
+(21, 'Login-Box', 16, 5, '1', 'forum_end');

@@ -1,5 +1,5 @@
 CREATE TABLE `{:=DBPREFIX=:}bbcode` (
-  `id` smallint(5) unsigned NOT NULL,
+  `id` smallint(5) unsigned NOT NULL auto_increment,
   `bbcodetag` varchar(200) NOT NULL default '',
   `bbcodereplacement` mediumtext NOT NULL,
   `bbcodeexample` varchar(255) NOT NULL,

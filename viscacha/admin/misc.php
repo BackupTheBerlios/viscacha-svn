@@ -654,7 +654,7 @@ elseif ($job == "credits") {
 		<li><a href="http://www.phpclasses.org/browse/author/152329.html" target="_blank">Image Converter by Huda M Elmatsani</a> (Convert Images; Freeware)</li>
 		<li><a href="http://www.flaimo.com" target="_blank">vCard-Class 1.001 by Michael Wimmer</a> (vCard Output; Unspecified)</li>
 		<li><a href="http://www.phpconcept.net" target="_blank">PclZip Library 2.5 by Vincent Blavet</a> (Zip File Handling; LPGL)</li>
-		<li><a href="http://qbnz.com/highlighter" target="_blank">GeSHi 1.0.7.9 by Nigel McNie</a> (Syntax Highlighting; GPL)</li>
+		<li><a href="http://qbnz.com/highlighter" target="_blank">GeSHi 1.0.7.10 by Nigel McNie</a> (Syntax Highlighting; GPL)</li>
 		<li><a href="http://magpierss.sourceforge.net" target="_blank">MagPieRSS 0.72 by kellan</a> (Parsing Newsfeeds; GPL)</li>
 		<li><a href="http://phpmailer.sourceforge.net/" target="_blank">PHPMailer 1.73 by Brent R. Matzelle and SMTP Class 1.02 by Chris Ryan</a> (Sending E-Mails with SMTP; LGPL)</li>
 		<li><a href="http://cjphp.netflint.net" target="_blank">Class.Jabber.PHP v0.4.2 by Nathan Fritz</a> (Jabber Messages; GPL)</li>

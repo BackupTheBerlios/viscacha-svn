@@ -51,6 +51,8 @@ $gll = array(
 'docs' => 'Darf alle Dokumente &amp; Seiten ansehen.'
 );
 
+$guest_limitation = array('admin', 'gmod', 'pm', 'usepic', 'useabout', 'usesignature', 'voting', 'edit');
+
 if ($job == 'manage') {
 	echo head();
 	$result = $db->query("SELECT * FROM {$db->pre}groups ORDER BY admin DESC , guest ASC , core ASC");
@@ -79,7 +81,10 @@ if ($job == 'manage') {
 	<?php } ?>
    	<td valign="bottom"><?php txt2img('Floodcheck (sec.)'); ?></td>
   </tr>
-  <?php foreach ($cache as $row) { ?>
+  <?php
+  foreach ($cache as $row) {
+  	$guest = ($row['guest'] == 1 && $row['core'] == 1);
+  ?>
   <tr class="mbox">
   <?php if ($delete == 1) { ?>
   	<td>
@@ -93,9 +98,19 @@ if ($job == 'manage') {
   	<td><input type="radio" name="edit" value="<?php echo $row['id']; ?>"></td>
     <td nowrap="nowrap"><?php echo $row['name']; ?><br /><?php echo $row['title']; ?></td>
 	<td><?php echo $row['id']; ?></td>
-	<?php foreach ($glk as $txt) { ?>
-   	<td><?php echo noki($row[$txt], ' onmouseover="HandCursor(this)" onclick="ajax_noki(this, \'action=groups&job=ajax_changeperm&id='.$row['id'].'&key='.$txt.'\')"'); ?></td>
-   	<?php } ?>
+	<?php 
+	foreach ($glk as $txt) {
+	   	$clickable = !($guest && array_search($txt, $guest_limitation) !== false);
+	   	if ($txt == 'guest') {
+	   		$clickable = false;
+	   	}
+	   	$js = iif ($clickable, ' onmouseover="HandCursor(this)" onclick="ajax_noki(this, \'action=groups&job=ajax_changeperm&id='.$row['id'].'&key='.$txt.'\')"');
+	   	$js .= iif(!$clickable, ' style="-moz-opacity: 0.4; opacity: 0.4; filter:Alpha(opacity=40, finishopacity=0);"', '');
+	   	echo '<td align="center"'.iif(!$clickable, ' class="mmbox"').'>';
+	   	echo noki($row[$txt], $js);
+	   	echo '</td>';
+	}
+	?>
    	<td><?php echo $row['flood']; ?></td>
   </tr>
   <?php } ?>
@@ -308,7 +323,8 @@ elseif ($job == 'edit') {
   </tr>
   <?php
   foreach ($glk as $key) {
-  if ($key != 'guest') {
+  	$editable = !(($data['guest'] == 1 && $data['core'] == 1) && array_search($key, $guest_limitation) !== false);
+  	if ($key != 'guest' && $editable) {
   ?>
   <tr>
    <td class="mbox" width="50%"><?php echo $gls[$key]; ?><br /><span class="stext"><?php echo $gll[$key]; ?></span></td>
@@ -351,7 +367,8 @@ elseif ($job == 'edit2') {
 
 	$sql_values = '';
 	foreach ($glk as $key) {
-		if ($key != 'guest') {
+		$editable = !(($data['guest'] == 1 && $data['core'] == 1) && array_search($key, $guest_limitation) !== false);
+		if ($key != 'guest' && $editable) {
 			$sql_values .= $key.' = "'.$gpc->get($key, int).'", ';
 		}
 	}

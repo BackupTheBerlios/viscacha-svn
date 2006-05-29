@@ -326,7 +326,7 @@ elseif ($job == 'design_import') {
   <tr><td class="mbox"><em>oder</em> Datei vom Server auswählen:<br /><span class="stext">Pfad ausgehend vom Viscacha-Hauptverzeichnis: <?php echo $config['fpath']; ?></span></td>
   <td class="mbox"><input type="text" name="server" size="50" /></td></tr>
   <tr><td class="mbox">Datei nach dem importieren löschen:</td>
-  <td class="mbox"><input type="checkbox" name="delete" value="1" /></td></tr>
+  <td class="mbox"><input type="checkbox" name="delete" value="1" checked="checked" /></td></tr>
   <tr><td class="ubox" colspan="2" align="center"><input accesskey="s" type="submit" value="Send" /></td></tr>
  </table>
 </form>
@@ -620,7 +620,7 @@ elseif ($job == 'templates_add') {
   <tr><td class="mbox"><em>oder</em> Datei vom Server auswählen:<br /><span class="stext">Pfad ausgehend vom Viscacha-Hauptverzeichnis: <?php echo $config['fpath']; ?></span></td>
   <td class="mbox"><input type="text" name="server" size="50" /></td></tr>
   <tr><td class="mbox">Datei nach dem importieren löschen:</td>
-  <td class="mbox"><input type="checkbox" name="delete" value="1" /></td></tr>
+  <td class="mbox"><input type="checkbox" name="delete" value="1" checked="checked" /></td></tr>
   <tr><td class="ubox" colspan="2" align="center"><input accesskey="s" type="submit" value="Send" /></td></tr>
  </table>
 </form>
@@ -1160,7 +1160,7 @@ elseif ($job == 'css_add') {
   <tr><td class="mbox"><em>oder</em> Datei vom Server auswählen:<br /><span class="stext">Pfad ausgehend vom Viscacha-Hauptverzeichnis: <?php echo $config['fpath']; ?></span></td>
   <td class="mbox"><input type="text" name="server" size="50" /></td></tr>
   <tr><td class="mbox">Datei nach dem importieren löschen:</td>
-  <td class="mbox"><input type="checkbox" name="delete" value="1" /></td></tr>
+  <td class="mbox"><input type="checkbox" name="delete" value="1" checked="checked" /></td></tr>
   <tr><td class="ubox" colspan="2" align="center"><input accesskey="s" type="submit" value="Send" /></td></tr>
  </table>
 </form>
@@ -1338,7 +1338,7 @@ elseif ($job == 'images_add') {
   <tr><td class="mbox"><em>oder</em> Datei vom Server auswählen:<br /><span class="stext">Pfad ausgehend vom Viscacha-Hauptverzeichnis: <?php echo $config['fpath']; ?></span></td>
   <td class="mbox"><input type="text" name="server" size="50" /></td></tr>
   <tr><td class="mbox">Datei nach dem importieren löschen:</td>
-  <td class="mbox"><input type="checkbox" name="delete" value="1" /></td></tr>
+  <td class="mbox"><input type="checkbox" name="delete" value="1" checked="checked" /></td></tr>
   <tr><td class="ubox" colspan="2" align="center"><input accesskey="s" type="submit" value="Send" /></td></tr>
  </table>
 </form>

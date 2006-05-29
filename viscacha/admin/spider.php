@@ -109,7 +109,7 @@ elseif ($job == 'delete') {
 	if ($id > 0 || count($mark) > 0) {
 		$id = ($id > 0) ? " = {$id}" : ' IN (' . implode(', ', $mark) . ')';
 		$db->query("DELETE FROM {$db->pre}spider WHERE id {$id}");
-		if ($db->affected_rows() <> 1) {
+		if ($db->affected_rows() == 0) {
 			error("admin.php?action=spider&job=manage", "No entries deleted.");
 		}
 		else {
@@ -222,7 +222,7 @@ elseif ($job == 'add' || $job == 'edit') {
 		<tr>
 			<td class="mbox" width="40%">Reset Last Visits:<br /><span class="stext"></span></td>
 			<td class="mbox">
-			<input type="radio" name="reset_lastvisit" value="0" />Keep the "Last Vists". Don't change them!<br />
+			<input type="radio" name="reset_lastvisit" value="0" checked="checked" />Keep the "Last Vists". Don't change them!<br />
 			<input type="radio" name="reset_lastvisit" value="1" />The "Last Visits" will be deleted except for the really last visit.<br />
 			<input type="radio" name="reset_lastvisit" value="2" />The "Last Visits" will be completely deleted.
 			</td>
@@ -354,7 +354,7 @@ else {
 				</tr>
 				<tr>
 					<td class="ubox" nowrap="nowrap">Name</td>
-					<td class="ubox" nowrap="nowrap">User Agents</td>
+					<td class="ubox" nowrap="nowrap">User Agents (Count)</td>
 					<td class="ubox" nowrap="nowrap">Visits</td>
 					<td class="ubox" nowrap="nowrap">Last Visit</td>
 					<td class="ubox" nowrap="nowrap">Actions</td>
@@ -368,11 +368,11 @@ else {
 				$useragent = 'Not specified!';
 			}
 			else {
-				$useragent = "<select style=\"width: 100%;\">";
+				$useragent = "<select style=\"width: 90%;\">";
 				foreach ($useragents as $ua) {
 					$useragent .= "<option>".htmlspecialchars($ua)."</option>";
 				}
-				$useragent .= "</select>";
+				$useragent .= "</select> (".count($useragents).")";
 			}
 			
 			$last_visits = explode('|', $row['last_visit']);
@@ -391,7 +391,7 @@ else {
 			?>
 			<tr>
 				<td class="mbox" width="25%"><?php echo $row['name']; ?></td>
-				<td class="mbox" width="20%"><?php echo $useragent; ?></td>
+				<td class="mbox" width="20%" nowrap="nowrap"><?php echo $useragent; ?></td>
 				<td class="mbox" width="10%" align="center" nowrap="nowrap"><?php echo $row['bot_visits']; ?></td>
 				<td class="mbox" width="15%" align="center"><?php echo $last_visit; ?></td>
 				<td class="mbox" width="3%" align="center">[<a href="admin.php?action=spider&id=<?php echo $row['id']; ?>&job=edit">Edit</a>]&nbsp;[<a href="admin.php?action=spider&id=<?php echo $row['id']; ?>&job=delete">Delete</a>]</td>

@@ -508,10 +508,10 @@ function noki ($int, $js = '', $id = '') {
 		$id = ' id="'.$id.'"';
 	}
 	if ($int == 1 || $int == true) {
-		return '<img'.$js.$id.' class="valign" src="admin/html/images/yes.gif" border="0" alt="Yes" title="Click here to change setting!">';
+		return '<img'.$js.$id.' class="valign" src="admin/html/images/yes.gif" border="0" alt="Yes"'.iif(!empty($js), ' title="Click here to change setting!"', ' title="Yes"').' />';
 	}
 	else {
-		return '<img'.$js.$id.' class="valign" src="admin/html/images/no.gif" border="0" alt="No" title="Click here to change setting!">';
+		return '<img'.$js.$id.' class="valign" src="admin/html/images/no.gif" border="0" alt="No"'.iif(!empty($js), ' title="Click here to change setting!"', ' title="No"').' />';
 	}
 
 }

@@ -176,42 +176,37 @@ if ($job == 'menu') {
 	<?php
 }
 else {
-	?>
-    <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Frameset//EN" "http://www.w3.org/TR/REC-html40/frameset.dtd">
-	<html>
-	<head>
-	<title><?php echo $config['fname']; ?>: Viscacha Admin Control Panel</title>
-	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
-	<meta http-equiv="pragma" content="no-cache">
-	<link rel="copyright" href="http://www.mamo-net.de">
-	</head>
-	<frameset framespacing="0" border="0" cols="190,*" frameborder="0">
-	  <frame name="Menu" target="Main" src="admin.php?action=frames&job=menu" scrolling="yes" noresize>
-	  <frame name="Main" src="admin.php?action=index" scrolling="auto" noresize>
-	  <noframes>
-	  <body>
-	  Your browser does not seem to support frames or frame support has been disabled.<br><br>
-	  Go to:<br>
-	  <ul>
-	  <li>Viscacha Admin Control Panel:
-	  	<ul>
-	  	<li><a href="admin.php?action=frames&job=menu">Navigation</a></li>
-	  	</ul>
-	  </li>
-	  </ul>
-	  <li>Download a &quot;modern&quot; Browser:
-	  	<ul>
-	  	<li><a href="http://www.mozilla.com">Mozilla Firefox</a></li>
-	  	<li><a href="http://www.opera.com">Opera</a></li>
-	  	<li><a href="http://www.apple.com/safari">Safari (Only Mac)</a></li>
-	  	</ul>
-	  </li>
-	  </ul>
-	  </body>
-	  </noframes>
-	</frameset>
-	</html>
-	<?php
+?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Frameset//EN" "http://www.w3.org/TR/REC-html40/frameset.dtd">
+<html>
+ <head>
+  <title><?php echo $config['fname']; ?>: Viscacha Admin Control Panel</title>
+  <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1" />
+  <meta http-equiv="pragma" content="no-cache" />
+  <link rel="copyright" href="http://www.mamo-net.de" />
+ </head>
+ <frameset cols="190,*" frameborder="0" framespacing="0" border="0">
+  <frame name="Menu" src="admin.php?action=frames&amp;job=menu" scrolling="yes" noresize="noresize" />
+  <frame name="Main" src="admin.php?action=index" scrolling="auto" noresize="noresize" />
+  <noframes>
+   <body>
+    <p>Your browser does not seem to support frames or frame support has been disabled.</p>
+    What do you want to do?
+     <ul>
+      <li><a href="admin.php?action=frames&amp;job=menu">Viscacha Admin Control Panel Navigation</a></li>
+     </ul>
+    <br />
+     Download a &quot;modern&quot; Browser:
+     <ul>
+      <li><a href="http://www.mozilla.com">Mozilla Firefox</a></li>
+      <li><a href="http://www.opera.com">Opera</a></li>
+      <li><a href="http://www.apple.com/safari">Safari (Only Mac)</a></li>
+     </ul>
+   </body>
+  </noframes>
+ </frameset>
+</html>
+<?php
 }
 
 ?>

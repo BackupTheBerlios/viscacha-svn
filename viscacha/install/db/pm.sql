@@ -8,5 +8,5 @@ CREATE TABLE `{:=DBPREFIX=:}pm` (
   `status` enum('0','1') NOT NULL default '0',
   `dir` enum('1','2','3') NOT NULL default '1',
   PRIMARY KEY  (`id`),
-  KEY `date` (`date`)
+  KEY `pm_to` (`pm_to`)
 ) TYPE=MyISAM AUTO_INCREMENT=1 ;
