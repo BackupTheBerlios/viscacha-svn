@@ -1,1 +1,0 @@
-Willkommen im neuen Forum!
