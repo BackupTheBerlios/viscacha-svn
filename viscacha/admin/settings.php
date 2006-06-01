@@ -1807,26 +1807,23 @@ elseif ($job == 'version') {
 	$comp = get_remote('http://version.viscacha.org/compare/?version='.base64_encode($config['version']));
 	$version = get_remote('http://version.viscacha.org/version');
 	$news = get_remote('http://version.viscacha.org/news');
-	if ($comp == '-1') {
+	if ($comp == '3') {
 		$res = "Your Viscacha is <strong>not up-to-date</strong>. The current version is {$version}!";
 	}
 	elseif ($comp == '1') {
 		$res = "Your Viscacha is a not yet approved test version.";
 	}
-	elseif ($comp == '0') {
+	elseif ($comp == '2') {
 		$res = "Your Viscacha is up-to-date!";
 	}
 	else {
-		$res = "Error on synchronization!";
+		$res = "Error on synchronization or no connection!";
 	}
 	if (!$news) {
 		$news = 'Could not connect to server.';
 	}
 	if (!$version) {
 		$version = 'No connection';
-	}
-	if (!$comp) {
-		$comp = 'Could not connect to server.';
 	}
 	?>
 	 <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
