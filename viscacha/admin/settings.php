@@ -1804,20 +1804,20 @@ elseif ($job == 'spiders2') {
 }
 elseif ($job == 'version') {
 	echo head();
-	$comp = @get_remote('http://version.viscacha.org/compare/?version='.base64_encode($config['version']));
-	$version = @get_remote('http://version.viscacha.org/version');
-	$news = @get_remote('http://version.viscacha.org/news');
-	if ($comp == -1) {
+	$comp = get_remote('http://version.viscacha.org/compare/?version='.base64_encode($config['version']));
+	$version = get_remote('http://version.viscacha.org/version');
+	$news = get_remote('http://version.viscacha.org/news');
+	if ($comp == '-1') {
 		$res = "Your Viscacha is <strong>not up-to-date</strong>. The current version is {$version}!";
 	}
-	elseif ($comp == 1) {
+	elseif ($comp == '1') {
 		$res = "Your Viscacha is a not yet approved test version.";
 	}
-	elseif ($comp == 0) {
+	elseif ($comp == '0') {
 		$res = "Your Viscacha is up-to-date!";
 	}
 	else {
-		$res = "Error on syncronization!";
+		$res = "Error on synchronization!";
 	}
 	if (!$news) {
 		$news = 'Could not connect to server.';

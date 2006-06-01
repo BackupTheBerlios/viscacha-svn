@@ -37,27 +37,27 @@ if (isset($_REQUEST['save']) && $_REQUEST['save'] == 1) {
 	 </tr>
 	 <tr> 
 	  <td class="mbox" width="50%">Datenbank-Host:</td>
-	  <td class="mbox" width="50%"><input type="text" name="host" value="localhost" size="50"></td> 
+	  <td class="mbox" width="50%"><input type="text" name="host" value="localhost" size="50" /></td> 
 	 </tr>
 	 <tr> 
 	  <td class="mbox" width="50%">Datenbank-Nutzer:</td>
-	  <td class="mbox" width="50%"><input type="text" name="dbuser" value="" size="50"></td> 
+	  <td class="mbox" width="50%"><input type="text" name="dbuser" value="" size="50" /></td> 
 	 </tr>
 	 <tr> 
 	  <td class="mbox" width="50%">Datenbank-Passwort:</td>
-	  <td class="mbox" width="50%"><input type="password" name="dbpw" value="" size="50"></td> 
+	  <td class="mbox" width="50%"><input type="password" name="dbpw" value="" size="50" /></td> 
 	 </tr>
 	 <tr> 
-	  <td class="mbox" width="50%">Datenbank:<br><span class="stext">Datenbank in der die Tabellen des Forums gespeichert werden sollen.</span></td>
-	  <td class="mbox" width="50%"><input type="text" name="database" value="" size="50"></td> 
+	  <td class="mbox" width="50%">Datenbank:<br /><span class="stext">Datenbank in der die Tabellen des Forums gespeichert werden sollen.</span></td>
+	  <td class="mbox" width="50%"><input type="text" name="database" value="" size="50" /></td> 
 	 </tr>
 	 <tr> 
-	  <td class="mbox" width="50%">Tabellenprefix:<br><span class="stext">Prefix für die Tabellen dieser Viscacha-Installation.</span></td>
-	  <td class="mbox" width="50%"><input type="text" name="dbprefix" value="v_" size="10"></td> 
+	  <td class="mbox" width="50%">Tabellenprefix:<br /><span class="stext">Prefix für die Tabellen dieser Viscacha-Installation.</span></td>
+	  <td class="mbox" width="50%"><input type="text" name="dbprefix" value="v_" size="10" /></td> 
 	 </tr>
 	 <tr> 
-	  <td class="mbox" width="50%">Persistente Verbindung:</span><br><span class="stext">siehe: <a href="http://www.php.net/manual/features.persistent-connections.php" target="_blank">php.net - Persistente Datenbankverbindungen</a></span></td>
-	  <td class="mbox" width="50%"><input type="checkbox" name="pconnect" value="1"></td>
+	  <td class="mbox" width="50%">Persistente Verbindung:<br /><span class="stext">siehe: <a href="http://www.php.net/manual/features.persistent-connections.php" target="_blank">php.net - Persistente Datenbankverbindungen</a></span></td>
+	  <td class="mbox" width="50%"><input type="checkbox" name="pconnect" value="1" /></td>
 	 </tr>
 	</table>
 </div>

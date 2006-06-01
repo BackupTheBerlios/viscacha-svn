@@ -16,7 +16,7 @@ file_get_contents, str_ireplace, str_split, version_compare, is_a, http_build_qu
 if (isset($config['error_reporting']) && $config['error_reporting'] > 0) {
 	error_reporting($config['error_reporting']);
 }
-if ($config['error_handler'] == 1) {
+if (isset($config['error_handler']) && $config['error_handler'] == 1) {
 	set_error_handler('msg_handler');
 }
 

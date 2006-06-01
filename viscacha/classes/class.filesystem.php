@@ -1,7 +1,14 @@
 <?php
 if (!class_exists('ftp')) {
-	require_once("classes/ftp/class.ftp.php");
-	require_once("classes/ftp/class.ftp_".pemftp_class_module().".php");
+	if (is_dir("classes/ftp/")) {
+		require_once("classes/ftp/class.ftp.php");
+		require_once("classes/ftp/class.ftp_".pemftp_class_module().".php");
+	}
+	else {
+		$path = realpath(dirname(__FILE__));
+		require_once("{$path}/ftp/class.ftp.php");
+		require_once("{$path}/ftp/class.ftp_".pemftp_class_module().".php");
+	}
 }
 
 class filesystem {

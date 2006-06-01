@@ -1,6 +1,6 @@
 <?php 
 define('VISCACHA_VERSION', '0.8 Beta 2');
-error_reporting(E_ERROR);
+error_reporting(E_ALL);
 
 if (!isset($_REQUEST) || !is_array($_REQUEST)) {
 	$_REQUEST = array_merge($_GET, $_POST, $_COOKIE);

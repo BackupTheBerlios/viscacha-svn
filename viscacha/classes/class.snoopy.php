@@ -4,8 +4,8 @@
 
 Snoopy - the PHP net client
 Author: Monte Ohrt <monte@ispi.net>
-Copyright (c): 1999-2000 ispi, all rights reserved
-Version: 1.01
+Copyright (c): 1999-2005 ispi, all rights reserved
+Version: 1.2.3
 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -142,7 +142,7 @@ class Snoopy
 			$URI_PARTS["query"] = '';
 		if (empty($URI_PARTS["path"]))
 			$URI_PARTS["path"] = '';
-				
+
 		switch(strtolower($URI_PARTS["scheme"]))
 		{
 			case "http":
@@ -158,7 +158,7 @@ class Snoopy
 					}
 					else
 					{
-						$path = $URI_PARTS["path"].(isset($URI_PARTS["query"]) ? "?".$URI_PARTS["query"] : "");
+						$path = $URI_PARTS["path"].(!empty($URI_PARTS["query"]) ? "?".$URI_PARTS["query"] : "");
 						// no proxy, send only the path
 						$this->_httprequest($path, $fp, $URI, $this->_httpmethod);
 					}
@@ -1169,11 +1169,16 @@ class Snoopy
 		else
 		{
 			$host = $this->host;
-			$port = $this->port;
+			if (empty($this->port)) {
+				$port = 80;
+			}
+			else {
+				$port = $this->port;
+			}
 		}
 	
 		$this->status = 0;
-		
+
 		if($fp = fsockopen(
 					$host,
 					$port,

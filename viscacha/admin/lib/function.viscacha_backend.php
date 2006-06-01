@@ -160,37 +160,20 @@ function get_webserver() {
 
 function get_remote($file) {
 	if (!preg_match('/^(http:\/\/)([\wäöüÄÖÜ@\-_\.]+)\:?([0-9]*)\/(.*)$/', $file, $url_ary)) {
-		return false;
+		return null;
 	}
-
-	$base_get = '/' . $url_ary[4];
-	$port = (!empty($url_ary[3])) ? $url_ary[3] : 80;
-
-	if (!($fsock = @fsockopen($url_ary[2], $port, $errno, $errstr, 5))) {
-		return false;
+	if (!class_exists('Snoopy')) {
+		include('classes/class.snoopy.php');
 	}
-
-	@fputs($fsock, "GET {$base_get} HTTP/1.1\r\n");
-	@fputs($fsock, "HOST: " . $url_ary[2] . "\r\n");
-	@fputs($fsock, "Connection: close\r\n\r\n");
-
-	$data = '';
-	while(!@feof($fsock)) {
-		$data .= @fread($fsock, 1024);
+	$snoopy = new Snoopy;
+	$snoopy->port = null;
+	$status = $snoopy->fetch($file);
+	if ($status == true) {
+		return $snoopy->results;
 	}
-	@fclose($fsock);
-		
-	list($header,$data) = explode("\r\n\r\n", $data, 2);
-	if (preg_match('#Location\: ([^\s]+)[\s]+#i', $header, $loc)) {
-		$data = get_remote($loc[1]);
+	else {
+		return null;
 	}
-
-	// Workaround for a mysterious bug....
-	if (preg_match('#\d+[\r\n\s]+([\d-]+)[\r\n\s]+\d+#i', $data, $d)) {
-		$data = $d[1];
-	}
-
-	return $data;
 }
 
 function checkRemotePic($pic, $url_ary, $id) {
