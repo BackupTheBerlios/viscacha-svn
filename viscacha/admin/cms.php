@@ -4,6 +4,30 @@ if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "cms.php") 
 require('classes/class.phpconfig.php');
 require('lib/language.inc.php');
 
+function SelectPackageLinks ($head) {
+	?>
+  <form style="float: right;" name="act" action="admin.php?action=locate" method="post">
+  	<select size="1" name="url" onchange="locate(this.value)">
+	 <option value="" selected="selected">Bitte w&auml;hlen</option>
+	 <optgroup label="Verwaltung">
+	  <option value="admin.php?action=cms&job=plugins_add&id=<?php echo $head['module']; ?>">Plugin hinzuf&uuml;gen</option>
+	  <option value="admin.php?action=cms&job=package_info&id=<?php echo $head['module']; ?>">Informationen</option> 
+	  <?php if (isset($configs[$head['module']]) == true) { ?>
+	   <option value="admin.php?action=settings&job=custom&id=<?php echo $configs[$head['module']]; ?>">Konfiguration</option>
+	  <?php } ?>
+	  <option value="admin.php?action=cms&job=package_export&id=<?php echo $head['module']; ?>">Exportieren</option>
+	  <option value="admin.php?action=cms&job=package_delete&id=<?php echo $head['module']; ?>">Löschen</option> 
+	 </optgroup>
+	 <optgroup label="Status">
+	  <option value="admin.php?action=cms&job=plugins_active_all&value=1&id=<?php echo $head['module']; ?>">Alle aktivieren</option> 
+	  <option value="admin.php?action=cms&job=plugins_active_all&value=0&id=<?php echo $head['module']; ?>">Alle deaktivieren</option>
+	 </optgroup>
+	</select>
+	<input type="submit" value="Go" />
+  </form>
+	<?php
+}
+
 if ($job == 'plugins') {
 	send_nocache_header();
 	echo head();
@@ -67,25 +91,7 @@ if ($job == 'plugins') {
 				?>
 				<tr>
 				<td class="ubox" colspan="4">
-				  <form style="float: right;" name="act" action="admin.php?action=locate" method="post">
-				  	<select size="1" name="url" onchange="locate(this.value)">
-					 <option value="" selected="selected">Bitte w&auml;hlen</option>
-					 <optgroup label="Verwaltung">
-					  <option value="admin.php?action=cms&job=plugins_add&id=<?php echo $head['module']; ?>">Plugin hinzuf&uuml;gen</option>
-					  <option value="admin.php?action=cms&job=package_info&id=<?php echo $head['module']; ?>">Informationen</option> 
-					  <?php if (isset($configs[$head['module']]) == true) { ?>
-					   <option value="admin.php?action=settings&job=custom&id=<?php echo $configs[$head['module']]; ?>">Konfiguration</option>
-					  <?php } ?>
-					  <option value="admin.php?action=cms&job=package_export&id=<?php echo $head['module']; ?>">Exportieren</option>
-					  <option value="admin.php?action=cms&job=package_delete&id=<?php echo $head['module']; ?>">Löschen</option> 
-					 </optgroup>
-					 <optgroup label="Status">
-					  <option value="admin.php?action=cms&job=plugins_active_all&value=1&id=<?php echo $head['module']; ?>">Alle aktivieren</option> 
-					  <option value="admin.php?action=cms&job=plugins_active_all&value=0&id=<?php echo $head['module']; ?>">Alle deaktivieren</option>
-					 </optgroup>
-					</select>
-					<input type="submit" value="Go">
-				  </form>
+				<?php SelectPackageLinks($head); ?>
 				  Package: <strong><?php echo $head['title']; ?></strong> (<?php echo $head['module']; ?>)
 				</td>
 				</tr>
@@ -135,11 +141,11 @@ if ($job == 'plugins') {
 		?>
 		 <table class="border" border="0" cellspacing="0" cellpadding="4" align="center"> 
 		  <tr class="obox">
-		   <td>Plugin</td>
-		   <td>Package</td>
-		   <td>Status</td>
-		   <td>Priority</td>
-		   <td>Aktion</td>
+		   <td width="30%">Plugin</td>
+		   <td width="28%">Package</td>
+		   <td width="11%">Status</td>
+		   <td width="9%">Priority</td>
+		   <td width="22%">Aktion</td>
 		  </tr>
 		<?php
 		while ($head = $db->fetch_assoc($result)) {
@@ -154,7 +160,9 @@ if ($job == 'plugins') {
 			?>
 			<tr class="mbox">
 				<td><?php echo $head['name']; ?><?php echo iif ($head['active'] == 0, ' (<em>Inaktiv</em>)'); ?></td>
-				<td nowrap="nowrap" title="<?php echo htmlspecialchars($head['title']); ?>"><?php echo $head['module']; ?></td>
+				<td nowrap="nowrap" title="<?php echo htmlspecialchars($head['title']); ?>">
+					<?php SelectPackageLinks($head); echo $head['module']; ?>&nbsp;&nbsp;	
+				</td>
 				<td nowrap="nowrap">
 					<?php 
 					if ($head['active'] == 1) {
@@ -481,7 +489,7 @@ elseif ($job == 'plugins_add2') {
 	
 	if (!$isInvisibleHook) {
 		$hookPriority = $db->query("SELECT id, name, ordering FROM {$db->pre}plugins WHERE position = '{$hook}' ORDER BY ordering", __LINE__, __FILE__);
-	
+
 		$db->query("
 		INSERT INTO {$db->pre}plugins 
 		(`name`,`module`,`ordering`,`active`,`position`) 
@@ -522,6 +530,8 @@ elseif ($job == 'plugins_add2') {
 	 <tr class="mbox" valign="top">
 	  <td>
 	  Code:<br /><br />
+	  <span class="stext">Hier können Sie PHP-Code eingeben, der an dem angegebenen Hook ausgeführt werden soll. Sie brauchen am Anfang und am Ende keine PHP Start- und Endtags angeben (&lt;?php bzw. ?&gt;). Sie können auch Templates und Phrasen für dieses Plugin hinzufügen (siehe unten). Für nähere Informationen lesen Sie bitte die Dokumentation.</span>
+	  <br /><br />
 	  <ul>
 	    <li><a href="admin.php?action=cms&amp;job=package_template&amp;id=<?php echo $package['id']; ?>" target="_blank">Add Template</a></li>
 	    <li><a href="admin.php?action=cms&amp;job=package_language&amp;id=<?php echo $package['id']; ?>" target="_blank">Add Phrase</a></li>
@@ -565,9 +575,11 @@ elseif ($job == 'plugins_add3') {
 	$priority = $gpc->get('priority', none);
 	$active = $gpc->get('active', int);
 	
+	$result = $db->query("SELECT module, name, position FROM {$db->pre}plugins WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
+	$data = $db->fetch_assoc($result);
+	$isInvisibleHook = isInvisibleHook($data['position']);
+	
 	if (!$isInvisibleHook) {
-		$result = $db->query("SELECT module, name, position FROM {$db->pre}plugins WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
-		$data = $db->fetch_assoc($result);
 		$dir = "modules/{$data['module']}/";
 	}
 	else {

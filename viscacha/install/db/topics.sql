@@ -15,5 +15,6 @@ CREATE TABLE `{:=DBPREFIX=:}topics` (
   PRIMARY KEY  (`id`),
   KEY `last` (`last`),
   KEY `name` (`name`),
-  KEY `board` (`board`)
+  KEY `board` (`board`),
+  FULLTEXT KEY `topic` (`topic`)
 ) TYPE=MyISAM AUTO_INCREMENT=1 ;

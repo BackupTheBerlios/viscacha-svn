@@ -9,7 +9,8 @@ CREATE TABLE `{:=DBPREFIX=:}plugins` (
   KEY `position` (`position`)
 ) TYPE=MyISAM PACK_KEYS=0 AUTO_INCREMENT=22 ;
 
-INSERT INTO `{:=DBPREFIX=:}plugins` (`id`, `name`, `module`, `ordering`, `active`, `position`) VALUES (1, 'Verwandte Themen', 1, 1, '1', 'showtopic_end'),
+INSERT INTO `{:=DBPREFIX=:}plugins` (`id`, `name`, `module`, `ordering`, `active`, `position`) VALUES 
+(1, 'Verwandte Themen', 1, 1, '1', 'showtopic_end'),
 (2, 'Wer-ist-Online-Box', 2, 1, '1', 'forum_end'),
 (3, 'News-Boxen', 3, 1, '1', 'portal'),
 (4, 'Newsfeed-Ticker', 4, 1, '0', 'navigation'),
@@ -28,4 +29,4 @@ INSERT INTO `{:=DBPREFIX=:}plugins` (`id`, `name`, `module`, `ordering`, `active
 (17, 'Legende (PM)', 12, 1, '1', 'pm_index_end'),
 (18, 'Legende (Foren)', 13, 4, '1', 'forum_end'),
 (19, 'Birthday-Reminder', 14, 3, '1', 'navigation'),
-(21, 'Login-Box', 16, 5, '1', 'forum_end');
+(21, 'Login-Box', 16, 0, '1', 'forum_end');
