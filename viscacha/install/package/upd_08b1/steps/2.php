@@ -1,6 +1,3 @@
-<div class="bbody">
-Änderungen:
-<ul>
 <?php
 include('../data/config.inc.php');
 if (!class_exists('filesystem')) {
@@ -8,138 +5,142 @@ if (!class_exists('filesystem')) {
 	$filesystem = new filesystem($config['ftp_server'], $config['ftp_user'], $config['ftp_pw'], $config['ftp_port']);
 	$filesystem->set_wd($config['ftp_path']);
 }
-if (!class_exists('DB')) {
-	require_once('../classes/database/'.$config['dbsystem'].'.inc.php');
-	$db = new DB($config['host'], $config['dbuser'], $config['dbpw'], $config['database'], $config['pconnect'], false, $config['dbprefix']);
-	$db->pre = $db->prefix();
-	$db->connect(false);
+?>
+<div class="bbody">
+<?php 
+define('CHEX', 777);
+define('CHWR', 666);
+require('lib/function.chmod.php');
+$chmod = array(
+array('path' => 'data', 'chmod' => CHEX, 'recursive' => false, 'req' => true),
+array('path' => 'data/cron', 'chmod' => CHEX, 'recursive' => false, 'req' => true),
+array('path' => 'feeds', 'chmod' => CHEX, 'recursive' => false, 'req' => true),
+array('path' => 'docs', 'chmod' => CHEX, 'recursive' => false, 'req' => false),
+array('path' => 'classes/cron/jobs', 'chmod' => CHEX, 'recursive' => false, 'req' => false),
+array('path' => 'classes/feedcreator', 'chmod' => CHEX, 'recursive' => false, 'req' => false),
+array('path' => 'classes/fonts', 'chmod' => CHEX, 'recursive' => false, 'req' => false),
+array('path' => 'classes/geshi', 'chmod' => CHEX, 'recursive' => false, 'req' => false),
+array('path' => 'classes/graphic/noises', 'chmod' => CHEX, 'recursive' => false, 'req' => false),
+array('path' => 'admin/backup', 'chmod' => CHEX, 'recursive' => false, 'req' => false),
+array('path' => 'admin/data', 'chmod' => CHEX, 'recursive' => false, 'req' => false),
+array('path' => 'designs', 'chmod' => CHEX, 'recursive' => true, 'req' => false),
+array('path' => 'images', 'chmod' => CHEX, 'recursive' => true, 'req' => false),
+array('path' => 'components', 'chmod' => CHEX, 'recursive' => true, 'req' => false),
+array('path' => 'language', 'chmod' => CHEX, 'recursive' => true, 'req' => false),
+array('path' => 'cache', 'chmod' => CHEX, 'recursive' => true, 'req' => true),
+array('path' => 'temp', 'chmod' => CHEX, 'recursive' => true, 'req' => true),
+array('path' => 'uploads', 'chmod' => CHEX, 'recursive' => true, 'req' => true),
+array('path' => 'admin/data/notes.php', 'chmod' => CHWR, 'recursive' => false, 'req' => false),
+array('path' => '.htaccess', 'chmod' => CHWR, 'recursive' => false, 'req' => true),
+array('path' => 'data', 'chmod' => CHWR, 'recursive' => true, 'req' => true),
+array('path' => 'language', 'chmod' => CHWR, 'recursive' => true, 'req' => false)
+);
+$path = 'docs';
+$dh = opendir('../'.$path);
+while ($file = readdir($dh)) {
+	if($file != '.' && $file != '..') {
+		$fullpath = $path.'/'.$file;
+		if(is_file('../'.$fullpath)) {
+			$chmod[] = array('path' => $fullpath, 'chmod' => CHWR, 'recursive' => false, 'req' => false);
+		}
+	}
 }
-
-include('../classes/class.phpconfig.php');
-$c = new manageconfig();
-$c->getdata('../data/config.inc.php');
-$c->updateconfig('abozahl', int, 20);
-$c->updateconfig('activezahl', int, 20);
-$c->updateconfig('botgfxtest_colortext', int, 1);
-$c->updateconfig('botgfxtest_format', str, 'jpg');
-$c->updateconfig('botgfxtest_height', int, 50);
-$c->updateconfig('botgfxtest_posts', int, 1);
-$c->updateconfig('botgfxtest_posts_height', int, 40);
-$c->updateconfig('botgfxtest_posts_width', int, 170);
-$c->updateconfig('botgfxtest_quality', int, 80);
-$c->updateconfig('botgfxtest_text_verification', int, 0);
-$c->updateconfig('botgfxtest_width', int, 175);
-$c->updateconfig('error_handler', int, 0);
-$c->updateconfig('error_log', int, 0);
-$c->updateconfig('guest_email_optional', int, 0);
-$c->updateconfig('mineditlength', int, 0);
-$c->updateconfig('memberrating', int, 0);
-$c->updateconfig('memberrating_counter', int, 0);
-$c->updateconfig('postrating', int, 1);
-$c->updateconfig('postrating_counter', int, 5);
-$c->delete('register_text_verification');
-$c->updateconfig('searchzahl', int, 10);
-$c->updateconfig('smileypath', str, 'images/smileys');
-$c->updateconfig('smileyurl', str, 'images/smileys');
-$c->updateconfig('spider_logvisits', int, 1);
-$c->updateconfig('spider_pendinglist', int, 0);
-$c->updateconfig(array('module_1', 'relatednum'), int, 5);
-$c->updateconfig(array('module_3', 'items'), int, 5);
-$c->updateconfig(array('module_3', 'teaserlength'), int, 300);
-$c->updateconfig(array('module_4', 'title'), str, 'Ticker');
-$c->updateconfig(array('module_4', 'feed'), int, 1);
-$c->updateconfig(array('module_7', 'text'), str, 'Willkommen in Ihrer <a href="http://www.viscacha.org" target="_blank">Viscacha</a>-Installation!');
-$c->updateconfig(array('module_7', 'title'), str, 'Wichtige Nachricht!');
-$c->updateconfig(array('module_9', 'topicnum'), int, 10);
-$c->updateconfig(array('module_10', 'repliesnum'), int, 5);
-$c->savedata();
-
-$filesystem->unlink('../admin/form.php');
-$filesystem->unlink('../templates/newsfeed.js');
-
-rmdirr('../classes/magpie_rss/extlib/');
-
-$filesystem->mkdir('../cache/modules/', 0777);
-
-$filesystem->file_put_contents('data/errlog_php.inc.php', '');
-
-$db->query("ALTER TABLE `{$db->pre}abos` CHANGE `type` `type` ENUM( '', 'd', 'w', 'f' ) NOT NULL");
-$result = $db->query("SELECT mid, tid FROM {$db->pre}fav");
-while ($row = $db->fetch_assoc($result)) {
-	$db->query("INSERT INTO `{$db->pre}abos` (`mid`, `tid`, `type`) VALUES ('{$row['mid']}', '{$row['tid']}', 'f')");
+closedir($dh);
+$path = 'templates';
+$dh = opendir('../'.$path);
+while ($file = readdir($dh)) {
+	if($file != '.' && $file != '..') {
+		$fullpath = $path.'/'.$file;
+		if(is_dir('../'.$fullpath) && intval($file) == $file) {
+			$chmod[] = array('path' => $fullpath, 'chmod' => CHEX, 'recursive' => false, 'req' => false);
+		}
+	}
 }
-$db->query("DROP TABLE `{$db->pre}abos`");
+closedir($dh);
 
-$db->query("ALTER TABLE `{$db->pre}bbcode` CHANGE `type` `type` ENUM('censor','word','replace') NOT NULL DEFAULT 'word'");
-$db->query("ALTER TABLE `{$db->pre}bbcode` RENAME `{$db->pre}textparser`");
-
-$db->query("ALTER TABLE `{$db->pre}cat` ADD `forumzahl` tinyint(3) unsigned NOT NULL default '0' AFTER `optvalue`");
-$db->query("ALTER TABLE `{$db->pre}cat` ADD `topiczahl` tinyint(3) unsigned NOT NULL default '0' AFTER `forumzahl`");
-$db->query("ALTER TABLE `{$db->pre}cat` ADD `invisible` enum('0','1') NOT NULL default '0' AFTER `prefix`");
-$db->query("ALTER TABLE `{$db->pre}cat` ADD INDEX ( `last_topic` )");
-
-$db->query("ALTER TABLE `{$db->pre}designs` DROP COLUMN `smileyfolder`");
-$db->query("ALTER TABLE `{$db->pre}designs` DROP COLUMN `smileypath`");
-
-$db->query("INSERT INTO `{:=DBPREFIX=:}language` (`language`, `detail`, `publicuse`) VALUES ('English', 'English language pack', '1')");
-
-$result = $db->query("SELECT * FROM `{$db->pre}menu`");
-$cache = array();
-while ($row = $db->fetch_assoc($result)) {
-	$cache[] = $row;
-}
-$db->query("ALTER TABLE `{$db->pre}menu` DROP COLUMN `position`");
-$db->query("ALTER TABLE `{$db->pre}menu` CHANGE `module` `module` int(10) NOT NULL default '0'");
-foreach ($cache as $row) {
-	if ($row['position'] != 'navigation') {
-		$db->query("DELETE FROM `{$db->pre}menu` WHERE id = '{$row['id']}'");
+?>
+<p>Some directories and files needs special permissions (CHMOD) to be writable und executable. 
+This permissions will be checked and the result will be shown below.</p>
+<p>The following states can appear:<br />
+<strong class="hl_true">OK</strong>: The permissions are set correctly.<br />
+<strong class="hl_null">Failure*</strong>: The permissions are not correct, but these files are only required for changing a couple of things at the Admin Control Panel. You need not to change them until you edit these files.<br />
+<strong class="hl_false">Failure</strong>: The permissions are not correct and you have to set them manually (per FTP). You can not continue this setup until this permissions<br />
+</p>
+<table class="tables">
+<tr>
+	<td width="70%"><strong>File / Directory (<?php echo realpath('../'); ?>)</strong></td>
+	<td width="10%"><strong>Required</strong></td>
+	<td width="10%"><strong>Given</strong></td>
+	<td width="10%"><strong>State</strong></td>
+</tr>
+<?php
+$files = array();
+foreach ($chmod as $dat) {
+	$path = '../'.$dat['path'];
+	if ($dat['recursive']) {
+		$filenames = array();
+		if ($dat['chmod'] == CHEX) {
+			$filenames = set_chmod_r($path, 0777, CHMOD_DIR);
+		}
+		elseif ($dat['chmod'] == CHWR) {
+			$filenames = set_chmod_r($path, 0666, CHMOD_FILE);
+		}
+		foreach ($filenames as $f) {
+			$f = str_replace('../', '', $f);
+			$files[] = array('path' => $f, 'chmod' => $dat['chmod'], 'recursive' => false, 'req' => $dat['req']);
+		}
 	}
 	else {
-		if ($row['link']) == '1') {
-			$db->query("UPDATE `{$db->pre}menu` SET `module` = '5' WHERE id = '{$row['id']}'");
+		if ($dat['chmod'] == CHEX) {
+			set_chmod($path, 0777, CHMOD_DIR);
 		}
-		elseif ($row['link']) == '3') {
-			$db->query("UPDATE `{$db->pre}menu` SET `module` = '19' WHERE id = '{$row['id']}'");
+		elseif ($dat['chmod'] == CHWR) {
+			set_chmod($path, 0666, CHMOD_FILE);
 		}
+		$files[] = $dat;
 	}
 }
-
-$db->query("ALTER TABLE `{$db->pre}pm` DROP INDEX ( `date` )");
-$db->query("ALTER TABLE `{$db->pre}pm` ADD INDEX ( `pm_to` )");
-
-$db->query("ALTER TABLE `{$db->pre}replies` DROP INDEX ( `name` )");
-$db->query("ALTER TABLE `{$db->pre}replies` ADD `guest` enum('0','1') NOT NULL default '0'");
-$db->query("ALTER TABLE `{$db->pre}replies` ADD `ip` varchar(20) NOT NULL");
-$result = $db->query("SELECT * FROM `{$db->pre}replies`");
-while ($row = $db->fetch_assoc($result)) {
-	if (!empty($row['email'])) {
-		$db->query("UPDATE `{$db->pre}replies` SET `guest` = '1' WHERE id = '{$row['id']}'");
+@clearstatcache();
+sort($files);
+$failure = false;
+foreach ($files as $arr) {
+	$filesys_path = '../'.$arr['path'];
+	$path = realpath($filesys_path);
+	if (empty($path)) {
+		$path = $arr['path'];
 	}
-}
-
-$db->query("ALTER TABLE `{$db->pre}session` ADD `is_bot` mediumint(6) unsigned NOT NULL default '0'");
-$db->query("ALTER TABLE `{$db->pre}session` ADD INDEX ( `sid` )");
-
-$db->query("DROP TABLE `{$db->pre}settings`");
-
-$db->query("DROP TABLE `{$db->pre}spider`");
-
-$db->query("ALTER TABLE `{$db->pre}topics` DROP INDEX ( `date` )");
-$db->query("ALTER TABLE `{$db->pre}topics` DROP INDEX ( `mark` )");
-$db->query("ALTER TABLE `{$db->pre}topics` ADD INDEX ( `board` )");
-
-$db->query("ALTER TABLE `{$db->pre}user` ADD `skype` varchar(128) NOT NULL default ''");
-
-$db->query("ALTER TABLE `{$db->pre}votes` DROP INDEX ( `mid` )");
-
-$tables = array('bbcode', 'packages', 'plugins', 'postratings', 'profilefields', 'settings', 'settings_groups', 'spider', 'textparser', 'userfields');
-foreach ($tables as $table) {
-	$file = 'db/'.$table.'.sql';
-	$sql = implode('', file($file));
-	$sql = str_replace('{:=DBPREFIX=:}', $db->pre, $sql);
-	$db->multi_query($sql);
+	$chmod = get_chmod($filesys_path);
+	if (check_chmod($arr['chmod'], $chmod)) {
+		$status = '<strong class="hl_true">OK</strong>';
+		$int_status = true;
+	}
+	elseif ($arr['req'] == false) {
+		$status = '<strong class="hl_null">Failure*</strong>';
+		$int_status = null;
+	}
+	else {
+		$status = '<strong class="hl_false">Failure</strong>';
+		$int_status = false;
+		$failure = true;
+	}
+	if ($arr['req'] == true || $int_status != true) {
+?>
+<tr>
+	<td><?php echo $arr['path']; ?></td>
+	<td><?php echo $arr['chmod']; ?></td>
+	<td><?php echo substr($chmod, 1, 3); ?></td>
+	<td><?php echo $status; ?></td>
+</tr>
+<?php
+	}
 }
 ?>
-</ul>
+</table>
 </div>
-<div class="bfoot center"><input type="submit" value="Continue" /></div>
+<div class="bfoot center">
+<?php if (!$failure) { ?>
+<input type="submit" value="Continue" />
+<?php } else { ?>
+<a class="submit" href="index.php?step=<?php echo $step; ?>">Reload page</a>
+<?php } ?>
+</div>
