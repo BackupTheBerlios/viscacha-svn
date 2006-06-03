@@ -4,7 +4,6 @@ if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "bbcodes.ph
 if ($job == 'smileys_delete') {
 	$deleteid = $gpc->get('id', arr_int);
 	if (count($deleteid) > 0) {
-		echo head();
 	   	$delobj = $scache->load('smileys');
 	   	$delobj->delete();
 	   	$result = $db->query('SELECT * FROM '.$db->pre.'smileys WHERE id IN ('.implode(',', $deleteid).')',__LINE__,__FILE__);
@@ -18,6 +17,7 @@ if ($job == 'smileys_delete') {
 	else {
 		$anz = 0;
 	}
+	echo head();
 	ok('admin.php?action=bbcodes&job=smileys', $anz.' entries were deleted successfully!');
 }
 elseif ($job == 'smileys_edit') {

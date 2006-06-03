@@ -144,9 +144,9 @@ elseif ($job == 'onlinestatus2') {
 }
 elseif ($job == 'sessionmails') {
 	echo head();
-	$b = file_get_contents('data/sessionmails.php');
+	$mails = file_get_contents('data/sessionmails.php');
 	?>
-<form name="form" method="post" action="admin.php?action=members&job=sessionmails2">
+<form name="form" method="post" action="admin.php?action=misc&job=sessionmails2">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr> 
    <td class="obox" colspan="2"><b>Wegwerf-E-Mail-Adressen-Anbieter</b></td>
@@ -156,7 +156,7 @@ elseif ($job == 'sessionmails') {
    Anbieter-Domain:<br />
    <span class="stext">Pro Zeile eine Domain.<br />Format: <code>name.tld</code> (ohne http, www, @, ...)</span>
    </td>
-   <td class="mbox" width="70%"><textarea name="ips" rows="10" cols="90"><?php echo $b; ?></textarea></td> 
+   <td class="mbox" width="70%"><textarea name="mails" rows="10" cols="90"><?php echo $mails; ?></textarea></td> 
   </tr>
   <tr> 
    <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="Submit"></td> 
@@ -168,7 +168,8 @@ elseif ($job == 'sessionmails') {
 }
 elseif ($job == 'sessionmails2') {
 	echo head();
-	$filesystem->file_put_contents('data/sessionmails.php', $gpc->get('template', none));
+	$mails = $gpc->get('mails', none);
+	$filesystem->file_put_contents('data/sessionmails.php', $mails);
 	ok('admin.php?action=misc&job=sessionmails', 'Daten wurden gespeichert');
 }
 elseif ($job == 'feedcreator') {

@@ -43,7 +43,7 @@ elseif ($job == 'newsletter2') {
 		while ($row = $db->fetch_array($result)) {
 			$emails[] = $row[0];
 		}
-		$result = $db->query('SELECT email FROM '.$db->pre.'replies WHERE email != ""');
+		$result = $db->query('SELECT email FROM '.$db->pre.'replies WHERE email != "" AND guest = "1"');
 		while ($row = $db->fetch_array($result)) {
 			$emails[] = $row[0];
 		}
@@ -57,7 +57,7 @@ elseif ($job == 'newsletter2') {
 	}
 	elseif ($int1 == 3) {
 		$emails = array();
-		$result = $db->query('SELECT email FROM '.$db->pre.'replies WHERE email != ""');
+		$result = $db->query('SELECT email FROM '.$db->pre.'replies WHERE email != "" AND guest = "1"');
 		while ($row = $db->fetch_array($result)) {
 			$emails[] = $row[0];
 		}

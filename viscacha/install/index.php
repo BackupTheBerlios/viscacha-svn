@@ -10,27 +10,35 @@ $config = array();
 require_once('../classes/function.phpcore.php');
 require_once('lib/function.variables.php');
 
-$steps = array(
-1 => 'Initialize Setup Process',
-2 => 'License Agreement',
-3 => 'FTP Settings',
-4 => 'Prepare File System',
-5 => 'Basic Settings',
-6 => 'Database Settings',
-7 => 'Create Tables',
-8 => 'Create Administrator Account',
-9 => 'Complete Installation'
+$packages = array(
+	'install' => array(
+		'title' => 'Installation',
+		'description' => 'Choose this if you want to install a new copy of this software.'
+	),
+	'upd_08b1' => array(
+		'title' => 'Update: 0.8 Beta 1 => '.VISCACHA_VERSION,
+		'description' => 'Already running Viscacha? Then choose this option to update to the new Version!'
+	)
 );
-if (isset($_REQUEST['step'])) {
-	$step = intval(trim($_REQUEST['step']));
-	if (!isset($steps[$step])) {
+
+$package = null;
+if (isset($_REQUEST['package']) && isset($packages[$_REQUEST['package']])) {
+	$package = trim($_REQUEST['package']);
+	$package_data = $packages[$_REQUEST['package']];
+}
+if (!empty($package)) {
+	require_once('package/'.$package.'/steps.inc.php');
+	if (isset($_REQUEST['step'])) {
+		$step = intval(trim($_REQUEST['step']));
+		if (!isset($steps[$step])) {
+			$step = 1;
+		}
+	}
+	else {
 		$step = 1;
 	}
+	$nextstep = $step+1;
 }
-else {
-	$step = 1;
-}
-$nextstep = $step+1;
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" dir="ltr">
@@ -48,8 +56,23 @@ $nextstep = $step+1;
 <body>
 <div id="container">
     <h1>&nbsp;</h1>
-    <div class="breadcrumb"><a href="index.php">Viscacha Setup</a> &raquo; Step <?php echo $step; ?></div>
+    <div class="breadcrumb">
+    	<a href="index.php">Viscacha Setup</a> 
+    	<?php if (empty($package)) { ?>
+    	&raquo; Choose Package
+    	<?php } else { ?>
+    	&raquo; <?php echo $package_data['title']; ?> &raquo; Step <?php echo $step; ?>
+    	<?php } ?>
+    </div>
     <div id="navigation">
+    	<?php if (empty($package)) { ?>
+		<h3>Packages</h3>
+		<ul class="nav">
+		<?php foreach ($packages as $id => $data) { ?>
+			<li><a href="index.php?package=<?php echo $id; ?>"><?php echo $data['title']; ?></a></li>
+		<?php } ?>
+		</ul>
+    	<?php } else { ?>
 		<h3>Steps</h3>
 		<ul class="nav">
 		<?php
@@ -60,7 +83,7 @@ $nextstep = $step+1;
 			}
 			echo '>';
 			if ($id < $step) {
-				echo '<a href="index.php?step='.$id.'">'.$val.'</a>';
+				echo '<a href="index.php?package='.$package.'&amp;step='.$id.'">'.$val.'</a>';
 			}
 			else {
 				echo $val;
@@ -69,14 +92,32 @@ $nextstep = $step+1;
 		}
 		?>
 		</ul>
+		<?php } ?>
 	</div>
 	<div id="content">
-		<form method="post" action="index.php?step=<?php echo $nextstep; ?>">
+		<?php if (!empty($package)) { ?>
+		<form method="post" action="index.php?package=<?php echo $package;?>&amp;step=<?php echo $nextstep; ?>">
 		<div class="border">
 			<h3><?php echo $steps[$step]; ?></h3>
-			<?php include('steps/'.$step.'.php'); ?>
+			<?php include('package/'.$package.'/steps/'.$step.'.php'); ?>
 		</div>
 		</form>
+		<?php } else { ?>
+		<div class="border">
+		<h3>Viscacha Setup</h3>
+		<div class="bbody">
+			What do you want to do?
+			<ul>
+			<?php foreach ($packages as $id => $data) { ?>
+				<li>
+					<strong><a href="index.php?package=<?php echo $id; ?>"><?php echo $data['title']; ?></a></strong><br />
+					<span class="stext"><?php echo $data['description']; ?></span>
+				</li>
+			<?php } ?>
+			</ul>
+		</div>
+		</div>
+		<?php } ?>
 	</div>
 	<br class="invclear" />
 	<div class="breadcrumb center">
