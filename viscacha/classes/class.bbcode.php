@@ -94,6 +94,7 @@ class BBCode {
 	    return $list;
 	}
 	function cb_code ($code) {
+		global $lang;
 		$pid = $this->noparse_id();
 	    $code = trim($code);
 	    $rows = explode("\n", $code);
@@ -112,14 +113,15 @@ class BBCode {
 
 			$aa = implode("<br>",$aa);
 
-		    $this->noparse[$pid] = '<strong class="bb_blockcode_header">Quelltext:</strong><div class="bb_blockcode"><table><tr><td width="1%">'.$aa.'</td><td width="99%">'.$this->nl2br($code2).'</td></tr></table></div>';
+		    $this->noparse[$pid] = '<strong class="bb_blockcode_header">'.$lang->phrase('bb_sourcecode').'</strong><div class="bb_blockcode"><table><tr><td width="1%">'.$aa.'</td><td width="99%">'.$this->nl2br($code2).'</td></tr></table></div>';
 		}
 		else {
 			$this->noparse[$pid] = '<code class="bb_inlinecode">'.$this->nl2br($code2).'</code>';
 		}
 	    return '<!PID:'.$pid.'>';
 	}
-	function cb_hlcode ($lang, $code) {
+	function cb_hlcode ($sclang, $code) {
+		global $lang;
 		$pid = $this->noparse_id();
 		$code = trim($code);
 	    $rows = preg_split('/(\r\n|\r|\n)/',$code);
@@ -136,7 +138,7 @@ class BBCode {
 			$cache = new CacheItem($unique, 'cache/geshicode/');
 			if ($cache->exists() == false) {
 				$export = array(
-				'language' => $lang,
+				'language' => $sclang,
 				'source' => trim($code)
 				);
 			    $cache->set($export);
@@ -150,20 +152,20 @@ class BBCode {
 
 			$aa = implode("<br />",$aa);
 
-		    $this->noparse[$pid] = '<strong class="bb_blockcode_header"><a target="_blank" href="popup.php?action=hlcode&amp;fid='.$unique.SID2URL_x.'">Erweiterter Quelltext</a>:</strong><div class="bb_blockcode"><table><tr><td width="1%">'.$aa.'</td><td width="99%">'.$this->nl2br($code2).'</td></tr></table></div>';
+		    $this->noparse[$pid] = '<strong class="bb_blockcode_header"><a target="_blank" href="popup.php?action=hlcode&amp;fid='.$unique.SID2URL_x.'">'.$lang->phrase('bb_ext_sourcecode').'</a></strong><div class="bb_blockcode"><table><tr><td width="1%">'.$aa.'</td><td width="99%">'.$this->nl2br($code2).'</td></tr></table></div>';
 		}
 		else {
 			$this->noparse[$pid] = '<code class="bb_inlinecode">'.$this->nl2br($code2).'</code>';
 		}
 		return '<!PID:'.$pid.'>';
 	}
-	function cb_mail ($pattern1, $pattern2) {
+	function cb_mail ($pattern1, $pattern2) { // ToDo: Show as image
 	    $str = "";
 	    $a = unpack("C*", "$pattern1@$pattern2");
 	    foreach ($a as $b) {
 	   		$str .= sprintf("%%%X", $b);
 	   	}
-	   	return "<a href=\"mailto: $str\">{$pattern1}&#64;$pattern2</a>";
+	   	return "<a href=\"mailto:$str\">{$pattern1}&#64;$pattern2</a>";
 	}
 	function cb_header ($size, $content) {
 		if ($size == 'small') {
@@ -296,6 +298,7 @@ class BBCode {
 	    return $list;
 	}
 	function cb_pdf_code ($code) {
+		global $lang;
 		$pid = $this->noparse_id();
 	    $code = trim($code);
 	    $rows = explode("\n", $code);
@@ -313,7 +316,7 @@ class BBCode {
 		        $code .= "<tt>".leading_zero($a, $lines)."</tt>: <code>".$row."</code><br>";
 		    }
 
-		    $this->noparse[$pid] = '<br><b>Quelltext:</b><br>'.htmlentities($code);
+		    $this->noparse[$pid] = '<br><b>'.$lang->phrase('bb_sourcecode').'</b><br>'.htmlentities($code);
 		}
 		else {
 			$this->noparse[$pid] = '<code>'.htmlentities($code2).'</code>';
@@ -386,10 +389,11 @@ class BBCode {
 		    }
 	    }
 	    // A workaround for a bug in the parser
-	    $list = preg_replace('/ +?([a-zA-Z0-9\-\.]+?) <br>/is', '', $list);
+	    $list = preg_replace('/ +?([a-zA-Z0-9\-\.]+?) \n/is', '', $list);
 	    return $list;
 	}
 	function cb_plain_code ($code) {
+		global $lang;
 		$pid = $this->noparse_id();
 	    $code = trim($code);
 	    $rows = explode("\n", $code);
@@ -405,7 +409,7 @@ class BBCode {
 		        $code .= leading_zero($a, $lines).": ".$row."\n";
 		    }
 
-		    $this->noparse[$pid] = "\nQuelltext:\n".$code;
+		    $this->noparse[$pid] = "\n".$lang->phrase('bb_sourcecode')."\n-------------------\n{$code}-------------------\n";
 		}
 		else {
 			$this->noparse[$pid] = $code2;
@@ -437,10 +441,10 @@ class BBCode {
 		$replace = array_fill(0, count($search), '');
 		$text = str_ireplace($search, $replace, $text);
 
-		$text = preg_replace('/\[code(=\w+?)?\](.+?)\[\/code\]\n?/ise', '\2', $text);
+		$text = preg_replace('/\[code(=\w+?)?\](.+?)\[\/code\]\n?/is', '\2', $text);
 
 		while (preg_match('/\[list(?:=(a|A|I|i|OL|ol))?\](.+?)\[\/list\]/is',$text)) {
-			$text = preg_replace('/\[list(?:=(a|A|I|i|OL|ol))?\](.+?)\[\/list\]/ise', '\2', $text);
+			$text = preg_replace('/\[list(?:=(a|A|I|i|OL|ol))?\](.+?)\[\/list\]/is', '\2', $text);
 		}
 		$text = preg_replace('/\[note=(.+?)\](.+?)\[\/note\]/is', "\\2", $text);
 		$text = preg_replace('/\[color=(\#?[0-9A-F]{3,6})\](.+?)\[\/color\]/is', "\\2", $text);
@@ -468,13 +472,13 @@ class BBCode {
 
 	// Possible values for $type: html, pdf, plain (with linebreaks)
 	function parse ($text, $type = 'html') {
-		global $lang, $my; // Replace DE-Language with Variables
+		global $lang, $my;
 		$thiszm1=benchmarktime();
 		$this->noparse = array();
 		$text = preg_replace('/(\r\n|\r|\n)/', "\n", $text);
 		$text = str_replace('$', '&#36;', $text);
 		if($type != 'pdf' && $type != 'plain' && ($my->p['admin'] == 1 || ($my->id > 0 && $my->id == $this->author))) {
-		    $text = preg_replace('/\n?\[hide\](.+?)\[\/hide\]/is', '<br /><div class="bb_hide"><strong>Versteckter Inhalt:</strong><span>\1</span></div>', $text);
+		    $text = preg_replace('/\n?\[hide\](.+?)\[\/hide\]/is', '<br /><div class="bb_hide"><strong>'.$lang->phrase('bb_hidden_content').'</strong><span>\1</span></div>', $text);
 		}
 		else {
 		    $text = preg_replace('/\[hide\](.+?)\[\/hide\]/is', '', $text);
@@ -509,22 +513,22 @@ class BBCode {
 			$text = preg_replace('/\[size=(small|extended|large)\](.+?)\[\/size\]/is', "\\2", $text);
 
 			while (preg_match('/\[quote=(.+?)\](.+?)\[\/quote\]/is',$text)) {
-				$text = preg_replace('/\[quote=(.+?)\](.+?)\[\/quote\]\n?/is', "\nZitat von \\1:\n\\2\n", $text);
+				$text = preg_replace('/\[quote=(.+?)\](.+?)\[\/quote\]\n?/is', "\n".$lang->phrase('bb_quote_by')." \\1:\n-------------------\n\\2\n-------------------\n", $text);
 			}
 			while (preg_match('/\[quote](.+?)\[\/quote\]/is',$text)) {
-				$text = preg_replace('/\[quote](.+?)\[\/quote\]\n?/is', "\nZitat:\n\\1\n", $text);
+				$text = preg_replace('/\[quote](.+?)\[\/quote\]\n?/is', "\n".$lang->phrase('bb_quote')."\n-------------------\n\\1\n-------------------\n", $text);
 			}
 			while (preg_match('/\[edit\](.+?)\[\/edit\]/is',$text)) {
-				$text = preg_replace('/\[edit\](.+?)\[\/edit\]\n?/is', "\nNachträgliche Anmerkung des Autors:\n\\1\n", $text);
+				$text = preg_replace('/\[edit\](.+?)\[\/edit\]\n?/is', "\n".$lang->phrase('bb_edit_author')."\n-------------------\n\\1\n-------------------\n", $text);
 			}
 			while (preg_match('/\[edit=(.+?)\](.+?)\[\/edit\]/is',$text)) {
-				$text = preg_replace('/\[edit=(.+?)\](.+?)\[\/edit\]\n?/is', "\nNachträgliche Anmerkung von \\1:\n\\2\n", $text);
+				$text = preg_replace('/\[edit=(.+?)\](.+?)\[\/edit\]\n?/is', "\n".$lang->phrase('bb_edit_mod')." \\1:\n-------------------\n\\2\n-------------------\n", $text);
 			}
 			while (preg_match('/\[ot\](.+?)\[\/ot\]/is',$text)) {
-				$text = preg_replace('/\[ot\](.+?)\[\/ot\]\n?/is', "\nOff-Topic:\n\\1\n", $text);
+				$text = preg_replace('/\[ot\](.+?)\[\/ot\]\n?/is', "\n".$lang->phrase('bb_offtopic')."\n-------------------\n\\1\n-------------------\n", $text);
 			}
 
-			$text = preg_replace('/(\[hr\]){1,}/is', "-------------------", $text);
+			$text = preg_replace('/(\[hr\]){1,}/is', "\n-------------------\n", $text);
 			$text = str_ireplace('[tab]', "    ", $text);
 		}
 		elseif ($type == 'pdf') {
@@ -547,19 +551,19 @@ class BBCode {
 			$text = preg_replace('/\[size=(small|extended|large)\](.+?)\[\/size\]/ise', '$this->cb_pdf_size("\1", "\2")', $text);
 
 			while (preg_match('/\[quote=(.+?)\](.+?)\[\/quote\]/is',$text)) {
-				$text = preg_replace('/\[quote=(.+?)\](.+?)\[\/quote\]\n?/is', "<br><b>Zitat von \\1:</b><hr><i>\\2</i><hr>", $text);
+				$text = preg_replace('/\[quote=(.+?)\](.+?)\[\/quote\]\n?/is', "<br><b>".$lang->phrase('bb_quote_by')." \\1:</b><hr><i>\\2</i><hr>", $text);
 			}
 			while (preg_match('/\[quote](.+?)\[\/quote\]/is',$text)) {
-				$text = preg_replace('/\[quote](.+?)\[\/quote\]\n?/is', "<br><b>Zitat:</b><hr><i>\\1</cite></i><hr>", $text);
+				$text = preg_replace('/\[quote](.+?)\[\/quote\]\n?/is', "<br><b>".$lang->phrase('bb_quote')."</b><hr><i>\\1</cite></i><hr>", $text);
 			}
 			while (preg_match('/\[edit\](.+?)\[\/edit\]/is',$text)) {
-				$text = preg_replace('/\[edit\](.+?)\[\/edit\]\n?/is', "<br><b>Nachträgliche Anmerkung des Autors:</b><hr>\\1<hr>", $text);
+				$text = preg_replace('/\[edit\](.+?)\[\/edit\]\n?/is', "<br><b>".$lang->phrase('bb_edit_author')."</b><hr>\\1<hr>", $text);
 			}
 			while (preg_match('/\[edit=(.+?)\](.+?)\[\/edit\]/is',$text)) {
-				$text = preg_replace('/\[edit=(.+?)\](.+?)\[\/edit\]\n?/is', "<br><b>Nachträgliche Anmerkung von \\1:</b><hr>\\2<hr>", $text);
+				$text = preg_replace('/\[edit=(.+?)\](.+?)\[\/edit\]\n?/is', "<br><b>".$lang->phrase('bb_edit_mod')." \\1:</b><hr>\\2<hr>", $text);
 			}
 			while (preg_match('/\[ot\](.+?)\[\/ot\]/is',$text)) {
-				$text = preg_replace('/\[ot\](.+?)\[\/ot\]\n?/is', "<br><b>Off-Topic:</b><hr><span style=\"color: #999999\" size=\"7\">\\1</span><hr>", $text);
+				$text = preg_replace('/\[ot\](.+?)\[\/ot\]\n?/is', "<br><b>".$lang->phrase('bb_offtopic')."</b><hr><span style=\"color: #999999\" size=\"7\">\\1</span><hr>", $text);
 			}
 
 			$text = preg_replace('/\[b\](.+?)\[\/b\]/is', "<b>\\1</b>", $text);
@@ -610,19 +614,19 @@ class BBCode {
 			$text = preg_replace('/\[size=(small|extended|large)\](.+?)\[\/size\]/ise', '$this->cb_size("\1", "\2")', $text);
 
 			while (preg_match('/\[quote=(.+?)\](.+?)\[\/quote\]/is',$text)) {
-				$text = preg_replace('/\[quote=(.+?)\](.+?)\[\/quote\]\n?/is', "<blockquote class='bb_quote'><strong>Zitat von \\1:</strong><br /><cite>\\2</cite></blockquote>", $text);
+				$text = preg_replace('/\[quote=(.+?)\](.+?)\[\/quote\]\n?/is', "<blockquote class='bb_quote'><strong>".$lang->phrase('bb_quote_by')." \\1:</strong><br /><cite>\\2</cite></blockquote>", $text);
 			}
 			while (preg_match('/\[quote](.+?)\[\/quote\]/is',$text)) {
-				$text = preg_replace('/\[quote](.+?)\[\/quote\]\n?/is', "<blockquote class='bb_quote'><strong>Zitat:</strong><br /><cite>\\1</cite></blockquote>", $text);
+				$text = preg_replace('/\[quote](.+?)\[\/quote\]\n?/is', "<blockquote class='bb_quote'><strong>".$lang->phrase('bb_quote')."</strong><br /><cite>\\1</cite></blockquote>", $text);
 			}
 			while (preg_match('/\[edit\](.+?)\[\/edit\]/is',$text)) {
-				$text = preg_replace('/\[edit\](.+?)\[\/edit\]\n?/is', "<div class='bb_edit'><strong>Nachträgliche Anmerkung des Autors:</strong><br /><ins>\\1</ins></div>", $text);
+				$text = preg_replace('/\[edit\](.+?)\[\/edit\]\n?/is', "<div class='bb_edit'><strong>".$lang->phrase('bb_edit_author')."</strong><br /><ins>\\1</ins></div>", $text);
 			}
 			while (preg_match('/\[edit=(.+?)\](.+?)\[\/edit\]/is',$text)) {
-				$text = preg_replace('/\[edit=(.+?)\](.+?)\[\/edit\]\n?/is', "<div class='bb_edit'><strong>Nachträgliche Anmerkung von \\1:</strong><br /><ins>\\2</ins></div>", $text);
+				$text = preg_replace('/\[edit=(.+?)\](.+?)\[\/edit\]\n?/is', "<div class='bb_edit'><strong>".$lang->phrase('bb_edit_mod')." \\1:</strong><br /><ins>\\2</ins></div>", $text);
 			}
 			while (preg_match('/\[ot\](.+?)\[\/ot\]/is',$text)) {
-				$text = preg_replace('/\[ot\](.+?)\[\/ot\]\n?/is', "<div class='bb_ot'><strong>Off-Topic:</strong><br /><span>\\1</span></div>", $text);
+				$text = preg_replace('/\[ot\](.+?)\[\/ot\]\n?/is', "<div class='bb_ot'><strong>".$lang->phrase('bb_offtopic')."</strong><br /><span>\\1</span></div>", $text);
 			}
 
 			$text = preg_replace('/\[b\](.+?)\[\/b\]/is', "<strong>\\1</strong>", $text);

@@ -50,7 +50,7 @@
  *
  ************************************************************************************/
 $language_data = array (
-	'LANG_NAME' => 'QBasic/QuickBASIC',
+	'LANG_NAME' => 'QuickBASIC',
 	'COMMENT_SINGLE' => array(1 => "'", 2 => ' REM', 3 => "\tREM"),
 	'COMMENT_MULTI' => array(),
 	'CASE_KEYWORDS' => GESHI_CAPS_UPPER,

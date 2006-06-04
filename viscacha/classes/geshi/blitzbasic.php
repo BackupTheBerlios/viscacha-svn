@@ -50,7 +50,7 @@
  ************************************************************************************/
 
  $language_data = array (
-  'LANG_NAME' => 'BLITZ BASIC',
+  'LANG_NAME' => 'Blitz Basic',
   'COMMENT_SINGLE' => array(1 => ';'),
   'COMMENT_MULTI' => array(),
   'CASE_KEYWORDS' => GESHI_CAPS_NO_CHANGE,

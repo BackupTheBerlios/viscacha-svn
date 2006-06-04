@@ -4,7 +4,7 @@ $lang = array();
 $lang['birthdaybox_module'] = 'Wir gratulieren...';
 $lang['last_posts_info_reply'] = 'Dieses Thema enthält mehr als {$num} Antworten. Klicken Sie <a href=\'showtopic.php?id={@indo->id}\' target=\'_blank\'>hier</a>, um das ganze Thema zu lesen.';
 $lang['last_posts_reply'] = 'Die letzten {$num} Beiträge in diesem Thema';
-$lang['last_x_forumposts'] = '"Letzte {$topicnum} aktive Themen";';
+$lang['last_x_forumposts'] = 'Letzte {$topicnum} aktive Themen';
 $lang['legend_cat_hidden'] = 'Forum ist geschlossen.';
 $lang['legend_cat_new_post'] = 'Forum enthält neue Beiträge.';
 $lang['legend_cat_old_post'] = 'Forum enthält keine neuen Beiträge.';

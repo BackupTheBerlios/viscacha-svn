@@ -51,7 +51,7 @@
  ************************************************************************************/
 
 $language_data = array (
-	'LANG_NAME' => 'Java(TM) 2 Platform Standard Edition 5.0',
+	'LANG_NAME' => 'Java 2 Platform SE 5.0',
 	'COMMENT_SINGLE' => array(1 => '//'),   /* import statements are not comments! */
 	'COMMENT_MULTI' => array('/*' => '*/'),
 	'CASE_KEYWORDS' => GESHI_CAPS_NO_CHANGE,

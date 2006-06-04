@@ -74,6 +74,7 @@ if (strlen($q) > 2) {
 else {
 	$qUrl = '';
 }
+
 if ($_GET['action'] == 'firstnew') {
 	if ($info['last'] > $my->clv) {
 		$result = $db->query('SELECT COUNT(*) AS count FROM '.$db->pre.'replies WHERE topic_id = '.$info['id'].' AND date > '.$my->clv,__LINE__,__FILE__);
@@ -278,6 +279,7 @@ ORDER BY date ASC {$searchsql}
 ",__LINE__,__FILE__);
 
 $firstnew = 0;
+$firstnew_url = 'showtopic.php?action=firstnew&amp;id='.$info['id'].SID2URL_x;
 while ($row = $gpc->prepare($db->fetch_object($result))) {
 	$inner['upload_box'] = '';
 	$inner['image_box'] = '';
@@ -293,11 +295,12 @@ while ($row = $gpc->prepare($db->fetch_object($result))) {
 		$row->mid = 0;
 	}
 
-    if ($firstnew == 1) {
-        $firstnew = 2;
-    }
+	if ($firstnew == 1) {
+		$firstnew++;
+	}
 	if ($row->date > $my->clv && $firstnew == 0) {
 		$firstnew = 1;
+		$firstnew_url = "#firstnew";
 	}
 	$new = iif($row->date > $my->clv, 'new', 'old');
 	

@@ -44,24 +44,28 @@ if ($_GET['action'] == "hlcode") {
 		error($lang->phrase('query_string_error'), 'javascript:parent.close();');
 	}
 
-	$codeobj = new CacheItem($_GET['fid'], 'cache/geshicode/');
-	$codeobj->get();
+	$codeObj = new CacheItem($_GET['fid'], 'cache/geshicode/');
+	if (!$codeObj->import()) {
+		echo $tpl->parse("popup/header");
+		error($lang->phrase('query_string_error'), 'javascript:parent.close();');
+	}
+	$sourcecode = $codeObj->get();
 	
-	$code['source'] = @html_entity_decode($code['source'], ENT_QUOTES, $lang->phrase('charset'));
+	$sourcecode['source'] = @html_entity_decode($sourcecode['source'], ENT_QUOTES, $lang->phrase('charset'));
 
 	($code = $plugins->load('popup_hlcode_start')) ? eval($code) : null;
 
 	if ($_GET['temp'] == 1) {
 		viscacha_header('Cache-control: private');
 		viscacha_header('Content-Type: text/plain');
-		viscacha_header('Content-Length: '.strlen($code['source']));
+		viscacha_header('Content-Length: '.strlen($sourcecode['source']));
 		viscacha_header('Content-Disposition: attachment; filename='.date('d-m-Y_H-i').'.txt');
-		echo $code['source'];
+		echo $sourcecode['source'];
 		exit;
 	}
 	else {
 		require_once('classes/class.geshi.php');
-		$geshi = new GeSHi($code['source'], strtolower($code['language']), 'classes/geshi');
+		$geshi = new GeSHi($sourcecode['source'], strtolower($sourcecode['language']), 'classes/geshi');
 		$geshi->set_encoding($lang->phrase('charset'));
 		// Use classes for colouring
 		$geshi->enable_classes();
@@ -77,7 +81,7 @@ if ($_GET['action'] == "hlcode") {
 		
 		($code = $plugins->load('popup_hlcode_initialized')) ? eval($code) : null;
 		
-		$code['hl'] = $geshi->parse_code();
+		$sourcecode['hl'] = $geshi->parse_code();
 		echo $tpl->parse("popup/hlcode");
 		
 		($code = $plugins->load('popup_hlcode_end')) ? eval($code) : null;

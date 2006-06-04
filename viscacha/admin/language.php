@@ -1019,6 +1019,30 @@ elseif ($job == 'phrase') {
 	<?php
 	echo foot();
 }
+elseif ($job == 'phrase_file_find') {
+	$file = $gpc->get('file', none);
+	echo head();
+?>
+<form name="form" method="get" action="admin.php">
+<input type="hidden" name="action" value="language" />
+<input type="hidden" name="job" value="phrase_file" />
+<input type="hidden" name="show" value="search" />
+<input type="hidden" name="file" value="<?php echo $file; ?>" />
+ <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
+  <tr> 
+   <td class="obox" colspan="2">Phrase Manager &raquo; Find Phrase</td>
+  </tr>
+  <tr>
+   <td class="mbox" width="40%">Keyword:</td>
+   <td class="mbox" width="60%"><input type="text" name="key" size="40" /></td>
+  <tr> 
+   <td class="ubox" align="center" colspan="2"><input type="submit" value="Find"></td>
+  </tr>
+ </table>
+</form>
+<?php
+	echo foot();
+}
 elseif ($job == 'phrase_file') {
 	echo head();
 	$file = $gpc->get('file', none);
@@ -1039,9 +1063,20 @@ elseif ($job == 'phrase_file') {
 		$same = call_user_func_array('array_intersect', $diff);
 		$complete = array_diff($complete, $same);
 	}
+	$search = $gpc->get('key', none);
+	if ($show == 'search') {
+		if (strlen($search) <= 3) {
+			error('admin.php?action=language&job=phrase_file_find', 'The keyword is too short. (Minimum: 3)');
+		}
+		foreach ($complete as $key => $value) {
+			if (stristr($key, $search) === false && stristr($value, $search) === false) {
+				unset($complete[$key]);
+			}
+		}
+	}
 	sort($complete);
 	$width = floor(75/count($cache));
-	if ($show == 'diff') {
+	if ($show == 'diff' || $show == 'search') {
 		$perpage = 100;
 	}
 	else {
@@ -1055,7 +1090,7 @@ elseif ($job == 'phrase_file') {
 	$pages_html = "Seiten ({$pages}):";
 	// Ersetzen durch Buchstaben (?) -> [A] [B] ...
 	for($i=1;$i<=$pages;$i++) {
-   		$pages_html .= ' ['.iif($i == $page, "<strong>{$i}</strong>", "<a href='admin.php?action=language&job=phrase_file&file=".$file."&page={$i}'>{$i}</a>").']';
+   		$pages_html .= ' ['.iif($i == $page, "<strong>{$i}</strong>", "<a href='admin.php?action=language&job=phrase_file&file={$file}&page={$i}&show={$show}&key={$search}'>{$i}</a>").']';
 	}
 	?>
 <form name="form" method="post" action="admin.php?action=language&job=phrase_file_delete&file=<?php echo $file; ?>">
@@ -1068,6 +1103,7 @@ elseif ($job == 'phrase_file') {
    <?php } else { ?>
     [<a href="admin.php?action=language&job=phrase_file&file=<?php echo $file; ?>&show=diff">Show only differences</a>] 
    <?php } ?>
+    [<a href="admin.php?action=language&job=phrase_file_find&file=<?php echo $file; ?>">Find Phrases</a>]
     [<a href="admin.php?action=language&job=phrase_add&file=<?php echo $file; ?>">Add new Phrase</a>]
    </span>
    Phrase Manager &raquo; <?php echo $encfile; ?></td>
@@ -1092,7 +1128,7 @@ elseif ($job == 'phrase_file') {
   </tr>
   <?php foreach ($data[$page-1] as $phrase) { ?>
   <tr>
-   <td class="mmbox"><input type="checkbox" name="delete[]" value="<?php echo $phrase; ?>">&nbsp;<?php echo $phrase; ?></td>
+   <td class="mmbox" nowrap="nowrap"><input type="checkbox" name="delete[]" value="<?php echo $phrase; ?>">&nbsp;[<a href="admin.php?action=language&job=phrase_file_edit&file=<?php echo $file; ?>&phrase=<?php echo $phrase; ?>">Edit</a>]&nbsp;<?php echo $phrase; ?></td>
    <?php
    foreach ($cache as $row) {
    	$status = in_array($phrase, $diff[$row['id']]);
@@ -1163,6 +1199,87 @@ elseif ($job == 'phrase_copy2') {
 		error('admin.php?action=language&job=phrase', 'Quelldatei existiert nicht oder Datei konnte nicht kopiert werden.');
 	}
 }
+elseif ($job == 'phrase_file_edit') {
+	echo head();
+	
+	$phrase = $gpc->get('phrase', none);
+	$file = $gpc->get('file', none);
+	$encfile = base64_decode($file);
+	$basefile = substr($encfile, 0, strlen($encfile)-8);
+	
+	$result = $db->query('SELECT * FROM '.$db->pre.'language ORDER BY language',__LINE__,__FILE__);
+	$cache = array();
+	while($row = $db->fetch_assoc($result)) {
+	  	$phrases = return_array($basefile, $row['id']);
+	  	if (!isset($phrases[$phrase])) {
+	  		$row['phrase'] = '';
+	  	}
+	  	else {
+	  		$row['phrase'] = $phrases[$phrase];
+	  	}
+	  	unset($phrases);
+	  	$cache[$row['id']] = $row;
+	}
+	?>
+<form name="form" method="post" action="admin.php?action=language&job=phrase_file_edit2&file=<?php echo $file; ?>">
+ <table class="border" border="0" cellspacing="0" cellpediting="4" align="center">
+  <tr> 
+   <td class="obox" colspan="2">Phrase Manager &raquo; Edit new Phrase to Package</td>
+  </tr>
+  <tr>
+   <td class="mbox" width="50%">Varname:<br />
+   <span class="stext">Varname is a value which can only contain letters, numbers and underscores.</span></td>
+   <td class="mbox" width="50%"><input type="hidden" name="varname" size="50" value="<?php echo $phrase; ?>" /><code><?php echo $phrase; ?></code></td>
+  </tr>
+  <tr>
+   <td class="mbox" width="50%">Text:<br />
+   <span class="stext">This is the default language used.</span></td>
+   <td class="mbox" width="50%"><input type="text" name="text" size="50" value="<?php echo htmlspecialchars($cache[$config['langdir']]['phrase']); ?>" /></td>
+  </tr>
+  <tr> 
+   <td class="obox" colspan="2">Translations</td>
+  </tr>
+  <tr>
+   <td class="ubox" colspan="2"><ul>
+	<li>When editing a custom phrase, you may also specify the translations into whatever languages you have installed.</li>
+	<li>If you do leave a translation box blank, it will inherit the text from the 'Text' box.</li>
+   </ul></td> 
+  </tr>
+  <?php foreach ($cache as $row) { ?>
+  <tr>
+   <td class="mbox" width="50%"><em><?php echo $row['language']; ?></em> Translation:<br /><span class="stext">Optional. HTML is allowed but not recommended.</span></td>
+   <td class="mbox" width="50%"><input type="text" name="langt[<?php echo $row['id']; ?>]" size="50" value="<?php echo htmlspecialchars($row['phrase']); ?>" /></td>
+  </tr>
+  <?php } ?>
+  <tr>
+   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="Save" /></td> 
+  </tr>
+ </table>
+</form>
+	<?php
+	echo foot();
+}
+elseif ($job == 'phrase_file_edit2') {
+	echo head();
+	
+	$file = $gpc->get('file', none);
+	$encfile = base64_decode($file);
+	$varname = $gpc->get('varname', none);
+	$text = $gpc->get('text', none);
+	$lang = $gpc->get('langt', none);
+	
+	$c = new manageconfig();
+	foreach ($lang as $id => $t) {
+		if (empty($t)) {
+			$t = $text;
+		}
+		$c->getdata("language/{$id}/{$encfile}", 'lang');
+		$c->updateconfig($varname, str, $t);
+		$c->savedata();
+	}
+	
+	ok('admin.php?action=language&job=phrase_file&file='.$file);
+}
 elseif ($job == 'phrase_file_copy') {
 	$lang = $gpc->get('id', int);
 	$file = $gpc->get('file', none);
@@ -1183,7 +1300,6 @@ elseif ($job == 'phrase_file_copy') {
 	<?php
 	$basefile = substr($encfile, 0, strlen($encfile)-8);
 	while($row = $db->fetch_assoc($result)) {
-		echo 'language/'.$row['id'].'/'.$basefile;
 		if (file_exists('language/'.$row['id'].'/'.$encfile)) {
 			$langarr = return_array($basefile, $row['id']);
 			if (isset($langarr[$phrase])) {
