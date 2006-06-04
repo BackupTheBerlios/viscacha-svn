@@ -226,7 +226,6 @@ function checkRemotePic($pic, $url_ary, $id) {
 	}
 	else {
 		error("admin.php?action=members&job=edit&id=".$id, 'Bild entspricht nicht den Vorgaben!');
-		$filesystem->unlink($origfile);
 	}
 	return $pic;
 }

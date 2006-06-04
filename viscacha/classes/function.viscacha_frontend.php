@@ -86,7 +86,7 @@ function GroupCheck($groups) {
 }
 
 function checkRemotePic($pic, $url_ary, $id, $redir = "editprofile.php?action=pic") {
-	global $lang, $config;
+	global $lang, $config, $filesystem;
 	$redir .= SID2URL_x;
 	if (empty($url_ary[4])) {
 		error($lang->phrase('editprofile_pic_error1'), $redir);
@@ -126,11 +126,10 @@ function checkRemotePic($pic, $url_ary, $id, $redir = "editprofile.php?action=pi
 	if ($width > 0 && $height > 0 && $width <= $config['avwidth'] && $height <= $config['avheight'] && $filesize <= $config['avfilesize'] && in_array($ext, $types)) {
 		$pic = 'uploads/pics/'.$id.$ext;
 		removeOldImages('uploads/pics/', $id);
-		@copy($origfile, $pic);
+		@$filesystem->copy($origfile, $pic);
 	}
 	else {
 		error($lang->phrase('editprofile_pic_error3'), $redir);
-		@unlink($origfile);
 	}
 	return $pic;
 }

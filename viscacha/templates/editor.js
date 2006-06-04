@@ -14,7 +14,7 @@ function refreshElement(parentWindow) {
 }
 
 function setFocus(field) {
-	if (field.hasfocus == false) {
+	if (field.hasFocus != true) {
 		field.focus();
 	}
 }
@@ -47,13 +47,12 @@ function InsertTags(aTag, eTag, parentWindow, param2) {
 	var input = refreshElement(parentWindow);
 	setFocus(input);
 
-
 	if (parentWindow == 1) {
 		var docsel = window.opener.document;
 	}
 	else {
 		var docsel = document;
-	}	 
+	}
 	if(typeof docsel.selection != 'undefined') {
         var range = docsel.selection.createRange();
         var insText = range.text;

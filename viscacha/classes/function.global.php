@@ -331,6 +331,7 @@ function is_id ($x) {
 }
 
 function removeOldImages ($dir, $name) {
+	global $filesystem;
     $dir = realpath($dir);
     $dir_open = @opendir($dir);
     while (($dir_content = readdir($dir_open)) !== false) {
@@ -338,7 +339,7 @@ function removeOldImages ($dir, $name) {
             $ext = get_extension($dir_content);
             $fname = str_ireplace($ext, '', $dir_content);
             if ($fname == $name) {
-                @unlink($dir.'/'.$dir_content);
+                @$filesystem->unlink($dir.'/'.$dir_content);
             }
         }
     }

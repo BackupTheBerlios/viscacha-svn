@@ -424,9 +424,7 @@ elseif ($_GET['action'] == "pic2") {
 			error($my_uploader->return_error(),'editprofile.php?action=pic');
 		}
 		else {
-			if (file_exists($my->pic)) {
-				@unlink($my->pic);
-			}
+			removeOldImages('uploads/pics/', $my->id);
 			$ext = $my_uploader->rename_file('uploads/pics/', $my_uploader->file['name'], $my->id);
 		}
 		$my->pic = 'uploads/pics/'.$my->id.$ext;
