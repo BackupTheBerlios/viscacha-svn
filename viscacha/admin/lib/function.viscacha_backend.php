@@ -32,7 +32,7 @@ header('Content-type: text/html; charset: iso-8859-1');
 
 $htmlhead = '';
 $months = array('January','February','March','April','May','June','July','August','September','October','November','December');
-$days = array('Sonntag','Montag','Dienstag','Mittwoch','Donenrstag','Freitag','Samstag');
+$days = array('Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday');
 
 // Variables
 require_once ("classes/class.gpc.php");
@@ -185,14 +185,14 @@ function checkRemotePic($pic, $url_ary, $id) {
 		$config['avheight'] = 2048;
 	}
 	if (empty($url_ary[4])) {
-		error("admin.php?action=members&job=edit&id=".$id, 'Keine gültige URL angegeben.');
+		error("admin.php?action=members&job=edit&id=".$id, 'No valid URL indicated.');
 	}
 
 	$base_get = '/' . $url_ary[4];
 	$port = (!empty($url_ary[3])) ? $url_ary[3] : 80;
 
 	if (!($fsock = @fsockopen($url_ary[2], $port, $errno, $errstr, 15))) {
-		error("admin.php?action=members&job=edit&id=".$id, "Konnte keine Verbindung zum Avatar-Server herstellen:<br />{errno}: {$errstr}");
+		error("admin.php?action=members&job=edit&id=".$id, "The server does not respond to your request:<br />{errno}: {$errstr}");
 	}
 
 	@fputs($fsock, "GET {$base_get} HTTP/1.1\r\n");
@@ -206,7 +206,7 @@ function checkRemotePic($pic, $url_ary, $id) {
 	@fclose($fsock);
 
 	if (!preg_match('#Content-Length\: ([0-9]+)[^ /][\s]+#i', $avatar_data, $file_data1) || !preg_match('#Content-Type\: image/[x\-]*([a-z]+)[\s]+#i', $avatar_data, $file_data2)) {
-		error("admin.php?action=members&job=edit&id=".$id, 'Es wurden keine gültige Rückgabe vom Avatar-Server empfangen.');
+		error("admin.php?action=members&job=edit&id=".$id, 'The server does not return a valid response!');
 	}
 		
 	list(,$avatar_data) = explode("\r\n\r\n", $avatar_data, 2);
@@ -225,7 +225,7 @@ function checkRemotePic($pic, $url_ary, $id) {
 		$filesystem->copy($origfile, $pic);
 	}
 	else {
-		error("admin.php?action=members&job=edit&id=".$id, 'Bild entspricht nicht den Vorgaben!');
+		error("admin.php?action=members&job=edit&id=".$id, 'Image does not match the criteria!');
 	}
 	return $pic;
 }
@@ -389,7 +389,7 @@ function head($onload = '') {
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head>
-	<title><?php echo $config['fname']; ?>: Administrations Control Panel - powered by Viscacha</title>
+	<title><?php echo $config['fname']; ?>: Administration Control Panel - powered by Viscacha</title>
 	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 	<meta http-equiv="Pragma" content="no-cache" />
 	<meta http-equiv="Expires" content="-1" />

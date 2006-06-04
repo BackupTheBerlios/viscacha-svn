@@ -57,7 +57,7 @@ function locate(url) {
 }
 
 function deleteit(rid){
-	var res = confirm("Wollen Sie die Daten wirklich löschen?");
+	var res = confirm("Do you really want to delete the data?");
 	if(res) locate('admin.php?action=query&job=delete&id='+rid);
 }
 function useit(rq){

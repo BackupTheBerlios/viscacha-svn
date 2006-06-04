@@ -1,5 +1,5 @@
 <?php
-if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "start.php") die('Error: Hacking Attempt');
+if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "cron.php") die('Error: Hacking Attempt');
 
 if ($_GET['job'] == 'upload') {
 	echo head();
@@ -8,9 +8,10 @@ if ($_GET['job'] == 'upload') {
 <table class="border" cellpadding="3" cellspacing="0" border="0">
 <tr><td class="obox">Cron Job File Upload</td></tr>
 <tr><td class="mbox">
-To attach a file, click on the „browse“-button and select a file.
-Then click on “upload” in order to complete the procedure.
-Allowed filetypes: .php<br /><br />
+To attach a file, click on the &quot;browse&quot;-button and select a file.
+Then click on &quot;upload&quot; in order to complete the procedure.
+Allowed file types: .php
+Maximum file size: 100 KB<br /><br />
 <strong>Upload file:</strong>
 <br /><input type="file" name="upload_0" size="40" />
 </td></tr>
@@ -32,11 +33,11 @@ elseif ($_GET['job'] == 'add') {
    <td class="mbox" colspan=2><span class='stext'>
 <?php if ($config['pccron'] == 1) { ?>
 <b>Status: Cron Jobs are simulated</b> [<a href="admin.php?action=settings&job=cron<?php echo SID2URL_x; ?>">change</a>]<br>
-   Because original Cron Jobs are often not availible, Viscacha can simulate Cron Jobs. This works as follows: <br />
+Because original Cron Jobs are often not availible, Viscacha can simulate Cron Jobs. This works as follows:<br />
 On every page call it will be checked if there should have been a Cron Job, the due will be done if necessary.
 <?php } else { ?>
 <b>Status: Original Cron Jobs activated</b> [<a href="admin.php?action=settings&job=cron<?php echo SID2URL_x; ?>">change</a>]<br>
-Original Cron Jobs are used. You have to start an Cron Job for every entry (of the system or a external service), if not already done.
+Normal Cron Jobs are used. You have to start an Cron Job for every entry (of the system or an external service), if not already done.
 <?php } ?>
    </span></td>
   </tr>
@@ -175,7 +176,7 @@ elseif ($_GET['job'] == 'manage') {
 	<form name="form" method="post" action="admin.php?action=cron&job=delete<?php echo SID2URL_x; ?>">
 	 <table class="border">
 	  <tr> 
-	   <td class="obox" colspan="7">Administer Tasks</td>
+	   <td class="obox" colspan="7">Manage Tasks</td>
 	  </tr>
 	  <tr> 
 	   <td class="ubox" width="5%"><font class="mtext">Delete</font></td>

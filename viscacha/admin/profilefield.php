@@ -3,15 +3,15 @@ if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "profilefie
 
 $editable = array(
 '0' => 'Hidden',
-'1' => 'Daten ändern',
-'2' => 'Optionen ändern'
+'1' => 'Change User Data',
+'2' => 'Change Settings'
 );
 
 $viewable = array(
 '0' => 'Hidden',
-'1' => 'Persönliche Informationen',
-'2' => 'Foreninformationen',
-'3' => 'Kontaktinformationen'
+'1' => 'Personal information',
+'2' => 'Forum information',
+'3' => 'Contact information'
 );
 
 if($job == "add2") {
@@ -124,7 +124,7 @@ elseif($job == "add") {
 	   <td class="mbox" width="50%"><input type="checkbox" name="required" value="1" /></td> 
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">Wo sollte es editierbar sein?</td>
+	   <td class="mbox" width="50%">Where shall it be editable?</td>
 	   <td class="mbox" width="50%">
 		  <select name="editable">
 		  	<?php foreach ($editable as $id => $title) { ?>
@@ -133,7 +133,7 @@ elseif($job == "add") {
 		  </select>
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">Wo sollte es sichtbar sein?</td>
+	   <td class="mbox" width="50%">Where shall it be visible?</td>
 	   <td class="mbox" width="50%">
 		  <select name="viewable">
 		  	<?php foreach ($viewable as $id => $title) { ?>
@@ -227,7 +227,7 @@ elseif($job == "edit") {
 	   <td class="mbox" width="50%"><input type="checkbox" name="required" value="1"<?php echo iif($profilefield['required'] == 1, ' checked="checked"'); ?> /></td> 
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">Wo sollte es editierbar sein?</td>
+	   <td class="mbox" width="50%">Where shall it be editable?</td>
 	   <td class="mbox" width="50%">
 		  <select name="editable">
 		  	<?php foreach ($editable as $id => $title) { ?>
@@ -236,7 +236,7 @@ elseif($job == "edit") {
 		  </select>
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">Wo sollte es sichtbar sein?</td>
+	   <td class="mbox" width="50%">Where shall it be visible?</td>
 	   <td class="mbox" width="50%">
 		  <select name="viewable">
 		  	<?php foreach ($viewable as $id => $title) { ?>
@@ -264,7 +264,7 @@ elseif ($job == "manage") {
 		<td>ID</td>
 		<td>Required</td>
 		<td>Editable</td>
-		<td>Anzeigeort</td>
+		<td>Visible</td>
 		<td>Action</td>
 	  </tr>
 	<?php

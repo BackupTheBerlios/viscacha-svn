@@ -46,15 +46,15 @@ elseif ($job == 'smileys_edit') {
    <td class="mbox" width="50%"><input type="text" name="search_<?php echo $row['id']; ?>" size="50" value="<?php echo $row['search']; ?>"></td> 
   </tr>
   <tr> 
-   <td class="mbox" width="50%">Image:<br><font class="stext">URL or relative path to the image.<br />{folder} is a placeholder for the adress to the smiley directory.</font></td>
+   <td class="mbox" width="50%">Image:<br><span class="stext">URL or relative path to the image.<br />{folder} is a placeholder for the adress to the smiley directory.</span></td>
    <td class="mbox" width="50%"><input type="text" name="replace_<?php echo $row['id']; ?>" size="50" value="<?php echo $row['replace']; ?>"></td> 
   </tr>
   <tr>
-   <td class="mbox" width="50%">Description:<br><font class="stext">Optional</font></td>
+   <td class="mbox" width="50%">Description:<br><span class="stext">Optional</span></td>
    <td class="mbox" width="50%"><input type="text" name="desc_<?php echo $row['id']; ?>" size="50" value="<?php echo $row['desc']; ?>"></td> 
   </tr>
   <tr> 
-   <td class="mbox" width="50%">Show directly:<br><font class="stext">Gibt an ob der Smiley direkt zum schnellen klicken neben den BB-Codes angezeigt wird oder erst im Popup-Menü.</font></td>
+   <td class="mbox" width="50%">Show directly:<br><span class="stext">Indicates whether the smiley is directly placed next to the BB codes or only in the popup menu.</span></td>
    <td class="mbox" width="50%"><input type="checkbox" name="show_<?php echo $row['id']; ?>" value="1"<?php echo iif($row['show'] == 1, ' checked="checked"'); ?>></td> 
   </tr>
  </table><br />
@@ -87,13 +87,13 @@ elseif ($job == 'smileys_import') {
 <form name="form2" method="post" enctype="multipart/form-data" action="admin.php?action=bbcodes&job=smileys_import2">
  <table class="border" cellpadding="4" cellspacing="0" border="0">
   <tr><td class="obox" colspan="2">Import Smileypack</td></tr>
-  <tr><td class="mbox"><em>Entweder</em> Datei hochladen:<br /><span class="stext">Erlaubte Dateitypen: .zip - Maximale Dateigröße: 2 MB</span></td>
+  <tr><td class="mbox"><em>Either</em> upload the file from your computer:<br /><span class="stext">Allowed file types: .zip - Maximum file size: 2 MB</span></td>
   <td class="mbox"><input type="file" name="upload" size="40" /></td></tr>
-  <tr><td class="mbox"><em>oder</em> Datei vom Server auswählen:<br /><span class="stext">Pfad ausgehend vom Viscacha-Hauptverzeichnis: <?php echo $config['fpath']; ?></span></td>
+  <tr><td class="mbox"><em>or</em> import the file from your server:<br /><span class="stext">Pfad ausgehend vom Viscacha-Hauptverzeichnis: <?php echo $config['fpath']; ?></span></td>
   <td class="mbox"><input type="text" name="server" size="50" /></td></tr>
-  <tr><td class="mbox">Datei nach dem importieren löschen:</td>
+  <tr><td class="mbox">Delete file after import:</td>
   <td class="mbox"><input type="checkbox" name="delete" value="1" checked="checked" /></td></tr>
-  <tr><td class="ubox" colspan="2" align="center"><input accesskey="s" type="submit" value="Send" /></td></tr>
+  <tr><td class="ubox" colspan="2" align="center"><input accesskey="s" type="submit" value="Import" /></td></tr>
  </table>
 </form>
 	<?php
@@ -134,11 +134,11 @@ elseif ($job == 'smileys_import2') {
 			$file = $server;
 		}
 		else {
-			$inserterrors[] = 'Angegebene Datei ist keine ZIP-Datei.';
+			$inserterrors[] = 'File is not a ZIP-file.';
 		}
 	}
 	else {
-		$inserterrors[] = 'Keine gültige Datei angegeben.';
+		$inserterrors[] = 'No valid file given.';
 	}
 	echo head();
 	if (count($inserterrors) > 0) {
@@ -152,7 +152,7 @@ elseif ($job == 'smileys_import2') {
 	$failure = $archive->extract($tempdir);
 	if ($failure < 1) {
 		rmdirr($tempdir);
-		error('admin.php?action=bbcodes&job=smileys_import', 'ZIP-Archiv konnte nicht gelesen werden order ist leer.');
+		error('admin.php?action=bbcodes&job=smileys_import', 'ZIP-archive could not be read or is empty.');
 	}
 
 	$codes = array();
@@ -184,7 +184,7 @@ elseif ($job == 'smileys_import2') {
 	
 	rmdirr($tempdir);
 	
-	ok('admin.php?action=bbcodes&job=smileys', $anz.' Smileys erfolgreich importiert.');
+	ok('admin.php?action=bbcodes&job=smileys', $anz.' Smileys successfully imported.');
 }
 elseif ($job == 'smileys_export') {
 	$smileys = $gpc->get('id', arr_int);
@@ -244,7 +244,7 @@ elseif ($job == 'smileys') {
 <form name="form" method="post" action="admin.php?action=bbcodes">
  <table class="border">
   <tr> 
-   <td class="obox" colspan="6"><span style="float: right;">[<a href="admin.php?action=bbcodes&amp;job=smileys_import">Smileypack importieren</a>]</span>Manage Smileys</td>
+   <td class="obox" colspan="6"><span style="float: right;">[<a href="admin.php?action=bbcodes&amp;job=smileys_import">Import Smileypack</a>]</span>Manage Smileys</td>
   </tr>
   <tr class="ubox">
    <td width="5%">Choose<br /><span class="stext"><input type="checkbox" onclick="check_all('id[]');" name="all" value="1" /> All</span></td>
@@ -269,10 +269,10 @@ elseif ($job == 'smileys') {
 <?php } ?>
   <tr> 
    <td class="ubox" colspan="6" align="center">
-   Ausgewählte Smileys: <select name="job">
-    <option value="smileys_edit" selected="selected">Ändern</option>
-    <option value="smileys_export">Exportieren</option>
-   	<option value="smileys_delete">Löschen</option>
+   Selected Smileys: <select name="job">
+    <option value="smileys_edit" selected="selected">Edit</option>
+    <option value="smileys_export">Export</option>
+   	<option value="smileys_delete">Delete</option>
    </select>&nbsp;&nbsp;&nbsp;&nbsp;
    <input type="submit" value="Go">
    </td> 
@@ -283,24 +283,24 @@ elseif ($job == 'smileys') {
 <form name="form" method="post" enctype="multipart/form-data" action="admin.php?action=bbcodes&amp;job=smileys_add">
  <table class="border">
   <tr> 
-   <td class="obox" colspan="2"><span style="float: right;">[<a href="admin.php?action=bbcodes&amp;job=smileys_import">Smileypack importieren</a>]</span>Add Smiley</td>
+   <td class="obox" colspan="2"><span style="float: right;">[<a href="admin.php?action=bbcodes&amp;job=smileys_import">Import Smileypack</a>]</span>Add Smiley</td>
   </tr>
   <tr> 
    <td class="mbox" width="50%">Code:</td>
    <td class="mbox" width="50%"><input type="text" name="code" size="50"></td> 
   </tr>
   <tr> 
-   <td class="mbox" width="50%">Image:<br><font class="stext">URL or relative path to the image. Only when you do not upload an image.<br />{folder} = <?php echo $config['smileypath']; ?> and <?php echo $config['smileyurl']; ?></font></td>
+   <td class="mbox" width="50%">Image:<br><span class="stext">URL or relative path to the image. Only when you do not upload an image.<br />{folder} = <?php echo $config['smileypath']; ?> and <?php echo $config['smileyurl']; ?></span></td>
    <td class="mbox" width="50%"><input type="text" name="img" size="50"></td> 
   </tr>
-   <td class="mbox" width="50%">Upload an image<br><font class="stext">Erlaubte Dateitypen: .gif, .jpg, .jpeg, .png, .jpe, .bmp<br />Maximale Dateigröße: 200 KB</font></td>
+   <td class="mbox" width="50%">Upload an image<br><span class="stext">Allowed file types: .gif, .jpg, .jpeg, .png, .jpe, .bmp<br />Maximum file size: 200 KB</span></td>
    <td class="mbox" width="50%"><input type="file" name="upload_0" size="40" /></td>
   <tr> 
-   <td class="mbox" width="50%">Description:<br><font class="stext">Optional</font></td>
+   <td class="mbox" width="50%">Description:<br><span class="stext">Optional</span></td>
    <td class="mbox" width="50%"><input type="text" name="desc" size="50"></td> 
   </tr>
   <tr> 
-   <td class="mbox" width="50%">Show directly:<br><font class="stext">Gibt an ob der Smiley direkt zum schnellen klicken neben den BB-Codes angezeigt wird oder erst im Popup-Menü.</font></td>
+   <td class="mbox" width="50%">Show directly:<br><span class="stext">Indicates whether the smiley is directly placed next to the BB codes or only in the popup menu.</span></td>
    <td class="mbox" width="50%"><input type="checkbox" name="show" value="1"></td> 
   </tr>
   <tr> 
@@ -319,7 +319,8 @@ elseif ($job == 'smileys_ajax_pos') {
 	$db->query("UPDATE {$db->pre}smileys AS b SET b.show = '{$use}' WHERE id = '{$id}' LIMIT 1",__LINE__,__FILE__);
 	$delobj = $scache->load('smileys');
 	$delobj->delete();
-	die(strval($use));
+	echo strval($use);
+	exit;
 }
 elseif ($job == 'smileys_add') {
 	echo head();
@@ -363,13 +364,13 @@ elseif ($job == 'smileys_add') {
 		}
 	}
 	if (strlen($gpc->get('code', str)) < 2) {
-		$error[] = 'Code ist zu kurz';
+		$error[] = 'Code is too short';
 	}
 	if (!$has_upload && strlen($img) < 5) {
-		$error[] = 'Imagepfad zu kurz';
+		$error[] = 'Path of image is too short';
 	}
 	if (strlen($gpc->get('show', int)) != 1 && $gpc->get('show', int) != 0) {
-		$error[] = 'Falsche Angabe(n)';
+		$error[] = 'Wrong specification(s)';
 	}
 	if (count($error) > 0) {
 	    error('admin.php?action=bbcodes&job=smiley', $error);
@@ -391,17 +392,16 @@ elseif ($job == 'smileys_add') {
 	$delobj = $scache->load('smileys');
 	$delobj->delete();
 
-	ok('admin.php?action=bbcodes&job=smileys', 'Smiley was successfully added');
+	ok('admin.php?action=bbcodes&job=smileys', 'Smiley successfully added');
 }
 elseif ($job == 'word') {
 	echo head();
 	$result = $db->query("SELECT * FROM {$db->pre}textparser WHERE type = 'word'",__LINE__,__FILE__);
 ?>
-<form name="form" method="post" action="admin.php?action=bbcodes&job=del">
-<input name="temp4" value="word" type="hidden">
+<form name="form" method="post" action="admin.php?action=bbcodes&job=del&tp=word">
  <table class="border">
   <tr>
-   <td class="obox" colspan=4>Manage Glossary</b></td>
+   <td class="obox" colspan="4">Manage Glossary</b></td>
   </tr>
   <tr>
    <td class="ubox" width="5%">Delete</td>
@@ -418,16 +418,15 @@ elseif ($job == 'word') {
   </tr>
 <?php } ?>
   <tr> 
-   <td class="ubox" width="100%" colspan=4 align="center"><input type="submit" name="Submit" value="Delete"></td> 
+   <td class="ubox" width="100%" colspan="4" align="center"><input type="submit" name="Submit" value="Delete"></td> 
   </tr>
  </table>
 </form>
 <br>
-<form name="form" method="post" action="admin.php?action=bbcodes&job=add">
-<input name="temp4" value="word" type="hidden">
+<form name="form" method="post" action="admin.php?action=bbcodes&job=add&tp=word">
  <table class="border">
   <tr> 
-   <td class="obox" colspan=2>Add Word</b></td>
+   <td class="obox" colspan="2">Add Word</b></td>
   </tr>
   <tr> 
    <td class="mbox" width="50%">Abbreviation:</td>
@@ -442,7 +441,7 @@ elseif ($job == 'word') {
    <td class="mbox" width="50%"><textarea name="temp3" cols="50" rows="3"></textarea></td> 
   </tr>
   <tr> 
-   <td class="ubox" width="100%" colspan=2 align="center"><input type="submit" name="Submit" value="Add"></td> 
+   <td class="ubox" width="100%" colspan="2" align="center"><input type="submit" name="Submit" value="Add"></td> 
   </tr>
  </table>
 </form> 
@@ -453,8 +452,7 @@ elseif ($job == 'censor') {
 	echo head();
 	$result = $db->query("SELECT * FROM {$db->pre}textparser WHERE type = 'censor'",__LINE__,__FILE__);
 ?>
-<form name="form" method="post" action="admin.php?action=bbcodes&job=del">
-<input name="temp4" value="censor" type="hidden">
+<form name="form" method="post" action="admin.php?action=bbcodes&job=del&tp=censor">
  <table class="border">
   <tr> 
    <td class="obox" colspan=3>Manage Censorship</b></td>
@@ -477,8 +475,7 @@ elseif ($job == 'censor') {
  </table>
 </form>
 <br>
-<form name="form" method="post" action="admin.php?action=bbcodes&job=add">
-<input name="temp4" value="censor" type="hidden">
+<form name="form" method="post" action="admin.php?action=bbcodes&job=add&tp=censor">
  <table class="border">
   <tr> 
    <td class="obox" colspan=2>Add Word</b></td>
@@ -503,8 +500,8 @@ elseif ($job == 'replace') {
 	echo head();
 	$result = $db->query("SELECT * FROM {$db->pre}textparser WHERE type = 'replace'",__LINE__,__FILE__);
 ?>
-<form name="form" method="post" action="admin.php?action=bbcodes&job=del">
-<input name="temp4" value="replace" type="hidden">
+<form name="form" method="post" action="admin.php?action=bbcodes&job=del&tp=replace">
+<input name="tp" value="replace" type="hidden">
  <table class="border">
   <tr> 
    <td class="obox" colspan=3>Manage Vocabulary</b></td>
@@ -527,8 +524,8 @@ elseif ($job == 'replace') {
  </table>
 </form>
 <br>
-<form name="form" method="post" action="admin.php?action=bbcodes&job=add">
-<input name="temp4" value="replace" type="hidden">
+<form name="form" method="post" action="admin.php?action=bbcodes&job=add&tp=replace">
+<input name="tp" value="replace" type="hidden">
  <table class="border">
   <tr> 
    <td class="obox" colspan=2>Add Word</b></td>
@@ -551,20 +548,20 @@ elseif ($job == 'replace') {
 }
 elseif ($job == 'add') {
 	echo head();
-	$type = $gpc->get('temp4', str);
+	$type = $gpc->get('tp', str);
 	
 	$error = array();
 	if ($type != 'word' && $type != 'censor' && $type != 'replace') {
-		$error[] = "Kein gültiger Typ angegeben";
+		$error[] = "No valid type given";
 	}
 	if (strlen($gpc->get('temp1', str)) < 2) {
-		$error[] = "Angabe 1 zu kurz";
+		$error[] = "Word is too short";
 	}
 	if (strlen($gpc->get('temp2', str)) < 2) {
-		$error[] = "Angabe 2 zu kurz";
+		$error[] = "Replacement/Censored Word/Phrase is too short";
 	}
 	if (strlen($gpc->get('temp3', str)) < 2 && $type == 'word') {
-		$error[] = "Beschreibung zu kurz";
+		$error[] = "Description is too short";
 	}
 	if (count($error) > 0) {
 		error('admin.php?action=bbcodes&job='.$type, $error);
@@ -575,14 +572,14 @@ elseif ($job == 'add') {
 	$delobj = $scache->load('bbcode');
 	$delobj->delete();
 
-	ok('admin.php?action=bbcodes&job='.$type, 'Daten wurden hinzugefügt');
+	ok('admin.php?action=bbcodes&job='.$type, 'Data successfully added!');
 }
 elseif ($job == 'del') {
 	echo head();
 	$delete = $gpc->get('delete', arr_int);
-	$type = $gpc->get('temp4', str);
+	$type = $gpc->get('tp', str);
 	if (count($delete) > 0) {
-		error('admin.php?action=bbcodes&job='.$type, 'Sie haben keine gültige Auswahl getroffen.');
+		error('admin.php?action=bbcodes&job='.$type, 'You did not enter a valid selection.');
 	}
 	$db->query('DELETE FROM '.$db->pre.'textparser WHERE id IN ('.implode(',',$delete).')',__LINE__,__FILE__);
 	$anz = $db->affected_rows();
@@ -633,11 +630,11 @@ elseif ($job == 'codefiles') {
 <table class="border">
 <tr><td class="obox">Add Syntax Highlighting Files</td></tr>
 <tr><td class="mbox">
-Um eine Datei hinzuzufügen, klicken Sie auf die "Durchsuchen"-Schaltfläche und wählen Sie eine Datei aus.
-Klicken Sie dann auf "Senden", um den Vorgang abzuschließen.<br /><br />
-Erlaubte Dateitypen: .php<br />
-Maximale Dateigröße: 200 KB<br /><br />
-<strong>Datei hochladen:</strong>
+To attach a file, click on the &quot;browse&quot;-button and select a file.
+Then click on &quot;upload&quot; in order to complete the procedure.<br /><br />
+Allowed file types: .php<br />
+Maximum file size: 200 KB<br /><br />
+<strong>Upload file:</strong>
 <br /><input type="file" name="upload_0" size="40" />
 </td></tr>
 <tr><td class="ubox" align="center"><input accesskey="s" type="submit" value="Upload" /></td></tr>
@@ -657,7 +654,7 @@ elseif ($job == 'del_codefiles') {
 	}
 	$delobj = $scache->load('syntax-highlight');
 	$delobj->delete();
-    ok('admin.php?action=bbcodes&job=codefiles', 'Dateien wurden gelöscht');
+    ok('admin.php?action=bbcodes&job=codefiles', 'Files successfully deleted!');
 }
 elseif ($job == 'custombb_add') {
 	echo head();
@@ -845,7 +842,7 @@ elseif ($job == 'custombb_delete') {
 	<table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
 	<tr><td class="obox">Delete Custom BB Code</td></tr>
 	<tr><td class="mbox">
-	<p align="center">Wollen Sie diesen BB-Code wirklich löschen?</p>
+	<p align="center">Do you really want to delete this custom BB code?</p>
 	<p align="center">
 	<a href="admin.php?action=bbcodes&job=custombb_delete2&id=<?php echo $id; ?>"><img border="0" align="middle" alt="" src="admin/html/images/yes.gif"> Yes</a>
 	&nbsp&nbsp;&nbsp;&nbsp&nbsp;&nbsp;

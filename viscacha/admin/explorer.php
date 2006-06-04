@@ -134,7 +134,7 @@ elseif ($job == 'newdir') {
    <td class="obox" colspan="2">Create new directory</td>
   </tr>
   <tr> 
-   <td class="mbox">Name of new directory:</td>
+   <td class="mbox">Name for the new directory:</td>
    <td class="mbox"><input type="text" name="name" size="30"></td>
   </tr>
   <tr> 
@@ -347,11 +347,11 @@ elseif ($job == "edit") {
    <td class="obox" colspan="2"><b>Edit a File</b></td>
   </tr>
   <tr>
-   <td class="mbox" width="15%">Dateiinhalt:</td> 
+   <td class="mbox" width="15%">Content:</td> 
    <td class="mbox" width="85%"><textarea name="content" rows="20" cols="110" class="texteditor"><?php echo htmlspecialchars($content); ?></textarea></td> 
   </tr>
   <tr> 
-   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="Submit"></td> 
+   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="Save" /></td> 
   </tr>
  </table>
 </form>
