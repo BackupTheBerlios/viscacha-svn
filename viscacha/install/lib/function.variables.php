@@ -9,9 +9,12 @@ function array_stripslashes($array) {
 }
 function rmdirr($dirname) {
 	global $filesystem;
+	if (!file_exists($dirname)) {
+		return false;
+	}
 	if (is_file($dirname)) {
 		return $filesystem->unlink($dirname);
-	} 
+	}
 	$dir = dir($dirname);
 	while (false !== $entry = $dir->read()) {
 		if ($entry == '.' || $entry == '..') {

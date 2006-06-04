@@ -38,7 +38,7 @@ if (isset($_REQUEST['save']) && $_REQUEST['save'] == 1) {
 			$done = array_fill(0, 4, 0);
 			foreach ($action as $table => $value) {
 				$t = $db->pre.$table;
-				$file = 'db/'.$table.'.sql';
+				$file = 'package/'.$package.'/db/'.$table.'.sql';
 				if ($value == 0) {
 					$sql = implode('', file($file));
 					$sql = str_replace('{:=DBPREFIX=:}', $db->pre, $sql);

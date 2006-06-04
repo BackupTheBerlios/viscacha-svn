@@ -105,7 +105,7 @@ array('path' => 'cache', 'chmod' => CHEX, 'recursive' => true, 'req' => true),
 array('path' => 'temp', 'chmod' => CHEX, 'recursive' => true, 'req' => true),
 array('path' => 'uploads', 'chmod' => CHEX, 'recursive' => true, 'req' => true),
 array('path' => 'admin/data/notes.php', 'chmod' => CHWR, 'recursive' => false, 'req' => false),
-array('path' => '.htaccess', 'chmod' => CHWR, 'recursive' => false, 'req' => true),
+array('path' => '.htaccess', 'chmod' => CHWR, 'recursive' => false, 'req' => false),
 array('path' => 'data', 'chmod' => CHWR, 'recursive' => true, 'req' => true),
 array('path' => 'language', 'chmod' => CHWR, 'recursive' => true, 'req' => false)
 );

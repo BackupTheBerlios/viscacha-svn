@@ -3,6 +3,6 @@ CREATE TABLE `{:=DBPREFIX=:}postratings` (
   `aid` mediumint(7) NOT NULL,
   `tid` int(10) NOT NULL,
   `pid` int(10) NOT NULL,
-  `rating` enum('-1','1') NOT NULL,
+  `rating` tinyint(1) NOT NULL default '0',
   UNIQUE KEY `mid` (`mid`,`pid`)
 ) TYPE=MyISAM;

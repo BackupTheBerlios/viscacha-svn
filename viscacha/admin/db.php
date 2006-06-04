@@ -153,7 +153,7 @@ elseif ($job == 'backup') {
    <td class="mbox" width="70%" valign="top">
    <input type="checkbox" name="structure" value="1" checked="checked" /> <strong>Export structure</strong><br />
    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="drop" value="1" checked="checked" /> Add 'DROP TABLE IF EXISTS'<br /><br />
-   <input type="checkbox" name="data" value="1" checked="checked" /> <strong>Dxport data</strong>
+   <input type="checkbox" name="data" value="1" checked="checked" /> <strong>Export data</strong>
    <br /><br /><input type="checkbox" name="zip" value="1" /> <strong>Save as ZIP file</strong>
    </td>
   </tr>

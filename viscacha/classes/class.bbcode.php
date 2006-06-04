@@ -48,7 +48,9 @@ class BBCode {
 	    );
 		$this->cache_bbcode();
 		$this->cache_custombb();
-		include('classes/class.convertroman.php');
+		if (!class_exists('ConvertRoman')) {
+			include('classes/class.convertroman.php');
+		}
 	}
 	function setName($name) {
 		$this->reader = $name;

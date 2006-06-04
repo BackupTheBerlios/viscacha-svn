@@ -16,5 +16,5 @@ INSERT INTO `{:=DBPREFIX=:}settings` (`name`, `title`, `description`, `type`, `o
 ('title', 'Title for Newsfeed', '', 'text', '', 'Ticker', 3),
 ('text', 'Text to show', 'You can enter the message here. You can use HTML.', 'textarea', '', '', 4),
 ('title', 'Title to show', 'You can enter the title here. You can use HTML.', 'text', '', '', 4),
-('topicnum', 'Topics to show', 'Number of new topics which are supposed to be listed maximally.', 'textarea', '', '10', 5),
+('topicnum', 'Topics to show', 'Number of new topics which are supposed to be listed maximally.', 'text', '', '10', 5),
 ('repliesnum', 'Number of replies', 'Maximum number of newest replies shown after the form.', 'text', '', '5', 6);

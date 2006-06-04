@@ -9,7 +9,7 @@ VALUES (
 	'topicnum', 
 	'Topics to show', 
 	'Number of new topics which are supposed to be listed maximally.', 
-	'textarea', 
+	'text', 
 	'', 
 	'10', 
 	'{$group}')

@@ -63,7 +63,7 @@ class DB {
 				      $this->commentdel.' Tables: '.implode(', ', $tables).$this->new_line;
 
 		// Keine Anfuehrungszeichen in mySQL-Namen
-		$this->query('SET SQL_QUOTE_SHOW_CREATE = 0',__LINE__,__FILE__);
+		$this->query('SET SQL_QUOTE_SHOW_CREATE = 1',__LINE__,__FILE__);
 	
 		// Werte & Struktur der Tabellen ermitteln
 		foreach ($tables as $mysql_table) {
