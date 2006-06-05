@@ -61,7 +61,7 @@ rmdirr('../classes/magpie_rss/extlib/');
 
 $filesystem->mkdir('../cache/modules/', 0777);
 
-$filesystem->file_put_contents('data/errlog_php.inc.php', '');
+$filesystem->file_put_contents('../data/errlog_php.inc.php', '');
 
 $db->query("ALTER TABLE `{$db->pre}abos` CHANGE `type` `type` ENUM( '', 'd', 'w', 'f' ) NOT NULL", __LINE__, __FILE__,false);
 $result = $db->query("SELECT mid, tid FROM {$db->pre}fav", __LINE__, __FILE__,false);

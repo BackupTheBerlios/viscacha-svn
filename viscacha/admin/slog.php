@@ -222,9 +222,9 @@ elseif ($job == 's_general') {
 	require_once("classes/class.charts.php");
 	$PG = new PowerGraphic();
 	$skin = $gpc->get('skin', int, 1);
-	$modus = $gpc->get('modus', int, 1);
+	$modus = $gpc->get('modus', int, 2);
 	$type = $gpc->get('dtype', int, 3);
-	$timeorder = $gpc->get('timeorder', int, 2);
+	$timeorder = $gpc->get('timeorder', int, 3);
 	$sortorder = $gpc->get('sortorder', str, 'asc');
 	?>
 <form method="post" action="admin.php?action=slog&job=s_general&show=1">
@@ -402,8 +402,14 @@ if ($show == 1) {
   <tr> 
    <td class="mbox">
 	<table border="0" cellspacing="0" cellpadding="0" width="100%">
-	<tr><td>Members:</td><td><code><?php echo $members[0];?></code></td></tr>
-	<tr><td>Posts:</td><td><code><?php echo $posts[0];?></code></td></tr>
+	<tr>
+	  <td>Members:</td><td><code><?php echo $members[0];?></code></td>
+	  <td colspan="2">&nbsp;</td>
+	</tr>
+	<tr>
+	  <td>Posts:</td><td><code><?php echo $posts[0];?></code></td>
+	  <td>Attachments:</td><td><code><?php echo $uploads[0];?></code></td>
+	</tr>
 	<tr>
 	  <td>Threads:</td><td><code><?php echo $topics[0];?></code></td>
 	  <td>Replies:</td><td><code><?php echo $replies;?></code></td>
@@ -412,7 +418,6 @@ if ($show == 1) {
 	  <td>Articles:</td><td><code><?php echo $aposts[0];?></code></td>
 	  <td>News:</td><td><code><?php echo $nposts[0];?></code></td>
 	</tr>
-	<tr><td>Attachments:</td><td><code><?php echo $uploads[0];?></code></td></tr>
 	<tr>
 	  <td>Subscriptions:</td><td><code><?php echo $abos[0];?></code></td>
 	  <td>Favourite threads:</td><td><code><?php echo $favs[0];?></code></td>

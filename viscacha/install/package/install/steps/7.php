@@ -70,7 +70,7 @@ else {
 		<td width="40%"><strong>Action</strong></td>
 	</tr>
 	<?php
-	$path = 'db/';
+	$path = 'package/'.$package.'/db/';
 	$tables = $db->list_tables();
 	$dh = opendir($path);
 	while (($file = readdir($dh)) !== false) {

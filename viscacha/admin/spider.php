@@ -264,6 +264,8 @@ elseif ($job == 'pending') {
 				$pending_bots++;
 			}
 		}
+		natsort($pending_agent_array);
+		natsort($pending_ip_array);
 		
 		if (count($pending_agent_array) > 0 || count($pending_ip_array) > 0) {
 			?>
@@ -314,6 +316,7 @@ elseif ($job == 'pending') {
 	</td></tr>
 	</table>
 	<?php
+	echo foot();
 }
 else {
 	?>
