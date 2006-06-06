@@ -27,28 +27,28 @@ $gls = array(
 );
 $glk = array_keys($gls);
 $gll = array(
-'admin' => 'Der Nutzer ist der oberste Verwalter im Forum. Er darf in dieses Admincenter und hat volle Konttrolle über das Forum!',
-'gmod' => 'Der Nutzer ist automatisch Moderator in allen Foren und darf dort alle Optionen und Aktionen auf Themen anwenden!',
-'guest' => 'Die Benutzer dieser Benutzergruppe sind (nicht registrierte) Gäste.',
-'members' => 'Darf sich die Mitgliederliste ansehen und evtl. einsehbare Daten nutzen.',
-'profile' => 'Der Nutzer darf sich die Profile der Mitglieder ansehen und evtl. einsehbare Daten nutzen.',
-'pdf' => 'Der Nutzer darf sich die PDF-Dateien von einzelnen Themenseiten herunterladen.',
-'pm' => 'Der Nutzer das private Nachrichten (PN) System benutzen. Er kann PNs verschicken, empfangen, verwalten und archivieren.',
-'wwo' => 'Darf die Wer-ist-wo-online-Liste mit den Aufenthaltsorten der Nutzer ansehen.',
-'search' => 'Darf die Suche benutzen und sich Ergebnisse ansehen.',
-'team' => 'Darf sich die Teamliste, mit den Administartoren, Globalen Moderatoren und Moderatoren ansehen.',
-'usepic' => 'Darf sein eigenes Profilbild (häufig als Avatar bezeichnet) hochladen oder eine URL zu einem Profilbild eingeben.',
-'useabout' => 'Darf eine persönliche Seite im Benutzerprofil erstellen.',
-'usesignature' => 'Der Nutzer darf eine eigene Signatur erstellen.',
-'downloadfiles' => 'Der Nutzer darf angehängte Dateien und Bilder betrachten und herunterladen.',
-'forum' => 'Der Nutzer darf generell die Foren betrachten und in ihnen lesen.',
-'posttopics' => 'Es dürfen neue Themen gestartet werden.',
-'postreplies' => 'Es dürfen Antworten zu Themen geschrieben werden.',
-'addvotes' => 'Es dürfen zusammen mit Themen Umfragen erstellt werden.',
-'attachments' => 'Der Nutzer darf an seine Beiträge Dateien anhängen.',
-'edit' => 'Der Nutzer darf seine eigenen Beiträge editieren und löschen.',
-'voting' => 'Der Nutzer darf an Umfragen in Themen teilnehmen und seine Stimme abgeben.',
-'docs' => 'Darf alle Dokumente &amp; Seiten ansehen.'
+'admin' => 'The user ist he highest ranked Administrator in the forum. He may use this admincenter and has full control of the forum!',
+'gmod' => 'The user will automatically be moderator in all forums and can use all options and actions on topics.',
+'guest' => 'The users in this usergroup are (not registered) guests.',
+'members' => 'May view the memberlist and use eventually observably data.',
+'profile' => 'The user may view the profiles of the members and use eventually observably data.',
+'pdf' => 'The user may download particular topics as PDF-file.',
+'pm' => 'The user may use the Private Messaging (PM) System. He can send, receive, administer and archive private messages.',
+'wwo' => 'May view the where-is-who-online-list with the users residence.',
+'search' => 'May use the Search and view the results.',
+'team' => 'May view the teamlist with administrators, global moderators and moderators.',
+'usepic' => 'May upload his own picture for his profile (frequently named avatar) or indicate an URL to a picture.',
+'useabout' => 'May create a personal site in his user profile.',
+'usesignature' => 'The user may create his own signature.',
+'downloadfiles' => 'The user may view and download attached files.',
+'forum' => 'The user may generally view the forums and read them.',
+'posttopics' => 'New topics may be started.',
+'postreplies' => 'Answers to topics may be written.',
+'addvotes' => 'Polls may be created within topics.',
+'attachments' => 'The user may attach files to his post.',
+'edit' => 'The user may edit and delete his own posts.',
+'voting' => 'The user may participate in polls in topics.',
+'docs' => 'May view all documents &amp; pages.'
 );
 
 $guest_limitation = array('admin', 'gmod', 'pm', 'usepic', 'useabout', 'usesignature', 'voting', 'edit');
@@ -158,13 +158,13 @@ elseif ($job == 'add') {
    <td class="obox" colspan="2">Add a new Usergroup - Settings and Permissions</td>
   </tr>
   <tr> 
-   <td class="ubox" colspan="2">Übernahme von Zugriffsrechten aus einer bestehenden Gruppe:</td>
+   <td class="ubox" colspan="2">Assumption of permissions of other groups:</td>
   </tr>
   <tr>
-   <td class="mbox" width="50%">Gruppe:<br /><span class="stext">Wenn Sie hier eine Gruppe angeben, werden die unten gesetzten Daten ignoriert!</span></td>
+   <td class="mbox" width="50%">Group:<br /><span class="stext">If you indicate a group here, the data below will be ignored!</span></td>
    <td class="mbox" width="50%">
    <select name="copy">
-   <option value="0">-Daten "von Hand" setzen-</option>
+   <option value="0">-Set data "by hand" (manually)-</option>
    <?php foreach ($cache as $row) { ?>
    <option value="<?php echo $row['id']; ?>"><?php echo $row['name']; ?></option>
    <?php } ?>
@@ -172,7 +172,7 @@ elseif ($job == 'add') {
    </td>
   </tr>
   <tr>
-   <td class="mbox" width="50%">Forenrechte ebenfalls übernehmen<br /><span class="stext">DIe Rechte die für einzelne Foren für die oben angegebene Gruppe gesetzt sind auch für diese Gruppe benutzen.</span></td>
+   <td class="mbox" width="50%">Also assumpt Forum rights<br /><span class="stext">Use the permissions set for the group indicated above also for this group.</span></td>
    <td class="mbox" width="50%"><input type="checkbox" name="copyf" value="1" /></td>
   </tr>
   <tr> 
