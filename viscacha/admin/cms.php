@@ -2845,7 +2845,7 @@ elseif ($job == 'doc_add2') {
   <?php if($format['remote'] != 1) { ?>
   <tr>
    <td class="mbox">
-	HTML-Sourcecode:<br /> 
+	Sourcecode:<br /> 
 	<?php
 	$editorpath = 'templates/editor/';
 	$path = $tpl->altdir.'docs/'.$format['template'].'.html';
@@ -2992,8 +2992,11 @@ elseif ($job == 'doc_edit') {
 	}
 	$groups = $db->query("SELECT id, name FROM {$db->pre}groups", __LINE__, __FILE__);
 	$garr = explode(',', $row['groups']);
+	
+	$memberdata_obj = $scache->load('memberdata');
+	$memberdata = $memberdata_obj->get();
+	
 	echo head();
-	// ToDo: Autor ändern
 ?>
 <form id="form" method="post" action="admin.php?action=cms&job=doc_edit2&id=<?php echo $id.SID2URL_x; ?>">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
@@ -3010,7 +3013,7 @@ elseif ($job == 'doc_edit') {
   <?php if($format['remote'] != 1) { ?>
   <tr>
    <td class="mbox">
-	HTML-Sourcecode:<br /> 
+	Sourcecode:<br /> 
 	<textarea id="template" name="template" rows="20" cols="110" class="texteditor"><?php echo $row['content']; ?></textarea>
 	<?php if ($format['parser'] == 1) { ?>
 	<link rel="stylesheet" type="text/css" href="templates/editor/rte.css" />
@@ -3055,6 +3058,13 @@ elseif ($job == 'doc_edit') {
   </tr>
   <tr>
    <td class="mbox">
+	Author:<br /> 
+	<input type="radio" value="<?php echo $row['author']; ?>" name="author" checked="checked" /> Keep current Author: <strong><?php echo isset($memberdata[$row['author']]) ? $memberdata[$row['author']] : 'Unknown'; ?></strong><br />
+	<input type="radio" value="<?php echo $my->id; ?>" name="author" /> Change author to: <strong><?php echo $my->name; ?></strong>
+   </td>
+  </tr>
+  <tr>
+   <td class="mbox">
 	Freigeschaltet:<br /> 
 	<input type="checkbox" value="1" name="active"<?php echo iif($row['active'] == 1, ' checked="checked"'); ?> />
    </td>
@@ -3071,6 +3081,7 @@ elseif ($job == 'doc_edit2') {
 	$id = $gpc->get('id', int);
 	$title = $gpc->get('title', str);
 	$active = $gpc->get('active', int);
+	$author = $gpc->get('author', int);
   	$groups = $gpc->get('groups', arr_int);
   	$file = $gpc->get('file', none);
   	$file = trim($file);
@@ -3101,7 +3112,7 @@ elseif ($job == 'doc_edit2') {
 	
 	$time = time();
 	
-	$db->query("UPDATE {$db->pre}documents SET `title` = '{$title}', `content` = '{$content}', `update` = '{$time}', `groups` = '{$groups}', `active` = '{$active}', `file` = '{$file}' WHERE id = '{$id}' LIMIT 1",__LINE__,__FILE__);
+	$db->query("UPDATE {$db->pre}documents SET `title` = '{$title}', `content` = '{$content}', `update` = '{$time}', `groups` = '{$groups}', `active` = '{$active}', `file` = '{$file}', `author` = '{$author}' WHERE id = '{$id}' LIMIT 1",__LINE__,__FILE__);
 
 	ok('admin.php?action=cms&job=doc', 'Eintrag geändert');
 }

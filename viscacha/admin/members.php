@@ -960,9 +960,10 @@ elseif ($job == 'delete') {
 		$db->query("UPDATE {$db->pre}postratings SET aid = '0' WHERE aid IN ({$did})");
 		// Step 12: Delete user himself
 		$db->query("DELETE FROM {$db->pre}user WHERE id IN ({$did})");
+		$anz = $db->affected_rows();
 		// Step 13: Delete user's custom profile fields
 		$db->query("DELETE FROM {$db->pre}userfields WHERE ufid IN ({$did})");
-		ok('javascript:history.back(-1);', $db->affected_rows().' members deleted');
+		ok('javascript:history.back(-1);', $anz.' members deleted');
 	}
 	else {
 		error('javascript:history.back(-1);', 'Keine gültige Angabe gemacht.');

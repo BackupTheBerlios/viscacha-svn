@@ -1902,7 +1902,7 @@ elseif ($job == 'custom2') {
 	ORDER BY s.name
 	", __LINE__, __FILE__);
 	while ($row = $db->fetch_assoc($result)) {
-		$c->updateconfig(array($row['groupname'], $row['name']), str);
+		$c->updateconfig(array($row['groupname'], $row['name']), none);
 	}
 	
 	$c->savedata();
@@ -2056,7 +2056,7 @@ elseif ($job == 'new2') {
 	$name = $gpc->get('name', str);
 	$type = $gpc->get('type', str);
 	$typevalue = $gpc->get('typevalue', none);
-	$value = $gpc->get('value', str);
+	$value = $gpc->get('value', none);
 	$group = $gpc->get('group', int);
 	
 	$result = $db->query("SELECT name FROM {$db->pre}settings_groups WHERE id = '{$group}'");
@@ -2083,11 +2083,11 @@ elseif ($job == 'new2') {
 	
 	$db->query("
 INSERT INTO {$db->pre}settings (name, title, description, type, optionscode, value, sgroup) 
-VALUES ('{$name}', '{$title}', '{$desc}', '{$type}', '{$typevalue}', '{$value}', '{$group}')
+VALUES ('{$name}', '{$title}', '{$desc}', '{$type}', '{$typevalue}', '".$gpc->save_str($value)."', '{$group}')
 ");
 	
 	$c->getdata();
-	$c->updateconfig(array($row['name'], $name), str, $value);
+	$c->updateconfig(array($row['name'], $name), none, $value);
 	$c->savedata();
 	
 	ok('admin.php?action=settings&job=custom&id='.$group, 'Setting inserted!');

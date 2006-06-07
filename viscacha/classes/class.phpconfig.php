@@ -43,6 +43,25 @@ class manageconfig {
 	
 	}
 	
+	function _escapeNewline($nl) {
+		$nl = str_replace("\r\n", '\\r\\n', $nl[1]);
+		$nl = str_replace("\n", '\\n', $nl);
+		$nl = str_replace("\r", '\\r', $nl);
+		$nl = str_replace("\t", '\\t', $nl);
+		$str = "'.\"";
+		$str .= $nl;
+		$str .= "\".'";
+		return $str;
+	}
+	
+	function _prepareString($val2) {
+		$val2 = str_replace("'", "\\'", $val2);
+		// ToDo: Espace-Zeichen (\) escapcen (am Ende von String wegen Kollision \')
+		$val2 = preg_replace_callback("/((\r\n|\n|\r|\t)+)/s", array(&$this, '_escapeNewline'), $val2);
+		$val2 = "'{$val2}'";
+		return $val2;
+	}
+	
 	function savedata() {
 		global $filesystem;
 		$top = '<?php'."\n".'if (isset($_SERVER[\'PHP_SELF\']) && basename($_SERVER[\'PHP_SELF\']) == "'.basename($this->file).'") die(\'Error: Hacking Attempt\');'."\n";
@@ -55,12 +74,8 @@ class manageconfig {
 					if ((isset($this->opt[$key][$key2]) && $this->opt[$key][$key2] == int) || is_int($val2)) {
 						$val2 = intval($val2);
 					}
-					elseif (isset($this->opt[$key][$key2]) && $this->opt[$key][$key2] == null) {
-						// Fall through
-					}
 					else {
-						$val2 = str_replace("'", "\\'", $val2);
-						$val2 = "'{$val2}'";
+						$val2 = $this->_prepareString($val2);
 					}
 					$cfg[] = '$'.$this->varname."['{$key}']['{$key2}'] = {$val2};";
 				}
@@ -69,12 +84,8 @@ class manageconfig {
 				if ((isset($this->opt[$key]) && $this->opt[$key] == int) || is_int($val)) {
 					$val = intval($val);
 				}
-				elseif (isset($this->opt[$key]) && $this->opt[$key] == null) {
-					// Fall through
-				}
 				else {
-					$val = str_replace("'", "\\'", $val);
-					$val = "'{$val}'";
+					$val = $this->_prepareString($val);
 				}
 				$cfg[] = '$'.$this->varname."['{$key}'] = {$val};";
 			}

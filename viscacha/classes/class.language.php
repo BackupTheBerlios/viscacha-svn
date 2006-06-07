@@ -196,7 +196,12 @@ class lang {
 	
 	function setdir($dirv) {
 		global $config;
-		$dir = $config['fpath']."/language/$dirv";
+		if (is_dir($config['fpath'])) {
+			$dir = "{$config['fpath']}/language/{$dirv}";
+		}
+		else {
+			$dir = "language/{$dirv}";
+		}
 		$dir = realpath($dir);
 		if (file_exists($dir)) {
 			$this->dirid = $dirv;

@@ -364,6 +364,7 @@ elseif ($job == 'edit2') {
 	if ($db->num_rows($result) != 1) {
 		error('admin.php?action=groups&job=manage', 'Keine gültige ID angegeben');
 	}
+	$data = $db->fetch_assoc($result); // FIX
 
 	$sql_values = '';
 	foreach ($glk as $key) {

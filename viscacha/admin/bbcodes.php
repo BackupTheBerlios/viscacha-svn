@@ -15,7 +15,7 @@ if ($job == 'smileys_delete') {
 		$anz = $db->affected_rows();
 	}
 	else {
-		$anz = 0;
+		$anz = 'No';
 	}
 	echo head();
 	ok('admin.php?action=bbcodes&job=smileys', $anz.' entries were deleted successfully!');
@@ -578,7 +578,7 @@ elseif ($job == 'del') {
 	echo head();
 	$delete = $gpc->get('delete', arr_int);
 	$type = $gpc->get('tp', str);
-	if (count($delete) > 0) {
+	if (count($delete) == 0) {
 		error('admin.php?action=bbcodes&job='.$type, 'You did not enter a valid selection.');
 	}
 	$db->query('DELETE FROM '.$db->pre.'textparser WHERE id IN ('.implode(',',$delete).')',__LINE__,__FILE__);
