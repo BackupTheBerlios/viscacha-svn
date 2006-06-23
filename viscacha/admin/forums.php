@@ -956,10 +956,10 @@ elseif ($job == 'cat_edit') {
 	$row = $db->fetch_assoc($result);
 
 	?>
-<form name="form" method="post" action="admin.php?action=forums&job=cat_edit2&id=<?php echo $id; ?>">
+<form name="form" method="post" action="admin.php?action=forums&amp;job=cat_edit2&amp;id=<?php echo $id; ?>">
  <table class="border">
   <tr> 
-   <td class="obox" colspan=2>Edit Category</td>
+   <td class="obox" colspan="2">Edit Category</td>
   </tr>
   <tr> 
    <td class="mbox" width="50%">Name:</td>
