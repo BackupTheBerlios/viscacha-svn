@@ -15,7 +15,7 @@ if (isset($_REQUEST['save']) && $_REQUEST['save'] == 1) {
 	$db->errlogfile = '../'.$db->errlogfile;
 	$db->pre = $db->prefix();
 	$db->connect(false);
-	if (!$db->conn) {
+	if (!is_resource($db->conn)) {
 		?>
 	<div class="bbody">Could not connect to database! Pleasy try again later or check the database settings!</div>
 	<div class="bfoot center"><a class="submit" href="index.php?step=<?php echo $step-2; ?>">Go back</a> <a class="submit" href="index.php?step=<?php echo $step; ?>">Refresh</a></div>
@@ -24,7 +24,7 @@ if (isset($_REQUEST['save']) && $_REQUEST['save'] == 1) {
 	else {
 		if (!$db->select_db()) {
 			?>
-	<div class="bbody">Could not find database <em><?php echo $db->getcfg('database'); ?></em>! Pleasy create a new database with this name or choose another database!</div>
+	<div class="bbody">Could not find database <em><?php echo $db->database; ?></em>! Pleasy create a new database with this name or choose another database!</div>
 	<div class="bfoot center"><a class="submit" href="index.php?step=<?php echo $step-2; ?>">Go back</a> <a class="submit" href="index.php?step=<?php echo $step; ?>">Refresh</a></div>
 			<?php
 		}

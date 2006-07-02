@@ -45,7 +45,7 @@ require_once('../classes/database/'.$config['dbsystem'].'.inc.php');
 $db = new DB($config['host'], $config['dbuser'], $config['dbpw'], $config['database'], $config['pconnect'], false, $config['dbprefix']);
 $db->pre = $db->prefix();
 $db->connect(false);
-if (!$db->conn) {
+if (!is_resource($db->conn)) {
 	?>
 <div class="bbody">Could not connect to database! Pleasy try again later or check the database settings!</div>
 <div class="bfoot center"><a class="submit" href="index.php?step=<?php echo $step-1; ?>">Go back</a> <a class="submit" href="index.php?step=<?php echo $step; ?>">Refresh</a></div>

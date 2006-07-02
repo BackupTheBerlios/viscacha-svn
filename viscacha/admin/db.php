@@ -403,7 +403,7 @@ elseif ($job == 'status') {
 	$result = $db->list_tables();
 
 	if (!empty($table)) {
-		$result11 = $db->query('SHOW TABLE STATUS FROM '.$db->getcfg('db').' LIKE "'.$table.'"',__LINE__,__FILE__);
+		$result11 = $db->query('SHOW TABLE STATUS FROM '.$db->database.' LIKE "'.$table.'"',__LINE__,__FILE__);
 		$result12 = $db->query('DESCRIBE '.$table);
 ?>
   <table class="border">
@@ -459,7 +459,7 @@ elseif ($job == 'status') {
    <td class="ubox" width="30%">Name</td>
    <td class="ubox" width="70%">Value</td>
   </tr>
-	<?php while ($row = $db->fetch_array($result2)) { ?>
+	<?php while ($row = $db->fetch_num($result2)) { ?>
 		<tr>
 		   <td class="mbox" width="30%"><?php echo $row[0]; ?></td>
            <td class="mbox" width="70%"><?php echo $row[1]; ?></td>
@@ -474,7 +474,7 @@ elseif ($job == 'status') {
    <td class="ubox" width="30%">Name</td>
    <td class="ubox" width="70%">Value</td>
   </tr>
-	<?php while ($row = $db->fetch_array($result1)) { ?>
+	<?php while ($row = $db->fetch_num($result1)) { ?>
 		<tr>
 		   <td class="mbox" width="30%"><?php echo $row[0]; ?></td>
            <td class="mbox" width="70%"><?php echo $row[1]; ?></td>

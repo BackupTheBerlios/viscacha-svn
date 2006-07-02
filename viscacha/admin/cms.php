@@ -1930,7 +1930,7 @@ elseif ($job == 'nav_edit2') {
 	$active = $gpc->get('active', int);
 	$groups = $gpc->get('groups', arr_int);
 	$result = $db->query('SELECT COUNT(*) FROM '.$db->pre.'groups', __LINE__, __FILE__);
-	$count = $db->fetch_array($result);
+	$count = $db->fetch_num($result);
 	if (count($groups) == $count[0]) {
 		$groups = 0;
 	}
@@ -2113,7 +2113,7 @@ elseif ($job == 'nav_addplugin2') {
 	$sort = $gpc->get('sort', int);
 	$groups = $gpc->get('groups', arr_int);
 	$result = $db->query('SELECT COUNT(*) FROM '.$db->pre.'groups', __LINE__, __FILE__);
-	$count = $db->fetch_array($result);
+	$count = $db->fetch_num($result);
 	if (count($groups) == $count[0]) {
 		$groups = 0;
 	}
@@ -2207,18 +2207,18 @@ elseif ($job == 'nav_add2') {
 		error('admin.php?action=cms&job=nav_addbox', 'Sie haben keinen Titel angegeben.');
 	}
 	if ($sort == 1) {
-		$sortx = $db->fetch_array($db->query("SELECT MAX(ordering) FROM {$db->pre}menu WHERE sub = '{$sub}' LIMIT 1", __LINE__, __FILE__));
+		$sortx = $db->fetch_num($db->query("SELECT MAX(ordering) FROM {$db->pre}menu WHERE sub = '{$sub}' LIMIT 1", __LINE__, __FILE__));
 		$sort = $sortx[0]+1;
 	}
 	elseif ($sort == 0) {
-		$sortx = $db->fetch_array($db->query("SELECT MIN(ordering) FROM {$db->pre}menu WHERE sub = '{$sub}' LIMIT 1", __LINE__, __FILE__));
+		$sortx = $db->fetch_num($db->query("SELECT MIN(ordering) FROM {$db->pre}menu WHERE sub = '{$sub}' LIMIT 1", __LINE__, __FILE__));
 		$sort = $sortx[0]-1;
 	}
 	else {
 		$sort = 0;
 	}
 	$result = $db->query('SELECT COUNT(*) FROM '.$db->pre.'groups', __LINE__, __FILE__);
-	$count = $db->fetch_array($result);
+	$count = $db->fetch_num($result);
 	if (count($groups) == $count[0]) {
 		$groups = 0;
 	}
@@ -2279,7 +2279,7 @@ elseif ($job == 'nav_addbox2') {
 	$sort = $gpc->get('sort', int);
 	$groups = $gpc->get('groups', arr_int);
 	$result = $db->query('SELECT COUNT(*) FROM '.$db->pre.'groups', __LINE__, __FILE__);
-	$count = $db->fetch_array($result);
+	$count = $db->fetch_num($result);
 	if (count($groups) == $count[0]) {
 		$groups = 0;
 	}
@@ -2935,7 +2935,7 @@ elseif ($job == 'doc_add3') {
 	}
 
 	$result = $db->query('SELECT COUNT(*) FROM '.$db->pre.'groups', __LINE__, __FILE__);
-	$count = $db->fetch_array($result);
+	$count = $db->fetch_num($result);
 	if (count($groups) == $count[0]) {
 		$groups = 0;
 	}
@@ -2958,10 +2958,10 @@ elseif ($job == 'doc_delete') {
 			$deleteids[] = 'id = '.$did; 
 		}
 		$result = $db->query('SELECT file FROM '.$db->pre.'documents WHERE '.implode(' OR ',$deleteids), __LINE__, __FILE__);
-		while ($row = $db->fetch_array($result)) {
+		while ($row = $db->fetch_assoc($result)) {
 			$rest = @substr(strtolower($row['file']), 0, 7);
-			if (!empty($row[0]) && $rest != 'http://') {
-				$filesystem->unlink($row[0]);
+			if (!empty($row['file']) && $rest != 'http://') {
+				$filesystem->unlink($row['file']);
 			}
 		}
 
@@ -3102,7 +3102,7 @@ elseif ($job == 'doc_edit2') {
 	}
 
 	$result = $db->query('SELECT COUNT(*) FROM '.$db->pre.'groups');
-	$count = $db->fetch_array($result);
+	$count = $db->fetch_num($result);
 	if (count($groups) == $count[0]) {
 		$groups = 0;
 	}

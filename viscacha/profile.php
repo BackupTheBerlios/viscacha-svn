@@ -323,7 +323,7 @@ elseif ($is_member) {
 		$row = $gpc->prepare($db->fetch_object($result));
 	
 		if ($config['showpostcounter']) {
-			$anz= $db->fetch_array($db->query('SELECT COUNT(name) FROM '.$db->pre.'replies WHERE name = "'.$_GET['id'].'"',__LINE__,__FILE__)); // etwas ungenau, aber noch recht schnell
+			$anz= $db->fetch_num($db->query('SELECT COUNT(name) FROM '.$db->pre.'replies WHERE name = "'.$_GET['id'].'"',__LINE__,__FILE__)); // etwas ungenau, aber noch recht schnell
 			
 			$days2 = $anz[0] / ((times() - $row->regdate) / 86400);
 			$days2 = sprintf("%01.2f", $days2);
@@ -388,7 +388,7 @@ elseif ($is_member) {
 		$vcarddl = '';
 		if ($config['osi_profile'] == 1) {
 			$result = $db->query('SELECT mid, active FROM '.$db->pre.'session WHERE mid = '.$_GET['id'],__LINE__,__FILE__);
-			$wwo = $db->fetch_array($result);
+			$wwo = $db->fetch_num($result);
 			if ($wwo[0] > 0) {
 				$wwo[1] = gmdate($lang->phrase('dformat3'),times($wwo[1]));
 				$osi = 1;

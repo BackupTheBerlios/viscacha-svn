@@ -80,7 +80,7 @@ else {
 ($code = $plugins->load('members_queries')) ? eval($code) : null;
 
 $result = $db->query("SELECT COUNT(*) FROM {$db->pre}user {$sqlwhere}",__LINE__,__FILE__);
-$count = $db->fetch_array($result);
+$count = $db->fetch_num($result);
 
 $temp = pages($count[0], $config['mlistenzahl'], "members.php?sort={$_GET['sort']}&amp;letter={$_GET['letter']}&amp;order={$_GET['order']}".SID2URL_x."&amp;", $_GET['page']);
 $start = $_GET['page']*$config['mlistenzahl'];

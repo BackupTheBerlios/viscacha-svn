@@ -118,7 +118,7 @@ if ($allowed == true) {
 			if ($info['tstart'] == 0 || $info['posts'] == 0) {
 				$db->query ("DELETE FROM {$db->pre}replies WHERE id = '{$info['id']}'",__LINE__,__FILE__);
 				$uresult = $db->query ("SELECT file FROM {$db->pre}uploads WHERE tid = '{$info['id']}'",__LINE__,__FILE__);
-				while ($urow = $db->fetch_array($uresult)) {
+				while ($urow = $db->fetch_num($uresult)) {
 				    @unlink('uploads/topics/'.$urow[0]);
 				}
 				$db->query ("DELETE FROM {$db->pre}uploads WHERE tid = '{$info['id']}'",__LINE__,__FILE__);
@@ -128,7 +128,7 @@ if ($allowed == true) {
 					$db->query ("DELETE FROM {$db->pre}topics WHERE id = '{$info['topic_id']}'",__LINE__,__FILE__);
 					$votes = $db->query("SELECT id FROM {$db->pre}vote WHERE tid = '{$info['id']}'",__LINE__,__FILE__);
 					$voteaids = array();
-					while ($row = $db->fetch_array($votes)) {
+					while ($row = $db->fetch_num($votes)) {
 						$voteaids[] = $row[0];
 					}
 					if (count($voteaids) > 0) {

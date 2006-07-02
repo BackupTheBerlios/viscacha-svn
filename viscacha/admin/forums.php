@@ -202,7 +202,7 @@ elseif ($job == 'delete2') {
 	
 		$db->query ("DELETE FROM {$db->pre}replies WHERE board = '{$_GET['id']}'",__LINE__,__FILE__);
 		$uresult = $db->query ("SELECT file FROM {$db->pre}uploads WHERE topic_id IN({$ids})",__LINE__,__FILE__);
-		while ($urow = $db->fetch_array($uresult)) {
+		while ($urow = $db->fetch_num($uresult)) {
 		    $filesystem->unlink('uploads/topics/'.$urow[0]);
 		    if (file_exists('uploads/topics/thumbnails/'.$urow[0])) {
 		    	$filesystem->unlink('uploads/topics/thumbnails/'.$urow[0]);
@@ -214,7 +214,7 @@ elseif ($job == 'delete2') {
 		$db->query ("DELETE FROM {$db->pre}topics WHERE board = '{$_GET['id']}'",__LINE__,__FILE__);
 		$votes = $db->query("SELECT id FROM {$db->pre}vote WHERE tid IN({$ids})",__LINE__,__FILE__);
 		$voteaids = array();
-		while ($row = $db->fetch_array($votes)) {
+		while ($row = $db->fetch_num($votes)) {
 			$voteaids[] = $row[0];
 		}
 		if (count($voteaids) > 0) {
@@ -324,14 +324,14 @@ elseif ($job == 'editforum2') {
 	if ($parent != 'NULL') {
 		if (preg_match("/c_\d{1,}/", $parent) == 1) {
 			$cid = str_replace("c_", "", $parent);
-			$array = $db->fetch_array($db->query("SELECT bid FROM {$db->pre}cat WHERE cid = $cid LIMIT 1"));
+			$array = $db->fetch_num($db->query("SELECT bid FROM {$db->pre}cat WHERE cid = $cid LIMIT 1"));
 			$bid = $array[0];
 		}
 		elseif (preg_match("/f_\d{1,}/", $parent) == 1) {
 			$bid = str_replace("f_", "", $parent);
-			$array = $db->fetch_array($db->query("SELECT cid FROM {$db->pre}cat WHERE bid = $bid LIMIT 1"));
+			$array = $db->fetch_num($db->query("SELECT cid FROM {$db->pre}cat WHERE bid = $bid LIMIT 1"));
 			if ($array[0] < 1) {
-				$array2 = $db->fetch_array($db->query("SELECT name, c.desc FROM {$db->pre}cat AS c WHERE id = $bid LIMIT 1"));
+				$array2 = $db->fetch_num($db->query("SELECT name, c.desc FROM {$db->pre}cat AS c WHERE id = $bid LIMIT 1"));
 				$db->query("INSERT INTO {$db->pre}categories (name, desctxt, c_order) VALUES ('{$array2[0]}', '{$array2[1]}', 0)");
 				$cid = $db->insert_id();
 			}
@@ -433,7 +433,7 @@ elseif ($job == 'add_mod2') {
 	if (empty($id)) {
 		error('admin.php?action=forums&job=manage', 'Forum or Category was not found');
 	}
-	$uid = $db->fetch_array($db->query('SELECT id FROM '.$db->pre.'user WHERE name = "'.$temp1.'" LIMIT 1'));
+	$uid = $db->fetch_num($db->query('SELECT id FROM '.$db->pre.'user WHERE name = "'.$temp1.'" LIMIT 1'));
 	if ($uid[0] < 1) {
 		error('admin.php?action=forums&job=add_mod&id='.$id, 'Member was not found!');
 	}
@@ -546,14 +546,14 @@ elseif ($job == 'addforum2') {
 	
 	if (preg_match("/c_\d{1,}/", $parent) == 1) {
 		$cid = str_replace("c_", "", $parent);
-		$array = $db->fetch_array($db->query("SELECT bid FROM {$db->pre}cat WHERE cid = '{$cid}' LIMIT 1"));
+		$array = $db->fetch_num($db->query("SELECT bid FROM {$db->pre}cat WHERE cid = '{$cid}' LIMIT 1"));
 		$bid = $array[0];
 	}
 	elseif (preg_match("/f_\d{1,}/", $parent) == 1) {
 		$bid = str_replace("f_", "", $parent);
-		$array = $db->fetch_array($db->query("SELECT cid FROM {$db->pre}cat WHERE bid = '{$bid}' LIMIT 1"));
+		$array = $db->fetch_num($db->query("SELECT cid FROM {$db->pre}cat WHERE bid = '{$bid}' LIMIT 1"));
 		if ($array[0] < 1) {
-			$array2 = $db->fetch_array($db->query("SELECT name, c.desc FROM {$db->pre}cat AS c WHERE id = $bid LIMIT 1"));
+			$array2 = $db->fetch_num($db->query("SELECT name, c.desc FROM {$db->pre}cat AS c WHERE id = $bid LIMIT 1"));
 			$db->query("INSERT INTO {$db->pre}categories (name, desctxt, c_order) VALUES ('{$array2[0]}', '{$array2[1]}', 0)");
 			$cid = $db->insert_id();
 		}
@@ -566,11 +566,11 @@ elseif ($job == 'addforum2') {
 	}
 	
 	if ($sort == 1) {
-		$sortx = $db->fetch_array($db->query("SELECT MAX(c_order) FROM {$db->pre}cat WHERE cid = {$cid} LIMIT 1"));
+		$sortx = $db->fetch_num($db->query("SELECT MAX(c_order) FROM {$db->pre}cat WHERE cid = {$cid} LIMIT 1"));
 		$sort = $sortx[0]+1;
 	}
 	elseif ($sort == 0) {
-		$sortx = $db->fetch_array($db->query("SELECT MIN(c_order) FROM {$db->pre}cat WHERE cid = {$cid} LIMIT 1"));
+		$sortx = $db->fetch_num($db->query("SELECT MIN(c_order) FROM {$db->pre}cat WHERE cid = {$cid} LIMIT 1"));
 		$sort = $sortx[0]-1;
 	}
 	else {
@@ -840,7 +840,7 @@ elseif ($job == 'add_rights') {
 	$result2 = $db->query("SELECT gid FROM {$db->pre}fgroups WHERE bid = ".$id);
 	$cache = array();
 	$cache2 = array();
-	while ($row = $db->fetch_array($result2)) {
+	while ($row = $db->fetch_num($result2)) {
 		$cache2[] = $row[0];
 	}
 	while ($row = $db->fetch_assoc($result)) {

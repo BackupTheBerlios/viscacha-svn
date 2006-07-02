@@ -95,7 +95,7 @@ if ($my->vlogin && $my->mp[0] == 1) {
 		$db->query ("DELETE FROM {$db->pre}replies WHERE topic_id = '{$info['id']}'",__LINE__,__FILE__);
 		$anz = $db->affected_rows();
 		$uresult = $db->query ("SELECT file FROM {$db->pre}uploads WHERE topic_id = '{$info['id']}'",__LINE__,__FILE__);
-		while ($urow = $db->fetch_array($uresult)) {
+		while ($urow = $db->fetch_num($uresult)) {
 			@unlink('uploads/topics/'.$urow[0]);
 			if (file_exists('uploads/topics/thumbnails/'.$urow[0])) {
 				@unlink('uploads/topics/thumbnails/'.$urow[0]);
@@ -111,7 +111,7 @@ if ($my->vlogin && $my->mp[0] == 1) {
 		$anz += $db->affected_rows();
 		$votes = $db->query("SELECT id FROM {$db->pre}vote WHERE tid = '{$info['id']}'",__LINE__,__FILE__);
 		$voteaids = array();
-		while ($row = $db->fetch_array($votes)) {
+		while ($row = $db->fetch_num($votes)) {
 			$voteaids[] = $row[0];
 		}
 		if (count($voteaids) > 0) {
@@ -332,7 +332,7 @@ if ($my->vlogin && $my->mp[0] == 1) {
 		$anz = 0;
 		$votes = $db->query("SELECT id FROM {$db->pre}vote WHERE tid = '{$info['id']}'",__LINE__,__FILE__);
 		$voteaids = array();
-		while ($row = $db->fetch_array($votes)) {
+		while ($row = $db->fetch_num($votes)) {
 			$voteaids[] = $row[0];
 		}
 		if (count($voteaids) > 0) {
@@ -359,7 +359,7 @@ if ($my->vlogin && $my->mp[0] == 1) {
 		$db->query ("DELETE FROM {$db->pre}replies WHERE id IN ({$iid})",__LINE__,__FILE__);
 		$anz = $db->affected_rows();
 		$uresult = $db->query ("SELECT file FROM {$db->pre}uploads WHERE tid IN ({$iid})",__LINE__,__FILE__);
-		while ($urow = $db->fetch_array($uresult)) {
+		while ($urow = $db->fetch_num($uresult)) {
 			@unlink('uploads/topics/'.$urow[0]);
 			if (file_exists('uploads/topics/thumbnails/'.$urow[0])) {
 				@unlink('uploads/topics/thumbnails/'.$urow[0]);
@@ -374,7 +374,7 @@ if ($my->vlogin && $my->mp[0] == 1) {
 			$db->query ("DELETE FROM {$db->pre}topics WHERE id = '{$info['id']}'",__LINE__,__FILE__);
 			$votes = $db->query("SELECT id FROM {$db->pre}vote WHERE tid = '{$info['id']}'",__LINE__,__FILE__);
 			$voteaids = array();
-			while ($row = $db->fetch_array($votes)) {
+			while ($row = $db->fetch_num($votes)) {
 				$voteaids[] = $row[0];
 			}
 			if (count($voteaids) > 0) {

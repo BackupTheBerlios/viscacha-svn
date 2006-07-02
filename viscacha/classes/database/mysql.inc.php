@@ -8,13 +8,14 @@ class DB {
 	var $persist;
 	var $open;
 	var $dbname;
-	var $dbprefix;
+	var $pre;
 	var $system;
 	var $escaper;
 	var $conn = NULL;
 	var $result = FALSE;
 	var $dbqd = array();
 	var $logerrors = TRUE;
+	var $freeResult;
 	// Backup
 	var $new_line;
 	var $commentdel;
@@ -27,8 +28,9 @@ class DB {
 	    $this->pwd = $pwd;
 	    $this->database = $dbname;
 	    $this->persist = $persist;
-	    $this->dbprefix = $dbprefix;
+	    $this->pre = $dbprefix;
 	    $this->system = 'mysql';
+	    $this->freeResult = false;
 		$this->errlogfile = 'data/errlog_'.$this->system.'.inc.php';
 		if (version_compare(PHP_VERSION, "4.3.0", ">=")) {
 			$this->escaper = 'mysql_real_escape_string';
@@ -39,11 +41,13 @@ class DB {
 		if($open) {
 		   $this->open();
 		}
-		define('DB_BOTH', MYSQL_BOTH);
-		define('DB_ASSOC', MYSQL_ASSOC);
-		define('DB_NUM', MYSQL_NUM);
 	}
 
+	/**
+	 * Retrieves the Database server version.
+	 *
+	 * @return	mixed	Returns the MySQL server version on success, or FALSE on failure.
+	 */
 	function version () {
 		return @mysql_get_server_info();
 	}
@@ -156,30 +160,9 @@ class DB {
 		}
 		return $s;
 	}
-
-	function getcfg($key) {
-		switch ($key) {
-		case 'host':
-		   return $this->host;
-		case 'user':
-		case 'name':
-		   return $this->user;
-		case 'password':
-		case 'pw':
-		   return $this->pwd;
-		case 'database':
-		case 'db':
-		   return $this->database;
-		case 'persist':
-		   return $this->persist;
-		case 'system':
-		case 'sql':
-		   return $this->system;
-		}
-	}
 	
 	function prefix() {
-		return $this->dbprefix;
+		return $this->pre;
 	}
 
 	function benchmark($type='array') {
@@ -224,9 +207,9 @@ class DB {
 	    return @mysql_free_result($result);
 	}
 	function close() {
-//		if (!empty($this->result)) {
-//	    	$this->free_result();
-//	    }
+		if (!empty($this->result) && $this->freeResult == true) {
+	    	$this->free_result();
+	    }
 		return mysql_close($this->conn);
 	}
 	function connect($die = true) {
@@ -237,9 +220,17 @@ class DB {
 			$func = 'mysql_connect';
 		}
 
-		$this->conn = @$func($this->host, $this->user, $this->pwd);
-		if(!$this->conn && $die == true) {
-			die('Could not connect to database! Pleasy try again later or check the database settings: host, username and password!');
+		ob_start();
+		$this->conn = $func($this->host, $this->user, $this->pwd);
+		ob_end_clean();
+		
+		if (!is_resource($this->conn)) {
+			if ($die == true) {
+				trigger_error('Could not connect to database! Pleasy try again later or check the database settings: host, username and password!<br /><strong>Database returned</strong>: '.mysql_error(), E_USER_ERROR);
+			}
+			else {
+				trigger_error('Could not connect to database!<br /><strong>Database returned</strong>: '.mysql_error(), E_USER_WARNING);
+			}
 		}
 	}
 	function select_db($dbname="") {
@@ -307,7 +298,7 @@ class DB {
 	    
 	    return $this->result;
 	}
-	function num_rows($result='') {
+	function num_rows($result = '') {
 		if (empty($result)) {
 	    	$result = $this->result;
 	    }
@@ -316,13 +307,13 @@ class DB {
     function insert_id() {
 	    return (@mysql_insert_id($this->conn));
 	}
-	function fetch_object($result='') {
+	function fetch_object($result = '') {
 		if (empty($result)) {
 	    	$result = $this->result;
 	    }
-	    return (@mysql_fetch_object($result));
+	    return @mysql_fetch_object($result);
 	}
-	function fetch_array($result='',$prefix=DB_BOTH) {
+	function fetch_num($result='') {
 		if (empty($result)) {
 	    	$result = $this->result;
 	    }

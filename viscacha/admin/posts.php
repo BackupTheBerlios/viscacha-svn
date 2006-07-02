@@ -43,7 +43,7 @@ elseif ($_GET['job'] == 'postrating2') {
 		error('admin.php?action=posts&job=postrating', 'Please choose a valid forum (not a category)!');
 	}
 	
-	$count = $db->fetch_array($db->query("SELECT COUNT(*) FROM {$db->pre}postratings AS p LEFT JOIN {$db->pre}topics AS t ON p.tid = t.id  WHERE t.board = '{$board}' AND t.status != '2' GROUP BY p.tid"));
+	$count = $db->fetch_num($db->query("SELECT COUNT(*) FROM {$db->pre}postratings AS p LEFT JOIN {$db->pre}topics AS t ON p.tid = t.id  WHERE t.board = '{$board}' AND t.status != '2' GROUP BY p.tid"));
 	$temp = pages($count[0], "admin.php?action=members&job=memberrating&amp;", 25);
 	
 	if ($count[0] < 1) {

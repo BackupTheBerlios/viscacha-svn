@@ -195,7 +195,7 @@ elseif ($_GET['action'] == "save") {
 
 	if (!is_id($_POST['name'])) {
 		$result = $db->query('SELECT id FROM '.$db->pre.'user WHERE name="'.$_POST['name'].'" LIMIT 1',__LINE__,__FILE__);
-		$user = $db->fetch_array($result);
+		$user = $db->fetch_num($result);
 		if ($user[0] > 0) {
 			$_POST['name'] = $user[0];
 		}
@@ -336,11 +336,13 @@ elseif ($_GET['action'] == "browse") {
 
 	($code = $plugins->load('pm_browse_start')) ? eval($code) : null;
 
-	$count = $db->fetch_array($db->query("
+	
+	$result = $db->query("
 	SELECT COUNT(*) 
 	FROM {$db->pre}pm 
 	WHERE pm_to = '{$my->id}' AND dir = '{$_GET['id']}'
-	",__LINE__,__FILE__));
+	",__LINE__,__FILE__);
+	$count = $db->fetch_num($result);
 	
 	$temp = pages($count[0], $config['pmzahl'], 'pm.php?action=browse&amp;id='.$_GET['id'].'&amp;', $_GET['page']);
 	$start = $_GET['page']*$config['pmzahl'];

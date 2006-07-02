@@ -113,7 +113,7 @@ elseif ($_GET['action'] == "pwremind2") {
 	LIMIT 1
 	',__LINE__,__FILE__);
 	
-	$user = $db->fetch_array($result);
+	$user = $db->fetch_assoc($result);
 	if ($db->num_rows($result) != 1) {
 		error($lang->phrase('log_pwremind_failed'), "log.php?action=pwremind".SID2URL_x);
 	}

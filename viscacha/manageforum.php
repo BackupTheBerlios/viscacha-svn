@@ -77,7 +77,7 @@ if ($my->vlogin && $my->mp[0] == 1) {
 		
 		if (!empty($marksql)) {
 			$result = $db->query("SELECT COUNT(*) FROM {$db->pre}topics WHERE board = '$board' {$marksql}",__LINE__,__FILE__);
-			$vlasttopics = $db->fetch_array($result);
+			$vlasttopics = $db->fetch_num($result);
 			$info['topics'] = $vlasttopics[0];
 		}
 		
@@ -241,7 +241,7 @@ if ($my->vlogin && $my->mp[0] == 1) {
 		$db->query ("DELETE FROM {$db->pre}replies WHERE topic_id IN({$ids})",__LINE__,__FILE__);
 		$anz = $db->affected_rows();
 		$uresult = $db->query ("SELECT file FROM {$db->pre}uploads WHERE topic_id IN({$ids})",__LINE__,__FILE__);
-		while ($urow = $db->fetch_array($uresult)) {
+		while ($urow = $db->fetch_num($uresult)) {
 			@unlink('uploads/topics/'.$urow[0]);
 			if (file_exists('uploads/topics/thumbnails/'.$urow[0])) {
 				@unlink('uploads/topics/thumbnails/'.$urow[0]);
@@ -257,7 +257,7 @@ if ($my->vlogin && $my->mp[0] == 1) {
 		$anz += $db->affected_rows();
 		$votes = $db->query("SELECT id FROM {$db->pre}vote WHERE tid IN({$ids})",__LINE__,__FILE__);
 		$voteaids = array();
-		while ($row = $db->fetch_array($votes)) {
+		while ($row = $db->fetch_num($votes)) {
 			$voteaids[] = $row[0];
 		}
 		if (count($voteaids) > 0) {

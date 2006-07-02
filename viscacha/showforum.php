@@ -104,7 +104,7 @@ else {
 
 if (!empty($marksql)) {
 	$result = $db->query("SELECT COUNT(*) FROM {$db->pre}topics WHERE board = '{$board}' {$marksql}",__LINE__,__FILE__);
-	$vlasttopics = $db->fetch_array($result);
+	$vlasttopics = $db->fetch_num($result);
 	$info['topics'] = $vlasttopics[0];
 }
 

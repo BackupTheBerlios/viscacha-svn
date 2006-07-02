@@ -89,15 +89,16 @@ if ($_GET['action'] == 'firstnew') {
 	}
 }
 elseif ($_GET['action'] == 'last') {
+	// Resourcen sparender wäre es in der Themenansicht einen Anker "last" zu setzen und diesen anzuspringen... damit wäre diese Query gespart
 	$result = $db->query('SELECT id FROM '.$db->pre.'replies WHERE topic_id = '.$info['id'].' ORDER BY date DESC LIMIT 1',__LINE__,__FILE__);
-	$new = $db->fetch_array($result);
+	$new = $db->fetch_num($result);
 	$pgs = ceil(($info['posts']+1)/$last['topiczahl']);
 	viscacha_header('Location: showtopic.php?id='.$info['id'].'&page='.$pgs.$qUrl.SID2URL_JS_x.'#p'.$new[0]);
 	exit;
 }
 elseif ($_GET['action'] == 'mylast') {
 	$result = $db->query('SELECT date, id FROM '.$db->pre.'replies WHERE topic_id = '.$info['id'].' AND name="'.$my->id.'" ORDER BY date DESC LIMIT 1');
-	$mylast =$db->fetch_array($result);
+	$mylast =$db->fetch_num($result);
 	$result = $db->query('SELECT COUNT(*) AS count FROM '.$db->pre.'replies WHERE topic_id = '.$info['id'].' AND date > '.$mylast[0],__LINE__,__FILE__);
 	$new = $db->fetch_assoc($result);
 	$tp = ($info['posts']+1) - $new['count'];
@@ -110,7 +111,7 @@ elseif ($_GET['action'] == 'mylast') {
 }
 elseif ($_GET['action'] == 'jumpto') {
 	$result = $db->query('SELECT date, id FROM '.$db->pre.'replies WHERE topic_id = "'.$info['id'].'" AND id="'.$gpc->get('topic_id', int).'" ORDER BY date DESC LIMIT 1');
-	$mylast =$db->fetch_array($result);
+	$mylast =$db->fetch_num($result);
 	$result = $db->query('SELECT COUNT(*) AS count FROM '.$db->pre.'replies WHERE topic_id = "'.$info['id'].'" AND date > "'.$mylast[0].'"',__LINE__,__FILE__);
 	$new = $db->fetch_assoc($result);
 	$tp = ($info['posts']+1) - $new['count'];
@@ -414,7 +415,7 @@ while (list($key, $val) = each ($my->mark['t'])) {
 $inkeys = implode(",",$keys);
 foreach ($topforums as $tf) {
 	$result = $db->query('SELECT COUNT(*) FROM '.$db->pre.'topics WHERE board = "'.$tf.'" AND last > "'.$my->clv.'" AND id NOT IN('.$inkeys.')',__LINE__,__FILE__);
-	$row = $db->fetch_array($result);
+	$row = $db->fetch_num($result);
 	if ($row[0] == 0) {
 		$my->mark['f'][$tf] = time();
 	}

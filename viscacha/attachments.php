@@ -221,7 +221,7 @@ else {
 				WHERE mid = "'.$upinfo['name'].'" AND id IN ('.implode(',', $ids).')
 				',__LINE__,__FILE__);
 				
-				while ($row = $db->fetch_array($result)) {
+				while ($row = $db->fetch_num($result)) {
 					if (file_exists('uploads/topics/'.$row[0])) {
 						@unlink('uploads/topics/'.$row[0]);
 					}

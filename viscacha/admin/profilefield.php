@@ -269,7 +269,7 @@ elseif ($job == "manage") {
 	  </tr>
 	<?php
 	$query = $db->query("SELECT * FROM ".$db->pre."profilefields ORDER BY disporder");
-	while($profilefield = $db->fetch_array($query)) {
+	while($profilefield = $db->fetch_assoc($query)) {
 		$profilefield['required'] = ($profilefield['required'] == 1) ? 'Yes' : 'No';
 		$profilefield['editable'] = (isset($editable[$profilefield['editable']])) ? $editable[$profilefield['editable']] : '-';
 		$profilefield['viewable'] = (isset($viewable[$profilefield['viewable']])) ? $viewable[$profilefield['viewable']] : '-';

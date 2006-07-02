@@ -40,25 +40,25 @@ elseif ($job == 'newsletter2') {
 	if ($int1 == 1) {
 		$emails = array();
 		$result = $db->query('SELECT mail FROM '.$db->pre.'user');
-		while ($row = $db->fetch_array($result)) {
+		while ($row = $db->fetch_num($result)) {
 			$emails[] = $row[0];
 		}
 		$result = $db->query('SELECT email FROM '.$db->pre.'replies WHERE email != "" AND guest = "1"');
-		while ($row = $db->fetch_array($result)) {
+		while ($row = $db->fetch_num($result)) {
 			$emails[] = $row[0];
 		}
 	}
 	elseif ($int1 == 2) {
 		$emails = array();
 		$result = $db->query('SELECT mail FROM '.$db->pre.'user');
-		while ($row = $db->fetch_array($result)) {
+		while ($row = $db->fetch_num($result)) {
 			$emails[] = $row[0];
 		}
 	}
 	elseif ($int1 == 3) {
 		$emails = array();
 		$result = $db->query('SELECT email FROM '.$db->pre.'replies WHERE email != "" AND guest = "1"');
-		while ($row = $db->fetch_array($result)) {
+		while ($row = $db->fetch_num($result)) {
 			$emails[] = $row[0];
 		}
 	}
@@ -392,7 +392,7 @@ elseif ($job == 'manage') {
 	$letter = $gpc->get('letter', str);
 	$page = $gpc->get('page', int, 1);
 	
-	$count = $db->fetch_array($db->query('SELECT COUNT(*) FROM '.$db->pre.'user'));
+	$count = $db->fetch_num($db->query('SELECT COUNT(*) FROM '.$db->pre.'user'));
 	$temp = pages($count[0], "admin.php?action=members&job=manage&sort=".$sort."&amp;letter=".$letter."&amp;order=".$order."&amp;", 25);
 
     if ($order == '1') $order = 'desc';
@@ -476,7 +476,7 @@ elseif ($job == 'memberrating') {
 	echo head();
 	$page = $gpc->get('page', int, 1);
 	
-	$count = $db->fetch_array($db->query('SELECT COUNT(*) FROM '.$db->pre.'postratings WHERE aid != "0" GROUP BY aid'));
+	$count = $db->fetch_num($db->query('SELECT COUNT(*) FROM '.$db->pre.'postratings WHERE aid != "0" GROUP BY aid'));
 	$temp = pages($count[0], "admin.php?action=members&job=memberrating&amp;", 25);
 
 	$start = $page*25;
@@ -1000,25 +1000,25 @@ elseif ($job == 'emaillist2') {
 	if ($int1 == 1) {
 		$emails = array();
 		$result = $db->query('SELECT mail FROM '.$db->pre.'user');
-		while ($row = $db->fetch_array($result)) {
+		while ($row = $db->fetch_num($result)) {
 			$emails[] = $row[0];
 		}
 		$result = $db->query('SELECT email FROM '.$db->pre.'replies WHERE email != ""');
-		while ($row = $db->fetch_array($result)) {
+		while ($row = $db->fetch_num($result)) {
 			$emails[] = $row[0];
 		}
 	}
 	elseif ($int1 == 2) {
 		$emails = array();
 		$result = $db->query('SELECT mail FROM '.$db->pre.'user');
-		while ($row = $db->fetch_array($result)) {
+		while ($row = $db->fetch_num($result)) {
 			$emails[] = $row[0];
 		}
 	}
 	elseif ($int1 == 3) {
 		$emails = array();
 		$result = $db->query('SELECT email FROM '.$db->pre.'replies WHERE email != ""');
-		while ($row = $db->fetch_array($result)) {
+		while ($row = $db->fetch_num($result)) {
 			$emails[] = $row[0];
 		}
 	}

@@ -45,7 +45,6 @@ $plugins = new PluginSystem();
 // Database functions
 require_once('classes/database/'.$config['dbsystem'].'.inc.php');
 $db = new DB($config['host'], $config['dbuser'], $config['dbpw'], $config['database'], $config['pconnect'], true, $config['dbprefix']);
-$db->pre = $db->prefix();
 
 // Construct base bb-code object
 $bbcode = new BBCode();
@@ -503,16 +502,16 @@ function UpdateBoardStats ($board) {
 	global $config, $db, $scache;
 	if ($config['updateboardstats'] == '1') {
 		$result = $db->query("SELECT COUNT(*) FROM {$db->pre}replies WHERE board='$board'",__LINE__,__FILE__);
-		$count = $db->fetch_array ($result);
+		$count = $db->fetch_num ($result);
 
 		$result = $db->query("SELECT COUNT(*) FROM {$db->pre}topics WHERE board='$board'",__LINE__,__FILE__);
-		$count2 = $db->fetch_array($result);
+		$count2 = $db->fetch_num($result);
 		
 		$replies = $count[0]-$count2[0];
 		$topics = $count2[0];
 
 		$result = $db->query("SELECT id FROM {$db->pre}topics WHERE board = '$board' ORDER BY last DESC LIMIT 1",__LINE__,__FILE__);
-	    $last = $db->fetch_array($result);
+	    $last = $db->fetch_num($result);
 	    if (empty($last[0])) {
 			$last[0] = 0;
 		}
