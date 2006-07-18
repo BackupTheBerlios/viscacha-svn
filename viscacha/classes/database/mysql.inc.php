@@ -317,13 +317,13 @@ class DB {
 		if (empty($result)) {
 	    	$result = $this->result;
 	    }
-	    return (@mysql_fetch_array($result, $prefix));
+	    return @mysql_fetch_row($result);
 	}
 	function fetch_assoc($result='') {
 		if (empty($result)) {
 	    	$result = $this->result;
 	    }
-	    return (@mysql_fetch_assoc($result));
+	    return @mysql_fetch_assoc($result);
 	}
 	function escape_string($value) {
 		$func = $this->escaper;

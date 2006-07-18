@@ -1,13 +1,13 @@
 <mail>
-	<title>{@config->fname}: Neue PN erhalten</title>
-	<comment>Hallo {@row->name}
+	<title>{@config->fname}: New PM received</title>
+	<comment>Dear {@row->name}
 
-Soeben haben Sie eine neue PN erhalten. 
-Die PN stammt von {%my->name} und hat den Titel "{@_POST->topic}".
-Sie können die PN unter diesem Link aufrufen:
+You just reveived a new private message. 
+The PM is from {%my->name} and has the title "{@_POST->topic}".
+You can view the PM with this link:
 {@config->furl}/pm.php
 
-Mit freundlichen Grüßen
-Ihr {@config->fname} Team
+Best regards,
+your {@config->fname} team
 {@config->furl}</comment>
 </mail>

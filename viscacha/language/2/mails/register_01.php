@@ -1,13 +1,13 @@
 <mail>
-	<title>{@config->fname}: Bestätigungsemail</title>
-	<comment>Hallo {@_POST->name},
+	<title>{@config->fname}: Confirmation email</title>
+	<comment>Dear {@_POST->name},
 
-Sie haben sich soeben erfolgreich im Forum "{@config->fname}" registriert.
+You just registered at the board "{@config->fname}".
 
-Der Forenverwalter (Administrator) muss Ihre Registrierung erst noch bestätigen, bevor Sie sich einloggen können. Sie erhalten dann eine weitere Bestätigungsemail von uns!
+The board administrator has to confirm your registration before you can login. We will send you an activation email if your account gets activated!
 
-Mit freundlichen Grüßen
-Ihr {@config->fname} Team
+Best regards,
+your {@config->fname} team
 {@config->furl}
 </comment>
 </mail>

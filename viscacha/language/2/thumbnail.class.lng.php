@@ -1,9 +1,9 @@
 <?php
-$lang["tne_badtype"] = 'Ungültiger Bildtyp!';
-$lang["tne_giferror"] = 'Konnte gif-Thumbnail nicht erzeugen!';
-$lang["tne_jpgerror"] = 'Konnte jpeg-Thumbnail nicht erzeugen!';
-$lang["tne_pngerror"] = 'Konnte png-Thumbnail nicht erzeugen!';
-$lang["tne_gd1error"] = 'Konnte GD1-Thumbnail nicht erzeugen!';
-$lang["tne_truecolorerror"] = 'Konnte True-Color-Thumbnail nicht erzeugen!';
-$lang["tne_imageerror"] = 'Konnte Image-Thumbnail nicht erzeugen!';
+$lang["tne_badtype"] = 'Wrong imagetype!';
+$lang["tne_giferror"] = 'Could not create gif-thumbnail!';
+$lang["tne_jpgerror"] = 'Could not create jpeg-thumbnail!';
+$lang["tne_pngerror"] = 'Could not create png-thumbnail!';
+$lang["tne_gd1error"] = 'Could not create GD1-thumbnail!';
+$lang["tne_truecolorerror"] = 'Could not create true-color-Ttumbnail!';
+$lang["tne_imageerror"] = 'Could not create image-Thumbnail!';
 ?>

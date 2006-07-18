@@ -1,10 +1,10 @@
 <mail>
-	<title>{@config->fname}: Ihr Benutzeraccount wurde freigeschaltet</title>
-	<comment>Hallo {@row->name}. 
+	<title>{@config->fname}: Your account has been activated</title>
+	<comment>Dear {@row->name},
 
-Ihr Benutzeraccount wurde soeben vom Administrator freigeschaltet.
+your account has been activated by the administrator.
 
-Mit freundlichen Grüßen
-Ihr {@config->fname} Team
+Best regards,
+your {@config->fname} team
 {@config->furl}</comment>
 </mail>

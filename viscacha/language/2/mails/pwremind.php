@@ -1,12 +1,16 @@
 <mail>
-	<title>{@config->fname}: Passwort-Erinnerung</title>
-	<comment>Hallo {@_POST->name},
+	<title>{@config->fname}: Password-Request</title>
+	<comment>Dear {%user->name},
+	
+you have requested to reset your password because you have forgotten your password. 
+If you did not request this, please ignore it. It will expire and become useless in 24 hours time.
 
-Sie haben soeben ein neues Passwort bei uns angefordert.
+To reset your password, please visit the following page: 
+$vboptions[bburl]/login.php?a=pwd&u={%user->id}&fid={$fid}
 
-Ihr neues Passwort lautet: {$pw}
+When you visit that page, your password will be reset, and the new password will be emailed to you. 
 
-Mit freundlichen Grüßen
-Ihr {@config->fname} Team
+Best regards,
+your {@config->fname} team
 {@config->furl}</comment>
 </mail>

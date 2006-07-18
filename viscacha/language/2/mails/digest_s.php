@@ -1,17 +1,17 @@
 <mail>
-	<title>{@config->fname}: Neuer Beitrag im Thema "{@row->topic}"</title>
-	<comment>Hallo {@row->name}
+	<title>{@config->fname}: New posting in topic "{@row->topic}"</title>
+	<comment>Hello {@row->name}
 
-Sie haben das Thema "{@row->topic}" abonniert.
-Zu diesem Thema gibt es einen neuen Beitrag. Der Beitrag stammt von {$pname}.
+YOu have subscribed the topic "{@row->topic}".
+There is a new posting for this topic. The posting is from {$pname}.
 
-Hier können Sie das Thema einsehen: 
+Here you can view the topic: 
 {@config->furl}/showtopic.php?id={@row->id}
 
-Mit freundlichen Grüßen
-Ihr {@config->fname} Team
+Best regards,
+your {@config->fname} team
 {@config->furl}
 ____________________________________________
-Um keine E-Mailbenachrichtigungen mehr zu erhalten, besuchen Sie bitte Ihre Themen-Abonnement-Verwaltung:
+To disable notifications, visit your topic subscription administration:
 {@config->furl}/editprofile.php?action=abos</comment>
 </mail>

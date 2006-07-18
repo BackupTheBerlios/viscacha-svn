@@ -1,17 +1,17 @@
-Wir diskutieren sachlich und akzeptieren die Meinung anderer.
-Wir bemühen uns um einen freundlichen Umgangston.
-Die Beiträge sollten kurz und prägnant verfasst sein und auf die Kernfrage/-diskussion eingehen.
-Wenn wir zu einem Thema keinen für die Diskussion sinnvollen Beitrag leisten können, dann verzichten wir darauf.
-Wir halten die Rechtschreibregeln ein und bemühen uns, Fehler nachträglich auszubessern. 
-Ein aussagekräftiger Titel bei neuen Themen ist Pflicht.
-Verfasste Beiträge sind lesefreundlich zu formatieren, z.B. durch Hervorhebungen, Unterstreichungen, Absätze zwischen verschiedenen Gedanken sowie saubere Untergliederungen bei Aufzählungen.
-Bitte überlege vor dem Veröffentlichen eines Beitrages, ob die richtige Rubrik gewählt ist.
-Für jede Frage erstellen wir einen neuen Beitrag. Damit bleiben alle Threads übersichtlich und die Suchfunktion kann effizienter arbeiten.
-Konfliktsituationen sollten zwischen den Beteiligten immer intern per PM und nicht öffentlich gelöst werden.
-Anstößige und unpassende Beiträge werden von uns ignoriert.
-Wir benutzen die Suchfunktion und schauen nach, ob unsere Frage bereits an anderer Stelle beantwortet wurde.
-Alle Antworten werden in das Forum geschrieben, so helfen wir anderen Besuchern mit der gleichen Frage. Hilfe per eMail oder PM sollte nur in Ausnahmefällen geschehen.
-Threads, deren Thema an anderer Stelle bereits diskutiert wurde, bleiben erhalten, auch wenn sich dies für die Übersichtlichkeit negativ auswirken sollte.
-Wir verweisen nicht plumb auf die Suchfunktion oder Google, sondern bieten dem Suchenden Links zu den Beiträgen mit ähnlichem Inhalt.
-Wir schweifen nicht vom Thema ab.
-Werbung für die eigene Homepage, so lange es nicht zum Thema passt, ist nicht erlaubt!
+We discuss objective and accept other members opinions.
+We try to keep a friendly tone.
+The postings should be short and concentrated on the main question or discuession subject.
+If we are not able to post something that is worth the time it needs to be read, we abandon the idea of posting.
+We follow the rules of orthography and grammer and we try to correct mistakes.
+A good, short, describing title is obligative.
+Postings have to be formated reader friendly, making use of accentuation, underlining, paragraphs between different ideas as well es clean structure in listings.
+Please ask yourself if you choose the right topic for your posting before you submit it.
+We create a new topic for every question. This way all topics remain clear and the serach function can work efficently.
+Conflicts should allways be solved by the involved via PMs and not in public.
+offensive and improper postings will be ignored.
+We use the search function to check if our question has been answered in another topic.
+Alle answers will be writen into the board to help other visitors with the same Questions. Helping via PM or email should be the exception.
+Topics, whose subject was allready discussed at another location, are preserved, even if the impact on the clarity is negativ .
+We do not crudely refer the search function or google, but instead provide links to topics with similar content.
+We do not zone out to off topic.
+Promoting own websites (homepage or commercial site) is prohibited if it does not fit the topic.

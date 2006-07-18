@@ -1,15 +1,15 @@
 <mail>
-	<title>{@config->fname}: Aktivierungsemail</title>
-	<comment>Hallo {@_POST->name},
+	<title>{@config->fname}: Activation email</title>
+	<comment>Dear {@_POST->name},
 
-Sie haben sich soeben erfolgreich im Forum "{@config->fname}" registriert.
+You just have registered at the board "{@config->fname}".
 
-Um die Registrierung zu bestätigen, besuchen Sie bitte den folgenden Link:
+To confirm you registration, please follow this link:
 {@config->furl}/register.php?action=confirm&id={$redirect}&fid={$confirmcode}
-Danach können Sie sich mit Ihren Nutzerdaten im Forum anmelden.
+After that you will be able to login with your username and password.
 
-Mit freundlichen Grüßen
-Ihr {@config->fname} Team
+Best regards,
+your {@config->fname} team
 {@config->furl}
 </comment>
 </mail>
