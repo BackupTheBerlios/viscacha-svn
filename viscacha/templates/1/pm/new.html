@@ -2,17 +2,18 @@
 <div class="border">
 <h3><img src="<?php echo $tpl->img('pm_new'); ?>" alt="" />  <?php echo $lang->phrase('preview_title'); ?></h3>
 <div class="bbody">
-	<span class='stext'><?php echo $lang->phrase('showtopic_subject'); ?> <strong><?php echo $data['topic']; ?></strong></span>
+	<span class="stext"><?php echo $lang->phrase('showtopic_subject'); ?> <strong><?php echo $data['topic']; ?></strong></span>
 	<hr />
 	<?php echo $data['formatted_comment']; ?>
+</div>
 </div>
 <br class="minibr" />
 <?php } ?>
 <form name="form2" method="post" action="pm.php?action=save<?php echo SID2URL_x; ?>">
 <div class="border">
-<h3><img src="<?php echo $tpl->img('pm_new'); ?>" alt="" />  <?php echo $lang->phrase('pm_writenew'); ?></h3>
+<h3><img src="<?php echo $tpl->img('pm_new'); ?>" alt="" /> <?php echo $lang->phrase('pm_writenew'); ?></h3>
 <div class="bbody">
-<label>Absender:</label>
+<label><?php echo $lang->phrase('pm_sender'); ?>:</label>
 <span class="iefix_left"><?php echo $my->name; ?><input type="hidden" name="id" value="<?php echo $my->id; ?>" /></span>
 <br class="newinput" /><hr class="formsep" />
 <label for="membersuggest_val"><?php echo $lang->phrase('pm_addressee'); ?></label>
@@ -27,7 +28,7 @@
   <br /><span class="stext" id="membersuggest"></span>
 </div>
 <br class="newinput" /><hr class="formsep" />
-<label for="topic">Titel:</label> 
+<label for="topic"><?php echo $lang->phrase('pm_title'); ?>:</label> 
 <input type="text" id="topic" class="label" name="topic" size="30" value="<?php echo $data['topic']; ?>" />
 <br class="newinput" /><hr class="formsep" />
 <label><?php echo $inner['smileys']; ?></label>

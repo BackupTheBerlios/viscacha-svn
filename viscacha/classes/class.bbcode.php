@@ -111,7 +111,7 @@ class BBCode {
 		        $aa[] = "$a:&nbsp;";
 		    }
 
-			$aa = implode("<br>",$aa);
+			$aa = implode("<br />",$aa);
 
 		    $this->noparse[$pid] = '<strong class="bb_blockcode_header">'.$lang->phrase('bb_sourcecode').'</strong><div class="bb_blockcode"><table><tr><td width="1%">'.$aa.'</td><td width="99%">'.$this->nl2br($code2).'</td></tr></table></div>';
 		}
@@ -777,6 +777,7 @@ class BBCode {
 		return $text;
 	}
 	function getSmileys () {
+		$this->cache_smileys();
 		return $this->smileys;
 	}
 	function getCustomBB () {

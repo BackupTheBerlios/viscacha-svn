@@ -50,7 +50,7 @@ function dir_array($dir, $chop = false) {
 function return_array($group, $id) {
 	$file = "language/{$id}/{$group}.lng.php";
 	if (file_exists($file)) {
-		@include($file);
+		include($file);
 	}
 	if (!isset($lang) || !is_array($lang)) {
 		$lang = array();

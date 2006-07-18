@@ -1,7 +1,7 @@
 <div class="border">
 <h3>
 <span class="right"><?php echo $lang->phrase('hello_user'); ?>
-<?php echo iif (1==1, '&nbsp;(<a href="search.php?action=active&amp;type=lastvisit'.SID2URL_x.'">Neue Beiträge</a>)</span>'); ?>
+&nbsp;(<a href="search.php?action=active&amp;type=lastvisit<?php echo SID2URL_x; ?>"><?php echo $lang->phrase('new_posts'); ?></a>)</span>
 <a href="forum.php<?php echo SID2URL_1; ?>"><?php echo $lang->phrase('forumname'); ?></a>
 </h3>
 <ul class="topmenu">

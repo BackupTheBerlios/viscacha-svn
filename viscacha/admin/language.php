@@ -998,16 +998,16 @@ elseif ($job == 'phrase') {
   <?php foreach ($complete as $file) { ?>
   <tr>
    <td class="mmbox" nowrap="nowrap">
-   <input type="checkbox" name="delete[]" value="<?php echo base64_encode($file); ?>">
+   <input type="checkbox" name="delete[]" value="<?php echo urlencode(base64_encode($file)); ?>">
    <?php if (substr($file, -8, 8) == '.lng.php') { ?>
-   <a href="admin.php?action=language&job=phrase_file&file=<?php echo base64_encode($file); ?>"><?php echo $file; ?></a>
+   <a href="admin.php?action=language&job=phrase_file&file=<?php echo urlencode(base64_encode($file)); ?>"><?php echo $file; ?></a>
    <?php } else { echo $file; } ?>
    </td>
    <?php
    foreach ($cache as $row) { 
    	$status = in_array($file, $diff[$row['id']]);
    ?>
-   <td class="mbox" align="center"><?php echo noki($status).iif(!$status, ' [<a href="admin.php?action=language&job=phrase_copy&file='.base64_encode($file).'&id='.$row['id'].'">Add</a>]'); ?></td>
+   <td class="mbox" align="center"><?php echo noki($status).iif(!$status, ' [<a href="admin.php?action=language&job=phrase_copy&file='.urlencode(base64_encode($file)).'&id='.$row['id'].'">Add</a>]'); ?></td>
    <?php } ?>
   </tr>
   <?php } ?>
@@ -1033,7 +1033,7 @@ elseif ($job == 'phrase_file_find') {
    <td class="obox" colspan="2">Phrase Manager &raquo; Find Phrase</td>
   </tr>
   <tr>
-   <td class="mbox" width="40%">Keyword:</td>
+   <td class="mbox" width="40%">Keyword:<br />The keyword will be searched in the keys (unique identifier for phrases) and in the values (the phrases itself).</td>
    <td class="mbox" width="60%"><input type="text" name="key" size="40" /></td>
   <tr> 
    <td class="ubox" align="center" colspan="2"><input type="submit" value="Find"></td>
@@ -1065,7 +1065,7 @@ elseif ($job == 'phrase_file') {
 	}
 	$search = $gpc->get('key', none);
 	if ($show == 'search') {
-		if (strlen($search) <= 3) {
+		if (strlen($search) < 3) {
 			error('admin.php?action=language&job=phrase_file_find', 'The keyword is too short. (Minimum: 3)');
 		}
 		foreach ($complete as $key => $value) {
@@ -1410,7 +1410,7 @@ elseif ($job == 'phrase_add_lngfile') {
 	echo foot();
 }
 elseif ($job == 'phrase_add_lngfile2') {
-	$dir = base64_encode($gpc->get('dir', none));
+	$dir = base64_decode($gpc->get('dir', none));
 	$file = $gpc->get('file', none);
 	$c = new manageconfig();
 	$result = $db->query('SELECT * FROM '.$db->pre.'language ORDER BY language',__LINE__,__FILE__);
@@ -1418,7 +1418,7 @@ elseif ($job == 'phrase_add_lngfile2') {
 		$c->createfile("language/{$row['id']}/{$dir}{$file}.lng.php", 'lang');
 	}
 	echo head();
-	ok('admin.php?action=language&job=phrase_file&file='.base64_encode("{$dir}{$file}.lng.php"), 'Language file sucessfully created.');
+	ok('admin.php?action=language&job=phrase_file&file='.urlencode(base64_encode("{$dir}{$file}.lng.php")), 'Language file sucessfully created.');
 }
 elseif ($job == 'phrase_add_mailfile') {
 	echo head();
@@ -1569,6 +1569,6 @@ elseif ($job == 'phrase_add2') {
 		$c->savedata();
 	}
 	
-	ok('admin.php?action=language&job=phrase_file&file='.base64_encode($file));	
+	ok('admin.php?action=language&job=phrase_file&file='.urlencode(base64_encode($file)));	
 }
 ?>

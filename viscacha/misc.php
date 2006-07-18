@@ -354,6 +354,14 @@ elseif ($_GET['action'] == "bbhelp") {
 	BBProfile($bbcode);
 	$smileys = $bbcode->getSmileys();
 	$cbb = $bbcode->getCustomBB();
+	$codelang = $scache->load('syntaxhighlight');
+	$clang = $codelang->get();
+	$phpcode = '[code=php]&lt;'.'?php';
+	$phpcode .= "\n";
+	$phpcode .= 'echo phpversion();';
+	$phpcode .= "\n";
+	$phpcode .= '?'.'&gt;[/code]';
+	$parsed_phpcode = $bbcode->parse($phpcode);
 	$breadcrumb->Add($lang->phrase('bbhelp_title'));
 	echo $tpl->parse("header");
 	echo $tpl->parse("menu");

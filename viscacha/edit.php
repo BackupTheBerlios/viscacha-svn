@@ -256,7 +256,7 @@ if ($allowed == true) {
 			);
 		}
 
-		if (count($prefix) > 0) {
+		if (count($prefix) > 0 && $info['tstart'] == 1) {
 			arsort($prefix);
 			if ($last['prefix'] == 0) {
 				// PHP is stupid: have to work around array_unshift and array_merge
