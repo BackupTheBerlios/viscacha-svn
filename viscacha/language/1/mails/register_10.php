@@ -8,7 +8,7 @@ Um die Registrierung zu bestätigen, besuchen Sie bitte den folgenden Link:
 {@config->furl}/register.php?action=confirm&id={$redirect}&fid={$confirmcode}
 Danach können Sie sich mit Ihren Nutzerdaten im Forum anmelden.
 
-Mit freundlichen Grüßen
+Mit freundlichen Grüßen,
 Ihr {@config->fname} Team
 {@config->furl}
 </comment>

@@ -2,11 +2,11 @@
 	<title>{@config->fname}: Passwort-Erinnerung</title>
 	<comment>Hallo {@_POST->name},
 
-Sie haben soeben ein neues Passwort bei uns angefordert.
+Du hast soeben ein neues Passwort bei uns angefordert.
 
-Ihr neues Passwort lautet: {$pw}
+Dein neues Passwort lautet: {$pw}
 
 Mit freundlichen Grüßen,
-Ihr {@config->fname} Team
+Dein {@config->fname} Team
 {@config->furl}</comment>
 </mail>

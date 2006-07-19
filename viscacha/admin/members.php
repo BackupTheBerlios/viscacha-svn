@@ -1594,12 +1594,27 @@ elseif ($job == 'search2') {
 	<?php
     echo foot();
 }
+elseif ($job == 'disallow') {
+	echo head();
+	$delete = $gpc->get('delete', arr_int);
+	if (count($delete) > 0) {
+		$did = implode(',', $delete);
+		$db->query("DELETE FROM {$db->pre}user WHERE id IN ({$did}) AND confirm != '11'");
+		$anz = $db->affected_rows();
+		$db->query("DELETE FROM {$db->pre}userfields WHERE ufid IN ({$did})");
+		ok('admin.php?action=members&job=activate', $anz.' members deleted');
+	}
+	else {
+		error('admin.php?action=members&job=activate', 'Keine gültige Angabe gemacht.');
+	}
+
+}
 elseif ($job == 'activate') {
 	echo head();
 
 	$result = $db->query('SELECT * FROM '.$db->pre.'user WHERE confirm != "11" ORDER BY regdate DESC');
 	?>
-	<form name="form" action="admin.php?action=members&job=delete" method="post">
+	<form name="form" action="admin.php?action=members&job=disallow" method="post">
 	<table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
 		<tr> 
 		  <td class="obox" colspan="4">Moderate &amp; Unlock Members</td>
@@ -1608,7 +1623,7 @@ elseif ($job == 'activate') {
 		  <td class="ubox" width="30%">Name</td>
 		  <td class="ubox" width="10%">Email</td>
 		  <td class="ubox" width="15%">Registered</td>
-		  <td class="ubox" width="45%">Status</td>
+		  <td class="ubox" width="45%">Status (<input type="checkbox" onchange="check_all('delete[]')" /> Alle)</td>
 		</tr>
 	<?php
 	while ($row = $gpc->prepare($db->fetch_object($result))) { 
@@ -1629,7 +1644,7 @@ elseif ($job == 'activate') {
 		  <?php } if ($row->confirm == '00' || $row->confirm == '10') { ?>
 		  <li>User muss sich noch per E-Mail freischalten</li>
 		  <?php } ?>
-		  <li>User löschen: <input type="checkbox" name="delete[]" value="<?php echo $row->id; ?>"></li>
+		  <li>User löschen: <input type="checkbox" name="delete[]" value="<?php echo $row->id; ?>" /></li>
 		  </ul></td>
 		</tr>
 		<?php

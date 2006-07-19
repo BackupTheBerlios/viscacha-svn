@@ -11,7 +11,7 @@ $lang = array(
 'mailer_from_failed' => 'Die folgende Absenderadresse ist nicht korrekt:',
 'mailer_instantiate' => 'Mail Funktion konnte nicht initialisiert werden.',
 'mailer_mailer_not_supported' => '-Mailer wird nicht unterst&uuml;tzt.',
-'mailer_provide_address' => 'Bitte geben Sie mindestens eine Empf&auml;nger Emailadresse an.',
+'mailer_provide_address' => 'Bitte gib mindestens eine Empf&auml;nger Emailadresse an.',
 'mailer_recipients_failed' => 'SMTP Fehler: Die folgenden Empf&auml;nger sind nicht korrekt:'
 );
 ?>

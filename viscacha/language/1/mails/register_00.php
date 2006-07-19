@@ -9,7 +9,7 @@ Um die Registrierung zu bestätigen, besuchen Sie bitte den folgenden Link:
 
 Der Forenverwalter (Administrator) muss Ihre Registrierung auch erst noch bestätigen, bevor Sie sich einloggen können. Sie erhalten dann eine weitere Bestätigungsemail von uns!
 
-Mit freundlichen Grüßen
+Mit freundlichen Grüßen,
 Ihr {@config->fname} Team
 {@config->furl}
 </comment>
