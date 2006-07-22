@@ -76,7 +76,7 @@ elseif ($job == 'cache_refresh') {
 	echo head();
 	$cache = new CacheItem($file);
 	$data = $cache->delete();
-	ok('admin.php?action=misc&job=cache', 'Die Cache-Datei wurde gelöscht, deswegen wird diese Datei vorerst nicht mehr in der Übersicht aufgeführt. Wenn sie das nächste mal gebraucht wird, wird der Cache automatisch neu aufgebaut und in der Übersicht wieder angezeigt.');
+	ok('admin.php?action=misc&job=cache', 'The cache-file was deleted. Therefore, this file will not be listed in the overview for the time being. If it is necessary the next time the cache will be rebuild and listed automatically into the overview.');
 }
 elseif ($job == 'cache_refresh_all') {
 	echo head();
@@ -91,7 +91,7 @@ elseif ($job == 'cache_refresh_all') {
 	    }
 		closedir($dh);
 	}
-	ok('admin.php?action=misc&job=cache', 'Die Cache-Dateien wurden gelöscht, deswegen werden diese Dateien vorerst nicht mehr in der Übersicht aufgeführt. Wenn sie das nächste mal gebraucht werden, wird der Cache automatisch neu aufgebaut und in der Übersicht wieder angezeigt.');
+	ok('admin.php?action=misc&job=cache', 'The cache-files were deleted. Therefore, this file will not be listed in the overview for the time being. If it is necessary the next time the cache will be rebuild and listed automatically into the overview.');
 }
 elseif ($job == 'onlinestatus') {
 	echo head();
@@ -100,12 +100,12 @@ elseif ($job == 'onlinestatus') {
 <form name="form" method="post" action="admin.php?action=misc&job=onlinestatus2">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr> 
-   <td class="obox" colspan="2"><b>Onlinestatus-Server</b></td>
+   <td class="obox" colspan="2"><b>Online-Status Server</b></td>
   </tr>
   <tr>
    <td class="mbox" width="30%">
    Server:<br />
-   <span class="stext">Pro Zeile ein Server.<br /><a href="http://osi.viscacha.org/" target="_blank">Onlinestatus-Server-Übersicht</a></span>
+   <span class="stext">Per line one server.<br /><a href="http://osi.viscacha.org/" target="_blank">Online-Status Server overview</a></span>
    </td>
    <td class="mbox" width="70%"><textarea name="servers" rows="10" cols="90"><?php echo $b; ?></textarea></td> 
   </tr>
@@ -117,16 +117,16 @@ elseif ($job == 'onlinestatus') {
 <br />
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr> 
-   <td class="obox" colspan="2"><b>Informationen bzgl. der Onlinestatus-Server</b></td>
+   <td class="obox" colspan="2"><b>Information concerning the online-status server</b></td>
   </tr>
   <tr>
    <td class="mbox">
-   <p><strong>Was ist mit Onlinestatus gemeint?</strong><br />
-   In den Benutzerprofilen kann man Instant Messenger-Adressen angeben. Diese werden im Profil auf eine Seite verlinkt, die den aktuellen Status der angegebenen Adresse anzeigen.</p>
-   <p><strong>Woher werden die Onlinestatus-Daten genommen?</strong><br />
-   Die Daten der Messenger ICQ, Yahoo, AOL und Skype werden direkt von den Servern der jeweiligen Messenger-Betreiber geholt. Jabber und MSN bieten keinen solchen Service an und deswegen wird eine inoffizielle Quelle, den Service von <a href="http://www.onlinestatus.org" target="_blank">Onlinestatus.org</a>, zurückgegriffen.
-   Dieser Service stellt ein Programm zur Verfügung, das die Daten der Messenger auslesen kann und zurückgibt. Da dieses Programm jedoch auf mehrere verschiedene Server verteilt ist, die sich häufiger mal ändern kann, muss in das obige Feld eine Liste von Servern angegeben werden, von denen der Status ausgelesen werden kann.<br />
-   Eine Übersicht an zur Verfügung stehenden Servern und weitere Informationen sind hier einsehbar: <a href="http://osi.viscacha.org/" target="_blank">Onlinestatus-Server-Übersicht</a>.
+   <p><strong>What is the meaning of online-status?</strong><br />
+   In the user-profiles you can mention the addresses of instant messengers. In the profile these addresses will be linked to a website which shows the current status of the given address.</p>
+   <p><strong>Where come the datas for the online-status from?</strong><br />
+   The datas of the messengers ICQ, Yahoo, AOL and Skype are taken directly from the servers of the respective messenger-provider. Jabber and MSN does not provide such a service. Therefore an inofficel source, the service of <a href="http://www.onlinestatus.org" target="_blank">Onlinestatus.org</a>, is used.
+   This service provides a programm which can read and return the datas of the messengers. Due to the fact that this program is distributed to several servers which can change freqently, there must be mentioned a list of servers in the field above where the status could read from.<br />
+   An overview of available servers and further information you can find here: <a href="http://osi.viscacha.org/" target="_blank">Online-Status-Server-overview</a>.
    </p>
    </td> 
   </tr>
@@ -140,7 +140,7 @@ elseif ($job == 'onlinestatus') {
 elseif ($job == 'onlinestatus2') {
 	echo head();
 	$filesystem->file_put_contents('data/imservers.php', $gpc->get('servers', none));
-	ok('admin.php?action=misc&job=onlinestatus', 'Daten wurden gespeichert');
+	ok('admin.php?action=misc&job=onlinestatus', 'Datas are saved');
 }
 elseif ($job == 'sessionmails') {
 	echo head();
@@ -149,12 +149,12 @@ elseif ($job == 'sessionmails') {
 <form name="form" method="post" action="admin.php?action=misc&job=sessionmails2">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr> 
-   <td class="obox" colspan="2"><b>Wegwerf-E-Mail-Adressen-Anbieter</b></td>
+   <td class="obox" colspan="2"><b>Disposable e-mail address provider</b></td>
   </tr>
   <tr>
    <td class="mbox" width="30%">
-   Anbieter-Domain:<br />
-   <span class="stext">Pro Zeile eine Domain.<br />Format: <code>name.tld</code> (ohne http, www, @, ...)</span>
+   Provider-domain:<br />
+   <span class="stext">Per line one domain.<br />Format: <code>name.tld</code> (without http, www, @, ...)</span>
    </td>
    <td class="mbox" width="70%"><textarea name="mails" rows="10" cols="90"><?php echo $mails; ?></textarea></td> 
   </tr>
@@ -170,7 +170,7 @@ elseif ($job == 'sessionmails2') {
 	echo head();
 	$mails = $gpc->get('mails', none);
 	$filesystem->file_put_contents('data/sessionmails.php', $mails);
-	ok('admin.php?action=misc&job=sessionmails', 'Daten wurden gespeichert');
+	ok('admin.php?action=misc&job=sessionmails', 'Datas are saved');
 }
 elseif ($job == 'feedcreator') {
 	echo head();
@@ -197,8 +197,8 @@ foreach ($data as $r) {
    <td class="mbox" width="10%"><input type="checkbox" name="delete[]" value="<?php echo $row[0]; ?>"></td>
    <td class="mbox" width="30%"><a href="external.php?action=<?php echo $row[0]; ?>" target="_blank" title="Show feed"><?php echo $row[2]; ?></a></td>
    <td class="mbox" width="30%"><?php echo $row[1]; ?> (<?php echo $row[0]; ?>)</td>
-   <td class="mbox" width="15%"><?php echo noki($row[3]); ?> [<a href="admin.php?action=misc&job=feedcreator_active&id=<?php echo $row[0]; ?>&key=3">Ändern</a>]</td>
-   <td class="mbox" width="15%"><?php echo noki($row[4]); ?> [<a href="admin.php?action=misc&job=feedcreator_active&id=<?php echo $row[0]; ?>&key=4">Ändern</a>]</td>
+   <td class="mbox" width="15%"><?php echo noki($row[3]); ?> [<a href="admin.php?action=misc&job=feedcreator_active&id=<?php echo $row[0]; ?>&key=3">Change</a>]</td>
+   <td class="mbox" width="15%"><?php echo noki($row[4]); ?> [<a href="admin.php?action=misc&job=feedcreator_active&id=<?php echo $row[0]; ?>&key=4">Change</a>]</td>
   </tr>
 <?php } ?>
   <tr> 
@@ -210,11 +210,11 @@ foreach ($data as $r) {
 <form name="form2" method="post" enctype="multipart/form-data" action="admin.php?action=misc&job=feedcreator_add">
 <table class="border">
 <tr><td class="obox" colspan="2">Add Feedcreator</td></tr>
-<tr class="mbox"><td>Datei hochladen:<br /><span class="stext">Erlaubte Dateitypen: .php<br />Maximale Dateigröße: 200 KB</span></td><td><input type="file" name="upload" size="50" /></td></tr>
+<tr class="mbox"><td>Upload file:<br /><span class="stext">permitted file types: .php<br />maximum file size: 200 KB</span></td><td><input type="file" name="upload" size="50" /></td></tr>
 <tr class="mbox"><td>Name:</td><td><input type="text" name="name" size="50" /></td></tr>
-<tr class="mbox"><td>Name der Klasse:<br /><span class="stext">Wenn kein Wert angegeben wird, versucht Viscacha den Namen selbst zu filtern.</span></td><td><input type="text" name="class" size="50" /></td></tr>
-<tr class="mbox"><td>Shown:<br /><span class="stext">Gibt an ob dieser Feed angezeigt wird. Dies regelt nicht ob ein Feed aktiv ist oder nicht!</span></td><td><input type="checkbox" name="active" value="1" /></td></tr>
-<tr class="mbox"><td>Download:<br /><span class="stext">Gibt an ob dieser Feed zum Download angeboten oder direkt im Browser angezeigt werden soll.</span></td><td><input type="checkbox" name="dl" value="1" /></td></tr>
+<tr class="mbox"><td>Name of the class:<br /><span class="stext">If no value is mentioned Viscacha will try to filter the name itself.</span></td><td><input type="text" name="class" size="50" /></td></tr>
+<tr class="mbox"><td>Shown:<br /><span class="stext">Specifys whether this feed will be shown. It does not regulate whether a feed is active or not!</span></td><td><input type="checkbox" name="active" value="1" /></td></tr>
+<tr class="mbox"><td>Download:<br /><span class="stext">Specifys whether this feed should be offered for downloads or shown directly in the browser.</span></td><td><input type="checkbox" name="dl" value="1" /></td></tr>
 <tr><td class="ubox" colspan="2" align="center"><input accesskey="s" type="submit" value="Upload &amp; Add" /></td></tr>
 </table>
 </form>
@@ -310,7 +310,7 @@ elseif ($job == 'feedcreator_delete') {
 		}
 	}
 	$filesystem->file_put_contents('data/feedcreator.inc.php', implode("\n", $n));
-    ok('admin.php?action=misc&job=feedcreator', 'Dateien wurden gelöscht');
+    ok('admin.php?action=misc&job=feedcreator', 'Files have been deleted');
 }
 elseif ($job == "captcha") {
 	echo head();
@@ -342,9 +342,9 @@ elseif ($job == "captcha") {
   <tr>
    <td class="mbox">
    <ul>
-   <li>Hintergrundbilder: <?php echo $noises; ?> [<a href="admin.php?action=misc&amp;job=captcha_noises">Verwalten</a>]</li>
-   <li>Schriftarten: <?php echo $fonts; ?> [<a href="admin.php?action=misc&amp;job=captcha_fonts">Verwalten</a>]</li>
-   <li><a href="admin.php?action=settings&amp;job=captcha">Einstellungen</a></li>
+   <li>Background pictures: <?php echo $noises; ?> [<a href="admin.php?action=misc&amp;job=captcha_noises">administrate</a>]</li>
+   <li>Fonts: <?php echo $fonts; ?> [<a href="admin.php?action=misc&amp;job=captcha_fonts">administrate</a>]</li>
+   <li><a href="admin.php?action=settings&amp;job=captcha">Settings</a></li>
    </ul>
    </td>
   </tr>
@@ -362,7 +362,7 @@ elseif ($job == "captcha_noises_delete") {
 			$deleted++;
 		}
 	}
-	ok('admin.php?action=misc&job=captcha_noises', $deleted.' Hintergrundbilder wurden gelöscht.');
+	ok('admin.php?action=misc&job=captcha_noises', $deleted.' Background pictures have been deleted.');
 }
 elseif ($job == "captcha_noises_view") {
 	$file = $gpc->get('file', str);
@@ -386,11 +386,11 @@ elseif ($job == "captcha_noises") {
 <form action="admin.php?action=misc&job=captcha_noises_delete" name="form2" method="post">
  <table class="border">
   <tr> 
-   <td class="obox" colspan="3">Captcha Manager &raquo; Hintergrundbilder</td>
+   <td class="obox" colspan="3">Captcha Manager &raquo; background pictures</td>
   </tr>
   <tr>
-   <td class="ubox" width="10%">Löschen</td>
-   <td class="ubox" width="90%">Vorschau der Hintergrundgrafik</td>
+   <td class="ubox" width="10%">Delete</td>
+   <td class="ubox" width="90%">Preview of the background image</td>
   </tr>
   <?php foreach ($fonts as $path) { ?>
   <tr>
@@ -406,15 +406,15 @@ elseif ($job == "captcha_noises") {
 <br />
 <form name="form2" method="post" enctype="multipart/form-data" action="admin.php?action=explorer&job=upload&cfg=captcha_noises">
  <table class="border" cellpadding="3" cellspacing="0" border="0">
-  <tr><td class="obox">Neue Schriftarten-Datei hochladen</td></tr>
+  <tr><td class="obox">Upload new font-files</td></tr>
   <tr>
    <td class="mbox">
-	Um eine Datei anzufügen, klicken Sie auf die "Durchsuchen"-Schaltfläche und wählen Sie eine Datei aus.
-	Klicken Sie dann auf "Senden", um den Vorgang abzuschließen.<br /><br />
-	Erlaubte Dateitypen: .jpg<br />
-	Maximale Dateigröße: 200 KB<br />
-	Empfohlene Bildgröße: 150x40 Pixel - Maximale Bildgröße: 300x80 Pixel<br /><br />
-	<strong>Datei hochladen:</strong>
+	To add a file, click on the "Browse"-button an select the file.
+	Afterwards click on "Submit" to finish the process.<br /><br />
+	Permitted file types: .jpg<br />
+	Maximum file size: 200 KB<br />
+	Recommended picture size: 150x40 pixel - maximum picture size: 300x80 pixel<br /><br />
+	<strong>Upload file:</strong>
 	<br /><input type="file" name="upload_0" size="40" />
    </td>
   </tr>
@@ -434,7 +434,7 @@ elseif ($job == "captcha_fonts_delete") {
 			$deleted++;
 		}
 	}
-	ok('admin.php?action=misc&job=captcha_fonts', $deleted.' Schriftarten wurden gelöscht.');
+	ok('admin.php?action=misc&job=captcha_fonts', $deleted.' Fonts have been deleted.');
 }
 elseif ($job == "captcha_fonts") {
 	$fonts = array();
@@ -452,11 +452,11 @@ elseif ($job == "captcha_fonts") {
 <form action="admin.php?action=misc&job=captcha_fonts_delete" name="form2" method="post">
  <table class="border">
   <tr> 
-   <td class="obox" colspan="3">Captcha Manager &raquo; Schriftarten</td>
+   <td class="obox" colspan="3">Captcha Manager &raquo; Fonts</td>
   </tr>
   <tr>
-   <td class="ubox" width="10%">Löschen</td>
-   <td class="ubox" width="90%">Vorschau der Schriftart</td>
+   <td class="ubox" width="10%">Delete</td>
+   <td class="ubox" width="90%">Preview of the font</td>
   </tr>
   <?php foreach ($fonts as $path) { ?>
   <tr>
@@ -472,14 +472,14 @@ elseif ($job == "captcha_fonts") {
 <br />
 <form name="form2" method="post" enctype="multipart/form-data" action="admin.php?action=explorer&job=upload&cfg=captcha_fonts">
  <table class="border" cellpadding="3" cellspacing="0" border="0">
-  <tr><td class="obox">Neue Schriftarten-Datei hochladen</td></tr>
+  <tr><td class="obox">Upload new font file</td></tr>
   <tr>
    <td class="mbox">
-	Um eine Datei anzufügen, klicken Sie auf die "Durchsuchen"-Schaltfläche und wählen Sie eine Datei aus.
-	Klicken Sie dann auf "Senden", um den Vorgang abzuschließen.<br /><br />
-	Erlaubte Dateitypen: .ttf<br />
-	Maximale Dateigröße: 500 KB<br /><br />
-	<strong>Datei hochladen:</strong>
+	To add a file, click on the "Browse"-button an select an file.
+	Afterwards click on "Submit" to finish the process.<br /><br />
+	Permitted file types: .ttf<br />
+	Maximum file size: 500 KB<br />
+	<strong>Upload file:</strong>
 	<br /><input type="file" name="upload_0" size="40" />
    </td>
   </tr>

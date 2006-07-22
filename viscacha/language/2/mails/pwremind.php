@@ -1,14 +1,12 @@
 <mail>
-	<title>{@config->fname}: Password-Request</title>
-	<comment>Dear {%user->name},
-	
-you have requested to reset your password because you have forgotten your password. 
-If you did not request this, please ignore it. It will expire and become useless in 24 hours time.
+	<title>{@config->fname}: Confirmation of your password request</title>
+	<comment>Dear {@user->name},
 
-To reset your password, please visit the following page: 
-$vboptions[bburl]/login.php?a=pwd&u={%user->id}&fid={$fid}
+You are receiving this email because you have (or someone pretending to be you has) requested a new password be sent for your account on {@config->fname}. If you did not request this email then please ignore it, if you keep receiving it please contact the board administrator.
 
-When you visit that page, your password will be reset, and the new password will be emailed to you. 
+To set a new password you need to confirm this e-mail it. To do this click the link provided below. When you visit that page, your password will be reset, and the new password will be emailed to you. 
+
+{@config->furl}/log.php?action=pwremind3&id={@user->id}&fid={$confirmcode}
 
 Best regards,
 your {@config->fname} team

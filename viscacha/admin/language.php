@@ -20,11 +20,11 @@ if ($job == 'manage') {
 	?>
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr> 
-   <td class="obox" colspan="6">Sprachdateien</td>
+   <td class="obox" colspan="6">Language Files</td>
   </tr>
   <tr>
-   <td class="ubox" width="18%">Sprache</td>
-   <td class="ubox" width="43%">Beschreibung</td>
+   <td class="ubox" width="18%">Language</td>
+   <td class="ubox" width="43%">Description</td>
    <td class="ubox" width="5%">Published</td>
    <td class="ubox" width="34%">Action</td>
   </tr>
@@ -75,9 +75,9 @@ elseif ($job == 'import') {
 <form name="form2" method="post" enctype="multipart/form-data" action="admin.php?action=language&job=import2">
  <table class="border" cellpadding="4" cellspacing="0" border="0">
   <tr><td class="obox" colspan="2">Import Languagepack</td></tr>
-  <tr><td class="mbox"><em>Entweder</em> Datei hochladen:<br /><span class="stext">Erlaubte Dateitypen: .zip - Maximale Dateigröße: 1 MB</span></td>
+  <tr><td class="mbox"><em>Either</em> upload file:<br /><span class="stext">permitted file types: .zip - maximum file size: 1 MB</span></td>
   <td class="mbox"><input type="file" name="upload" size="40" /></td></tr>
-  <tr><td class="mbox"><em>oder</em> Datei vom Server auswählen:<br /><span class="stext">Pfad ausgehend vom Viscacha-Hauptverzeichnis: <?php echo $config['fpath']; ?></span></td>
+  <tr><td class="mbox"><em>or</em> select file from server:<br /><span class="stext">path starting from the Viscacha-root-directory: <?php echo $config['fpath']; ?></span></td>
   <td class="mbox"><input type="text" name="server" size="50" /></td></tr>
   <tr><td class="mbox">Overwrite Language:<br /><span class="stext">Selecting a language here will cause the imported language to overwrite an existing language. Leave blank to create a new language.</span></td>
   <td class="mbox"><select name="overwrite">
@@ -86,7 +86,7 @@ elseif ($job == 'import') {
     <option value="<?php echo $row['id']; ?>"><?php echo $row['language']; ?></option>
    <?php } ?>
   </select></td></tr>
-  <tr><td class="mbox">Datei nach dem importieren löschen:</td>
+  <tr><td class="mbox">Delete file after import:</td>
   <td class="mbox"><input type="checkbox" name="delete" value="1" checked="checked" /></td></tr>
   <tr><td class="ubox" colspan="2" align="center"><input accesskey="s" type="submit" value="Send" /></td></tr>
  </table>
@@ -131,11 +131,11 @@ elseif ($job == 'import2') {
 			$file = $server;
 		}
 		else {
-			$inserterrors[] = 'Angegebene Datei ist keine ZIP-Datei.';
+			$inserterrors[] = 'The selected file is no ZIP-file.';
 		}
 	}
 	else {
-		$inserterrors[] = 'Keine gültige Datei angegeben.';
+		$inserterrors[] = 'No valid file selected.';
 	}
 	echo head();
 	if (count($inserterrors) > 0) {
@@ -149,7 +149,7 @@ elseif ($job == 'import2') {
 	$failure = $archive->extract($tempdir);
 	if ($failure < 1) {
 		rmdirr($tempdir);
-		error('admin.php?action=language&job=import', 'ZIP-Archiv konnte nicht gelesen werden order ist leer.');
+		error('admin.php?action=language&job=import', 'ZIP-archive could not be read or the folder is empty.');
 	}
 
 	$inserted = false;
@@ -171,13 +171,13 @@ elseif ($job == 'import2') {
 		}
 		$delobj = $scache->load('loadlanguage');
 		$delobj->delete();
-		ok('admin.php?action=language&job=manage', 'Languagepack erfolgreich importiert.');
+		ok('admin.php?action=language&job=manage', 'Languagepack import successful.');
 	}
 	else {
 		if ($inserted) {
 			$db->query("DELETE FROM {$db->pre}language WHERE id = '{$overwrite}' LIMIT 1");
 		}
-		error('admin.php?action=language&job=import', 'Languagepack konnte nicht importiert werden. Vermutlich konnten die Dateien nicht richtig kopiert werden oder die settings.lng.php fehlt oder ist beschädigt.');
+		error('admin.php?action=language&job=import', 'Languagepack could not be imported. Probably the files could not be copied successful, the settings.lng.php is missing or it is damaged.');
 	}
 }
 elseif ($job == 'export') {
@@ -211,14 +211,14 @@ elseif ($job == 'lang_copy') {
 <form name="form" method="post" action="admin.php?action=language&job=lang_copy2&id=<?php echo $gpc->get('id', int); ?>">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr> 
-   <td class="obox" colspan="6">Sprachdatei kopieren</td>
+   <td class="obox" colspan="6">Copy language file</td>
   </tr>
   <tr>
-   <td class="mbox" width="40%">Name für das neue Sprachpaket:</td>
+   <td class="mbox" width="40%">Name for the new languagepack:</td>
    <td class="mbox" width="60%"><input type="text" name="name" size="60" /></td>
   </tr>
   <tr>
-   <td class="mbox" width="40%">Beschreibung für das Sprachpaket:</td>
+   <td class="mbox" width="40%">Description for the languagepack:</td>
    <td class="mbox" width="60%"><textarea name="desc" rows="3" cols="70"></textarea></td>
   </tr>
   <tr>
@@ -240,20 +240,20 @@ elseif ($job == 'lang_copy2') {
 	copyr("language/{$id}/", "language/{$newid}/");
 	$delobj = $scache->load('loadlanguage');
 	$delobj->delete();
-	ok('admin.php?action=language&job=manage', 'Sprachpaket wurde erfolgreich kopiert.');
+	ok('admin.php?action=language&job=manage', 'Languagepack has been copied successful.');
 }
 elseif ($job == 'lang_delete') {
 	echo head();
 	$id = $gpc->get('id', int);
 	?>
 	<table class="border" border="0" cellspacing="0" cellpadding="4">
-	<tr><td class="obox">Sprachpaket löschen</td></tr>
+	<tr><td class="obox">Delete languagepack</td></tr>
 	<tr><td class="mbox">
-	<p align="center">Wollen Sie dieses Sprachpaket wirklich löschen?</p>
+	<p align="center">Would you really like to delete this language pack?</p>
 	<p align="center">
-	<a href="admin.php?action=language&job=lang_delete2&id=<?php echo $id; ?>"><img border="0" align="middle" alt="" src="admin/html/images/yes.gif"> Ja</a>
+	<a href="admin.php?action=language&job=lang_delete2&id=<?php echo $id; ?>"><img border="0" align="middle" alt="" src="admin/html/images/yes.gif"> Yes</a>
 	&nbsp&nbsp;&nbsp;&nbsp&nbsp;&nbsp;
-	<a href="javascript: history.back(-1);"><img border="0" align="middle" alt="" src="admin/html/images/no.gif"> Nein</a>
+	<a href="javascript: history.back(-1);"><img border="0" align="middle" alt="" src="admin/html/images/no.gif"> No</a>
 	</p>
 	</td></tr>
 	</table>
@@ -268,10 +268,10 @@ elseif ($job == 'lang_delete2') {
 		rmdirr("language/{$id}/");
 		$delobj = $scache->load('loadlanguage');
 		$delobj->delete();
-		ok('admin.php?action=language&job=manage', 'Sprachpaket wurde erfolgreich kopiert.');
+		ok('admin.php?action=language&job=manage', 'Languagepack has been deleted successful.');
 	}
 	else {
-		error('admin.php?action=language&job=manage', 'Sprachpaket konnte nicht gelöscht werden.');
+		error('admin.php?action=language&job=manage', 'Languagepack could not be deleted.');
 	}
 }
 elseif ($job == 'lang_settings') {
@@ -301,34 +301,34 @@ function errordefault(box) {
 <form name="form" method="post" action="admin.php?action=language&job=lang_settings2&id=<?php echo $id; ?>">
  <table class="border" border="0" cellspacing="0" cellpadding="4">
   <tr> 
-   <td class="obox" colspan="2">Sprachdatei bearbeiten &raquo; Einstellungen</td>
+   <td class="obox" colspan="2">Edit language file &raquo; settings</td>
   </tr>
   <tr>
-   <td class="mbox" width="50%">Name für das Sprachpaket:</td>
+   <td class="mbox" width="50%">Name for the languagepack:</td>
    <td class="mbox" width="50%"><input type="text" name="language" size="50" value="<?php echo $data['language']; ?>" /></td>
   </tr>
   <tr>
-   <td class="mbox" width="50%">Beschreibung für das Sprachpaket:</td>
+   <td class="mbox" width="50%">Description for the languagepack:</td>
    <td class="mbox" width="50%"><textarea name="desc" rows="3" cols="60"><?php echo $data['detail']; ?></textarea></td>
   </tr>
   <tr>
-   <td class="mbox" width="50%">Kompatibel mit Version:<br /><span class="stext">Ihre derzeitige Viscacha-Version: <?php echo $config['version']; ?></span></td>
+   <td class="mbox" width="50%">Compatible with version:<br /><span class="stext">Your current Viscacha-Version: <?php echo $config['version']; ?></span></td>
    <td class="mbox" width="50%"><input type="text" name="compatible_version" size="20" value="<?php echo isset($settings['compatible_version']) ? $settings['compatible_version'] : $config['version']; ?>" /></td>
   </tr>
   <tr>
-   <td class="mbox" width="50%">Sprachpaket öffentlich benutzbar:</td>
+   <td class="mbox" width="50%">Languagepack is public usable:</td>
    <td class="mbox" width="50%"><input<?php echo iif($config['langdir'] == $id, ' onclick="errordefault(this)"'); ?> type="checkbox" name="use" value="1"<?php echo iif($data['publicuse'] == 1, ' checked="checked"'); ?> /></td>
   </tr>
   <tr>
-   <td class="mbox" width="50%">Schreibrichtung:</td>
+   <td class="mbox" width="50%">Writing direction:</td>
    <td class="mbox" width="50%">
    <select name="html_read_direction">
-   <option value="ltr"<?php echo iif($settings['html_read_direction'] == 'ltr', ' selected="selected"'); ?>>ltr: Von links nach rechts</option>
-   <option value="rtl"<?php echo iif($settings['html_read_direction'] == 'rtl', ' selected="selected"'); ?>>rtl: Von rechts nach links</option>
+   <option value="ltr"<?php echo iif($settings['html_read_direction'] == 'ltr', ' selected="selected"'); ?>>ltr: From left to right</option>
+   <option value="rtl"<?php echo iif($settings['html_read_direction'] == 'rtl', ' selected="selected"'); ?>>rtl: From right to left</option>
    </select>
   </tr>
   <tr>
-   <td class="mbox" width="50%">RSS Sprachkürzel:</td>
+   <td class="mbox" width="50%">RSS language symbols:</td>
    <td class="mbox" width="50%">
    <select name="rss_language">
    <?php foreach ($rsslang as $key => $val) { ?>
@@ -337,35 +337,35 @@ function errordefault(box) {
    </select>
   </tr>
   <tr>
-   <td class="mbox" width="50%">Kürzel für Rechtschreibprüfung:<br /><span class="stext">Bestehend aus dem zweibuchstabigen ISO 639-Sprachencode und, nach Unterstrich, einem optionalen zweibuchstabigen ISO 3166-Ländercode besteht.</span></td>
+   <td class="mbox" width="50%">Symbol for spell check:<br /><span class="stext">Consists of the two-letter ISO 639-language-code and, after underscore, a optional two-letter ISO 3166-country-code.</span></td>
    <td class="mbox" width="50%"><input type="text" name="spellcheck_dict" size="8" value="<?php echo isset($settings['spellcheck_dict']) ? $settings['spellcheck_dict'] : ''; ?>" /></td>
   </tr>
   <tr>
-   <td class="mbox" width="50%">Tausendertrennzeichen:</td>
+   <td class="mbox" width="50%">Thousand seperator:</td>
    <td class="mbox" width="50%"><input type="text" name="thousandssep" size="2" value="<?php echo isset($settings['thousandssep']) ? $settings['thousandssep'] : ','; ?>" /></td>
   </tr>
   <tr>
-   <td class="mbox" width="50%">Dezimalzeichen für Nachkommazahlen:</td>
+   <td class="mbox" width="50%">Decimal seperator:</td>
    <td class="mbox" width="50%"><input type="text" name="decpoint" size="2" value="<?php echo isset($settings['decpoint']) ? $settings['decpoint'] : '.'; ?>" /></td>
   </tr>
   <tr> 
-   <td class="mbox" width="50%">Zeichensatz:</td>
+   <td class="mbox" width="50%">Charset:</td>
    <td class="mbox" width="50%"><input type="text" name="charset" value="<?php echo isset($settings['charset']) ? $settings['charset'] : 'ISO-8859-1'; ?>" size="20"></td> 
   </tr>
   <tr> 
-   <td class="mbox" width="50%">Format für Beiträge:<br><span class="stext">Für Beiträge, letzten Besuch etc. Kürzel gemäß der PHP-Funktion: date(). Mehr Infos: <a href="http://www.php.net/manual-lookup.php?function=date" target="_blank">PHP: date()</a></span></td>
+   <td class="mbox" width="50%">Format for contributions:<br><span class="stext">For contributions, last visit etc. Abbreviation according to the PHP-function: date(). Further information: <a href="http://www.php.net/manual-lookup.php?function=date" target="_blank">PHP: date()</a></span></td>
    <td class="mbox" width="50%"><input type="text" name="dformat1" value="<?php echo isset($settings['dformat1']) ?  $settings['dformat1'] : 'd.m.Y, H:i'; ?>" size="20"></td> 
   </tr>
   <tr> 
-   <td class="mbox" width="50%">Format für das Registerierdatum:</span><br><span class="stext">Kürzel gemäß der PHP-Funktion: date(). Mehr Infos: <a target="_blank" href="http://www.php.net/manual-lookup.php?function=date">PHP: date()</a></span></td>
+   <td class="mbox" width="50%">Format for the date of registry:</span><br><span class="stext">Abbreviation according to the PHP-function: date(). Further information: <a target="_blank" href="http://www.php.net/manual-lookup.php?function=date">PHP: date()</a></span></td>
    <td class="mbox" width="50%"><input type="text" name="dformat2" value="<?php echo isset($settings['dformat2']) ? $settings['dformat2'] : 'd.m.Y, H:i'; ?>" size="20"></td> 
   </tr>
   <tr> 
-   <td class="mbox" width="50%">Format für letzte Aktivität (in der Online-Liste):</span><br><span class="stext">Kürzel gemäß der PHP-Funktion: date(). Mehr Infos: <a target="_blank" href="http://www.php.net/manual-lookup.php?function=date">PHP: date()</a></span></td>
+   <td class="mbox" width="50%">Format for last activity (in der Online-Liste):</span><br><span class="stext">Abbreviation according to the PHP-function: date(). Further information: <a target="_blank" href="http://www.php.net/manual-lookup.php?function=date">PHP: date()</a></span></td>
    <td class="mbox" width="50%"><input type="text" name="dformat3" value="<?php echo isset($settings['dformat3']) ? $settings['dformat3'] : 'H:i'; ?>" size="20"></td> 
   </tr>
   <tr> 
-   <td class="mbox" width="50%">Format, dass nach "Heute" und "Gestern" benutzt wird:</span><br><span class="stext">Nur wenn es oben aktiviert ist! Für Beiträge, letzten Besuch etc. Kürzel gemäß der PHP-Funktion: date(). Mehr Infos: <a target="_blank" href="http://www.php.net/manual-lookup.php?function=date">PHP: date()</a></span></td>
+   <td class="mbox" width="50%">Format, that is used after "Today" and "Yesterday":</span><br><span class="stext">Only if it is activated above! For contribitions, last visit etc. Abbreviation according to the PHP-function: date(). Further information: <a target="_blank" href="http://www.php.net/manual-lookup.php?function=date">PHP: date()</a></span></td>
    <td class="mbox" width="50%"><input type="text" name="dformat4" value="<?php echo isset($settings['dformat4']) ? $settings['dformat4'] : 'H:i'; ?>" size="20"></td> 
   </tr>
   <tr>
@@ -436,16 +436,16 @@ elseif ($job == 'lang_ignore') {
 <form name="form" method="post" action="admin.php?action=language&job=lang_ignore2&id=<?php echo $id; ?>">
  <table class="border" border="0" cellspacing="0" cellpadding="4">
   <tr> 
-   <td class="obox" colspan="2">Sprachdatei bearbeiten &raquo; Ignorierte Suchbegriffe</td>
+   <td class="obox" colspan="2">Edit language file &raquo; ignored search keys</td>
   </tr>
   <tr>
    <td class="mbox" width="40%" valign="top">
-   Hier werden die Wörter aufgelistet, die bei der Suche ignoriert werden sollen, um nicht unnötig nach häufig vorkommenden Wörtern zu suchen, die 1. unüberschaubar viele Ergebnisse zurückliefern und 2. die Suchgeschwindigkeit deutlich negativ beeinflussen.<br /><br />
-   Pro Zeile ein Wort. Bitte die Wörter komplett in Kleinschrift schreiben. Sonderzeichen sollten in 2 Formen vorkommen. Beispiele: <br />
-   &Auml; = ae und &auml;,<br />
-   &szlig; = ss und &szlig;,<br />
-   &eacute; = e und &eacute;,<br />
-   &Ccedil; = c und &ccedil;
+   Here are the words listed which should be ignored during the search run to prevent the search for frequently occured words leading to 1st unmanageable many matches and 2nd an significant affect of the searching speed.<br /><br />
+   Only one word in each line. Please type the words completly in lower case letters. Special symbols should be occured in two forms. Examples: <br />
+   &Auml; = ae and &auml;,<br />
+   &szlig; = ss and &szlig;,<br />
+   &eacute; = e and &eacute;,<br />
+   &Ccedil; = c and &ccedil;
    </td>
    <td class="mbox" width="60%" align="center">
    <textarea name="ignore" rows="25" cols="50"><?php echo $ignore; ?></textarea>
@@ -494,24 +494,24 @@ elseif ($job == 'lang_rules') {
 <form name="form" method="post" action="admin.php?action=language&job=lang_rules2&id=<?php echo $id; ?>">
  <table class="border" border="0" cellspacing="0" cellpadding="4">
   <tr> 
-   <td class="obox">Sprachdatei bearbeiten &raquo; Verhaltensbedigungen</td>
+   <td class="obox">Edit language file &raquo; Terms of behaviour</td>
   </tr>
   <tr>
-   <td class="ubox">Bestehende Regeln:</td> 
+   <td class="ubox">Existing rules:</td> 
   </tr>
   <tr>
    <td class="mbox">
    <ol>
    <?php foreach ($rules as $rule) { ?>
-    <li><input type="text" name="rules[<?php echo $i; ?>]" size="110" value="<?php echo $gpc->prepare($rule); ?>" />&nbsp;&nbsp;<input type="checkbox" name="delete[<?php echo $i; ?>]" value="1"> Löschen</li>
+    <li><input type="text" name="rules[<?php echo $i; ?>]" size="110" value="<?php echo $gpc->prepare($rule); ?>" />&nbsp;&nbsp;<input type="checkbox" name="delete[<?php echo $i; ?>]" value="1"> Delete</li>
    <?php $i++; } if (count($rules) == 0) { ?>
-   	<li><em>Noch keine Regel erstellt!</em></li>
+   	<li><em>No rule has been created yet!</em></li>
    <?php } ?>
    </ol>
    </td>
   </tr>
   <tr>
-   <td class="ubox" align="center">Neue Regel(n) hinzufügen:</td> 
+   <td class="ubox" align="center">Add new rule(s):</td> 
   </tr>
   <tr>
    <td class="mbox">
@@ -522,7 +522,7 @@ elseif ($job == 'lang_rules') {
    <?php } ?>
    </ol>
   <?php } else { ?>
-   Nach dem Speichern <input type="text" name="c" size="3" value="0" /> neue Regeln hinzufügen!
+   Add <input type="text" name="c" size="3" value="0" /> new rules after saving!
   <?php } ?>
    </td>
   </tr>
@@ -573,7 +573,7 @@ elseif ($job == 'lang_txttpl') {
 <form name="form" method="post" action="admin.php?action=language&job=lang_txttpl2&id=<?php echo $id; ?>&file=<?php echo $file; ?>">
  <table class="border" border="0" cellspacing="0" cellpadding="4">
   <tr> 
-   <td class="obox">Sprachdatei bearbeiten &raquo; Textvorlagen</td>
+   <td class="obox">Edit language file &raquo; Text templates</td>
   </tr>
   <tr>
    <td class="ubox"><?php echo getLangVarsHelp(); ?></td> 
@@ -622,18 +622,18 @@ elseif ($job == 'lang_emailtpl') {
 <form name="form" method="post" action="admin.php?action=language&job=lang_emailtpl2&id=<?php echo $id; ?>&file=<?php echo $file; ?>">
  <table class="border" border="0" cellspacing="0" cellpadding="4">
   <tr> 
-   <td class="obox" colspan="2">Sprachdatei bearbeiten &raquo; E-Mail-Texte &raquo; <?php echo $file; ?></td>
+   <td class="obox" colspan="2">Edit language file &raquo; e-mail-texts &raquo; <?php echo $file; ?></td>
   </tr>
   <tr>
-   <td class="ubox" width="20%">Hilfe:</td>
+   <td class="ubox" width="20%">Help:</td>
    <td class="ubox" width="80%"><?php echo getLangVarsHelp(); ?></td> 
   </tr>
   <tr>
-   <td class="mbox" width="20%">Betreff:</td>
+   <td class="mbox" width="20%">Subject:</td>
    <td class="mbox" width="80%"><input type="text" name="title" value="<?php echo $gpc->prepare($tpl[1]); ?>" size="80"></td>
   </tr>
   <tr>
-   <td class="mbox" width="20%">Nachricht:</td>
+   <td class="mbox" width="20%">Message:</td>
    <td class="mbox" width="80%"><textarea name="tpl" rows="10" cols="80"><?php echo $tpl[2]; ?></textarea></td>
   </tr>
   <tr>
@@ -676,7 +676,7 @@ elseif ($job == 'lang_emails') {
 	?>
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr> 
-   <td class="obox">Sprachdateien bearbeiten &raquo; E-Mail-Texte</td>
+   <td class="obox">Edit language file &raquo; e-mail-texts</td>
   </tr>
   <tr>
    <td class="mbox">
@@ -691,7 +691,7 @@ elseif ($job == 'lang_emails') {
 			$i++;
 		?>
 	   	<li><a href="admin.php?action=language&job=lang_emailtpl&id=<?php echo $id; ?>&file=<?php echo $n; ?>">
-	   	<?php echo $n; ?></a><?php echo iif(isset($help[$n]), "<br /><span class=\"stext\">{$help[$n]}</span>"); ?>
+	   	<?php echo $n; ?></a><?php echo isset($help[$n]) ? "<br /><span class=\"stext\">{$help[$n]}</span>" : ''; ?>
 	   	</li>
 	    <?php
 	    }
@@ -730,7 +730,7 @@ elseif ($job == 'lang_array') {
 <form name="form" method="post" action="admin.php?action=language&job=lang_array2&id=<?php echo $id; ?>&file=<?php echo $file; ?>&page=<?php echo $page; ?>">
  <table class="border" border="0" cellspacing="0" cellpadding="4">
   <tr> 
-   <td class="obox" colspan="2">Sprachdatei bearbeiten &raquo; <?php echo isset($langbase[$file]) ? $langbase[$file] : ucfirst($file); ?></td>
+   <td class="obox" colspan="2">Edit language file &raquo; <?php echo isset($langbase[$file]) ? $langbase[$file] : ucfirst($file); ?></td>
   </tr>
   <tr>
    <td class="mbox stext" colspan="2"><?php echo getLangVarsHelp(); ?></td> 
@@ -810,7 +810,7 @@ elseif ($job == 'lang_com') {
 		}
 	}
 	if (count($files) == 0) {
-		error('admin.php?action=language&job=lang_edit&id='.$id, 'This components has no language-files');
+		error('admin.php?action=language&job=lang_edit&id='.$id, 'This component has no language-file');
 	}
 	if (count($files) > 0 && empty($file)) {
 		$file = current($files);
@@ -828,7 +828,7 @@ elseif ($job == 'lang_com') {
 	<form name="form" method="post" action="admin.php?action=language&job=lang_com2&id=<?php echo $id; ?>&file=<?php echo $file; ?>&cid=<?php echo $cid; ?>">
 	 <table class="border" border="0" cellspacing="0" cellpadding="4">
 	  <tr> 
-	   <td class="obox" colspan="2">Sprachdatei bearbeiten &raquo; Komponente: <?php echo $cid; ?> &raquo; <?php echo ucfirst($file); ?></td>
+	   <td class="obox" colspan="2">Edit language file &raquo; component: <?php echo $cid; ?> &raquo; <?php echo ucfirst($file); ?></td>
 	  </tr>
 	  <tr>
 	   <td class="mbox stext" colspan="2"><?php echo getLangVarsHelp(); ?></td> 
@@ -913,13 +913,13 @@ elseif ($job == 'lang_edit') {
 	?>
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr> 
-   <td class="obox">Sprachdateien bearbeiten</td>
+   <td class="obox">Edit language file</td>
   </tr>
   <tr>
    <td class="mbox">
    <ul>
-   <li><a href="admin.php?action=language&job=lang_settings&id=<?php echo $id; ?>">Einstellungen</a></li>
-   <li>Normale Sprachdateien und Phrasen:
+   <li><a href="admin.php?action=language&job=lang_settings&id=<?php echo $id; ?>">Settings</a></li>
+   <li>Normal language file and phrases:
 	   <ul>
 	   <?php
 		$dir = 'language/'.$id.'/';
@@ -940,7 +940,7 @@ elseif ($job == 'lang_edit') {
 		<?php } ?>
 	   </ul>
    </li>
-   <li>Sprachdateien der Komponenten:
+   <li>Language file of the components:
 	   <ul>
 	   <?php
 		$result = $db->query("SELECT * FROM {$db->pre}component ORDER BY active DESC");
@@ -952,15 +952,15 @@ elseif ($job == 'lang_edit') {
 	   <?php } ?>
 	   </ul>
    </li>
-   <li><a href="admin.php?action=language&job=lang_rules&id=<?php echo $id; ?>">Verhaltensbedigungen</a></li>
-   <li><a href="admin.php?action=language&job=lang_emails&id=<?php echo $id; ?>">E-Mail-Texte</a></li>
+   <li><a href="admin.php?action=language&job=lang_rules&id=<?php echo $id; ?>">Terms of behaviour</a></li>
+   <li><a href="admin.php?action=language&job=lang_emails&id=<?php echo $id; ?>">E-mail-texts</a></li>
    <li>Textvorlagen:
 	   <ul>
-	   <li><a href="admin.php?action=language&job=lang_txttpl&id=<?php echo $id; ?>&file=moved">Thema wurde verschoben</a></li>
-	   <li><a href="admin.php?action=language&job=lang_txttpl&id=<?php echo $id; ?>&file=notice">Kopierte Beiträge</a></li>
+	   <li><a href="admin.php?action=language&job=lang_txttpl&id=<?php echo $id; ?>&file=moved">Topic was moved</a></li>
+	   <li><a href="admin.php?action=language&job=lang_txttpl&id=<?php echo $id; ?>&file=notice">Copied contributions</a></li>
 	   </ul>
    </li>
-   <li><a href="admin.php?action=language&job=lang_ignore&id=<?php echo $id; ?>">Ignorierte Suchbegriffe</a></li>
+   <li><a href="admin.php?action=language&job=lang_ignore&id=<?php echo $id; ?>">Ignored search keys</a></li>
    </ul>
    </td>
   </tr>
@@ -1087,7 +1087,7 @@ elseif ($job == 'phrase_file') {
 		$page = 1;
 	}
 	$pages = count($data);
-	$pages_html = "Seiten ({$pages}):";
+	$pages_html = "Pages ({$pages}):";
 	// Ersetzen durch Buchstaben (?) -> [A] [B] ...
 	for($i=1;$i<=$pages;$i++) {
    		$pages_html .= ' ['.iif($i == $page, "<strong>{$i}</strong>", "<a href='admin.php?action=language&job=phrase_file&file={$file}&page={$i}&show={$show}&key={$search}'>{$i}</a>").']';
@@ -1099,22 +1099,22 @@ elseif ($job == 'phrase_file') {
    <td class="obox" colspan="<?php echo count($cache)+1; ?>">
    <span style="float: right;">
    <?php if ($show == 'diff') { ?>
-    [<a href="admin.php?action=language&job=phrase_file&file=<?php echo $file; ?>">Show all Phrases</a>] 
+    [<a href="admin.php?action=language&job=phrase_file&file=<?php echo $file; ?>">Show all phrases</a>] 
    <?php } else { ?>
     [<a href="admin.php?action=language&job=phrase_file&file=<?php echo $file; ?>&show=diff">Show only differences</a>] 
    <?php } ?>
-    [<a href="admin.php?action=language&job=phrase_file_find&file=<?php echo $file; ?>">Find Phrases</a>]
-    [<a href="admin.php?action=language&job=phrase_add&file=<?php echo $file; ?>">Add new Phrase</a>]
+    [<a href="admin.php?action=language&job=phrase_file_find&file=<?php echo $file; ?>">Find phrases</a>]
+    [<a href="admin.php?action=language&job=phrase_add&file=<?php echo $file; ?>">Add new phrase</a>]
    </span>
    Phrase Manager &raquo; <?php echo $encfile; ?></td>
   </tr>
   <?php if (count($cache) < 2 && $show == 'diff') { ?>
   <tr>
-   <td class="mbox" colspan="<?php echo count($cache)+1; ?>">Nicht genügend Sprachen zum vergleichen gefunden. Es müssen mindestens 2 Sprachen installiert sein!</td> 
+   <td class="mbox" colspan="<?php echo count($cache)+1; ?>">Not enough languages found to compare. At least 2 languages have to be installed!</td> 
   </tr>
   <?php } elseif (!isset($data[$page-1]) || count($data[$page-1]) == 0) { ?>
   <tr>
-   <td class="mbox" colspan="<?php echo count($cache)+1; ?>">Es wurden noch keine Phrasen angelegt. [<a href="admin.php?action=language&job=phrase_add&file=<?php echo $file; ?>">Add new Phrase</a>]</td> 
+   <td class="mbox" colspan="<?php echo count($cache)+1; ?>">No phrases have been saved yet. [<a href="admin.php?action=language&job=phrase_add&file=<?php echo $file; ?>">Add new Phrase</a>]</td> 
   </tr>
   <?php } else { ?>
   <tr>
@@ -1162,8 +1162,8 @@ elseif ($job == 'phrase_copy') {
    <td class="obox" colspan="2">Phrase Manager &raquo; <?php echo $encfile; ?> &raquo; Copy file</td>
   </tr>
   <tr>
-   <td class="mbox" width="50%">Vorlagen-Verzeichnis:<br />
-   <span class="stext">Geben Sie hier an, aus welchem Verzeichnis die Datei kopiert werden soll.</span></td>
+   <td class="mbox" width="50%">Template directory:<br />
+   <span class="stext">Specify the directory wherefrom the file should be copied.</span></td>
    <td class="mbox" width="50%"><select name="dir">
 	<?php
 	while($row = $db->fetch_assoc($result)) {
@@ -1190,13 +1190,13 @@ elseif ($job == 'phrase_copy2') {
 	$dest = 'language/'.$dest.'/'.$file;
 	$source = 'language/'.$source.'/'.$file;
 	if (file_exists($dest)) {
-		error('admin.php?action=language&job=phrase', 'Diese Datei existiert schon. Sie wurde nicht überschrieben.');
+		error('admin.php?action=language&job=phrase', 'This file already exists. It has not been overwritten.');
 	}
 	if (file_exists($source) && $filesystem->copy($source, $dest)) {
-		ok('admin.php?action=language&job=phrase', 'Datei wurde erfolgreich kopiert');
+		ok('admin.php?action=language&job=phrase', 'File was copied successful');
 	}
 	else {
-		error('admin.php?action=language&job=phrase', 'Quelldatei existiert nicht oder Datei konnte nicht kopiert werden.');
+		error('admin.php?action=language&job=phrase', 'Sourcefile does not exists or file could not be copied.');
 	}
 }
 elseif ($job == 'phrase_file_edit') {
@@ -1294,8 +1294,8 @@ elseif ($job == 'phrase_file_copy') {
    <td class="obox" colspan="2">Phrase Manager &raquo; <?php echo $encfile; ?> &raquo; Copy phrase</td>
   </tr>
   <tr>
-   <td class="mbox" width="50%">Sprache die als Vorlage dienen soll:<br />
-   <span class="stext">Geben Sie hier an, aus welchem Verzeichnis/von welcher Sprache die Phrase kopiert werden soll.</span></td>
+   <td class="mbox" width="50%">Language which should be used as original:<br />
+   <span class="stext">Specify the directory/language wherefrom the phrase should be copied.</span></td>
    <td class="mbox" width="50%"><select name="dir">
 	<?php
 	$basefile = substr($encfile, 0, strlen($encfile)-8);
@@ -1446,10 +1446,10 @@ elseif ($job == 'phrase_add_mailfile') {
    <td class="mbox" width="30%">Text:</td>
    <td class="mbox" width="70%"><textarea name="tpl" rows="8" cols="80">Hallo,
 
-Ihren Text können Sie hier verfassen...
+You can compose your text here...
 
-Mit freundlichen Grüßen,
-Ihr {@config->fname} Team
+Yours sincerely,
+Your {@config->fname} Team
 {@config->furl}</textarea></td>
   </tr>
   <tr> 

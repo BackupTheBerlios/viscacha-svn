@@ -155,6 +155,9 @@ log.php
 -log_pwremind2_start
 -log_pwremind2_prepare
 -log_pwremind2_end
+-log_pwremind3_start
+-log_pwremind3_success
+-log_pwremind3_failed
 -log_login_form_start
 -log_login_form_end
 -log_end

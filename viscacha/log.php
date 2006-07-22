@@ -27,8 +27,8 @@ error_reporting(E_ALL);
 DEFINE('SCRIPTNAME', 'log');
 DEFINE('TEMPSHOWLOG', 1);
 
-include ("data/config.inc.php");
-include ("classes/function.viscacha_frontend.php");
+include("data/config.inc.php");
+include("classes/function.viscacha_frontend.php");
 
 $zeitmessung1 = t1();
 
@@ -100,40 +100,61 @@ elseif ($_GET['action'] == "pwremind") {
 	$slog->updatelogged();
 }
 elseif ($_GET['action'] == "pwremind2") {
-	if (flood_protect() == FALSE) {
+	if (flood_protect() == false) {
 		error($lang->phrase('flood_control'),'log.php?action=login'.SID2URL_x);
 	}
 	set_flood();
 	
 	($code = $plugins->load('log_pwremind2_start')) ? eval($code) : null;
 
-	$result = $db->query('
-	SELECT id FROM '.$db->pre.'user 
-	WHERE name="'.$_POST['name'].'" AND mail="'.$_POST['email'].'" 
-	LIMIT 1
-	',__LINE__,__FILE__);
+	$result = $db->query("SELECT id, name, mail, pw FROM {$db->pre}user WHERE mail = '{$_POST['email']}' LIMIT 1",__LINE__,__FILE__);
 	
 	$user = $db->fetch_assoc($result);
 	if ($db->num_rows($result) != 1) {
 		error($lang->phrase('log_pwremind_failed'), "log.php?action=pwremind".SID2URL_x);
 	}
 	else {
-		$pw = random_word();
+
+		$confirmcode = md5($config['cryptkey'].$user['pw']);
 
 		($code = $plugins->load('log_pwremind2_prepare')) ? eval($code) : null;
-
+		
 		$data = $lang->get_mail('pwremind');
-		$to = array('0' => array('name' => $_POST['name'], 'mail' => $_POST['email']));
+		$to = array('0' => array('name' => $user['name'], 'mail' => $user['mail']));
 		$from = array();
 		xmail($to, $from, $data['title'], $data['comment']);
-
-		$db->query("UPDATE {$db->pre}user SET pw = MD5('".$pw."') WHERE id = '".$user['id']."' LIMIT 1",__LINE__,__FILE__);
 
 		($code = $plugins->load('log_pwremind2_end')) ? eval($code) : null;
 		
 		ok($lang->phrase('log_pwremind_success'), "log.php?action=login".SID2URL_x);
 	}
 	$slog->updatelogged();
+}
+elseif ($_GET['action'] == "pwremind3") {
+	if (flood_protect() == false) {
+		error($lang->phrase('flood_control'),'log.php?action=login'.SID2URL_x);
+	}
+	set_flood();
+
+	($code = $plugins->load('log_pwremind3_start')) ? eval($code) : null;
+
+	$result = $db->query("SELECT id, pw FROM {$db->pre}user WHERE id = '{$_GET['id']}' LIMIT 1",__LINE__,__FILE__);
+	$user = $db->fetch_assoc($result);
+	
+	$confirmcode = md5($config['cryptkey'].$user['pw']);
+	if ($confirmcode == $_GET['fid']) {
+	
+		$pw = random_word();
+		$md5 = md5($pw);
+		$db->query("UPDATE {$db->pre}user SET pw = '{$md5}' WHERE id = '{$user['id']}' LIMIT 1",__LINE__,__FILE__);
+		
+		($code = $plugins->load('log_pwremind3_success')) ? eval($code) : null;
+		ok($lang->phrase('log_pwremind_changed'), "log.php?action=login".SID2URL_x);
+	}
+	else {
+		($code = $plugins->load('log_pwremind3_failed')) ? eval($code) : null;
+		error($lang->phrase('log_pwremind_wrong_code'), "log.php?action=pwremind".SID2URL_x);
+	}
 }
 else {
 	if ($my->vlogin) {

@@ -171,6 +171,9 @@ if ($my->vlogin && $my->p['admin'] == 1) {
 		if (check_mail($_POST['email']) == false) {
 			 $error[] = $lang->phrase('illegal_mail');
 		}
+		if (double_udata('mail', $_POST['email']) == false) {
+			 $error[] = $lang->phrase('email_already_used');
+		}
 		if (strxlen($_POST['name']) > $config['maxnamelength']) {
 			$error[] = $lang->phrase('name_too_long');
 		}

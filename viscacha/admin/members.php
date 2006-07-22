@@ -7,14 +7,14 @@ if ($job == 'newsletter') {
 <form name="form" method="post" action="admin.php?action=members&job=newsletter2">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr> 
-   <td class="obox" colspan="2"><b><span style="float: right;">[<a href="admin.php?action=members&job=newsletter_archive">Newsletter-Archiv</a>]</span>Newsletter verschicken</b></td>
+   <td class="obox" colspan="2"><b><span style="float: right;">[<a href="admin.php?action=members&job=newsletter_archive">Newsletter-Archiv</a>]</span>Send newsletter</b></td>
   </tr>
   <tr> 
-	<td class="mbox" width="50%">Empfänger:</td>
-	<td class="mbox" width="50%"><select size="1" name="int1"><option value="1">Alle</option><option value="2" selected>Nur Mitglieder</option><option value="3">Nur Gäste</option></select></td> 
+	<td class="mbox" width="50%">Addressee:</td>
+	<td class="mbox" width="50%"><select size="1" name="int1"><option value="1">All</option><option value="2" selected>Members only</option><option value="3">Guests only</option></select></td> 
   </tr>
   <tr> 
-   <td class="mbox" width="50%">Titel:</td>
+   <td class="mbox" width="50%">Title:</td>
    <td class="mbox" width="50%"><input type="text" name="temp1" size="60"></td> 
   </tr>
   <tr> 
@@ -22,11 +22,11 @@ if ($job == 'newsletter') {
    <td class="mbox" width="50%"><textarea name="temp2" rows="8" cols="60"></textarea></td> 
   </tr>
   <tr> 
-   <td class="mbox" width="50%">Anzahl Emails die pro Staffel verschickt werden:</td>
+   <td class="mbox" width="50%">Number of e-mails which will be sent in each echelon:</td>
    <td class="mbox" width="50%"><input type="text" name="int2" size="10" value="100"></td> 
   </tr>
   <tr> 
-   <td class="ubox" width="100%" colspan="2" align="center"><input type="submit" name="Submit" value="Abschicken"></td> 
+   <td class="ubox" width="100%" colspan="2" align="center"><input type="submit" name="Submit" value="Submit"></td> 
   </tr>
  </table>
 </form>
@@ -66,7 +66,7 @@ elseif ($job == 'newsletter2') {
 	$anz = count($emails);
 	if ($anz == 0) {
 		echo head();
-		error('admin.php?action=members&job=newsletter', 'Keine E-Mail-Adressen gefunden!');
+		error('admin.php?action=members&job=newsletter', 'No e-mail address found!');
 	}
 	$int2 = $gpc->get('int2', int, 100);
 	$steps = ceil($anz/$int2);
@@ -83,10 +83,10 @@ elseif ($job == 'newsletter2') {
 	?>
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr> 
-   <td class="obox"><b>Schritt 1 von <?php echo $steps+1; ?></b></td>
+   <td class="obox"><b>Step 1 of <?php echo $steps+1; ?></b></td>
   </tr>
   <tr> 
-   <td class="mbox">Die Daten wurden gespeichert<br>Die Emails werden nun in Staffeln versandt.</td>
+   <td class="mbox">The datas have been saved<br>Now the mails will be sent in echelons.</td>
   </tr>
  </table>	
 <?php
@@ -112,7 +112,7 @@ elseif ($job == 'newsletter3') {
 	$i = 0;
 	if (!isset($split[$minus]) || !is_array($split[$minus])) {
 		echo head();
-		error('admin.php?action=members&job=newsletter', 'Keine E-Mail-Adressen zu dieser Staffel gefunden!');
+		error('admin.php?action=members&job=newsletter', 'No e-mail address found for this echelon!');
 	}
 	foreach ($split[$minus] as $mail) {
 		$i++;
@@ -132,10 +132,10 @@ elseif ($job == 'newsletter3') {
 ?>
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr> 
-   <td class="obox"><b>Staffel <?php echo $page+1; ?> von <?php echo $steps+1; ?>...</b></td>
+   <td class="obox"><b>Echelon <?php echo $page+1; ?> von <?php echo $steps+1; ?>...</b></td>
   </tr>
   <tr> 
-   <td class="mbox">E-Mail Staffel <?php echo $page; ?> versandt.<br>Insgesamt <?php echo $ready; ?> E-Mails gesandt!<br><br>Alle Emails erfolgreich versandt! <a href="admin.php?action=members&job=newsletter">Leite zur Verwaltung zurück.</a></td>
+   <td class="mbox">E-mail echelon <?php echo $page; ?> sent.<br>Alltogether <?php echo $ready; ?> e-mails sent!<br><br>All e-mails have been send successful! <a href="admin.php?action=members&job=newsletter">Redirect to the administration.</a></td>
   </tr>
  </table>	
 <?php
@@ -149,7 +149,7 @@ elseif ($job == 'newsletter3') {
    <td class="obox"><b>Staffel <?php echo $page+1; ?> von <?php echo $steps+1; ?>...</b></td>
   </tr>
   <tr> 
-   <td class="mbox">E-Mail Staffel <?php echo $page; ?> versandt.<br>Insgesamt <?php echo $ready; ?> E-Mails gesandt!</td>
+   <td class="mbox">E-mail-echelon <?php echo $page; ?> sent.<br>Alltogether <?php echo $ready; ?> e-mails-sent!</td>
   </tr>
  </table>	
 <?php
@@ -159,18 +159,18 @@ elseif ($job == 'newsletter3') {
 elseif ($job == 'newsletter_archive') {
 	$result = $db->query('SELECT id, title, receiver, time FROM '.$db->pre.'newsletter ORDER BY time');
 	echo head();
-	$receiver = array('1' => 'Alle','2' => 'Nur Mitglieder','3' => 'Nur Gäste');
+	$receiver = array('1' => 'All','2' => 'Members only','3' => 'Guests only');
 ?>
 <form name="form" method="post" action="admin.php?action=members&job=newsletter_delete">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr> 
-   <td class="obox" colspan=4><b>Newsletter-Archiv</b></td>
+   <td class="obox" colspan=4><b>Newsletter-Archive</b></td>
   </tr>
   <tr> 
    <td class="ubox">Del</td>
-   <td class="ubox">Betreff</td>
-   <td class="ubox">Gesendet</td> 
-   <td class="ubox">An</td> 
+   <td class="ubox">Subject</td>
+   <td class="ubox">Sent</td> 
+   <td class="ubox">To</td> 
   </tr>
 <?php while ($row = $db->fetch_assoc($result)) { ?>
   <tr>
@@ -181,7 +181,7 @@ elseif ($job == 'newsletter_archive') {
   </tr>
 <?php } ?>
   <tr> 
-   <td class="ubox" colspan=4 align="center"><input type="submit" name="Submit" value="Löschen"></td> 
+   <td class="ubox" colspan=4 align="center"><input type="submit" name="Submit" value="Delete"></td> 
   </tr>
  </table>
 </form> 
@@ -192,33 +192,33 @@ elseif ($job == 'newsletter_view') {
 	$result = $db->query('SELECT * FROM '.$db->pre.'newsletter WHERE id = '.$gpc->get('id', int));
 	$row = $db->fetch_assoc($result);
 	echo head();
-	$receiver = array('1' => 'Alle','2' => 'Nur Mitglieder','3' => 'Nur Gäste');
+	$receiver = array('1' => 'All','2' => 'Members only','3' => 'Guests only');
 ?>
 <form name="form" method="post" action="admin.php?action=members&job=newsletter_delete">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr> 
-   <td class="obox" colspan=2><b>Newsletter-Archiv: Detail-Ansicht</b></td>
+   <td class="obox" colspan=2><b>Newsletter-Archive: detail-view</b></td>
   </tr>
   <tr>
-   <td class="mbox">Titel:</td> 
+   <td class="mbox">Title:</td> 
    <td class="mbox"><?php echo $row['title']; ?></td>
   </tr>
   <tr>
-   <td class="mbox">Gesendet am:</td> 
+   <td class="mbox">Sent:</td> 
    <td class="mbox"><?php echo date('d.m.Y, H:i', $row['time']); ?></td>
   </tr>
   <tr>
-   <td class="mbox">Empfänger:</td> 
+   <td class="mbox">Addressee:</td> 
    <td class="mbox"><?php echo $receiver[$row['receiver']]; ?></td>
   </tr>
   <tr> 
-   <td class="ubox" colspan=2>Newsletter-Text</td>
+   <td class="ubox" colspan=2>Newsletter-text</td>
   </tr>
   <tr>
    <td class="mbox" colspan=2><pre><?php echo $row['content']; ?></pre></td>
   </tr>
   <tr> 
-   <td class="ubox" colspan=2 align="center"><input type="hidden" name="delete[]" value="<?php echo $row['id']; ?>"><input type="submit" name="Submit" value="Löschen"></td> 
+   <td class="ubox" colspan=2 align="center"><input type="hidden" name="delete[]" value="<?php echo $row['id']; ?>"><input type="submit" name="Submit" value="Delete"></td> 
   </tr>
  </table> 
 </form>
@@ -235,10 +235,10 @@ elseif ($job == 'newsletter_delete') {
 		}
 		$db->query('DELETE FROM '.$db->pre.'newsletter WHERE '.implode(' OR ',$deleteids));
 		$anz = $db->affected_rows();
-		ok('admin.php?action=members&job=newsletter_archive', $anz.' Newsletter wurden gelöscht!');
+		ok('admin.php?action=members&job=newsletter_archive', $anz.' Newsletters have been deleted!');
 	}
 	else {
-		error('admin.php?action=members&job=newsletter_archive', 'Keine Eingabe gemacht');
+		error('admin.php?action=members&job=newsletter_archive', 'No entry done!');
 	}
 	
 }
@@ -249,27 +249,27 @@ elseif ($job == 'merge') {
 <table class="border">
 <tr><td class="obox" colspan="2">Merge Users</td></tr>
 <tr><td class="ubox" colspan="2">
-Hier können Sie 2 Benutzeraccounts zu einem zusammenführen. 
-Das "Basis-Mitglied" bleibt bestehen und die Daten werden als Standard benutzt. 
-Die Beiträge, PNs etc. vom "überflüssigen Mitglied" werden auf das "Basis-Mitglied überschrieben. 
-Beim "Basis-Mitglied" fehlende Daten werden vom "überflüssigen Mitglied" übernommen. 
-Das "überflüssige Mitglied" wird danach gelöscht.
+Here you can merge two user accounts into one.
+The "base-member" persists and its datas are set as default.
+The contributions, PNs etc. from the "needless member" will be transcribed to the base member.
+Missing datas from the base member will be taken from the needless member.
+Afterwards the needless member will be deleted.
 </td></tr>
 <tr>
-<td class="mbox">Basis-Mitglied:</td>
+<td class="mbox">Base-member:</td>
 <td class="mbox">
 	<input type="text" name="name1" id="name1" onkeyup="ajax_searchmember(this, 'sugg1');" size="40" /><br />
 	<span class="stext">Suggestions: <span id="sugg1"></span></span>
 </td>
 </tr>
-<td class="mbox">Überflüssiges Mitglied:</td>
+<td class="mbox">Needless-member:</td>
 <td class="mbox">
 	<input type="text" name="name2" id="name2" onkeyup="ajax_searchmember(this, 'sugg2');" size="40" /><br />
 	<span class="stext">Suggestions: <span id="sugg2"></span></span>
 </td>
 </tr>
 <tr> 
-<td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="Löschen"></td> 
+<td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="Delete"></td> 
 </tr>
 </table>
 </form>
@@ -285,7 +285,7 @@ elseif ($job == 'merge2') {
 	$result = $db->query('SELECT * FROM '.$db->pre.'user WHERE name = "'.$base.'" LIMIT 1');
 	$result2 = $db->query('SELECT * FROM '.$db->pre.'user WHERE name = "'.$old.'" LIMIT 1');
 	if ($db->num_rows($result) != 1 || $db->num_rows($result2) != 1) {
-		error('admin.php?action=members&job=merge', 'Mindestens einer der angegebenen Benutzernamen wurde nicht gefunden.');
+		error('admin.php?action=members&job=merge', 'At least one of the selected users could not be found.');
 	}
 	$base = $db->fetch_assoc($result);
 	$old = $db->fetch_assoc($result2);
@@ -500,12 +500,12 @@ elseif ($job == 'memberrating') {
 		  <td class="obox" colspan="6">Memberrating</td>
 		</tr>
 		<tr> 
-		  <td class="ubox" colspan="6"><span style="float: right;"><?php echo $temp; ?></span><?php echo $count[0]; ?> rated Members</td>
+		  <td class="ubox" colspan="6"><span style="float: right;"><?php echo $temp; ?></span><?php echo $count[0]; ?> rated members</td>
 		</tr>
 		<tr>
 		  <td class="obox">Del</td>
 		  <td class="obox">Name</td>
-		  <td class="obox">Bewertung (Anz. Bewertungen)</td>
+		  <td class="obox">Rating (amount of ratings)</td>
 		  <td class="obox">Email</td>
 		  <td class="obox">Last Visit</td>
 		  <td class="obox">Registered on</td>
@@ -543,7 +543,7 @@ elseif ($job == 'edit') {
 
 	$result = $db->query('SELECT * FROM '.$db->pre.'user WHERE id = '.$id);
 	if ($db->num_rows() != 1) {
-		error('admin.php?action=members&job=manage', 'Keine gültige ID angegeben.');
+		error('admin.php?action=members&job=manage', 'No valid ID given.');
 	}
 	$user = $gpc->prepare($db->fetch_assoc($result));
 	
@@ -579,23 +579,23 @@ elseif ($job == 'edit') {
 ?>
 <form name="form_<?php echo $random; ?>" method="post" action="admin.php?action=members&job=edit2&amp;id=<?php echo $id; ?>&amp;random=<?php echo $random; ?>">
 <table class="border">
-<tr><td class="obox" colspan="2">Mitglied bearbeiten</td></tr>
-<tr><td class="mbox">Benutzername:</td><td class="mbox">
+<tr><td class="obox" colspan="2">Edit member</td></tr>
+<tr><td class="mbox">Nickname:</td><td class="mbox">
 <input type="text" name="name_<?php echo $random; ?>" size="40" value="<?php echo $user['name']; ?>" />
 </td></tr>
-<tr><td class="mbox">Neues Passwort:</td><td class="mbox">
+<tr><td class="mbox">New password:</td><td class="mbox">
 <input type="password" name="pw_<?php echo $random; ?>" size="40" value="" />
 </td></tr>
-<tr><td class="mbox" valign="top">Gruppenzugehörigkeit:<br />
-<span class="stext">Mehrere Gruppen möglich. Eingabe der IDs mit Kommas!</span>
+<tr><td class="mbox" valign="top">Group affiliation:<br />
+<span class="stext">Several groups possible. Entry of the IDs with commas!</span>
 </td><td class="mbox">
 <input type="text" name="groups" id="groups" size="40" value="<?php echo $user['groups']; ?>" />
 <br />
 <table class="border">
 <tr>
 <td class="ubox">ID</td>
-<td class="ubox">Interner Gruppenname></td>
-<td class="ubox">Öffentlicher Gruppentitel</td>
+<td class="ubox">Internal group name</td>
+<td class="ubox">Public group title</td>
 </tr>
 <?php while ($row = $gpc->prepare($db->fetch_assoc($result))) { ?>
 <tr>
@@ -606,23 +606,23 @@ elseif ($job == 'edit') {
 <?php } ?>
 </table>
 </td></tr>
-<tr><td class="mbox">Bürgerlicher Name:</td><td class="mbox">
+<tr><td class="mbox">Civil-name:</td><td class="mbox">
 <input type="text" name="fullname" id="fullname" size="40" value="<?php echo $user['fullname']; ?>" />
 </td></tr>
-<tr><td class="mbox">Emailadresse:</td><td class="mbox"> 
+<tr><td class="mbox">Emailaddress:</td><td class="mbox"> 
 <input type="text" name="email" id="email" size="40" value="<?php echo $user['mail']; ?>" />
 </td></tr>
-<tr><td class="mbox">Wohnort:</td><td class="mbox"> 
+<tr><td class="mbox">Residence:</td><td class="mbox"> 
 <input type="text" name="location" id="location" size="40" value="<?php echo $user['location']; ?>" />
 </td></tr>
-<tr><td class="mbox">Geschlecht:</td><td class="mbox"> 
+<tr><td class="mbox">Gender:</td><td class="mbox"> 
 <select size="1" name="gender">
-	<option value="">Keine Angabe</option>
-	<option<?php echo iif($user['gender'] == 'm',' selected="selected"'); ?> value="m">Männlich</option>
-	<option<?php echo iif($user['gender'] == 'w',' selected="selected"'); ?> value="w">Weiblich</option>
+	<option value="">Not specified</option>
+	<option<?php echo iif($user['gender'] == 'm',' selected="selected"'); ?> value="m">Male</option>
+	<option<?php echo iif($user['gender'] == 'w',' selected="selected"'); ?> value="w">Female</option>
 </select>
 </td></tr>
-<tr><td class="mbox">Geburtstag:</td><td class="mbox">
+<tr><td class="mbox">Birthday:</td><td class="mbox">
   <select size="1" name="birthday">
   <option value="00">--</option>
 	<?php
@@ -685,9 +685,9 @@ elseif ($job == 'edit') {
 <br class="minibr" />
 
 <table class="border">
-<tr><td class="obox" colspan="2">Profilbild ändern</td></tr>
+<tr><td class="obox" colspan="2">Change avatar</td></tr>
 <tr>
-<td class="mbox">Neues Profilbild per URL hinzufügen:</td>
+<td class="mbox">Add new avatar with URL:</td>
 <td class="mbox"><input type="text" name="pic" id="pic" size="70" value="<?php echo $user['pic']; ?>" /></td>
 </tr>
 <tr><td class="ubox" colspan="2" align="center"><input accesskey="s" type="submit" name="Submit1" value="Submit" /></td></tr>
@@ -695,74 +695,74 @@ elseif ($job == 'edit') {
 <br class="minibr" />
 
 <table class="border">
-<tr><td class="obox" colspan="2">Optionen ändern</td></tr>
-<tr><td class="mbox">Zeitzone:</td><td class="mbox">
+<tr><td class="obox" colspan="2">Edit options</td></tr>
+<tr><td class="mbox">Time zone:</td><td class="mbox">
 <select id="temp" name="temp"> 
-	<option selected="selected" value="<?php echo $user['timezone']; ?>">Zeitzone beibehalten (GMT <?php echo $user['timezone']; ?>)</option>
+	<option selected="selected" value="<?php echo $user['timezone']; ?>">keep time zone (GMT <?php echo $user['timezone']; ?>)</option>
 	<option value="-12">(GMT -12:00) Eniwetok, Kwajalein</option>
-	<option value="-11">(GMT -11:00) Midway-Inseln, Samoa</option>
+	<option value="-11">(GMT -11:00) Midway-Ilands, Samoa</option>
 	<option value="-10">(GMT -10:00) Hawaii</option>
 	<option value="-9">(GMT -09:00) Alaska</option>
-	<option value="-8">(GMT -08:00) Tijuana, Lod Angeles, Seattle, Vancouver</option>
+	<option value="-8">(GMT -08:00) Tijuana, Los Angeles, Seattle, Vancouver</option>
 	<option value="-7">(GMT -07:00) Arizona, Denver, Salt Lake City, Calgary</option>
-	<option value="-6">(GMT -06:00) Mexiko-Stadt, Saskatchewan, Zentralamerika</option>
-	<option value="-5">(GMT -05:00)  Bogot&aacute;, Lima, Quito, Indiana (Ost), New York, Toronto</option>
+	<option value="-6">(GMT -06:00) Mexico-City, Saskatchewan, Central-amerika</option>
+	<option value="-5">(GMT -05:00)  Bogot&aacute;, Lima, Quito, Indiana (East), New York, Toronto</option>
 	<option value="-4">(GMT -04:00) Caracas, La Paz, Montreal, Quebec, Santiago</option>
-	<option value="-3.5">(GMT -03:30) Neufundland</option>
-	<option value="-3">(GMT -03:00) Brasilia, Buenos Aires, Georgetown, Gr&ouml;nland</option>
-	<option value="-2">(GMT -02:00) Mittelatlantik</option>
-	<option value="-1">(GMT -01:00) Azoren, Kapverdische Inseln</option>
+	<option value="-3.5">(GMT -03:30) Newfoundland</option>
+	<option value="-3">(GMT -03:00) Brasilia, Buenos Aires, Georgetown, Greenland</option>
+	<option value="-2">(GMT -02:00) Middle atlantic</option>
+	<option value="-1">(GMT -01:00) Azores, Cape verde islands</option>
 	<option value="0">(GMT) Casablance, Monrovia, Dublin, Edinburgh, Lissabon, London</option>
-	<option value="+1">(GMT +01:00) Amsterdam, Berlin, Bern, Rom, Stockholm, Wien, Paris</option>
-	<option value="+2">(GMT +02:00) Athen, Istanbul, Minsk, Kairo, Jerusalem</option>
-	<option value="+3">(GMT +03:00) Bagdad, Moskau, Nairobi</option>
+	<option value="+1">(GMT +01:00) Amsterdam, Berlin, Bern, Rome, Stockholm, Vienna, Paris</option>
+	<option value="+2">(GMT +02:00) Athens, Istanbul, Minsk, Cairo, Jerusalem</option>
+	<option value="+3">(GMT +03:00) Bagdad, Moscow, Nairobi</option>
 	<option value="+3.5">(GMT +03:30) Teheran</option>
 	<option value="+4">(GMT +04:00) Muskat, Tiflis</option>
 	<option value="+4.5">(GMT +04:30) Kabul</option>
 	<option value="+5">(GMT +05:00) Islamabad</option>
-	<option value="+5.5">(GMT +05:30) Kalkutta, Neu-Delhi</option>
+	<option value="+5.5">(GMT +05:30) Kalkutta, New-Delhi</option>
 	<option value="+5.75">(GMT +05:45) Katmandu</option>
-	<option value="+6">(GMT +06:00) Almaty, Nowosibirsk, Dhaka</option>
+	<option value="+6">(GMT +06:00) Almaty, Novosibirsk, Dhaka</option>
 	<option value="+6.5">(GMT +06:30) Rangun</option>
 	<option value="+7">(GMT +07:00) Bangkok, Hanoi, Jakarta</option>
 	<option value="+8">(GMT +08:00) Ulan Bator, Singapur, Peking, Hongkong</option>
 	<option value="+9">(GMT +09:00) Irkutsk, Osaka, Sapporo, Tokyo, Seoul</option>
 	<option value="+9.5">(GMT +09:30) Adelaide, Darwin</option>
-	<option value="+10">(GMT +10:00) Brisbane, Canberra, Melbourne, Sydney, Wladiwostok</option>
-	<option value="+11">(GMT +11:00) Salomonen, Neukaledonien</option>
-	<option value="+12">(GMT +12:00) Auckland, Wellington, Fidschi, Kamtschatka</option>
+	<option value="+10">(GMT +10:00) Brisbane, Canberra, Melbourne, Sydney, Vladivostok</option>
+	<option value="+11">(GMT +11:00) Solomon, New Caledonia</option>
+	<option value="+12">(GMT +12:00) Auckland, Wellington, Fiji Islands, Kamchatka</option>
 </select>		
 </td></tr>
-<tr><td class="mbox">Beitragseditor:</td><td class="mbox">
+<tr><td class="mbox">Contribution editor:</td><td class="mbox">
 <select id="opt_0" name="opt_0">
-	<option<?php echo iif($user['opt_textarea'] == 0,' selected="selected"'); ?> value="0">Einfacher Editor</option>
-	<option<?php echo iif($user['opt_textarea'] == 1,' selected="selected"'); ?> value="1">Erweiterter Editor</option>
+	<option<?php echo iif($user['opt_textarea'] == 0,' selected="selected"'); ?> value="0">Simple editor</option>
+	<option<?php echo iif($user['opt_textarea'] == 1,' selected="selected"'); ?> value="1">Advanced editor</option>
 </select>
 </td></tr>
-<tr><td class="mbox">Email bei neuer PN senden?</td><td class="mbox">
+<tr><td class="mbox">Sending an email by receiving a PN?</td><td class="mbox">
 <input id="opt_1" type="checkbox" name="opt_1" <?php echo iif($user['opt_pmnotify'] == 1,' checked="checked"'); ?> value="1" />
 </td></tr>
-<tr><td class="mbox">Schlecht bewertete Themen automatisch ausblenden?</td><td class="mbox">
+<tr><td class="mbox">Hide topics with bad ratings?</td><td class="mbox">
 <input id="opt_2" type="checkbox" name="opt_2" <?php echo iif($user['opt_hidebad'] == 1,' checked="checked"'); ?> value="1" />
 </td></tr>
-<tr><td class="mbox">Wie soll Mitgliedern Ihre Email angezeigt werden?</td><td class="mbox">
+<tr><td class="mbox">How should your email shown to the members?</td><td class="mbox">
 <select id="opt_3" name="opt_3">
-	<option<?php echo iif($user['opt_hidemail'] == 0,' selected="selected"'); ?> value="0">E-Mail verschlüsselt zeigen + Formular</option>
-	<option<?php echo iif($user['opt_hidemail'] == 1,' selected="selected"'); ?> value="1">E-Mail nicht zeigen + Kein Formular</option>
-	<option<?php echo iif($user['opt_hidemail'] == 2,' selected="selected"'); ?> value="2">E-Mail nicht zeigen + Formular</option>
+	<option<?php echo iif($user['opt_hidemail'] == 0,' selected="selected"'); ?> value="0">show the e-mail encrypted + provide form</option>
+	<option<?php echo iif($user['opt_hidemail'] == 1,' selected="selected"'); ?> value="1">do not show the e-mail + provide no form</option>
+	<option<?php echo iif($user['opt_hidemail'] == 2,' selected="selected"'); ?> value="2">do not show the e-mail + provide form</option>
 </select>
 </td></tr>
-<tr><td class="mbox">Welches Design wollen Sie nutzen?</td><td class="mbox">
+<tr><td class="mbox">Which design would you like to use?</td><td class="mbox">
 <select id="opt_4" name="opt_4">
-	<option selected="selected" value="<?php echo $user['template']; ?>">Design beibehalten</option>
+	<option selected="selected" value="<?php echo $user['template']; ?>">keep design</option>
 	<?php foreach ($design as $row) { ?>
 	<option value="<?php echo $row['id']; ?>"><?php echo $row['name']; ?></option>
 	<?php } ?>
 </select>
 </td></tr>
-<tr><td class="mbox">Welche Sprache wollen Sie nutzen?</td><td class="mbox">
+<tr><td class="mbox">Which language would you like to use?</td><td class="mbox">
 <select id="opt_5" name="opt_5">
-	<option selected="selected" value="<?php echo $user['language']; ?>">Sprache beibehalten</option>
+	<option selected="selected" value="<?php echo $user['language']; ?>">keep language</option>
 	<?php foreach ($language as $row) { ?>
 	<option value="<?php echo $row['id']; ?>"><?php echo $row['language']; ?></option>
 	<?php } ?>
@@ -781,7 +781,7 @@ elseif ($job == 'edit') {
 <br class="minibr" />
 
 <table class="border">
-<tr><td class="obox">Persönliche Seite ändern</td></tr>
+<tr><td class="obox">Change personal site</td></tr>
 <tr><td class="mbox" align="center"><textarea name="comment" id="comment" rows="15" cols="110"><?php echo $user['about']; ?></textarea></td></tr>
 <tr><td class="ubox" align="center"><input accesskey="s" type="submit" name="Submit1" value="Submit" /></td></tr>
 </table>
@@ -810,7 +810,7 @@ elseif ($job == 'edit2') {
 
 	$result = $db->query('SELECT * FROM '.$db->pre.'user WHERE id = '.$query['id']);
 	if ($db->num_rows() != 1) {
-		error('admin.php?action=members&job=manage', 'Keine gültige ID angegeben.');
+		error('admin.php?action=members&job=manage', 'No valid ID given.');
 	}
 	$user = $gpc->prepare($db->fetch_assoc($result));
 
@@ -831,55 +831,58 @@ elseif ($job == 'edit2') {
 	
 	$error = array();
 	if (strxlen($query['comment']) > $config['maxaboutlength']) {
-		$error[] = 'Perönliche Seite ist zu lang';
+		$error[] = 'Personal site has too many characters';
 	}
 	if (check_mail($query['email']) == false) {
-		 $error[] = 'Keine gültige Emailadresse angegeben';
+		 $error[] = 'No valid e-mail address given';
 	}
 	if (strxlen($query['name']) > $config['maxnamelength']) {
-		$error[] = 'Name ist zu lang';
+		$error[] = 'Name has too many characters';
 	}
 	if (strxlen($query['name']) < $config['minnamelength']) {
-		$error[] = 'Name ist zu kurz';
+		$error[] = 'Name has too less characters';
 	}
 	if (strxlen($query['email']) > 200) {
-		$error[] = 'Emailadresse ist zu lang (max. 200 Zeichen)';
+		$error[] = 'E-mail address has too many characters (max. 200 characters)';
+	}
+	if (double_udata('mail', $_POST['email']) == false) {
+		 $error[] = $lang->phrase('email_already_used');
 	}
 	if (strxlen($query['signature']) > $config['maxsiglength']) {
-		$error[] = 'Signatur ist zu lang';
+		$error[] = 'Signature has too many characters';
 	}
 	if (strxlen($query['hp']) > 254) {
-		$error[] = 'Homepage ist zu lang';
+		$error[] = 'Homepage has too many characters';
 	}
 	if (!check_hp($query['hp'])) {
 		$query['hp'] = '';
 	}
 	if (strxlen($query['location']) > 50) {
-		$error[] = 'Wohnort ist zu lang (max. 50 Zeichen)';
+		$error[] = 'Residence has too many characters (max. 50 characters)';
 	}
 	if ($query['gender'] != 'm' && $query['gender'] != 'w' && $query['gender'] != '') {
-		$error[] = "Geschlecht wurde falsch übermittelt";
+		$error[] = "Gender transfer failed";
 	}
 	if ($query['birthday'] > 31) {
-		$error[] = "Geburtstag wurde falsch übermittelt";
+		$error[] = "Birthday-day transfer failed";
 	}
 	if ($query['birthmonth'] > 12) {
-		$error[] = "Geburtsmonat wurde falsch übermittelt";
+		$error[] = "Birthday-month transfer failed";
 	}
 	if (($query['birthyear'] < gmdate('Y')-120 || $query['birthyear'] > gmdate('Y')) && $query['birthyear'] != 0 ) {
-		$error[] = "Geburtsjahr wurde falsch übermittelt";
+		$error[] = "Birthday-year transfer failed";
 	}
 	if (strxlen($query['fullname']) > 128) {
-		$error[] = "Bürgerlicher Name ist zu lang";
+		$error[] = "Civil name has too many characters";
 	}
 	if (intval($query['temp']) < -12 && intval($query['temp']) > 12) {
-		$error[] = 'Sie haben keine gültige Zeitzone ausgewählt';
+		$error[] = 'You have not select a valid time zone';
 	}
 	if (!isset($cache[$query['opt_4']])) {
-		$error[] = 'Ungültiges Design ausgewählt';
+		$error[] = 'Invalid design seleced';
 	}
 	if (!isset($cache2[$query['opt_5']])) {
-		$error[] = 'Ungültige Sprache ausgewählt';
+		$error[] = 'Invalid language selected';
 	}
 	if (!empty($query['pic']) && preg_match('/^(http:\/\/|www.)([\wäöüÄÖÜ@\-_\.]+)\:?([0-9]*)\/(.*)$/', $query['pic'], $url_ary)) {
 		$query['pic'] = checkRemotePic($query['pic'], $url_ary, $query['id']);
@@ -918,7 +921,7 @@ elseif ($job == 'edit2') {
 		admin_customsave($query['id']);
 
 		$db->query("UPDATE {$db->pre}user SET groups = '".$query['groups']."', timezone = '".$query['temp']."', opt_textarea = '".$query['opt_0']."', opt_pmnotify = '".$query['opt_1']."', opt_hidebad = '".$query['opt_2']."', opt_hidemail = '".$query['opt_3']."', template = '".$query['opt_4']."', language = '".$query['opt_5']."', pic = '".$query['pic']."', about = '".$query['comment']."', icq = '".$query['icq']."', yahoo = '".$query['yahoo']."', aol = '".$query['aol']."', msn = '".$query['msn']."', jabber = '".$query['jabber']."', birthday = '".$bday."', gender = '".$query['gender']."', hp = '".$query['hp']."', signature = '".$query['signature']."', location = '".$query['location']."', fullname = '".$query['fullname']."', skype = '".$query['skype']."', mail = '".$query['email']."', name = '".$query['name']."'".$update_sql." WHERE id = '".$user['id']."' LIMIT 1",__LINE__,__FILE__); 
-		ok("admin.php?action=members&job=manage", 'Daten erfolgreich gespeichert!');
+		ok("admin.php?action=members&job=manage", 'Datas saved successful!');
 	}
 }
 elseif ($job == 'delete') {
@@ -966,7 +969,7 @@ elseif ($job == 'delete') {
 		ok('javascript:history.back(-1);', $anz.' members deleted');
 	}
 	else {
-		error('javascript:history.back(-1);', 'Keine gültige Angabe gemacht.');
+		error('javascript:history.back(-1);', 'No valid specifiation given.');
 	}
 
 }
@@ -976,15 +979,15 @@ elseif ($job == 'emaillist') {
 <form name="form" method="post" action="admin.php?action=members&job=emaillist2">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr> 
-   <td class="obox" colspan="2"><b>Email-Liste erstellen</b></td>
+   <td class="obox" colspan="2"><b>Create e-mail list</b></td>
   </tr>
   <tr> 
-   <td class="mbox" width="50%">Trennzeichen:<br><span class="stext">Trennzeichen zwischen den Emailadressen. Keine Angabe = Kommagetrennt</span></td>
+   <td class="mbox" width="50%">Seperator:<br><span class="stext">Seperator between e-mail-addresses. No specification = comma</span></td>
    <td class="mbox" width="50%"><textarea name="template" cols="10" rows="2"></textarea></td> 
   </tr>
   <tr> 
-	<td class="mbox" width="50%">Empfänger:</td>
-	<td class="mbox" width="50%"><select size="1" name="int1"><option value="1">Alle</option><option value="2" selected>Nur Mitglieder</option><option value="3">Nur Gäste</option></select></td> 
+	<td class="mbox" width="50%">Addressee:</td>
+	<td class="mbox" width="50%"><select size="1" name="int1"><option value="1">All</option><option value="2" selected>Members only</option><option value="3">Guests only</option></select></td> 
   </tr>
   <tr> 
    <td class="ubox" width="100%" colspan=2 align="center"><input type="submit" name="Submit" value="Submit"></td> 
@@ -1030,7 +1033,7 @@ elseif ($job == 'emaillist2') {
 	?>
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr> 
-   <td class="obox"><b>Email-Liste erstellen</b></td>
+   <td class="obox"><b>Create e-mail list</b></td>
   </tr>
   <tr> 
    <td class="mbox"><textarea class="fullwidth" cols="125" rows="25"><?php echo implode($template, $emails); ?></textarea></td>
@@ -1047,26 +1050,26 @@ elseif ($job == 'banned') {
 <form name="form" method="post" action="admin.php?action=members&job=banned2">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr> 
-   <td class="obox" colspan=2><b>Seite für gebannte IP-Adressen</b></td>
+   <td class="obox" colspan=2><b>Site for banned IP-addresses</b></td>
   </tr>
   <tr> 
-   <td class="mbox" width="30%">Inhalt d. Seite:<br><span class="stext">HTML und PHP sind möglich!</span></td>
+   <td class="mbox" width="30%">Content of the Site:<br><span class="stext">HTML and PHP are possible!</span></td>
    <td class="mbox" width="70%"><textarea name="template" rows="10" cols="90"><?php echo $content; ?></textarea></td> 
   </tr>
   <tr> 
-   <td class="ubox" width="100%" colspan=2 align="center"><input type="submit" name="Submit" value="Abschicken"></td> 
+   <td class="ubox" width="100%" colspan=2 align="center"><input type="submit" name="Submit" value="Submit"></td> 
   </tr>
  </table>
 </form><br>
 <form name="form" method="post" action="admin.php?action=members&job=banned3">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr> 
-   <td class="obox" colspan="2"><b>IP-Adressen verwalten</b></td>
+   <td class="obox" colspan="2"><b>Administrate IP-addresses</b></td>
   </tr>
   <tr>
    <td class="mbox" width="30%">
-   IP-Adresse:<br />
-   <span class="stext">Pro Zeile eine Emailadresse.<br />Um einen IP-Adressenbereich anzugeben, geben sie nur die erstezn Zeichen des Bereichs an (Bsp: "127.0." findet z.Bsp: "127.0.0.1")</span>
+   IP-address:<br />
+   <span class="stext">Per line one e-mail-address.<br />To specify an IP-range please mention only the front characters (Ex.: "127.0." will find e.g. "127.0.0.1")</span>
    </td>
    <td class="mbox" width="70%"><textarea name="ips" rows="10" cols="90"><?php echo $b; ?></textarea></td> 
   </tr>
@@ -1081,7 +1084,7 @@ elseif ($job == 'banned') {
 elseif ($job == 'banned2') {
 	echo head();
 	$filesystem->file_put_contents('data/banned.php', $gpc->get('template', none));
-	ok('admin.php?action=members&job=banned', 'Seite wurde gespeichert');
+	ok('admin.php?action=members&job=banned', 'Site has been saved successful');
 }
 elseif ($job == 'banned3') {
 	echo head();
@@ -1090,7 +1093,7 @@ elseif ($job == 'banned3') {
 	$file = $gpc->get('ips', none);
 	$file = trim($file);
 	$filesystem->file_put_contents('data/bannedip.php',$file);
-	ok('admin.php?action=members&job=banned', 'IP-Adressen wurden gespeichert.');
+	ok('admin.php?action=members&job=banned', 'IP-addresses have been saved successful.');
 }
 elseif ($job == 'search') {
 	echo head();
@@ -1106,29 +1109,29 @@ elseif ($job == 'search') {
 <form name="form" method="post" action="admin.php?action=members&job=search2">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr> 
-   <td class="obox" colspan="4">Mitglieder suchen</td>
+   <td class="obox" colspan="4">Search for members</td>
   </tr>
   <tr>
 	<td class="mbox" width="50%" colspan="4">
 	<b>Hilfe:</b>
 	<ul>
-	<li>Sie können "%" und "_" als Platzhalter in den Suchbegriff einfügen. Ein "_" steht für ein einziges Zeichen, ein "%" steht für beliebig viele Zeichen. Die Platzhalter können nur mit den Vergleichsoperatoren <b>!=</b> und <b>=</b> verwendet werden.</li>
-	<li>=<b></b> bedeutet <i>gleich</i>, <b>&lt;</b> bedeutet <i>kleiner als</i>, <b>&gt;</b> bedeutet <i>größer als</i>, <b>!=</b> bedeutet <i>nicht gleich</i>.</li>
+	<li>You can type "%" and "_" as wildcards into the keyword. An "_" replaces one single character, a "%" replaces many characters. The wildcards could only use with the relational operators <b>!=</b> and <b>=</b>.</li>
+	<li>=<b></b> means <i>equal</i>, <b>&lt;</b> means <i>less than</i>, <b>&gt;</b> means <i>greater than</i>, <b>!=</b> means <i>not equal</i>.</li>
 	</ul>
 	</td>
   </tr>
   <tr> 
-   <td class="mbox" colspan="2">Genauigkeit:</td>
+   <td class="mbox" colspan="2">Exactness:</td>
    <td class="mbox" colspan="2">
-   <input type="radio" name="type" value="0"> <b>Oder</b> (mindestens eine der Eingaben muss stimmen)<br>
-   <input type="radio" name="type" value="1" checked="checked">  <b>Und</b> (alle Eingaben müssen stimmen)
+   <input type="radio" name="type" value="0"> <b>or</b> (at least one of the input have to lead to a match)<br>
+   <input type="radio" name="type" value="1" checked="checked">  <b>and</b> (the whole input have to lead to a match)
    </td> 
   </tr>
   <tr> 
    <td class="ubox" width="40%">&nbsp;</td>
-   <td class="ubox" width="5%">Vergleichsoperator</td>
+   <td class="ubox" width="5%">Relational operator</td>
    <td class="ubox" width="50%">&nbsp;</td> 
-   <td class="ubox" width="5%">Anzeigen</td> 
+   <td class="ubox" width="5%">Show</td> 
   </tr>
   <tr> 
    <td class="mbox">ID:</td>
@@ -1147,13 +1150,13 @@ elseif ($job == 'search') {
    <td class="mbox"><input type="checkbox" name="show[name]" value="1" checked>Yes</td> 
   </tr>
   <tr> 
-   <td class="mbox">Emailadresse:</td>
+   <td class="mbox">E-mail address:</td>
    <td class="mbox" align="center">=</td>
    <td class="mbox"><input type="text" name="mail" size="50"></td> 
    <td class="mbox"><input type="checkbox" name="show[mail]" value="1" checked></td> 
   </tr>
   <tr> 
-   <td class="mbox">Datum d. Registrierung:</td>
+   <td class="mbox">Date of registry:</td>
    <td class="mbox" align="center"><select size="1" name="compare[regdate]">
       <option value="-1">&lt;</option>
       <option value="0" selected="selected">=</option>
@@ -1163,7 +1166,7 @@ elseif ($job == 'search') {
    <td class="mbox"><input type="checkbox" name="show[regdate]" value="1" checked></td> 
   </tr>
   <tr> 
-   <td class="mbox">Vollständiger Name:</td>
+   <td class="mbox">Civil name:</td>
    <td class="mbox" align="center">=</td>
    <td class="mbox"><input type="text" name="fullname" size="50"></td> 
    <td class="mbox"><input type="checkbox" name="show[fullname]" value="1" checked></td> 
@@ -1175,7 +1178,7 @@ elseif ($job == 'search') {
    <td class="mbox"><input type="checkbox" name="show[hp]" value="1"></td> 
   </tr>
   <tr> 
-   <td class="mbox">Wohnort:</td>
+   <td class="mbox">Residence:</td>
    <td class="mbox" align="center"><select size="1" name="compare[location]">
       <option value="0" selected="selected">=</option>
       <option value="2">!=</option>
@@ -1184,21 +1187,21 @@ elseif ($job == 'search') {
    <td class="mbox"><input type="checkbox" name="show[location]" value="1"></td> 
   </tr>
   <tr> 
-   <td class="mbox">Geschlecht:</td>
+   <td class="mbox">Gender:</td>
    <td class="mbox" align="center"><select size="1" name="compare[gender]">
       <option value="0" selected="selected">=</option>
       <option value="2">!=</option>
     </select></td>
    <td class="mbox"><select name="gender" size="1">
    <option selected="selected" value="">Egal</option>
-   <option value="x">Keine Angabe</option>
-   <option value="m">Männlich</option>
-   <option value="w">Weiblich</option>
+   <option value="x">Not specified</option>
+   <option value="m">Male</option>
+   <option value="w">Female</option>
    </select></td> 
    <td class="mbox"><input type="checkbox" name="show[gender]" value="1"></td> 
   </tr>
   <tr> 
-   <td class="mbox">Geburtstag:</td>
+   <td class="mbox">Birthday:</td>
    <td class="mbox" align="center"><select size="1" name="compare[birthday]">
       <option value="-1">&lt;</option>
       <option value="0" selected="selected">=</option>
@@ -1208,7 +1211,7 @@ elseif ($job == 'search') {
    <td class="mbox"><input type="checkbox" name="show[birthday]" value="1"></td> 
   </tr>
   <tr> 
-   <td class="mbox">Letzter Besuch:</td>
+   <td class="mbox">Last visit:</td>
    <td class="mbox" align="center"><select size="1" name="compare[lastvisit]">
       <option value="-1">&lt;</option>
       <option value="0" selected="selected">=</option>
@@ -1218,7 +1221,7 @@ elseif ($job == 'search') {
    <td class="mbox"><input type="checkbox" name="show[lastvisit]" value="1" checked></td> 
   </tr>
   <tr> 
-   <td class="mbox">ICQ-Nummer:</td>
+   <td class="mbox">ICQ-number:</td>
    <td class="mbox" align="center"><select size="1" name="compare[icq]">
       <option value="-1">&lt;</option>
       <option value="0" selected="selected">=</option>
@@ -1234,77 +1237,77 @@ elseif ($job == 'search') {
    <td class="mbox"><input type="checkbox" name="show[yahoo]" value="1"></td> 
   </tr>
   <tr> 
-   <td class="mbox">AOL-Name:</td>
+   <td class="mbox">AOL-name:</td>
    <td class="mbox" align="center">=</td>
    <td class="mbox"><input type="text" name="aol" size="50"></td> 
    <td class="mbox"><input type="checkbox" name="show[aol]" value="1"></td> 
   </tr>
   <tr> 
-   <td class="mbox">MSN-Adresse:</td>
+   <td class="mbox">MSN-address:</td>
    <td class="mbox" align="center">=</td>
    <td class="mbox"><input type="text" name="msn" size="50"></td> 
    <td class="mbox"><input type="checkbox" name="show[msn]" value="1"></td> 
   </tr>
   <tr> 
-   <td class="mbox">Jabber-Adresse:</td>
+   <td class="mbox">Jabber-address:</td>
    <td class="mbox" align="center">=</td>
    <td class="mbox"><input type="text" name="jabber" size="50"></td> 
    <td class="mbox"><input type="checkbox" name="show[jabber]" value="1"></td> 
   </tr>
   <tr> 
-   <td class="mbox">Skype-Name:</td>
+   <td class="mbox">Skype-name:</td>
    <td class="mbox" align="center">=</td>
    <td class="mbox"><input type="text" name="skype" size="50"></td> 
    <td class="mbox"><input type="checkbox" name="show[skype]" value="1"></td> 
   </tr>
   <tr> 
-   <td class="mbox">Zeitzone:</td>
+   <td class="mbox">Time zone:</td>
    <td class="mbox" align="center"><select size="1" name="compare[timezone]">
       <option value="0" selected="selected">=</option>
       <option value="2">!=</option>
     </select></td>
    <td class="mbox"><select name="timezone"> 
-	<option selected="selected" value="">Egal</option>
+	<option selected="selected" value="">whatever</option>
 	<option value="-12">(GMT -12:00) Eniwetok, Kwajalein</option>
-	<option value="-11">(GMT -11:00) Midway-Inseln, Samoa</option>
+	<option value="-11">(GMT -11:00) Midway-Ilands, Samoa</option>
 	<option value="-10">(GMT -10:00) Hawaii</option>
 	<option value="-9">(GMT -09:00) Alaska</option>
-	<option value="-8">(GMT -08:00) Tijuana, Lod Angeles, Seattle, Vancouver</option>
+	<option value="-8">(GMT -08:00) Tijuana, Los Angeles, Seattle, Vancouver</option>
 	<option value="-7">(GMT -07:00) Arizona, Denver, Salt Lake City, Calgary</option>
-	<option value="-6">(GMT -06:00) Mexiko-Stadt, Saskatchewan, Zentralamerika</option>
-	<option value="-5">(GMT -05:00) Bogotá, Lima, Quito, Indiana (Ost), New York, Toronto</option>
+	<option value="-6">(GMT -06:00) Mexico-City, Saskatchewan, Central-amerika</option>
+	<option value="-5">(GMT -05:00)  Bogot&aacute;, Lima, Quito, Indiana (East), New York, Toronto</option>
 	<option value="-4">(GMT -04:00) Caracas, La Paz, Montreal, Quebec, Santiago</option>
-	<option value="-3.5">(GMT -03:30) Neufundland</option>
-	<option value="-3">(GMT -03:00) Brasilia, Buenos Aires, Georgetown, Grönland</option>
-	<option value="-2">(GMT -02:00) Mittelatlantik</option>
-	<option value="-1">(GMT -01:00) Azoren, Kapverdische Inseln</option>
+	<option value="-3.5">(GMT -03:30) Newfoundland</option>
+	<option value="-3">(GMT -03:00) Brasilia, Buenos Aires, Georgetown, Greenland</option>
+	<option value="-2">(GMT -02:00) Middle atlantic</option>
+	<option value="-1">(GMT -01:00) Azores, Cape verde islands</option>
 	<option value="0">(GMT) Casablance, Monrovia, Dublin, Edinburgh, Lissabon, London</option>
-	<option value="+1">(GMT +01:00) Amsterdam, Berlin, Bern, Rom, Stockholm, Wien, Paris</option>
-	<option value="+2">(GMT +02:00) Athen, Istanbul, Minsk, Kairo, Jerusalem</option>
-	<option value="+3">(GMT +03:00) Bagdad, Moskau, Nairobi</option>
+	<option value="+1">(GMT +01:00) Amsterdam, Berlin, Bern, Rome, Stockholm, Vienna, Paris</option>
+	<option value="+2">(GMT +02:00) Athens, Istanbul, Minsk, Cairo, Jerusalem</option>
+	<option value="+3">(GMT +03:00) Bagdad, Moscow, Nairobi</option>
 	<option value="+3.5">(GMT +03:30) Teheran</option>
 	<option value="+4">(GMT +04:00) Muskat, Tiflis</option>
 	<option value="+4.5">(GMT +04:30) Kabul</option>
 	<option value="+5">(GMT +05:00) Islamabad</option>
-	<option value="+5.5">(GMT +05:30) Kalkutta, Neu-Delhi</option>
+	<option value="+5.5">(GMT +05:30) Kalkutta, New-Delhi</option>
 	<option value="+5.75">(GMT +05:45) Katmandu</option>
-	<option value="+6">(GMT +06:00) Almaty, Nowosibirsk, Dhaka</option>
+	<option value="+6">(GMT +06:00) Almaty, Novosibirsk, Dhaka</option>
 	<option value="+6.5">(GMT +06:30) Rangun</option>
 	<option value="+7">(GMT +07:00) Bangkok, Hanoi, Jakarta</option>
 	<option value="+8">(GMT +08:00) Ulan Bator, Singapur, Peking, Hongkong</option>
 	<option value="+9">(GMT +09:00) Irkutsk, Osaka, Sapporo, Tokyo, Seoul</option>
 	<option value="+9.5">(GMT +09:30) Adelaide, Darwin</option>
-	<option value="+10">(GMT +10:00) Brisbane, Canberra, Melbourne, Sydney, Wladiwostok</option>
-	<option value="+11">(GMT +11:00) Salomonen, Neukaledonien</option>
-	<option value="+12">(GMT +12:00) Auckland, Wellington, Fidschi, Kamtschatka</option>
+	<option value="+10">(GMT +10:00) Brisbane, Canberra, Melbourne, Sydney, Vladivostok</option>
+	<option value="+11">(GMT +11:00) Solomon, New Caledonia</option>
+	<option value="+12">(GMT +12:00) Auckland, Wellington, Fiji Islands, Kamchatka</option>
 </select>	</td> 
    <td class="mbox"><input type="checkbox" name="show[timezone]" value="1"></td> 
   </tr>
   <tr> 
-   <td class="mbox">Gruppen-ID:</td>
+   <td class="mbox">Group-ID:</td>
    <td class="mbox" align="center">=</td>
    <td class="mbox"><select size="3" name="groups" multiple="multiple">
-      <option selected="selected" value="">Egal</option>
+      <option selected="selected" value="">whatever</option>
 	  <?php while ($row = $gpc->prepare($db->fetch_assoc($result))) { ?>
 		<option value="<?php echo $row['id']; ?>"><?php echo $row['name']; ?></option>
 	  <?php } ?>
@@ -1318,7 +1321,7 @@ elseif ($job == 'search') {
       <option value="2">!=</option>
     </select></td>
    <td class="mbox"><select name="template">
-	<option selected="selected" value="">Egal</option>
+	<option selected="selected" value="">whatever</option>
 	<?php foreach ($design as $row) { ?>
 	<option value="<?php echo $row['id']; ?>"><?php echo $row['name']; ?></option>
 	<?php } ?>
@@ -1326,13 +1329,13 @@ elseif ($job == 'search') {
    <td class="mbox"><input type="checkbox" name="show[template]" value="1"></td> 
   </tr>
   <tr> 
-   <td class="mbox">Sprache:</td>
+   <td class="mbox">Language:</td>
    <td class="mbox" align="center"><select size="1" name="compare[language]">
       <option value="0" selected="selected">=</option>
       <option value="2">!=</option>
     </select></td>
    <td class="mbox"><select name="language">
-	<option selected="selected" value="">Egal</option>
+	<option selected="selected" value="">whatever</option>
 	<?php foreach ($language as $row) { ?>
 	<option value="<?php echo $row['id']; ?>"><?php echo $row['language']; ?></option>
 	<?php } ?>
@@ -1346,16 +1349,16 @@ elseif ($job == 'search') {
       <option value="2">!=</option>
     </select></td>
    <td class="mbox"><select size="1" name="confirm">
-      <option selected="selected" value="">Egal</option>
-      <option value="11">Freigeschaltet</option>
-      <option value="10">User muss sich noch per E-Mail freischalten</option>
-      <option value="01">User muss noch vom Admin freigeschaltet werden</option>
-      <option value="00">User ist weder vom Admin noch per E-Mail freigeschaltet</option>
+      <option selected="selected" value="">whatever</option>
+      <option value="11">Activated</option>
+      <option value="10">User has to activate the account per e-mail</option>
+      <option value="01">User account has to be activated by the admin</option>
+      <option value="00">User has neither from the admin nor per e-mail been activated</option>
     </select></td> 
    <td class="mbox"><input type="checkbox" name="show[confirm]" value="1"></td> 
   </tr>
   <tr> 
-   <td class="ubox" align="center" colspan="4"><input type="submit" value="Abschicken"></td> 
+   <td class="ubox" align="center" colspan="4"><input type="submit" value="Submit"></td> 
   </tr>
  </table>
 </form>
@@ -1524,15 +1527,15 @@ elseif ($job == 'search2') {
 	<form name="form" action="admin.php?action=members&job=delete" method="post">
 	<table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
 		<tr> 
-		  <td class="obox" colspan="<?php echo $colspan; ?>"><b>Mitglieder suchen</b></td>
+		  <td class="obox" colspan="<?php echo $colspan; ?>"><b>Search for members</b></td>
 		</tr>
 		<?php if ($count == 0) { ?>
 		<tr> 
-		  <td class="mbox" colspan="<?php echo $colspan; ?>">Es konnte kein Mitglied gefunden werden.</td>
+		  <td class="mbox" colspan="<?php echo $colspan; ?>">No member found.</td>
 		</tr>
 		<?php } else { ?>
 			<tr> 
-			  <td class="ubox" colspan="<?php echo $colspan; ?>"><?php echo $count; ?> gefundene Mitglieder</td>
+			  <td class="ubox" colspan="<?php echo $colspan; ?>"><?php echo $count; ?> members found.</td>
 			</tr>
 			<tr>
 			  <td class="obox">DEL</td>
@@ -1572,10 +1575,10 @@ elseif ($job == 'search2') {
 					$row['language'] = $language[$row['language']]['language'];
 				}
 				if (isset($row['confirm'])) {
-			      	if ($row['confirm'] == "11") { $row['confirm'] = 'Freigeschaltet'; }
-			      	elseif ($row['confirm'] == "10") { $row['confirm'] = 'User muss sich noch per E-Mail freischalten'; }
-			      	elseif ($row['confirm'] == "01") { $row['confirm'] = 'User muss noch vom Admin freigeschaltet werden'; }
-			      	elseif ($row['confirm'] == "00") { $row['confirm'] = 'User ist weder vom Admin noch per E-Mail freigeschaltet'; }
+			      	if ($row['confirm'] == "11") { $row['confirm'] = 'Activated'; }
+			      	elseif ($row['confirm'] == "10") { $row['confirm'] = 'User has to activate the account per e-mail'; }
+			      	elseif ($row['confirm'] == "01") { $row['confirm'] = 'User account has to be activated by the admin'; }
+			      	elseif ($row['confirm'] == "00") { $row['confirm'] = 'User has neither from the admin nor per e-mail been activated'; }
 			    }
 			?>
 		    <tr>
@@ -1586,7 +1589,7 @@ elseif ($job == 'search2') {
 			</tr>
 			<?php } ?>
 			<tr> 
-			  <td class="ubox" colspan="<?php echo $colspan; ?>"><input type="submit" name="submit" value="Löschen"></td>
+			  <td class="ubox" colspan="<?php echo $colspan; ?>"><input type="submit" name="submit" value="Delete"></td>
 			</tr>
 		<?php } ?>
 	</table>
@@ -1607,7 +1610,6 @@ elseif ($job == 'disallow') {
 	else {
 		error('admin.php?action=members&job=activate', 'Keine gültige Angabe gemacht.');
 	}
-
 }
 elseif ($job == 'activate') {
 	echo head();
@@ -1623,7 +1625,7 @@ elseif ($job == 'activate') {
 		  <td class="ubox" width="30%">Name</td>
 		  <td class="ubox" width="10%">Email</td>
 		  <td class="ubox" width="15%">Registered</td>
-		  <td class="ubox" width="45%">Status (<input type="checkbox" onchange="check_all('delete[]')" /> Alle)</td>
+		  <td class="ubox" width="45%">Status (<input type="checkbox" onchange="check_all('delete[]')" /> All)</td>
 		</tr>
 	<?php
 	while ($row = $gpc->prepare($db->fetch_object($result))) { 
@@ -1640,11 +1642,11 @@ elseif ($job == 'activate') {
 		  <td class="mbox"><?php echo $row->regdate; ?></td>
 		  <td class="mbox"><ul>
 		  <?php if ($row->confirm == '00' || $row->confirm == '01') { ?>
-		  <li><strong><a href="admin.php?action=members&job=confirm&id=<?php echo $row->id; ?>">User freischalten</a></strong></li>
+		  <li><strong><a href="admin.php?action=members&job=confirm&id=<?php echo $row->id; ?>">Activate user</a></strong></li>
 		  <?php } if ($row->confirm == '00' || $row->confirm == '10') { ?>
-		  <li>User muss sich noch per E-Mail freischalten</li>
+		  <li>User has to activate the account per e-mail</li>
 		  <?php } ?>
-		  <li>User löschen: <input type="checkbox" name="delete[]" value="<?php echo $row->id; ?>" /></li>
+		  <li>Delete user: <input type="checkbox" name="delete[]" value="<?php echo $row->id; ?>"></li>
 		  </ul></td>
 		</tr>
 		<?php
@@ -1678,7 +1680,7 @@ elseif ($job == 'confirm') {
 	$content = $lang->get_mail('admin_confirmed');
 	xmail(array('0' => array('mail' => $row['mail'])), array(), $content['title'], $content['comment']);
 	
-	ok('admin.php?action=members&job=activate', 'Mitglied wurde freigeschaltet!');
+	ok('admin.php?action=members&job=activate', 'Member has been activated!');
 }
 elseif ($job == 'ips') {
 	$username = $gpc->get('username', str);

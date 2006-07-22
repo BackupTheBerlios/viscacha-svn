@@ -4,7 +4,8 @@ digest_s	Sofortige Benachrichtigung über neue Beiträge
 digest_w	Wöchentliche Benachrichtigung über neue Beiträge
 mass_topic_moved	"Thema wurde verschoben"-Benachrichtigung (Massenverschieben)
 newpm	Benachrichtigung über eine neue PM
-pwremind	Passwort-Vergessen-Email
+pwremind	Passwort-Vergessen-Email (Bestätigungs-Email)
+pwremind2	Passwort-Vergessen-Email (Email mit neuem Passwort)
 register_00	Registrierungsbestätigung (bei Freischaltung per E-Mail und Administrator)
 register_01	Registrierungsbestätigung (bei Freischaltung per Administrator)
 register_10	Registrierungsbestätigung (bei Freischaltung per E-Mail)
