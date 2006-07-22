@@ -1271,12 +1271,12 @@ elseif ($job == 'package_import') {
 	?>
 <form name="form2" method="post" enctype="multipart/form-data" action="admin.php?action=cms&job=package_import2">
  <table class="border" cellpadding="4" cellspacing="0" border="0">
-  <tr><td class="obox" colspan="2">Import new Design</td></tr>
-  <tr><td class="mbox"><em>Entweder</em> Datei hochladen:<br /><span class="stext">Erlaubte Dateitypen: .zip - Maximale Dateigröße: <?php echo formatFilesize(ini_maxupload()); ?></span></td>
+  <tr><td class="obox" colspan="2">Import a new Package</td></tr>
+  <tr><td class="mbox"><em>Either</em> upload a file:<br /><span class="stext">Allowed file types: .zip - Maximum file size: <?php echo formatFilesize(ini_maxupload()); ?></span></td>
   <td class="mbox"><input type="file" name="upload" size="40" /></td></tr>
-  <tr><td class="mbox"><em>oder</em> Datei vom Server auswählen:<br /><span class="stext">Pfad ausgehend vom Viscacha-Hauptverzeichnis: <?php echo $config['fpath']; ?></span></td>
+  <tr><td class="mbox"><em>oder</em> select a file from the server:<br /><span class="stext">Path starting from the Viscacha-root-directory: <?php echo $config['fpath']; ?></span></td>
   <td class="mbox"><input type="text" name="server" size="50" /></td></tr>
-  <tr><td class="mbox">Datei nach dem importieren löschen:</td>
+  <tr><td class="mbox">Delete file after import:</td>
   <td class="mbox"><input type="checkbox" name="delete" value="1" checked="checked" /></td></tr>
   <tr><td class="ubox" colspan="2" align="center"><input accesskey="s" type="submit" value="Send" /></td></tr>
  </table>
@@ -1320,11 +1320,11 @@ elseif ($job == 'package_import2') {
 			$file = $server;
 		}
 		else {
-			$inserterrors[] = 'Angegebene Datei ist keine ZIP-Datei.';
+			$inserterrors[] = 'The selected file is no ZIP-file.';
 		}
 	}
 	else {
-		$inserterrors[] = 'Keine gültige Datei angegeben.';
+		$inserterrors[] = 'No valid file selected.';
 	}
 	if (count($inserterrors) > 0) {
 		echo head();
@@ -1343,7 +1343,7 @@ elseif ($job == 'package_import2') {
 	if ($failure < 1) {
 		rmdirr($tempdir);
 		echo head();
-		error('admin.php?action=designs&job=design_import', 'ZIP-Archiv konnte nicht gelesen werden oder ist leer.');
+		error('admin.php?action=designs&job=design_import', 'ZIP-archive could not be read or the folder is empty.');
 	}
 	else {
 		$c = new manageconfig();

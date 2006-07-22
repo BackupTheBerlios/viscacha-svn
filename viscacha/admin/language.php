@@ -75,9 +75,9 @@ elseif ($job == 'import') {
 <form name="form2" method="post" enctype="multipart/form-data" action="admin.php?action=language&job=import2">
  <table class="border" cellpadding="4" cellspacing="0" border="0">
   <tr><td class="obox" colspan="2">Import Languagepack</td></tr>
-  <tr><td class="mbox"><em>Either</em> upload file:<br /><span class="stext">permitted file types: .zip - maximum file size: 1 MB</span></td>
+  <tr><td class="mbox"><em>Either</em> upload a file:<br /><span class="stext">Allowed file types: .zip - Maximum file size: 1 MB</span></td>
   <td class="mbox"><input type="file" name="upload" size="40" /></td></tr>
-  <tr><td class="mbox"><em>or</em> select file from server:<br /><span class="stext">path starting from the Viscacha-root-directory: <?php echo $config['fpath']; ?></span></td>
+  <tr><td class="mbox"><em>or</em> select a file from the server:<br /><span class="stext">Path starting from the Viscacha-root-directory: <?php echo $config['fpath']; ?></span></td>
   <td class="mbox"><input type="text" name="server" size="50" /></td></tr>
   <tr><td class="mbox">Overwrite Language:<br /><span class="stext">Selecting a language here will cause the imported language to overwrite an existing language. Leave blank to create a new language.</span></td>
   <td class="mbox"><select name="overwrite">

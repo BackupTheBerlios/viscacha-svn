@@ -82,8 +82,6 @@ $db->query("ALTER TABLE `{$db->pre}cat` ADD INDEX ( `last_topic` )", __LINE__, _
 $db->query("ALTER TABLE `{$db->pre}designs` DROP COLUMN `smileyfolder`", __LINE__, __FILE__,false);
 $db->query("ALTER TABLE `{$db->pre}designs` DROP COLUMN `smileypath`", __LINE__, __FILE__,false);
 
-$db->query("INSERT INTO `{$db->pre}language` (`language`, `detail`, `publicuse`) VALUES ('English', 'English language pack', '1')", __LINE__, __FILE__,false);
-
 $result = $db->query("SELECT * FROM `{$db->pre}menu`", __LINE__, __FILE__,false);
 $cache = array();
 while ($row = $db->fetch_assoc($result)) {
@@ -136,7 +134,7 @@ $db->query("ALTER TABLE `{$db->pre}user` ADD `skype` varchar(128) NOT NULL defau
 
 $db->query("ALTER TABLE `{$db->pre}votes` DROP INDEX ( `mid` )", __LINE__, __FILE__,false);
 
-$tables = array('bbcode', 'packages', 'plugins', 'postratings', 'profilefields', 'settings', 'settings_groups', 'spider', 'textparser', 'userfields');
+$tables = array('bbcode', 'language', 'packages', 'plugins', 'postratings', 'profilefields', 'settings', 'settings_groups', 'spider', 'textparser', 'userfields');
 foreach ($tables as $table) {
 	$file = 'package/'.$package.'/db/'.$table.'.sql';
 	$sql = implode('', file($file));

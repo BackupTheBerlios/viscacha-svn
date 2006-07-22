@@ -87,9 +87,9 @@ elseif ($job == 'smileys_import') {
 <form name="form2" method="post" enctype="multipart/form-data" action="admin.php?action=bbcodes&job=smileys_import2">
  <table class="border" cellpadding="4" cellspacing="0" border="0">
   <tr><td class="obox" colspan="2">Import Smileypack</td></tr>
-  <tr><td class="mbox"><em>Either</em> upload the file from your computer:<br /><span class="stext">Allowed file types: .zip - Maximum file size: 2 MB</span></td>
+  <tr><td class="mbox"><em>Either</em> upload a file:<br /><span class="stext">Allowed file types: .zip - Maximum file size: 2 MB</span></td>
   <td class="mbox"><input type="file" name="upload" size="40" /></td></tr>
-  <tr><td class="mbox"><em>or</em> import the file from your server:<br /><span class="stext">Pfad ausgehend vom Viscacha-Hauptverzeichnis: <?php echo $config['fpath']; ?></span></td>
+  <tr><td class="mbox"><em>or</em> select a file from the server:<br /><span class="stext">Path starting from the Viscacha-root-directory: <?php echo $config['fpath']; ?></span></td>
   <td class="mbox"><input type="text" name="server" size="50" /></td></tr>
   <tr><td class="mbox">Delete file after import:</td>
   <td class="mbox"><input type="checkbox" name="delete" value="1" checked="checked" /></td></tr>
@@ -134,11 +134,11 @@ elseif ($job == 'smileys_import2') {
 			$file = $server;
 		}
 		else {
-			$inserterrors[] = 'File is not a ZIP-file.';
+			$inserterrors[] = 'The selected file is no ZIP-file.';
 		}
 	}
 	else {
-		$inserterrors[] = 'No valid file given.';
+		$inserterrors[] = 'No valid file selected.';
 	}
 	echo head();
 	if (count($inserterrors) > 0) {
@@ -152,7 +152,7 @@ elseif ($job == 'smileys_import2') {
 	$failure = $archive->extract($tempdir);
 	if ($failure < 1) {
 		rmdirr($tempdir);
-		error('admin.php?action=bbcodes&job=smileys_import', 'ZIP-archive could not be read or is empty.');
+		error('admin.php?action=bbcodes&job=smileys_import', 'ZIP-archive could not be read or the folder is empty.');
 	}
 
 	$codes = array();
