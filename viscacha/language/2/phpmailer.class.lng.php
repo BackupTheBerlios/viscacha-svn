@@ -7,11 +7,11 @@ $lang = array(
 'mailer_encoding' => 'Unknown encoding:',
 'mailer_execute' => 'Could not execute this command:',
 'mailer_file_access' => 'Acces on this file failed:',
-'mailer_file_open' => 'file error: Could not open file:',
-'mailer_from_failed' => 'This sender adress is not correct:',
+'mailer_file_open' => 'File error: Could not open file:',
+'mailer_from_failed' => 'Sender address is not correct:',
 'mailer_instantiate' => 'Could not initialise mail function.',
 'mailer_mailer_not_supported' => '-mailer is not supported.',
-'mailer_provide_address' => 'Please enter at least one adressee email adress.',
-'mailer_recipients_failed' => 'SMTP error: These adressees are not correct:'
+'mailer_provide_address' => 'Please enter at least one addressee e-mail address.',
+'mailer_recipients_failed' => 'SMTP error: These addressees are not correct:'
 );
 ?>

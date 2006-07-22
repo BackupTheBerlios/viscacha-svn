@@ -158,7 +158,7 @@ elseif ($job == 'add') {
    <td class="obox" colspan="2">Add a new Usergroup - Settings and Permissions</td>
   </tr>
   <tr> 
-   <td class="ubox" colspan="2">Assumption of permissions of other groups:</td>
+   <td class="ubox" colspan="2">Copy the permissions of another group:</td>
   </tr>
   <tr>
    <td class="mbox" width="50%">Group:<br /><span class="stext">If you indicate a group here, the data below will be ignored!</span></td>
@@ -172,7 +172,7 @@ elseif ($job == 'add') {
    </td>
   </tr>
   <tr>
-   <td class="mbox" width="50%">Also assumpt Forum rights<br /><span class="stext">Use the permissions set for the group indicated above also for this group.</span></td>
+   <td class="mbox" width="50%">Also copy Forum rights<br /><span class="stext">Use the permissions set for the group indicated above also for this group.</span></td>
    <td class="mbox" width="50%"><input type="checkbox" name="copyf" value="1" /></td>
   </tr>
   <tr> 

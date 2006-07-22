@@ -26,6 +26,17 @@ if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "function.v
 
 require_once("classes/function.frontend_init.php");
 
+function basefilename($file) {
+	$file = basename($file);
+	if (strpos($file, '?') !== false) {
+		$parts = explode('?', $file, 2);
+		return $parts[0];
+	}
+	else {
+		return $file;
+	}
+}
+
 function cmp_edit_date($a, $b) {
 	if ($a['date'] < $b['date']) {
 		return -1;

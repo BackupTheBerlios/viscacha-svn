@@ -43,7 +43,7 @@ $my->p = $slog->Permissions();
 if ($_GET['action'] == "login2") {
 	$remember = $gpc->get('remember', int, 1);
 	$loc = strip_tags($gpc->get('redirect', none, 'index.php'.SID2URL_1));
-	$file = basename($loc);
+	$file = basefilename($loc);
 	if ($file == 'log.php') {
 		$loc = 'index.php'.SID2URL_1;
 	}
@@ -76,7 +76,7 @@ elseif ($_GET['action'] == "logout") {
 	}
 	else {
 		$loc = strip_tags($gpc->get('redirect', none, 'index.php'.SID2URL_1));
-		$file = basename($loc);
+		$file = basefilename($loc);
 		if ($file == 'log.php') {
 			$loc = 'index.php'.SID2URL_1;
 		}
@@ -138,7 +138,7 @@ elseif ($_GET['action'] == "pwremind3") {
 
 	($code = $plugins->load('log_pwremind3_start')) ? eval($code) : null;
 
-	$result = $db->query("SELECT id, pw FROM {$db->pre}user WHERE id = '{$_GET['id']}' LIMIT 1",__LINE__,__FILE__);
+	$result = $db->query("SELECT id, pw, mail, name FROM {$db->pre}user WHERE id = '{$_GET['id']}' LIMIT 1",__LINE__,__FILE__);
 	$user = $db->fetch_assoc($result);
 	
 	$confirmcode = md5($config['cryptkey'].$user['pw']);
@@ -147,6 +147,11 @@ elseif ($_GET['action'] == "pwremind3") {
 		$pw = random_word();
 		$md5 = md5($pw);
 		$db->query("UPDATE {$db->pre}user SET pw = '{$md5}' WHERE id = '{$user['id']}' LIMIT 1",__LINE__,__FILE__);
+
+		$data = $lang->get_mail('pwremind2');
+		$to = array('0' => array('name' => $user['name'], 'mail' => $user['mail']));
+		$from = array();
+		xmail($to, $from, $data['title'], $data['comment']);
 		
 		($code = $plugins->load('log_pwremind3_success')) ? eval($code) : null;
 		ok($lang->phrase('log_pwremind_changed'), "log.php?action=login".SID2URL_x);

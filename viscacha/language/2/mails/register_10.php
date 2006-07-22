@@ -1,5 +1,5 @@
 <mail>
-	<title>{@config->fname}: Activation email</title>
+	<title>{@config->fname}: Activation e-mail</title>
 	<comment>Dear {@_POST->name},
 
 You just have registered at the board "{@config->fname}".

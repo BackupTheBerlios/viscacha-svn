@@ -1,5 +1,5 @@
 <mail>
-	<title>{@config->fname}: Aktivierungsemail</title>
+	<title>{@config->fname}: Aktivierungs-E-Mail</title>
 	<comment>Hallo {@_POST->name},
 
 du hast dich soeben erfolgreich im Forum "{@config->fname}" registriert.

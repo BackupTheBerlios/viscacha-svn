@@ -10,7 +10,7 @@ Für jede Frage erstellen wir einen neuen Beitrag. Damit bleiben alle Threads übe
 Konfliktsituationen sollten zwischen den Beteiligten immer intern per PM und nicht öffentlich gelöst werden.
 Anstößige und unpassende Beiträge werden von uns ignoriert.
 Wir benutzen die Suchfunktion und schauen nach, ob unsere Frage bereits an anderer Stelle beantwortet wurde.
-Alle Antworten werden in das Forum geschrieben, so helfen wir anderen Besuchern mit der gleichen Frage. Hilfe per eMail oder PM sollte nur in Ausnahmefällen geschehen.
+Alle Antworten werden in das Forum geschrieben, so helfen wir anderen Besuchern mit der gleichen Frage. Hilfe per E-Mail oder PM sollte nur in Ausnahmefällen geschehen.
 Threads, deren Thema an anderer Stelle bereits diskutiert wurde, bleiben erhalten, auch wenn sich dies für die Übersichtlichkeit negativ auswirken sollte.
 Wir verweisen nicht plumb auf die Suchfunktion oder Google, sondern bieten dem Suchenden Links zu den Beiträgen mit ähnlichem Inhalt.
 Wir schweifen nicht vom Thema ab.

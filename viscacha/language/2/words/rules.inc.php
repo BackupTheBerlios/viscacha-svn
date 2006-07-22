@@ -10,7 +10,7 @@ We create a new topic for every question. This way all topics remain clear and t
 Conflicts should allways be solved by the involved via PMs and not in public.
 offensive and improper postings will be ignored.
 We use the search function to check if our question has been answered in another topic.
-Alle answers will be writen into the board to help other visitors with the same Questions. Helping via PM or email should be the exception.
+Alle answers will be writen into the board to help other visitors with the same Questions. Helping via PM or e-mail should be the exception.
 Topics, whose subject was allready discussed at another location, are preserved, even if the impact on the clarity is negativ .
 We do not crudely refer the search function or google, but instead provide links to topics with similar content.
 We do not zone out to off topic.
