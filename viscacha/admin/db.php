@@ -1,6 +1,23 @@
 <?php
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "db.php") die('Error: Hacking Attempt');
 
+function highlight_sql_query($sql) {
+	global $lang;
+	require_once('classes/class.geshi.php');
+	$path = 'classes/geshi';
+	$lang = 'mysql';
+	if (!file_exists($path.'/'.$lang.'.php')) {
+		$lang = 'sql';
+		if (!file_exists($path.'/'.$lang.'.php')) {
+			return null;
+		}
+	}
+	$geshi = new GeSHi($sql, $lang, $path);
+	$geshi->enable_classes(false);
+	$geshi->enable_line_numbers(GESHI_FANCY_LINE_NUMBERS, 5);
+	return $geshi->parse_code();
+}
+
 function exec_query_form ($query = '') {
 	global $db;
 	$tables = $db->list_tables();
@@ -567,6 +584,7 @@ elseif ($job == 'query2') {
 	
 	$sql = str_replace('{:=DBPREFIX=:}', $db->pre, $lines);
 	@exec_query_form($lines);
+	$hl = highlight_sql_query($sql);
 	
 	if (!empty($lines)) {
 
@@ -586,7 +604,9 @@ elseif ($job == 'query2') {
 		else {
 			echo '<table class="border" border="0" cellspacing="0" cellpadding="4" align="center"><tr><td class="obox">'.$q['ok'].' Queries executed';
 			echo iif($q['affected'] > 0, ' - '.$q['affected'].' Rows affected');
-			echo '</td></tr></table>';
+			echo '</td></tr>';
+			echo iif(!empty($hl), '<tr><td class="mbox">'.$hl.'</td></tr>');
+			echo '</table>';
 			foreach ($q['queries'] as $num) {
 				if (count($num) > 0) {
 					$keys = array_keys($num[0]);

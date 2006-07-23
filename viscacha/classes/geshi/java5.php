@@ -4,10 +4,10 @@
  * --------
  * Author: Nigel McNie (oracle.shinoda@gmail.com)
  * Copyright: (c) 2004 Nigel McNie (http://qbnz.com/highlighter/)
- * Release Version: 1.0.7.10
- * CVS Revision Version: $Revision: 1.7 $
+ * Release Version: 1.0.7.12
+ * CVS Revision Version: $Revision: 1.8.2.2 $
  * Date Started: 2004/07/10
- * Last Modified: $Date: 2006/05/19 11:40:16 $
+ * Last Modified: $Date: 2006/07/22 11:30:32 $
  *
  * Java language file for GeSHi.
  *
@@ -51,7 +51,7 @@
  ************************************************************************************/
 
 $language_data = array (
-	'LANG_NAME' => 'Java 2 Platform SE 5.0',
+	'LANG_NAME' => 'Java(TM) 2 Platform Standard Edition 5.0',
 	'COMMENT_SINGLE' => array(1 => '//'),   /* import statements are not comments! */
 	'COMMENT_MULTI' => array('/*' => '*/'),
 	'CASE_KEYWORDS' => GESHI_CAPS_NO_CHANGE,

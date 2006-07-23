@@ -79,7 +79,7 @@ class DB {
     		    $table_data .= $this->new_line. $this->commentdel.' Create: ' .$mysql_table . $this->new_line;
     		    
     		    $result = $this->query('SHOW CREATE TABLE ' .$mysql_table, __LINE__, __FILE__);
-    		    $show_results = $this->fetch_array($result, DB_NUM);
+    		    $show_results = $this->fetch_num($result);
     		    if (!$show_results) {
     			    return false;
     		    }
@@ -335,7 +335,7 @@ class DB {
 		}
 		$result = $this->query('SHOW TABLES FROM '.$result,__LINE__,__FILE__);
 		$tables = array();
-		while ($row = $this->fetch_array($result)) {
+		while ($row = $this->fetch_num($result)) {
 			$tables[] = $row[0];
 		}
 		return $tables;
