@@ -151,6 +151,10 @@ elseif ($job == 'smileys_import2') {
 	$archive = new PclZip($file);
 	$failure = $archive->extract($tempdir);
 	if ($failure < 1) {
+		unset($archive);
+		if ($del > 0) {
+			$filesystem->unlink($file);
+		}
 		rmdirr($tempdir);
 		error('admin.php?action=bbcodes&job=smileys_import', 'ZIP-archive could not be read or the folder is empty.');
 	}
@@ -182,6 +186,10 @@ elseif ($job == 'smileys_import2') {
 	$db->query('INSERT INTO '.$db->pre.'smileys (`search`, `replace`, `desc`) VALUES '.implode(', ', $sqlinsert));
 	$anz = $db->affected_rows();
 	
+	unset($archive);
+	if ($del > 0) {
+		$filesystem->unlink($file);
+	}
 	rmdirr($tempdir);
 	
 	ok('admin.php?action=bbcodes&job=smileys', $anz.' Smileys successfully imported.');
@@ -225,6 +233,7 @@ elseif ($job == 'smileys_export') {
 	$v_list = $archive->create($files, PCLZIP_OPT_REMOVE_PATH, PclZipUtilTranslateWinPath($config['smileypath']));
 	if ($v_list == 0) {
 		echo head();
+		unset($archive);
 		$filesystem->unlink($smilieconfig);
 		error('admin.php?action=bbcodes&job=smileys', $archive->errorInfo(true));
 	}
@@ -233,9 +242,10 @@ elseif ($job == 'smileys_export') {
 		viscacha_header('Content-Disposition: attachment; filename="'.$file.'"');
 		viscacha_header('Content-Length: '.filesize($tempdir.$file));
 		readfile($tempdir.$file);
+		unset($archive);
+		$filesystem->unlink($smilieconfig);
 		$filesystem->unlink($tempdir.$file);
 	}
-	$filesystem->unlink($smilieconfig);
 }
 elseif ($job == 'smileys') {
 	echo head();

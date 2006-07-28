@@ -403,7 +403,7 @@ elseif ($job == "extract2") {
 	check_executable($dir);
 	$redirect = 'admin.php?action=explorer&path='.urlencode(extract_dir($file, false));
 	if (!preg_match('#\.(tar\.gz|tar|gz|zip)$#is', $file, $ext)) {
-		error($redirect, 'File is not an supported archive. (Failed at position: preg_match)');
+		error($redirect, 'The archive is currently not supported. (Failed at position: preg_match)');
 	}
 	unset($extension);
 	if (isset($ext[1])) {

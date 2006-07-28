@@ -1341,6 +1341,7 @@ elseif ($job == 'package_import2') {
 	$archive = new PclZip($file);
 	$failure = $archive->extract($tempdir);
 	if ($failure < 1) {
+		unset($archive);
 		rmdirr($tempdir);
 		echo head();
 		error('admin.php?action=designs&job=design_import', 'ZIP-archive could not be read or the folder is empty.');
@@ -1409,6 +1410,10 @@ elseif ($job == 'package_import2') {
 		($code = $plugins->install($packageid)) ? eval($code) : null;
 		
 		rmdirr($tempdir);
+	}
+	unset($archive);
+	if ($del > 0) {
+		$filesystem->unlink($file);
 	}
 	if ($confirm) {
 		echo head();
@@ -1516,6 +1521,7 @@ elseif ($job == 'package_export2') {
 	}
 	if ($error == true) {
 		echo head();
+		unset($archive);
 		$filesystem->unlink($tempdir.$file);
 		error('admin.php?action=cms&job=package_export&id='.$id, $archive->errorInfo(true));
 	}
@@ -1524,6 +1530,7 @@ elseif ($job == 'package_export2') {
 		viscacha_header('Content-Disposition: attachment; filename="'.$file.'"');
 		viscacha_header('Content-Length: '.filesize($tempdir.$file));
 		readfile($tempdir.$file);
+		unset($archive);
 		$filesystem->unlink($tempdir.$file);
 	}
 }
@@ -2568,13 +2575,14 @@ elseif ($job == 'com_add2') {
 				}
 			}
 
-			$filesystem->copy($tdir.'/components.ini',"./components/$id/components.ini");
-			$filesystem->chmod("./components/$id/components.ini", 0666);
+			$filesystem->copy("{$tdir}/components.ini","./components/{$id}/components.ini");
+			$filesystem->chmod("./components/{$id}/components.ini", 0666);
 
 			$delobj = $scache->load('components');
 			$delobj->delete();
 			
 			rmdirr($tdir);
+			unset($archive);
 			$filesystem->unlink('./temp/'.$my_uploader->file['name']);
 			
 			if (empty($cfg['config']['install'])) {
@@ -2645,6 +2653,7 @@ elseif ($job == 'com_export') {
 	}
 	if ($error) {
 		echo head();
+		unset($archive);
 		$filesystem->unlink($tempdir.$file);
 		error('admin.php?action=cms&job=com', $archive->errorInfo(true));
 	}
@@ -2653,6 +2662,7 @@ elseif ($job == 'com_export') {
 		viscacha_header('Content-Disposition: attachment; filename="'.$file.'"');
 		viscacha_header('Content-Length: '.filesize($tempdir.$file));
 		readfile($tempdir.$file);
+		unset($archive);
 		$filesystem->unlink($tempdir.$file);
 	}
 }

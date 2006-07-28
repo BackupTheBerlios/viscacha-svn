@@ -387,6 +387,10 @@ elseif ($job == 'design_import2') {
 	$failure = $archive->extract($tempdir);
 	if ($failure < 1) {
 		rmdirr($tempdir);
+		unset($archive);
+		if ($del > 0) {
+			$filesystem->unlink($file);
+		}
 		error('admin.php?action=designs&job=design_import', 'ZIP-archive could not be read or the folder is empty.');
 	}
 	else {
@@ -446,7 +450,11 @@ elseif ($job == 'design_import2') {
 		}
 		
 		$db->query("INSERT INTO `{$db->pre}designs` (`template` , `stylesheet` , `images` , `name`) VALUES ('{$tplid}', '{$cssid}', '{$imgid}', '{$ini['name']}')");
-		
+
+		unset($archive);
+		if ($del > 0) {
+			$filesystem->unlink($file);
+		}
 		rmdirr($tempdir);
 	}
 	$delobj = $scache->load('loaddesign');
@@ -461,7 +469,7 @@ elseif ($job == 'design_export') {
 <form name="form2" method="post" action="admin.php?action=designs&job=design_export2&id=<?php echo $id; ?>">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr> 
-   <td class="obox" colspan="6">Design exportieren</td>
+   <td class="obox" colspan="6">Export Design</td>
   </tr>
   <tr>
    <td class="mbox" width="40%">Export Templates:</td>
@@ -543,6 +551,7 @@ elseif ($job == 'design_export2') {
 	}
 	if ($error) {
 		echo head();
+		unset($archive);
 		$filesystem->unlink($tempdir.$file);
 		$filesystem->unlink($settings);
 		error('admin.php?action=designs&job=export&id='.$id, $archive->errorInfo(true));
@@ -552,6 +561,7 @@ elseif ($job == 'design_export2') {
 		viscacha_header('Content-Disposition: attachment; filename="'.$file.'"');
 		viscacha_header('Content-Length: '.filesize($tempdir.$file));
 		readfile($tempdir.$file);
+		unset($archive);
 		$filesystem->unlink($tempdir.$file);
 		$filesystem->unlink($settings);
 	}
@@ -690,9 +700,17 @@ elseif ($job == 'templates_add2') {
 	$failure = $archive->extract($tempdir);
 	if ($failure < 1) {
 		rmdirr($tempdir);
+		unset($archive);
+		if ($del > 0) {
+			$filesystem->unlink($file);
+		}
 		error('admin.php?action=designs&job=templates_add', 'ZIP-archive could not be read or the folder is empty.');
 	}
-	
+
+	unset($archive);
+	if ($del > 0) {
+		$filesystem->unlink($file);
+	}
 	ok('admin.php?action=designs&job=templates', 'Templates successfully imported into directory '.$n.' .');
 	
 }
@@ -710,6 +728,8 @@ elseif ($job == 'templates_export') {
 	$v_list = $archive->create($list, PCLZIP_OPT_REMOVE_PATH, $dir);
 	if ($v_list == 0) {
 		echo head();
+		unset($archive);
+		$filesystem->unlink($tempdir.$file);
 		error('admin.php?action=designs&job=templates', $archive->errorInfo(true));
 	}
 	else {
@@ -717,6 +737,7 @@ elseif ($job == 'templates_export') {
 		viscacha_header('Content-Disposition: attachment; filename="'.$file.'"');
 		viscacha_header('Content-Length: '.filesize($tempdir.$file));
 		readfile($tempdir.$file);
+		unset($archive);
 		$filesystem->unlink($tempdir.$file);
 	}
 }
@@ -1229,10 +1250,18 @@ elseif ($job == 'css_add2') {
 	$archive = new PclZip($file);
 	$failure = $archive->extract($tempdir);
 	if ($failure < 1) {
+		unset($archive);
+		if ($del > 0) {
+			$filesystem->unlink($file);
+		}
 		rmdirr($tempdir);
 		error('admin.php?action=designs&job=css_add', 'ZIP-archive could not be read or the folder is empty.');
 	}
-	
+
+	unset($archive);
+	if ($del > 0) {
+		$filesystem->unlink($file);
+	}
 	ok('admin.php?action=designs&job=css', 'Stylesheets successfully imported into directory '.$n.'.');
 	
 }
@@ -1407,10 +1436,18 @@ elseif ($job == 'images_add2') {
 	$archive = new PclZip($file);
 	$failure = $archive->extract($tempdir);
 	if ($failure < 1) {
+		unset($archive);
+		if ($del > 0) {
+			$filesystem->unlink($file);
+		}
 		rmdirr($tempdir);
 		error('admin.php?action=designs&job=images_add', 'ZIP-archive could not be read or the folder is empty.');
 	}
 	
+	unset($archive);
+	if ($del > 0) {
+		$filesystem->unlink($file);
+	}	
 	ok('admin.php?action=designs&job=images', 'Images successfully imported into directory '.$n.'.');
 	
 }
@@ -1426,6 +1463,10 @@ elseif ($job == 'images_export') {
 	$v_list = $archive->create($dir, PCLZIP_OPT_REMOVE_PATH, $dir);
 	if ($v_list == 0) {
 		echo head();
+		unset($archive);
+		if ($del > 0) {
+			$filesystem->unlink($tempdir.$file);
+		}
 		error('admin.php?action=designs&job=images', $archive->errorInfo(true));
 	}
 	else {
@@ -1433,6 +1474,10 @@ elseif ($job == 'images_export') {
 		viscacha_header('Content-Disposition: attachment; filename="'.$file.'"');
 		viscacha_header('Content-Length: '.filesize($tempdir.$file));
 		readfile($tempdir.$file);
+		unset($archive);
+		if ($del > 0) {
+			$filesystem->unlink($tempdir.$file);
+		}
 		$filesystem->unlink($tempdir.$file);
 	}
 }

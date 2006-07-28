@@ -26,5 +26,5 @@ $lang['portal_date_written'] = 'Written by {@row->name}, {@row->date}';
 $lang['portal_news'] = 'News: ';
 $lang['related_no_results'] = 'No related topics found';
 $lang['related_topics'] = 'Related Topics';
-$lang['x_comments'] = 'Comments ({$posts})';
+$lang['x_comments'] = 'Comments ({@row->posts})';
 ?>

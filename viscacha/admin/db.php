@@ -183,8 +183,8 @@ elseif ($job == 'backup') {
 	echo foot();
 }
 elseif ($job == 'backup2') {
-	@ignore_user_abort(FALSE);
-	@set_time_limit(60);
+	@ignore_user_abort(false);
+	@set_time_limit(300);
 	$tables = $gpc->get('backup', arr_str);
 	$structure = $gpc->get('structure', int);
 	$data = $gpc->get('data', int);
@@ -194,7 +194,7 @@ elseif ($job == 'backup2') {
 	$db->backup_settings("\n","--");
 	$sqldata = $db->backup($tables, $structure, $data, $drop);
 	$ok = "Backup successfully created!";
-	if ($sqldata) {
+	if (!empty($sqldata) && strlen($sqldata) > 0) {
         // Speichern der Backup-Datei
         $file_path = "admin/backup/".date('d_m_Y-H_i_s');
         if ($zip == 1) {
@@ -226,7 +226,7 @@ elseif ($job == 'backup2') {
     	}
 	}
 	else {
-	    error('admin.php?action=db&job=backup','Backup was not created on account of no data!');
+	    error('admin.php?action=db&job=backup','Backup was not created on account of missing data!');
 	}
 }
 elseif ($job == 'restore') {

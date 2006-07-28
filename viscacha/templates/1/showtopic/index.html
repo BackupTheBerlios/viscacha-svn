@@ -42,11 +42,11 @@
 <?php echo $inner['index_bit']; ?>
 <div class="border">
 <div class="bfoot topfooter">
-<span class="right">
 <?php if($my->p['postreplies'] == 1 && $info['status'] == 0) { ?>
+<span class="right">
 <a href="addreply.php?id=<?php echo $info['id'].SID2URL_x; ?>"><img src="<?php echo $tpl->img('addreply'); ?>" alt="" /> <?php echo $lang->phrase('box_reply'); ?></a>
-<?php } ?>
-</span><?php echo $temp; ?>
+</span>
+<?php } echo $temp; ?>
 </div></div>
 <noscript>
 	<br class="minibr" />

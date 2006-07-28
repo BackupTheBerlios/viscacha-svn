@@ -6,7 +6,7 @@
 		<li><a href="<?php echo $sub['link']; ?>"<?php echo iif(!empty($sub['param']), ' target="'.$sub['param'].'"'); ?>><?php echo $sub['name']; ?></a>
 	<?php } else { ?>
 		<li><strong><?php echo $sub['name']; ?></strong>
-	<?php } ?>
+	<?php } if (count($sub['navigation']) > 0) { ?>
 	<ul>
 	<?php foreach ($sub['navigation'] as $sub) { ?>
 		<?php if(!empty($sub['link'])) { ?>
@@ -17,7 +17,7 @@
 		</li>
 	<?php } ?>
 	</ul>
-	</li>
+	<?php } ?></li>
 <?php } ?>
 </ul>
 </div>

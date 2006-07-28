@@ -148,6 +148,10 @@ elseif ($job == 'import2') {
 	$archive = new PclZip($file);
 	$failure = $archive->extract($tempdir);
 	if ($failure < 1) {
+		unset($archive);
+		if ($del == 1) {
+			$filesystem->unlink($file);
+		}
 		rmdirr($tempdir);
 		error('admin.php?action=language&job=import', 'ZIP-archive could not be read or the folder is empty.');
 	}
@@ -166,7 +170,8 @@ elseif ($job == 'import2') {
 	$info = return_array('settings', $overwrite);
 	if (isset($info['lang_name'])) {
 		$db->query("UPDATE {$db->pre}language SET language = '{$info['lang_name']}', detail = '{$info['lang_description']}' WHERE id = '{$overwrite}' LIMIT 1");
-		if ($delete == 1) {
+		unset($archive);
+		if ($del == 1) {
 			$filesystem->unlink($file);
 		}
 		$delobj = $scache->load('loadlanguage');
@@ -176,6 +181,10 @@ elseif ($job == 'import2') {
 	else {
 		if ($inserted) {
 			$db->query("DELETE FROM {$db->pre}language WHERE id = '{$overwrite}' LIMIT 1");
+		}
+		unset($archive);
+		if ($del == 1) {
+			$filesystem->unlink($file);
 		}
 		error('admin.php?action=language&job=import', 'Languagepack could not be imported. Probably the files could not be copied successful, the settings.lng.php is missing or it is damaged.');
 	}
@@ -195,6 +204,10 @@ elseif ($job == 'export') {
 	$v_list = $archive->create($dir, PCLZIP_OPT_REMOVE_PATH, $dir, PCLZIP_OPT_COMMENT, "{$row['language']}\n\n{$row['detail']}\n\nVersion: {$config['version']}");
 	if ($v_list == 0) {
 		echo head();
+		unset($archive);
+		if ($del > 0) {
+			$filesystem->unlink($tempdir.$file);
+		}
 		error('admin.php?action=language&job=manage', $archive->errorInfo(true));
 	}
 	else {
@@ -202,6 +215,7 @@ elseif ($job == 'export') {
 		viscacha_header('Content-Disposition: attachment; filename="'.$file.'"');
 		viscacha_header('Content-Length: '.filesize($tempdir.$file));
 		readfile($tempdir.$file);
+		unset($archive);
 		$filesystem->unlink($tempdir.$file);
 	}
 }
