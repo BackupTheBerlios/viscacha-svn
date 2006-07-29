@@ -413,7 +413,7 @@ $lang['log_pwremind_success'] = 'The e-mail with instructions to change your pas
 $lang['log_pwremind_title'] = 'Forgotten your password?';
 $lang['log_pwremind_wrong_code'] = 'The given confirmation code does not belong to this user account or is expired.';
 $lang['log_title'] = 'Log in';
-$lang['log_wrong_data'] = 'You entered wrong login data our your account is not activated.<br />Did you <a href="misc.php?action=pwremind">forgot your password</a>?';
+$lang['log_wrong_data'] = 'You entered wrong login data our your account is not activated.<br />Did you <a href="log.php?action=pwremind">forgot your password</a>?';
 $lang['managemembers_gid'] = 'ID';
 $lang['managemembers_gint'] = 'Public groupname';
 $lang['managemembers_gpublic'] = 'Internal groupname';
@@ -791,6 +791,9 @@ $lang['wiw_r'] = 'Members:';
 $lang['wiw_useragent'] = 'User-Agent:';
 $lang['written_by'] = 'by';
 $lang['wwo_detail_title'] = 'Who is online?';
+$lang['wwo_next_refresh'] = 'Next refresh: ';
+$lang['wwo_start_refresh'] = 'Start automatic refresh';
+$lang['wwo_stop_refresh'] = 'Stop automatic refresh';
 $lang['xreplies'] = 'Replies';
 $lang['xtopics'] = 'Topics';
 $lang['x_article'] = 'Article';

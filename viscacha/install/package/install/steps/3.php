@@ -7,7 +7,7 @@ if (isset($_SERVER['DOCUMENT_ROOT'])) {
 ?>
 <div class="bfoot">
 If you do not want to fill in your FTP data, you need not to fill them. 
-You can skip this step, this can result in problems with the CHMODs. 
+<strong>You can skip this step, but this can result in problems with the CHMODs</strong>. 
 It may be that they can not be set correctly and you have to set them manually. 
 However, you can change or remove these data in the administration control panel later.
 </div>

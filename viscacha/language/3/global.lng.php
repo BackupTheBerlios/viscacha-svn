@@ -413,7 +413,7 @@ $lang['log_pwremind_success'] = 'Die E-Mail mit den Anweisungen zum Ändern des P
 $lang['log_pwremind_title'] = 'Passwort vergessen';
 $lang['log_pwremind_wrong_code'] = 'Der eingegebene Bestätigungscode passt nicht zur Benutzer-ID oder ist ausgelaufen.';
 $lang['log_title'] = 'Anmelden';
-$lang['log_wrong_data'] = 'Du hast falsche Benutzerdaten angegeben oder Du bist noch nicht freigeschaltet.<br />Benutze die <a href="misc.php?action=pwremind">Passwort vergessen</a>-Funktion wenn Du dein Passwort nicht mehr weißt.';
+$lang['log_wrong_data'] = 'Du hast falsche Benutzerdaten angegeben oder Du bist noch nicht freigeschaltet.<br />Benutze die <a href="log.php?action=pwremind">Passwort vergessen</a>-Funktion wenn Du dein Passwort nicht mehr weißt.';
 $lang['managemembers_gid'] = 'ID';
 $lang['managemembers_gint'] = 'Öffentlicher Gruppentitel';
 $lang['managemembers_gpublic'] = 'Interner Gruppenname';
@@ -791,6 +791,9 @@ $lang['wiw_r'] = 'Mitglieder:';
 $lang['wiw_useragent'] = 'User-Agent:';
 $lang['written_by'] = 'von';
 $lang['wwo_detail_title'] = 'Wer ist wo online?';
+$lang['wwo_next_refresh'] = 'Nächste Aktualisierung:';
+$lang['wwo_start_refresh'] = 'Automatische Aktualisierung starten';
+$lang['wwo_stop_refresh'] = 'Automatische Aktualisierung stoppen';
 $lang['xreplies'] = 'Antworten';
 $lang['xtopics'] = 'Themen';
 $lang['x_article'] = 'Artikel';

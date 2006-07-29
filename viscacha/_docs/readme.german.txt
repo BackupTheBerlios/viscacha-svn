@@ -29,7 +29,16 @@ Viscacha-Verzeichnis aufrufen und den Anweisungen folgen.
 Anschließend sollte Ihnen eine "frische" Viscacha-Installation zur Verfügung stehen.
 
 
+== CHMODs ==
+Die Dateien des Viscacha brauchen teilweise mehr Rechte als sie normalerweise vom Server 
+bekommen. Falls bei der Installation das Setzen der CHMODs fehlschlägt (auch mit FTP-Daten),
+dann setzen Sie die CHMODs bitte wie folgt:
+...
+
+
 == Update ==
+
+Als erstes sollten Sie ein Backup Ihrer alten Daten machen!
 
 Löschen Sie folgende Ordner vollständig und laden Sie die entsprechenden Ordner aus 
 dem Verzeichnis der Version 0.8 Beta 2 anschließend dafür hoch:
@@ -116,20 +125,20 @@ und ersetzen Sie diese mit der folgenden zeile:
 == Systemvoraussetzungen ==
 
 Minimale Systemvoraussetzungen:
- - PHP ab Version 4.1.0
+ - PHP Version: 4.1.0 und höher
  - PHP-Erweiterungen: mysql, pcre, gd, zlib
- - MySQL ab Version 3.23.57
+ - MySQL Version: 3.23.57 und höher
   
 Normale Systemvoraussetzungen:
- - PHP ab Version 4.3.0
+ - PHP Version: 4.3.0 und höher
  - PHP-Erweiterungen: mysql, pcre, gd, zlib, xml
- - MySQL ab Version 4
+ - MySQL Version: 4.0  und höher
   
 Optimale Systemvoraussetzungen:
- - PHP ab Version 5.0.0
+ - PHP Version: 5.0.0 und höher
  - PHP-Erweiterungen: mysql, pcre, gd, zlib, xml, pspell, iconv, mbstring, mhash, 
                       sockets
- - MySQL ab Version 4.1
+ - MySQL Version: 4.1 und höher
 
 Wenn Sie das Viscacha testen, bitte ich Sie darum, mir Bescheid zu geben unter 
 welcher Serverkonfiguration das Viscacha lief und welche Fehler aufgetreten sind.
@@ -151,7 +160,7 @@ Folgende Angaben sind von Interesse:
 
 == Kontakt ==
 
-E-Mail: webmaster@mamo-net.de
+E-mail: webmaster@mamo-net.de
 ICQ: 104458187
 AIM: mamonede8
 YIM: mamonede

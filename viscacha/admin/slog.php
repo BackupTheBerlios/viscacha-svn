@@ -173,8 +173,8 @@ elseif ($job == 's_general_image') {
 	
 	$max = 0;
 	$cache = array();
-	$result = $db->query("SELECT COUNT(*), DATE_FORMAT(FROM_UNIXTIME($datefield),'$sqlformat') AS timeorder, MAX($datefield) AS statdate FROM $table WHERE $datefield > '$from' AND $datefield < '$to' $sql GROUP BY timeorder ORDER BY $datefield $sort", __LINE__, __FILE__);
-	while ($row = $db->fetch_array($result)) {
+	$result = $db->query("SELECT COUNT(*) AS nr, DATE_FORMAT(FROM_UNIXTIME($datefield),'$sqlformat') AS timeorder, MAX($datefield) AS statdate FROM $table WHERE $datefield > '$from' AND $datefield < '$to' $sql GROUP BY timeorder ORDER BY $datefield $sort", __LINE__, __FILE__);
+	while ($row = $db->fetch_assoc($result)) {
 		$statdate = date($phpformat, $row['statdate']);
 		
 		if ($timeorder == 1) $statdate = preg_replace("/(\d+)~/e", "getday('\\1')", $statdate);
@@ -182,15 +182,15 @@ elseif ($job == 's_general_image') {
 		if ($timeorder == 2) {
 			$week = ceil((date('z', $row['statdate']) - daynumber($row['statdate'])) / 7) + ((daynumber(mktime(0, 0, 0, 1, 1, date('Y', $row['statdate']))) <= 3) ? (1) : (0));
 			if ($week == 53 && daynumber(mktime(0, 0, 0, 12, 31, date('Y', $row['statdate']))) < 3) {
-				$tempRow = $db->fetch_array($result);
-				$row[0] += $tempRow[0];
+				$tempRow = $db->fetch_num($result);
+				$row['nr'] += $tempRow[0];
 				$week = 1;
 			}
 			$statdate = str_replace("#", "#".$week, $statdate);
 		}
 			
-		if ($row[0] > $max) $max = $row[0];
-		$cache[] = array($row[0], $statdate);
+		if ($row['nr'] > $max) $max = $row['nr'];
+		$cache[] = array($row['nr'], $statdate);
 	}
 	
 	$PG->title     = $stats_name;
@@ -367,33 +367,33 @@ if ($show == 1) {
 	}
 	else {
 	$result = $db->query('SELECT COUNT(*) FROM '.$db->pre.'replies',__LINE__,__FILE__);
-	$posts = $db->fetch_array($result);
+	$posts = $db->fetch_num($result);
 	$result = $db->query('SELECT COUNT(*) FROM '.$db->pre.'topics',__LINE__,__FILE__);
-	$topics = $db->fetch_array($result);
+	$topics = $db->fetch_num($result);
 	$replies = $posts[0]-$topics[0];
 
 	$result = $db->query('SELECT COUNT(*) FROM '.$db->pre.'topics WHERE mark = "a"',__LINE__,__FILE__);
-	$aposts = $db->fetch_array($result);
+	$aposts = $db->fetch_num($result);
 	$result = $db->query('SELECT COUNT(*) FROM '.$db->pre.'topics WHERE mark = "n"',__LINE__,__FILE__);
-	$nposts = $db->fetch_array($result);
+	$nposts = $db->fetch_num($result);
 
 	$result = $db->query('SELECT COUNT(*) FROM '.$db->pre.'topics WHERE vquestion != ""',__LINE__,__FILE__);
-	$vote = $db->fetch_array($result);
+	$vote = $db->fetch_num($result);
 
 	$result = $db->query('SELECT COUNT(*) FROM '.$db->pre.'user',__LINE__,__FILE__);
-	$members = $db->fetch_array($result);
+	$members = $db->fetch_num($result);
 	
 	$result = $db->query('SELECT COUNT(*) FROM '.$db->pre.'abos WHERE type != "f"',__LINE__,__FILE__);
-	$abos = $db->fetch_array($result);
+	$abos = $db->fetch_num($result);
 
 	$result = $db->query('SELECT COUNT(*) FROM '.$db->pre.'abos WHERE type = "f"',__LINE__,__FILE__);
-	$favs = $db->fetch_array($result);
+	$favs = $db->fetch_num($result);
 
 	$result = $db->query('SELECT COUNT(*) FROM '.$db->pre.'uploads',__LINE__,__FILE__);
-	$uploads = $db->fetch_array($result);
+	$uploads = $db->fetch_num($result);
 	
 	$result = $db->query('SELECT COUNT(*) FROM '.$db->pre.'votes',__LINE__,__FILE__);
-	$votes = $db->fetch_array($result);
+	$votes = $db->fetch_num($result);
 ?>
  <table class="border">
   <tr> 

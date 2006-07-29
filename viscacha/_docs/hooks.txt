@@ -1,6 +1,6 @@
 -----------------------------
 -- Viscacha 0.8 Beta 2 	   --
--- Implemented Hooks (329) --
+-- Implemented Hooks       --
 -----------------------------
 
 Special Hooks

@@ -57,6 +57,18 @@ function postrating(Link) {
     window.open(Link.href, "postrating", "width=400,height=120,resizable=yes,scrollbars=yes,location=no");
 }
 
+function ReloadCountdown(iv) {
+	if (iv == -1) {
+		window.location.reload();
+	}
+	else {
+		countdown = FetchElement('countdown');
+		countdown.innerHTML = iv;
+		iv = iv - 1;
+		setTimeout("ReloadCountdown("+iv+")", 1000);
+	}
+}
+
 function deletenotice(id) {
 	input = confirm(lng['js_confirm_ndelete']);
 	if (input == true) {

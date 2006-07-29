@@ -69,6 +69,9 @@ elseif ($_GET['action'] == "wwo") {
 		errorLogin();
 	}
 	
+	if ($_GET['type'] == 1) {
+		$htmlonload .= "ReloadCountdown(60);";
+	}
 	$breadcrumb->Add($lang->phrase('wwo_detail_title'));
 	echo $tpl->parse("header");
 	echo $tpl->parse("menu");

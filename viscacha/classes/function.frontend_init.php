@@ -61,6 +61,7 @@ if (@ini_get('register_globals') == '1' || strtolower(@ini_get('register_globals
 
 $inner = array();
 $htmlhead = '';
+$htmlonload = '';
 if (defined('SCRIPTNAME')) {
     $htmlbody = ' id="css_'.SCRIPTNAME.'"';
 }
