@@ -32,7 +32,7 @@
 		</td>
 		<td width="45%">
 			<strong><a href="showforum.php?id=<?php echo $forum['id'].SID2URL_x; ?>"><?php echo $forum['name']; ?></a></strong>
-			<?php iif ($forum['desc'], "<br />{$forum['desc']}"); ?>
+			<?php echo iif ($forum['desc'], "<br />{$forum['desc']}"); ?>
 			<?php if (count($forum['mod'])) { ?>
 			<br /><span class="stext">
 			<strong><?php echo $lang->phrase('forum_mods'); ?></strong> 
