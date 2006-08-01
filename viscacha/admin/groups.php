@@ -176,11 +176,11 @@ elseif ($job == 'add') {
    <td class="mbox" width="50%"><input type="checkbox" name="copyf" value="1" /></td>
   </tr>
   <tr> 
-   <td class="ubox" colspan="2">Gruppenrechte "von Hand" setzen:</td>
+   <td class="ubox" colspan="2">Set settings of this group manually:</td>
   </tr>
   <tr>
-   <td class="mbox" width="50%">Werte aus einer anderen Gruppe eintragen:<br />
-   <span class="stext">Sie können die Checkboxen unterhalb mit den Werten einer anderen Gruppe füllen und dann ändern.</span></td>
+   <td class="mbox" width="50%">Insert Values from another group:<br />
+   <span class="stext">You can fill the checkboxes at the bottom with values of other groups to use this as base for adding a new group.</span></td>
    <td class="mbox" width="50%">
 <script language="JavaScript" type="text/javascript">
 <!--
@@ -205,7 +205,7 @@ function setGroupBoxes(sel) {
 -->
 </script>
    <select name="template" onchange="setGroupBoxes(this);">
-   <option value="0">-Keine Checkbox setzen-</option>
+   <option value="0">- Set no checkbox -</option>
    <?php foreach ($cache as $row) { ?>
    <option value="<?php echo $row['id']; ?>"><?php echo $row['name']; ?></option>
    <?php } ?>
@@ -222,7 +222,7 @@ function setGroupBoxes(sel) {
   </tr>
   <?php } } ?>
   <tr>
-	<td class="mbox" width="50%">Floodcheck (in sec.)<br /><span class="stext">Zeit in der max. 1 Formular angesandt werden darf - um Spam zu verhindern</span></td>
+	<td class="mbox" width="50%">Floodcheck (in sec.)<br /><span class="stext">Time until a second form can be send. This is helpful to prevent spam.</span></td>
    	<td class="mbox" width="50%"><input type="text" name="flood" id="flood" size="3" value="20"></td>
   </tr>
  </table>
@@ -232,10 +232,10 @@ function setGroupBoxes(sel) {
    <td class="obox" colspan="2">Add a new Usergroup - Settings</td>
   </tr>
   <tr>
-      <td class="mbox" width="50%">Interner Name d. Gruppe:<br /><span class="stext">Ein interner Name für die Benutzergruppe. Wird im Forum nicht angezeigt!</span></td>
+      <td class="mbox" width="50%">Internal name for the group:<br /><span class="stext">This internal title is not visible in the forum!</span></td>
       <td class="mbox" width="50%"><input type="text" name="name" size="35"></td>
   </tr><tr>
-      <td class="mbox" width="50%">Öffentlicher Titel:<br /><span class="stext">Der öffentliche Benutzertitel der den im Forum Benutzer trägt.</span></td>
+      <td class="mbox" width="50%">Public Title:<br /><span class="stext">Public title for users in the forum.</span></td>
       <td class="mbox" width="50%"><input type="text" name="title" size="35"></td>
   </tr>
   <tr> 
@@ -286,7 +286,7 @@ elseif ($job == 'add2') {
 		ok('admin.php?action=groups&job=manage');
 	}
 	else {
-		error('admin.php?action=groups&job=add', 'Die Gruppe konnte nicht eingefügt werden!');
+		error('admin.php?action=groups&job=add', 'The group couldn't be added!');
 	}
 }
 elseif ($job == 'delete') {
@@ -298,7 +298,7 @@ elseif ($job == 'delete') {
 		$delobj = $scache->load('group_status');
 		$delobj->delete();
 		echo head();
-		ok('admin.php?action=groups&job=manage', $anz.' Einträge gelöscht');
+		ok('admin.php?action=groups&job=manage', $anz.' entries deleted');
 	}
 	elseif (isset($_POST['submit_edit']) && $edit > 0) {
 		viscacha_header('Location: admin.php?action=groups&job=edit&id='.$edit);
@@ -312,7 +312,7 @@ elseif ($job == 'edit') {
 	echo head();
 	$result = $db->query("SELECT * FROM {$db->pre}groups WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	if ($db->num_rows($result) != 1) {
-		error('admin.php?action=groups&job=manage', 'Keine gültige ID angegeben');
+		error('admin.php?action=groups&job=manage', 'No valid ID given');
 	}
 	$data = $db->fetch_assoc($result);
 	?>
@@ -332,20 +332,20 @@ elseif ($job == 'edit') {
   </tr>
   <?php } } ?>
   <tr>
-	<td class="mbox" width="50%">Floodcheck (in sec.)<br /><span class="stext">Zeit in der max. 1 Formular angesandt werden darf - um Spam zu verhindern</span></td>
+	<td class="mbox" width="50%">Floodcheck (in sec.)<br /><span class="stext">Time until a second form can be send. This is helpful to prevent spam.</span></td>
    	<td class="mbox" width="50%"><input type="text" name="flood" size="3" value="<?php echo $data['flood']; ?>"></td>
   </tr>
  </table>
  <br />
  <table class="border">
   <tr> 
-   <td class="obox" colspan="2">Add a new Usergroup - Settings</td>
+   <td class="obox" colspan="2">Edit a Usergroup - Settings</td>
   </tr>
   <tr>
-      <td class="mbox" width="50%">Interner Name d. Gruppe:<br /><span class="stext">Ein interner Name für die Benutzergruppe. Wird im Forum nicht angezeigt!</span></td>
+      <td class="mbox" width="50%">Internal name for the group:<br /><span class="stext">This internal title is not visible in the forum!</span></td>
       <td class="mbox" width="50%"><input type="text" name="name" size="35" value="<?php echo $data['name']; ?>"></td>
   </tr><tr>
-      <td class="mbox" width="50%">Öffentlicher Titel:<br /><span class="stext">Der öffentliche Benutzertitel der den im Forum Benutzer trägt.</span></td>
+      <td class="mbox" width="50%">Public Title:<br /><span class="stext">Public usertitle for users in the forum.</span></td>
       <td class="mbox" width="50%"><input type="text" name="title" size="35" value="<?php echo $data['title']; ?>"></td>
   </tr>
   <tr> 
@@ -362,7 +362,7 @@ elseif ($job == 'edit2') {
 	$id = $gpc->get('id', int);
 	$result = $db->query("SELECT * FROM {$db->pre}groups WHERE id = {$id} LIMIT 1");
 	if ($db->num_rows($result) != 1) {
-		error('admin.php?action=groups&job=manage', 'Keine gültige ID angegeben');
+		error('admin.php?action=groups&job=manage', 'No valid ID given');
 	}
 	$data = $db->fetch_assoc($result); // FIX
 
@@ -383,7 +383,7 @@ elseif ($job == 'edit2') {
 		ok('admin.php?action=groups&job=manage');
 	}
 	else {
-		error('admin.php?action=groups&job=add', 'Die Gruppe konnte nicht geändert werden!');
+		error('admin.php?action=groups&job=add', 'The group couldn't be updated!');
 	}
 }
 ?>

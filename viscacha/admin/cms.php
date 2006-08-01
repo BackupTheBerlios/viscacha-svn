@@ -8,19 +8,19 @@ function SelectPackageLinks ($head) {
 	?>
   <form style="float: right;" name="act" action="admin.php?action=locate" method="post">
   	<select size="1" name="url" onchange="locate(this.value)">
-	 <option value="" selected="selected">Bitte w&auml;hlen</option>
-	 <optgroup label="Verwaltung">
-	  <option value="admin.php?action=cms&job=plugins_add&id=<?php echo $head['module']; ?>">Plugin hinzuf&uuml;gen</option>
-	  <option value="admin.php?action=cms&job=package_info&id=<?php echo $head['module']; ?>">Informationen</option> 
+	 <option value="" selected="selected">Please choose</option>
+	 <optgroup label="Management">
+	  <option value="admin.php?action=cms&job=plugins_add&id=<?php echo $head['module']; ?>">Add Plugin</option>
+	  <option value="admin.php?action=cms&job=package_info&id=<?php echo $head['module']; ?>">Information</option> 
 	  <?php if (isset($configs[$head['module']]) == true) { ?>
-	   <option value="admin.php?action=settings&job=custom&id=<?php echo $configs[$head['module']]; ?>">Konfiguration</option>
+	   <option value="admin.php?action=settings&job=custom&id=<?php echo $configs[$head['module']]; ?>">Configuration</option>
 	  <?php } ?>
-	  <option value="admin.php?action=cms&job=package_export&id=<?php echo $head['module']; ?>">Exportieren</option>
-	  <option value="admin.php?action=cms&job=package_delete&id=<?php echo $head['module']; ?>">Löschen</option> 
+	  <option value="admin.php?action=cms&job=package_export&id=<?php echo $head['module']; ?>">Export</option>
+	  <option value="admin.php?action=cms&job=package_delete&id=<?php echo $head['module']; ?>">Delete</option> 
 	 </optgroup>
 	 <optgroup label="Status">
-	  <option value="admin.php?action=cms&job=plugins_active_all&value=1&id=<?php echo $head['module']; ?>">Alle aktivieren</option> 
-	  <option value="admin.php?action=cms&job=plugins_active_all&value=0&id=<?php echo $head['module']; ?>">Alle deaktivieren</option>
+	  <option value="admin.php?action=cms&job=plugins_active_all&value=1&id=<?php echo $head['module']; ?>">Activate all</option> 
+	  <option value="admin.php?action=cms&job=plugins_active_all&value=0&id=<?php echo $head['module']; ?>">Deactivate all</option>
 	 </optgroup>
 	</select>
 	<input type="submit" value="Go" />
@@ -45,7 +45,7 @@ if ($job == 'plugins') {
 		   <li><a href="admin.php?action=cms&job=plugins_add">Add Plugin</a></li>
 		   <li>
 			   <form method="get" name="admin.php" style="display: inline;">
-			   	Anzeige von: 
+			   Display of: 
 			   	<select name="sort">
 			   		<option value="0"<?php echo iif($sort == 0, ' selected="selected"'); ?>>Hooks</option>
 			   		<option value="1"<?php echo iif($sort == 1, ' selected="selected"'); ?>>Packages</option>
@@ -83,7 +83,7 @@ if ($job == 'plugins') {
 		   <td>Plugin</td>
 		   <td>Hook</td>
 		   <td>Status</td>
-		   <td>Aktion</td>
+		   <td>Action</td>
 		  </tr>
 		<?php
 		while ($head = $db->fetch_assoc($result)) {
@@ -106,16 +106,16 @@ if ($job == 'plugins') {
 					<td nowrap="nowrap">
 						<?php 
 						if ($head['active'] == 1) {
-							echo '<a href="admin.php?action=cms&job=plugins_active&id='.$head['id'].'&value=0">Deaktivieren</a>';
+							echo '<a href="admin.php?action=cms&job=plugins_active&id='.$head['id'].'&value=0">Deactivate</a>';
 						}
 						else {
-							echo '<a href="admin.php?action=cms&job=plugins_active&id='.$head['id'].'&value=1">Aktivieren</a>';
+							echo '<a href="admin.php?action=cms&job=plugins_active&id='.$head['id'].'&value=1">Activate</a>';
 						}
 						?>
 					</td>
 					<td>
-					 [<a href="admin.php?action=cms&job=plugins_edit&id=<?php echo $head['id']; ?>">&Auml;ndern</a>] 
-					 [<a href="admin.php?action=cms&job=plugins_delete&id=<?php echo $head['id']; ?>">L&ouml;schen</a>]
+					 [<a href="admin.php?action=cms&job=plugins_edit&id=<?php echo $head['id']; ?>">Edit</a>] 
+					 [<a href="admin.php?action=cms&job=plugins_delete&id=<?php echo $head['id']; ?>">delete</a>]
 					</td>
 				</tr>
 				<?php
@@ -145,7 +145,7 @@ if ($job == 'plugins') {
 		   <td width="28%">Package</td>
 		   <td width="11%">Status</td>
 		   <td width="9%">Priority</td>
-		   <td width="22%">Aktion</td>
+		   <td width="22%">Action</td>
 		  </tr>
 		<?php
 		while ($head = $db->fetch_assoc($result)) {
@@ -166,10 +166,10 @@ if ($job == 'plugins') {
 				<td nowrap="nowrap">
 					<?php 
 					if ($head['active'] == 1) {
-						echo '<a href="admin.php?action=cms&job=plugins_active&id='.$head['id'].'&value=0">Deaktivieren</a>';
+						echo '<a href="admin.php?action=cms&job=plugins_active&id='.$head['id'].'&value=0">Deactivate</a>';
 					}
 					else {
-						echo '<a href="admin.php?action=cms&job=plugins_active&id='.$head['id'].'&value=1">Aktivieren</a>';
+						echo '<a href="admin.php?action=cms&job=plugins_active&id='.$head['id'].'&value=1">Activate</a>';
 					}
 					?>
 				</td>
@@ -179,8 +179,8 @@ if ($job == 'plugins') {
 		 			<a href="admin.php?action=cms&job=plugins_move&id=<?php echo $head['id']; ?>&value=1"><img src="admin/html/images/desc.gif" border="0" alt="Down"></a>
 				</td>
 				<td>
-				 [<a href="admin.php?action=cms&job=plugins_edit&id=<?php echo $head['id']; ?>">&Auml;ndern</a>] 
-				 [<a href="admin.php?action=cms&job=plugins_delete&id=<?php echo $head['id']; ?>">L&ouml;schen</a>]
+				 [<a href="admin.php?action=cms&job=plugins_edit&id=<?php echo $head['id']; ?>">Edit</a>] 
+				 [<a href="admin.php?action=cms&job=plugins_delete&id=<?php echo $head['id']; ?>">Delete</a>]
 				</td>
 			</tr>
 			<?php
@@ -193,7 +193,7 @@ elseif ($job == 'plugins_move') {
 	$id = $gpc->get('id', int);
 	$pos = $gpc->get('value', int);
 	if ($id < 1) {
-		error('admin.php?action=cms&job=nav', 'Ungültige ID angegeben');
+		error('admin.php?action=cms&job=nav', 'Invalid ID given');
 	}
 	if ($pos < 0) {
 		$db->query('UPDATE '.$db->pre.'plugins SET ordering = ordering-1 WHERE id = '.$id, __LINE__, __FILE__);
@@ -241,9 +241,9 @@ elseif ($job == 'plugins_delete') {
 	$id = $gpc->get('id', int);
 	?>
 	<table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
-	<tr><td class="obox">Package löschen</td></tr>
+	<tr><td class="obox">Delete Package</td></tr>
 	<tr><td class="mbox">
-	<p align="center">Wollen Sie dieses Plugin wirklich löschen?</p>
+	<p align="center">Do you really want to delete this plugin?</p>
 	<p align="center">
 	<a href="admin.php?action=cms&job=plugins_delete2&id=<?php echo $id; ?>"><img border="0" align="middle" alt="" src="admin/html/images/yes.gif"> Yes</a>
 	&nbsp&nbsp;&nbsp;&nbsp&nbsp;&nbsp;
@@ -530,7 +530,7 @@ elseif ($job == 'plugins_add2') {
 	 <tr class="mbox" valign="top">
 	  <td>
 	  Code:<br /><br />
-	  <span class="stext">Hier können Sie PHP-Code eingeben, der an dem angegebenen Hook ausgeführt werden soll. Sie brauchen am Anfang und am Ende keine PHP Start- und Endtags angeben (&lt;?php bzw. ?&gt;). Sie können auch Templates und Phrasen für dieses Plugin hinzufügen (siehe unten). Für nähere Informationen lesen Sie bitte die Dokumentation.</span>
+	  <span class="stext">At this place you can insert PHP-Code which will be executed in the indicated hook. You don't need to use &lt;?php bzw. ?&gt;-Tags at the beginning and the end of your code. You also can use templates and phrases for this plugin (more information down of this page). More information can be found in the documentation.</span>
 	  <br /><br />
 	  <ul>
 	    <li><a href="admin.php?action=cms&amp;job=package_template&amp;id=<?php echo $package['id']; ?>" target="_blank">Add Template</a></li>
@@ -638,6 +638,7 @@ elseif ($job == 'package_template') {
 	$standardDesign = $designs[$config['templatedir']]['template'];
 	$tpldir = "templates/{$standardDesign}/modules/{$data['id']}/";
 
+	// ToDo: Prüfen ob .html variabel sein sollte (class.template.php => Endung der Templates ist variabel, nur standardmäßig html)
 	$filetitle = convert2adress($data['title']);
 	$codefile = "{$filetitle}.html";
 	$i = 1;
@@ -917,7 +918,7 @@ elseif ($job == 'package_language') {
   </tr>
   <?php if (count($ini['language']) == 0) { ?>
   <tr>
-   <td class="mbox" colspan="<?php echo count($cache)+1; ?>">Es wurden noch keine Phrasen angelegt. [<a href="admin.php?action=cms&job=package_language_add&id=<?php echo $id; ?>">Add new Phrase</a>]</td> 
+   <td class="mbox" colspan="<?php echo count($cache)+1; ?>">There were no phrases created. [<a href="admin.php?action=cms&job=package_language_add&id=<?php echo $id; ?>">Add new Phrase</a>]</td> 
   </tr>
   <?php } else { ?>
   <tr>
@@ -1091,8 +1092,8 @@ elseif ($job == 'package_language_copy') {
    <td class="obox" colspan="2">Phrase Manager &raquo; Copy</td>
   </tr>
   <tr>
-   <td class="mbox" width="50%">Sprache die als Vorlage dienen soll:<br />
-   <span class="stext">Geben Sie hier an, aus welchem Verzeichnis/von welcher Sprache die Phrase kopiert werden soll.</span></td>
+   <td class="mbox" width="50%">Language to use as submittal:<br />
+   <span class="stext">Specify from which directory/language the phrase should be copied.</span></td>
    <td class="mbox" width="50%"><select name="dir">
 	<?php
 	while($row = $db->fetch_assoc($result)) {
@@ -1476,7 +1477,7 @@ elseif ($job == 'package_export') {
    <td class="mbox">Filename:</td>
    <td class="mbox"><input type="text" name="file" size="50" value="<?php echo $file; ?>" /></td>
   </tr><tr>
-   <td class="mbox">Datei nach dem exportieren löschen:</td>
+   <td class="mbox">Delete file after export:</td>
    <td class="mbox"><input type="checkbox" name="delete" value="1" checked="checked" /></td></tr>
   <tr>
    <td class="ubox" colspan="2" align="center"><input accesskey="s" type="submit" value="Export" /></td>
@@ -1615,9 +1616,9 @@ elseif ($job == 'package_delete') {
 	$id = $gpc->get('id', int);
 	?>
 	<table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
-	<tr><td class="obox">Package löschen</td></tr>
+	<tr><td class="obox">Delete Package</td></tr>
 	<tr><td class="mbox">
-	<p align="center">Wollen Sie dieses Package mit allen enthaltenen Plugins wirklich löschen?</p>
+	<p align="center">Do you really want to delete this package with all included plugins?</p>
 	<p align="center">
 	<a href="admin.php?action=cms&job=package_delete2&id=<?php echo $id; ?>"><img border="0" align="middle" alt="" src="admin/html/images/yes.gif"> Yes</a>
 	&nbsp&nbsp;&nbsp;&nbsp&nbsp;&nbsp;
@@ -1704,7 +1705,7 @@ elseif ($job == 'nav') {
    <td class="ubox">Link</td>
    <td class="ubox">Status</td>
    <td class="ubox">Reihenfolge</td>
-   <td class="ubox">Aktion</td>
+   <td class="ubox">Action</td>
   </tr>
 <?php
 	$result = $db->query("SELECT * FROM {$db->pre}menu ORDER BY ordering, id", __LINE__, __FILE__);
@@ -1740,20 +1741,20 @@ elseif ($job == 'nav') {
 	<td width="10%">
 	<?php 
 	if ($head['active'] == 1) {
-		echo '<a href="admin.php?action=cms&job=nav_active&id='.$head['id'].iif($head['module'] > 0, '&plug='.$head['module']).'&act=0">Deaktivieren</a>';
+		echo '<a href="admin.php?action=cms&job=nav_active&id='.$head['id'].iif($head['module'] > 0, '&plug='.$head['module']).'&act=0">Deactivate</a>';
 	}
 	else {
-		echo '<a href="admin.php?action=cms&job=nav_active&id='.$head['id'].iif($head['module'] > 0, '&plug='.$head['module']).'&act=1">Aktivieren</a>';
+		echo '<a href="admin.php?action=cms&job=nav_active&id='.$head['id'].iif($head['module'] > 0, '&plug='.$head['module']).'&act=1">Activate</a>';
 	}
 	?>
 	</td>
 	<td width="15%"><?php echo $head['ordering']; ?>&nbsp;&nbsp;
-	<a href="admin.php?action=cms&job=nav_move&id=<?php echo $head['id']; ?>&value=-1"><img src="admin/html/images/asc.gif" border="0" alt="Hoch"></a>&nbsp;
-	<a href="admin.php?action=cms&job=nav_move&id=<?php echo $head['id']; ?>&value=1"><img src="admin/html/images/desc.gif" border="0" alt="Runter"></a>
+	<a href="admin.php?action=cms&job=nav_move&id=<?php echo $head['id']; ?>&value=-1"><img src="admin/html/images/asc.gif" border="0" alt="Up"></a>&nbsp;
+	<a href="admin.php?action=cms&job=nav_move&id=<?php echo $head['id']; ?>&value=1"><img src="admin/html/images/desc.gif" border="0" alt="Down"></a>
 	</td>
 	<td width="35%">
-	 [<a href="admin.php?action=cms&job=nav_edit&id=<?php echo $head['id']; ?>">Ändern</a>] 
-	 [<a href="admin.php?action=cms&job=nav_delete&id=<?php echo $head['id']; ?>">Löschen</a>]	
+	 [<a href="admin.php?action=cms&job=nav_edit&id=<?php echo $head['id']; ?>">Edit</a>] 
+	 [<a href="admin.php?action=cms&job=nav_delete&id=<?php echo $head['id']; ?>">Delete</a>]	
 	</td>
 	</tr>
 	<?php
@@ -1769,25 +1770,25 @@ elseif ($job == 'nav') {
 			else {
 				?>
 				<a href="<?php echo $link['link']; ?>" target="<?php echo $link['param']; ?>"><?php echo $link['name']; ?></a>			
-				<?php } echo iif ($link['active'] == '0', ' (<em>Inaktiv</em>)'); ?><br />
+				<?php } echo iif ($link['active'] == '0', ' (<em>Inactive</em>)'); ?><br />
 				</td>
 				<td class="mbox" width="10%">
 				<?php 
 				if ($link['active'] == 1) {
-					echo '<a href="admin.php?action=cms&job=nav_active&id='.$link['id'].'&act=0">Deaktivieren</a>';
+					echo '<a href="admin.php?action=cms&job=nav_active&id='.$link['id'].'&act=0">Deactivate</a>';
 				}
 				else {
-					echo '<a href="admin.php?action=cms&job=nav_active&id='.$link['id'].'&act=1">Aktivieren</a>';
+					echo '<a href="admin.php?action=cms&job=nav_active&id='.$link['id'].'&act=1">Activate</a>';
 				}
 				?>
 				</td>
 				<td class="mbox" width="15%" nowrap="nowrap" align="center"><?php echo $link['ordering']; ?>&nbsp;&nbsp;
-				<a href="admin.php?action=cms&job=nav_move&id=<?php echo $link['id']; ?>&value=-1"><img src="admin/html/images/asc.gif" border="0" alt="Hoch"></a>&nbsp;
-				<a href="admin.php?action=cms&job=nav_move&id=<?php echo $link['id']; ?>&value=1"><img src="admin/html/images/desc.gif" border="0" alt="Runter"></a>
+				<a href="admin.php?action=cms&job=nav_move&id=<?php echo $link['id']; ?>&value=-1"><img src="admin/html/images/asc.gif" border="0" alt="Up"></a>&nbsp;
+				<a href="admin.php?action=cms&job=nav_move&id=<?php echo $link['id']; ?>&value=1"><img src="admin/html/images/desc.gif" border="0" alt="Down"></a>
 				</font></td>			
 				<td class="mbox" width="25%">
-				 [<a href="admin.php?action=cms&job=nav_edit&id=<?php echo $link['id'].SID2URL_x; ?>">Ändern</a>] 
-				 [<a href="admin.php?action=cms&job=nav_delete&id=<?php echo $link['id'].SID2URL_x; ?>">Löschen</a>]
+				 [<a href="admin.php?action=cms&job=nav_edit&id=<?php echo $link['id'].SID2URL_x; ?>">Edit</a>] 
+				 [<a href="admin.php?action=cms&job=nav_delete&id=<?php echo $link['id'].SID2URL_x; ?>">Delete</a>]
 				</td>
 				</tr>
 				<?php
@@ -1803,25 +1804,25 @@ elseif ($job == 'nav') {
 						else {
 							?>
 							<a href='<?php echo $sublink['link']; ?>' target='<?php echo $sublink['param']; ?>'><?php echo $sublink['name']; ?></a>			
-							<?php } echo iif ($sublink['active'] == '0', ' (<i>Inaktiv</i>)'); ?></font><br>
+							<?php } echo iif ($sublink['active'] == '0', ' (<i>Inactive</i>)'); ?></font><br>
 							</td>
 							<td class="mbox" width="10%">
 							<?php 
 							if ($sublink['active'] == 1) {
-								echo '<a href="admin.php?action=cms&job=nav_active&id='.$sublink['id'].'&act=0">Deaktivieren</a>';
+								echo '<a href="admin.php?action=cms&job=nav_active&id='.$sublink['id'].'&act=0">Deactivate</a>';
 							}
 							else {
-								echo '<a href="admin.php?action=cms&job=nav_active&id='.$sublink['id'].'&act=1">Aktivieren</a>';
+								echo '<a href="admin.php?action=cms&job=nav_active&id='.$sublink['id'].'&act=1">Activate</a>';
 							}
 							?>
 							</td>
 							<td class="mbox" width="15%" nowrap="nowrap" align="right"><?php echo $sublink['ordering']; ?>&nbsp;&nbsp;
-							<a href="admin.php?action=cms&job=nav_move&id=<?php echo $sublink['id']; ?>&value=-1"><img src="admin/html/images/asc.gif" border="0" alt="Hoch"></a>&nbsp;
-							<a href="admin.php?action=cms&job=nav_move&id=<?php echo $sublink['id']; ?>&value=1"><img src="admin/html/images/desc.gif" border="0" alt="Runter"></a>
+							<a href="admin.php?action=cms&job=nav_move&id=<?php echo $sublink['id']; ?>&value=-1"><img src="admin/html/images/asc.gif" border="0" alt="Up"></a>&nbsp;
+							<a href="admin.php?action=cms&job=nav_move&id=<?php echo $sublink['id']; ?>&value=1"><img src="admin/html/images/desc.gif" border="0" alt="Down"></a>
 							</td>			
 							<td class="mbox" width="25%">
-							 [<a href="admin.php?action=cms&job=nav_edit&id=<?php echo $sublink['id']; ?>">Ändern</a>] 
-							 [<a href="admin.php?action=cms&job=nav_delete&id=<?php echo $sublink['id']; ?>">Löschen</a>]
+							 [<a href="admin.php?action=cms&job=nav_edit&id=<?php echo $sublink['id']; ?>">Edit</a>] 
+							 [<a href="admin.php?action=cms&job=nav_delete&id=<?php echo $sublink['id']; ?>">Delete</a>]
 							</td>
 							</tr>
 							<?php
@@ -1860,19 +1861,19 @@ elseif ($job == 'nav_edit') {
 <form name="form" method="post" action="admin.php?action=cms&job=nav_edit2&id=<?php echo $id; ?>">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr> 
-   <td class="obox" colspan="2"><?php echo iif ($data['sub'] > 0, 'Link', 'Box'); ?> ändern</td>
+   <td class="obox" colspan="2">Edit <?php echo iif ($data['sub'] > 0, 'link', 'box'); ?></td>
   </tr>
   <tr> 
-   <td class="mbox" width="50%">Titel:</td>
+   <td class="mbox" width="50%">Title:</td>
    <td class="mbox" width="50%"><input type="text" name="title" size="40" value="<?php echo $data['name']; ?>" /></td>
   </tr>
 <?php if ($data['sub'] > 0) { ?>
   <tr> 
-   <td class="mbox" width="50%">Datei/URL: (<a href="javascript:docs();">Existierende Dokumente</a>)</td>
+   <td class="mbox" width="50%">File/URL: (<a href="javascript:docs();">Existing Documents</a>)</td>
    <td class="mbox" width="50%"><input type="text" name="url" size="40" value="<?php echo $data['link']; ?>" /></td>
   </tr>
   <tr> 
-   <td class="mbox" width="50%">Target:<br /><span class="stext">Standardmäßig werden alle Verweise im aktuellen Fenster geöffnet. Mit der Option können Sie ein Zielfenster für den Verweis festlegen. "_blank" öffnet ein neues Fenster.</span></td>
+   <td class="mbox" width="50%">Target:<br /><span class="stext">All links will be opened in the same window by default. This option defines the target window for the link. For example: "_blank" will open links in a new window.</span></td>
    <td class="mbox" width="50%"><input type="text" name="target" size="40" value="<?php echo $data['param']; ?>" /></td>
   </tr>
   <tr>
@@ -1903,7 +1904,7 @@ elseif ($job == 'nav_edit') {
   </tr>
 <?php } ?>
   <tr> 
-   <td class="mbox" width="50%">Gruppen:<br /><span class="stext">Gruppen denen es erlaubt ist, die Box zu betrachten.</span></td>
+   <td class="mbox" width="50%">Groups:<br /><span class="stext">Groups which have the ability to view the box.</span></td>
    <td class="mbox" width="50%">
    <?php while ($row = $db->fetch_assoc($groups)) { ?>
     <input type="checkbox" name="groups[]"<?php echo iif($data['groups'] == 0 || in_array($row['id'], $data['group_array']), ' checked="checked"'); ?> value="<?php echo $row['id']; ?>"> <?php echo $row['name']; ?><br />
@@ -1911,7 +1912,7 @@ elseif ($job == 'nav_edit') {
    </td>
   </tr>
   <tr> 
-   <td class="mbox" width="50%">Aktiv:</td>
+   <td class="mbox" width="50%">Active:</td>
    <td class="mbox" width="50%"><input type="checkbox" name="active" value="1"<?php echo iif($data['active'] == 1, ' checked="checked"'); ?> /></td>
   </tr>
   <tr>
@@ -1975,13 +1976,13 @@ elseif ($job == 'nav_delete') {
 	$id = $gpc->get('id', int);
 ?>
 	<table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
-	<tr><td class="obox">Komponente löschen</td></tr>
+	<tr><td class="obox">Delete Component</td></tr>
 	<tr><td class="mbox">
-	<p align="center">Wollen Sie diese Box/diesen Link/diesen Verweis auf ein Plugin mit allen evtl. vorhandenen untergeordneten Links wirklich löschen?</p>
+	<p align="center">Do you really want to delete this box or link (to a plugin) including all child-links?</p>
 	<p align="center">
-	<a href="admin.php?action=cms&job=nav_delete2&id=<?php echo $id; ?>"><img border="0" align="middle" alt="" src="admin/html/images/yes.gif"> Ja</a>
+	<a href="admin.php?action=cms&job=nav_delete2&id=<?php echo $id; ?>"><img border="0" align="middle" alt="" src="admin/html/images/yes.gif"> Yes</a>
 	&nbsp&nbsp;&nbsp;&nbsp&nbsp;&nbsp;
-	<a href="javascript: history.back(-1);"><img border="0" align="middle" alt="" src="admin/html/images/no.gif"> Nein</a>
+	<a href="javascript: history.back(-1);"><img border="0" align="middle" alt="" src="admin/html/images/no.gif"> No</a>
 	</p>
 	</td></tr>
 	</table>
@@ -2010,13 +2011,13 @@ elseif ($job == 'nav_delete2') {
 	$delobj = $scache->load('modules_navigation');
 	$delobj->delete();
 	
-	ok('admin.php?action=cms&job=nav', $anz.' Einträge wurden erfolgreich gelöscht.');
+	ok('admin.php?action=cms&job=nav', $anz.' entries deleted.');
 }
 elseif ($job == 'nav_move') {
 	$id = $gpc->get('id', int);
 	$pos = $gpc->get('value', int);
 	if ($id < 1) {
-		error('admin.php?action=cms&job=nav', 'Ungültige ID angegeben');
+		error('admin.php?action=cms&job=nav', 'Invalid ID given');
 	}
 	if ($pos < 0) {
 		$db->query('UPDATE '.$db->pre.'menu SET ordering = ordering-1 WHERE id = '.$id, __LINE__, __FILE__);
@@ -2034,10 +2035,10 @@ elseif ($job == 'nav_active') {
 	$id = $gpc->get('id', int);
 	$pos = $gpc->get('act', int);
 	if ($id < 1) {
-		error('admin.php?action=cms&job=nav', 'Ungültige ID angegeben');
+		error('admin.php?action=cms&job=nav', 'Invalid ID given');
 	}
 	if ($pos != 0 && $pos != 1) {
-		error('admin.php?action=cms&job=nav', 'Ungültigen Status angegeben');
+		error('admin.php?action=cms&job=nav', 'Invalid status specified');
 	}
 	$db->query('UPDATE '.$db->pre.'menu SET active = "'.$pos.'" WHERE id = '.$id, __LINE__, __FILE__);
 	
@@ -2065,7 +2066,7 @@ elseif ($job == 'nav_addplugin') {
 <form name="form" method="post" action="admin.php?action=cms&job=nav_addplugin2">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr> 
-   <td class="obox" colspan="2">Plugin in die Navigation aufnehmen</td>
+   <td class="obox" colspan="2">Add Plugin to navigation</td>
   </tr>
   <tr> 
    <td class="mbox" width="50%">Title:<br /><span class="stext">Leave empty to use default.</span></td>
@@ -2082,7 +2083,7 @@ elseif ($job == 'nav_addplugin') {
    </td>
   </tr>
   <tr> 
-   <td class="mbox" width="50%">Einsortieren nach:</td>
+   <td class="mbox" width="50%">Sort in after:</td>
    <td class="mbox" width="50%">
    <select name="sort">
    <?php while ($row = $db->fetch_assoc($sort)) { ?>
@@ -2092,7 +2093,7 @@ elseif ($job == 'nav_addplugin') {
    </td>
   </tr>
   <tr> 
-   <td class="mbox" width="50%">Gruppen:<br /><span class="stext">Gruppen denen es erlaubt ist, das PlugIn zu betrachten.</span></td>
+   <td class="mbox" width="50%">Groups:<br /><span class="stext">Groups which have the ability to view the PlugIn.</span></td>
    <td class="mbox" width="50%">
    <?php while ($row = $db->fetch_assoc($groups)) { ?>
     <input type="checkbox" name="groups[]" checked="checked" value="<?php echo $row['id']; ?>"> <?php echo $row['name']; ?><br />
@@ -2130,7 +2131,7 @@ elseif ($job == 'nav_addplugin2') {
 	$db->query("INSERT INTO {$db->pre}menu (name, groups, ordering, active, module) VALUES ('{$title}','{$groups}','{$sort}','{$data['active']}','{$data['id']}')", __LINE__, __FILE__);
 	$delobj = $scache->load('modules_navigation');
 	$delobj->delete();
-	ok('admin.php?action=cms&job=nav', 'Plugin wurde erfolgreich hinzugefügt');
+	ok('admin.php?action=cms&job=nav', 'PlugIn successful added');
 }
 elseif ($job == 'nav_add') {
 	echo head();
@@ -2147,18 +2148,18 @@ elseif ($job == 'nav_add') {
 <form name="form" method="post" action="admin.php?action=cms&job=nav_add2">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr> 
-   <td class="obox" colspan="2">Neuen Link hinzufügen</td>
+   <td class="obox" colspan="2">Add a new link</td>
   </tr>
   <tr> 
-   <td class="mbox" width="50%">Titel:</td>
+   <td class="mbox" width="50%">Title:</td>
    <td class="mbox" width="50%"><input type="text" name="title" size="40" /></td>
   </tr>
   <tr> 
-   <td class="mbox" width="50%">Datei/URL: (<a href="javascript:docs();">Existierende Dokumente</a>)</td>
+   <td class="mbox" width="50%">File/URL: (<a href="javascript:docs();">Existing Documents</a>)</td>
    <td class="mbox" width="50%"><input type="text" name="url" size="40" /></td>
   </tr>
   <tr> 
-   <td class="mbox" width="50%">Target:<br /><span class="stext">Standardmäßig werden alle Verweise im aktuellen Fenster geöffnet. Mit der Option können Sie ein Zielfenster für den Verweis festlegen. "_blank" öffnet ein neues Fenster.</span></td>
+   <td class="mbox" width="50%">Target:<br /><span class="stext">All links will be opened in the same window by default. This option defines the target window for the link. For example: "_blank" will open links in a new window.</span></td>
    <td class="mbox" width="50%"><input type="text" name="target" size="40" /></td>
   </tr>
   <tr>
@@ -2178,16 +2179,16 @@ elseif ($job == 'nav_add') {
   </tr>
   </tr>
   <tr>
-   <td class="mbox" width="50%">Einsortieren:</td>
+   <td class="mbox" width="50%">Sort in:</td>
    <td class="mbox" width="50%">
    <select name="sort">
-    <option value="0">am Anfang</option>
-    <option value="1">am Ende</option>
+    <option value="0">at the Beginning</option>
+    <option value="1">at the End</option>
    </select>
    </td>
   </tr>
   <tr> 
-   <td class="mbox" width="50%">Gruppen:<br /><span class="stext">Gruppen denen es erlaubt ist, die Box zu betrachten.</span></td>
+   <td class="mbox" width="50%">Groups:<br /><span class="stext">Groups which have the ability to view the box.</span></td>
    <td class="mbox" width="50%">
    <?php while ($row = $db->fetch_assoc($groups)) { ?>
     <input type="checkbox" name="groups[]" checked="checked" value="<?php echo $row['id']; ?>"> <?php echo $row['name']; ?><br />
@@ -2235,7 +2236,7 @@ elseif ($job == 'nav_add2') {
 	$db->query("INSERT INTO {$db->pre}menu (name, groups, ordering, link, param, sub) VALUES ('{$title}','{$groups}','{$sort}','{$url}','{$target}','{$sub}')", __LINE__, __FILE__);
 	$delobj = $scache->load('modules_navigation');
 	$delobj->delete();
-	ok('admin.php?action=cms&job=nav', 'Link wurde erfolgreich hinzugefügt');
+	ok('admin.php?action=cms&job=nav', 'Link successfully added.');
 }
 elseif ($job == 'nav_addbox') {
 	echo head();
@@ -2245,14 +2246,14 @@ elseif ($job == 'nav_addbox') {
 <form name="form" method="post" action="admin.php?action=cms&job=nav_addbox2">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr> 
-   <td class="obox" colspan="2">Neue Box erstellen</td>
+   <td class="obox" colspan="2">Create a new box</td>
   </tr>
   <tr> 
-   <td class="mbox" width="50%">Titel:</td>
+   <td class="mbox" width="50%">Title:</td>
    <td class="mbox" width="50%"><input type="text" name="title" size="40" /></td>
   </tr>
   <tr> 
-   <td class="mbox" width="50%">Einsortieren nach:</td>
+   <td class="mbox" width="50%">Sort in after:</td>
    <td class="mbox" width="50%">
    <select name="sort">
    <?php while ($row = $db->fetch_assoc($sort)) { ?>
@@ -2262,7 +2263,7 @@ elseif ($job == 'nav_addbox') {
    </td>
   </tr>
   <tr> 
-   <td class="mbox" width="50%">Gruppen:<br /><span class="stext">Gruppen denen es erlaubt ist, die Box zu betrachten.</span></td>
+   <td class="mbox" width="50%">Groups:<br /><span class="stext">Groups which have the ability to view the box.</span></td>
    <td class="mbox" width="50%">
    <?php while ($row = $db->fetch_assoc($groups)) { ?>
     <input type="checkbox" name="groups[]" checked="checked" value="<?php echo $row['id']; ?>"> <?php echo $row['name']; ?><br />
@@ -2304,7 +2305,7 @@ $result = $db->query('SELECT id, title FROM '.$db->pre.'documents');
 ?>
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr> 
-   <td class="obox">Existierende Dokumente und Seiten</td>
+   <td class="obox">Existing Documents and Pages</td>
   </tr>
   <tr> 
    <td class="mbox">
@@ -2322,13 +2323,13 @@ elseif ($job == 'com') {
 ?>
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr> 
-   <td class="obox" colspan="5"><span style="float: right;">[<a href="admin.php?action=cms&job=com_add">Neue Komponente hochladen</a>]</span>Komponenten verwalten</td>
+   <td class="obox" colspan="5"><span style="float: right;">[<a href="admin.php?action=cms&job=com_add">Upload new Component</a>]</span>Manage Components</td>
   </tr>
   <tr> 
    <td class="ubox">Name</b></td>
    <td class="ubox">Status</b></td>
    <td class="ubox">Version</b></td>
-   <td class="ubox">Aktion</b></td>
+   <td class="ubox">Action</b></td>
   </tr>
 <?php
 	$result = $db->query("SELECT * FROM {$db->pre}component ORDER BY active DESC", __LINE__, __FILE__);
@@ -2344,9 +2345,9 @@ elseif ($job == 'com') {
 	<td class="mbox" width="15%">
 	<?php 
 	if ($head['active'] == 1) {
-		echo '<a href="admin.php?action=cms&job=com_active&id='.$head['id'].'&value=0">Deaktivieren</a>';
+		echo '<a href="admin.php?action=cms&job=com_active&id='.$head['id'].'&value=0">Deactivate</a>';
 	} else {
-		echo '<a href="admin.php?action=cms&job=com_active&id='.$head['id'].'&value=1">Aktivieren</a>';
+		echo '<a href="admin.php?action=cms&job=com_active&id='.$head['id'].'&value=1">Activate</a>';
 	}
 	?>
 	</td>
@@ -2356,14 +2357,14 @@ elseif ($job == 'com') {
 	<td class="mbox" width="30%">
 	<form name="" action="admin.php?action=locate" method="post">
 		<select size="1" name="url" onchange="locate(this.value)">
-			<option value="" selected="selected">Bitte w&auml;hlen</option>
-			<option value="admin.php?action=cms&job=com_info&id=<?php echo $head['id']; ?>">Informationen</option>
+			<option value="" selected="selected">Please choose</option>
+			<option value="admin.php?action=cms&job=com_info&id=<?php echo $head['id']; ?>">Information</option>
 			<option value="admin.php?action=cms&job=com_admin&cid=<?php echo $head['id']; ?>">Administration</option>
 			<?php if (!empty($cfg['config']['readme'])) { ?>
 			<option value="admin.php?action=cms&job=com_readme&cid=<?php echo $head['id']; ?>">Readme</option>
 			<?php } ?>
-			<option value="admin.php?action=cms&job=com_export&id=<?php echo $head['id']; ?>">Exportieren</option>
-			<option value="admin.php?action=cms&job=com_delete&id=<?php echo $head['id']; ?>">L&ouml;schen</option>
+			<option value="admin.php?action=cms&job=com_export&id=<?php echo $head['id']; ?>">Export</option>
+			<option value="admin.php?action=cms&job=com_delete&id=<?php echo $head['id']; ?>">Delete</option>
 		</select>
 		<input type="submit" value="Go">
 	</form>
@@ -2394,7 +2395,7 @@ elseif ($job == 'com_readme') {
 		include("components/{$cfg['id']}/{$file}");
 	}
 	else {
-		error('admin.php?action=cms&job=com', 'Keine Readme vorhanden!');
+		error('admin.php?action=cms&job=com', 'Readme not found!');
 	}
 }
 elseif ($job == 'com_admin') {
@@ -2429,7 +2430,7 @@ elseif ($job == 'com_info') {
 	?>
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr> 
-   <td class="obox" colspan="2">Informationen</b></td>
+   <td class="obox" colspan="2">Information</b></td>
   </tr>
     <?php
     foreach ($cfg as $key => $row) {
@@ -2466,7 +2467,7 @@ elseif ($job == 'com_active') {
 	$id = $gpc->get('id', int);
 	$act = $gpc->get('value', int);
 	if (!is_id($id)) {
-		error('admin.php?action=cms&job=com'.SID2URL_x, 'Ungültige ID angegeben');
+		error('admin.php?action=cms&job=com'.SID2URL_x, 'Invalid ID given');
 	}
 	if ($act != 0 && $act != 1) {
 		error('admin.php?action=cms&job=com'.SID2URL_x, 'Ungültigen Status angegeben');
@@ -2482,14 +2483,14 @@ elseif ($job == 'com_add') {
 <form name="form" method="post" action="admin.php?action=cms&job=com_add2" enctype="multipart/form-data">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr> 
-   <td class="obox" colspan="2">Neue Komponente hochladen</b></td>
+   <td class="obox" colspan="2">Upload new Components</b></td>
   </tr>
   <tr> 
-   <td class="mbox" width="50%">Gepackte Komponente:<br><span class="stext">Komprimierte Komponentendatei (.zip). Es sollten nur Komponenten von vertraulichen Quellen installiert werden!</td>
+   <td class="mbox" width="50%">Packed Component:<br><span class="stext">Compressed file containing the component (.zip). You should install only components from confidential sources!</td>
    <td class="mbox" width="50%"><input type="file" name="upload" size="60" /></td> 
   </tr>
   <tr> 
-   <td class="ubox" width="100%" colspan="2" align="center"><input type="submit" name="Submit" value="Abschicken"></td> 
+   <td class="ubox" width="100%" colspan="2" align="center"><input type="submit" name="Submit" value="Upload"></td> 
   </tr>
  </table>
 </form> 
@@ -2603,7 +2604,7 @@ elseif ($job == 'com_add2') {
 		}
 	}
 	else {
-		error('admin.php?action=cms&job=acom_add', 'Es wurde keine Datei ausgewählt');
+		error('admin.php?action=cms&job=acom_add', 'No file was chosen.');
 	}
 }
 elseif ($job == 'com_export') {
@@ -2671,13 +2672,13 @@ elseif ($job == 'com_delete') {
 	$id = $gpc->get('id', int);
 ?>
 	<table class='border' border='0' cellspacing='0' cellpadding='4' align='center'>
-	<tr><td class='obox'>Komponente löschen</td></tr>
+	<tr><td class='obox'>Delete Component</td></tr>
 	<tr><td class='mbox'>
-	<p align="center">Wollen Sie diese Komponente wirklich löschen?</p>
+	<p align="center">Do you really want to delete this component?</p>
 	<p align="center">
-	<a href="admin.php?action=cms&job=com_delete2&id=<?php echo $id; ?>"><img border="0" align="middle" alt="" src="admin/html/images/yes.gif"> Ja</a>
+	<a href="admin.php?action=cms&job=com_delete2&id=<?php echo $id; ?>"><img border="0" align="middle" alt="" src="admin/html/images/yes.gif"> Yes</a>
 	&nbsp&nbsp;&nbsp;&nbsp&nbsp;&nbsp;
-	<a href="javascript: history.back(-1);"><img border="0" align="middle" alt="" src="admin/html/images/no.gif"> Nein</a>
+	<a href="javascript: history.back(-1);"><img border="0" align="middle" alt="" src="admin/html/images/no.gif"> No</a>
 	</p>
 	</td></tr>
 	</table>
@@ -2713,7 +2714,7 @@ elseif ($job == 'com_delete2') {
 	$delobj->delete();
 	
 	if (empty($cfg['config']['uninstall'])) {
-		ok('admin.php?action=cms&job=com', 'Komponente wurde deinstalliert!');
+		ok('admin.php?action=cms&job=com', 'Component was successfully deinstalled!');
 	}
 	else {
 		$mod = $gpc->get('file', none, $cfg['config']['uninstall']);
@@ -2736,8 +2737,8 @@ elseif ($job == 'doc') {
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr> 
    <td class="obox" colspan="7">
-   <span style="float: right;">[<a href="admin.php?action=cms&job=doc_add">Neues Dokument erstellen</a>]</span>
-   Dokumente &amp; Seiten  verwalten
+   <span style="float: right;">[<a href="admin.php?action=cms&job=doc_add">Create new document</a>]</span>
+   Manage Documents &amp; Pages
    </td>
   </tr>
   <tr>
@@ -2814,7 +2815,7 @@ elseif ($job == 'doc_add') {
    <td class="ubox">Title</td>
    <td class="ubox">Template</td>
    <td class="ubox">Parser</td>
-   <td class="ubox">Einbindung der Templates</td>
+   <td class="ubox">Integration of Templates</td>
   </tr>
 <?php
 foreach ($type as $id => $row) {
@@ -2847,7 +2848,7 @@ elseif ($job == 'doc_add2') {
   </tr>
   <tr>
    <td class="mbox">
-	<?php if ($format['inline'] == 1 && empty($format['template'])) { ?><span class="stext right">Falls kein &lt;title&gt; geparsed werden kann.</span><?php } ?>
+	<?php if ($format['inline'] == 1 && empty($format['template'])) { ?><span class="stext right">If no &lt;title&gt; can be parsed.</span><?php } ?>
 	Title:<br />
 	<input type="text" name="title" size="60" />
    </td>
@@ -2896,13 +2897,13 @@ elseif ($job == 'doc_add2') {
   <?php } ?>
   <tr>
    <td class="mbox">
-   <?php if($format['remote'] != 1) { ?><span class="stext right">Wenn Sie hier einen Pfad eingeben wird die Datei anstatt in der Datenbank im Dateisystem gespeichert.</span><?php } ?>
+   <?php if($format['remote'] != 1) { ?><span class="stext right">If a path is given, the file will be saved on the filesystem instead of saving it to the database.</span><?php } ?>
    File:<br />
 	<input type="text" name="file" size="60" />
    </td>
   </tr>
   <tr> 
-   <td class="mbox"><span class="stext right">Gruppen denen es erlaubt ist, die Box zu betrachten.</span>Gruppen:<br />
+   <td class="mbox"><span class="stext right">Groups which have the ability to view the box.</span>Groups:<br />
    <?php while ($row = $db->fetch_assoc($groups)) { ?>
     <input type="checkbox" name="groups[]" checked="checked" value="<?php echo $row['id']; ?>"> <?php echo $row['name']; ?><br />
    <?php } ?>
@@ -2910,7 +2911,7 @@ elseif ($job == 'doc_add2') {
   </tr>
   <tr>
    <td class="mbox">
-	Freigeschaltet:<br /> 
+	Active:<br /> 
 	<input type="checkbox" value="1" name="active" />
    </td>
   </tr>
@@ -3015,7 +3016,7 @@ elseif ($job == 'doc_edit') {
   </tr>
   <tr>
    <td class="mbox">
-	<?php if ($format['inline'] == 1 && empty($format['template'])) { ?><span class="stext right">Falls kein &lt;title&gt; geparsed werden kann.</span><?php } ?>
+	<?php if ($format['inline'] == 1 && empty($format['template'])) { ?><span class="stext right">If no &lt;title&gt; can be parsed.</span><?php } ?>
 	Title:<br />
 	<input type="text" name="title" size="60" value="<?php echo $gpc->prepare($row['title']); ?>" />
    </td>
@@ -3054,13 +3055,13 @@ elseif ($job == 'doc_edit') {
   <?php } ?>
   <tr>
    <td class="mbox">
-   <?php if($format['remote'] != 1) { ?><span class="stext right">Wenn Sie hier einen Pfad eingeben wird die Datei anstatt in der Datenbank im Dateisystem gespeichert.</span><?php } ?>
+   <?php if($format['remote'] != 1) { ?><span class="stext right">If a path is given, the file will be saved on the filesystem instead of saving it to the database.</span><?php } ?>
    File:<br />
 	<input type="text" name="file" value="<?php echo $row['file']; ?>" size="60" />
    </td>
   </tr>
   <tr> 
-   <td class="mbox"><span class="stext right">Gruppen denen es erlaubt ist, die Box zu betrachten.</span>Gruppen:<br />
+   <td class="mbox"><span class="stext right">Groups which have the ability to view the box.</span>Groups:<br />
    <?php while ($g = $db->fetch_assoc($groups)) { ?>
     <input type="checkbox" name="groups[]"<?php echo iif($row['groups'] == 0 || in_array($g['id'], $garr),'checked="checked"'); ?> value="<?php echo $g['id']; ?>"> <?php echo $g['name']; ?><br />
    <?php } ?>
@@ -3075,7 +3076,7 @@ elseif ($job == 'doc_edit') {
   </tr>
   <tr>
    <td class="mbox">
-	Freigeschaltet:<br /> 
+	Active:<br /> 
 	<input type="checkbox" value="1" name="active"<?php echo iif($row['active'] == 1, ' checked="checked"'); ?> />
    </td>
   </tr>
@@ -3174,19 +3175,19 @@ echo head();
    <td class="obox" colspan="2">Add a new Newsfeed</td>
   </tr>
   <tr>
-   <td class="mbox">Titel:<br><span class="stext">Falls kein Titel aus dem Newsfeed gelesen werden kann.</td> 
+   <td class="mbox">Titel:<br><span class="stext">If no title can be read from the newsfeed.</td> 
    <td class="mbox"><input type="text" name="temp1" size="60"></td> 
   </tr>
   <tr>
-   <td class="mbox">URL zum Newsfeed:<br><span class="stext">RSS 0.91, RSS 1.0, RSS 2.0 oder ATOM-Newsfeed</td>
+   <td class="mbox">URL of the Newsfeed:<br><span class="stext">RSS 0.91, RSS 1.0, RSS 2.0 or ATOM-Newsfeed</td>
    <td class="mbox"><input type="text" name="temp2" size="60"></td>
   </tr>
   <tr>
-   <td class="mbox">Anzahl der Einträge:<br><span class="stext">Anzahl der Einträge die max. ausgegeben werden, 0 = alle. Newsfeed liefern nicht mehr als 15 Einträge!</td> 
+   <td class="mbox">Number of Entries:<br><span class="stext">Maximum number of entries to show, 0 = all. Newsfeed are (normally) limited to 15 entries!</td> 
    <td class="mbox"><input type="text" name="value" size="3"></td> 
   </tr>
   <tr> 
-   <td class="ubox" width="100%" colspan=2 align="center"><input type="submit" name="Submit" value="Abschicken"></td> 
+   <td class="ubox" width="100%" colspan="2" align="center"><input type="submit" name="Submit" value="Send"></td> 
   </tr>
  </table>
 </form> 
@@ -3251,22 +3252,22 @@ $row = $db->fetch_assoc($result);
 <form name="form" method="post" action="admin.php?action=cms&job=feed_edit2&id=<?php echo $id.SID2URL_x; ?>">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr> 
-   <td class="obox" colspan="2">Dokument editieren</td>
+   <td class="obox" colspan="2">Edit Document</td>
   </tr>
   <tr>
-   <td class="mbox">Titel:<br><span class="stext">Falls kein Titel aus dem Newsfeed gelesen werden kann.</span></td> 
+   <td class="mbox">Title:<br><span class="stext">If no title can be read from the newsfeed.</span></td> 
    <td class="mbox"><input type="text" name="temp1" size="60" value="<?php echo $gpc->prepare($row['title']); ?>"></td> 
   </tr>
   <tr>
-   <td class="mbox">URL zum Newsfeed:<br><span class="stext">RSS 0.91, RSS 1.0, RSS 2.0 oder ATOM-Newsfeed</span></td>
+   <td class="mbox">URL of the Newsfeed:<br><span class="stext">RSS 0.91, RSS 1.0, RSS 2.0 or ATOM-Newsfeed</span></td>
    <td class="mbox"><input type="text" name="temp2" size="60" value="<?php echo $row['file']; ?>"></td>
   </tr>
   <tr>
-   <td class="mbox">Anzahl der Einträge:<br><span class="stext">Anzahl der Einträge die max. ausgegeben werden, 0 = alle. Newsfeed liefern nicht mehr als 15 Einträge!</span></td> 
+   <td class="mbox">Number of Entries:<br><span class="stext">Maximum number of entries for output, 0 = all. Newsfeed are (normally) limited to 15 entries!</span></td> 
    <td class="mbox"><input type="text" name="value" size="3" value="<?php echo $row['entries']; ?>"></td> 
   </tr>
   <tr> 
-   <td class="ubox" width="100%" colspan=2 align="center"><input type="submit" name="Submit" value="Abschicken"></td> 
+   <td class="ubox" width="100%" colspan=2 align="center"><input type="submit" name="Submit" value="Send"></td> 
   </tr>
  </table>
 </form> 
@@ -3281,13 +3282,13 @@ elseif ($job == 'feed_edit2') {
 	$entries = $gpc->get('value', int);
 	$id = $gpc->get('id', int);
 	if (!is_id($id)) {
-		error('admin.php?action=cms&job=feed'.SID2URL_x, 'Keine gültige ID übergeben');
+		error('admin.php?action=cms&job=feed'.SID2URL_x, 'Invalid ID delivered');
 	}
 	if (empty($title)) {
-		error('admin.php?action=cms&job=feed_edit&id='.$id.SID2URL_x, 'Keinen Titel angegeben');
+		error('admin.php?action=cms&job=feed_edit&id='.$id.SID2URL_x, 'No title given');
 	}
 	if (empty($file)) {
-		error('admin.php?action=cms&job=feed_edit&id='.$id.SID2URL_x, 'Keine Newsfeed-URL angegeben');
+		error('admin.php?action=cms&job=feed_edit&id='.$id.SID2URL_x, 'No Newsfeed-URL given');
 	}
 	if (empty($entries)) {
 		$entries = 0;
@@ -3298,6 +3299,6 @@ elseif ($job == 'feed_edit2') {
 	$delobj = $scache->load('grabrss');
 	$delobj->delete();
 
-	ok('admin.php?action=cms&job=feed'.SID2URL_x, 'Eintrag geändert');
+	ok('admin.php?action=cms&job=feed'.SID2URL_x, 'Entry updated');
 }
 ?>
