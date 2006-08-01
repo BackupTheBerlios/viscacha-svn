@@ -845,7 +845,7 @@ elseif ($job == 'edit2') {
 	if (strxlen($query['email']) > 200) {
 		$error[] = 'E-mail address has too many characters (max. 200 characters)';
 	}
-	if (double_udata('mail', $_POST['email']) == false) {
+	if ($user['mail'] != $_POST['email'] && double_udata('mail', $_POST['email']) == false) {
 		 $error[] = $lang->phrase('email_already_used');
 	}
 	if (strxlen($query['signature']) > $config['maxsiglength']) {

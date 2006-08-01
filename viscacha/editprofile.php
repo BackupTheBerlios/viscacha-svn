@@ -505,7 +505,7 @@ elseif ($_GET['action'] == "profile2") {
 	if (check_mail($_POST['email']) == false) {
 		 $error[] = $lang->phrase('illegal_mail');
 	}
-	if (double_udata('mail', $_POST['email']) == false) {
+	if ($my->mail != $_POST['email'] && double_udata('mail', $_POST['email']) == false) {
 		 $error[] = $lang->phrase('email_already_used');
 	}
 	if (strxlen($_POST['name']) > $config['maxnamelength'] && $config['changename_allowed'] == 1) {
