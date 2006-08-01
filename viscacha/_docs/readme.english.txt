@@ -31,7 +31,32 @@ Installation will be available on your server.
 Some of the Viscacha files need more permissions on the server than they have 
 normally on the server. It may happen, that it fails to set the CHMODs while 
 setting up Viscacha. In this case you have to set them manually:
-...
+
+Following directories need CHMOD 777:
+- "admin/backup"
+- "cache" and all subdirectories
+- "classes/cron/jobs"
+- "classes/feedcreator"
+- "classes/fonts"
+- "classes/geshi"
+- "classes/graphic/noises"
+- "components"
+- "data" and all subdirectories
+- "designs" and all subdirectories
+- "docs"
+- "feeds"
+- "images" and all subdirectories
+- "language" and all subdirectories
+- "temp" and all subdirectories
+- "templates" and all subdirectories
+- All subdirectories of "uploads"
+
+Following files need CHMOD 666:
+- admin/data/notes.php
+- All files in the directories "data" and "data/cron"
+- All files in the directory "docs"
+- All files in the directory "language" and all files in the subdirectories of "language"
+- All files in the directory "templates" and all files in the subdirectories of "templates"
 
 
 == Update ==

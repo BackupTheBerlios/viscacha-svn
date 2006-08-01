@@ -33,8 +33,32 @@ Anschließend sollte Ihnen eine "frische" Viscacha-Installation zur Verfügung ste
 Die Dateien des Viscacha brauchen teilweise mehr Rechte als sie normalerweise vom Server 
 bekommen. Falls bei der Installation das Setzen der CHMODs fehlschlägt (auch mit FTP-Daten),
 dann setzen Sie die CHMODs bitte wie folgt:
-...
 
+Folgende Ordner benötigen CHMOD 777:
+- "admin/backup"
+- "cache" und alle Unterordner
+- "classes/cron/jobs"
+- "classes/feedcreator"
+- "classes/fonts"
+- "classes/geshi"
+- "classes/graphic/noises"
+- "components"
+- "data" und alle Unterordner
+- "designs" und alle Unterordner
+- "docs"
+- "feeds"
+- "images" und alle Unterordner
+- "language" und alle Unterordner
+- "temp" und alle Unterordner
+- "templates" und alle Unterordner
+- Alle Unterordner von "uploads"
+
+Folgende Dateien benötigen CHMOD 666:
+- admin/data/notes.php
+- Alle Dateien im Ordner "data" und "data/cron"
+- Alle Dateien im Ordner "docs"
+- Alle Dateien im Ordner "language" und dessen Unterordnern
+- Alle Dateien im Ordner "templates" und dessen Unterordnern
 
 == Update ==
 

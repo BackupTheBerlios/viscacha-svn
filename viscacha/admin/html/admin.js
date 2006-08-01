@@ -260,11 +260,6 @@ function noki(int) {
 	}
 }
 
-function titletip(title) {
-	span = FetchElement('tooltip')
-	span.innerHTML=title;
-}
-
 /*
 Bases on Jeroen's Chmod Calculator
 By Jeroen Vermeulen of Alphamega Hosting <jeroen@alphamegahosting.com>

@@ -1,57 +1,7 @@
 <?php
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "groups.php") die('Error: Hacking Attempt');
 
-$gls = array(
-'admin' => 'Is Administrator',
-'gmod' => 'Is Global Moderator',
-'guest' => 'Is Guest',
-'members' => 'Can view Memberlist',
-'profile' => 'Can view Profiles',
-'pdf' => 'Can view PDF-Files',
-'pm' => 'Can use PM',
-'wwo' => 'Can view Who is Online',
-'search' => 'Can use Search',
-'team' => 'Can view Teamlist',
-'usepic' => 'Can use (own) Avatar',
-'useabout' => 'Create (own) Personal Page',
-'usesignature' => 'Can use (own) Signature',
-'downloadfiles' => 'Can download Attachements',
-'forum' => 'Can view Forums',
-'posttopics' => 'Can start a new Thread',
-'postreplies' => 'Can write a reply',
-'addvotes' => 'Can start a Poll',
-'attachments' => 'Can add Attachements',
-'edit' => 'Can edit own Posts',
-'voting' => 'Can vote',
-'docs' => 'Can view Documents/Pages'
-);
-$glk = array_keys($gls);
-$gll = array(
-'admin' => 'The user ist he highest ranked Administrator in the forum. He may use this admincenter and has full control of the forum!',
-'gmod' => 'The user will automatically be moderator in all forums and can use all options and actions on topics.',
-'guest' => 'The users in this usergroup are (not registered) guests.',
-'members' => 'May view the memberlist and use eventually observably data.',
-'profile' => 'The user may view the profiles of the members and use eventually observably data.',
-'pdf' => 'The user may download particular topics as PDF-file.',
-'pm' => 'The user may use the Private Messaging (PM) System. He can send, receive, administer and archive private messages.',
-'wwo' => 'May view the where-is-who-online-list with the users residence.',
-'search' => 'May use the Search and view the results.',
-'team' => 'May view the teamlist with administrators, global moderators and moderators.',
-'usepic' => 'May upload his own picture for his profile (frequently named avatar) or indicate an URL to a picture.',
-'useabout' => 'May create a personal site in his user profile.',
-'usesignature' => 'The user may create his own signature.',
-'downloadfiles' => 'The user may view and download attached files.',
-'forum' => 'The user may generally view the forums and read them.',
-'posttopics' => 'New topics may be started.',
-'postreplies' => 'Answers to topics may be written.',
-'addvotes' => 'Polls may be created within topics.',
-'attachments' => 'The user may attach files to his post.',
-'edit' => 'The user may edit and delete his own posts.',
-'voting' => 'The user may participate in polls in topics.',
-'docs' => 'May view all documents &amp; pages.'
-);
-
-$guest_limitation = array('admin', 'gmod', 'pm', 'usepic', 'useabout', 'usesignature', 'voting', 'edit');
+// moved arrays with group-language-data to function.viscacha_backend.php to use the arrays as well in the forums.php
 
 if ($job == 'manage') {
 	echo head();
@@ -286,7 +236,7 @@ elseif ($job == 'add2') {
 		ok('admin.php?action=groups&job=manage');
 	}
 	else {
-		error('admin.php?action=groups&job=add', 'The group couldn't be added!');
+		error('admin.php?action=groups&job=add', 'The group couldn\'t be added!');
 	}
 }
 elseif ($job == 'delete') {
@@ -383,7 +333,7 @@ elseif ($job == 'edit2') {
 		ok('admin.php?action=groups&job=manage');
 	}
 	else {
-		error('admin.php?action=groups&job=add', 'The group couldn't be updated!');
+		error('admin.php?action=groups&job=add', 'The group couldn\'t be updated!');
 	}
 }
 ?>
