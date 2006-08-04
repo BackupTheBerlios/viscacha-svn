@@ -328,7 +328,7 @@ elseif ($job == "captcha") {
 	$dir = 'classes/graphic/noises/';
 	if ($dh = opendir($dir)) {
 		while (($file = readdir($dh)) !== false) {
-			if(get_extension($file) == '.jpg') {
+			if(get_extension($file) == 'jpg') {
 				$noises++;
 			}
 		}
@@ -375,7 +375,7 @@ elseif ($job == "captcha_noises") {
 	$dir = 'classes/graphic/noises/';
 	if ($dh = opendir($dir)) {
 		while (($file = readdir($dh)) !== false) {
-			if(get_extension($file) == '.jpg') {
+			if(get_extension($file) == 'jpg') {
 				$fonts[] = $dir.$file;
 			}
 		}

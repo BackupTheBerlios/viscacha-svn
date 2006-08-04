@@ -884,8 +884,38 @@ elseif ($job == 'edit2') {
 	if (!isset($cache2[$query['opt_5']])) {
 		$error[] = 'Invalid language selected';
 	}
-	if (!empty($query['pic']) && preg_match('/^(http:\/\/|www.)([\w‰ˆ¸ƒ÷‹@\-_\.]+)\:?([0-9]*)\/(.*)$/', $query['pic'], $url_ary)) {
-		$query['pic'] = checkRemotePic($query['pic'], $url_ary, $query['id']);
+	if (!empty($query['pic']) && preg_match('/^(http:\/\/|www.)([\w‰ˆ¸ƒ÷‹@\-_\.]+)\:?([0-9]*)\/(.*)$/', $query['pic'])) {
+		$query['pic'] = checkRemotePic($query['pic'], $query['id']);
+		switch ($query['pic']) {
+			case REMOTE_INVALID_URL:
+				$error[] = 'Avatar: Invalid URL given';
+				$query['pic'] = '';
+			break;
+			case REMOTE_CLIENT_ERROR:
+				$error[] = 'Avatar: Could not retrieve avatar from server';
+				$query['pic'] = '';
+			break;
+			case REMOTE_FILESIZE_ERROR:
+				$error[] = 'Avatar: Filesize exceeeded';
+				$query['pic'] = '';
+			break;
+			case REMOTE_IMAGE_HEIGHT_ERROR:
+				$error[] = 'Avatar: Height is too high';
+				$query['pic'] = '';
+			break;
+			case REMOTE_IMAGE_WIDTH_ERROR:
+				$error[] = 'Avatar: Width is too high';
+				$query['pic'] = '';
+			break;
+			case REMOTE_EXTENSION_ERROR:
+				$error[] = 'Avatar: Invalid extension/file type';
+				$query['pic'] = '';
+			break;
+			case REMOTE_IMAGE_ERROR:
+				$error[] = 'Avatar: Could not parse image';
+				$query['pic'] = '';
+			break;
+		}
 	}
 	elseif (empty($query['pic']) || !file_exists($query['pic'])) {
 		$query['pic'] = '';

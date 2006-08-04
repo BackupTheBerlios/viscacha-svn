@@ -49,6 +49,85 @@ $db = new DB($config['host'], $config['dbuser'], $config['dbpw'], $config['datab
 // Construct base bb-code object
 $bbcode = new BBCode();
 
+define('REMOTE_INVALID_URL', 100);
+define('REMOTE_CLIENT_ERROR', 200);
+define('REMOTE_FILESIZE_ERROR', 300);
+define('REMOTE_IMAGE_HEIGHT_ERROR', 400);
+define('REMOTE_IMAGE_WIDTH_ERROR', 500);
+define('REMOTE_EXTENSION_ERROR', 600);
+define('REMOTE_IMAGE_ERROR', 700);
+
+function get_remote($file) {
+	if (!class_exists('Snoopy')) {
+		include('classes/class.snoopy.php');
+	}
+	
+	if (!preg_match('/^(http:\/\/)([\wäöüÄÖÜ@\-_\.]+)\:?([0-9]*)\/(.*)$/', $file, $url_ary)) {
+		return REMOTE_INVALID_URL;
+	}
+
+	$snoopy = new Snoopy;
+	if (is_id($url_ary[3])) {
+		$snoopy->port = $url_ary[3];
+	}
+	else {
+		$snoopy->port = null;
+	}
+	$status = $snoopy->fetch($file);
+	if ($status == true) {
+		return $snoopy->results;
+	}
+	else {
+		return REMOTE_CLIENT_ERROR;
+	}
+}
+
+function checkRemotePic($pic, $id) {
+	global $config, $filesystem;
+
+	$avatar_data = get_remote($pic);
+	if ($avatar_data == REMOTE_CLIENT_ERROR || $avatar_data == REMOTE_INVALID_URL) {
+		return $avatar_data;
+	}
+
+	if (strlen($avatar_data) > $config['avfilesize']) {
+		return REMOTE_FILESIZE_ERROR;
+	}
+	
+	$filename = md5(uniqid($id));
+	$origfile = 'temp/'.$filename;
+	$filesystem->file_put_contents($origfile, $avatar_data);
+
+	if (filesize($origfile) > $config['avfilesize']) {
+		return REMOTE_FILESIZE_ERROR;
+	}
+    $imageinfo = @getimagesize($origfile);
+    if (is_array($imageinfo)) {
+    	list($width, $height, $type) = $imageinfo;
+    }
+    else {
+    	return REMOTE_IMAGE_ERROR;
+    }
+	if ($width > $config['avwidth']) {
+		return REMOTE_IMAGE_WIDTH_ERROR;
+	}
+	if ($height > $config['avheight']) {
+		return REMOTE_IMAGE_HEIGHT_ERROR;
+	}
+    $types = explode(',', $config['avfiletypes']);
+    $ext = image_type_to_extension($type);
+	if (!in_array($ext, $types)) {
+		return REMOTE_EXTENSION_ERROR;
+	}
+
+	$dir = 'uploads/pics/';
+	$pic = $dir.$id.$ext;
+	removeOldImages($dir, $id);
+	@$filesystem->copy($origfile, $pic);
+	
+	return $pic;
+}
+
 function array_empty_trim($arr) {
 	$array = array();
 	foreach($arr as $key => $val) {
@@ -335,7 +414,7 @@ function removeOldImages ($dir, $name) {
     $dir_open = @opendir($dir);
     while (($dir_content = readdir($dir_open)) !== false) {
         if ($dir_content != '.' && $dir_content != '..') {
-            $ext = get_extension($dir_content);
+            $ext = get_extension($dir_content, true);
             $fname = str_ireplace($ext, '', $dir_content);
             if ($fname == $name) {
                 @$filesystem->unlink($dir.'/'.$dir_content);
@@ -485,13 +564,13 @@ function str_date($format, $time=FALSE) {
 	return $returndate;
 }
 
-// Returns the extension ( using pathinfo() ) of an file with a leading dot (e.g. '.gif' or '.php') or not ($leading = true)
-function get_extension($url, $leading=FALSE) {
+// Returns the extension in lower case ( using pathinfo() ) of an file with a leading dot (e.g. '.gif' or '.php') or not ($leading = false)
+function get_extension($url, $include_dot = false) {
 	$path_parts = pathinfo($url);
 	if (!isset($path_parts["extension"])) {
 		$path_parts["extension"] = '';
 	}
-	if ($leading == TRUE) {
+	if ($include_dot == false) {
 		return strtolower($path_parts["extension"]);
 	}
 	else {

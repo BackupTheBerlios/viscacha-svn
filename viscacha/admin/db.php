@@ -360,7 +360,7 @@ elseif ($job == 'restore2') {
 	$d = 0;
 	if (count($delete) > 0) {
 		foreach ($delete as $file) {
-			$ext = get_extension($file, true);
+			$ext = get_extension($file);
 			if (($ext == 'zip' || $ext == 'sql') && file_exists($dir.$file)) {
 				$filesystem->unlink($dir.$file);
 				$d++;
@@ -369,7 +369,7 @@ elseif ($job == 'restore2') {
 		ok('admin.php?action=db&job=restore', $d.' backups deleted');
 	}
 	
-	$ext = get_extension($edit, true);
+	$ext = get_extension($edit);
 	if (($ext == 'zip' || $ext == 'sql') && file_exists($dir.$file)) {
 		if ($ext == 'zip') {
 			require_once('classes/class.zip.php');
@@ -398,7 +398,7 @@ elseif ($job == 'restore2') {
 elseif ($job == 'download') {
 	$dir = "./admin/backup/";
 	$file = $gpc->get('file', none);
-	$ext = get_extension($file, true);
+	$ext = get_extension($file);
 	if (($ext == 'zip' || $ext == 'sql') && file_exists($dir.$file)) {
 		if ($ext == 'sql') {
 		    viscacha_header('Content-Type: text/plain');
@@ -560,7 +560,7 @@ elseif ($job == 'query2') {
 			error('admin.php?action=db&job=query', $inserterrors);
 		}
 		else {
-			$ext = get_extension($file, true);
+			$ext = get_extension($file);
 			if (($ext == 'zip' || $ext == 'sql') && file_exists($file)) {
 				if ($ext == 'zip') {
 					require_once('classes/class.zip.php');

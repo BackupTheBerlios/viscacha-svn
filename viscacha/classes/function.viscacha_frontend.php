@@ -96,54 +96,6 @@ function GroupCheck($groups) {
     }
 }
 
-function checkRemotePic($pic, $url_ary, $id, $redir = "editprofile.php?action=pic") {
-	global $lang, $config, $filesystem;
-	$redir .= SID2URL_x;
-	if (empty($url_ary[4])) {
-		error($lang->phrase('editprofile_pic_error1'), $redir);
-	}
-
-	$base_get = '/' . $url_ary[4];
-	$port = (!empty($url_ary[3])) ? $url_ary[3] : 80;
-
-	if (!($fsock = @fsockopen($url_ary[2], $port, $errno, $errstr, 10))) {
-		error($lang->phrase('editprofile_pic_error2'), $redir);
-	}
-
-	@fputs($fsock, "GET $base_get HTTP/1.1\r\n");
-	@fputs($fsock, "HOST: " . $url_ary[2] . "\r\n");
-	@fputs($fsock, "Connection: close\r\n\r\n");
-
-	$avatar_data = '';
-	while(!@feof($fsock)) {
-		$avatar_data .= @fread($fsock, $config['avfilesize']);
-	}
-	@fclose($fsock);
-
-	if (!preg_match('#Content-Length\: ([0-9]+)[^ /][\s]+#i', $avatar_data, $file_data1) || !preg_match('#Content-Type\: image/[x\-]*([a-z]+)[\s]+#i', $avatar_data, $file_data2)) {
-		error($lang->phrase('editprofile_pic_error4'), $redír);
-	}
-		
-	list(,$avatar_data) = explode("\r\n\r\n", $avatar_data, 2);
-		
-	$ext = get_extension($pic);
-	$filename = md5(uniqid($id));
-	$origfile = 'temp/'.$filename.$ext;
-	file_put_contents($origfile, $avatar_data);
-    $filesize = filesize($origfile);
-    list($width, $height, $type) = @getimagesize($origfile);
-    $types = explode('|', $config['avfiletypes']);
-
-	if ($width > 0 && $height > 0 && $width <= $config['avwidth'] && $height <= $config['avheight'] && $filesize <= $config['avfilesize'] && in_array($ext, $types)) {
-		$pic = 'uploads/pics/'.$id.$ext;
-		removeOldImages('uploads/pics/', $id);
-		@$filesystem->copy($origfile, $pic);
-	}
-	else {
-		error($lang->phrase('editprofile_pic_error3'), $redir);
-	}
-	return $pic;
-}
 function numbers ($nvar,$deci=NULL) {
 	global $config, $lang;
 	
@@ -244,7 +196,7 @@ function count_nl($str='',$max=NULL) {
 function get_mimetype($file) {
     global $db, $scache;
 
-	$ext = strtolower(get_extension($file, TRUE));
+	$ext = strtolower(get_extension($file));
 
 	$mimetype_headers = $scache->load('mimetype_headers');
 	$mime = $mimetype_headers->get();

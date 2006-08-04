@@ -129,7 +129,7 @@ elseif ($job == 'smileys_import2') {
 		}
 	}
 	elseif (file_exists($server)) {
-		$ext = get_extension($server, true);
+		$ext = get_extension($server);
 		if ($ext == 'zip') {
 			$file = $server;
 		}
@@ -172,7 +172,7 @@ elseif ($job == 'smileys_import2') {
 			$ini['replace_new'] = str_replace('{folder}', $config['smileypath'], $ini['replace']);
 			$n = 0;
 			while(file_exists($ini['replace_new'])) {
-				$ext = get_extension($ini['replace_new']);
+				$ext = get_extension($ini['replace_new'], true);
 				$length = strlen($ext);
 				$base = substr($ini['replace_new'], $length*(-1), $length);
 				$n++;
@@ -603,7 +603,7 @@ elseif ($job == 'codefiles') {
 	$clang = array();
 	$d = dir("classes/geshi");
 	while (false !== ($entry = $d->read())) {
-		if (get_extension($entry,TRUE) == 'php' && !is_dir("classes/geshi/".$entry)) {
+		if (get_extension($entry) == 'php' && !is_dir("classes/geshi/".$entry)) {
 			@include_once("classes/geshi/".$entry);
 			$short = str_replace('.php','',$entry);
 			$clang[$short]['file'] = $entry;

@@ -126,7 +126,7 @@ elseif ($job == 'import2') {
 		}
 	}
 	elseif (file_exists($server)) {
-		$ext = get_extension($server, true);
+		$ext = get_extension($server);
 		if ($ext == 'zip') {
 			$file = $server;
 		}

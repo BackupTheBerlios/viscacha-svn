@@ -90,7 +90,7 @@ class uploader {
 	
 	if (file_exists($dir.$file)) {
 	    
-		$this->file["extention"] = get_extension($dir.$file);
+		$this->file["extention"] = get_extension($dir.$file, true);
 	    
 	    if (file_exists($dir.$newname.$this->file["extention"])) {
 	        unlink($dir.$newname.$this->file["extention"]);
@@ -144,9 +144,9 @@ class uploader {
 			return FALSE;
 		}
 		$this->file["extention"] = get_extension($this->file['name']);
-		if($this->file["extention"] == '.gif' or $this->file["extention"] == '.png' or $this->file["extention"] == '.jpg' or $this->file["extention"] == '.jpeg' or $this->file["extention"] == '.jpe' or $this->file["extention"] == '.swf') {
+		$extension = strtolower(substr($this->file["extention"], 1));
+		if(in_array($extension, $imagetype_extension)) {
 			
-			/* IMAGES (gif, jpeg, png, swf) */
 			$image = getimagesize($this->file["tmp_name"]);
 			if ($this->max_image_width > 0) {
 				$this->file["width"]  = $image[0];
@@ -171,7 +171,7 @@ class uploader {
 		
 		// check to see if the file is of type specified
 		if(count($this->acceptable_file_types) > 0) {
-			if(!empty($this->file["extention"]) && in_array($this->file["extention"], $this->acceptable_file_types)) {
+			if(!empty($extension) && in_array($extension, $this->acceptable_file_types)) {
 				$this->accepted = TRUE;
 			} else { 
 				$this->accepted = FALSE;
@@ -310,7 +310,7 @@ class uploader {
 		if (!$this->max_image_height) $this->max_image_height = $lang->phrase('upload_unspecified');
 		if (!$this->max_image_width) $this->max_image_width = $lang->phrase('upload_unspecified');
 
-		$aft = implode(", ", $this->acceptable_file_types);
+		$aft = implode($lang->phrase('listspacer'), $this->acceptable_file_types);
 		$mfs = formatFilesize($this->max_filesize);
 		$pathfile = $this->path.$this->file["name"];
 

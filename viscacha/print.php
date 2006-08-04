@@ -202,7 +202,7 @@ while ($row = $gpc->prepare($db->fetch_object($result))) {
 		foreach ($uploads[$row->id] as $file) {
 			$file['file'] = trim($file['file']);
 			$uppath = 'uploads/topics/'.$file['file'];
-			$info = get_extension($uppath, TRUE);
+			$info = get_extension($uppath);
 			
 			// Dateigroesse
 			$fsize = filesize($uppath);

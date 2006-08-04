@@ -110,6 +110,8 @@ editprofile.php
  - editprofile_abos_Start
  - editprofile_abos_prepared
  - editprofile_abos_end
+ - editprofile_pic3_start
+ - editprofile_pic3_end
  - editprofile_pic2_query
  - editprofile_pic_prepared
  - editprofile_profile_start

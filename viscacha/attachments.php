@@ -79,7 +79,7 @@ if ($_GET['action'] == "thumbnail") {
 			$thumb->create_error('#4 '.$lang->phrase('thumb_error'));
 		}
 
-		$chachepath = 'uploads/topics/thumbnails/'.$row['id'].get_extension($uppath);
+		$chachepath = 'uploads/topics/thumbnails/'.$row['id'].get_extension($uppath, true);
 		$thumb->set_cacheuri($chachepath);
 		
 		if (file_exists($chachepath) == FALSE) {
@@ -251,7 +251,7 @@ else {
 				$my_uploader->max_filesize($config['tpcfilesize']);
 				$my_uploader->max_image_size($config['tpcwidth'], $config['tpcheight']);
 				($code = $plugins->load('attachments_upload_add_prepare')) ? eval($code) : null;
-				if ($my_uploader->upload('upload_'.$i, explode('|', $config['tpcfiletypes']), 1)) {
+				if ($my_uploader->upload('upload_'.$i, explode(',', $config['tpcfiletypes']), 1)) {
 					$my_uploader->save_file('uploads/topics/', '2');
 				}
 				if ($my_uploader->return_error()) {
@@ -288,7 +288,7 @@ else {
 	else {
 		echo $tpl->parse("popup/header");
 		
-		$filetypes = implode($lang->phrase('listspacer'), explode('|',$config['tpcfiletypes']));
+		$filetypes = implode($lang->phrase('listspacer'), explode(',',$config['tpcfiletypes']));
 		$filesize = formatFilesize($config['tpcfilesize']);
 
 		if ($_GET['type'] == 'edit' && ($my->mp[0] == 1 || $upinfo['name'] == $my->id)) {

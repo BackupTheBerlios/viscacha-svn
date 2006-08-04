@@ -406,6 +406,18 @@ elseif ($_GET['action'] == "about") {
 	echo $tpl->parse("editprofile/about");
 	($code = $plugins->load('editprofile_abos_end')) ? eval($code) : null;
 }
+elseif ($_GET['action'] == "pic3") {
+
+	($code = $plugins->load('editprofile_pic3_start')) ? eval($code) : null;
+	if ($my->p['usepic'] == 0) {
+		errorLogin($lang->phrase('not_allowed'), "editprofile.php");
+	}
+	removeOldImages('uploads/pics/', $my->id);
+	$db->query("UPDATE {$db->pre}user SET pic = '' WHERE id = '{$my->id}' LIMIT 1",__LINE__,__FILE__);
+	($code = $plugins->load('editprofile_pic3_end')) ? eval($code) : null;
+	ok($lang->phrase('editprofile_pic_success'), "editprofile.php?action=pic".SID2URL_x);
+	
+}
 elseif ($_GET['action'] == "pic2") {
 
 	$pic = $gpc->get('pic', none);
@@ -417,7 +429,7 @@ elseif ($_GET['action'] == "pic2") {
 		$my_uploader = new uploader();
 		$my_uploader->max_filesize($config['avfilesize']);
 		$my_uploader->max_image_size($config['avwidth'], $config['avheight']);
-		if ($my_uploader->upload('upload', explode('|', $config['avfiletypes']))) {
+		if ($my_uploader->upload('upload', explode(',', $config['avfiletypes']))) {
 			$my_uploader->save_file('uploads/pics/', '2');
 		}
 		if ($my_uploader->return_error()) {
@@ -429,8 +441,29 @@ elseif ($_GET['action'] == "pic2") {
 		}
 		$my->pic = 'uploads/pics/'.$my->id.$ext;
 	}
-	elseif (!empty($pic) && preg_match('/^(http:\/\/|www.)([\wäöüÄÖÜ@\-_\.]+)\:?([0-9]*)\/(.*)$/', $pic, $url_ary)) {
-		$my->pic = checkRemotePic($pic, $url_ary, $my->id);
+	elseif (!empty($pic) && preg_match('/^(http:\/\/|www.)([\wäöüÄÖÜ@\-_\.]+)\:?([0-9]*)\/(.*)$/', $pic)) {
+		$my->pic = checkRemotePic($pic, $my->id);
+		switch ($my->pic) {
+			case REMOTE_INVALID_URL:
+				$error[] = $lang->phrase('editprofile_pic_error1');
+				$my->pic = '';
+			break;
+			case REMOTE_CLIENT_ERROR:
+				$error[] = $lang->phrase('editprofile_pic_error2');
+				$my->pic = '';
+			break;
+			case REMOTE_FILESIZE_ERROR:
+			case REMOTE_IMAGE_HEIGHT_ERROR:
+			case REMOTE_IMAGE_WIDTH_ERROR:
+			case REMOTE_EXTENSION_ERROR:
+				$error[] = $lang->phrase('editprofile_pic_error3');
+				$my->pic = '';
+			break;
+			case REMOTE_IMAGE_ERROR:
+				$error[] = $lang->phrase('editprofile_pic_error4');
+				$my->pic = '';
+			break;
+		}
 	}
 	else {
 		removeOldImages('uploads/pics/', $my->id);
@@ -446,7 +479,7 @@ elseif ($_GET['action'] == "pic") {
 	$breadcrumb->Add($lang->phrase('editprofile_pic'));
 	echo $tpl->parse("header");
 	echo $tpl->parse("menu");
-	$filetypes = str_replace("|", ", ", $config['avfiletypes']);
+	$filetypes = str_replace(",", $lang->phrase('listspacer'), $config['avfiletypes']);
 	$filesize = formatFilesize($config['avfilesize']);
 
 	$size = '';

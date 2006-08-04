@@ -1316,7 +1316,7 @@ elseif ($job == 'package_import2') {
 		}
 	}
 	elseif (file_exists($server)) {
-		$ext = get_extension($server, true);
+		$ext = get_extension($server);
 		if ($ext == 'zip') {
 			$file = $server;
 		}
@@ -2935,8 +2935,11 @@ elseif ($job == 'doc_add3') {
   	}
   	else {
   		$content = $gpc->get('template', none);
-  		if (strlen(strip_tags($content)) > 4 && $filesystem->file_put_contents($file, $content) == 0) {
-  			$content = $gpc->$this->save_str($content);
+  		if ($filesystem->file_put_contents($file, $content) > 0) {
+  			$content = '';
+  		}
+  		else {
+  			$content = $gpc->save_str($content);
   			$file = '';
   		}
   	}
@@ -2958,7 +2961,7 @@ elseif ($job == 'doc_add3') {
 	
 	$db->query("INSERT INTO {$db->pre}documents ( `title` , `content` , `author` , `date` , `update` , `type` , `groups` , `active` , `file` ) VALUES ('{$title}', '{$content}', '{$my->id}', '{$time}' , '{$time}' , '{$type}', '{$groups}', '{$active}', '{$file}')", __LINE__, __FILE__);
 
-	ok('admin.php?action=cms&job=doc', 'Eintrag eingefügt');
+	ok('admin.php?action=cms&job=doc', 'Document successfully added!');
 }
 elseif ($job == 'doc_delete') {
 	echo head();
@@ -3101,11 +3104,13 @@ elseif ($job == 'doc_edit2') {
   	}
   	else {
   		$content = $gpc->get('template', none);
-  		if (strlen(strip_tags($content)) > 4 && $filesystem->file_put_contents($file, $content) == 0) {
-  			$content = $gpc->$this->save_str($content);
+  		if ($filesystem->file_put_contents($file, $content) > 0) {
+  			$content = '';
+  		}
+  		else {
+  			$content = $gpc->save_str($content);
   			$file = '';
   		}
-		$content = '';
   	}
 	
 	if (empty($title)) {
@@ -3125,7 +3130,7 @@ elseif ($job == 'doc_edit2') {
 	
 	$db->query("UPDATE {$db->pre}documents SET `title` = '{$title}', `content` = '{$content}', `update` = '{$time}', `groups` = '{$groups}', `active` = '{$active}', `file` = '{$file}', `author` = '{$author}' WHERE id = '{$id}' LIMIT 1",__LINE__,__FILE__);
 
-	ok('admin.php?action=cms&job=doc', 'Eintrag geändert');
+	ok('admin.php?action=cms&job=doc', 'Document successfully changed!');
 }
 
 elseif ($job == 'feed') {

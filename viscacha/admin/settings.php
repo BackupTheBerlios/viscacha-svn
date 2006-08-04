@@ -1157,18 +1157,7 @@ elseif ($job == 'db2') {
 elseif ($job == 'attupload') {
 	$config = $gpc->prepare($config);
 	echo head();
-	
-	$array = explode('|',$config['tpcfiletypes']);
-	$array2 = array();
-	foreach ($array as $row) {
-		if (strpos($row, '.') == 0) {
-			$array2[] = substr($row,1);
-		}
-		else {
-			$array2[] = $row;
-		}
-	}
-	$config['tpcfiletypes'] = implode(',',$array2);
+
 	?>
 	<form name="form" method="post" action="admin.php?action=settings&job=attupload2">
 	 <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
@@ -1180,7 +1169,7 @@ elseif ($job == 'attupload') {
 	   <td class="mbox" width="50%"><input type="checkbox" name="tpcallow" value="1"<?php echo iif($config['tpcallow'],' checked'); ?>></td> 
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">Allowed File Formats for Upload:<br /><font class="stext">Indicate separated by ",".</font></td>
+	   <td class="mbox" width="50%">Allowed File Formats for Upload:<br /><font class="stext">Each file type separated by ",". Without leading dot!</font></td>
 	   <td class="mbox" width="50%"><input type="text" name="tpcfiletypes" value="<?php echo $config['tpcfiletypes']; ?>" size="50"></td> 
 	  </tr>
 	  <tr> 
@@ -1223,14 +1212,12 @@ elseif ($job == 'attupload2') {
 	echo head();
 
 	$c->getdata();
-	
-	// Beitragsupload
-	$array = explode(',',$gpc->get('tpcfiletypes'));
-	$array2 = array();
-	foreach ($array as $row) {
-		$array2[] = '.'.$row;
-	}
-	$ft = implode('|',$array2);
+
+	$list = $gpc->get('tpcfiletypes', none);
+	$arraylist = explode(',', $list);
+	$arraylist = array_map('strtolower', $arraylist);
+	$arraylist = array_map('trim', $arraylist);
+	$list = implode(',',$arraylist);
 
 	$c->updateconfig('tpcallow',int);
 	$c->updateconfig('tpcdownloadspeed',int);
@@ -1238,7 +1225,7 @@ elseif ($job == 'attupload2') {
 	$c->updateconfig('tpcheight',int);
 	$c->updateconfig('tpcwidth',int);
 	$c->updateconfig('tpcfilesize',int);
-	$c->updateconfig('tpcfiletypes',str, $ft);
+	$c->updateconfig('tpcfiletypes',str,$list);
 	$c->updateconfig('tpcthumbwidth',int);
 	$c->updateconfig('tpcthumbheight',int);
 	
@@ -1249,18 +1236,7 @@ elseif ($job == 'attupload2') {
 elseif ($job == 'avupload') {
 	$config = $gpc->prepare($config);
 	echo head();
-	
-	$array = explode('|',$config['avfiletypes']);
-	$array2 = array();
-	foreach ($array as $row) {
-		if (strpos($row, '.') == 0) {
-			$array2[] = substr($row,1);
-		}
-		else {
-			$array2[] = $row;
-		}
-	}
-	$ft = implode(',',$array2);
+
 	?>
 	<form name="form" method="post" action="admin.php?action=settings&job=avupload2">
 	 <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
@@ -1268,19 +1244,19 @@ elseif ($job == 'avupload') {
 	   <td class="obox" colspan="2"><b>Profile pictures &amp; Avatars</b></td>
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">Allowed file formats for profile pictures:<br /><font class="stext">Indicate separated by ",".</font></td>
+	   <td class="mbox" width="50%">Allowed file formats for profile pictures:<br /><span class="stext">Each fily type separated by ",". Without leading dot!<br />Possible file types: <?php echo implode(', ', $imagetype_extension); ?></span></td>
 	   <td class="mbox" width="50%"><input type="text" name="avfiletypes" value="<?php echo $ft; ?>" size="50"></td> 
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">Max. file size for profile pictures in Bytes:<br /><font class="stext">1 KB = 1024 Byte</font></td>
+	   <td class="mbox" width="50%">Max. file size for profile pictures in Bytes:<br /><span class="stext">1 KB = 1024 Byte</span></td>
 	   <td class="mbox" width="50%"><input type="text" name="avfilesize" value="<?php echo $config['avfilesize']; ?>" size="10"></td> 
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">Max. width for profile pictures:<br /><font class="stext">Empty = any</font></td>
+	   <td class="mbox" width="50%">Max. width for profile pictures:<br /><span class="stext">Empty = any</span></td>
 	   <td class="mbox" width="50%"><input type="text" name="avwidth" value="<?php echo $config['avwidth']; ?>" size="5"></td> 
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">Max. height for profile pictures:<br /><font class="stext">Empty = any</font></td>
+	   <td class="mbox" width="50%">Max. height for profile pictures:<br /><span class="stext">Empty = any</span></td>
 	   <td class="mbox" width="50%"><input type="text" name="avheight" value="<?php echo $config['avheight']; ?>" size="5"></td> 
 	  </tr>
 	  <tr> 
@@ -1295,14 +1271,15 @@ elseif ($job == 'avupload2') {
 	echo head();
 
 	$c->getdata();
-	$array = explode(',',$gpc->get('avfiletypes', none));
-	$array2 = array();
-	foreach ($array as $row) {
-		$array2[] = '.'.$row;
-	}
-	$ft = implode('|',$array2);
 	
-	$c->updateconfig('avfiletypes',str, $ft);
+	$list = $gpc->get('avfiletypes', none);
+	$arraylist = explode(',', $list);
+	$arraylist = array_map('strtolower', $arraylist);
+	$arraylist = array_map('trim', $arraylist);
+	$arraylist = array_intersect($imagetype_extension, $arraylist);
+	$list = implode(',',$arraylist);
+	
+	$c->updateconfig('avfiletypes',str,$list);
 	$c->updateconfig('avfilesize',int);
 	$c->updateconfig('avwidth',int);
 	$c->updateconfig('avheight',int);

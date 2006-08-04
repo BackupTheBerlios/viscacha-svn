@@ -105,6 +105,29 @@ include_once ("classes/class.language.php");
 // Global functions
 require_once ("classes/function.global.php");
 
+function AdminLogInForm() {
+	?>
+	<form action="admin.php?action=login2" method="post" target="_top">
+	 <table class="border" style="width: 50%; margin: auto;">
+	  <tr> 
+	   <td class="obox" colspan="2">Log in</td>
+	  </tr>
+	  <tr> 
+		<td class="mbox" width="40%">User Name:</td>
+		<td class="mbox" width="60%"><input type="text" name="name" size="40" /></td>
+	  </tr>
+	  <tr> 
+		<td class="mbox" width="40%">Password:</td>
+		<td class="mbox" width="60%"><input type="password" name="pw" size="40" /></td>
+	  </tr>
+	  <tr> 
+	   <td class="ubox" align="center" colspan="2"><input type="submit" value="Log in" /></td>
+	  </tr>
+	 </table>
+	</form>
+	<?php
+}
+
 function isInvisibleHook($hook) {
 	switch ($hook) {
 		case 'uninstall':
@@ -211,78 +234,6 @@ function get_webserver() {
 		$webserver = 'Unknown';
 	}
 	return $webserver;
-}
-
-function get_remote($file) {
-	if (!preg_match('/^(http:\/\/)([\wäöüÄÖÜ@\-_\.]+)\:?([0-9]*)\/(.*)$/', $file, $url_ary)) {
-		return null;
-	}
-	if (!class_exists('Snoopy')) {
-		include('classes/class.snoopy.php');
-	}
-	$snoopy = new Snoopy;
-	$snoopy->port = null;
-	$status = $snoopy->fetch($file);
-	if ($status == true) {
-		return $snoopy->results;
-	}
-	else {
-		return null;
-	}
-}
-
-function checkRemotePic($pic, $url_ary, $id) {
-	global $config, $filesystem;
-	if ($config['avwidth'] == 0) {
-		$config['avwidth'] = 2048;
-	}
-	if ($config['avheight'] == 0) {
-		$config['avheight'] = 2048;
-	}
-	if (empty($url_ary[4])) {
-		error("admin.php?action=members&job=edit&id=".$id, 'No valid URL indicated.');
-	}
-
-	$base_get = '/' . $url_ary[4];
-	$port = (!empty($url_ary[3])) ? $url_ary[3] : 80;
-
-	if (!($fsock = @fsockopen($url_ary[2], $port, $errno, $errstr, 15))) {
-		error("admin.php?action=members&job=edit&id=".$id, "The server does not respond to your request:<br />{errno}: {$errstr}");
-	}
-
-	@fputs($fsock, "GET {$base_get} HTTP/1.1\r\n");
-	@fputs($fsock, "HOST: " . $url_ary[2] . "\r\n");
-	@fputs($fsock, "Connection: close\r\n\r\n");
-
-	$avatar_data = '';
-	while(!@feof($fsock)) {
-		$avatar_data .= @fread($fsock, $config['avfilesize']);
-	}
-	@fclose($fsock);
-
-	if (!preg_match('#Content-Length\: ([0-9]+)[^ /][\s]+#i', $avatar_data, $file_data1) || !preg_match('#Content-Type\: image/[x\-]*([a-z]+)[\s]+#i', $avatar_data, $file_data2)) {
-		error("admin.php?action=members&job=edit&id=".$id, 'The server does not return a valid response!');
-	}
-		
-	list(,$avatar_data) = explode("\r\n\r\n", $avatar_data, 2);
-		
-	$ext = get_extension($pic);
-	$filename = md5(uniqid($id));
-	$origfile = 'temp/'.$filename.$ext;
-	$filesystem->file_put_contents($origfile, $avatar_data);
-    $filesize = filesize($origfile);
-    list($width, $height, $type) = @getimagesize($origfile);
-    $types = explode('|', $config['avfiletypes']);
-
-	if ($width > 0 && $height > 0 && $width <= $config['avwidth'] && $height <= $config['avheight'] && $filesize <= $config['avfilesize'] && in_array($ext, $types)) {
-		$pic = 'uploads/pics/'.$id.$ext;
-		removeOldImages('uploads/pics/', $id);
-		$filesystem->copy($origfile, $pic);
-	}
-	else {
-		error("admin.php?action=members&job=edit&id=".$id, 'Image does not match the criteria!');
-	}
-	return $pic;
 }
 
 function fileAge($age) {

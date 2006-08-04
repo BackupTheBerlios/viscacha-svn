@@ -227,6 +227,7 @@ $lang['editprofile_ownprofile'] = 'View profile';
 $lang['editprofile_ownprofile_desc'] = 'Here you can view your public profile';
 $lang['editprofile_pic'] = 'Change profile image';
 $lang['editprofile_pic_current'] = 'Currently used profile image';
+$lang['editprofile_pic_delete'] = 'Delete Avatar';
 $lang['editprofile_pic_desc'] = 'Here you can enter a profile image (avatar) that represents your "identity"';
 $lang['editprofile_pic_empty'] = 'Currently, there exists no profile image!';
 $lang['editprofile_pic_error1'] = 'No valid URL given.';

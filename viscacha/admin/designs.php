@@ -365,7 +365,7 @@ elseif ($job == 'design_import2') {
 		}
 	}
 	elseif (file_exists($server)) {
-		$ext = get_extension($server, true);
+		$ext = get_extension($server);
 		if ($ext == 'zip') {
 			$file = $server;
 		}
@@ -669,7 +669,7 @@ elseif ($job == 'templates_add2') {
 		}
 	}
 	elseif (file_exists($server)) {
-		$ext = get_extension($server, true);
+		$ext = get_extension($serve);
 		if ($ext == 'zip') {
 			$file = $server;
 		}
@@ -850,7 +850,7 @@ elseif ($job == 'templates_file_revert') {
 		$basename = $file;
 	}
 	else {
-		$basename = basename ($path.'/'.$file, get_extension($path.'/'.$file));
+		$basename = basename ($path.'/'.$file, get_extension($path.'/'.$file, true));
 		$content = file_get_contents($path.'/'.$file);
 		$filesystem->file_put_contents($path.'/'.$basename, $content);
 		$filesystem->unlink($path.'/'.$file);
@@ -881,7 +881,7 @@ elseif ($job == 'templates_file_history') {
    	if ($dh = opendir($path)) {
 	   	while (($hfile = readdir($dh)) !== false) {
 	   		$data = pathinfo($path.'/'.$hfile);
-	   		$ext = get_extension($path.'/'.$hfile);
+	   		$ext = get_extension($path.'/'.$hfile, true);
 	   		$basename = basename ($path.'/'.$hfile, $ext);
 	   		if ($basename == $file && stripos($ext, 'bak') !== false) {
 		   		$history[] = $hfile;
@@ -1062,7 +1062,7 @@ elseif ($job == 'templates_browse') {
 				$color = 'black';
 				$custom = false;
 			}
-			$extension = get_extension($dir['name'], true);
+			$extension = get_extension($dir['name']);
 			if (stripos($extension, 'bak') !== false || stripos($extension, 'htaccess') !== false) {
 				continue;
 			}
@@ -1220,7 +1220,7 @@ elseif ($job == 'css_add2') {
 		}
 	}
 	elseif (file_exists($server)) {
-		$ext = get_extension($server, true);
+		$ext = get_extension($server);
 		if ($ext == 'zip') {
 			$file = $server;
 		}
@@ -1406,7 +1406,7 @@ elseif ($job == 'images_add2') {
 		}
 	}
 	elseif (file_exists($server)) {
-		$ext = get_extension($server, true);
+		$ext = get_extension($server);
 		if ($ext == 'zip') {
 			$file = $server;
 		}

@@ -227,6 +227,7 @@ $lang['editprofile_ownprofile'] = 'Profil ansehen';
 $lang['editprofile_ownprofile_desc'] = 'Hier kannst Du dir dein öffentliches Profil ansehen';
 $lang['editprofile_pic'] = 'Profilbild ändern';
 $lang['editprofile_pic_current'] = 'Aktuell benutztes Profilbild';
+$lang['editprofile_pic_delete'] = 'Profilbild löschen';
 $lang['editprofile_pic_desc'] = 'Ein Profildbild, das Deine "Identität" darstellt, kannst Du hier eingeben';
 $lang['editprofile_pic_empty'] = 'Derzeit ist kein Profilbild angegeben!';
 $lang['editprofile_pic_error1'] = 'Keine gültige URL angegeben.';

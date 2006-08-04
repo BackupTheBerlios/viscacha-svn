@@ -186,11 +186,11 @@ elseif ($job == 'manage') {
 	   <td class="ubox" width="20%">Mimetype</td>
 	  </tr>
 	<?php
-	$attachments = explode('|', $config['tpcfiletypes']);
+	$attachments = explode(',', $config['tpcfiletypes']);
 	foreach ($attachments as $key => $value) {
 		$attachments[$key] = substr($value, 1);
 	}
-	$pics = explode('|', $config['avfiletypes']);
+	$pics = explode(',', $config['avfiletypes']);
 	foreach ($pics as $key => $value) {
 		$pics[$key] = substr($value, 1);
 	}

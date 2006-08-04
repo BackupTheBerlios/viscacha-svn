@@ -375,7 +375,7 @@ elseif ($job == "extract") {
 		error('admin.php?action=explorer&path='.urlencode(extract_dir($file, false)), 'File is not an supported archive.');
 	}
 	$newdir = realpath(extract_dir($file, false));
-	$filename = basename($file, get_extension($file));
+	$filename = basename($file, get_extension($file, true));
 	$newdir .= DIRECTORY_SEPARATOR.$filename;
 	?>
 <form name="form" method="post" action="admin.php?action=explorer&job=extract2">

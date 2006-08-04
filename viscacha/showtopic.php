@@ -343,7 +343,7 @@ while ($row = $gpc->prepare($db->fetch_object($result))) {
 		foreach ($uploads[$row->id] as $file) {
 			$file['file'] = trim($file['file']);
 			$uppath = 'uploads/topics/'.$file['file'];
-			$imginfo = get_extension($uppath, TRUE);
+			$imginfo = get_extension($uppath);
 			
 			if (!isset($fileicons[$imginfo])) {
 				$icon = 'unknown.gif';

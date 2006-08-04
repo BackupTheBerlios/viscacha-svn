@@ -1155,8 +1155,14 @@ function GlobalPermissions() {
 		}
 		return array_combine($boardid, array_fill(0, count($boardid), $this->permissions));
 	}
+
+	if (count($parent) > 0) {
+		$fpermissions = array_combine($boardid, array_fill(0, count($parent), array()));
+	}
+	else {
+		$fpermissions = array();
+	}
 	
-	$fpermissions = array_combine($boardid, array_fill(0, count($parent), array()));
 	while ($row = $db->fetch_assoc($result)) {
 		$gid = $row['gid'];
 		$bid = $row['bid'];
