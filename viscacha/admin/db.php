@@ -352,24 +352,24 @@ elseif ($job == 'restore') {
 }
 elseif ($job == 'restore2') {
 	$delete = $gpc->get('delete', arr_str);
-	$edit = $gpc->get('file', str);
+	$file = $gpc->get('file', str);
 	$dir = "./admin/backup/";
 	
 	echo head();
 	
 	$d = 0;
 	if (count($delete) > 0) {
-		foreach ($delete as $file) {
-			$ext = get_extension($file);
-			if (($ext == 'zip' || $ext == 'sql') && file_exists($dir.$file)) {
-				$filesystem->unlink($dir.$file);
+		foreach ($delete as $delfile) {
+			$ext = get_extension($delfile);
+			if (($ext == 'zip' || $ext == 'sql') && file_exists($dir.$delfile)) {
+				$filesystem->unlink($dir.$delfile);
 				$d++;
 			}
 		}
 		ok('admin.php?action=db&job=restore', $d.' backups deleted');
 	}
 	
-	$ext = get_extension($edit);
+	$ext = get_extension($file);
 	if (($ext == 'zip' || $ext == 'sql') && file_exists($dir.$file)) {
 		if ($ext == 'zip') {
 			require_once('classes/class.zip.php');
@@ -530,7 +530,7 @@ elseif ($job == 'query2') {
 
 	$type = $gpc->get('type', int);
 	if ($type == 1) {
-		$filetypes = array('.zip','.sql');
+		$filetypes = array('zip','sql');
 		$dir = 'temp/';
 		$inserterrors = array();
 		require("classes/class.upload.php");

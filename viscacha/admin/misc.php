@@ -15,7 +15,8 @@ elseif ($job == 'cache') {
 		if ($file != "." && $file != ".." && !is_dir($dir.$file)) {					  
 			$nfo = pathinfo($dir.$file);
 			if ($nfo['extension'] == 'php') {
-				$result[] = array(
+				$name = str_replace('.inc.php', '', $nfo['basename']);
+				$result[$name] = array(
 				'file' => $nfo['basename'],
 				'size' => filesize($dir.$file),
 				'age' => time()-filemtime($dir.$file)
@@ -23,6 +24,7 @@ elseif ($job == 'cache') {
 			}
 		}
 	}
+	ksort($result);
 	?>
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr> 
@@ -36,10 +38,7 @@ elseif ($job == 'cache') {
    <td class="ubox" width="10%">Age</td>
    <td class="ubox" width="40%">Options</td>
   </tr>
-  <?php
-  foreach ($result as $row) {
-  	$name = str_replace('.inc.php', '', $row['file']);
-  ?>
+  <?php foreach ($result as $name => $row) { ?>
   <tr>
    <td class="mbox" width="40%"><?php echo $name; ?></td>
    <td class="mbox" width="10%" nowrap="nowrap" align="right"><?php echo formatFilesize($row['size']); ?></td>
@@ -252,7 +251,7 @@ elseif ($job == 'feedcreator_add') {
 	require("classes/class.upload.php");
 	$my_uploader = new uploader();
 	$my_uploader->max_filesize(200*1024);
-	if ($my_uploader->upload('upload', array('.php'))) {
+	if ($my_uploader->upload('upload', array('php'))) {
 		if (strlen($my_uploader->return_error()) > 0) {
 			array_push($inserterrors,$my_uploader->return_error());
 		}

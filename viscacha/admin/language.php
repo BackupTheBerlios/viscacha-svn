@@ -103,7 +103,7 @@ elseif ($job == 'import2') {
 	
 	if (!empty($_FILES['upload']['name'])) {
 		$filesize = 1024*1024;
-		$filetypes = array('.zip');
+		$filetypes = array('zip');
 		$dir = realpath('temp/');
 	
 		$insertuploads = array();

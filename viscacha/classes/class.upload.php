@@ -111,7 +111,8 @@ class uploader {
 	 * 
 	 */
 	function upload($filename='', $accept_type=array() ) {
-		
+		global $imagetype_extension;		
+
 		if (is_array($accept_type) && count($accept_type)) {
 		    $this->acceptable_file_types = $accept_type;
 		}
@@ -143,7 +144,7 @@ class uploader {
 			$this->accepted  = FALSE;
 			return FALSE;
 		}
-		$this->file["extention"] = get_extension($this->file['name']);
+		$this->file["extention"] = get_extension($this->file['name'], true);
 		$extension = strtolower(substr($this->file["extention"], 1));
 		if(in_array($extension, $imagetype_extension)) {
 			
@@ -167,17 +168,19 @@ class uploader {
 				$this->accepted  = FALSE;
 				return FALSE;
 			}
-			}
+		}
 		
 		// check to see if the file is of type specified
 		if(count($this->acceptable_file_types) > 0) {
 			if(!empty($extension) && in_array($extension, $this->acceptable_file_types)) {
 				$this->accepted = TRUE;
-			} else { 
+			}
+			else { 
 				$this->accepted = FALSE;
 				$this->error = $this->get_error(3);
 			}
-		} else { 
+		}
+		else { 
 			$this->accepted = TRUE;
 		}
 		

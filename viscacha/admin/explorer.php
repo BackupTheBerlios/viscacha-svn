@@ -14,35 +14,35 @@ if ($job == 'upload') {
 	if ($cfg == 'cron') {
 		$ups = 1;
 		$filesize = 100; // 100KB
-		$filetypes = '.php';
+		$filetypes = 'php';
 		$dir = realpath('./classes/cron/jobs/');
 		$url = 'javascript:history.back();';
 	}
 	elseif ($cfg == 'codefiles') {
 		$ups = 1;
 		$filesize = 200; // 200KB
-		$filetypes = '.php';
+		$filetypes = 'php';
 		$dir = realpath('./classes/geshi/');
 		$url = 'admin.php?action=bbcodes&job=codefiles';
 	}
 	elseif ($cfg == 'dbrestore') {
 		$ups = 1;
 		$filesize = ini_maxupload();
-		$filetypes = '.sql|.zip';
+		$filetypes = 'sql|zip';
 		$dir = realpath('./admin/backup/');
 		$url = 'admin.php?action=db&job=restore';
 	}
 	elseif ($cfg == 'captcha_fonts') {
 		$ups = 1;
 		$filesize = 500; // 500KB
-		$filetypes = '.ttf';
+		$filetypes = 'ttf';
 		$dir = realpath('./classes/fonts/');
 		$url = 'admin.php?action=misc&job=captcha_fonts';
 	}
 	elseif ($cfg == 'captcha_noises') {
 		$ups = 1;
 		$filesize = 200; // 200KB
-		$filetypes = '.jpg';
+		$filetypes = 'jpg';
 		$dir = realpath('./classes/graphic/noises/');
 		$url = 'admin.php?action=misc&job=captcha_noises';
 		$imgwidth = 300;

@@ -1293,7 +1293,7 @@ elseif ($job == 'package_import2') {
 	
 	if (!empty($_FILES['upload']['name'])) {
 		$filesize = ini_maxupload();
-		$filetypes = array('.zip');
+		$filetypes = array('zip');
 		$dir = realpath('temp/');
 	
 		$insertuploads = array();
@@ -2795,6 +2795,8 @@ elseif ($job == 'doc_ajax_active') {
 	$use = $db->fetch_assoc($result);
 	$use = invert($use['active']);
 	$db->query("UPDATE {$db->pre}documents SET active = '{$use}' WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
+	$delobj = $scache->load('wraps');
+	$delobj->delete();
 	die(strval($use));
 }
 elseif ($job == 'doc_add') {
@@ -2961,6 +2963,9 @@ elseif ($job == 'doc_add3') {
 	
 	$db->query("INSERT INTO {$db->pre}documents ( `title` , `content` , `author` , `date` , `update` , `type` , `groups` , `active` , `file` ) VALUES ('{$title}', '{$content}', '{$my->id}', '{$time}' , '{$time}' , '{$type}', '{$groups}', '{$active}', '{$file}')", __LINE__, __FILE__);
 
+	$delobj = $scache->load('wraps');
+	$delobj->delete();
+
 	ok('admin.php?action=cms&job=doc', 'Document successfully added!');
 }
 elseif ($job == 'doc_delete') {
@@ -2981,7 +2986,10 @@ elseif ($job == 'doc_delete') {
 
 		$db->query('DELETE FROM '.$db->pre.'documents WHERE '.implode(' OR ',$deleteids), __LINE__, __FILE__);
 		$anz = $db->affected_rows();
-			
+
+		$delobj = $scache->load('wraps');
+		$delobj->delete();
+
 		ok('admin.php?action=cms&job=doc', $anz.' Dokumente gelöscht');
 	}
 	else {
@@ -3129,6 +3137,9 @@ elseif ($job == 'doc_edit2') {
 	$time = time();
 	
 	$db->query("UPDATE {$db->pre}documents SET `title` = '{$title}', `content` = '{$content}', `update` = '{$time}', `groups` = '{$groups}', `active` = '{$active}', `file` = '{$file}', `author` = '{$author}' WHERE id = '{$id}' LIMIT 1",__LINE__,__FILE__);
+
+	$delobj = $scache->load('wraps');
+	$delobj->delete();
 
 	ok('admin.php?action=cms&job=doc', 'Document successfully changed!');
 }

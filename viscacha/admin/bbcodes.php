@@ -9,7 +9,9 @@ if ($job == 'smileys_delete') {
 	   	$result = $db->query('SELECT * FROM '.$db->pre.'smileys WHERE id IN ('.implode(',', $deleteid).')',__LINE__,__FILE__);
 	   	while ($row = $db->fetch_assoc($result)) {
 	   		$row['replace'] = str_replace('{folder}', $config['smileypath'], $row['replace']);
-	   		$filesystem->unlink($row['replace']);
+	   		if(file_exists($row['replace'])) {
+	   			$filesystem->unlink($row['replace']);
+	   		}
 	   	}
 		$db->query('DELETE FROM '.$db->pre.'smileys WHERE id IN ('.implode(',', $deleteid).')',__LINE__,__FILE__);
 		$anz = $db->affected_rows();
@@ -91,6 +93,14 @@ elseif ($job == 'smileys_import') {
   <td class="mbox"><input type="file" name="upload" size="40" /></td></tr>
   <tr><td class="mbox"><em>or</em> select a file from the server:<br /><span class="stext">Path starting from the Viscacha-root-directory: <?php echo $config['fpath']; ?></span></td>
   <td class="mbox"><input type="text" name="server" size="50" /></td></tr>
+  <tr><td class="mbox">Format of imported Smileypack:</td>
+  <td class="mbox"><select name="format">
+  <option value="viscacha_ini" selected="selected">Viscacha (Standard)</option>
+  <option value="phpbb2">phpBB 2</option>
+  <option value="none">No format</option>
+  </select></td></tr>
+  <tr><td class="mbox">Delete all existing smileys before import:</td>
+  <td class="mbox"><input type="checkbox" name="truncate" value="1" /></td></tr>
   <tr><td class="mbox">Delete file after import:</td>
   <td class="mbox"><input type="checkbox" name="delete" value="1" checked="checked" /></td></tr>
   <tr><td class="ubox" colspan="2" align="center"><input accesskey="s" type="submit" value="Import" /></td></tr>
@@ -102,11 +112,13 @@ elseif ($job == 'smileys_import') {
 elseif ($job == 'smileys_import2') {
 	$server = $gpc->get('server', none);
 	$del = $gpc->get('delete', int);
+	$format = $gpc->get('format', none);
+	$truncate = $gpc->get('truncate', int);
 	$inserterrors = array();
 	
 	if (!empty($_FILES['upload']['name'])) {
 		$filesize = 2048*1024;
-		$filetypes = array('.zip');
+		$filetypes = array('zip');
 		$dir = realpath('temp/');
 	
 		$insertuploads = array();
@@ -123,7 +135,7 @@ elseif ($job == 'smileys_import2') {
 		else {
 			array_push($inserterrors,$my_uploader->return_error());
 		}
-		$file = $dir.'/'.$my_uploader->file['name'];
+		$file = $dir.DIRECTORY_SEPARATOR.$my_uploader->file['name'];
 		if (!file_exists($file)) {
 			$inserterrors[] = 'File ('.$file.') does not exist.';
 		}
@@ -147,6 +159,7 @@ elseif ($job == 'smileys_import2') {
 	
 	$tempdir = 'temp/'.md5(microtime()).'/';
 	
+	// Exract
 	require_once('classes/class.zip.php');
 	$archive = new PclZip($file);
 	$failure = $archive->extract($tempdir);
@@ -159,12 +172,68 @@ elseif ($job == 'smileys_import2') {
 		error('admin.php?action=bbcodes&job=smileys_import', 'ZIP-archive could not be read or the folder is empty.');
 	}
 
-	$codes = array();
-	$result = $db->query('SELECT search FROM '.$db->pre.'smileys');
-	while ($row = $db->fetch_assoc($result)) {
-		$codes[] = $row['search'];
+	// Parse format
+	switch ($format) {
+		case 'phpbb2':
+			$package = array();
+			$d = dir($tempdir);
+			while (false !== ($entry = $d->read())) {
+				if (get_extension($entry) == 'pak') {
+					$lines = file($tempdir.$entry);
+					break;
+				}
+			}
+			$d->close();
+			$lines = array_map('trim', $lines);
+			foreach($lines as $line) {
+				$new_pack = array();
+				list($new_pack['replace'], $new_pack['desc'], $new_pack['search']) = explode('=+:', $line, 3);
+				$new_pack['replace'] = '{folder}/'.$new_pack['replace'];
+				$package[] = $new_pack;
+			}
+		break;
+		case 'none':
+			$package = array();
+			$d = dir($tempdir);
+			$i = 0;
+			while (false !== ($entry = $d->read())) {
+				if (@getimagesize($tempdir.$entry) != false) {
+					$i++;
+					$package[] = array(
+						'search' => ':smiley'.$i.':',
+						'replace' => '{folder}/'.$entry,
+						'desc' => ''
+					);
+				}
+			}
+			$d->close();
+		break;
+		default: // viscacha_ini
+			$package = $myini->read($tempdir.'/smileys.ini');
+		break;
 	}
-	$package = $myini->read($tempdir.'/smileys.ini');
+	
+	// Delete old smileys
+	$codes = array();
+	if ($truncate == 1) {
+	   	$result = $db->query('SELECT * FROM '.$db->pre.'smileys',__LINE__,__FILE__);
+	   	while ($row = $db->fetch_assoc($result)) {
+	   		$row['replace'] = str_replace('{folder}', $config['smileypath'], $row['replace']);
+	   		if(file_exists($row['replace'])) {
+	   			$filesystem->unlink($row['replace']);
+	   		}
+	   	}
+		$db->query('TRUNCATE TABLE '.$db->pre.'smileys',__LINE__,__FILE__);
+	}
+	else {
+		// Get existing smiley codes from database
+		$result = $db->query('SELECT search FROM '.$db->pre.'smileys');
+		while ($row = $db->fetch_assoc($result)) {
+			$codes[] = strtolower($row['search']);
+		}
+	}
+
+	// Copy files and prepare for inserting smileys
 	$sqlinsert = array();
 	foreach ($package as $ini) {
 		if (strpos($ini['replace'], '{folder}') !== false) {
@@ -179,6 +248,12 @@ elseif ($job == 'smileys_import2') {
 				$base .= '_'.$n;
 				$ini['replace_new'] = $base.$ext;
 			}
+			$n = 0;
+			while(in_array($ini['search'], $codes)) {
+				$n++;
+				$ini['search'] = ':smiley'.$n.':';
+			}
+			$codes[] = $ini['search'];
 			$filesystem->copy($ini['replace_temp'], $ini['replace_new']);
 		}
 		$sqlinsert[] = '("'.$gpc->save_str($ini['search']).'", "'.$gpc->save_str($ini['replace']).'", "'.$gpc->save_str($ini['desc']).'")';
@@ -192,6 +267,9 @@ elseif ($job == 'smileys_import2') {
 	}
 	rmdirr($tempdir);
 	
+	$delobj = $scache->load('smileys');
+	$delobj->delete();
+		
 	ok('admin.php?action=bbcodes&job=smileys', $anz.' Smileys successfully imported.');
 }
 elseif ($job == 'smileys_export') {
@@ -254,7 +332,7 @@ elseif ($job == 'smileys') {
 <form name="form" method="post" action="admin.php?action=bbcodes">
  <table class="border">
   <tr> 
-   <td class="obox" colspan="6"><span style="float: right;">[<a href="admin.php?action=bbcodes&amp;job=smileys_import">Import Smileypack</a>]</span>Manage Smileys</td>
+   <td class="obox" colspan="6"><span style="float: right;">[<a href="admin.php?action=bbcodes&amp;job=smileys_import">Import Smileypack</a>]</span>Manage Smileys (<?php echo $db->num_rows($result); ?> Smileys)</td>
   </tr>
   <tr class="ubox">
    <td width="5%">Choose<br /><span class="stext"><input type="checkbox" onclick="check_all('id[]');" name="all" value="1" /> All</span></td>

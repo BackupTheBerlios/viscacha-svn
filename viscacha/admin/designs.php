@@ -342,7 +342,7 @@ elseif ($job == 'design_import2') {
 	
 	if (!empty($_FILES['upload']['name'])) {
 		$filesize = ini_maxupload();
-		$filetypes = array('.zip');
+		$filetypes = array('zip');
 		$dir = realpath('temp/');
 	
 		$insertuploads = array();
@@ -646,7 +646,7 @@ elseif ($job == 'templates_add2') {
 	
 	if (!empty($_FILES['upload']['name'])) {
 		$filesize = ini_maxupload();
-		$filetypes = array('.zip');
+		$filetypes = array('zip');
 		$dir = realpath('temp/');
 	
 		$insertuploads = array();
@@ -1197,7 +1197,7 @@ elseif ($job == 'css_add2') {
 	
 	if (!empty($_FILES['upload']['name'])) {
 		$filesize = ini_maxupload();
-		$filetypes = array('.zip');
+		$filetypes = array('zip');
 		$dir = realpath('temp/');
 	
 		$insertuploads = array();
@@ -1383,7 +1383,7 @@ elseif ($job == 'images_add2') {
 	
 	if (!empty($_FILES['upload']['name'])) {
 		$filesize = ini_maxupload();
-		$filetypes = array('.zip');
+		$filetypes = array('zip');
 		$dir = realpath('temp/');
 	
 		$insertuploads = array();
