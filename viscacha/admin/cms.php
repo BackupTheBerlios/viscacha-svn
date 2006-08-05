@@ -1969,7 +1969,7 @@ elseif ($job == 'nav_edit2') {
 	}
 	$delobj = $scache->load('modules_navigation');
 	$delobj->delete();
-	ok('admin.php?action=cms&job=nav', 'Datensatz wurde erfolgreich geändert');
+	ok('admin.php?action=cms&job=nav', 'Data successfully changed!');
 }
 elseif ($job == 'nav_delete') {
 	echo head();
@@ -2297,7 +2297,7 @@ elseif ($job == 'nav_addbox2') {
 	$db->query("INSERT INTO {$db->pre}menu (name, groups, ordering) VALUES ('{$title}','{$groups}','{$sort}')", __LINE__, __FILE__);
 	$delobj = $scache->load('modules_navigation');
 	$delobj->delete();
-	ok('admin.php?action=cms&job=nav', 'Box wurde erfolgreich hinzugefügt');
+	ok('admin.php?action=cms&job=nav', 'Box successfully added');
 }
 elseif ($job == 'nav_docslist') {
 echo head();

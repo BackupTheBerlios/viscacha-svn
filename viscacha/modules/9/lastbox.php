@@ -1,12 +1,15 @@
 $topicnum = $config['module_'.$pluginid]['topicnum'];
 
 $result = $db->query("
-SELECT t.id, t.board, t.topic, t.last AS date, t.last_name AS name
+SELECT t.id, t.board, t.topic, t.last AS date, t.last_name AS name, t.prefix
 FROM {$db->pre}topics AS t LEFT JOIN {$db->pre}cat AS c ON t.board = c.id 
 WHERE c.opt != 'pw' AND t.status != '2' ".$slog->sqlinboards('t.board')."
 ORDER BY t.last DESC 
 LIMIT 0,{$topicnum}"
 ,__LINE__,__FILE__);
+
+$prefix_obj = $scache->load('prefix');
+$prefix = $prefix_obj->get();
 
 if ($db->num_rows($result) > 0) {
 
@@ -22,6 +25,12 @@ if ($db->num_rows($result) > 0) {
 		if (strxlen($row['topic']) >= 75) {
 			$row['topic'] = substr($row['topic'], 0, 75);
 			$row['topic'] .= $lang->phrase('dot_more');
+		}
+		if (isset($prefix[$row['board']][$row['prefix']]) && $row['prefix'] > 0) {
+			$row['prefix'] = $prefix[$row['board']][$row['prefix']];
+		}
+		else {
+			$row['prefix'] = '';
 		}
 		$lastbox[] = $row;
 		

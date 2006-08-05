@@ -130,7 +130,7 @@ elseif ($job == 'design_edit') {
 <form name="form2" method="post" enctype="multipart/form-data" action="admin.php?action=designs&job=design_edit2&id=<?php echo $id; ?>">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr> 
-   <td class="obox" colspan="6">>Edit Design</td>
+   <td class="obox" colspan="6">Edit Design</td>
   </tr>
   <tr>
    <td class="mbox" width="40%">Name for this design:</td>
@@ -214,7 +214,7 @@ elseif ($job == 'design_delete') {
 // Do NOT removes data. That "feature" is terrible on account of loosing data!
 	
 	echo head();
-	ok('admin.php?action=designs&job=design', 'Design erfolgreich gelöscht.');
+	ok('admin.php?action=designs&job=design', 'Design successfully deleted');
 }
 elseif ($job == 'design_add') {
 	$id = $gpc->get('id', int);
