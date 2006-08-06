@@ -476,7 +476,7 @@ elseif ($job == 'addforum') {
    <td class="mbox" width="50%"><input type="text" name="name" size="50" /></td> 
   </tr>
   <tr> 
-   <td class="mbox" width="50%">Description:<br /><span class="stext">Optional. HTML is allowed.<7span></td>
+   <td class="mbox" width="50%">Description:<br /><span class="stext">Optional. HTML is allowed.</span></td>
    <td class="mbox" width="50%"><textarea name="desc" rows="4" cols="50"></textarea></td> 
   </tr>
   <tr> 
@@ -880,6 +880,9 @@ elseif ($job == 'add_rights') {
    <td class="mbox" width="50%"><input type="checkbox" name="<?php echo $key; ?>" id="<?php echo $key; ?>" value="1" /></td>
   </tr>
   <?php } ?>
+  <tr> 
+   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="Add" /></td> 
+  </tr>
  </table>
 </form>
 	<?php

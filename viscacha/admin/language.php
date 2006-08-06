@@ -1206,11 +1206,15 @@ elseif ($job == 'phrase_copy2') {
 	if (file_exists($dest)) {
 		error('admin.php?action=language&job=phrase', 'This file already exists. It has not been overwritten.');
 	}
-	if (file_exists($source) && $filesystem->copy($source, $dest)) {
+	if (!file_exists($source)) {
+		error('admin.php?action=language&job=phrase', 'This file does not exist.');
+	}
+	$filesystem->copy($source, $dest);
+	if (file_exists($dest)) {
 		ok('admin.php?action=language&job=phrase', 'File was copied successful');
 	}
 	else {
-		error('admin.php?action=language&job=phrase', 'Sourcefile does not exists or file could not be copied.');
+		error('admin.php?action=language&job=phrase', 'File could not be copied.');
 	}
 }
 elseif ($job == 'phrase_file_edit') {

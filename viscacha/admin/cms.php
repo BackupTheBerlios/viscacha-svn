@@ -1695,16 +1695,16 @@ elseif ($job == 'nav') {
   <tr> 
    <td class="obox" colspan="4">
    	<span style="float: right;">
-   	[<a href="admin.php?action=cms&job=nav_add">Link hinzufügen</a>]
-   	[<a href="admin.php?action=cms&job=nav_addbox">Box erstellen</a>]
-   	[<a href="admin.php?action=cms&job=nav_addplugin">PlugIn hinzufügen</a>]
-   	</span>Navigation verwalten
+   	[<a href="admin.php?action=cms&job=nav_add">Add Link</a>]
+   	[<a href="admin.php?action=cms&job=nav_addbox">Add Box</a>]
+   	[<a href="admin.php?action=cms&job=nav_addplugin">Add PlugIn</a>]
+   	</span>Manage Navigation
    </td>
   </tr>
   <tr> 
    <td class="ubox">Link</td>
    <td class="ubox">Status</td>
-   <td class="ubox">Reihenfolge</td>
+   <td class="ubox">Order</td>
    <td class="ubox">Action</td>
   </tr>
 <?php
@@ -1731,7 +1731,7 @@ elseif ($job == 'nav') {
 			$type[] = '<em>PlugIn</em>';
 		}
 		if ($head['active'] == 0) {
-			$type[] = '<em>Inaktiv</em>';
+			$type[] = '<em>Inactive</em>';
 		}
 	?>
 	<tr class="mmbox">
@@ -1869,7 +1869,11 @@ elseif ($job == 'nav_edit') {
   </tr>
 <?php if ($data['sub'] > 0) { ?>
   <tr> 
-   <td class="mbox" width="50%">File/URL: (<a href="javascript:docs();">Existing Documents</a>)</td>
+   <td class="mbox" width="50%">File/URL:<br />
+   <span class="stext">
+   - <a href="javascript:docs();">Existing Documents</a><br />
+   - <a href="javascript:coms();">Existing Components</a>
+   </span></td>
    <td class="mbox" width="50%"><input type="text" name="url" size="40" value="<?php echo $data['link']; ?>" /></td>
   </tr>
   <tr> 
@@ -2155,7 +2159,11 @@ elseif ($job == 'nav_add') {
    <td class="mbox" width="50%"><input type="text" name="title" size="40" /></td>
   </tr>
   <tr> 
-   <td class="mbox" width="50%">File/URL: (<a href="javascript:docs();">Existing Documents</a>)</td>
+   <td class="mbox" width="50%">File/URL:<br />
+   <span class="stext">
+   - <a href="javascript:docs();">Existing Documents</a><br />
+   - <a href="javascript:coms();">Existing Components</a>
+   </span></td>
    <td class="mbox" width="50%"><input type="text" name="url" size="40" /></td>
   </tr>
   <tr> 
@@ -2300,22 +2308,45 @@ elseif ($job == 'nav_addbox2') {
 	ok('admin.php?action=cms&job=nav', 'Box successfully added');
 }
 elseif ($job == 'nav_docslist') {
-echo head();
-$result = $db->query('SELECT id, title FROM '.$db->pre.'documents');
-?>
- <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
-  <tr> 
-   <td class="obox">Existing Documents and Pages</td>
-  </tr>
-  <tr> 
-   <td class="mbox">
-   <?php while ($row = $db->fetch_assoc($result)) { ?>
-   <input type="radio" name="data" onclick="insert_doc('docs.php?id=<?php echo $row['id']; ?>','<?php echo htmlentities($row['title']); ?>')"> <?php echo $row['title']; ?><br>
-   <?php } ?>
-   </td>
- </table>
-<?php
-echo foot();
+	echo head();
+	$result = $db->query('SELECT id, title FROM '.$db->pre.'documents');
+	?>
+	 <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
+	  <tr> 
+	   <td class="obox">Existing Documents and Pages</td>
+	  </tr>
+	  <tr> 
+	   <td class="mbox">
+	   <?php while ($row = $db->fetch_assoc($result)) { ?>
+	   <input type="radio" name="data" onclick="insert_doc('docs.php?id=<?php echo $row['id']; ?>','<?php echo htmlentities($row['title']); ?>')"> <?php echo $row['title']; ?><br>
+	   <?php } ?>
+	   </td>
+	 </table>
+	<?php
+	echo foot();
+}
+elseif ($job == 'nav_comslist') {
+	echo head();
+	$result = $db->query("SELECT * FROM {$db->pre}component ORDER BY active", __LINE__, __FILE__);
+	?>
+	 <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
+	  <tr> 
+	   <td class="obox">Existing Components</td>
+	  </tr>
+	  <tr> 
+	   <td class="mbox">
+	   <?php
+		while ($row = $db->fetch_assoc($result)) {
+			$head = array();
+			$cfg = $myini->read('components/'.$row['id'].'/components.ini');
+			$head = array_merge($row, $cfg);
+	   ?>
+	   <input type="radio" name="data" onclick="insert_doc('components.php?cid=<?php echo $row['id']; ?>','<?php echo htmlentities($head['config']['name']); ?>')"> <?php echo  $head['config']['name'].iif ($head['active'] == '0', ' (<em>Inactive</em>)'); ?><br />
+	   <?php } ?>
+	   </td>
+	 </table>
+	<?php
+	echo foot();
 }
 elseif ($job == 'com') {
 	send_nocache_header();
@@ -2340,7 +2371,7 @@ elseif ($job == 'com') {
 	?>
 	<tr>
 	<td class="mbox" width="40%">
-	<?php echo $head['config']['name']; ?><?php echo iif ($head['active'] == '0', ' (<i>Inaktiv</i>)'); ?>
+	<?php echo $head['config']['name']; ?><?php echo iif ($head['active'] == '0', ' (<i>Inactive</i>)'); ?>
 	</td>
 	<td class="mbox" width="15%">
 	<?php 
@@ -2352,7 +2383,7 @@ elseif ($job == 'com') {
 	?>
 	</td>
 	<td class="mbox" width="15%">
-	<?php echo $head['config']['version']; ?><br>
+	<?php echo $head['config']['version']; ?><br />
 	</td>
 	<td class="mbox" width="30%">
 	<form name="" action="admin.php?action=locate" method="post">

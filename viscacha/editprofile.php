@@ -622,13 +622,16 @@ elseif ($_GET['action'] == "settings") {
 	echo $tpl->parse("header");
 	echo $tpl->parse("menu");
 
+	$result = $db->query("SELECT template, language FROM {$db->pre}user WHERE id = '{$my->id}' LIMIT 1");
+	$update = $db->fetch_assoc($result);
+
 	$loaddesign_obj = $scache->load('loaddesign');
 	$design = $loaddesign_obj->get();
-	$mydesign = $design[$my->template]['name'];
+	$mydesign = $design[$update['template']]['name'];
 	
 	$loadlanguage_obj = $scache->load('loadlanguage');
 	$language = $loadlanguage_obj->get();
-	$mylanguage = $language[$my->language]['language'];
+	$mylanguage = $language[$update['language']]['language'];
 	
 	$customfields = editprofile_customfields(2, $my->id);
 	
@@ -682,6 +685,14 @@ elseif ($_GET['action'] == "settings2") {
 	}
 	else {
 		($code = $plugins->load('editprofile_settings2_query')) ? eval($code) : null;
+		
+		if (isset($my->settings['q_tpl']) && $_POST['opt_4'] != $my->template) {
+			unset($my->settings['q_tpl']);
+		}
+		if (isset($my->settings['q_lng']) && $_POST['opt_5'] != $my->language) {
+			unset($my->settings['q_lng']);
+		}
+		
 		$db->query("UPDATE {$db->pre}user SET timezone = '".$_POST['location']."', opt_textarea = '".$_POST['opt_0']."', opt_pmnotify = '".$_POST['opt_1']."', opt_hidebad = '".$_POST['opt_2']."', opt_hidemail = '".$_POST['opt_3']."', template = '".$_POST['opt_4']."', language = '".$_POST['opt_5']."', opt_newsletter = '".$_POST['opt_6']."', opt_showsig = '".$_POST['opt_7']."' WHERE id = $my->id LIMIT 1",__LINE__,__FILE__);
 		ok($lang->phrase('data_success'), "editprofile.php?action=settings".SID2URL_x);
 	}

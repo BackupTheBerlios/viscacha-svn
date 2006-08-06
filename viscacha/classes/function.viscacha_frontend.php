@@ -380,10 +380,9 @@ function BoardSelect($board = 0) {
 	} 
 
 	while($row = $db->fetch_assoc($result)) {
-		$gpc->prepare($row['name']);
-		$gpc->prepare($row['btopic']);
-		$gpc->prepare($row['uname']);
-		$gpc->prepare($row['bname']);
+		$row['name'] = $gpc->prepare($row['name']);
+		$row['uname'] = $gpc->prepare($row['uname']);
+		$row['bname'] = $gpc->prepare($row['bname']);
 	    // Caching for Subforums
 	    if ($row['bid'] > 0) {
 	        $sub_cache[$row['bid']][] = $row;
@@ -482,11 +481,12 @@ function BoardSelect($board = 0) {
     				   	$forum['foldimg'] = $tpl->img('cat_red');
     				   	$forum['new'] = true;
     				}
-		    		if ($forum['btopic']) {
+		    		if (!empty($forum['btopic'])) {
 		    			if (strxlen($forum['btopic']) >= 40) {
 		    				$forum['btopic'] = substr($forum['btopic'],0,40);
 		    				$forum['btopic'] .= "...";
 		    			}
+		    			$forum['btopic'] = $gpc->prepare($forum['btopic']);
 		    			$forum['bdate'] = str_date($lang->phrase('dformat1'), times($forum['bdate']));
 		    			
 		    		}

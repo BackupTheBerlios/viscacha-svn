@@ -1704,6 +1704,8 @@ elseif ($job == 'textprocessing2') {
 	$c->updateconfig('maxurltrenner',str);
 	$c->updateconfig('smileysperrow',int);
 	$c->updateconfig('topicuppercase',int);
+	$c->updateconfig('smileypath',str);
+	$c->updateconfig('smileyurl',str);
 	$c->savedata();
 
 	ok('admin.php?action=settings&job=textprocessing');

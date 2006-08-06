@@ -70,7 +70,7 @@
 		<br class="newinput" /><hr class="formsep" />
 		<label for=""><?php echo $lang->phrase('editprofile_design'); ?></label>
 		<select name="opt_4" id="opt_4" class="label">
-			<option selected="selected" value="<?php echo $my->template; ?>"><?php echo $lang->phrase('editprofile_design_current'); ?></option>
+			<option selected="selected" value="<?php echo $update['template']; ?>"><?php echo $lang->phrase('editprofile_design_current'); ?></option>
 			<?php foreach ($design as $row) { ?>
 			<option value="<?php echo $row['id']; ?>"><?php echo $row['name']; ?></option>
 			<?php } ?>
@@ -78,7 +78,7 @@
 		<br class="newinput" /><hr class="formsep" />
 		<label for=""><?php echo $lang->phrase('editprofile_language'); ?></label>
 		<select name="opt_5" id="opt_5" class="label">
-			<option selected="selected" value="<?php echo $my->language; ?>"><?php echo $lang->phrase('editprofile_language_current'); ?></option>
+			<option selected="selected" value="<?php echo $update['language']; ?>"><?php echo $lang->phrase('editprofile_language_current'); ?></option>
 			<?php foreach ($language as $row) { ?>
 			<option value="<?php echo $row['id']; ?>"><?php echo $row['language']; ?></option>
 			<?php } ?>
