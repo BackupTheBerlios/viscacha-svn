@@ -280,7 +280,11 @@ ORDER BY date ASC {$searchsql}
 ",__LINE__,__FILE__);
 
 $firstnew = 0;
-$firstnew_url = 'showtopic.php?action=firstnew&amp;id='.$info['id'].SID2URL_x;
+$firstnew_url = null;
+if ($info['last'] > $my->clv) {
+	$firstnew_url = 'showtopic.php?action=firstnew&amp;id='.$info['id'].SID2URL_x;
+}
+
 while ($row = $gpc->prepare($db->fetch_object($result))) {
 	$inner['upload_box'] = '';
 	$inner['image_box'] = '';
@@ -296,13 +300,14 @@ while ($row = $gpc->prepare($db->fetch_object($result))) {
 		$row->mid = 0;
 	}
 
-	if ($firstnew == 1) {
+	if ($firstnew > 0) {
 		$firstnew++;
 	}
 	if ($row->date > $my->clv && $firstnew == 0) {
 		$firstnew = 1;
 		$firstnew_url = "#firstnew";
 	}
+	
 	$new = iif($row->date > $my->clv, 'new', 'old');
 	
 	BBProfile($bbcode);
@@ -400,7 +405,13 @@ while ($row = $gpc->prepare($db->fetch_object($result))) {
 	
 	($code = $plugins->load('showtopic_entry_prepared')) ? eval($code) : null;
 	$inner['index_bit'] .= $tpl->parse("showtopic/index_bit");
-} 
+}
+
+$abox['id'] = null;
+if ($my->vlogin) { 
+	$result = $db->query('SELECT id FROM '.$db->pre.'abos WHERE mid = '.$my->id.' AND tid = '.$info['id'],__LINE__,__FILE__); 
+	$abox = $db->fetch_assoc($result);
+}
 
 ($code = $plugins->load('showtopic_prepared')) ? eval($code) : null;
 echo $tpl->parse("showtopic/index");

@@ -55,8 +55,9 @@ class manageconfig {
 	}
 	
 	function _prepareString($val2) {
+		$val2 = str_replace("\0", "", $val2);
+		$val2 = str_replace('\\', '\\\\', $val2);
 		$val2 = str_replace("'", "\\'", $val2);
-		// ToDo: Espace-Zeichen (\) escapcen (am Ende von String wegen Kollision \')
 		$val2 = preg_replace_callback("/((\r\n|\n|\r|\t)+)/s", array(&$this, '_escapeNewline'), $val2);
 		$val2 = "'{$val2}'";
 		return $val2;
@@ -110,14 +111,11 @@ class manageconfig {
 		if ($val == null) {
 			global $gpc;
 			if (isset($gpc)) {
-				$val = $gpc->get($key, $type);
+				$val = $gpc->get($key, none);
 			}
 			else {
 		        if (isset($_REQUEST[$key])) {
-		            if ($type == str) {
-		                $val = trim($_REQUEST[$key]);
-		            }
-		            elseif ($type == int) {
+		            if ($type == int) {
 		                $val = intval(trim($_REQUEST[$key]));
 		            }
 		            else {

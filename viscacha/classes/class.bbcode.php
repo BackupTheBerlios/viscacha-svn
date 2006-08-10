@@ -93,16 +93,25 @@ class BBCode {
 	    }
 	    return $list;
 	}
+	function code_trim ($code) {
+		$code = preg_replace('/^([\s\t]*(\r\n|\r|\n))?(.+?)((\r\n|\r|\n)[\s\t]*)?$/s', '\3', $code);
+		return $code;
+	}
+	function code_prepare($code) {
+		$code = str_replace("]", "&#93;", $code);
+		$code = str_replace("[", "&#91;", $code);
+		$code = str_replace("\t", "&nbsp;&nbsp;&nbsp;&nbsp;", $code);
+		$code = str_replace(" ", "&nbsp;", $code);
+		return $code;
+	}
 	function cb_code ($code) {
 		global $lang;
 		$pid = $this->noparse_id();
-	    $code = trim($code);
-	    $rows = explode("\n", $code);
-		$code2 = preg_replace('/\[b\](.+?)\[\/b\]/is', "<strong>\\1</strong>", $code);
-		$code2 = str_replace("]", "&#93;", $code2);
-		$code2 = str_replace("[", "&#91;", $code2);
-		$code2 = str_replace("\t", "&nbsp;&nbsp;&nbsp;&nbsp;", $code2);
-
+		
+		$code = $this->code_prepare($code);
+	    $rows = preg_split('/(\r\n|\r|\n)/',$code);
+	    $code2 = $this->code_prepare($code);
+		
 	    if (count($rows) > 1) {
 	    	$a = 0;
 	    	$aa = array();
@@ -116,19 +125,17 @@ class BBCode {
 		    $this->noparse[$pid] = '<strong class="bb_blockcode_header">'.$lang->phrase('bb_sourcecode').'</strong><div class="bb_blockcode"><table><tr><td width="1%">'.$aa.'</td><td width="99%">'.$this->nl2br($code2).'</td></tr></table></div>';
 		}
 		else {
-			$this->noparse[$pid] = '<code class="bb_inlinecode">'.$this->nl2br($code2).'</code>';
+			$this->noparse[$pid] = '<code class="bb_inlinecode">'.$code2.'</code>';
 		}
 	    return '<!PID:'.$pid.'>';
 	}
 	function cb_hlcode ($sclang, $code) {
 		global $lang;
 		$pid = $this->noparse_id();
-		$code = trim($code);
+		
+		$code = $this->code_prepare($code);
 	    $rows = preg_split('/(\r\n|\r|\n)/',$code);
-		$code2 = preg_replace('/\[b\](.+?)\[\/b\]/is', "<strong>\\1</strong>", $code);
-		$code2 = str_replace("]", "&#93;", $code2);
-		$code2 = str_replace("[", "&#91;", $code2);
-		$code2 = str_replace("\t", "&nbsp;&nbsp;&nbsp;&nbsp;", $code2);
+	    $code2 = $this->code_prepare($code);
 
 	    if (count($rows) > 1) {
 		    $a = 0;
@@ -139,7 +146,7 @@ class BBCode {
 			if ($cache->exists() == false) {
 				$export = array(
 				'language' => $sclang,
-				'source' => trim($code)
+				'source' => $code
 				);
 			    $cache->set($export);
 			    $cache->export();
@@ -155,17 +162,14 @@ class BBCode {
 		    $this->noparse[$pid] = '<strong class="bb_blockcode_header"><a target="_blank" href="popup.php?action=hlcode&amp;fid='.$unique.SID2URL_x.'">'.$lang->phrase('bb_ext_sourcecode').'</a></strong><div class="bb_blockcode"><table><tr><td width="1%">'.$aa.'</td><td width="99%">'.$this->nl2br($code2).'</td></tr></table></div>';
 		}
 		else {
-			$this->noparse[$pid] = '<code class="bb_inlinecode">'.$this->nl2br($code2).'</code>';
+			$this->noparse[$pid] = '<code class="bb_inlinecode">'.$code2.'</code>';
 		}
 		return '<!PID:'.$pid.'>';
 	}
-	function cb_mail ($pattern1, $pattern2) { // ToDo: Show as image
-	    $str = "";
-	    $a = unpack("C*", "$pattern1@$pattern2");
-	    foreach ($a as $b) {
-	   		$str .= sprintf("%%%X", $b);
-	   	}
-	   	return "<a href=\"mailto:$str\">{$pattern1}&#64;$pattern2</a>";
+	function cb_mail ($email) {
+		global $lang;
+		$html = '<img alt="'.$lang->phrase('bbcodes_email').'" src="classes/graphic/text2image.php?text='.base64_encode($email).'&amp;enc=1" border="0" />';
+	   	return $html;
 	}
 	function cb_header ($size, $content) {
 		if ($size == 'small') {
@@ -609,7 +613,7 @@ class BBCode {
 			$text = preg_replace('/\[color=\#?([0-9A-F]{3,6})\](.+?)\[\/color\]/is', '<span style="color: #\1">\2</span>', $text);
 			$text = preg_replace('/\[align=(left|center|right|justify)\](.+?)\[\/align\]/is', "<p style='text-align: \\1'>\\2</p>", $text);
 
-			$text = preg_replace("/\[email\]([a-z0-9\-_\.\+]+)@([a-z0-9\-]+\.[a-z0-9\-\.]+?)\[\/email\]/ise", '$this->cb_mail("\1","\2")', $text);
+			$text = preg_replace("/\[email\]([a-z0-9\-_\.\+]+@[a-z0-9\-]+\.[a-z0-9\-\.]+?)\[\/email\]/ise", '$this->cb_mail("\1")', $text);
 			$text = preg_replace('/\n?\[h=(middle|small|large)\](.+?)\[\/h\]\n?/ise', '$this->cb_header("\1", "\2")', $text);
 			$text = preg_replace('/\[size=(small|extended|large)\](.+?)\[\/size\]/ise', '$this->cb_size("\1", "\2")', $text);
 

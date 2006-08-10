@@ -798,8 +798,23 @@ elseif ($_GET['action'] == "addabo") {
 	}
 	else {
 		$db->query('INSERT INTO '.$db->pre.'abos (tid,mid,type) VALUES ("'.$_GET['id'].'","'.$my->id.'","'.$type.'")',__LINE__,__FILE__);
-		ok($lang->phrase('data_success'));
+		ok($lang->phrase('subscribed_successfully'));
 	}
+}
+elseif ($_GET['action'] == "removeabo") {
+	($code = $plugins->load('editprofile_removeabo_start')) ? eval($code) : null;
+	$result = $db->query('SELECT id, board FROM '.$db->pre.'topics WHERE id = '.$_GET['id'],__LINE__,__FILE__);
+	$info = $db->fetch_assoc($result);
+	$my->p = $slog->Permissions($info['board']);
+
+	$catbid = $scache->load('cat_bid');
+	$fc = $catbid->get();
+	$last = $fc[$info['board']];
+	forum_opt($last['opt'], $last['optvalue'], $last['id']);
+
+	($code = $plugins->load('editprofile_removeabo_prepared')) ? eval($code) : null;
+	$db->query("DELETE FROM {$db->pre}abos WHERE tid = '{$_GET['id']}' AND mid = '{$my->id}' LIMIT 1",__LINE__,__FILE__);
+	ok($lang->phrase('unsubscribed_successfully'));
 }
 elseif ($_GET['action'] == "copy") {
 

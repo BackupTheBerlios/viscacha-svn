@@ -11,6 +11,7 @@ class lang {
 	var $cache;
 	var $js;
 	
+	// ToDo: Alternatives Verzeichnis für den Fall, dass eine ID übergeben wurde, die nichtmehr aktiv ist...
 	function lang($js = false) {
 		$this->js = $js;
 		$this->file = '';

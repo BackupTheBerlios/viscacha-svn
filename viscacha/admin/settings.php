@@ -766,35 +766,23 @@ elseif ($job == 'email2') {
 elseif ($job == 'lang') {
 	$config = $gpc->prepare($config);
 	echo head();
+
+	$charsets = array();
+	$charsets['ISO-8859-1'] = 'Western European, Latin-1';
+	$charsets['ISO-8859-15'] = 'Western European, Latin-9';
+	$charsets['UTF-8'] = 'ASCII compatible multi-byte 8-bit Unicode';
+	$charsets['cp1252'] = 'Windows specific charset for Western European';
+	if (version_compare(PHP_VERSION, '4.3.2', '>=')) {
+		$charsets['cp866'] = 'DOS-specific Cyrillic charset (PHP >= 4.3.2)';
+		$charsets['cp1251'] = 'Windows-specific Cyrillic charset (PHP >= 4.3.2)';
+		$charsets['KOI8-R'] = 'Russian (PHP >= 4.3.2)';
+	}
+	$charsets['BIG5'] = 'Traditional Chinese, mainly used in Taiwan';
+	$charsets['GB2312'] = 'Simplified Chinese, national standard character set';
+	$charsets['BIG5-HKSCS'] = 'Big5 with Hong Kong extensions, Traditional Chinese.';
+	$charsets['Shift_JIS'] = 'Japanese';
+	$charsets['EUC-JP'] = 'Japanese';
 	
-	// ToDo: Übersetzen
-	$charsets = array(
-	'ISO-8859-1' => 'Westeuropäisch, Latin-1',
-//	'ISO-8859-2' => 'Osteuropäisch, Latin-2',
-//	'ISO-8859-3' => 'Südeuropäisch, Latin-3',
-//	'ISO-8859-4' => 'Baltisch, Latin-4',
-//	'ISO-8859-5' => 'Kyrillisch',
-//	'ISO-8859-6' => 'Arabisch',
-//	'ISO-8859-7' => 'Griechisch',
-//	'ISO-8859-8' => 'Hebräisch',
-//	'ISO-8859-9' => 'Türkisch, Latin-5',
-//	'ISO-8859-10' => 'Nordisch, Latin-6',
-//	'ISO-8859-11' => 'Thai',
-//	'ISO-8859-13' => 'Baltisch, Latin-7',
-//	'ISO-8859-14' => 'Keltisch, Latin-8',
-	'ISO-8859-15' => 'Westeuropäisch, Latin-9',
-//	'ISO-8859-16' => 'Südosteuropäisch, Latin-10',
-	'UTF-8' => 'ASCII-kompatibles Multi-Byte 8-Bit Unicode.',
-	'cp866' => 'DOS-spezifischer Kyrillischer Zeichensatz. (Ab PHP version 4.3.2)',
-	'cp1251' => 'Windows-spezifischer Kyrillischer Zeichensatz. (Ab PHP version 4.3.2)',
-	'cp1252' => 'Windows spezifischer Zeichensatz für westeuropäische Sprachen.',
-	'KOI8-R' => 'Russisch. (Ab PHP version 4.3.2)',
-	'BIG5' => 'Traditionelles Chinesisch, hauptsächlich in Taiwan verwendet.',
-	'GB2312' => 'Vereinfachtes Chinesisch, nationaler Standard-Zeichensatz.',
-	'BIG5-HKSCS' => 'traditionelles Chinesisch mit Hongkong-spezifischen Erweiterungen',
-	'Shift_JIS' => 'Japanisch',
-	'EUC-JP' => 'Japanisch'
-	);
 	
 	?>
 	<form name="form" method="post" action="admin.php?action=settings&job=lang2">
