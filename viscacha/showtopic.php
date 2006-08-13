@@ -128,16 +128,16 @@ elseif ($_GET['action'] == 'jumpto') {
 $pre = '';
 if ($info['prefix'] > 0) {
 	$prefix_obj = $scache->load('prefix');
-	$prefix = $prefix_obj->get($info['board']);
-	if (isset($prefix[$info['prefix']])) {
-		$pre = $prefix[$info['prefix']];
-		$pre = $lang->phrase('showtopic_prefix_title');
+	$prefix_arr = $prefix_obj->get($info['board']);
+	if (isset($prefix_arr[$info['prefix']])) {
+		$prefix = $prefix_arr[$info['prefix']]['value'];
+		$prefix = $lang->phrase('showtopic_prefix_title');
 	}
 }
 
 $topforums = get_headboards($fc, $last, TRUE);
 $breadcrumb->Add($last['name'], "showforum.php?id=".$last['id'].SID2URL_x);
-$breadcrumb->Add($pre.$info['topic']);
+$breadcrumb->Add($prefix.$info['topic']);
 
 forum_opt($last['opt'], $last['optvalue'], $last['id']);
 

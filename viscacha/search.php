@@ -44,7 +44,7 @@ if ($my->p['search'] == 0) {
 
 $breadcrumb->Add($lang->phrase('search'));
 
-// ToDO:
+// ToDo:
 // * Suchanfragen längerfristig speichern können!
 // * GooglifyMe
 // * Modularer Aufbau!!
@@ -301,7 +301,7 @@ elseif ($_GET['action'] == "result") {
 	$memberdata_obj = $scache->load('memberdata');
 	$memberdata = $memberdata_obj->get();
 	$prefix_obj = $scache->load('prefix');
-	$prefix = $prefix_obj->get();
+	$prefix_arr = $prefix_obj->get();
 	
 	$inner['index_bit'] = '';
 
@@ -311,12 +311,11 @@ elseif ($_GET['action'] == "result") {
 
 	foreach ($pages[$_GET['page']-1] as $row) {
 		$pref = '';
-		$showprefix = FALSE;
-		if (isset($prefix[$row->board][$row->prefix]) && $row->prefix > 0) {
-			$showprefix = $prefix[$row->board][$row->prefix];
-		}
-		else {
-			$showprefix = null;
+		$prefix = '';
+		$showprefix = false;
+		if (isset($prefix_arr[$row->board][$row->prefix]) && $row->prefix > 0) {
+			$showprefix = true;
+			$prefix = $prefix_arr[$row->board][$row->prefix]['value'];
 		}
 		$info = $forums[$row->board];
 		
@@ -465,16 +464,18 @@ elseif ($_GET['action'] == "active") {
 			$catbid = $scache->load('cat_bid');
 			$forums = $catbid->get();
 			$prefix_obj = $scache->load('prefix');
-			$prefix = $prefix_obj->get();
+			$prefix_arr = $prefix_obj->get();
     		$memberdata_obj = $scache->load('memberdata');
 			$memberdata = $memberdata_obj->get();
 
     		$inner['index_bit'] = '';
     		while ($row = $gpc->prepare($db->fetch_object($result))) {
     			$pref = '';
-    			$showprefix = '';
-    			if ($row->prefix > 0 && isset($prefix[$row->board][$row->prefix])) {
-    				$showprefix = $prefix[$row->board][$row->prefix];
+    			$showprefix = false;
+    			$prefix = '';
+    			if ($row->prefix > 0 && isset($prefix_arr[$row->board][$row->prefix])) {
+    				$showprefix = true;
+    				$prefix = $prefix_arr[$row->board][$row->prefix]['value'];
     			}
     			
     			$info = $forums[$row->board];

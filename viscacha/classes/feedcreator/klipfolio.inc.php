@@ -44,7 +44,7 @@ class KLIPFOLIO extends FeedCreator {
 			
 		$feed .= '	<setup>'."\n";
 		$feed .= '		<refresh>'.htmlspecialchars($this->ttl).'</refresh>'."\n";
-		if (empty($_SERVER['HTTP_REFERER'])) {
+		if (!check_hp($_SERVER['HTTP_REFERER'])) {
 			$_SERVER['HTTP_REFERER'] = $this->link;
 		}
 		$feed .= '		<referer>'.$_SERVER['HTTP_REFERER'].'</referer>'."\n";

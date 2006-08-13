@@ -27,7 +27,8 @@ if ($db->num_rows($result) > 0) {
 			$row['topic'] .= $lang->phrase('dot_more');
 		}
 		if (isset($prefix[$row['board']][$row['prefix']]) && $row['prefix'] > 0) {
-			$row['prefix'] = $prefix[$row['board']][$row['prefix']];
+			$lang->assign('prefix', $prefix[$row['board']][$row['prefix']]['value']);
+			$row['prefix'] = $lang->phrase('showtopic_prefix_title');
 		}
 		else {
 			$row['prefix'] = '';

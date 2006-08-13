@@ -128,18 +128,20 @@ if ($info['topics'] > 0) {
 	",__LINE__,__FILE__);
 	
 	$prefix_obj = $scache->load('prefix');
-	$prefix = $prefix_obj->get($board);
+	$prefix_arr = $prefix_obj->get($board);
 	$memberdata_obj = $scache->load('memberdata');
 	$memberdata = $memberdata_obj->get();
 
 	while ($row = $gpc->prepare($db->fetch_object($result))) {
 		$pref = '';
-		$showprefix = FALSE;
-		if (isset($prefix[$row->prefix]) && $row->prefix > 0) {
-			$showprefix = TRUE;
+		
+		$showprefix = false;
+		if (isset($prefix_arr[$row->prefix]) && $row->prefix > 0) {
+			$showprefix = true;
+			$prefix = $prefix_arr[$row->prefix]['value'];
 		}
 		else {
-			$prefix[$row->prefix] = '';
+			$prefix = '';
 		}
 		
 		$last = $fc[$row->board];

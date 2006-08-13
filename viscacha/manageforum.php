@@ -98,16 +98,17 @@ if ($my->vlogin && $my->mp[0] == 1) {
 			$memberdata = $memberdata_obj->get();
 
 			$prefix_obj = $scache->load('prefix');
-			$prefix = $prefix_obj->get($board);
+			$prefix_arr = $prefix_obj->get($board);
 		
 			while ($row = $gpc->prepare($db->fetch_object($result))) {
 				$pref = '';
-				$showprefix = FALSE;
-				if (isset($prefix[$row->prefix]) && $row->prefix > 0) {
-					$showprefix = TRUE;
+				$showprefix = false;
+				if (isset($prefix_arr[$row->prefix]) && $row->prefix > 0) {
+					$prefix = $prefix_arr[$row->prefix]['value'];
+					$showprefix = true;
 				}
 				else {
-					$prefix[$row->prefix] = '';
+					$prefix = '';
 				}
 				
 				if(is_id($row->name) && isset($memberdata[$row->name])) {

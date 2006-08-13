@@ -168,7 +168,7 @@ function msg_handler($errno, $errtext, $errfile, $errline) {
 		<h1>General Error</h1>
 		<p class="center">
 			[<a href="<?php echo $config['furl']; ?>/index.php">Return to Index</a>]
-			<?php if (!empty($_SERVER['HTTP_REFERER'])) { ?>
+			<?php if (check_hp($_SERVER['HTTP_REFERER'])) { ?>
 			&nbsp;&nbsp;[<a href="<?php echo $_SERVER['HTTP_REFERER']; ?>">Return to last Page</a>]
 			<?php } ?>
 		</p>
@@ -712,6 +712,52 @@ if(!function_exists('image_type_to_extension')) {
 			default				   : return false;
 		}
 	}
+}
+
+/**
+ * Replace array_walk_recursive()
+ *
+ * @category    PHP
+ * @package     PHP_Compat
+ * @link        http://php.net/function.array_walk_recursive
+ * @author      Tom Buskens <ortega@php.net>
+ * @author      Aidan Lister <aidan@php.net>
+ * @version     $Revision: 1.7 $
+ * @since       PHP 5
+ * @require     PHP 4.0.6 (is_callable)
+ */
+if (!function_exists('array_walk_recursive')) {
+    function array_walk_recursive(&$input, $funcname)
+    {
+        if (!is_callable($funcname)) {
+            if (is_array($funcname)) {
+                $funcname = $funcname[0] . '::' . $funcname[1];
+            }
+            user_error('array_walk_recursive() Not a valid callback ' . $user_func,
+                E_USER_WARNING);
+            return;
+        }
+
+        if (!is_array($input)) {
+            user_error('array_walk_recursive() The argument should be an array',
+                E_USER_WARNING);
+            return;
+        }
+
+        $args = func_get_args();
+
+        foreach ($input as $key => $item) {
+            if (is_array($item)) {
+                array_walk_recursive($item, $funcname, $args);
+                $input[$key] = $item;
+            } else {
+                $args[0] = &$item;
+                $args[1] = &$key;
+                call_user_func_array($funcname, $args);
+                $input[$key] = $item;
+            }
+        }
+    }
 }
 
 /**

@@ -138,10 +138,10 @@ else {
 		error('index.php'.SID2URL_1, 'You are not allowed to view this page!');
 	}
 	
-	if ($action == "login2") {;
+	if ($action == "login2") {
 		$log_status = $slog->sid_login(true);
 		echo head();
-		if (!$log_status) {
+		if ($log_status == false) {
 			error('admin.php', 'You have entered an incorrect user name or password!');
 		}
 		else {

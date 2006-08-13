@@ -82,19 +82,20 @@ elseif ($_GET['job'] == 'postrating2') {
 	<?php
 	
 	$prefix_obj = $scache->load('prefix');
-	$prefix = $prefix_obj->get($board);
+	$prefix_arr = $prefix_obj->get($board);
 	
 	$memberdata_obj = $scache->load('memberdata');
 	$memberdata = $memberdata_obj->get();
 	
 	while ($row = $gpc->prepare($db->fetch_object($result))) {
 		$pref = '';
-		$showprefix = FALSE;
-		if (isset($prefix[$row->prefix]) && $row->prefix > 0) {
-			$showprefix = TRUE;
+		$showprefix = false;
+		if (isset($prefix_arr[$row->prefix]) && $row->prefix > 0) {
+			$prefix = $prefix_arr[$row->prefix]['value'];
+			$showprefix = true;
 		}
 		else {
-			$prefix[$row->prefix] = '';
+			$prefix = '';
 		}
 		
 		if(is_id($row->name) && isset($memberdata[$row->name])) {
@@ -135,7 +136,7 @@ elseif ($_GET['job'] == 'postrating2') {
 		?>
         <tr class="mbox">
         <td><img src="images.php?action=threadrating&id=<?php echo $row->id; ?>" alt="<?php echo $percent; ?>%" title="<?php echo $percent; ?>%"  /> <?php echo $percent; ?>% (<?php echo $row->rcount; ?>)</td>
-        <td><?php echo $pref; ?><a target="_blank" href="showtopic.php?id=<?php echo $row->id; ?>"><?php echo iif($showprefix, '['.$prefix[$row->prefix].'] ').$row->topic; ?></a></td>
+        <td><?php echo $pref; ?><a target="_blank" href="showtopic.php?id=<?php echo $row->id; ?>"><?php echo iif($showprefix, '['.$prefix.'] ').$row->topic; ?></a></td>
         <td class="stext"><?php echo $rstart; ?><br />by <?php echo iif($row->mid, "<a href='admin.php?action=members&amp;job=edit&amp;id=".$row->mid."'>".$row->name."</a>", $row->name); ?></td>
         <td align="center"><?php echo $row->posts; ?></td>
         <td align="right" class="stext"><?php echo $rlast; ?><br />by <?php echo $row->last_name; ?></td>

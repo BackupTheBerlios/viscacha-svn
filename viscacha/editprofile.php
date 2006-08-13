@@ -69,7 +69,7 @@ if ($_GET['action'] == "pw2") {
 	}
 	else {
 		($code = $plugins->load('editprofile_pw2_query')) ? eval($code) : null;
-		$db->query("UPDATE {$db->pre}user SET pw = MD5('{$_POST['pwx']}') WHERE id = '$my->id' LIMIT 1",__LINE__,__FILE__);
+		$db->query("UPDATE {$db->pre}user SET pw = MD5('{$_POST['pwx']}') WHERE id = '{$my->id}' LIMIT 1",__LINE__,__FILE__);
 		ok($lang->phrase('editprofile_pw_success'), "log.php".SID2URL_1);
 	}
 
@@ -153,7 +153,7 @@ elseif ($_GET['action'] == "abos") {
 	",__LINE__,__FILE__);
 	
 	$prefix_obj = $scache->load('prefix');
-	$prefix = $prefix_obj->get();
+	$prefix_arr = $prefix_obj->get();
 	$memberdata_obj = $scache->load('memberdata');
 	$memberdata = $memberdata_obj->get();
 	$catbid = $scache->load('cat_bid');
@@ -166,8 +166,9 @@ elseif ($_GET['action'] == "abos") {
 			$info['topiczahl'] = $config['topiczahl'];
 		}
 
-		if (!empty($row['prefix']) && isset($prefix[$row['board']][$row['prefix']])) {
-			$row['prefix'] = '['.$prefix[$row['board']][$row['prefix']].']';
+		if (!empty($row['prefix']) && isset($prefix_arr[$row['board']][$row['prefix']])) {
+			$prefix = $prefix_arr[$row['board']][$row['prefix']]['value'];
+			$row['prefix'] = $lang->phrase('showtopic_prefix_title');
 		}
 		else {
 			$row['prefix'] = '';
@@ -718,7 +719,7 @@ elseif ($_GET['action'] == "mylast") {
 	$anz = $db->num_rows($result);
 	
 	$prefix_obj = $scache->load('prefix');
-	$prefix = $prefix_obj->get();
+	$prefix_arr = $prefix_obj->get();
 	$catbid = $scache->load('cat_bid');
 	$fc = $catbid->get();
 
@@ -740,8 +741,9 @@ elseif ($_GET['action'] == "mylast") {
 			$row['alt'] = $lang->phrase('forum_icon_new');
 			$row['src'] = $tpl->img('dir_open2');
 		}
-		if (isset($prefix[$row['board']][$row['prefix']]) && $row['prefix'] > 0) {
-			$row['pre'] = '['.$prefix[$row['board']][$row['prefix']].']';
+		if (isset($prefix_arr[$row['board']][$row['prefix']]) && $row['prefix'] > 0) {
+			$prefix = $prefix_arr[$row['board']][$row['prefix']]['value'];
+			$row['pre'] = $lang->phrase('showtopic_prefix_title');
 		}
 		else {
 			$row['pre'] = '';

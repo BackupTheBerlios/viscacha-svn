@@ -90,8 +90,7 @@ $gll = array(
 $guest_limitation = array('admin', 'gmod', 'pm', 'usepic', 'useabout', 'usesignature', 'voting', 'edit');
 
 // Variables
-require_once ("classes/class.gpc.php");
-$gpc = new GPC();
+require_once ("classes/function.gpc.php");
 $action = $gpc->get('action', none);
 if (empty($_REQUEST['page'])) {
 	$_REQUEST['page'] = 1;

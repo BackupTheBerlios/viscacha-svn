@@ -62,15 +62,15 @@ $topforums = get_headboards($fc, $last, true);
 $pre = '';
 if ($info['prefix'] > 0) {
 	$prefix_obj = $scache->load('prefix');
-	$prefix = $prefix_obj->get($info['board']);
+	$prefix_arr = $prefix_obj->get($info['board']);
 	if (isset($prefix[$info['prefix']])) {
-		$pre = $prefix[$info['prefix']];
-		$pre = $lang->phrase('showtopic_prefix_title');
+		$prefix = $prefix_arr[$info['prefix']]['value'];
+		$prefix = $lang->phrase('showtopic_prefix_title');
 	}
 }
 
 $breadcrumb->Add($last['name'], "showforum.php?id=".$last['id'].SID2URL_x);
-$breadcrumb->Add($pre.$info['topic'], "showtopic.php?id=".$info['id'].SID2URL_x);
+$breadcrumb->Add($prefix.$info['topic'], "showtopic.php?id=".$info['id'].SID2URL_x);
 $breadcrumb->Add($lang->phrase('teamcp'));
 
 echo $tpl->parse("header");

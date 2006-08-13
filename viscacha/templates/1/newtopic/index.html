@@ -2,7 +2,7 @@
 <div class="border">
 <h3><img src="<?php echo $tpl->img('newtopic'); ?>" alt="" /> <?php echo $lang->phrase('preview_title'); ?></h3>
 <div class="bbody">
-	<span class='stext'><?php echo $lang->phrase('showtopic_subject'); ?> <strong><?php echo iif(!empty($data['formatted_prefix']), '['.$data['formatted_prefix'].']'); ?> <?php echo $data['topic']; ?></strong></span>
+	<span class='stext'><?php echo $lang->phrase('showtopic_subject'); ?> <?php echo iif(!empty($prefix), $lang->phrase('showtopic_prefix_title')); ?><strong><?php echo $data['topic']; ?></strong></span>
 	<hr />
 	<?php echo $data['formatted_comment']; ?>
 </div>

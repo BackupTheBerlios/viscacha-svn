@@ -62,7 +62,7 @@ class lang {
 		require($file);
 		echo 'var lng = new Array();'."\n";
 		foreach ($lang as $k => $l) {
-			$l = addslashes($l);
+			$l = str_replace("'", "\\'", $l);
 			echo "lng['$k'] = '$l';\n";
 		}
 	}

@@ -374,7 +374,7 @@ elseif ($_GET['action'] == "bbhelp") {
 }
 elseif ($_GET['action'] == "markasread") {
 	$my->p = $slog->Permissions();
-	if (!empty($_SERVER['HTTP_REFERER'])) {
+	if (check_hp($_SERVER['HTTP_REFERER'])) {
 		$url = parse_url($_SERVER['HTTP_REFERER']);
 		if (strpos($config['furl'], $url['host']) !== FALSE) {
 			$loc = htmlspecialchars($_SERVER['HTTP_REFERER']);

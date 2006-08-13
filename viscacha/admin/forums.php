@@ -28,7 +28,7 @@ function ForumSubs ($tree, $cat, $board, $char = '+', $level = 0) {
 		foreach ($boards as $bid => $sub) {
 			$bdata = $board[$bid];
 			?>
-			  <tr> 
+			  <tr>
 			    <td class="mbox"><?php echo str_repeat($char, $level+1).' '.$bdata['name']; ?></td>
 				<td class="mbox" width="10%" align="right"><?php echo $bdata['c_order']; ?>&nbsp;&nbsp;
 				<a href="admin.php?action=forums&job=move&temp1=f_<?php echo $bdata['id']; ?>&int1=-1"><img src="admin/html/images/asc.gif" border="0" alt="Up"></a>&nbsp;
@@ -375,7 +375,7 @@ elseif ($job == 'editforum2') {
 	$delobj = $scache->load('parent_forums');
 	$delobj->delete();
 	
-	ok('admin.php?action=forums&job=manage','Forum wurde editiert!');
+	ok('admin.php?action=forums&job=manage','Forum changed successfully!');
 }
 elseif ($job == 'add_mod') {
 	echo head();
@@ -432,7 +432,7 @@ elseif ($job == 'add_mod2') {
     $day = $gpc->get('day', int);
     $weekday = $gpc->get('weekday', int);
 	if (!is_id($id)) {
-		error('admin.php?action=forums&job=manage', 'Forum or Category was not found on account of an invalid ID');
+		error('admin.php?action=forums&job=manage', 'Forum or Category was not found on account of an invalid ID.');
 	}
 	$uid = $db->fetch_num($db->query('SELECT id FROM '.$db->pre.'user WHERE name = "'.$temp1.'" LIMIT 1'));
 	if ($uid[0] < 1) {
@@ -721,11 +721,16 @@ elseif ($job == 'updatestats') {
 }
 elseif ($job == 'move') {
     $id = $gpc->get('temp1', str);
-	if (!is_id($id)) {
-		error('admin.php?action=forums&job=manage', 'Forum or Category was not found on account of an invalid ID.');
+	if (strpos($id, '_') === false) {
+		echo head();
+		error('admin.php?action=forums&job=manage', 'No correct data specified.');
 	}
 	list($type, $gid) = explode('_',$id);
 	$gid = $gpc->save_int($gid);
+	if (!is_id($gid)) {
+		echo head();
+		error('admin.php?action=forums&job=manage', 'Forum or Category was not found on account of an invalid ID.');
+	}
 	$move = $gpc->get('int1', int);
 	
 	if ($move == -1 && $type == 'c') {
@@ -741,6 +746,7 @@ elseif ($job == 'move') {
 		$db->query('UPDATE '.$db->pre.'cat SET c_order = c_order+1 WHERE id = '.$gid);
 	}
 	else {
+		echo head();
 		error('admin.php?action=forums&job=manage','Invalid data sent!');
 	}
 
@@ -1004,20 +1010,28 @@ elseif ($job == 'prefix') {
 <form name="form" method="post" action="admin.php?action=forums&job=delete_prefix&id=<?php echo $id; ?>">
  <table class="border">
   <tr> 
-   <td class="obox" colspan="2">Manage Prefix</td>
+   <td class="obox" colspan="3">Manage Prefix</td>
   </tr>
   <tr> 
    <td class="ubox" width="10%">Delete</td>
-   <td class="ubox" width="90%">Value</td> 
+   <td class="ubox" width="70%">Value</td> 
+   <td class="ubox" width="20%">Standard</td> 
   </tr>
-  <?php while($prefix = $db->fetch_assoc($result)) { ?>
+  <?php
+  $has_standard = false;
+  while($prefix = $db->fetch_assoc($result)) {
+  	if ($prefix['standard'] == 1) {
+  		$has_standard = true;
+  	}
+  ?>
   <tr> 
    <td class="mbox" width="10%"><input type="checkbox" name="delete[]" value="<?php echo $prefix['id']; ?>"></td>
-   <td class="mbox" width="90%"><?php echo $prefix['value']; ?></td> 
+   <td class="mbox" width="70%"><a href="admin.php?action=forums&amp;job=edit_prefix&amp;id=<?php echo $prefix['id']; ?>"><?php echo $prefix['value']; ?></a></td>
+   <td class="mbox" width="20%" align="center"><?php echo noki($prefix['standard']); ?></td> 
   </tr>
   <?php } ?>
   <tr>
-   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="Delete"></td> 
+   <td class="ubox" colspan="3" align="center"><input type="submit" name="Submit" value="Delete"></td> 
   </tr>
  </table>
 </form><br />
@@ -1030,6 +1044,12 @@ elseif ($job == 'prefix') {
    <td class="mbox" width="50%">Value:</td>
    <td class="mbox" width="50%"><input type="text" name="name" size="50" /></td> 
   </tr>
+<?php if ($has_standard == false) { ?>
+  <tr> 
+   <td class="mbox" width="50%">Standard:</td>
+   <td class="mbox" width="50%"><input type="checkbox" name="standard" value="1" /></td> 
+  </tr>
+<?php } ?>
   <tr>
    <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="Add"></td> 
   </tr>
@@ -1037,6 +1057,56 @@ elseif ($job == 'prefix') {
 </form> 
 <?php
 	echo foot();
+}
+elseif ($job == 'edit_prefix') {
+	echo head();
+	$id = $gpc->get('id', int);
+	$result = $db->query("SELECT * FROM {$db->pre}prefix WHERE id = '{$id}'");
+	$row = $db->fetch_assoc($result);
+?>
+<form name="form" method="post" action="admin.php?action=forums&job=edit_prefix2&id=<?php echo $id; ?>">
+ <table class="border">
+  <tr> 
+   <td class="obox" colspan="2">Edit Prefix</td>
+  </tr>
+  <tr> 
+   <td class="mbox" width="50%">Value:</td>
+   <td class="mbox" width="50%"><input type="text" name="name" size="50" value="<?php echo htmlspecialchars($row['value']); ?>" /></td> 
+  </tr>
+  <tr> 
+   <td class="mbox" width="50%">Standard:<br /><span class="stext">If another prefix is standard in this category, the status will be removed.</span></td>
+   <td class="mbox" width="50%"><input type="checkbox" name="standard" value="1" <?php echo iif($row['standard'] == 1, ' checked="checked"'); ?> /></td> 
+  </tr>
+  <tr>
+   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="Edit"></td> 
+  </tr>
+ </table>
+</form> 
+<?php
+	echo foot();
+}
+elseif ($job == 'edit_prefix2') {
+	echo head();
+	$id = $gpc->get('id', int);
+	$val = $gpc->get('name', str);
+	$standard = $gpc->get('standard', int);
+	
+	$result = $db->query('SELECT bid, standard FROM '.$db->pre.'prefix WHERE id = "'.$id.'"');
+	$row = $db->fetch_assoc($result);
+
+	$result = $db->query('SELECT id FROM '.$db->pre.'prefix WHERE bid = "'.$row['bid'].'" AND value = "'.$val.'" AND id != "'.$id.'" LIMIT 1');
+	if ($db->num_rows() > 0) {
+		error('admin.php?action=forums&job=prefix&id='.$id, 'This value already exists!');
+	}
+	else {
+		if ($row['standard'] != $standard && $standard == 1) {
+			$db->query("UPDATE {$db->pre}prefix SET standard = '0' WHERE standard = '1' AND bid = '{$row['bid']}' LIMIT 1");
+		}
+		$db->query("UPDATE {$db->pre}prefix SET value = '{$val}', standard = '{$standard}' WHERE id = '{$id}' LIMIT 1");
+		$delobj = $scache->load('prefix');
+		$delobj->delete();
+		ok('admin.php?action=forums&job=prefix&id='.$row['bid'], 'Prefix successfully edited!');
+	}
 }
 elseif ($job == 'delete_prefix') {
 	echo head();
@@ -1047,21 +1117,22 @@ elseif ($job == 'delete_prefix') {
 	$delobj->delete();
 	$db->query('DELETE FROM '.$db->pre.'prefix WHERE id IN('.$did.') AND bid = "'.$id.'"');
 	$i = $db->affected_rows();
-	ok('admin.php?action=forums&job=prefix&id='.$id, $i.' values deleted!');
+	ok('admin.php?action=forums&job=prefix&id='.$id, $i.' prefixes deleted!');
 }
 elseif ($job == 'add_prefix') {
 	echo head();
 	$id = $gpc->get('id', int);
 	$val = $gpc->get('name', str);
-	$delobj = $scache->load('prefix');
-	$delobj->delete();
-	$result = $db->query('SELECT id FROM '.$db->pre.'prefix WHERE bid= "'.$id.'" AND value = "'.$val.'" LIMIT 1');
+	$standard = $gpc->get('standard', int);
+	$result = $db->query('SELECT id FROM '.$db->pre.'prefix WHERE bid = "'.$id.'" AND value = "'.$val.'" LIMIT 1');
 	if ($db->num_rows() > 0) {
 		error('admin.php?action=forums&job=prefix&id='.$id, 'This value already exists!');
 	}
 	else {
-		$db->query('INSERT INTO '.$db->pre.'prefix (bid, value) VALUES ("'.$id.'", "'.$val.'")');
-		ok('admin.php?action=forums&job=prefix&id='.$id, 'Value successfully added!');
+		$db->query("INSERT INTO {$db->pre}prefix (bid, value, standard) VALUES ('{$id}', '{$val}', '{$standard}')");
+		$delobj = $scache->load('prefix');
+		$delobj->delete();
+		ok('admin.php?action=forums&job=prefix&id='.$id, 'Prefix successfully added!');
 	}
 }
 ?>

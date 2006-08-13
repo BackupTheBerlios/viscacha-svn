@@ -71,10 +71,10 @@ if ($last['topiczahl'] < 1) {
 $pre = '';
 if ($info['prefix'] > 0) {
 	$prefix_obj = $scache->load('prefix');
-	$prefix = $prefix_obj->get($info['board']);
-	if (isset($prefix[$info['prefix']])) {
-		$pre = $prefix[$info['prefix']];
-		$pre = $lang->phrase('showtopic_prefix_title');
+	$prefix_arr = $prefix_obj->get($info['board']);
+	if (isset($prefix_arr[$info['prefix']])) {
+		$prefix = $prefix_arr[$info['prefix']]['value'];
+		$prefix = $lang->phrase('showtopic_prefix_title');
 	}
 }
 
@@ -97,13 +97,13 @@ BBProfile($bbcode);
 $memberdata_obj = $scache->load('memberdata');
 $memberdata = $memberdata_obj->get();
 $pdf = new PDF();
-$pdftitle = html_entity_decode($config['fname'].": ".$pre.$info['topic']);
+$pdftitle = html_entity_decode($config['fname'].": ".$prefix.$info['topic']);
 $pdf->SetCompression($config['pdfcompress']);
 $pdf->AliasNbPages('[Pages]');
 $pdf->SetCreator('Viscacha '.$config['version']);
 $pdf->SetAuthor($config['fname']);
-$pdf->SetSubject($pre.$info['topic']);
-$pdf->SetTitle($pre.$info['topic']);
+$pdf->SetSubject($prefix.$info['topic']);
+$pdf->SetTitle($prefix.$info['topic']);
 $pdf->AddPage();
 
 ($code = $plugins->load('pdf_start')) ? eval($code) : null;

@@ -128,6 +128,43 @@ function checkRemotePic($pic, $id) {
 	return $pic;
 }
 
+/**
+ * orders a multidimentional array on the base of a label-key
+ *
+ * @param $arr, the array to be ordered
+ * @param $l the "label" identifing the field
+ * @param $f the ordering function to be used,
+ *    strnatcasecmp() by default
+ * @return  TRUE on success, FALSE on failure.
+ */
+function array_columnsort(&$arr, $l , $f='strnatcasecmp') {
+	return uasort($arr, create_function('$a, $b', "return $f(\$a['$l'], \$b['$l']);"));
+}
+
+function array_empty($array) {
+	$array = array_unique($array);
+	if (count($array) == 0) {
+		return true;
+	}
+	elseif (count($array) == 1) {
+		$current = current($array);
+		if (empty($current)) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	else {
+		foreach ($array as $val) {
+			if (!empty($val)) {
+				return false;
+			}
+		}
+		return true;
+	}
+}
+
 function array_empty_trim($arr) {
 	$array = array();
 	foreach($arr as $key => $val) {
@@ -632,8 +669,11 @@ function getip($dots = 4) {
 
 	foreach ($ips as $ip) {
 		$found = false;
+		if (!preg_match("/[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}/", $ip)) {
+			$found = true;
+		}
 		foreach ($private_ips as $pip) {
-			if (preg_match($pip, trim($ip)) == 1) {
+			if (preg_match($pip, trim($ip))) {
 				$found = true;
 			}
 		}
@@ -920,7 +960,7 @@ function makecookie($name, $value = '', $expire = 31536000) {
 		return FALSE;
 	}
 
-//	if ($_SERVER['SERVER_PORT'] == '443') {
+//	if ($_SERVER['SERVER_PORT'] == '443' || isset($_SERVER['HTTPS'])) {
 //		$secure = 1;
 //	}
 //	else {
