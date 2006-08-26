@@ -476,6 +476,12 @@ function logged () {
 		}
 		else {
 			$my->vlogin = false;
+			$fields = $db->list_fields($db->pre.'user');
+			$fields = array_merge($fields, $db->list_fields($db->pre.'session'));
+			$fields = array_merge($fields, $db->list_fields($db->pre.'userfields'));
+			foreach ($fields as $field) {
+				$my->$field = null;
+			}
 		}
 	}
 	else {

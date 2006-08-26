@@ -454,7 +454,7 @@ elseif ($job == 'smileys_add') {
 	if (strlen($gpc->get('code', str)) < 2) {
 		$error[] = 'Code is too short';
 	}
-	if (!$has_upload && strlen($img) < 5) {
+	if (empty($has_upload) || strlen($img) < 5) {
 		$error[] = 'Path of image is too short';
 	}
 	if (strlen($gpc->get('show', int)) != 1 && $gpc->get('show', int) != 0) {

@@ -172,7 +172,7 @@ $config['tpcwidth'] = 2048;
 $config['updateboardstats'] = 1;
 $config['vcard_dl'] = 1;
 $config['vcard_dl_guests'] = 0;
-$config['version'] = '0.8 Beta 2';
+$config['version'] = '0.8 Beta 3';
 $config['wordstatus'] = 1;
 $config['wordwrap'] = 1;
 ?>

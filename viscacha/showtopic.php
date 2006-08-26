@@ -125,7 +125,7 @@ elseif ($_GET['action'] == 'jumpto') {
 
 ($code = $plugins->load('showtopic_redirect')) ? eval($code) : null;
 
-$pre = '';
+$prefix = '';
 if ($info['prefix'] > 0) {
 	$prefix_obj = $scache->load('prefix');
 	$prefix_arr = $prefix_obj->get($info['board']);
@@ -248,7 +248,7 @@ if (!empty($info['vquestion'])) {
 }
 
 if ($config['tpcallow'] == 1) {
-	$result = $db->query("SELECT id, tid, mid, file, hits FROM {$db->pre}uploads WHERE topic_id = ".$info['id'],__LINE__,__FILE__);
+	$result = $db->query("SELECT id, tid, mid, file, source, hits FROM {$db->pre}uploads WHERE topic_id = ".$info['id'],__LINE__,__FILE__);
 	$uploads = array();
 	while ($row = $db->fetch_assoc($result)) {
 		$uploads[$row['tid']][] = $row;
@@ -346,8 +346,7 @@ while ($row = $gpc->prepare($db->fetch_object($result))) {
 	
 	if (isset($uploads[$row->id]) && $config['tpcallow'] == 1) {
 		foreach ($uploads[$row->id] as $file) {
-			$file['file'] = trim($file['file']);
-			$uppath = 'uploads/topics/'.$file['file'];
+			$uppath = 'uploads/topics/'.$file['source'];
 			$imginfo = get_extension($uppath);
 			
 			if (!isset($fileicons[$imginfo])) {

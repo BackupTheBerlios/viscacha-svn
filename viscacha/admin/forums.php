@@ -201,12 +201,13 @@ elseif ($job == 'delete2') {
 		$ids = implode(',', $id);
 	
 		$db->query ("DELETE FROM {$db->pre}replies WHERE board = '{$_GET['id']}'",__LINE__,__FILE__);
-		$uresult = $db->query ("SELECT file FROM {$db->pre}uploads WHERE topic_id IN({$ids})",__LINE__,__FILE__);
-		while ($urow = $db->fetch_num($uresult)) {
-		    $filesystem->unlink('uploads/topics/'.$urow[0]);
-		    if (file_exists('uploads/topics/thumbnails/'.$urow[0])) {
-		    	$filesystem->unlink('uploads/topics/thumbnails/'.$urow[0]);
-		    }
+		$uresult = $db->query ("SELECT id, source FROM {$db->pre}uploads WHERE topic_id IN({$ids})",__LINE__,__FILE__);
+		while ($urow = $db->fetch_assoc($uresult)) {
+			$filesystem->unlink('uploads/topics/'.$urow['source']);
+			$thumb = 'uploads/topics/thumbnails/'.$urow['id'].get_extension($urow['source'], true);
+			if (file_exists($thumb)) {
+				$filesystem->unlink($thumb);
+			}
 		}
 		$db->query ("DELETE FROM {$db->pre}uploads WHERE topic_id IN({$ids})",__LINE__,__FILE__);
 		$db->query ("DELETE FROM {$db->pre}postratings WHERE tid IN({$ids})",__LINE__,__FILE__);

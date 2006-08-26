@@ -77,11 +77,11 @@ if ($_GET['action'] == "pw2") {
 elseif ($_GET['action'] == "attachments2" && $config['tpcallow'] == 1) {
 	if (count($_POST['delete']) > 0) {
 		($code = $plugins->load('editprofile_attachments2_start')) ? eval($code) : null;
-		$result = $db->query ("SELECT file FROM {$db->pre}uploads WHERE mid = '$my->id' AND id IN(".implode(',', $_POST['delete']).")",__LINE__,__FILE__);
+		$result = $db->query ("SELECT source FROM {$db->pre}uploads WHERE mid = '$my->id' AND id IN(".implode(',', $_POST['delete']).")",__LINE__,__FILE__);
 		while ($row = $db->fetch_assoc($result)) {
-			@unlink('uploads/topics/'.$row['file']);
+			$filesystem->unlink('uploads/topics/'.$row['source']);
 		}
-		$db->query ("DELETE FROM {$db->pre}uploads WHERE mid = '$my->id' AND id IN (".implode(',',$_POST['delete']).")",__LINE__,__FILE__);
+		$db->query ("DELETE FROM {$db->pre}uploads WHERE mid = '{$my->id}' AND id IN (".implode(',',$_POST['delete']).")",__LINE__,__FILE__);
 		$anz = $db->affected_rows();
 		ok($lang->phrase('editprofile_attachments_deleted'), "editprofile.php?action=attachments".SID2URL_x);
 	}
@@ -97,7 +97,7 @@ elseif ($_GET['action'] == "attachments" && $config['tpcallow'] == 1) {
 
 	($code = $plugins->load('editprofile_attachments_query')) ? eval($code) : null;
 	$result = $db->query("
-	SELECT r.board, r.topic, u.id, u.tid, u.file, u.hits 
+	SELECT r.board, r.topic, u.id, u.tid, u.file, u.source, u.hits 
 	FROM {$db->pre}uploads AS u 
 		LEFT JOIN {$db->pre}replies AS r ON r.id = u.tid 
 	WHERE u.mid = '$my->id' 
@@ -108,8 +108,7 @@ elseif ($_GET['action'] == "attachments" && $config['tpcallow'] == 1) {
 	$cache = array();
 	while ($row = $db->fetch_assoc($result)) {
 		$row['topic'] = $gpc->prepare($row['topic']);
-		$row['file'] = trim($row['file']);
-		$uppath = 'uploads/topics/'.$row['file'];
+		$uppath = 'uploads/topics/'.$row['source'];
 		$fsize = filesize($uppath);
 		$all[0]++;
 		$all[1] += $fsize;
@@ -438,8 +437,9 @@ elseif ($_GET['action'] == "pic2") {
 		}
 		else {
 			removeOldImages('uploads/pics/', $my->id);
-			$ext = $my_uploader->rename_file('uploads/pics/', $my_uploader->file['name'], $my->id);
+			$my_uploader->rename_file($my->id);
 		}
+		$ext = get_extension();
 		$my->pic = 'uploads/pics/'.$my->id.$ext;
 	}
 	elseif (!empty($pic) && preg_match('/^(http:\/\/|www.)([\wäöüÄÖÜ@\-_\.]+)\:?([0-9]*)\/(.*)$/', $pic)) {
@@ -628,11 +628,21 @@ elseif ($_GET['action'] == "settings") {
 
 	$loaddesign_obj = $scache->load('loaddesign');
 	$design = $loaddesign_obj->get();
-	$mydesign = $design[$update['template']]['name'];
+	if (isset($design[$update['template']])) {
+		$mydesign = $design[$update['template']]['name'];
+	}
+	else {
+		$mydesign = $design[$config['templatedir']]['name'];
+	}
 	
 	$loadlanguage_obj = $scache->load('loadlanguage');
 	$language = $loadlanguage_obj->get();
-	$mylanguage = $language[$update['language']]['language'];
+	if (isset($language[$update['language']])) {
+		$mylanguage = $language[$update['language']]['language'];
+	}
+	else {
+		$mylanguage = $language[$config['langdir']]['language'];
+	}
 	
 	$customfields = editprofile_customfields(2, $my->id);
 	

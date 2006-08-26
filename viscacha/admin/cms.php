@@ -3249,10 +3249,10 @@ elseif ($job == 'feed_add2') {
 	$entries = $gpc->get('value', int);
 
 	if (empty($title)) {
-		error('admin.php?action=cms&job=feed_add'.SID2URL_x, 'Keinen Titel angegeben');
+		error('admin.php?action=cms&job=feed_add'.SID2URL_x, 'No title specified');
 	}
 	if (empty($file)) {
-		error('admin.php?action=cms&job=feed_add'.SID2URL_x, 'Keine Newsfeed-URL angegeben');
+		error('admin.php?action=cms&job=feed_add'.SID2URL_x, 'No URL specified');
 	}
 	if (empty($entries)) {
 		$entries = 0;
@@ -3263,7 +3263,7 @@ elseif ($job == 'feed_add2') {
 	$delobj = $scache->load('grabrss');
 	$delobj->delete();
 
-	ok('admin.php?action=cms&job=feed'.SID2URL_x, 'Newsfeed eingefügt');
+	ok('admin.php?action=cms&job=feed'.SID2URL_x, 'Newsfeed successfully added');
 }
 elseif ($job == 'feed_delete') {
 	echo head();
@@ -3280,17 +3280,17 @@ elseif ($job == 'feed_delete') {
 		$delobj = $scache->load('grabrss');
 		$delobj->delete();
 			
-		ok('admin.php?action=cms&job=feed'.SID2URL_x, $anz.' Newsfeeds gelöscht');
+		ok('admin.php?action=cms&job=feed'.SID2URL_x, $anz.' Newsfeed(s) successfully deleted');
 	}
 	else {
-		error('admin.php?action=cms&job=feed'.SID2URL_x, 'Keine Eingabe gemacht');
+		error('admin.php?action=cms&job=feed'.SID2URL_x, 'No newsfeed selected');
 	}
 }
 elseif ($job == 'feed_edit') {
 echo head();
 $id = $gpc->get('id', int);
 if (empty($id)) {
-	error('admin.php?action=cms&job=feed'.SID2URL_x, 'Keine gültige ID übergeben');
+	error('admin.php?action=cms&job=feed'.SID2URL_x, 'Invalid ID given');
 }
 $result = $db->query('SELECT * FROM '.$db->pre.'grab WHERE id = '.$id, __LINE__, __FILE__);
 $row = $db->fetch_assoc($result);
@@ -3329,13 +3329,13 @@ elseif ($job == 'feed_edit2') {
 	$entries = $gpc->get('value', int);
 	$id = $gpc->get('id', int);
 	if (!is_id($id)) {
-		error('admin.php?action=cms&job=feed'.SID2URL_x, 'Invalid ID delivered');
+		error('admin.php?action=cms&job=feed'.SID2URL_x, 'Invalid ID given');
 	}
 	if (empty($title)) {
-		error('admin.php?action=cms&job=feed_edit&id='.$id.SID2URL_x, 'No title given');
+		error('admin.php?action=cms&job=feed_edit&id='.$id.SID2URL_x, 'No title specified');
 	}
 	if (empty($file)) {
-		error('admin.php?action=cms&job=feed_edit&id='.$id.SID2URL_x, 'No Newsfeed-URL given');
+		error('admin.php?action=cms&job=feed_edit&id='.$id.SID2URL_x, 'No URL specified');
 	}
 	if (empty($entries)) {
 		$entries = 0;
@@ -3346,6 +3346,6 @@ elseif ($job == 'feed_edit2') {
 	$delobj = $scache->load('grabrss');
 	$delobj->delete();
 
-	ok('admin.php?action=cms&job=feed'.SID2URL_x, 'Entry updated');
+	ok('admin.php?action=cms&job=feed'.SID2URL_x, 'Newsfeed successfully updated');
 }
 ?>

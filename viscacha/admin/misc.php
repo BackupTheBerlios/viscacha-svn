@@ -649,12 +649,11 @@ elseif ($job == "credits") {
 		<strong>Used Scripts</strong> (most are modified):
 		<ul>
 		<li><a href="http://www.fpdf.org" target="_blank">FPDF 1.53 by Olivier Plathey</a> (PDF Creation, Freeware)</li>
-		<li><a href="http://www.angryrobot.com" target="_blank">File-Upload-Class 2.15 by David Fox, Angryrobot Productions</a> (File-Uploads; BSD)</li>
 		<li><a href="http://www.phpclasses.org/browse/author/152329.html" target="_blank">Roman Numeral Conversion by Huda M Elmatsani</a> (Roman Numeral Conversion; Freeware)</li>
 		<li><a href="http://www.phpclasses.org/browse/author/152329.html" target="_blank">Image Converter by Huda M Elmatsani</a> (Convert Images; Freeware)</li>
 		<li><a href="http://www.flaimo.com" target="_blank">vCard-Class 1.001 by Michael Wimmer</a> (vCard Output; Unspecified)</li>
 		<li><a href="http://www.phpconcept.net" target="_blank">PclZip Library 2.5 by Vincent Blavet</a> (Zip File Handling; LPGL)</li>
-		<li><a href="http://qbnz.com/highlighter" target="_blank">GeSHi 1.0.7.12 by Nigel McNie</a> (Syntax Highlighting; GPL)</li>
+		<li><a href="http://qbnz.com/highlighter" target="_blank">GeSHi 1.0.7.13 by Nigel McNie</a> (Syntax Highlighting; GPL)</li>
 		<li><a href="http://magpierss.sourceforge.net" target="_blank">MagPieRSS 0.72 by kellan</a> (Parsing Newsfeeds; GPL)</li>
 		<li><a href="http://phpmailer.sourceforge.net/" target="_blank">PHPMailer 1.73 by Brent R. Matzelle and SMTP Class 1.02 by Chris Ryan</a> (Sending E-Mails with SMTP; LGPL)</li>
 		<li><a href="http://cjphp.netflint.net" target="_blank">Class.Jabber.PHP v0.4.2 by Nathan Fritz</a> (Jabber Messages; GPL)</li>

@@ -117,9 +117,9 @@ if ($allowed == true) {
 		if ($_POST['temp'] == '1' && $my->mp[4] == '1') {
 			if ($info['tstart'] == 0 || $info['posts'] == 0) {
 				$db->query ("DELETE FROM {$db->pre}replies WHERE id = '{$info['id']}'",__LINE__,__FILE__);
-				$uresult = $db->query ("SELECT file FROM {$db->pre}uploads WHERE tid = '{$info['id']}'",__LINE__,__FILE__);
+				$uresult = $db->query ("SELECT source FROM {$db->pre}uploads WHERE tid = '{$info['id']}'",__LINE__,__FILE__);
 				while ($urow = $db->fetch_num($uresult)) {
-				    @unlink('uploads/topics/'.$urow[0]);
+				    $filesystem->unlink('uploads/topics/'.$urow[0]);
 				}
 				$db->query ("DELETE FROM {$db->pre}uploads WHERE tid = '{$info['id']}'",__LINE__,__FILE__);
 				$db->query ("DELETE FROM {$db->pre}postratings WHERE pid = '{$info['id']}'",__LINE__,__FILE__);

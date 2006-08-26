@@ -87,7 +87,7 @@ elseif ($_GET['action'] == "wwo") {
 
 	// Foren cachen
 	$catbid = $scache->load('cat_bid');
-	$fc = $catbid->get();
+	$cat_cache = $catbid->get();
 	// Documents cachen
 	$wraps_obj = $scache->load('wraps');
 	$wrap_cache = $wraps_obj->get();

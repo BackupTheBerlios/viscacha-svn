@@ -1,19 +1,19 @@
 ########################################
-# Installation Viscacha 0.8 Beta 2     #
+# Installation Viscacha 0.8 Beta 3     #
 ########################################
 
 
 == Preambel ==
 
-This is the second public release of Viscacha (0.8). Some of the Feature
+This is the third public release of Viscacha (0.8). Some of the Feature
 are missing, but I am working to complete these features for version 0.9.
 You can commit bugs and suggestions to the bugtracker (see below) and I 
-will check this entries and fix or implement them in most cases.
+will check these entries and fix or implement them in most cases.
 
 This version is meant only for testing purposes only and in productive use
 there can occur some problems. This is version 0.8 and not 1.0. Until 
 version 1.0 is released there will be some major changes that can affect 
-the compatibility and my result in lost data. Plugins and Components are 
+the compatibility and may result in lost data. Plugins and Components are 
 currently on the newest state, but there can be some minor changes in the
 API of plugins and components. All available hooks of the plugin system you
 can find in the file hooks.txt. If there is a hook missing, please contact 
@@ -63,86 +63,7 @@ Following files need CHMOD 666:
 
 First make a backup of your old data!
 
-Delete the following directories completely and afterwards upload these directories
-from the Viscacha 0.8 Beta 2 package:
-- languages/
-- modules/
-- templates/1/
-- cache/
-- temp/
-
-If you do not need this directory anymore, remove it completely:
-- smilies (moved to images/smileys)
-
-Replace (upload) all following directories and files:
-- admin/ (except for admin/licenses/notes.php!)
-- classes/
-- docs/credits.php
-- images/smileys/
-- templates/editor.js
-- templates/global.js
-- templates/editor
-- /
-- install/
-
-Replace or upload the following images to all installed image sets:
-- negative.gif
-- positive.gif
-- skype.gif
-- ucp_abos.gif
-- ucp_signature.gif
-
-Delete this image in each image set:
-- ucp_fav.gif
-
-Open the standard.css in all installed designs (stylesheets) and do the
-following four steps:
-
-1. Add the code between the dashes (-):
----------------------------------------------------
-.popup_noscript {
-	text-align: center;
-	background-color: #ffffff;
-	border: 1px solid #839FBC;
-	border-top: 0px;
-}
-.popup_noscript li {
-	display: inline;
-	font-weight: bold;
-	padding-right: 0.8em; 
-	padding-left: 0.8em;
-}
-.popup_noscript strong {
-	text-align: left;
-	display: block;
-	padding: 4px;
-	background-color: #BCCADA;
-	border-top: 1px solid #839FBC;
-	border-bottom: 1px solid #839FBC;
-	color: #336699;
-	font-size: 9pt;
-}
-.popup_noscript ul {
-	padding: 4px; 
-	margin: 0px; 
-	list-style-type: none;
-}
----------------------------------------------------
-
-2. Find the following line:
-.navigation_cat .nav_sub, .navigation_cat .nav {
-and replace it with the following line:
-.navigation_cat ul ul, .navigation_cat ul {
-
-3. Find the following line:
-.navigation_cat .nav_sub {
-and replace it with the following line:
-.navigation_cat ul ul {
-
-4. Find the following line:
-.navigation_cat .nav {
-and replace it with the following line:
-.navigation_cat ul {
+...
 
 
 == System requirements ==

@@ -65,7 +65,7 @@ if ($last['topiczahl'] < 1) {
 	$last['topiczahl'] = $config['topiczahl'];
 }
 
-$pre = '';
+$prefix = '';
 if ($info['prefix'] > 0) {
 	$prefix_obj = $scache->load('prefix');
 	$prefix_arr = $prefix_obj->get($info['board']);
@@ -158,7 +158,7 @@ if (!empty($info['vquestion']) && $_GET['page'] == 1) {
 }
 
 if ($config['tpcallow'] == 1) {
-	$result = $db->query("SELECT id, tid, mid, file, hits FROM {$db->pre}uploads WHERE topic_id = ".$_GET['id'],__LINE__,__FILE__);
+	$result = $db->query("SELECT id, tid, mid, file, source, hits FROM {$db->pre}uploads WHERE topic_id = ".$_GET['id'],__LINE__,__FILE__);
 	$uploads = array();
 	while ($row = $db->fetch_assoc($result)) {
 		$uploads[$row['tid']][] = $row;
@@ -200,8 +200,7 @@ while ($row = $gpc->prepare($db->fetch_object($result))) {
 	
 	if (isset($uploads[$row->id]) && $config['tpcallow'] == 1) {
 		foreach ($uploads[$row->id] as $file) {
-			$file['file'] = trim($file['file']);
-			$uppath = 'uploads/topics/'.$file['file'];
+			$uppath = 'uploads/topics/'.$file['source'];
 			$info = get_extension($uppath);
 			
 			// Dateigroesse

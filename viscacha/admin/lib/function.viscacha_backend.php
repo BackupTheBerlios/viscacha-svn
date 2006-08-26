@@ -258,27 +258,6 @@ function fileAge($age) {
 	return round($age, 0).' '.$string;
 }
 
-function ini_maxupload() {
-    $keys = array(
-    'post_max_size' => 0,
-    'upload_max_filesize' => 0
-    );
-    foreach ($keys as $key => $bytes) {
-        $val = trim(@ini_get($key));
-        $last = strtolower($val{strlen($val)-1});
-        switch($last) {
-            case 'g':
-                $val *= 1024;
-            case 'm':
-                $val *= 1024;
-            case 'k':
-                $val *= 1024;
-        }
-        $keys[$key] = $val;
-    }
-    return min($keys);
-}
-
 function recur_dir($dir, $clevel = 0) {
 	$dirlist = opendir($dir);
 	$std = count(explode('/',$dir));
