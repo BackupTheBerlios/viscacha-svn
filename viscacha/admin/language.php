@@ -105,26 +105,25 @@ elseif ($job == 'import2') {
 	if (!empty($_FILES['upload']['name'])) {
 		$filesize = 1024*1024;
 		$filetypes = array('zip');
-		$dir = realpath('temp/');
+		$dir = realpath('temp/').DIRECTORY_SEPARATOR;
 	
 		$insertuploads = array();
 		require("classes/class.upload.php");
 		 
 		$my_uploader = new uploader();
 		$my_uploader->max_filesize($filesize);
-		if ($my_uploader->upload('upload', $filetypes)) {
-			$my_uploader->save_file($dir, 2);
-			if ($my_uploader->return_error()) {
-				array_push($inserterrors,$my_uploader->return_error());
+		if ($my_uploader->upload('upload')) {
+			if ($my_uploader->save_file()) {
+				$file = $dir.$my_uploader->fileinfo('filename');
+				if (!file_exists($file)) {
+					$inserterrors[] = 'File ('.$file.') does not exist.';
+				}
 			}
 		}
-		else {
-			array_push($inserterrors,$my_uploader->return_error());
+		if ($my_uploader->upload_failed()) {
+			array_push($inserterrors,$my_uploader->get_error());
 		}
-		$file = $dir.'/'.$my_uploader->file['name'];
-		if (!file_exists($file)) {
-			$inserterrors[] = 'File ('.$file.') does not exist.';
-		}
+
 	}
 	elseif (file_exists($server)) {
 		$ext = get_extension($server);

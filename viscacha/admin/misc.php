@@ -245,28 +245,24 @@ elseif ($job == 'feedcreator_add') {
 	$class = $gpc->get('class', str);
 	$active = $gpc->get('active', str);
 	$dl = $gpc->get('dl', str);
-	$dir = realpath('./classes/feedcreator/');
+	$dir = realpath('./classes/feedcreator/').DIRECTORY_SEPARATOR;
 	
 	$inserterrors = array();
 	require("classes/class.upload.php");
 	$my_uploader = new uploader();
 	$my_uploader->max_filesize(200*1024);
-	if ($my_uploader->upload('upload', array('php'))) {
-		if (strlen($my_uploader->return_error()) > 0) {
-			array_push($inserterrors,$my_uploader->return_error());
+	$my_uploader->file_types(array('php'));
+	$my_uploader->set_path($dir);
+	if ($my_uploader->upload('upload')) {
+		if ($my_uploader->save_file()) {
+			$file = $my_uploader->fileinfo('filename');
 		}
-		$my_uploader->save_file($dir, 2);
-		$file = $my_uploader->file['name'];
 	}
-	else {
-		if (strlen($my_uploader->return_error()) > 0) {
-			array_push($inserterrors,$my_uploader->return_error());
-		}
-		else {
-			if (count($inserterrors) == 0) {
-				array_push($inserterrors, 'An unexpected error occurred');
-			}
-		}
+	if ($my_uploader->upload_failed()) {
+		array_push($inserterrors, $my_uploader->get_error());
+	}
+	if (empty($file)) {
+		array_push($inserterrors, 'File does not exist!');
 	}
 	if (count($inserterrors) > 0) {
 		error('admin.php?action=misc&job=feedcreator', $inserterrors);

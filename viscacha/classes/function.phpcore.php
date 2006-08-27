@@ -169,7 +169,7 @@ function msg_handler($errno, $errtext, $errfile, $errline) {
 		<p class="center">
 			[<a href="<?php echo $config['furl']; ?>/index.php">Return to Index</a>]
 			<?php if (check_hp($_SERVER['HTTP_REFERER'])) { ?>
-			&nbsp;&nbsp;[<a href="<?php echo $_SERVER['HTTP_REFERER']; ?>">Return to last Page</a>]
+			&nbsp;&nbsp;[<a href="<?php echo htmlspecialchars($_SERVER['HTTP_REFERER']); ?>">Return to last Page</a>]
 			<?php } ?>
 		</p>
 		<h3>Error Message</h3>

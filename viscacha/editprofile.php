@@ -337,7 +337,7 @@ elseif ($_GET['action'] == "signature") {
 			$preview = false;
 		}
 		else {
-			$signature = $_POST['signature'];
+			$signature = $gpc->unescape($_POST['signature']);
 			$preview = true;
 			BBProfile($bbcode, 'signature');
 			$parsedPreview = $bbcode->parse($signature);
@@ -429,18 +429,18 @@ elseif ($_GET['action'] == "pic2") {
 		$my_uploader = new uploader();
 		$my_uploader->max_filesize($config['avfilesize']);
 		$my_uploader->max_image_size($config['avwidth'], $config['avheight']);
-		if ($my_uploader->upload('upload', explode(',', $config['avfiletypes']))) {
-			$my_uploader->save_file('uploads/pics/', '2');
-		}
-		if ($my_uploader->return_error()) {
-			error($my_uploader->return_error(),'editprofile.php?action=pic');
-		}
-		else {
+		$my_uploader->file_types(explode(',', $config['avfiletypes']));
+		$my_uploader->set_path('uploads/pics/');
+		$my_uploader->rename_file($my->id);
+		if ($my_uploader->upload('upload')) {
 			removeOldImages('uploads/pics/', $my->id);
-			$my_uploader->rename_file($my->id);
+			if ($my_uploader->save_file()) {
+				$my->pic = 'uploads/pics/'.$my_uploader->fileinfo('filename');
+			}
 		}
-		$ext = get_extension();
-		$my->pic = 'uploads/pics/'.$my->id.$ext;
+		if ($my_uploader->upload_failed()) {
+			error($my_uploader->get_error(), 'editprofile.php?action=pic');
+		}
 	}
 	elseif (!empty($pic) && preg_match('/^(http:\/\/|www.)([\wäöüÄÖÜ@\-_\.]+)\:?([0-9]*)\/(.*)$/', $pic)) {
 		$my->pic = checkRemotePic($pic, $my->id);

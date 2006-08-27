@@ -114,7 +114,7 @@ if ($my->p['admin'] == 1) {
 		}
 		else {
 			echo head();
-			error($_SERVER['HTTP_REFERER'], 'Please choose a valid option!');
+			error(htmlspecialchars($_SERVER['HTTP_REFERER']), 'Please choose a valid option!');
 		}
 	}
 	else {

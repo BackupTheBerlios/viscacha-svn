@@ -119,23 +119,25 @@ elseif ($job == 'smileys_import2') {
 	if (!empty($_FILES['upload']['name'])) {
 		$filesize = 2048*1024;
 		$filetypes = array('zip');
-		$dir = realpath('temp/');
+		$dir = realpath('temp').DIRECTORY_SEPARATOR;
 	
 		$insertuploads = array();
 		require("classes/class.upload.php");
 		 
 		$my_uploader = new uploader();
 		$my_uploader->max_filesize($filesize);
-		if ($my_uploader->upload('upload', $filetypes)) {
-			$my_uploader->save_file($dir, 2);
-			if ($my_uploader->return_error()) {
-				array_push($inserterrors,$my_uploader->return_error());
+		$my_uploader->file_types($filetypes);
+		$my_uploader->set_path($dir);
+		if ($my_uploader->upload('upload')) {
+			$my_uploader->save_file();
+			if ($my_uploader->upload_failed()) {
+				array_push($inserterrors,$my_uploader->get_error());
 			}
 		}
 		else {
-			array_push($inserterrors,$my_uploader->return_error());
+			array_push($inserterrors,$my_uploader->get_error());
 		}
-		$file = $dir.DIRECTORY_SEPARATOR.$my_uploader->file['name'];
+		$file = $dir.DIRECTORY_SEPARATOR.$my_uploader->fileinfo('filename');
 		if (!file_exists($file)) {
 			$inserterrors[] = 'File ('.$file.') does not exist.';
 		}
@@ -435,20 +437,18 @@ elseif ($job == 'smileys_add') {
 	 
 	    $my_uploader = new uploader();
 		$my_uploader->max_filesize($filesize);
+		$my_uploader->file_types($filetypes);
+		$my_uploader->set_path($dir);
 		if (isset($imgwidth) && isset($imgheight)) {
 			$my_uploader->max_image_size($imgwidth, $imgheight);
 		}
-		if ($my_uploader->upload('upload_'.$i, $filetypes)) {
-			$my_uploader->save_file($dir, 2);
-			if ($my_uploader->return_error()) {
-				$error[] = $my_uploader->return_error();
-			}
-			else {
-				$has_upload = $gpc->save_str($my_uploader->fileinfo('name'));
+		if ($my_uploader->upload('upload_'.$i)) {
+			if ($my_uploader->save_file()) {
+				$has_upload = $gpc->save_str($my_uploader->fileinfo('filename'));
 			}
 		}
-		else {
-			$error[] = $my_uploader->return_error();
+		if ($my_uploader->upload_failed()) {
+			$error[] = $my_uploader->get_error();
 		}
 	}
 	if (strlen($gpc->get('code', str)) < 2) {

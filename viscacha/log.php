@@ -167,7 +167,7 @@ else {
 		if (check_hp($_SERVER['HTTP_REFERER'])) {
 			$url = parse_url($_SERVER['HTTP_REFERER']);
 			if (strpos($config['furl'], $url['host']) !== FALSE) {
-				$loc = urlencode($_SERVER['HTTP_REFERER']);
+				$loc = htmlspecialchars($_SERVER['HTTP_REFERER']);
 			}
 		}
 	}

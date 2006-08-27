@@ -127,7 +127,7 @@ class uploader {
 
 
 		// Copy PHP's global $_FILES array to a local array
-		$indexes = array('extension','size','width','height','tmp_name','raw_name','form','type','name','image');
+		$indexes = array('extension','size','width','height','tmp_name','raw_name','form','type','name','image','filename');
 		foreach ($indexes as $key) {
 			$this->file[$key] = isset($_FILES[$index][$key]) ? $_FILES[$index][$key] : null;
 		}
@@ -167,7 +167,7 @@ class uploader {
 		}
 		// Set raw_name
 		$this->file['raw_name'] = substr($this->file['name'], 0, -(strlen($this->file['extension'])+1) );
-		
+		$this->file['filename'] = $this->file['name'];
 		
 		// test max file size
 		if($this->max_filesize > 0 && $this->file['size'] > $this->max_filesize ) {
@@ -291,6 +291,7 @@ class uploader {
 					$this->error = UPLOAD_ERR_COPY;
 				}
 		}
+		$this->file['filename'] = $this->file['raw_name'].'.'.$this->file['extension']
 
 		// Clean up text file line breaks
 		if(substr($this->file['type'], 0, 4) == 'text') {
@@ -314,6 +315,7 @@ class uploader {
 	 * string	'form'
 	 * string	'type'
 	 * string	'name'
+	 * string	'filename'
 	 * boolean	'image'
 	 *
 	 * @param	string	Index

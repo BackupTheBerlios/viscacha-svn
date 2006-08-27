@@ -76,20 +76,18 @@ if ($job == 'upload') {
 	 
 	    $my_uploader = new uploader();
 		$my_uploader->max_filesize($filesize);
+		$my_uploader->file_types($filetypes);
+		$my_uploader->set_path($dir.DIRECTORY_SEPARATOR);
 		if (isset($imgwidth) && isset($imgheight)) {
 			$my_uploader->max_image_size($imgwidth, $imgheight);
 		}
-		if ($my_uploader->upload('upload_'.$i, $filetypes)) {
-			$my_uploader->save_file($dir, 2);
-			$errstr = $my_uploader->return_error();
-			if (!empty($errstr)) {
-				array_push($inserterrors, $my_uploader->return_error());
-			}
+		if ($my_uploader->upload('upload_'.$i)) {
+			$my_uploader->save_file();
 		}
-		else {
-			array_push($inserterrors, $my_uploader->return_error());
+		if ($my_uploader->upload_failed()) {
+			array_push($inserterrors,$my_uploader->get_error());
 		}
-    	$file = $dir.DIRECTORY_SEPARATOR.$my_uploader->file['name'];
+    	$file = $dir.DIRECTORY_SEPARATOR.$my_uploader->fileinfo('filename');
     	if (!file_exists($file)) {
     	    $inserterrors[] = 'File ('.$file.') does not exist.';
     	}

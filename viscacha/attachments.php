@@ -258,7 +258,7 @@ else {
 				($code = $plugins->load('attachments_upload_add_prepare')) ? eval($code) : null;
 				if ($my_uploader->upload($field)) {
 					if ($my_uploader->save_file()) {
-						array_push($insertuploads, array('file' => $my_uploader->fileinfo('name'), 'source' => $my_uploader->fileinfo('raw_name').'.'.$my_uploader->fileinfo('extension')));
+						array_push($insertuploads, array('file' => $my_uploader->fileinfo('name'), 'source' => $my_uploader->fileinfo('filename')));
 					}
 				}
 				if ($my_uploader->upload_failed()) {

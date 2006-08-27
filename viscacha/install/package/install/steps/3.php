@@ -7,9 +7,14 @@ if (isset($_SERVER['DOCUMENT_ROOT'])) {
 ?>
 <div class="bfoot">
 If you do not want to fill in your FTP data, you need not to fill them.
-<strong>You can skip this step, but this can result in problems with the CHMODs</strong>.
+You can skip this step, but this can result in problems with the CHMODs.
 It may be that they can not be set correctly and you have to set them manually.
 However, you can change or remove these data in the administration control panel later.
+<?php
+$sm = ini_get('safe_mode');
+if ($sm == '1' || strtolower($sm) == 'on' || $sm == true) { ?>
+<br /><strong>Your server has safe_mode enabled. It is highly recommended to fill in your FTP data to avoid problems with incorrect CHMODs.</strong>
+<?php } ?>
 </div>
 <div class="bbody">
 	<input type="hidden" name="save" value="1" />
