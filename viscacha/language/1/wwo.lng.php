@@ -24,7 +24,7 @@ $lang['wwo_profile'] = 'Betrachtet das Profil von <a href="profile.php?id={$id}"
 $lang['wwo_profile_send'] = 'Schickt <a href="profile.php?id={$id}">{$title}</a> über das Profil eine Nachricht';
 $lang['wwo_popup_hlcode'] = 'Betrachtet Quellcode (erweitert)';
 $lang['wwo_popup_filetypes'] = 'Liest die Beschreibung eines Dateityps';
-$lang['wwo_popup_showpost'] = 'Betrachtet einen einzelnen Beitrag: <a href="javascript:showpost(\'{$id}\');">{$title}</a>';
+$lang['wwo_popup_showpost'] = 'Betrachtet einen einzelnen Beitrag: <a href="popup.php?action=showpost&id={$id}" target="showpost" onclick="showpost(this)">{$title}</a>';
 $lang['wwo_popup'] = 'Liest die Hilfe';
 $lang['wwo_pm_write'] = 'Schreibt eine <a href="pm.php?action=new">private Nachricht</a>';
 $lang['wwo_pm_manage'] = 'Verwaltet seine privaten Nachrichten';

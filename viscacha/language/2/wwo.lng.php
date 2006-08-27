@@ -24,7 +24,7 @@ $lang['wwo_profile'] = 'views the profile of <a href="profile.php?id={$id}">{$ti
 $lang['wwo_profile_send'] = 'sends <a href="profile.php?id={$id}">{$title}</a> a nmessage via the profile';
 $lang['wwo_popup_hlcode'] = 'views source code (extended)';
 $lang['wwo_popup_filetypes'] = 'reads the descritpion of a filetype';
-$lang['wwo_popup_showpost'] = 'views a single post: <a href="javascript:showpost(\'{$id}\');">{$title}</a>';
+$lang['wwo_popup_showpost'] = 'views a single post: <a href="popup.php?action=showpost&id={$id}" target="showpost" onclick="showpost(this)">{$title}</a>';
 $lang['wwo_popup'] = 'reads the help';
 $lang['wwo_pm_write'] = 'writes a <a href="pm.php?action=new">private message</a>';
 $lang['wwo_pm_manage'] = 'administers hers/his private messages';

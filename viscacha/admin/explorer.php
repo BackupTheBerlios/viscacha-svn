@@ -1,7 +1,7 @@
 <?php
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "explorer.php") die('Error: Hacking Attempt');
 
-$uploadfields = 3;
+$uploadfields = 5;
 require_once("admin/lib/class.servernavigator.php");
 include_once('classes/class.template.php');
 $tpl = new tpl();
@@ -10,6 +10,7 @@ $ServerNavigator = new ServerNavigator();
 if ($job == 'upload') {
 
 	$cfg = $gpc->get('cfg', str);
+	$path = $gpc->get('path', none);
 
 	if ($cfg == 'cron') {
 		$ups = 1;
@@ -54,7 +55,7 @@ if ($job == 'upload') {
 		$filetypes = '';
 		$path = $gpc->get('path');
 		$dir = realpath($path);
-		$url = 'admin.php?action=explorer&path='.urldecode($ServerNavigator->realPath($path));
+		$url = 'admin.php?action=explorer&path='.urlencode($ServerNavigator->realPath($path));
 	}
 	$filesize *= 1024;
 	$filetypes = explode('|', $filetypes);
@@ -109,14 +110,14 @@ if ($job == 'upload') {
 			while(file_exists($dir.DIRECTORY_SEPARATOR.'captcha_'.$n.'.ttf')) {
 				$n++;
 			}
-			$filesystem->rename($dir.DIRECTORY_SEPARATOR.$my_uploader->file['name'], $dir.DIRECTORY_SEPARATOR.'captcha_'.$n.'.ttf');
+			$filesystem->rename($dir.DIRECTORY_SEPARATOR.$my_uploader->fileinfo('filename'), $dir.DIRECTORY_SEPARATOR.'captcha_'.$n.'.ttf');
 		}
 		elseif ($cfg == 'captcha_noises') {
 			$n = 1;
 			while(file_exists($dir.DIRECTORY_SEPARATOR.'noise_'.$n.'.jpg')) {
 				$n++;
 			}
-			$filesystem->rename($dir.DIRECTORY_SEPARATOR.$my_uploader->file['name'], $dir.DIRECTORY_SEPARATOR.'noise_'.$n.'.jpg');
+			$filesystem->rename($dir.DIRECTORY_SEPARATOR.$my_uploader->fileinfo('filename'), $dir.DIRECTORY_SEPARATOR.'noise_'.$n.'.jpg');
 		}
 		ok($url, 'Upload ready!');
 	}

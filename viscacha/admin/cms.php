@@ -618,8 +618,12 @@ elseif ($job == 'plugins_add3') {
 	if (!$isInvisibleHook) {
 		$filesystem->unlink('cache/modules/'.$plugins->_group($data['position']).'.php');
 	}
-
-	ok('admin.php?action=cms&job=plugins_add&id='.$data['module'], 'Step 3 of 3: Plugin successfully added!');
+	if ($data['position'] == 'navigation') {
+		ok('admin.php?action=cms&job=nav_addplugin&id='.$data['module'], 'Step 3 of 3: Plugin successfully added! You have added a plugin to the hook "navigation". Before you can use it in your navigation, you have to add it to your Navigation Manager.');
+	}
+	else {
+		ok('admin.php?action=cms&job=plugins_add&id='.$data['module'], 'Step 3 of 3: Plugin successfully added!');
+	}
 }
 elseif ($job == 'package_template') {
 	$id = $gpc->get('id', int);
@@ -2064,6 +2068,7 @@ elseif ($job == 'nav_active') {
 }
 elseif ($job == 'nav_addplugin') {
 	echo head();
+	$id = $gpc->get('id', int);
 	$sort = $db->query("SELECT ordering, name FROM {$db->pre}menu WHERE sub = '0' ORDER BY ordering, id", __LINE__, __FILE__);
 	$plugs = $db->query("SELECT id, name FROM {$db->pre}plugins WHERE position = 'navigation' ORDER BY ordering", __LINE__, __FILE__);
 	$groups = $db->query("SELECT id, name FROM {$db->pre}groups", __LINE__, __FILE__);
@@ -2082,7 +2087,7 @@ elseif ($job == 'nav_addplugin') {
    <td class="mbox" width="50%">
    <select name="plugin">
    <?php while ($row = $db->fetch_assoc($plugs)) { ?>
-   <option value="<?php echo $row['id']; ?>"><?php echo $row['name']; ?></option>
+   <option value="<?php echo $row['id']; ?>"<?php echo iif($row['id'] == $id, ' selected="selected"'); ?>><?php echo $row['name']; ?></option>
    <?php } ?>
    </select>
    </td>
@@ -2515,11 +2520,19 @@ elseif ($job == 'com_add') {
 <form name="form" method="post" action="admin.php?action=cms&job=com_add2" enctype="multipart/form-data">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr> 
-   <td class="obox" colspan="2">Upload new Components</b></td>
+   <td class="obox" colspan="2">Import a new Component</td>
   </tr>
   <tr> 
-   <td class="mbox" width="50%">Packed Component:<br><span class="stext">Compressed file containing the component (.zip). You should install only components from confidential sources!</td>
-   <td class="mbox" width="50%"><input type="file" name="upload" size="60" /></td> 
+   <td class="mbox" width="50%"><em>Either</em> upload a file:<br /><span class="stext">Compressed file (.zip) containing the component. Maximum file size: <?php echo formatFilesize(ini_maxupload()); ?>. You should install only components from confidential sources!</td>
+   <td class="mbox" width="50%"><input type="file" name="upload" size="40" /></td> 
+  </tr>
+  <tr>
+   <td class="mbox"><em>or</em> select a file from the server:<br /><span class="stext">Path starting from the Viscacha-root-directory: <?php echo $config['fpath']; ?></span></td>
+   <td class="mbox"><input type="text" name="server" size="50" /></td>
+  </tr>
+  <tr>
+   <td class="mbox">Delete file after import:</td>
+   <td class="mbox"><input type="checkbox" name="delete" value="1" checked="checked" /></td>
   </tr>
   <tr> 
    <td class="ubox" width="100%" colspan="2" align="center"><input type="submit" name="Submit" value="Upload"></td> 
@@ -2532,113 +2545,136 @@ elseif ($job == 'com_add') {
 elseif ($job == 'com_add2') {
 	echo head();
 	
-	if (isset($_FILES) && is_array($_FILES['upload']) && $_FILES['upload']['name']) {
+	$del = $gpc->get('delete', int);
+	$server = $gpc->get('server', none);
+	$inserterrors = array();
+	
+	$sourcefile = '';
+	if (!empty($_FILES['upload']['name'])) {
 		require("classes/class.upload.php");
+		$dir = 'temp/';
 		$my_uploader = new uploader();
 		$my_uploader->file_types(array('zip'));
-		$my_uploader->set_path('temp/');
+		$my_uploader->set_path($dir);
+		$my_uploader->max_filesize(ini_maxupload());
 		if ($my_uploader->upload('upload')) {
-			$my_uploader->save_file();
+			if ($my_uploader->save_file()) {
+				$sourcefile = $dir.$my_uploader->fileinfo('filename');
+			}
 		}
 		if ($my_uploader->upload_failed()) {
-			error('admin.php?action=cms&job=com_add', $my_uploader->get_error());
-		} 
-		else {
-			$tdir = "temp/".time();
-			$filesystem->mkdir($tdir);
-			if (!is_dir($tdir)) {
-				error('admin.php?action=cms&job=com_add', 'Directory could not be created for extraction.');
-			}
-			include('classes/class.zip.php');
-			$archive = new PclZip('temp/'.$my_uploader->file['name']);
-			if ($archive->extract(PCLZIP_OPT_PATH, $tdir) == 0) {
-				error('admin.php?action=cms&job=com_add', $archive->errorInfo(true));
-			}
-
-			if (file_exists($tdir.'/components.ini')) {
-				$cfg = $myini->read($tdir.'/components.ini');
-			}
-			else {
-				error('admin.php?action=cms&job=com_add', 'components.ini file does not exist!');
-			}
-
-			if (!isset($cfg['module']['frontpage'])) {
-				$cfg['module']['frontpage'] = '';
-			}
-
-			$db->query("INSERT INTO {$db->pre}component (file) VALUES ('{$cfg['module']['frontpage']}')", __LINE__, __FILE__);
-			$id = $db->insert_id();
-
-			$result = $db->query("SELECT template, stylesheet, images FROM {$db->pre}designs WHERE id = '{$config['templatedir']}'",__LINE__,__FILE__);
-			$design = $db->fetch_assoc($result);
-			
-			$result = $db->query("SELECT stylesheet FROM {$db->pre}designs GROUP BY stylesheet",__LINE__,__FILE__);
-
-			if (isset($cfg['php']) && count($cfg['php']) > 0) {
-				$filesystem->mkdir("./components/$id");
-				foreach ($cfg['php'] as $file) {
-					$filesystem->copy("$tdir/php/$file", "./components/$id/$file");
-				}
-			}
-			if (isset($cfg['language']) && count($cfg['language']) > 0) {
-				$filesystem->mkdir("./language/{$config['langdir']}/components/$id", 0777);
-				foreach ($cfg['language'] as $file) {
-					$filesystem->copy("$tdir/language/$file", "./language/{$config['langdir']}/components/$id/$file");
-					$filesystem->chmod("./language/{$config['langdir']}/components/$id/$file", 0666);
-				}
-			}
-			
-			if (isset($cfg['template']) && count($cfg['template']) > 0) {
-				$filesystem->mkdir("./templates/{$design['template']}/components/$id", 0777);
-				foreach ($cfg['template'] as $file) {
-					$filesystem->copy("$tdir/template/$file", "./templates/{$design['template']}/components/$id/$file");
-					$filesystem->chmod("./templates/{$design['template']}/components/$id/$file", 0666);
-				}
-			}
-			
-			if (isset($cfg['image']) && count($cfg['image']) > 0) {
-				foreach ($cfg['image'] as $file) {
-					$filesystem->copy("$tdir/image/$file", "./images/{$design['images']}/$file");
-				}
-			}
-			
-			if (isset($cfg['style']) && count($cfg['style']) > 0) {
-				while ($css = $db->fetch_assoc($result)) {
-					foreach ($cfg['style'] as $file) {
-						$filesystem->copy("$tdir/style/$file", "./designs/{$css['stylesheet']}/$file");
-					}
-				}
-			}
-
-			$filesystem->copy("{$tdir}/components.ini","./components/{$id}/components.ini");
-			$filesystem->chmod("./components/{$id}/components.ini", 0666);
-
-			$delobj = $scache->load('components');
-			$delobj->delete();
-			
-			rmdirr($tdir);
-			unset($archive);
-			$filesystem->unlink('./temp/'.$my_uploader->file['name']);
-			
-			if (empty($cfg['config']['install'])) {
-				ok('admin.php?action=cms&job=com', 'Komponente wurde installiert!');
-			}
-			else {
-				$mod = $gpc->get('file', none, $cfg['config']['install']);
-				$uri = explode('?', $mod);
-				$file = basename($uri[0]);
-				if (isset($uri[1])) {
-					parse_str($uri[1], $input);
-				}
-				else {
-					$input = array();
-				}
-				include("components/{$id}/{$file}");
-			}	
+			array_push($inserterrors,$my_uploader->get_error());
 		}
 	}
+	elseif (file_exists($server)) {
+		$ext = get_extension($server);
+		if ($ext == 'zip') {
+			$sourcefile = $server;
+		}
+		else {
+			$inserterrors[] = 'The selected file is no ZIP-file.';
+		}
+	}
+	if (!file_exists($sourcefile)) {
+		$inserterrors[] = 'No valid file selected.';
+	}
+	if (count($inserterrors) > 0) {
+		error('admin.php?action=designs&job=design_import', $inserterrors);
+	}
 	else {
-		error('admin.php?action=cms&job=acom_add', 'No file was chosen.');
+		$tdir = "temp/".md5(microtime()).'/';
+		$filesystem->mkdir($tdir);
+		if (!is_dir($tdir)) {
+			error('admin.php?action=cms&job=com_add', 'Directory could not be created for extraction.');
+		}
+		include('classes/class.zip.php');
+		$archive = new PclZip($sourcefile);
+		if ($archive->extract(PCLZIP_OPT_PATH, $tdir) == 0) {
+			error('admin.php?action=cms&job=com_add', $archive->errorInfo(true));
+		}
+
+		if (file_exists($tdir.'components.ini')) {
+			$cfg = $myini->read($tdir.'components.ini');
+		}
+		else {
+			error('admin.php?action=cms&job=com_add', 'components.ini file does not exist!');
+		}
+
+		if (!isset($cfg['module']['frontpage'])) {
+			$cfg['module']['frontpage'] = '';
+		}
+
+		$db->query("INSERT INTO {$db->pre}component (file) VALUES ('{$cfg['module']['frontpage']}')", __LINE__, __FILE__);
+		$id = $db->insert_id();
+
+		$result = $db->query("SELECT template, stylesheet, images FROM {$db->pre}designs WHERE id = '{$config['templatedir']}'",__LINE__,__FILE__);
+		$design = $db->fetch_assoc($result);
+			
+		$result = $db->query("SELECT stylesheet FROM {$db->pre}designs GROUP BY stylesheet",__LINE__,__FILE__);
+
+		if (isset($cfg['php']) && count($cfg['php']) > 0) {
+			$filesystem->mkdir("./components/{$id}");
+			foreach ($cfg['php'] as $file) {
+				$filesystem->copy("{$tdir}php/{$file}", "./components/{$id}/{$file}");
+			}
+		}
+		if (isset($cfg['language']) && count($cfg['language']) > 0) {
+			$filesystem->mkdir("./language/{$config['langdir']}/components/{$id}", 0777);
+			foreach ($cfg['language'] as $file) {
+				$filesystem->copy("{$tdir}/language/$file", "./language/{$config['langdir']}/components/{$id}/{$file}");
+				$filesystem->chmod("./language/{$config['langdir']}/components/$id/$file", 0666);
+			}
+		}
+			
+		if (isset($cfg['template']) && count($cfg['template']) > 0) {
+			$filesystem->mkdir("./templates/{$design['template']}/components/{$id}", 0777);
+			foreach ($cfg['template'] as $file) {
+				$filesystem->copy("{$tdir}template/{$file}", "./templates/{$design['template']}/components/{$id}/{$file}");
+				$filesystem->chmod("./templates/{$design['template']}/components/{$id}/{$file}", 0666);
+			}
+		}
+			
+		if (isset($cfg['image']) && count($cfg['image']) > 0) {
+			foreach ($cfg['image'] as $file) {
+				$filesystem->copy("{$tdir}image/{$file}", "./images/{$design['images']}/{$file}");
+			}
+		}
+			
+		if (isset($cfg['style']) && count($cfg['style']) > 0) {
+			while ($css = $db->fetch_assoc($result)) {
+				foreach ($cfg['style'] as $file) {
+					$filesystem->copy("{$tdir}style/{$file}", "./designs/{$css['stylesheet']}/{$file}");
+				}
+			}
+		}
+
+		$filesystem->copy("{$tdir}components.ini","./components/{$id}/components.ini");
+		$filesystem->chmod("./components/{$id}/components.ini", 0666);
+
+		$delobj = $scache->load('components');
+		$delobj->delete();
+			
+		rmdirr($tdir);
+		unset($archive);
+		if ($del > 0) {
+			$filesystem->unlink($sourcefile);
+		}
+			
+		if (empty($cfg['config']['install'])) {
+			ok('admin.php?action=cms&job=com', 'Component successfully imported!');
+		}
+		else {
+			$mod = $gpc->get('file', none, $cfg['config']['install']);
+			$uri = explode('?', $mod);
+			$file = basename($uri[0]);
+			if (isset($uri[1])) {
+				parse_str($uri[1], $input);
+			}
+			else {
+				$input = array();
+			}
+			include("components/{$id}/{$file}");
+		}	
 	}
 }
 elseif ($job == 'com_export') {

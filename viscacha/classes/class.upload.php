@@ -291,11 +291,18 @@ class uploader {
 					$this->error = UPLOAD_ERR_COPY;
 				}
 		}
-		$this->file['filename'] = $this->file['raw_name'].'.'.$this->file['extension']
+		$this->file['filename'] = $this->file['raw_name'].'.'.$this->file['extension'];
 
 		// Clean up text file line breaks
 		if(substr($this->file['type'], 0, 4) == 'text') {
 			$this->cleanup_text_file();
+		}
+		if (isset($GLOBALS['filesystem'])) {
+			global $filesystem;
+			$filesystem->chmod($this->file['tmp_name'], 0666);
+		}
+		else {
+			@chmod($this->file['tmp_name'], 0666);
 		}
 
 		return $success;

@@ -115,7 +115,7 @@ elseif ($_GET['action'] == "wwo") {
 			$row->name = $memberdata[$row->mid];
 		}
 		else {
-			$row->name = NULL;
+			$row->name = $lang->phrase('fallback_no_username');
 		}
 		
 		switch (strtolower($row->wiw_script)) {

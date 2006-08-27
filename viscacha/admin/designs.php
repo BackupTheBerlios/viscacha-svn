@@ -394,6 +394,9 @@ elseif ($job == 'design_import2') {
 		error('admin.php?action=designs&job=design_import', 'ZIP-archive could not be read or the folder is empty.');
 	}
 	else {
+		if (!file_exists($tempdir.'design.ini')) {
+			error('admin.php?action=designs&job=design_import', 'ZIP-archive does not contain design.ini.');
+		}
 		$ini = $myini->read($tempdir.'design.ini');
 		
 		$result = $db->query("SELECT * FROM `{$db->pre}designs` WHERE id = '{$config['templatedir']}' LIMIT 1");

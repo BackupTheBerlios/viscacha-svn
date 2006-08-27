@@ -136,7 +136,6 @@ function isInvisibleHook($hook) {
 		break;
 		default:
 			return false;
-		break;
 	}
 }
 
