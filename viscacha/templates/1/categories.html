@@ -2,7 +2,7 @@
     <thead>
 	<tr>
 		<th colspan="4">
-			<img id="img_cat_f<?php echo $cat['id']; ?>" name="collapse" src="<?php echo $tpl->img('minus'); ?>" alt="" /> <?php echo $cat['name']; ?>
+			<img id="img_cat_f<?php echo $cat['id']; ?>" alt="switch" src="<?php echo $tpl->img('minus'); ?>" title="<?php echo $lang->phrase('box_collapse'); ?>" /> <?php echo $cat['name']; ?>
 			<?php echo iif ($cat['desctxt'], '<br /><span class="stext">'.$cat['desctxt'].'</span>'); ?>
 		</th>
 	</tr>
