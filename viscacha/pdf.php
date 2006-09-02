@@ -172,7 +172,7 @@ FROM {$db->pre}replies AS r
 WHERE r.topic_id = '{$info['id']}' {$searchsql}
 ",__LINE__,__FILE__);
 
-while ($row = $gpc->prepare($db->fetch_object($result))) {
+while ($row = $db->fetch_object($result)) { // no $gpc->prepare for pdf
 	$inner['upload_box'] = '';	
 
 	if ($row->guest == 0) {
@@ -185,7 +185,6 @@ while ($row = $gpc->prepare($db->fetch_object($result))) {
 		$row->groups = GROUP_GUEST;
 	}
 
-	$row->comment = trim($row->comment);
 	$bbcode->setSmileys(0);
 	if ($config['wordstatus'] == 0) {
 		$row->dowords = 0;
@@ -194,9 +193,9 @@ while ($row = $gpc->prepare($db->fetch_object($result))) {
 	if ($info['status'] == 2) {
 		$row->comment = $bbcode->ReplaceTextOnce($row->comment, 'moved');
 	}
-	$row->comment = html_entity_decode($bbcode->parse($row->comment, 'pdf'));
+	$row->comment = html_entity_decode($bbcode->parse($row->comment, 'pdf'), ENT_QUOTES);
 	$row->date = gmdate($lang->phrase('dformat1'), times($row->date));
-	$row->topic = html_entity_decode($row->topic);
+	$row->topic = html_entity_decode($row->topic, ENT_QUOTES);
 
 	if (isset($uploads[$row->id]) && $config['tpcallow'] == 1) {
 		$row->comment .= '<br><hr><b>'.$lang->phrase('pdf_attachments').'</b><br>';

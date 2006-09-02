@@ -345,7 +345,7 @@ elseif ($_GET['action'] == "save") {
 			}
 		}
 
-		$db->query ("UPDATE {$db->pre}cat SET topics = topics+1, last_topic = '{$tredirect}' WHERE id = '{$board}'");	
+		$db->query ("UPDATE {$db->pre}forums SET topics = topics+1, last_topic = '{$tredirect}' WHERE id = '{$board}'");	
 		$catobj = $scache->load('cat_bid');
 		$catobj->delete();
 		

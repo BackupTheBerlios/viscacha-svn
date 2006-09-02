@@ -652,7 +652,7 @@ function UpdateBoardStats ($board) {
 	    if (empty($last[0])) {
 			$last[0] = 0;
 		}
-		$db->query("UPDATE {$db->pre}cat SET topics = '".$topics."', replys = '".$replies."', last_topic = '".$last[0]."' WHERE id = '".$board."'",__LINE__,__FILE__);
+		$db->query("UPDATE {$db->pre}forums SET topics = '".$topics."', replies = '".$replies."', last_topic = '".$last[0]."' WHERE id = '".$board."'",__LINE__,__FILE__);
 		$delobj = $scache->load('cat_bid');
 		$delobj->delete();
 	}

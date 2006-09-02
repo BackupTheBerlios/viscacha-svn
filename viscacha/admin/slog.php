@@ -177,8 +177,12 @@ elseif ($job == 's_general_image') {
 	while ($row = $db->fetch_assoc($result)) {
 		$statdate = date($phpformat, $row['statdate']);
 		
-		if ($timeorder == 1) $statdate = preg_replace("/(\d+)~/e", "getday('\\1')", $statdate);
-		if ($timeorder > 1) $statdate = preg_replace("/(\d+)~/e", "getmonth('\\1')", $statdate);
+		if ($timeorder == 1) {
+			$statdate = preg_replace_callback("/(\d+)~/", "getday", $statdate);
+		}
+		if ($timeorder > 1) {
+			$statdate = preg_replace_callback("/(\d+)~/", "getmonth", $statdate);
+		}
 		if ($timeorder == 2) {
 			$week = ceil((date('z', $row['statdate']) - daynumber($row['statdate'])) / 7) + ((daynumber(mktime(0, 0, 0, 1, 1, date('Y', $row['statdate']))) <= 3) ? (1) : (0));
 			if ($week == 53 && daynumber(mktime(0, 0, 0, 12, 31, date('Y', $row['statdate']))) < 3) {

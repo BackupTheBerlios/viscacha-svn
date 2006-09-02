@@ -157,5 +157,6 @@ else {
 
 ($code = $plugins->load('admin_end')) ? eval($code) : null;
 
+$slog->updatelogged();
 $db->close();	
 ?>

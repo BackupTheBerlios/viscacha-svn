@@ -328,12 +328,12 @@ function SubStats($rtopics, $rreplys, $rid, $cat_cache,$bids=array()) {
 			if (isset($cat_cache[$subfs['id']])) {
 				$substats = SubStats(0, 0, $subfs['id'], $cat_cache, $bids);
 				$rtopics = $rtopics+$subfs['topics']+$substats[0];
-				$rreplys = $rreplys+$subfs['replys']+$substats[1];
+				$rreplys = $rreplys+$subfs['replies']+$substats[1];
 				$bids = $substats[2];
 			}
 			else {
 				$rtopics = $rtopics+$subfs['topics'];
-				$rreplys = $rreplys+$subfs['replys'];
+				$rreplys = $rreplys+$subfs['replies'];
 			}
 		}
 	}
@@ -347,8 +347,6 @@ function BoardSelect($board = 0) {
 	$found = false;
 	$sub_cache = array();
 	$sub_cache_last = array();
-	$cat_cache = array();
-	$mod_cache = array();
 	$forum_cache = array();
 	
 	$categories_obj = $scache->load('categories');
@@ -362,14 +360,15 @@ function BoardSelect($board = 0) {
 
 	($code = $plugins->load('forums_query')) ? eval($code) : null;
     // Fetch Forums
-	$result = $db->query("SELECT 
-    	c.id, c.name, c.desc, c.opt, c.optvalue, c.bid, c.topics, c.replys, c.cid, c.last_topic, c.invisible,  
+	$result = $db->query("
+	SELECT 
+    	f.id, f.name, f.description, f.opt, f.optvalue, f.parent, f.topics, f.replies, f.last_topic, f.invisible,  
     	t.topic as btopic, t.id as btopic_id, t.last as bdate, u.name AS uname, t.last_name AS bname
-    FROM {$db->pre}cat AS c
-        LEFT JOIN {$db->pre}topics AS t ON c.last_topic=t.id 
+    FROM {$db->pre}forums AS f
+        LEFT JOIN {$db->pre}topics AS t ON f.last_topic=t.id 
         LEFT JOIN {$db->pre}user AS u ON t.last_name=u.id 
-    ORDER BY c.cid, c.c_order, c.id"
-    ,__LINE__,__FILE__);
+    ORDER BY f.parent, f.position
+	",__LINE__,__FILE__);
 	
 	if ($db->num_rows($result) == 0) {
 		$errormsg = array('There are currently no boards to show. Pleas visit the <a href="admin.php'.SID2URL_1.'">Admin Control Panel</a> and create some forums.');
@@ -383,14 +382,15 @@ function BoardSelect($board = 0) {
 		$row['name'] = $gpc->prepare($row['name']);
 		$row['uname'] = $gpc->prepare($row['uname']);
 		$row['bname'] = $gpc->prepare($row['bname']);
+		$row['bid'] = $cat_cache[$row['parent']]['parent'];
 	    // Caching for Subforums
-	    if ($row['bid'] > 0) {
+	    if (!empty($row['bid'])) {
 	        $sub_cache[$row['bid']][] = $row;
 	        $sub_cache_last[$row['id']] = $row;
 	    }
 	    // Caching the Forums
 	    if ($row['bid'] == $board) {
-	        $forum_cache[$row['cid']][] = $row;
+	        $forum_cache[$row['parent']][] = $row;
 	    }
 	    ($code = $plugins->load('forums_caching')) ? eval($code) : null;
 	}
@@ -410,9 +410,9 @@ function BoardSelect($board = 0) {
     	    
     	    // Subforendaten vererben (Letzter Beitrag, Markierung)
     	    if(isset($sub_cache[$forum['id']])) {	
-    			$substats = SubStats($forum['topics'], $forum['replys'], $forum['id'], $sub_cache);
+    			$substats = SubStats($forum['topics'], $forum['replies'], $forum['id'], $sub_cache);
     			$forum['topics'] = $substats[0];
-    			$forum['replys'] = $substats[1];
+    			$forum['replies'] = $substats[1];
     			$bids = $substats[2];
     		}
     
@@ -470,7 +470,7 @@ function BoardSelect($board = 0) {
     				}
 					$forum['foldimg'] = $tpl->img('cat_locked');
     				$forum['topics'] = '-';
-    				$forum['replys'] = '-';
+    				$forum['replies'] = '-';
     				$forum['btopic'] = false;
     			}
     			else {
@@ -493,7 +493,7 @@ function BoardSelect($board = 0) {
     		    }
     	    }
     	    $forum['topics'] = numbers($forum['topics']);
-    	    $forum['replys'] = numbers($forum['replys']);
+    	    $forum['replies'] = numbers($forum['replies']);
     	    
     	    // Moderatoren
     	    $forum['mod'] = array();

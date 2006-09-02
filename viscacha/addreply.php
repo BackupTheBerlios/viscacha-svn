@@ -236,8 +236,8 @@ if ($_GET['action'] == "save") {
 		}
 		
 		$db->query ('
-		UPDATE '.$db->pre.'cat 
-		SET replys = replys+1, last_topic = "'.$_POST['id'].'" 
+		UPDATE '.$db->pre.'forums 
+		SET replies = replies+1, last_topic = "'.$_POST['id'].'" 
 		WHERE id = '.$info['board']
 		,__LINE__,__FILE__);
 

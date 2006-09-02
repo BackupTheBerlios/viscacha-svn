@@ -329,7 +329,10 @@ class DB {
 		$func = $this->escaper;
 		return $func($value);
 	}
-	function list_tables($db) {
+	function list_tables($db = null) {
+		if ($db == null) {
+			$db = $this->database;
+		}
 		$result = $this->query('SHOW TABLES FROM '.$db,__LINE__,__FILE__);
 		$tables = array();
 		while ($row = $this->fetch_num($result)) {

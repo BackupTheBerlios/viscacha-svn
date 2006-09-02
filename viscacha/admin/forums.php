@@ -7,7 +7,7 @@ function ForumSubs ($tree, $cat, $board, $char = '+', $level = 0) {
 		?>
 		<tr> 
 			<td class="mmbox" width="50%"><?php echo str_repeat($char, $level).' <b>'.$cdata['name']; ?></b></td>
-			<td class="mmbox" width="10%"><?php echo $cdata['c_order']; ?>&nbsp;&nbsp;
+			<td class="mmbox" width="10%"><?php echo $cdata['position']; ?>&nbsp;&nbsp;
 				<a href="admin.php?action=forums&job=move&temp1=c_<?php echo $cdata['id']; ?>&int1=-1"><img src="admin/html/images/asc.gif" border="0" alt="Up"></a>&nbsp;
 				<a href="admin.php?action=forums&job=move&temp1=c_<?php echo $cdata['id']; ?>&int1=1"><img src="admin/html/images/desc.gif" border="0" alt="Down"></a>
 			</td>
@@ -30,7 +30,7 @@ function ForumSubs ($tree, $cat, $board, $char = '+', $level = 0) {
 			?>
 			  <tr>
 			    <td class="mbox"><?php echo str_repeat($char, $level+1).' '.$bdata['name']; ?></td>
-				<td class="mbox" width="10%" align="right"><?php echo $bdata['c_order']; ?>&nbsp;&nbsp;
+				<td class="mbox" width="10%" align="right"><?php echo $bdata['position']; ?>&nbsp;&nbsp;
 				<a href="admin.php?action=forums&job=move&temp1=f_<?php echo $bdata['id']; ?>&int1=-1"><img src="admin/html/images/asc.gif" border="0" alt="Up"></a>&nbsp;
 				<a href="admin.php?action=forums&job=move&temp1=f_<?php echo $bdata['id']; ?>&int1=1"><img src="admin/html/images/desc.gif" border="0" alt="Down"></a>
 				</td>
@@ -98,7 +98,7 @@ elseif ($job == 'mods') {
 	else {
 		$where = '';
 	}
-	$result = $db->query("SELECT m.*, u.name as user, c.name as cat FROM {$db->pre}moderators AS m LEFT JOIN {$db->pre}user AS u ON u.id = m.mid LEFT JOIN {$db->pre}cat AS c ON c.id = m.bid $where ORDER BY ".$order);
+	$result = $db->query("SELECT m.*, u.name as user, c.name as cat FROM {$db->pre}moderators AS m LEFT JOIN {$db->pre}user AS u ON u.id = m.mid LEFT JOIN {$db->pre}forums AS c ON c.id = m.bid $where ORDER BY ".$order);
 	?>
 <form name="form" method="post" action="admin.php?action=forums&job=mods2">
  <table class="border">
@@ -226,7 +226,7 @@ elseif ($job == 'delete2') {
 	$db->query("DELETE FROM {$db->pre}fgroups WHERE bid = '{$_GET['id']}'");
 	$db->query("DELETE FROM {$db->pre}moderators WHERE bid = '{$_GET['id']}'");
 	$db->query("DELETE FROM {$db->pre}prefix WHERE bid = '{$_GET['id']}'");
-	$db->query("DELETE FROM {$db->pre}cat WHERE id = '{$_GET['id']}' LIMIT 1");
+	$db->query("DELETE FROM {$db->pre}forums WHERE id = '{$_GET['id']}' LIMIT 1");
 	
 	$delobj = $scache->load('cat_bid');
 	$delobj->delete();
@@ -240,7 +240,7 @@ elseif ($job == 'delete2') {
 elseif ($job == 'edit') {
 	echo head();
 	$id = $gpc->get('id', int);
-	$result = $db->query('SELECT * FROM '.$db->pre.'cat WHERE id = '.$id);
+	$result = $db->query('SELECT * FROM '.$db->pre.'forums WHERE id = '.$id);
 	if ($db->num_rows() == 0) {
 		error('admin.php?action=forums&job=manage', 'Invalid ID given');
 	}
@@ -325,15 +325,15 @@ elseif ($job == 'editforum2') {
 	if ($parent != 'NULL') {
 		if (preg_match("/c_\d{1,}/", $parent) == 1) {
 			$cid = str_replace("c_", "", $parent);
-			$array = $db->fetch_num($db->query("SELECT bid FROM {$db->pre}cat WHERE cid = $cid LIMIT 1"));
+			$array = $db->fetch_num($db->query("SELECT bid FROM {$db->pre}forums WHERE cid = $cid LIMIT 1"));
 			$bid = $array[0];
 		}
 		elseif (preg_match("/f_\d{1,}/", $parent) == 1) {
 			$bid = str_replace("f_", "", $parent);
-			$array = $db->fetch_num($db->query("SELECT cid FROM {$db->pre}cat WHERE bid = $bid LIMIT 1"));
+			$array = $db->fetch_num($db->query("SELECT cid FROM {$db->pre}forums WHERE bid = $bid LIMIT 1"));
 			if ($array[0] < 1) {
-				$array2 = $db->fetch_num($db->query("SELECT name, c.desc FROM {$db->pre}cat AS c WHERE id = $bid LIMIT 1"));
-				$db->query("INSERT INTO {$db->pre}categories (name, desctxt, c_order) VALUES ('{$array2[0]}', '{$array2[1]}', 0)");
+				$array2 = $db->fetch_num($db->query("SELECT name, c.desc FROM {$db->pre}forums AS c WHERE id = $bid LIMIT 1"));
+				$db->query("INSERT INTO {$db->pre}categories (name, description, position) VALUES ('{$array2[0]}', '{$array2[1]}', 0)");
 				$cid = $db->insert_id();
 			}
 			else {
@@ -365,7 +365,7 @@ elseif ($job == 'editforum2') {
 		$opt = '';
 		$optvalue = '';	
 	}
-	$db->query("UPDATE {$db->pre}cat SET name = '{$name}', `desc` = '{$desc}', forumzahl = '{$forumzahl}', topiczahl = '{$topiczahl}', invisible = '{$invisible}', opt = '{$opt}', optvalue = '{$optvalue}' {$option} WHERE id = '{$id}' LIMIT 1");
+	$db->query("UPDATE {$db->pre}forums SET name = '{$name}', `desc` = '{$desc}', forumzahl = '{$forumzahl}', topiczahl = '{$topiczahl}', invisible = '{$invisible}', opt = '{$opt}', optvalue = '{$optvalue}' {$option} WHERE id = '{$id}' LIMIT 1");
 	
 	$delobj = $scache->load('categories');
 	$delobj->delete();
@@ -548,15 +548,15 @@ elseif ($job == 'addforum2') {
 	
 	if (preg_match("/c_\d{1,}/", $parent) == 1) {
 		$cid = str_replace("c_", "", $parent);
-		$array = $db->fetch_num($db->query("SELECT bid FROM {$db->pre}cat WHERE cid = '{$cid}' LIMIT 1"));
+		$array = $db->fetch_num($db->query("SELECT bid FROM {$db->pre}forums WHERE cid = '{$cid}' LIMIT 1"));
 		$bid = $array[0];
 	}
 	elseif (preg_match("/f_\d{1,}/", $parent) == 1) {
 		$bid = str_replace("f_", "", $parent);
-		$array = $db->fetch_num($db->query("SELECT cid FROM {$db->pre}cat WHERE bid = '{$bid}' LIMIT 1"));
+		$array = $db->fetch_num($db->query("SELECT cid FROM {$db->pre}forums WHERE bid = '{$bid}' LIMIT 1"));
 		if ($array[0] < 1) {
-			$array2 = $db->fetch_num($db->query("SELECT name, c.desc FROM {$db->pre}cat AS c WHERE id = $bid LIMIT 1"));
-			$db->query("INSERT INTO {$db->pre}categories (name, desctxt, c_order) VALUES ('{$array2[0]}', '{$array2[1]}', 0)");
+			$array2 = $db->fetch_num($db->query("SELECT name, description FROM {$db->pre}forums WHERE id = $bid LIMIT 1"));
+			$db->query("INSERT INTO {$db->pre}categories (name, description, position) VALUES ('{$array2[0]}', '{$array2[1]}', 0)");
 			$cid = $db->insert_id();
 		}
 		else {
@@ -568,11 +568,11 @@ elseif ($job == 'addforum2') {
 	}
 	
 	if ($sort == 1) {
-		$sortx = $db->fetch_num($db->query("SELECT MAX(c_order) FROM {$db->pre}cat WHERE cid = {$cid} LIMIT 1"));
+		$sortx = $db->fetch_num($db->query("SELECT MAX(position) FROM {$db->pre}forums WHERE cid = {$cid} LIMIT 1"));
 		$sort = $sortx[0]+1;
 	}
 	elseif ($sort == 0) {
-		$sortx = $db->fetch_num($db->query("SELECT MIN(c_order) FROM {$db->pre}cat WHERE cid = {$cid} LIMIT 1"));
+		$sortx = $db->fetch_num($db->query("SELECT MIN(position) FROM {$db->pre}forums WHERE cid = {$cid} LIMIT 1"));
 		$sort = $sortx[0]-1;
 	}
 	else {
@@ -599,7 +599,7 @@ elseif ($job == 'addforum2') {
 	}
 	
 	$db->query("
-	INSERT INTO {$db->pre}cat (name, `desc`, bid, cid, c_order, opt, optvalue, forumzahl, topiczahl, invisible)
+	INSERT INTO {$db->pre}forums (name, `desc`, bid, cid, position, opt, optvalue, forumzahl, topiczahl, invisible)
 	VALUES ('{$name}', '{$desc}', '{$bid}', '{$cid}', '{$sort}', '{$opt}', '{$optvalue}','{$forumzahl}','{$topiczahl}','{$invisible}')
 	", __LINE__, __FILE__);
 
@@ -657,7 +657,7 @@ elseif ($job == 'addcat') {
    foreach ($catid as $id) {
    	$row = $categories[$id];
    ?>
-	<option value="<?php echo $row['c_order']; ?>"><?php echo $row['name']; ?></option>
+	<option value="<?php echo $row['position']; ?>"><?php echo $row['name']; ?></option>
 	<?php } ?>
    </select></td> 
   </tr>
@@ -682,7 +682,7 @@ elseif ($job == 'addcat2') {
 		error('admin.php?action=forums&job=addcat', 'Name is too long( > 200 chars)');
 	}
 	
-	$db->query("INSERT INTO ".$db->pre."categories (name, desctxt, c_order) VALUES ('{$boardname}', '".$gpc->get('temp2', str)."', '$sort')");
+	$db->query("INSERT INTO ".$db->pre."categories (name, description, position) VALUES ('{$boardname}', '".$gpc->get('temp2', str)."', '$sort')");
 
 	$delobj = $scache->load('categories');
 	$delobj->delete();
@@ -735,16 +735,16 @@ elseif ($job == 'move') {
 	$move = $gpc->get('int1', int);
 	
 	if ($move == -1 && $type == 'c') {
-		$db->query('UPDATE '.$db->pre.'categories SET c_order = c_order-1 WHERE id = '.$gid);
+		$db->query('UPDATE '.$db->pre.'categories SET position = position-1 WHERE id = '.$gid);
 	}
 	elseif ($move == 1 && $type == 'c') {
-		$db->query('UPDATE '.$db->pre.'categories SET c_order = c_order+1 WHERE id = '.$gid);
+		$db->query('UPDATE '.$db->pre.'categories SET position = position+1 WHERE id = '.$gid);
 	}
 	elseif ($move == -1 && $type == 'f') {
-		$db->query('UPDATE '.$db->pre.'cat SET c_order = c_order-1 WHERE id = '.$gid);
+		$db->query('UPDATE '.$db->pre.'forums SET position = position-1 WHERE id = '.$gid);
 	}
 	elseif ($move == 1 && $type == 'f') {
-		$db->query('UPDATE '.$db->pre.'cat SET c_order = c_order+1 WHERE id = '.$gid);
+		$db->query('UPDATE '.$db->pre.'forums SET position = position+1 WHERE id = '.$gid);
 	}
 	else {
 		echo head();
@@ -938,7 +938,7 @@ elseif ($job == 'cat_edit') {
 	if (!is_id($id)) {
 		error('admin.pgp?action=forums&job=manage', 'Forum not found');
 	}
-	$result = $db->query('SELECT name, desctxt FROM '.$db->pre.'categories WHERE id = '.$id);
+	$result = $db->query('SELECT name, description FROM '.$db->pre.'categories WHERE id = '.$id);
 	$row = $db->fetch_assoc($result);
 
 	?>
@@ -953,7 +953,7 @@ elseif ($job == 'cat_edit') {
   </tr>
   <tr> 
    <td class="mbox" width="50%">Short Description:<br /><span class="stext">Optional. BB-Codes and HTML is not allowed!</span></td>
-   <td class="mbox" width="50%"><textarea name="description" rows="2" cols="50"><?php echo $row['desctxt']; ?></textarea></td> 
+   <td class="mbox" width="50%"><textarea name="description" rows="2" cols="50"><?php echo $row['description']; ?></textarea></td> 
   </tr>
    <td class="ubox" width="100%" colspan="2" align="center"><input type="submit" name="Submit" value="Edit" /></td> 
   </tr>
@@ -976,7 +976,7 @@ elseif ($job == 'cat_edit2') {
 		error('Name is too long( > 200 chars)');
 	}
 	
-	$db->query("UPDATE {$db->pre}categories SET name = '{$boardname}', desctxt = '{$description}' WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
+	$db->query("UPDATE {$db->pre}categories SET name = '{$boardname}', description = '{$description}' WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 
 	$delobj = $scache->load('categories');
 	$delobj->delete();
@@ -989,7 +989,7 @@ elseif ($job == 'cat_delete') {
 	echo head();
 	$id = $gpc->get('id', int);
 	
-	$result = $db->query('SELECT id FROM '.$db->pre.'cat WHERE cid = '.$id);
+	$result = $db->query('SELECT id FROM '.$db->pre.'forums WHERE cid = '.$id);
 	if ($db->num_rows() > 0) {
 		error('admin.php?action=forums&job=manage', 'Until you can delete this category, you have to delete all forums this category contains.');
 	}

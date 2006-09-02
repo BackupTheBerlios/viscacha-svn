@@ -31,7 +31,10 @@ function SelectPackageLinks ($head) {
 if ($job == 'plugins') {
 	send_nocache_header();
 	echo head();
-	$sort = $gpc->get('sort', int);
+	if (!isset($my->settings['admin_plugins_sort'])) {
+		$my->settings['admin_plugins_sort'] = 1;
+	}
+	$sort = $gpc->get('sort', int, $my->settings['admin_plugins_sort']);
 	?>
 	 <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
 	  <tr> 
@@ -63,6 +66,7 @@ if ($job == 'plugins') {
 	<?php
 	if ($sort == 1) {
 		$package = null;
+		$my->settings['admin_plugins_sort'] = 1;
 		
 		$configs = array();
 		$result = $db->query("SELECT id, name FROM {$db->pre}settings_groups WHERE LEFT(name, 7) = 'module_'");
@@ -132,6 +136,8 @@ if ($job == 'plugins') {
 	}
 	else {
 		$pos = null;
+		$my->settings['admin_plugins_sort'] = 0;
+		
 		$result = $db->query("
 		SELECT p.*, m.title 
 		FROM {$db->pre}plugins AS p
