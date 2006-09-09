@@ -18,7 +18,7 @@ CREATE TABLE `{:=DBPREFIX=:}forums` (
   `reply_notification` text NOT NULL,
   `topic_notification` text NOT NULL,
   `active_topic` enum('0','1') NOT NULL default '1',
-  `message_active` enum('0','1') NOT NULL default '0',
+  `message_active` enum('0','1','2') NOT NULL default '0',
   `message_title` varchar(255) NOT NULL,
   `message_text` text NOT NULL,
   PRIMARY KEY  (`id`)

@@ -178,6 +178,8 @@ if ($_GET['action'] == "search") {
 		$sql_where .= " '{$timestamp}' ";
 		$having = " LEFT JOIN {$db->pre}topics AS t ON t.id = r.topic_id";
 	}
+	$having .= " LEFT JOIN {$db->pre}forums AS f ON f.id = r.board ";
+	$sql_where .= " AND f.invisible != '2' ";
 
 	($code = $plugins->load('search_search_query')) ? eval($code) : null;
 	$result = $db->query("
@@ -334,17 +336,28 @@ elseif ($_GET['action'] == "result") {
 		$rstart = str_date($lang->phrase('dformat1'),times($row->date));
 		$rlast = str_date($lang->phrase('dformat1'),times($row->last));
 		
-		if ($row->mark == 'n') {
-			$pref .= $lang->phrase('forum_mark_n'); 
-		}
-		elseif ($row->mark == 'a') {
-			$pref .= $lang->phrase('forum_mark_a');
-		}
-		elseif ($row->status == '2') {
+		if ($row->status == '2') {
 			$pref .= $lang->phrase('forum_moved');
 		}
-		elseif ($row->sticky == '1') {
-			$pref .= $lang->phrase('forum_announcement');
+		else {
+			if (empty($row->mark) && !empty($info['auto_status'])) {
+				$row->mark = $info['auto_status'];
+			}
+			if ($row->mark == 'n') {
+				$pref .= $lang->phrase('forum_mark_n'); 
+			}
+			elseif ($row->mark == 'a') {
+				$pref .= $lang->phrase('forum_mark_a');
+			}
+			elseif ($row->mark == 'b') {
+				$pref .= $lang->phrase('forum_mark_b');
+			}
+			elseif ($row->mark == 'g') {
+				$pref .= $lang->phrase('forum_mark_g');
+			}
+			if ($row->sticky == '1') {
+				$pref .= $lang->phrase('forum_announcement');
+			}
 		}
 
 		if ((isset($my->mark['t'][$row->id]) && $my->mark['t'][$row->id] > $row->last) || $row->last < $my->clv) {
@@ -451,10 +464,11 @@ elseif ($_GET['action'] == "active") {
     	
     	($code = $plugins->load('search_actiev_query')) ? eval($code) : null;
     	$result = $db->query("
-    	SELECT prefix, vquestion, posts, mark, id, board, topic, date, status, last, last_name, sticky, name 
-    	FROM {$db->pre}topics 
-    	WHERE ".$sqlwhere.$slog->sqlinboards('board')." 
-    	ORDER BY last DESC"
+    	SELECT t.prefix, t.vquestion, t.posts, t.mark, t.id, t.board, t.topic, t.date, t.status, t.last, t.last_name, t.sticky, t.name 
+    	FROM {$db->pre}topics AS t
+    		LEFT JOIN {$db->pre}forums AS f ON f.id = t.board 
+    	WHERE f.invisible != '2' AND f.active_topic = '1' AND {$sqlwhere} ".$slog->sqlinboards('t.board')." 
+    	ORDER BY t.last DESC"
     	,__LINE__,__FILE__);
     	$count = $db->num_rows($result);
     		
@@ -495,18 +509,29 @@ elseif ($_GET['action'] == "active") {
     			$rstart = str_date($lang->phrase('dformat1'),times($row->date));
     			$rlast = str_date($lang->phrase('dformat1'),times($row->last));
     			
-    			if ($row->mark == 'n') {
-    				$pref .= $lang->phrase('forum_mark_n'); 
-    			}
-    			elseif ($row->mark == 'a') {
-    				$pref .= $lang->phrase('forum_mark_a');
-    			}
-    			elseif ($row->status == '2') {
-    				$pref .= $lang->phrase('forum_moved');
-    			}
-    			elseif ($row->sticky == '1') {
-    				$pref .= $lang->phrase('forum_announcement');
-    			}
+				if ($row->status == '2') {
+					$pref .= $lang->phrase('forum_moved');
+				}
+				else {
+					if (empty($row->mark) && !empty($info['auto_status'])) {
+						$row->mark = $info['auto_status'];
+					}
+					if ($row->mark == 'n') {
+						$pref .= $lang->phrase('forum_mark_n'); 
+					}
+					elseif ($row->mark == 'a') {
+						$pref .= $lang->phrase('forum_mark_a');
+					}
+					elseif ($row->mark == 'b') {
+						$pref .= $lang->phrase('forum_mark_b');
+					}
+					elseif ($row->mark == 'g') {
+						$pref .= $lang->phrase('forum_mark_g');
+					}
+					if ($row->sticky == '1') {
+						$pref .= $lang->phrase('forum_announcement');
+					}
+				}
     	
     			if ((isset($my->mark['t'][$row->id]) && $my->mark['t'][$row->id] > $row->last) || $row->last < $my->clv) {
     		 		$firstnew = 0;

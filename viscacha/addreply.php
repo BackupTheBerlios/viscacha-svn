@@ -63,7 +63,7 @@ $my->p = $slog->Permissions($info['board']);
 $cat_bid_obj = $scache->load('cat_bid');
 $fc = $cat_bid_obj->get();
 $last = $fc[$info['board']];
-forum_opt($last['opt'], $last['optvalue'], $last['id'], 'postreplies');
+forum_opt($last, 'postreplies');
 
 $prefix = '';
 if ($info['prefix'] > 0) {
@@ -257,6 +257,13 @@ if ($_GET['action'] == "save") {
 			xmail($to, $from, $data['title'], $data['comment']);
 	    }
 	    $lang->setdir($lang_dir);
+	    
+		if (count($last['reply_notification']) > 0) {
+			$to = array_combine(array_fill(1, count($last['reply_notification']), 'mail'), $last['reply_notification']);
+			$data = $lang->get_mail('new_reply');
+			$from = array();
+			xmail($to, $from, $data['title'], $data['comment']);
+		}
 	    
 	    $close = $gpc->get('close', int);
 	    if ($close == 1 && $my->vlogin) {

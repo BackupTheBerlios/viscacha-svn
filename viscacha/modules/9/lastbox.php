@@ -3,7 +3,7 @@ $topicnum = $config['module_'.$pluginid]['topicnum'];
 $result = $db->query("
 SELECT t.id, t.board, t.topic, t.last AS date, t.last_name AS name, t.prefix
 FROM {$db->pre}topics AS t LEFT JOIN {$db->pre}forums AS f ON t.board = f.id 
-WHERE f.opt != 'pw' AND t.status != '2' ".$slog->sqlinboards('t.board')."
+WHERE f.opt != 'pw' AND f.invisible != '2' AND f.active_topic = '1' AND t.status != '2' ".$slog->sqlinboards('t.board')."
 ORDER BY t.last DESC 
 LIMIT 0,{$topicnum}"
 ,__LINE__,__FILE__);

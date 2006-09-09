@@ -6,7 +6,7 @@ $wwo['b']=0;
 $wwo['list'] = array();
 
 $result = $db->query("
-	SELECT s.mid, s.remoteaddr, s.is_bot, u.name
+	SELECT s.mid, s.is_bot, u.name
 	FROM {$db->pre}session AS s 
 		LEFT JOIN {$db->pre}user AS u ON s.mid = u.id
 	ORDER BY u.name
@@ -15,7 +15,6 @@ $count = $db->num_rows($result);
 $sep = $lang->phrase('listspacer');
 while ($row = $db->fetch_assoc($result)) {
 	$wwo['i']++;
-	$row['remoteaddr'] = $gpc->prepare($row['remoteaddr']);
 	if ($row['mid'] > 0) {
 		$wwo['r']++;
 		$row['sep'] = $sep;

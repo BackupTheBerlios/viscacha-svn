@@ -465,7 +465,7 @@ function BoardSelect($board = 0) {
             // Rechte und Gelesensystem
     		if ($forum['opt'] != 're') {
     			if (!check_forumperm($forum)) {
-    				if ($forum['invisible'] == 1) {
+    				if ($forum['invisible'] != 0) {
     					$forum['show'] = false;
     				}
 					$forum['foldimg'] = $tpl->img('cat_locked');
@@ -520,7 +520,7 @@ function BoardSelect($board = 0) {
 						$sub_cache[$forum['id']][$i]['new'] = false;
 			    		if ($sub_cache[$forum['id']][$i]['opt'] != 're') {
 			    			if (!check_forumperm($sub_cache[$forum['id']][$i])) {
-			    				if ($sub_cache[$forum['id']][$i]['invisible'] == 1) {
+			    				if ($sub_cache[$forum['id']][$i]['invisible'] != 0) {
 			    					$show = false;
 			    				}
 			    				else {
@@ -683,24 +683,31 @@ function ok ($errormsg = NULL, $errorurl = "javascript:history.back(-1)", $EOS =
 	exit;
 }
 
-function forum_opt($opt, $optvalue, $bid, $check = 'forum') {
+function forum_opt($array, $check = 'forum') {
 	global $my, $lang, $tpl;
-	if ($opt == 'pw' && (!isset($my->pwfaccess[$bid]) || $my->pwfaccess[$bid] != $optvalue)) {
+	extract($array, EXTR_PREFIX_ALL, 'f');
+	if ($f_opt == 'pw' && (!isset($my->pwfaccess[$f_id]) || $my->pwfaccess[$f_id] != $optvalue)) {
     	if (!$tpl->tplsent('header')) {
     		echo $tpl->parse('header');
     	}
     	if (!$tpl->tplsent('menu')) {
     		echo $tpl->parse('menu');
     	}
-	    GoBoardPW($optvalue, $bid);
+	    GoBoardPW($f_optvalue, $f_id);
 	}
-	elseif ($opt == "re") {
-		error($lang->phrase('forumopt_re'),$optvalue);
+	elseif ($f_opt == "re") {
+		error($lang->phrase('forumopt_re'), $f_optvalue);
+	}
+	elseif ($f_invisible == 2) {
+		error($lang->phrase('query_string_error'));
+	}
+	elseif (($check == 'postreplies' || $check == 'posttopics' || $check == 'edit') && $f_readonly == '1') {
+		error($lang->phrase('forum_is_read_only'));
 	}
 	elseif ($my->p[$check] == 0 || $my->p['forum'] == 0) {
 		errorLogin();
 	}
-
+	
 }
 
 function import_error_data($fid) {

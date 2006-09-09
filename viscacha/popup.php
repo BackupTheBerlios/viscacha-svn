@@ -151,7 +151,7 @@ elseif ($_GET['action'] == "showpost") {
 	$fc = $catbid->get();
 	$last = $fc[$row->board];
 	
-	forum_opt($last['opt'], $last['optvalue'], $last['id']);
+	forum_opt($last);
 	
 	($code = $plugins->load('popup_showpost_start')) ? eval($code) : null;
 	if ($config['tpcallow'] == 1) {
@@ -258,7 +258,7 @@ elseif ($_GET['action'] == "edithistory") {
 	$fc = $catbid->get();
 	$last = $fc[$row['board']];
 	
-	forum_opt($last['opt'], $last['optvalue'], $last['id']);
+	forum_opt($last);
 	
 	($code = $plugins->load('popup_edithistory_start')) ? eval($code) : null;
 	

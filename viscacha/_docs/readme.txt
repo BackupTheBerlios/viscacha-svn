@@ -55,8 +55,10 @@ Following files need CHMOD 666:
 - admin/data/notes.php
 - All files in the directories "data" and "data/cron"
 - All files in the directory "docs"
-- All files in the directory "language" and all files in the subdirectories of "language"
-- All files in the directory "templates" and all files in the subdirectories of "templates"
+- All files in the directory "language" and all files in the subdirectories of 
+  "language"
+- All files in the directory "templates" and all files in the subdirectories of 
+  "templates"
 
 
 == Update ==
@@ -81,7 +83,7 @@ Normal system requirements:
 Optimal system requirements:
  - PHP Version: 5.0.0 and above
  - PHP-Extensions: mysql, pcre, gd, zlib, xml, pspell, iconv, mbstring, mhash, 
-                      sockets
+                   sockets, mime_magic
  - MySQL Version: 4.1 and above
 
 If you are testing Viscacha, please give me some feedback how Viscacha worked,
@@ -93,7 +95,8 @@ Following information interest me:
 - E-mail-server (SMTP, Sendmail, PHP's mail() function)
 - MySQL version
 - PHP version
-- Status of the extensions: mysql, pcre, gd, zlib, xml, pspell, iconv, mbstring, mhash
+- Status of the extensions: mysql, pcre, gd, zlib, xml, pspell, iconv, mbstring,
+                            mhash
 - The following settings in the file php.ini: 
   - safe_mode
   - magic_quotes_gpc

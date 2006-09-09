@@ -139,7 +139,7 @@ $topforums = get_headboards($fc, $last, TRUE);
 $breadcrumb->Add($last['name'], "showforum.php?id=".$last['id'].SID2URL_x);
 $breadcrumb->Add($prefix.$info['topic']);
 
-forum_opt($last['opt'], $last['optvalue'], $last['id']);
+forum_opt($last);
 
 echo $tpl->parse("header");
 echo $tpl->parse("menu");

@@ -819,7 +819,6 @@ function SelectForums($html, $tree, $cat, $board, $group = true, $char = '&nbsp;
 	return $html;
 }
 
-// This function is simply for understanding the if-clauses better
 function check_forumperm($forum) {
 	global $my, $scache;
 
@@ -835,6 +834,9 @@ function check_forumperm($forum) {
 				if (!isset($my->pwfaccess[$id]) || $forums[$id]['optvalue'] != $my->pwfaccess[$id]) {
 					return false;
 				}
+			}
+			if ($forums[$id]['invisible'] == 2) {
+				return false;
 			}
 		}
 	}

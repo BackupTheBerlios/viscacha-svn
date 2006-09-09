@@ -218,6 +218,9 @@ misc.php
  - misc_vote_savedata
  - misc_bbhelp_prepared
  - misc_bbhelp_end
+ - misc_board_rules_start
+ - misc_board_rules_prepared
+ - misc_board_rules_end
  - misc_rules_prepared
  - misc_rules_end
  - misc_error_prepared

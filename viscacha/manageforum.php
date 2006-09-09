@@ -52,7 +52,7 @@ if ($info['forumzahl'] < 1) {
 $my->p = $slog->Permissions($info['id']);
 $my->mp = $slog->ModPermissions($info['id']);
 
-forum_opt($info['opt'], $info['optvalue'], $info['id']);
+forum_opt($info);
 
 $breadcrumb->Add($lang->phrase('teamcp'));
 
@@ -90,8 +90,9 @@ if ($my->vlogin && $my->mp[0] == 1) {
 			($code = $plugins->load('manageforum_query')) ? eval($code) : null;
 			$result = $db->query("
 			SELECT prefix, vquestion, posts, mark, id, board, topic, date, status, last, last_name, sticky, name 
-			FROM {$db->pre}topics WHERE board = '$board' {$marksql}
-			ORDER BY sticky DESC, last DESC LIMIT $start, {$info['forumzahl']}
+			FROM {$db->pre}topics
+			WHERE board = '{$board}' {$marksql}
+			ORDER BY sticky DESC, last DESC LIMIT {$start}, {$info['forumzahl']}
 			",__LINE__,__FILE__);
 			
 			$memberdata_obj = $scache->load('memberdata');
@@ -125,24 +126,29 @@ if ($my->vlogin && $my->mp[0] == 1) {
 				
 				$rstart = str_date($lang->phrase('dformat1'),times($row->date));
 				$rlast = str_date($lang->phrase('dformat1'),times($row->last));
-				
-				if ($row->mark == 'n') {
-					$pref .= $lang->phrase('forum_mark_n'); 
-				}
-				elseif ($row->mark == 'a') {
-					$pref .= $lang->phrase('forum_mark_a');
-				}
-				elseif ($row->mark == 'b') {
-					$pref .= $lang->phrase('forum_mark_b');
-				}
-				elseif ($row->mark == 'g') {
-					$pref .= $lang->phrase('forum_mark_g');
-				}
-				elseif ($row->status == '2') {
+
+				if ($row->status == '2') {
 					$pref .= $lang->phrase('forum_moved');
 				}
-				elseif ($row->sticky == '1') {
-					$pref .= $lang->phrase('forum_announcement');
+				else {
+					if (empty($row->mark) && !empty($info['auto_status'])) {
+						$row->mark = $info['auto_status'];
+					}
+					if ($row->mark == 'n') {
+						$pref .= $lang->phrase('forum_mark_n'); 
+					}
+					elseif ($row->mark == 'a') {
+						$pref .= $lang->phrase('forum_mark_a');
+					}
+					elseif ($row->mark == 'b') {
+						$pref .= $lang->phrase('forum_mark_b');
+					}
+					elseif ($row->mark == 'g') {
+						$pref .= $lang->phrase('forum_mark_g');
+					}
+					if ($row->sticky == '1') {
+						$pref .= $lang->phrase('forum_announcement');
+					}
 				}
 
 				($code = $plugins->load('manageforum_entry_prepared')) ? eval($code) : null;

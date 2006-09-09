@@ -57,7 +57,7 @@ $my->mp = $slog->ModPermissions($info['board']);
 $cat_bid_obj = $scache->load('cat_bid');
 $fc = $cat_bid_obj->get();
 $last = $fc[$info['board']];
-forum_opt($last['opt'], $last['optvalue'], $last['id'], 'edit');
+forum_opt($last, 'edit');
 
 $prefix_obj = $scache->load('prefix');
 $prefix_arr = $prefix_obj->get($info['board']);

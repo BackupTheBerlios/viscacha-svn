@@ -45,8 +45,7 @@ if (empty($board) || !isset($fc[$board])) {
 	error($lang->phrase('query_string_error'));
 }
 $last = $fc[$board];
-
-forum_opt($last['opt'], $last['optvalue'], $last['id'], 'posttopics');
+forum_opt($last, 'posttopics');
 
 if ($config['tpcallow'] == 1 && $my->p['attachments'] == 1) { 
 	$p_upload = 1;
@@ -348,7 +347,14 @@ elseif ($_GET['action'] == "save") {
 		$db->query ("UPDATE {$db->pre}forums SET topics = topics+1, last_topic = '{$tredirect}' WHERE id = '{$board}'");	
 		$catobj = $scache->load('cat_bid');
 		$catobj->delete();
-		
+
+		if (count($last['topic_notification']) > 0) {
+			$to = array_combine(array_fill(1, count($last['topic_notification']), 'mail'), $last['topic_notification']);
+			$data = $lang->get_mail('new_topic');
+			$from = array();
+			xmail($to, $from, $data['title'], $data['comment']);
+		}
+				
 		($code = $plugins->load('newtopic_save_end')) ? eval($code) : null;
 		
 		if ($_POST['opt_2'] == '1') {

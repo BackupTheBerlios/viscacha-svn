@@ -79,7 +79,7 @@ $topforums = get_headboards($fc, $last, TRUE);
 $breadcrumb->Add($last['name'], "showforum.php?id=".$last['id'].SID2URL_x);
 $breadcrumb->Add($prefix.$info['topic'], "showtopic.php?id={$_GET['id']}&amp;page=".$_GET['page'].SID2URL_x);
 
-forum_opt($last['opt'], $last['optvalue'], $last['id']);
+forum_opt($last);
 
 ($code = $plugins->load('print_start')) ? eval($code) : null;
 

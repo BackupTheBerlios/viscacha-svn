@@ -410,6 +410,7 @@ elseif ($job == 'download') {
 		readfile($dir.$file);
 	}
 	else {
+		echo head();
 		error('admin.php?action=db&job=restore', 'File not found');
 	}
 }

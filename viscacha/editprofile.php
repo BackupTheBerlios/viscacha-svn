@@ -147,7 +147,8 @@ elseif ($_GET['action'] == "abos") {
 	SELECT a.id, a.tid, a.type, t.topic, t.prefix, t.last, t.last_name, t.board, t.posts 
 	FROM {$db->pre}abos AS a 
 		LEFT JOIN {$db->pre}topics AS t ON a.tid=t.id 
-	WHERE a.mid = '{$my->id}' {$sqlwhere}
+		LEFT JOIN {$db->pre}forums AS f ON f.id=t.board 
+	WHERE a.mid = '{$my->id}' AND f.invisible != '2' {$sqlwhere}
 	ORDER BY a.id DESC
 	",__LINE__,__FILE__);
 	
@@ -722,7 +723,8 @@ elseif ($_GET['action'] == "mylast") {
 	SELECT t.last, t.posts, t.id, t.board, r.topic, r.date, r.name, t.prefix, r.id AS pid 
 	FROM {$db->pre}replies AS r 
 		LEFT JOIN {$db->pre}topics AS t ON t.id = r.topic_id 
-	WHERE r.name = '$my->id' 
+		LEFT JOIN {$db->pre}forums AS f ON f.id = t.board 
+	WHERE r.name = '{$my->id}' AND f.invisible != '2' 
 	GROUP BY r.topic_id 
 	ORDER BY r.date DESC 
 	LIMIT 0, {$config['mylastzahl']}
@@ -782,7 +784,7 @@ elseif ($_GET['action'] == "addabo") {
 	$catbid = $scache->load('cat_bid');
 	$fc = $catbid->get();
 	$last = $fc[$info['board']];
-	forum_opt($last['opt'], $last['optvalue'], $last['id']);
+	forum_opt($last);
 
 	if ($_GET['type'] == 0) {
 		$type = '';
@@ -823,7 +825,7 @@ elseif ($_GET['action'] == "removeabo") {
 	$catbid = $scache->load('cat_bid');
 	$fc = $catbid->get();
 	$last = $fc[$info['board']];
-	forum_opt($last['opt'], $last['optvalue'], $last['id']);
+	forum_opt($last);
 
 	($code = $plugins->load('editprofile_removeabo_prepared')) ? eval($code) : null;
 	$db->query("DELETE FROM {$db->pre}abos WHERE tid = '{$_GET['id']}' AND mid = '{$my->id}' LIMIT 1",__LINE__,__FILE__);
@@ -858,7 +860,7 @@ elseif ($_GET['action'] == "copy") {
 	$catbid = $scache->load('cat_bid');
 	$fc = $catbid->get();
 	$last = $fc[$row['board']];
-	forum_opt($last['opt'], $last['optvalue'], $last['id']);
+	forum_opt($last);
 
 	$memberdata_obj = $scache->load('memberdata');
 	$memberdata = $memberdata_obj->get();

@@ -376,11 +376,6 @@ if ($show == 1) {
 	$topics = $db->fetch_num($result);
 	$replies = $posts[0]-$topics[0];
 
-	$result = $db->query('SELECT COUNT(*) FROM '.$db->pre.'topics WHERE mark = "a"',__LINE__,__FILE__);
-	$aposts = $db->fetch_num($result);
-	$result = $db->query('SELECT COUNT(*) FROM '.$db->pre.'topics WHERE mark = "n"',__LINE__,__FILE__);
-	$nposts = $db->fetch_num($result);
-
 	$result = $db->query('SELECT COUNT(*) FROM '.$db->pre.'topics WHERE vquestion != ""',__LINE__,__FILE__);
 	$vote = $db->fetch_num($result);
 
@@ -417,10 +412,6 @@ if ($show == 1) {
 	<tr>
 	  <td>Threads:</td><td><code><?php echo $topics[0];?></code></td>
 	  <td>Replies:</td><td><code><?php echo $replies;?></code></td>
-	</tr>
-	<tr>
-	  <td>Articles:</td><td><code><?php echo $aposts[0];?></code></td>
-	  <td>News:</td><td><code><?php echo $nposts[0];?></code></td>
 	</tr>
 	<tr>
 	  <td>Subscriptions:</td><td><code><?php echo $abos[0];?></code></td>

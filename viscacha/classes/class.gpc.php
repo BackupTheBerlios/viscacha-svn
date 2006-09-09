@@ -130,7 +130,7 @@ class GPC {
     		}
     	}
     	elseif (is_string($var)){	
-    		$var = preg_replace('#(script|about|applet|activex|chrome):#is', "\\1&#058;", $var);
+    		$var = preg_replace('#(script|about|applet|activex|chrome|mocha):#is', "\\1&#058;", $var);
     		$var = $this->secure_null($var);
     		if ($config['asia'] == 1) {
     			$var = htmlentities($var, ENT_QUOTES, $config['asia_charset']);

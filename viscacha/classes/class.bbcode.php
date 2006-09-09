@@ -39,7 +39,7 @@ class BBCode {
 	var $noparse = array();
 	var $pid = 0;
 	var $benchmark = array();
-	var $author = 0;
+	var $author = -1;
 
 	function BBCode () {
 	    $this->benchmark = array(
@@ -55,7 +55,7 @@ class BBCode {
 	function setName($name) {
 		$this->reader = $name;
 	}
-	function setAuthor($id) {
+	function setAuthor($id = -1) {
 		$this->author = $id;
 	}
 	function noparse_id() {
@@ -511,7 +511,7 @@ class BBCode {
 		if ($type != 'pdf') {
 			$text = str_replace('$', '&#36;', $text);
 		}
-		if($type != 'pdf' && $type != 'plain' && ($my->p['admin'] == 1 || ($my->id > 0 && $my->id == $this->author))) {
+		if($type != 'pdf' && $type != 'plain' && ((isset($my->p['admin']) && $my->p['admin'] == 1) || ($my->id > 0 && $my->id == $this->author))) {
 		    $text = preg_replace('/\n?\[hide\](.+?)\[\/hide\]/is', '<br /><div class="bb_hide"><strong>'.$lang->phrase('bb_hidden_content').'</strong><span>\1</span></div>', $text);
 		}
 		else {

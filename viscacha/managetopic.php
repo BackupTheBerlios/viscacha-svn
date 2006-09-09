@@ -75,7 +75,7 @@ $breadcrumb->Add($lang->phrase('teamcp'));
 
 echo $tpl->parse("header");
 
-forum_opt($last['opt'], $last['optvalue'], $last['id']);
+forum_opt($last);
 
 if ($my->vlogin && $my->mp[0] == 1) {
 
@@ -219,7 +219,7 @@ if ($my->vlogin && $my->mp[0] == 1) {
 		if ($notallowed) {
 			errorLogin($lang->phrase('not_allowed'), 'showtopic.php?id='.$info['id'].SID2URL_x);
 		}
-		$db->query("UPDATE {$db->pre}topics SET mark = '".$input."' WHERE id = '".$info['id']."'",__LINE__,__FILE__);	
+		$db->query("UPDATE {$db->pre}topics SET mark = '{$input}' WHERE id = '{$info['id']}'",__LINE__,__FILE__);	
 		if ($db->affected_rows() == 1) {
 			ok($lang->phrase('admin_topicstatus_changed'),'showtopic.php?id='.$info['id'].SID2URL_x);
 		}

@@ -49,6 +49,10 @@ elseif ($_GET['job'] == 'postrating2') {
 	if ($count[0] < 1) {
 		error('admin.php?action=posts&job=postrating', 'Forum does not contain any posts.');
 	}
+	
+	$catbid = $scache->load('cat_bid');
+	$fc = $catbid->get();
+	$info = $fc[$board];
 
     $perpage = 30;
 
@@ -112,24 +116,32 @@ elseif ($_GET['job'] == 'postrating2') {
 		
 		$rstart = str_date('d.m.Y H:i', times($row->date));
 		$rlast = str_date('d.m.Y H:i', times($row->last));
-			
-		if ($row->mark == 'n') {
-			$pref .= 'News: '; 
+
+		if ($row->status == '2') {
+			$pref .= $lang->phrase('forum_moved');
 		}
-		elseif ($row->mark == 'a') {
-			$pref .= 'Artcle: ';
-		}
-		elseif ($row->mark == 'b') {
-			$pref .= 'Bad: ';
-		}
-		elseif ($row->mark == 'g') {
-			$pref .= 'Good: ';
-		}
-		if ($row->sticky == '1') {
-			$pref .= 'Announcement: ';
-		}
-		if ($row->status == 1) {
-			$pref .= 'Closed: ';
+		else {
+			if (empty($row->mark) && !empty($info['auto_status'])) {
+				$row->mark = $info['auto_status'];
+			}
+			if ($row->mark == 'n') {
+				$pref .= 'News: '; 
+			}
+			elseif ($row->mark == 'a') {
+				$pref .= 'Artcle: ';
+			}
+			elseif ($row->mark == 'b') {
+				$pref .= 'Bad: ';
+			}
+			elseif ($row->mark == 'g') {
+				$pref .= 'Good: ';
+			}
+			if ($row->sticky == '1') {
+				$pref .= 'Announcement: ';
+			}
+			if ($row->status == '1') {
+				$pref .= 'Closed: ';
+			}
 		}
 		
 		$percent = round((($row->ravg*50)+50));

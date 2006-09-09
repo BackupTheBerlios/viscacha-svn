@@ -108,7 +108,7 @@ $rss->editor = $config['fname'];
 $rss->editorEmail = $config['forenmail'];
 
 $sqllimit = 15;
-$sqlwhere = "r.tstart = '1' AND f.opt != 'pw' ".$slog->sqlinboards('t.board');
+$sqlwhere = "r.tstart = '1' AND f.invisible != '2' AND f.active_topic = '1' AND f.opt != 'pw' ".$slog->sqlinboards('t.board');
 $sqlorder = "t.date DESC";
 $sqljoin = $sqlfields = '';
 

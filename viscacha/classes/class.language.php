@@ -53,7 +53,7 @@ class lang {
 		global $config, $breadcrumb;
 		$isforum = array('addreply','attachments','edit','forum','manageforum','managetopic','misc','newtopic','pdf','search','showforum','showtopic');
 		if ($config['indexpage'] != 'forum' && in_array(SCRIPTNAME, $isforum)) {
-			$breadcrumb->Add($this->phrase('forumname'), 'forum.php');
+			$breadcrumb->Add($this->phrase('forumname'), iif(SCRIPTNAME != 'forum', 'forum.php'));
 		}
 	}
 
