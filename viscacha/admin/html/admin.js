@@ -208,7 +208,6 @@ function ajax() {
   return this;
 }
 
-// Sucht nach Nutzernamen
 function ajax_searchmember(field, ins) {
 	inline = FetchElement(ins);
 	if (field.value.length > 2) {
@@ -233,7 +232,6 @@ function ajax_searchmember(field, ins) {
 		inline.innerHTML = 'None (Name is too short)';
 	}
 }
-// Sucht nach Nutzernamen - Einfügen d. Nutzernamens
 function ajax_smIns(name, form, sugg) {
 	inline = FetchElement(form);
 	inline.value = name;

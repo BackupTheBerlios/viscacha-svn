@@ -1459,7 +1459,7 @@ elseif ($job == 'phrase_add_lngfile2') {
 		$c->createfile("language/{$row['id']}/{$dir}{$file}.lng.php", 'lang');
 	}
 	echo head();
-	ok('admin.php?action=language&job=phrase_file&file='.urlencode(base64_encode("{$dir}{$file}.lng.php")), 'Language file sucessfully created.');
+	ok('admin.php?action=language&job=phrase_file&file='.urlencode(base64_encode("{$dir}{$file}.lng.php")), 'Language file successfully created.');
 }
 elseif ($job == 'phrase_add_mailfile') {
 	echo head();

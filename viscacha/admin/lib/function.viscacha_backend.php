@@ -481,25 +481,55 @@ function noki ($int, $js = '', $id = '') {
 
 }
 
-function AdminSelectForum($tree, $cat, $board, $char = '&nbsp;&nbsp;', $level = 0) {
+define('ADMIN_SELECT_CATEGORIES', 2);
+define('ADMIN_SELECT_FORUMS', 1);
+define('ADMIN_SELECT_ALL', 0);
+
+function SelectBoardStructure($name = 'id', $group = ADMIN_SELECT_ALL, $standard = null, $no_select = false) {
+	global $scache;
+	
+	$forumtree = $scache->load('forumtree');
+	$tree = $forumtree->get();
+	
+	$categories_obj = $scache->load('categories');
+	$categories = $categories_obj->get();
+	
+	$catbid = $scache->load('cat_bid');
+	$boards = $catbid->get();
+	
+	$tree2 = array();
+	SelectBoardStructure_html(&$tree2, $tree, $categories, $boards, $group, $standard);
+	$forums = iif($no_select == false, '<select name="'.$name.'" size="1">');
+	$forums .= implode("\n", $tree2);
+	$forums .= iif($no_select == false, '</select>');
+	return $forums;
+}
+
+function SelectBoardStructure_html(&$html, $tree, $cat, $board, $group, $standard = null, $char = '&nbsp;&nbsp;', $level = 0) {
 	foreach ($tree as $cid => $boards) {
 		$cdata = $cat[$cid];
-		?>
-		<option style="background-color: #000000; color: #ffffff;" value="c_<?php echo $cdata['id']; ?>">
-		<?php echo str_repeat($char, $level).$cdata['name']; ?>
-		</option>
-		<?php
+		if ($group == ADMIN_SELECT_FORUMS) {
+			$html[] = '<optgroup label="'.str_repeat($char, $level).$cdata['name'].'"></optgroup>';
+		}
+		else {
+			$value = iif($group == ADMIN_SELECT_ALL, 'categories_').$cdata['id'];
+			$html[] = '<option'.iif($group != ADMIN_SELECT_CATEGORIES, 'style="font-weight: bold;"').iif($standard != null && $standard == $value, ' selected="selected"').' value="'.$value.'">'.str_repeat($char, $level).$cdata['name'].'</option>';
+		}
+		$i = 0;
 		foreach ($boards as $bid => $sub) {
 			$bdata = $board[$bid];
 			if ($bdata['opt'] == 're') {
 				continue;
 			}
-			?>
-			<option value="f_<?php echo $bdata['id']; ?>">
-			<?php echo str_repeat($char, $level+1).'+&nbsp;'.$bdata['name']; ?>
-			</option>
-	    	<?php
-	    	AdminSelectForum($sub, $cat, $board, $char, $level+2);
+			$i++;
+			if ($group != ADMIN_SELECT_CATEGORIES) {
+				$value = iif($group == ADMIN_SELECT_ALL, 'forums_').$bdata['id'];
+				$html[] = '<option '.iif($standard != null && $standard == $value, ' selected="selected"').' value="'.$value.'">'.str_repeat($char, $level+1).$bdata['name'].'</option>';
+			}
+	    	SelectBoardStructure_html(&$html, $sub, $cat, $board, $group, $standard, $char, $level+2);
+	    }
+	    if ($group == ADMIN_SELECT_FORUMS && $i == 0) {
+	    	$x = array_pop($html);
 	    }
 	}
 }

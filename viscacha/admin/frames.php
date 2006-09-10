@@ -41,8 +41,8 @@ if ($job == 'menu') {
 	   <h3><img id="img_admin_menu5" src="admin/html/images/plus.gif" alt="collapse" /> Forums &amp; Categories</h3>
 	  <ul id="part_admin_menu5">
 	   <li>&raquo; <a href="admin.php?action=forums&amp;job=manage" target="Main">Forum &amp; Category Manager</a></li>
-	   <li>&raquo; <a href="admin.php?action=forums&amp;job=addcat" target="Main">Add new Category</a></li>
-	   <li>&raquo; <a href="admin.php?action=forums&amp;job=addforum" target="Main">Add new Forum</a></li>
+	   <li>&raquo; <a href="admin.php?action=forums&amp;job=cat_add" target="Main">Add new Category</a></li>
+	   <li>&raquo; <a href="admin.php?action=forums&amp;job=forum_add" target="Main">Add new Forum</a></li>
 	   <li>&raquo; <a href="admin.php?action=forums&amp;job=mods" target="Main">Moderator Manager</a></li>
 	  </ul>
 	 </div>

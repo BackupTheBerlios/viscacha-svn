@@ -251,7 +251,7 @@ elseif ($job == 'merge') {
 <tr><td class="ubox" colspan="2">
 Here you can merge two user accounts into one.
 The "base-member" persists and its datas are set as default.
-The contributions, PNs etc. from the "needless member" will be transcribed to the base member.
+The contributions, PNs etc. from the "needless-member" will be transcribed to the base member.
 Missing datas from the base member will be taken from the needless member.
 Afterwards the needless member will be deleted.
 </td></tr>

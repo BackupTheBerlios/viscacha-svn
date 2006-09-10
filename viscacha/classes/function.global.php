@@ -638,21 +638,24 @@ function get_extension($url, $include_dot = false) {
 function UpdateBoardStats ($board) {
 	global $config, $db, $scache;
 	if ($config['updateboardstats'] == '1') {
-		$result = $db->query("SELECT COUNT(*) FROM {$db->pre}replies WHERE board='$board'",__LINE__,__FILE__);
+		$result = $db->query("SELECT COUNT(*) FROM {$db->pre}replies WHERE board='{$board}'",__LINE__,__FILE__);
 		$count = $db->fetch_num ($result);
 
-		$result = $db->query("SELECT COUNT(*) FROM {$db->pre}topics WHERE board='$board'",__LINE__,__FILE__);
+		$result = $db->query("SELECT COUNT(*) FROM {$db->pre}topics WHERE board='{$board}'",__LINE__,__FILE__);
 		$count2 = $db->fetch_num($result);
 		
 		$replies = $count[0]-$count2[0];
 		$topics = $count2[0];
 
-		$result = $db->query("SELECT id FROM {$db->pre}topics WHERE board = '$board' ORDER BY last DESC LIMIT 1",__LINE__,__FILE__);
+		$result = $db->query("SELECT id FROM {$db->pre}topics WHERE board = '{$board}' ORDER BY last DESC LIMIT 1",__LINE__,__FILE__);
 	    $last = $db->fetch_num($result);
 	    if (empty($last[0])) {
 			$last[0] = 0;
 		}
-		$db->query("UPDATE {$db->pre}forums SET topics = '".$topics."', replies = '".$replies."', last_topic = '".$last[0]."' WHERE id = '".$board."'",__LINE__,__FILE__);
+		$db->query("
+		UPDATE {$db->pre}forums SET topics = '{$topics}', replies = '{$replies}', last_topic = '{$last[0]}' 
+		WHERE id = '{$board}'
+		",__LINE__,__FILE__);
 		$delobj = $scache->load('cat_bid');
 		$delobj->delete();
 	}
@@ -664,25 +667,16 @@ function iif($if, $true, $false = '') {
 
 function getip($dots = 4) {
 	$ips = array();
-
-	// $_SERVER is sometimes for a windows server which can't handle getenv()
-	if(@getenv("REMOTE_ADDR")) {
-		$ips[] = @getenv("REMOTE_ADDR");
-	}
-	if(isset($_SERVER["REMOTE_ADDR"])) {
-		$ips[] = $_SERVER["REMOTE_ADDR"];
-	}
-	if(@getenv("HTTP_X_FORWARDED_FOR")) {
-		$ips[] = getenv("HTTP_X_FORWARDED_FOR");
-	}
-	if(isset($_SERVER["HTTP_X_FORWARDED_FOR"])) {
-		$ips[] = $_SERVER["HTTP_X_FORWARDED_FOR"];
-	}
-	if (@getenv("HTTP_CLIENT_IP")) {
-		$ips[] = getenv("HTTP_CLIENT_IP");
-	}
-	if (isset($_SERVER["HTTP_CLIENT_IP"])) {
-		$ips[] = $_SERVER["HTTP_CLIENT_IP"];
+	$indices = array('REMOTE_ADDR', 'HTTP_X_FORWARDED_FOR', 'HTTP_CLIENT_IP');
+	foreach ($indices as $index) {
+		// $_SERVER is sometimes for a windows server which can't handle getenv()
+		$tip = @getenv($index);
+		if(!empty($tip)) {
+			$ips[] = $tip;
+		}
+		if(!empty($_SERVER[$index])) {
+			$ips[] = $_SERVER[$index];
+		}
 	}
 
    	$private_ips = array("/^0\..+$/", "/^127\.0\.0\..+$/", "/^192\.168\..+$/", "/^172\.16\..+$/", "/^10..+$/", "/^224..+$/", "/^240..+$/", "/[^\d\.]+/");

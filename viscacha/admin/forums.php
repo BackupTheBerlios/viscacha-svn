@@ -54,8 +54,8 @@ function ForumSubs ($tree, $cat, $board, $char = '+', $level = 0) {
 					  <option value="admin.php?action=forums&job=updatestats&id=<?php echo $bdata['id']; ?>">Recount</option>
 					 </optgroup>
 					 <optgroup label="Moderators">
-					  <option value="admin.php?action=forums&job=add_mod&id=<?php echo $bdata['id']; ?>">Add</option>
-					  <option value="admin.php?action=forums&job=mods&int1=<?php echo $bdata['id']; ?>">Delete</option>
+					  <option value="admin.php?action=forums&job=mods&id=<?php echo $bdata['id']; ?>">Manage</option>
+					  <option value="admin.php?action=forums&job=mods_add&id=<?php echo $bdata['id']; ?>">Add</option>
 					 </optgroup>
 					 <?php } ?>
 					</select>
@@ -68,50 +68,64 @@ function ForumSubs ($tree, $cat, $board, $char = '+', $level = 0) {
 	    }
 	}
 }
-if ($job == 'ajax_changemodperm') {
+if ($job == 'mods_ajax_changeperm') {
 	$mid = $gpc->get('mid', int);
 	$bid = $gpc->get('bid', int);
 	$key = $gpc->get('key', str);
 	if(!is_id($mid) || !is_id($bid) || empty($key)) {
 		die('The ids or the key is not valid!');
 	}
-	$result = $db->query("SELECT {$key} FROM {$db->pre}moderators WHERE bid = '{$bid}' AND mid = '{$mid}' LIMIT 1");
+	$result = $db->query("SELECT {$key} FROM {$db->pre}moderators WHERE bid = '{$bid}' AND mid = '{$mid}' LIMIT 1", __LINE__, __FILE__);
 	$perm = $db->fetch_assoc($result);
 	if ($db->num_rows($result) == 0) {
 		die('Not found!');
 	}
 	$perm = invert($perm[$key]);
-	$db->query("UPDATE {$db->pre}moderators SET {$key} = '{$perm}' WHERE bid = '{$bid}' AND mid = '{$mid}' LIMIT 1");
+	$db->query("UPDATE {$db->pre}moderators SET {$key} = '{$perm}' WHERE bid = '{$bid}' AND mid = '{$mid}' LIMIT 1", __LINE__, __FILE__);
 	die(strval($perm));
 }
 elseif ($job == 'mods') {
 	echo head();
-	if ($gpc->get('temp1', str) == 'member') {
-		$order = 'u.name, c.name';
-	}
-	else {
-		$order = 'c.name, u.name';
-	}
-	if ($gpc->get('int1', int) > 0) {
-		$where = 'WHERE m.bid = '.$gpc->get('int1', int);
-	}
-	else {
-		$where = '';
-	}
-	$result = $db->query("SELECT m.*, u.name as user, c.name as cat FROM {$db->pre}moderators AS m LEFT JOIN {$db->pre}user AS u ON u.id = m.mid LEFT JOIN {$db->pre}forums AS c ON c.id = m.bid $where ORDER BY ".$order);
+	$orderby = $gpc->get('order', str);
+	$bid = $gpc->get('id', int);
+	
+	$colspan = iif($bid > 0, '8', '9');
+
+	$result = $db->query("
+	SELECT m.*, u.name as user, c.name as cat, c.id AS cat_id
+	FROM {$db->pre}moderators AS m 
+		LEFT JOIN {$db->pre}user AS u ON u.id = m.mid 
+		LEFT JOIN {$db->pre}forums AS c ON c.id = m.bid 
+	".iif($bid > 0, "WHERE m.bid = '{$bid}'")." 
+	ORDER BY ".iif($orderby == 'member' || $bid > 0, "u.name, c.name", "c.name, u.name")
+	, __LINE__, __FILE__);
 	?>
-<form name="form" method="post" action="admin.php?action=forums&job=mods2">
+<form name="form" method="post" action="admin.php?action=forums&job=mods_delete<?php echo iif($bid > 0, '&id='.$bid); ?>">
  <table class="border">
   <tr> 
-   <td class="obox" colspan="9"><span style="float: right;">Sort by [<a href="admin.php?action=forums&job=mods&temp1=member">Name</a>] [<a href="admin.php?action=forums&job=mods&temp1=board">Forums</a>]</span>Moderator Manager</td>
+   <td class="obox" colspan="<?php echo $colspan; ?>"><span style="float: right;">[<a href="admin.php?action=forums&amp;job=mods_add&amp;id=<?php echo $bid; ?>">Add Moderator</a>]</span>Moderator Manager</td>
   </tr>
   <tr class="ubox">
     <td width="5%" rowspan="2">Delete</td>
-    <td width="30%" rowspan="2">Name</td>
-    <td width="30%" rowspan="2">Forum</td>
+    <td width="30%" rowspan="2">
+    	<?php if ($bid == 0) { ?>
+    	<a<?php echo iif($orderby == 'member', ' style="font-weight: bold;"'); ?> href="admin.php?action=forums&job=mods&order=member">
+    		Name
+    	</a>
+    	<?php } else { ?>
+    		Name
+    	<?php } ?>
+    </td>
+    <?php if ($bid == 0) { ?>
+    <td width="30%" rowspan="2">
+    	<a<?php echo iif($orderby != 'member', ' style="font-weight: bold;"'); ?> href="admin.php?action=forums&job=mods&order=board">
+    		Forum
+    	</a>
+    </td>
+    <?php } ?>
     <td width="20%" rowspan="2">Period</td>
-    <td width="21%" colspan="3">Status</td>
-    <td width="14%" colspan="2">Topics</td>
+    <td width="21%" colspan="3" align="center">Status</td>
+    <td width="14%" colspan="2" align="center">Topics</td>
   </tr>
   <tr class="ubox">
     <td width="7%">Rating</td>
@@ -128,13 +142,15 @@ elseif ($job == 'mods') {
 	else {
 	    $row['time'] = '<em>No restriction!</em>';
 	}
-    $p1 = ' onmouseover="HandCursor(this)" onclick="ajax_noki(this, \'action=forums&job=ajax_changemodperm&mid='.$row['mid'].'&bid='.$row['bid'].'&key=';
+    $p1 = ' onmouseover="HandCursor(this)" onclick="ajax_noki(this, \'action=forums&job=mods_ajax_changeperm&mid='.$row['mid'].'&bid='.$row['bid'].'&key=';
     $p2 = '\')"';
 ?>
   <tr> 
    <td class="mbox" width="5%" align="center"><input type="checkbox" value="<?php echo $row['mid'].'_'.$row['bid']; ?>" name="delete[]"></td>
    <td class="mbox" width="30%"><?php echo $row['user']; ?></td>
-   <td class="mbox" width="30%"><?php echo $row['cat']; ?></td>
+   <?php if ($bid == 0) { ?>
+   <td class="mbox" width="30%"><a href="admin.php?action=forums&job=mods&id=<?php echo $row['cat_id']; ?>"><?php echo $row['cat']; ?></a></td>
+   <?php } ?>
    <td class="mbox" width="20%"><?php echo $row['time']; ?></td>
    <td class="mbox" width="7%" align="center"><?php echo noki($row['s_rating'], $p1.'s_rating'.$p2); ?></td>
    <td class="mbox" width="7%" align="center"><?php echo noki($row['s_article'], $p1.'s_article'.$p2); ?></td>
@@ -144,31 +160,136 @@ elseif ($job == 'mods') {
   </tr>
 <?php } ?>
   <tr> 
-   <td class="ubox" width="100%" colspan="9" align="center"><input type="submit" name="Submit" value="Delete"></td> 
+   <td class="ubox" width="100%" colspan="<?php echo $colspan; ?>" align="center"><input type="submit" name="Submit" value="Delete"></td> 
   </tr>
  </table>
 </form> 
 	<?php
 	echo foot();
 }
-elseif ($job == 'mods2') {
+elseif ($job == 'mods_delete') {
 	echo head();
+	$id = $gpc->get('id', int);
 	if (count($gpc->get('delete', none)) > 0) {
 		$deleteids = array();
 		foreach ($gpc->get('delete', none) as $did) {
 			list($mid, $bid) = explode('_',$did);
 			$mid = $gpc->save_int($mid);
 			$bid = $gpc->save_int($bid);
-			$deleteids[] = ' (mid = '.$mid.' AND bid = '.$bid.') '; 
+			$deleteids[] = " (mid = '{$mid}' AND bid = '{$bid}') "; 
 		}
-		$db->query("DELETE FROM {$db->pre}moderators WHERE ".implode(' OR ',$deleteids));
+		$db->query("DELETE FROM {$db->pre}moderators WHERE ".implode(' OR ',$deleteids), __LINE__, __FILE__);
 		$anz = $db->affected_rows();
 		$delobj = $scache->load('index-moderators');
 		$delobj->delete();
-		ok('admin.php?action=forums&job=mods', $anz.' entries deleted!');
+		ok('admin.php?action=forums&job=mods'.iif($id > 0, '&id='.$id), $anz.' entries deleted!');
 	}
 	else {
-		error('admin.php?action=forums&job=mods', 'Invalid data sent!');
+		error('admin.php?action=forums&job=mods'.iif($id > 0, '&id='.$id), 'Invalid data sent!');
+	}
+}
+elseif ($job == 'mods_add') {
+	echo head();
+    $id = $gpc->get('id', int);
+	?>
+<form name="form" method="post" action="admin.php?action=forums&amp;job=mods_add2">
+<?php echo iif(is_id($id), '<input type="hidden" name="id" value="'.$id.'" /><input type="hidden" name="bid" value="'.$id.'" />'); ?>
+ <table class="border">
+  <tr> 
+   <td class="obox" colspan="2">Add Moderator</td>
+  </tr>
+  <tr>
+   <td class="mbox" width="50%">Forum:</td>
+   <td class="mbox" width="50%">
+   <?php
+	$catbid = $scache->load('cat_bid');
+	$boards = $catbid->get();
+   	if (!isset($boards[$id]['name'])) {
+   		echo SelectBoardStructure('id', ADMIN_SELECT_FORUMS);
+    }
+   	else {
+		echo $boards[$id]['name'];
+   	}
+   ?>
+   </td>
+  </tr>
+  <tr>
+   <td class="mbox" width="50%">Username:</td>
+   <td class="mbox" width="50%">
+   	<input type="text" name="name" id="name" size="50" onkeyup="ajax_searchmember(this, 'sugg');" /><br />
+   	<span class="stext">Suggestions: <span id="sugg">-</span></span>
+   </td> 
+  </tr>
+  <tr>
+   <td class="mbox" width="50%">Period:<br />
+   <span class="stext">Entering a date here will cause that the moderator has the specified permissions only until the entered date. The moderator will loose his permissions at the specified date at 0 o'clock! This is optional!</span></td>
+   <td class="mbox" width="50%">Day: <input type="text" name="day" size="4" />&nbsp;&nbsp;&nbsp;&nbsp;Month: <input type="text" name="month" size="4" />&nbsp;&nbsp;&nbsp;&nbsp;Year: <input type="text" name="weekday" size="6" /></td> 
+  </tr>
+  <tr>
+   <td class="mbox" width="50%">Status: Is allowed to...</td>
+   <td class="mbox" width="50%">
+   <input type="checkbox" name="ratings" value="1" checked="checked" /> set Ratings (Good, Bad)<br />
+   <input type="checkbox" name="news" value="1" /> specify a topic as news<br />
+   <input type="checkbox" name="article" value="1" /> specify a topic as article
+   </td> 
+  </tr>
+  <tr>
+   <td class="mbox" width="50%">Manage Posts: Is allowed to...</td>
+   <td class="mbox" width="50%">
+   <input type="checkbox" name="delete" value="1" checked="checked" /> delete posts and topics<br />
+   <input type="checkbox" name="move" value="1" checked="checked" /> move posts and topics
+   </td> 
+  </tr>
+  </tr>
+  <tr>
+   <td class="ubox" width="100%" colspan="2" align="center"><input type="submit" name="Submit" value="Add"></td> 
+  </tr>
+ </table>
+</form> 
+	<?php
+	echo foot();
+}
+elseif ($job == 'mods_add2') {
+	echo head();
+	
+    $id = $gpc->get('id', int);
+    $bid = $gpc->get('bid', int);
+    $temp1 = $gpc->get('name', str);
+    $month = $gpc->get('month', int);
+    $day = $gpc->get('day', int);
+    $weekday = $gpc->get('weekday', int);
+	if (!is_id($id)) {
+		error('admin.php?action=forums&job=manage', 'Forum or Category was not found on account of an invalid ID.');
+	}
+	$uid = $db->fetch_num($db->query('SELECT id FROM '.$db->pre.'user WHERE name = "'.$temp1.'" LIMIT 1', __LINE__, __FILE__));
+	if ($uid[0] < 1) {
+		error('admin.php?action=forums&job=mods_add'.iif($bid > 0, '&id='.$id), 'Member not found!');
+	}
+	if ($month > 0 && $day > 0 && $weekday > 0) {
+		$timestamp = "'".mktime(0, 0, 0, $month, $day, $weekday, -1)."'";
+	}
+	else {
+		$timestamp = 'NULL';
+	}
+	
+	$news = $gpc->get('news', int);
+	$article = $gpc->get('article', int);
+	$rating = $gpc->get('rating', int);
+	$move = $gpc->get('move', int);
+	$delete = $gpc->get('delete', int);
+	
+	$db->query("
+	INSERT INTO {$db->pre}moderators (mid, bid, s_rating, s_news, s_article, p_delete, p_mc, time) 
+	VALUES ('{$uid[0]}', '{$id}', '{$rating}', '{$news}', '{$article}', '{$delete}', '{$move}', {$timestamp})
+	", __LINE__, __FILE__);
+	
+	if ($db->affected_rows() == 1) {
+		$delobj = $scache->load('index-moderators');
+		$delobj->delete();
+		ok('admin.php?action=forums&job=mods'.iif($bid > 0, '&id='.$id), 'Moderator successfully added!');
+	}
+	else {
+		error('admin.php?action=forums&job=mods'.iif($bid > 0, '&id='.$id), 'Could not insert data into database.');
 	}
 }
 elseif ($job == 'delete') {
@@ -193,7 +314,7 @@ elseif ($job == 'delete') {
 elseif ($job == 'delete2') {
 	echo head();
 	$id = array();
-	$result = $db->query("SELECT id FROM {$db->pre}topics WHERE board = '{$_GET['id']}'");
+	$result = $db->query("SELECT id FROM {$db->pre}topics WHERE board = '{$_GET['id']}'", __LINE__, __FILE__);
 		if ($db->num_rows($result) > 0) {
 		while ($row = $db->fetch_assoc($result)) {
 			$id[] = $row['id'];
@@ -223,10 +344,10 @@ elseif ($job == 'delete2') {
 		}
 		$db->query ("DELETE FROM {$db->pre}vote WHERE tid IN({$ids})",__LINE__,__FILE__);
 	}
-	$db->query("DELETE FROM {$db->pre}fgroups WHERE bid = '{$_GET['id']}'");
-	$db->query("DELETE FROM {$db->pre}moderators WHERE bid = '{$_GET['id']}'");
-	$db->query("DELETE FROM {$db->pre}prefix WHERE bid = '{$_GET['id']}'");
-	$db->query("DELETE FROM {$db->pre}forums WHERE id = '{$_GET['id']}' LIMIT 1");
+	$db->query("DELETE FROM {$db->pre}fgroups WHERE bid = '{$_GET['id']}'", __LINE__, __FILE__);
+	$db->query("DELETE FROM {$db->pre}moderators WHERE bid = '{$_GET['id']}'", __LINE__, __FILE__);
+	$db->query("DELETE FROM {$db->pre}prefix WHERE bid = '{$_GET['id']}'", __LINE__, __FILE__);
+	$db->query("DELETE FROM {$db->pre}forums WHERE id = '{$_GET['id']}' LIMIT 1", __LINE__, __FILE__);
 	
 	$delobj = $scache->load('cat_bid');
 	$delobj->delete();
@@ -240,7 +361,7 @@ elseif ($job == 'delete2') {
 elseif ($job == 'edit') {
 	echo head();
 	$id = $gpc->get('id', int);
-	$result = $db->query('SELECT * FROM '.$db->pre.'forums WHERE id = '.$id);
+	$result = $db->query('SELECT * FROM '.$db->pre.'forums WHERE id = '.$id, __LINE__, __FILE__);
 	if ($db->num_rows() == 0) {
 		error('admin.php?action=forums&job=manage', 'Invalid ID given');
 	}
@@ -325,15 +446,15 @@ elseif ($job == 'editforum2') {
 	if ($parent != 'NULL') {
 		if (preg_match("/c_\d{1,}/", $parent) == 1) {
 			$cid = str_replace("c_", "", $parent);
-			$array = $db->fetch_num($db->query("SELECT bid FROM {$db->pre}forums WHERE cid = $cid LIMIT 1"));
+			$array = $db->fetch_num($db->query("SELECT bid FROM {$db->pre}forums WHERE cid = $cid LIMIT 1", __LINE__, __FILE__));
 			$bid = $array[0];
 		}
 		elseif (preg_match("/f_\d{1,}/", $parent) == 1) {
 			$bid = str_replace("f_", "", $parent);
-			$array = $db->fetch_num($db->query("SELECT cid FROM {$db->pre}forums WHERE bid = $bid LIMIT 1"));
+			$array = $db->fetch_num($db->query("SELECT cid FROM {$db->pre}forums WHERE bid = $bid LIMIT 1", __LINE__, __FILE__));
 			if ($array[0] < 1) {
-				$array2 = $db->fetch_num($db->query("SELECT name, c.desc FROM {$db->pre}forums AS c WHERE id = $bid LIMIT 1"));
-				$db->query("INSERT INTO {$db->pre}categories (name, description, position) VALUES ('{$array2[0]}', '{$array2[1]}', 0)");
+				$array2 = $db->fetch_num($db->query("SELECT name, c.desc FROM {$db->pre}forums AS c WHERE id = $bid LIMIT 1", __LINE__, __FILE__));
+				$db->query("INSERT INTO {$db->pre}categories (name, description, position) VALUES ('{$array2[0]}', '{$array2[1]}', 0)", __LINE__, __FILE__);
 				$cid = $db->insert_id();
 			}
 			else {
@@ -365,7 +486,7 @@ elseif ($job == 'editforum2') {
 		$opt = '';
 		$optvalue = '';	
 	}
-	$db->query("UPDATE {$db->pre}forums SET name = '{$name}', `desc` = '{$desc}', forumzahl = '{$forumzahl}', topiczahl = '{$topiczahl}', invisible = '{$invisible}', opt = '{$opt}', optvalue = '{$optvalue}' {$option} WHERE id = '{$id}' LIMIT 1");
+	$db->query("UPDATE {$db->pre}forums SET name = '{$name}', `desc` = '{$desc}', forumzahl = '{$forumzahl}', topiczahl = '{$topiczahl}', invisible = '{$invisible}', opt = '{$opt}', optvalue = '{$optvalue}' {$option} WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	
 	$delobj = $scache->load('categories');
 	$delobj->delete();
@@ -377,84 +498,6 @@ elseif ($job == 'editforum2') {
 	$delobj->delete();
 	
 	ok('admin.php?action=forums&job=manage','Forum changed successfully!');
-}
-elseif ($job == 'add_mod') {
-	echo head();
-    $id = $gpc->get('id', str);
-	if (!is_id($id)) {
-		error('admin.php?action=forums&job=manage', 'Forum or Category not found on account of an invalid ID');
-	}
-	?>
-<form name="form" method="post" action="admin.php?action=forums&job=add_mod2">
-<input type="hidden" name="id" value="<?php echo $id; ?>">
- <table class="border">
-  <tr> 
-   <td class="obox" colspan="2">Add Moderator</td>
-  </tr>
-  <tr> 
-   <td class="mbox" width="50%">Username:</td>
-   <td class="mbox" width="50%"><input type="text" name="temp1" size="50" /></td> 
-  </tr>
-  <tr> 
-   <td class="mbox" width="50%">Period:<br />
-   <span class="stext">Entering a date here will cause that the moderator has the specified permissions only until the entered date. The moderator will loose his permissions at the specified date at 0 o'clock! This is optional!</span></td>
-   <td class="mbox" width="50%">Day: <input type="text" name="day" size="4" />&nbsp;&nbsp;&nbsp;&nbsp;Month: <input type="text" name="month" size="4" />&nbsp;&nbsp;&nbsp;&nbsp;Year: <input type="text" name="weekday" size="6" /></td> 
-  </tr>
-  <tr> 
-   <td class="mbox" width="50%">Status: Is allowed to...</td>
-   <td class="mbox" width="50%">
-   <input type="checkbox" name="int1" value="1" checked="checked" /> set Ratings (Good, Bad)<br />
-   <input type="checkbox" name="int2" value="1" /> specify a topic as news<br />
-   <input type="checkbox" name="int3" value="1" /> specify a topic as article
-   </td> 
-  </tr>
-  <tr> 
-   <td class="mbox" width="50%">Manage Posts: Is allowed to...</td>
-   <td class="mbox" width="50%">
-   <input type="checkbox" name="int4" value="1" checked="checked" /> delete posts and topics<br />
-   <input type="checkbox" name="int5" value="1" checked="checked" /> move posts and topics
-   </td> 
-  </tr>
-  </tr>
-  <tr> 
-   <td class="ubox" width="100%" colspan=2 align="center"><input type="submit" name="Submit" value="Add"></td> 
-  </tr>
- </table>
-</form> 
-	<?php
-	echo foot();
-}
-elseif ($job == 'add_mod2') {
-	echo head();
-	
-    $id = $gpc->get('id', str);
-    $temp1 = $gpc->get('temp1', str);
-    $month = $gpc->get('month', int);
-    $day = $gpc->get('day', int);
-    $weekday = $gpc->get('weekday', int);
-	if (!is_id($id)) {
-		error('admin.php?action=forums&job=manage', 'Forum or Category was not found on account of an invalid ID.');
-	}
-	$uid = $db->fetch_num($db->query('SELECT id FROM '.$db->pre.'user WHERE name = "'.$temp1.'" LIMIT 1'));
-	if ($uid[0] < 1) {
-		error('admin.php?action=forums&job=add_mod&id='.$id, 'Member not found!');
-	}
-	if ($month > 0 && $day > 0 && $weekday > 0) {
-		$timestamp = mktime(0, 0, 0, $month, $day, $weekday, -1);
-	}
-	else {
-		$timestamp = 'NULL';
-	}
-	
-	$db->query('INSERT INTO '.$db->pre.'moderators (mid, bid, s_rating, s_news, s_article, p_delete, p_mc, time) VALUES ('.$uid[0].', '.$id.', "'.$gpc->get('int1', int).'", "'.$gpc->get('int2', int).'", "'.$gpc->get('int3', int).'", "'.$gpc->get('int4', int).'", "'.$gpc->get('int5', int).'", '.$timestamp.')');
-	if ($db->affected_rows() == 1) {
-		$delobj = $scache->load('index-moderators');
-		$delobj->delete();
-		ok('admin.php?action=forums&job=add_mod&id='.$id, 'Moderator successfully added!');
-	}
-	else {
-		error('admin.php?action=forums&job=add_mod&id='.$id);
-	}
 }
 elseif ($job == 'addforum') {
 	echo head();
@@ -548,15 +591,15 @@ elseif ($job == 'addforum2') {
 	
 	if (preg_match("/c_\d{1,}/", $parent) == 1) {
 		$cid = str_replace("c_", "", $parent);
-		$array = $db->fetch_num($db->query("SELECT bid FROM {$db->pre}forums WHERE cid = '{$cid}' LIMIT 1"));
+		$array = $db->fetch_num($db->query("SELECT bid FROM {$db->pre}forums WHERE cid = '{$cid}' LIMIT 1", __LINE__, __FILE__));
 		$bid = $array[0];
 	}
 	elseif (preg_match("/f_\d{1,}/", $parent) == 1) {
 		$bid = str_replace("f_", "", $parent);
-		$array = $db->fetch_num($db->query("SELECT cid FROM {$db->pre}forums WHERE bid = '{$bid}' LIMIT 1"));
+		$array = $db->fetch_num($db->query("SELECT cid FROM {$db->pre}forums WHERE bid = '{$bid}' LIMIT 1", __LINE__, __FILE__));
 		if ($array[0] < 1) {
-			$array2 = $db->fetch_num($db->query("SELECT name, description FROM {$db->pre}forums WHERE id = $bid LIMIT 1"));
-			$db->query("INSERT INTO {$db->pre}categories (name, description, position) VALUES ('{$array2[0]}', '{$array2[1]}', 0)");
+			$array2 = $db->fetch_num($db->query("SELECT name, description FROM {$db->pre}forums WHERE id = $bid LIMIT 1", __LINE__, __FILE__));
+			$db->query("INSERT INTO {$db->pre}categories (name, description, position) VALUES ('{$array2[0]}', '{$array2[1]}', 0)", __LINE__, __FILE__);
 			$cid = $db->insert_id();
 		}
 		else {
@@ -568,11 +611,11 @@ elseif ($job == 'addforum2') {
 	}
 	
 	if ($sort == 1) {
-		$sortx = $db->fetch_num($db->query("SELECT MAX(position) FROM {$db->pre}forums WHERE cid = {$cid} LIMIT 1"));
+		$sortx = $db->fetch_num($db->query("SELECT MAX(position) FROM {$db->pre}forums WHERE cid = {$cid} LIMIT 1", __LINE__, __FILE__));
 		$sort = $sortx[0]+1;
 	}
 	elseif ($sort == 0) {
-		$sortx = $db->fetch_num($db->query("SELECT MIN(position) FROM {$db->pre}forums WHERE cid = {$cid} LIMIT 1"));
+		$sortx = $db->fetch_num($db->query("SELECT MIN(position) FROM {$db->pre}forums WHERE cid = {$cid} LIMIT 1", __LINE__, __FILE__));
 		$sort = $sortx[0]-1;
 	}
 	else {
@@ -606,7 +649,7 @@ elseif ($job == 'addforum2') {
 	if (preg_match("/f_\d{1,}/", $perm) == 1) {
 		$newid = $db->insert_id();
 		$fid = str_replace("f_", "", $perm);
-		$result = $db->query("SELECT * FROM {$db->pre}fgroups WHERE bid = '{$fid}'");
+		$result = $db->query("SELECT * FROM {$db->pre}fgroups WHERE bid = '{$fid}'", __LINE__, __FILE__);
 		while($row = $db->fetch_assoc($result)) {
 			unset($row['bid'], $row['fid']);
 			$keys = array_keys($row);
@@ -614,7 +657,7 @@ elseif ($job == 'addforum2') {
 			ksort($row, SORT_STRING);
 			$row_str = implode("','", $row);
 			$keys_str = implode(',', $keys);
-			$db->query("INSERT INTO {$db->pre}fgroups (".$keys_str.", bid) VALUES ('".$row_str."', '{$newid}')");
+			$db->query("INSERT INTO {$db->pre}fgroups ({$keys_str}, bid) VALUES ('{$row_str}', '{$newid}')", __LINE__, __FILE__);
 		}
 	}
 
@@ -628,68 +671,6 @@ elseif ($job == 'addforum2') {
 	$delobj->delete();
 	
 	ok('admin.php?action=forums&job=addforum', 'Forum successfully added!');
-}
-elseif ($job == 'addcat') {
-	echo head();
-	$forumtree = $scache->load('forumtree');
-	$cat = $forumtree->get();
-	$categories_obj = $scache->load('categories');
-	$categories = $categories_obj->get();
-	?>
-<form name="form" method="post" action="admin.php?action=forums&job=addcat2">
- <table class="border">
-  <tr> 
-   <td class="obox" colspan=2>Add Category</td>
-  </tr>
-  <tr> 
-   <td class="mbox" width="50%">Name:</td>
-   <td class="mbox" width="50%"><input type="text" name="temp1" size="50" /></td> 
-  </tr>
-  <tr> 
-   <td class="mbox" width="50%">Short Description:<br /><span class="stext">Optional. HTML is allowed!</span></td>
-   <td class="mbox" width="50%"><textarea name="temp2" rows="2" cols="50"></textarea></td> 
-  </tr>
-  <tr> 
-   <td class="mbox" width="50%">Sort in after:</td>
-   <td class="mbox" width="50%"><select name="sort">
-   <?php
-   $catid = array_keys($cat);
-   foreach ($catid as $id) {
-   	$row = $categories[$id];
-   ?>
-	<option value="<?php echo $row['position']; ?>"><?php echo $row['name']; ?></option>
-	<?php } ?>
-   </select></td> 
-  </tr>
-  <tr> 
-   <td class="ubox" width="100%" colspan=2 align="center"><input type="submit" name="Submit" value="Add"></td> 
-  </tr>
- </table>
-</form> 
-	<?php
-	echo foot();
-}
-elseif ($job == 'addcat2') {
-	echo head();
-	
-	$sort = $gpc->get('sort', int);
-	
-	$boardname = $gpc->get('temp1', str);
-	if (strlen($boardname) < 2) {
-		error('admin.php?action=forums&job=addcat', 'Name ist zu kurz ( < 2 chars)');
-	}
-	if (strlen($boardname) > 200) {
-		error('admin.php?action=forums&job=addcat', 'Name is too long( > 200 chars)');
-	}
-	
-	$db->query("INSERT INTO ".$db->pre."categories (name, description, position) VALUES ('{$boardname}', '".$gpc->get('temp2', str)."', '$sort')");
-
-	$delobj = $scache->load('categories');
-	$delobj->delete();
-	$delobj = $scache->load('forumtree');
-	$delobj->delete();
-
-	ok('admin.php?action=forums&job=addcat', 'Category sucessfully created!');
 }
 elseif ($job == 'manage') {
 	send_nocache_header();
@@ -735,16 +716,16 @@ elseif ($job == 'move') {
 	$move = $gpc->get('int1', int);
 	
 	if ($move == -1 && $type == 'c') {
-		$db->query('UPDATE '.$db->pre.'categories SET position = position-1 WHERE id = '.$gid);
+		$db->query('UPDATE '.$db->pre.'categories SET position = position-1 WHERE id = '.$gid, __LINE__, __FILE__);
 	}
 	elseif ($move == 1 && $type == 'c') {
-		$db->query('UPDATE '.$db->pre.'categories SET position = position+1 WHERE id = '.$gid);
+		$db->query('UPDATE '.$db->pre.'categories SET position = position+1 WHERE id = '.$gid, __LINE__, __FILE__);
 	}
 	elseif ($move == -1 && $type == 'f') {
-		$db->query('UPDATE '.$db->pre.'forums SET position = position-1 WHERE id = '.$gid);
+		$db->query('UPDATE '.$db->pre.'forums SET position = position-1 WHERE id = '.$gid, __LINE__, __FILE__);
 	}
 	elseif ($move == 1 && $type == 'f') {
-		$db->query('UPDATE '.$db->pre.'forums SET position = position+1 WHERE id = '.$gid);
+		$db->query('UPDATE '.$db->pre.'forums SET position = position+1 WHERE id = '.$gid, __LINE__, __FILE__);
 	}
 	else {
 		echo head();
@@ -770,7 +751,7 @@ elseif ($job == 'rights') {
 	if ($id == 0) {
 		error('admin.pgp?action=forums&job=manage', 'Forum not found');
 	}
-	$result = $db->query("SELECT f.*, g.name, g.title FROM {$db->pre}fgroups AS f LEFT JOIN {$db->pre}groups AS g ON g.id = f.gid WHERE f.bid = ".$id." ORDER BY f.gid");
+	$result = $db->query("SELECT f.*, g.name, g.title FROM {$db->pre}fgroups AS f LEFT JOIN {$db->pre}groups AS g ON g.id = f.gid WHERE f.bid = '{$id}' ORDER BY f.gid", __LINE__, __FILE__);
 	$cache = array();
 	?>
 <form name="form" method="post" action="admin.php?action=forums&job=delete_rights&id=<?php echo $id; ?>">
@@ -829,13 +810,13 @@ elseif ($job == 'ajax_changeperm') {
 	if(!is_id($id) || empty($key)) {
 		die('The id or the key is not valid!');
 	}
-	$result = $db->query("SELECT f.{$key} FROM {$db->pre}fgroups AS f WHERE f.fid = '{$id}' LIMIT 1");
+	$result = $db->query("SELECT f.{$key} FROM {$db->pre}fgroups AS f WHERE f.fid = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	$perm = $db->fetch_assoc($result);
 	if ($db->num_rows($result) == 0) {
 		die('Not found!');
 	}
 	$perm = invert($perm[$key]);
-	$db->query("UPDATE {$db->pre}fgroups AS f SET f.{$key} = '{$perm}' WHERE f.fid = '{$id}' LIMIT 1");
+	$db->query("UPDATE {$db->pre}fgroups AS f SET f.{$key} = '{$perm}' WHERE f.fid = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	die(strval($perm));
 }
 elseif ($job == 'add_rights') {
@@ -844,8 +825,8 @@ elseif ($job == 'add_rights') {
 	if ($id == 0) {
 		error('admin.pgp?action=forums&job=manage', 'Forum not found');
 	}
-	$result = $db->query("SELECT id, name FROM {$db->pre}groups ORDER BY admin DESC , guest ASC , core ASC");
-	$result2 = $db->query("SELECT gid FROM {$db->pre}fgroups WHERE bid = ".$id);
+	$result = $db->query("SELECT id, name FROM {$db->pre}groups ORDER BY admin DESC , guest ASC , core ASC", __LINE__, __FILE__);
+	$result2 = $db->query("SELECT gid FROM {$db->pre}fgroups WHERE bid = '{$id}'", __LINE__, __FILE__);
 	$cache = array();
 	$cache2 = array();
 	while ($row = $db->fetch_num($result2)) {
@@ -901,14 +882,17 @@ elseif ($job == 'add_rights2') {
 	$id = $gpc->get('id', int);
 	$int1 = $gpc->get('int1', int);
 
-	$db->query('SELECT * FROM '.$db->pre.'fgroups WHERE bid = "'.$id.'" AND gid = "'.$int1.'"');
+	$db->query('SELECT * FROM '.$db->pre.'fgroups WHERE bid = "'.$id.'" AND gid = "'.$int1.'"', __LINE__, __FILE__);
 	if ($db->num_rows() > 0) {
 		error('admin.php?action=forums&job=rights&id='.$id, 'Für die angegebene Gruppe besteht schon ein Eintrag!');
 	}
 
 	// ToDo: Gäste-Limitierungen (kein voten und editieren) beachten!
 
-	$db->query('INSERT INTO '.$db->pre.'fgroups (bid,gid,f_downloadfiles,f_forum,f_posttopics,f_postreplies,f_addvotes,f_attachments,f_edit,f_voting) VALUES ("'.$id.'","'.$int1.'","'.$gpc->get('downloadfiles', int).'","'.$gpc->get('forum', int).'","'.$gpc->get('posttopics', int).'","'.$gpc->get('postreplies', int).'","'.$gpc->get('addvotes', int).'","'.$gpc->get('attachments', int).'","'.$gpc->get('edit', int).'","'.$gpc->get('voting', int).'")');
+	$db->query('
+	INSERT INTO '.$db->pre.'fgroups (bid,gid,f_downloadfiles,f_forum,f_posttopics,f_postreplies,f_addvotes,f_attachments,f_edit,f_voting) 
+	VALUES ("'.$id.'","'.$int1.'","'.$gpc->get('downloadfiles', int).'","'.$gpc->get('forum', int).'","'.$gpc->get('posttopics', int).'","'.$gpc->get('postreplies', int).'","'.$gpc->get('addvotes', int).'","'.$gpc->get('attachments', int).'","'.$gpc->get('edit', int).'","'.$gpc->get('voting', int).'")
+	', __LINE__, __FILE__);
 	if ($db->affected_rows() == 1) {
 		ok('admin.php?action=forums&job=rights&id='.$id, 'Data successfully inserted!');
 	}
@@ -924,7 +908,7 @@ elseif ($job == 'delete_rights') {
 	}
 	$did = $gpc->get('delete', arr_int);
 	if (count($did) > 0) {
-		$db->query('DELETE FROM '.$db->pre.'fgroups WHERE fid IN('.implode(',',$did).') AND bid = "'.$id.'"');
+		$db->query('DELETE FROM '.$db->pre.'fgroups WHERE fid IN('.implode(',',$did).') AND bid = "'.$id.'"', __LINE__, __FILE__);
 		$anz = $db->affected_rows();	
 		ok('admin.php?action=forums&job=rights&id='.$id, $anz.' entries deleted!');
 	}
@@ -932,69 +916,217 @@ elseif ($job == 'delete_rights') {
 		error('admin.php?action=forums&job=rights&id='.$id, 'You have not chosen which entry shall be deleted!');
 	}
 }
+elseif ($job == 'cat_add') {
+	echo head();
+	?>
+<form name="form" method="post" action="admin.php?action=forums&job=cat_add2">
+ <table class="border">
+  <tr> 
+   <td class="obox" colspan="2">Add Category</td>
+  </tr>
+  <tr>
+   <td class="mbox" width="50%">Name:<br />
+   <span class="stext">Maximum: 200 characters</span>
+   </td>
+   <td class="mbox" width="50%"><input type="text" name="name" size="50" /></td> 
+  </tr>
+  <tr>
+   <td class="mbox" width="50%">Description:<br />
+   <span class="stext">
+   You can optionally type in a short description for this category.<br />
+   HTML is allowed; BB-Code is not allowed!</span></td>
+   <td class="mbox" width="50%"><textarea name="description" rows="2" cols="50"></textarea></td> 
+  </tr>
+  <tr>
+   <td class="mbox" width="50%">Position:</td>
+   <td class="mbox" width="50%">
+    <select name="sort_where">
+     <option value="-1">Before</option>
+     <option value="1" selected="selected">After</option>
+    </select>&nbsp;<?php echo SelectBoardStructure('sort', ADMIN_SELECT_CATEGORIES); ?>
+   </td>
+  </tr>
+  <tr>
+   <td class="mbox" width="50%">Parent Forum:</td>
+   <td class="mbox" width="50%">
+   	<select name="parent" size="1">
+   	 <option value="0" selected="selected">No one</option>
+   	 <?php echo SelectBoardStructure('parent', ADMIN_SELECT_FORUMS, null, true); ?>
+   	</select>
+   </td> 
+  </tr>
+  <tr> 
+   <td class="ubox" width="100%" colspan="2" align="center"><input type="submit" name="Submit" value="Add" /></td> 
+  </tr>
+ </table>
+</form>
+	<?php
+	echo foot();
+}
+elseif ($job == 'cat_add2') {
+	echo head();
+	
+	$sort = $gpc->get('sort', int);
+	$sortx = $gpc->get('sort_where', int);
+	$parent = $gpc->get('parent', int);
+	$name = $gpc->get('name', str);
+	$description = $gpc->get('description', str);
+	$position = null;
+	
+	if (strlen($name) < 2) {
+		error('admin.php?action=forums&job=cat_add', 'Name is too short (Minimum: 2 characters)');
+	}
+	elseif (strlen($name) > 200) {
+		error('admin.php?action=forums&job=cat_add', 'Name is too long (Maximum: 200 characters)');
+	}
+
+	$positions = array();
+	$result = $db->query("SELECT id, position FROM {$db->pre}categories WHERE parent = '{$parent}' ORDER BY position");
+	while ($pos = $db->fetch_assoc($result)) {
+		if ($pos['id'] == $sort) {
+			$position = $pos['position']+$sortx;
+		}
+		else {
+			$positions[$pos['id']] = $pos['position'];
+		}
+	}
+	if ($position == null) {
+		if (count($positions) > 0) {
+			$position = iif($sortx == 1, max($positions), min($positions));
+		}
+		else {
+			$position = 0;
+		}
+	}
+	else {
+		$id = array_search($position, $positions);
+		$move = array();
+		while (is_id($id)) {
+			$move[$id] = $positions[$id]+$sortx;
+			$id = array_search($move[$id], $positions);
+		}
+		if (count($move) > 0) {
+			$op = iif($sortx == 1, '+', '-');
+			$idlist = implode(',', array_keys($move));
+			$db->query("UPDATE {$db->pre}categories SET position = position {$op} 1 WHERE id IN({$idlist})");
+		}
+	}
+	
+	$db->query("
+	INSERT INTO {$db->pre}categories (name, description, position, parent) 
+	VALUES ('{$name}', '{$description}', '{$position}', '{$parent}')
+	", __LINE__, __FILE__);
+
+	$delobj = $scache->load('categories');
+	$delobj->delete();
+	$delobj = $scache->load('forumtree');
+	$delobj->delete();
+
+	ok('admin.php?action=forums&job=manage', 'Category successfully created!');
+}
 elseif ($job == 'cat_edit') {
 	echo head();
 	$id = $gpc->get('id', int);
-	if (!is_id($id)) {
-		error('admin.pgp?action=forums&job=manage', 'Forum not found');
-	}
-	$result = $db->query('SELECT name, description FROM '.$db->pre.'categories WHERE id = '.$id);
-	$row = $db->fetch_assoc($result);
 
+	$result = $db->query("SELECT id, name, description, parent FROM {$db->pre}categories WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
+	if ($db->num_rows($result) == 0) {
+		error('admin.pgp?action=forums&job=manage', 'Category not found');
+	}
+	$row = $gpc->prepare($db->fetch_assoc($result));
 	?>
-<form name="form" method="post" action="admin.php?action=forums&amp;job=cat_edit2&amp;id=<?php echo $id; ?>">
+<form name="form" method="post" action="admin.php?action=forums&job=cat_edit2&id=<?php echo $row['id']; ?>">
  <table class="border">
   <tr> 
    <td class="obox" colspan="2">Edit Category</td>
   </tr>
-  <tr> 
-   <td class="mbox" width="50%">Name:</td>
-   <td class="mbox" width="50%"><input type="text" name="boardname" size="50" value="<?php echo $row['name']; ?>" /></td> 
+  <tr>
+   <td class="mbox" width="50%">Name:<br />
+   <span class="stext">Maximum: 200 characters</span>
+   </td>
+   <td class="mbox" width="50%"><input type="text" name="name" size="50" value="<?php echo $row['name']; ?>" /></td> 
   </tr>
-  <tr> 
-   <td class="mbox" width="50%">Short Description:<br /><span class="stext">Optional. BB-Codes and HTML is not allowed!</span></td>
+  <tr>
+   <td class="mbox" width="50%">Description:<br />
+   <span class="stext">
+   You can optionally type in a short description for this category.<br />
+   HTML is allowed; BB-Code is not allowed!</span></td>
    <td class="mbox" width="50%"><textarea name="description" rows="2" cols="50"><?php echo $row['description']; ?></textarea></td> 
   </tr>
-   <td class="ubox" width="100%" colspan="2" align="center"><input type="submit" name="Submit" value="Edit" /></td> 
+  <tr>
+   <td class="mbox" width="50%">Parent Forum:</td>
+   <td class="mbox" width="50%">
+   	<select name="parent" size="1">
+   	 <option value="0"<?php echo iif($row['parent'] == '0', ' selected="selected"'); ?>>No one</option>
+   	 <?php echo SelectBoardStructure('parent', ADMIN_SELECT_FORUMS, $row['parent'], true); ?>
+   	</select>
+   </td> 
+  </tr>
+  <tr> 
+   <td class="ubox" width="100%" colspan="2" align="center"><input type="submit" name="Submit" value="Add" /></td> 
   </tr>
  </table>
-</form> 
+</form>
 	<?php
 	echo foot();
 }
 elseif ($job == 'cat_edit2') {
 	echo head();
 	
-	$boardname = $gpc->get('boardname', str);
-	$description = $gpc->get('description', str);
 	$id = $gpc->get('id', int);
-	
-	if (strlen($boardname) < 2) {
-		error('Name ist zu kurz ( < 2 chars)');
+	$parent = $gpc->get('parent', int);
+	$name = $gpc->get('name', str);
+	$description = $gpc->get('description', str);
+
+	$parent_notice = false;
+	if ($parent > 0) {
+		$subs = array();
+		$parent_forums = $scache->load('parent_forums');
+		$parents = $parent_forums->get();
+		$result = $db->query("SELECT parent FROM {$db->pre}categories WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
+		$row = $db->fetch_assoc($result);
+		foreach ($parents as $id => $p_arr) {
+			array_shift($p_arr);
+			if (in_array($row['parent'], $p_arr)) {
+				$subs[] = $id;
+			}
+		}
+		if (in_array($parent, $subs)) {
+			$parent_notice = true;
+			$parent = $row['parent'];
+		}
 	}
-	if (strlen($boardname) > 200) {
-		error('Name is too long( > 200 chars)');
+
+	if (strlen($name) < 2) {
+		error('admin.php?action=forums&job=cat_edit&id='.$id, 'Name is too short (Minimum: 2 characters)');
+	}
+	elseif (strlen($name) > 200) {
+		error('admin.php?action=forums&job=cat_edit&id='.$id, 'Name is too long (Maximum: 200 characters)');
 	}
 	
-	$db->query("UPDATE {$db->pre}categories SET name = '{$boardname}', description = '{$description}' WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
+	$db->query("UPDATE {$db->pre}categories SET name = '{$name}', description = '{$description}', parent = '{$parent}' WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 
 	$delobj = $scache->load('categories');
 	$delobj->delete();
 	$delobj = $scache->load('forumtree');
 	$delobj->delete();
 	
-	ok('admin.php?action=forums&job=manage', 'Category successfully edited!');
+	if ($parent_notice == false) {
+		ok('admin.php?action=forums&job=manage', 'Category successfully edited!');
+	}
+	else{
+		error('admin.php?action=forums&job=manage', 'Category successfully edited, but the parent forum was not changed, because you had specified a subforum of this category.');
+	}
 }
 elseif ($job == 'cat_delete') {
 	echo head();
 	$id = $gpc->get('id', int);
 	
-	$result = $db->query('SELECT id FROM '.$db->pre.'forums WHERE cid = '.$id);
+	$result = $db->query("SELECT id FROM {$db->pre}forums WHERE parent = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	if ($db->num_rows() > 0) {
 		error('admin.php?action=forums&job=manage', 'Until you can delete this category, you have to delete all forums this category contains.');
 	}
 	
-	$db->query("DELETE FROM {$db->pre}categories WHERE id = '{$id}' LIMIT 1");
+	$db->query("DELETE FROM {$db->pre}categories WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 
 	$delobj = $scache->load('categories');
 	$delobj->delete();
@@ -1005,10 +1137,10 @@ elseif ($job == 'cat_delete') {
 }
 elseif ($job == 'prefix') {
 	$id = $gpc->get('id', int);
-	$result = $db->query('SELECT * FROM '.$db->pre.'prefix WHERE bid = "'.$id.'" ORDER BY value');
+	$result = $db->query('SELECT * FROM '.$db->pre.'prefix WHERE bid = "'.$id.'" ORDER BY value', __LINE__, __FILE__);
 	echo head();
 ?>
-<form name="form" method="post" action="admin.php?action=forums&job=delete_prefix&id=<?php echo $id; ?>">
+<form name="form" method="post" action="admin.php?action=forums&job=prefix_delete&id=<?php echo $id; ?>">
  <table class="border">
   <tr> 
    <td class="obox" colspan="3">Manage Prefix</td>
@@ -1027,7 +1159,7 @@ elseif ($job == 'prefix') {
   ?>
   <tr> 
    <td class="mbox" width="10%"><input type="checkbox" name="delete[]" value="<?php echo $prefix['id']; ?>"></td>
-   <td class="mbox" width="70%"><a href="admin.php?action=forums&amp;job=edit_prefix&amp;id=<?php echo $prefix['id']; ?>"><?php echo $prefix['value']; ?></a></td>
+   <td class="mbox" width="70%"><a href="admin.php?action=forums&amp;job=prefix_edit&amp;id=<?php echo $prefix['id']; ?>"><?php echo $prefix['value']; ?></a></td>
    <td class="mbox" width="20%" align="center"><?php echo noki($prefix['standard']); ?></td> 
   </tr>
   <?php } ?>
@@ -1036,7 +1168,7 @@ elseif ($job == 'prefix') {
   </tr>
  </table>
 </form><br />
-<form name="form" method="post" action="admin.php?action=forums&job=add_prefix&id=<?php echo $id; ?>">
+<form name="form" method="post" action="admin.php?action=forums&job=prefix_add&id=<?php echo $id; ?>">
  <table class="border">
   <tr> 
    <td class="obox" colspan="2">Add Prefix</td>
@@ -1059,13 +1191,13 @@ elseif ($job == 'prefix') {
 <?php
 	echo foot();
 }
-elseif ($job == 'edit_prefix') {
+elseif ($job == 'prefix_edit') {
 	echo head();
 	$id = $gpc->get('id', int);
-	$result = $db->query("SELECT * FROM {$db->pre}prefix WHERE id = '{$id}'");
+	$result = $db->query("SELECT * FROM {$db->pre}prefix WHERE id = '{$id}'", __LINE__, __FILE__);
 	$row = $db->fetch_assoc($result);
 ?>
-<form name="form" method="post" action="admin.php?action=forums&job=edit_prefix2&id=<?php echo $id; ?>">
+<form name="form" method="post" action="admin.php?action=forums&job=prefix_edit2&id=<?php echo $id; ?>">
  <table class="border">
   <tr> 
    <td class="obox" colspan="2">Edit Prefix</td>
@@ -1086,51 +1218,51 @@ elseif ($job == 'edit_prefix') {
 <?php
 	echo foot();
 }
-elseif ($job == 'edit_prefix2') {
+elseif ($job == 'prefix_edit2') {
 	echo head();
 	$id = $gpc->get('id', int);
 	$val = $gpc->get('name', str);
 	$standard = $gpc->get('standard', int);
 	
-	$result = $db->query('SELECT bid, standard FROM '.$db->pre.'prefix WHERE id = "'.$id.'"');
+	$result = $db->query('SELECT bid, standard FROM '.$db->pre.'prefix WHERE id = "'.$id.'"', __LINE__, __FILE__);
 	$row = $db->fetch_assoc($result);
 
-	$result = $db->query('SELECT id FROM '.$db->pre.'prefix WHERE bid = "'.$row['bid'].'" AND value = "'.$val.'" AND id != "'.$id.'" LIMIT 1');
+	$result = $db->query('SELECT id FROM '.$db->pre.'prefix WHERE bid = "'.$row['bid'].'" AND value = "'.$val.'" AND id != "'.$id.'" LIMIT 1', __LINE__, __FILE__);
 	if ($db->num_rows() > 0) {
 		error('admin.php?action=forums&job=prefix&id='.$id, 'This value already exists!');
 	}
 	else {
 		if ($row['standard'] != $standard && $standard == 1) {
-			$db->query("UPDATE {$db->pre}prefix SET standard = '0' WHERE standard = '1' AND bid = '{$row['bid']}' LIMIT 1");
+			$db->query("UPDATE {$db->pre}prefix SET standard = '0' WHERE standard = '1' AND bid = '{$row['bid']}' LIMIT 1", __LINE__, __FILE__);
 		}
-		$db->query("UPDATE {$db->pre}prefix SET value = '{$val}', standard = '{$standard}' WHERE id = '{$id}' LIMIT 1");
+		$db->query("UPDATE {$db->pre}prefix SET value = '{$val}', standard = '{$standard}' WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 		$delobj = $scache->load('prefix');
 		$delobj->delete();
 		ok('admin.php?action=forums&job=prefix&id='.$row['bid'], 'Prefix successfully edited!');
 	}
 }
-elseif ($job == 'delete_prefix') {
+elseif ($job == 'prefix_delete') {
 	echo head();
 	$id = $gpc->get('id', int);
 	$did = $gpc->get('delete', arr_int);
 	$did = implode(',', $did);
 	$delobj = $scache->load('prefix');
 	$delobj->delete();
-	$db->query('DELETE FROM '.$db->pre.'prefix WHERE id IN('.$did.') AND bid = "'.$id.'"');
+	$db->query('DELETE FROM '.$db->pre.'prefix WHERE id IN('.$did.') AND bid = "'.$id.'"', __LINE__, __FILE__);
 	$i = $db->affected_rows();
 	ok('admin.php?action=forums&job=prefix&id='.$id, $i.' prefixes deleted!');
 }
-elseif ($job == 'add_prefix') {
+elseif ($job == 'prefix_add') {
 	echo head();
 	$id = $gpc->get('id', int);
 	$val = $gpc->get('name', str);
 	$standard = $gpc->get('standard', int);
-	$result = $db->query('SELECT id FROM '.$db->pre.'prefix WHERE bid = "'.$id.'" AND value = "'.$val.'" LIMIT 1');
+	$result = $db->query('SELECT id FROM '.$db->pre.'prefix WHERE bid = "'.$id.'" AND value = "'.$val.'" LIMIT 1', __LINE__, __FILE__);
 	if ($db->num_rows() > 0) {
 		error('admin.php?action=forums&job=prefix&id='.$id, 'This value already exists!');
 	}
 	else {
-		$db->query("INSERT INTO {$db->pre}prefix (bid, value, standard) VALUES ('{$id}', '{$val}', '{$standard}')");
+		$db->query("INSERT INTO {$db->pre}prefix (bid, value, standard) VALUES ('{$id}', '{$val}', '{$standard}')", __LINE__, __FILE__);
 		$delobj = $scache->load('prefix');
 		$delobj->delete();
 		ok('admin.php?action=forums&job=prefix&id='.$id, 'Prefix successfully added!');
