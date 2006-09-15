@@ -744,6 +744,153 @@ elseif ($job == 'del_codefiles') {
 	$delobj->delete();
     ok('admin.php?action=bbcodes&job=codefiles', 'Files successfully deleted!');
 }
+elseif ($job == 'custombb_export') {
+	$id = $gpc->get('id', int);
+	
+	$result = $db->query("
+	SELECT bbcodetag, bbcodereplacement, bbcodeexample, bbcodeexplanation, twoparams, title, buttonimage 
+	FROM {$db->pre}bbcode 
+	WHERE id = '{$id}' 
+	LIMIT 1
+	", __LINE__, __FILE__);
+	$data = $db->fetch_assoc($result);
+	$data['button'] = null;
+	
+	if (!empty($data['buttonimage']) && (file_exists($data['buttonimage']) || preg_match('/^(http:\/\/|www.)([\wäöüÄÖÜ@\-_\.]+)\:?([0-9]*)\/(.*)$/', $data['buttonimage'])) ) {
+		if (preg_match('/^(http:\/\/|www.)([\wäöüÄÖÜ@\-_\.]+)\:?([0-9]*)\/(.*)$/', $data['buttonimage'])) {
+			$button = get_remote($data['buttonimage']);
+		}
+		else {
+			$button = file_get_contents($data['buttonimage']);
+		}
+		if ($button == REMOTE_CLIENT_ERROR || $button == REMOTE_INVALID_URL) {
+			$data['buttonimage'] = '';
+		}
+		else {
+		    $ext = get_extension($data['buttonimage']);
+			if (!in_array($ext, $imagetype_extension)) {
+				$data['buttonimage'] = '';
+			}
+			else {
+				$data['button'] = base64_encode($button);
+			}
+		}
+	}
+	else {
+		$data['buttonimage'] = '';
+	}
+	
+	$content = serialize($data);
+	
+	viscacha_header('Content-Type: text/plain');
+	viscacha_header('Content-Length: '.strlen($content));
+	viscacha_header('Content-Disposition: attachment; filename="'.$data['bbcodetag'].'.bbc"');
+	
+	print($content);
+}
+elseif ($job == 'custombb_import') {
+	echo head();
+	?>
+<form name="form2" method="post" enctype="multipart/form-data" action="admin.php?action=bbcodes&job=custombb_import2">
+ <table class="border" cellpadding="4" cellspacing="0" border="0">
+  <tr><td class="obox" colspan="2">Import a new Design</td></tr>
+  <tr><td class="mbox"><em>Either</em> upload a file:<br /><span class="stext">Allowed file types: .bbc - Maximum file size: <?php echo formatFilesize(1024*250); ?></span></td>
+  <td class="mbox"><input type="file" name="upload" size="40" /></td></tr>
+  <tr><td class="mbox"><em>or</em> select a file from the server:<br /><span class="stext">Path starting from the Viscacha-root-directory: <?php echo $config['fpath']; ?></span></td>
+  <td class="mbox"><input type="text" name="server" size="50" /></td></tr>
+  <tr><td class="mbox">Delete file after import:</td>
+  <td class="mbox"><input type="checkbox" name="delete" value="1" checked="checked" /></td></tr>
+  <tr><td class="ubox" colspan="2" align="center"><input accesskey="s" type="submit" value="Import" /></td></tr>
+ </table>
+</form>
+	<?php
+	echo foot();
+}
+elseif ($job == 'custombb_import2') {
+
+	$dir = $gpc->get('dir', int);
+	$server = $gpc->get('server', none);
+	$del = $gpc->get('delete', int);
+	$inserterrors = array();
+	
+	if (!empty($_FILES['upload']['name'])) {
+		$filesize = ini_maxupload();
+		$filetypes = array('bbc');
+		$dir = 'temp/';
+	
+		$insertuploads = array();
+		require("classes/class.upload.php");
+		 
+		$my_uploader = new uploader();
+		$my_uploader->max_filesize(1024*250);
+		$my_uploader->file_types($filetypes);
+		$my_uploader->set_path($dir);
+		if ($my_uploader->upload('upload')) {
+			if ($my_uploader->save_file()) {
+				$file = $dir.$my_uploader->fileinfo('filename');
+				if (!file_exists($file)) {
+					$inserterrors[] = 'File ('.$file.') does not exist.';
+				}
+			}
+		}
+		if ($my_uploader->upload_failed()) {
+			array_push($inserterrors,$my_uploader->get_error());
+		}
+	}
+	elseif (file_exists($server)) {
+		$ext = get_extension($server);
+		if ($ext == 'bbc') {
+			$file = $server;
+		}
+		else {
+			$inserterrors[] = 'The selected file is no BBC-file.';
+		}
+	}
+	else {
+		$inserterrors[] = 'No valid file selected.';
+	}
+	echo head();
+	if (count($inserterrors) > 0) {
+		error('admin.php?action=bbcodes&job=custombb_import', $inserterrors);
+	}
+	
+	$content = file_get_contents($file);
+	extract(unserialize($content));
+
+	if (empty($bbcodetag) || empty($bbcodereplacement) || empty($bbcodeexample)) {
+		error('admin.php?action=bbcodes&job=custombb_import', 'File not valid!');
+	}
+
+	$result = $db->query("SELECT * FROM {$db->pre}bbcode WHERE bbcodetag = '{$bbcodetag}' AND twoparams = '{$twoparams}'", __LINE__, __FILE__);
+	if ($db->num_rows($result) > 0) {
+		error('admin.php?action=bbcodes&job=custombb_import', 'There is already a BB-Code named &quot;'.$bbcodetag.'&quot;. You may not create duplicate names.');
+	}
+	
+	if (empty($button)) {
+		$buttonimage = '';
+	}
+	else {
+		$name = basename($buttonimage);
+		$buttonimage = "images/{$name}";
+		if (!file_exists($buttonimage)) {
+			$filesystem->file_put_contents($buttonimage, base64_decode($button));
+		}
+	}
+	
+	$db->query("
+	INSERT INTO {$db->pre}bbcode (bbcodetag, bbcodereplacement, bbcodeexample, bbcodeexplanation, twoparams, title, buttonimage)
+	VALUES ('{$bbcodetag}','{$bbcodereplacement}','{$bbcodeexample}','{$bbcodeexplanation}','{$twoparams}','{$title}','{$buttonimage}')
+	", __LINE__, __FILE__);
+	
+	if ($del > 0) {
+		$filesystem->unlink($file);
+	}
+	
+	$delobj = $scache->load('custombb');
+	$delobj->delete();
+	
+	ok('admin.php?action=bbcodes&job=custombb', 'BB-Code ('.$title.') successfully imported!');
+}
 elseif ($job == 'custombb_add') {
 	echo head();
 	?>
@@ -932,15 +1079,21 @@ elseif ($job == 'custombb_edit2') {
 elseif ($job == 'custombb_delete') {
 	echo head();
 	$id = $gpc->get('id', int);
+	$result = $db->query("SELECT buttonimage FROM {$db->pre}bbcode WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
+	$image = $db->fetch_assoc($result);
 	?>
 	<table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
 	<tr><td class="obox">Delete Custom BB Code</td></tr>
 	<tr><td class="mbox">
 	<p align="center">Do you really want to delete this custom BB code?</p>
 	<p align="center">
-	<a href="admin.php?action=bbcodes&job=custombb_delete2&id=<?php echo $id; ?>"><img border="0" align="middle" alt="" src="admin/html/images/yes.gif"> Yes</a>
-	&nbsp&nbsp;&nbsp;&nbsp&nbsp;&nbsp;
-	<a href="javascript: history.back(-1);"><img border="0" align="middle" alt="" src="admin/html/images/no.gif"> No</a>
+	<?php if (@file_exists($image['buttonimage']) && !preg_match('/^(http:\/\/|www.)([\wäöüÄÖÜ@\-_\.]+)\:?([0-9]*)\/(.*)$/', $image['buttonimage'])) { ?>
+	<a href="admin.php?action=bbcodes&amp;job=custombb_delete2&amp;id=<?php echo $id; ?>&amp;img=1"><img border="0" align="absmiddle" alt="" src="admin/html/images/yes.gif"> Yes, inclusive image</a><br />
+	<a href="admin.php?action=bbcodes&amp;job=custombb_delete2&amp;id=<?php echo $id; ?>"><img border="0" align="absmiddle" alt="" src="admin/html/images/yes.gif"> Yes, but not the image</a><br />
+	<?php } else { ?>
+	<a href="admin.php?action=bbcodes&amp;job=custombb_delete2&amp;id=<?php echo $id; ?>"><img border="0" align="absmiddle" alt="" src="admin/html/images/yes.gif"> Yes</a><br />
+	<?php } ?>
+	<br /><a href="admin.php?action=bbcodes&amp;job=custombb"><img border="0" align="absmiddle" alt="" src="admin/html/images/no.gif"> No</a>
 	</p>
 	</td></tr>
 	</table>
@@ -950,7 +1103,15 @@ elseif ($job == 'custombb_delete') {
 elseif ($job == 'custombb_delete2'){
 	echo head();
 	$id = $gpc->get('id', int);
-	$db->query("DELETE FROM {$db->pre}bbcode WHERE id = ".$id, __LINE__, __FILE__);
+	$img = $gpc->get('img', int);
+	if ($img == 1) {
+		$result = $db->query("SELECT buttonimage FROM {$db->pre}bbcode WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
+		$image = $db->fetch_assoc($result);
+		if (@file_exists($image['buttonimage']) && !preg_match('/^(http:\/\/|www.)([\wäöüÄÖÜ@\-_\.]+)\:?([0-9]*)\/(.*)$/', $image['buttonimage'])) {
+			$filesystem->unlink($image['buttonimage']);
+		}
+	}
+	$db->query("DELETE FROM {$db->pre}bbcode WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	$delobj = $scache->load('custombb');
 	$delobj->delete();
 	ok('admin.php?action=bbcodes&job=custombb', 'Custom BB Code successfully deleted');
@@ -961,7 +1122,7 @@ elseif ($job == 'custombb') {
 	?>
 	<table align="center" class="border">
 	<tr>
-		<td class="obox" align="center" colspan="4"><span style="float: right;">[<a href="admin.php?action=bbcodes&job=custombb_add">Add new BB Code</a>]</span>Custom BB Code Manager</td>
+		<td class="obox" align="center" colspan="4"><span style="float: right;">[<a href="admin.php?action=bbcodes&job=custombb_add">Add new BB Code</a>] [<a href="admin.php?action=bbcodes&job=custombb_import">Import BB Code</a>]</span>Custom BB Code Manager</td>
 	</tr>
 	<tr>
 		<td class="ubox" width="30%">Title</td>
@@ -972,7 +1133,7 @@ elseif ($job == 'custombb') {
 	<?php
 	while ($bbcode = $db->fetch_assoc($result)) {
 		if (!empty($bbcode['buttonimage'])) {
-			$src = "<img style=\"background: buttonface; border:solid 1px highlight;\" src=\"{$bbcode['buttonimage']}\" alt=\"\" />";
+			$src = "<img style=\"background-color: buttonface; border:solid 1px highlight;\" src=\"{$bbcode['buttonimage']}\" alt=\"\" />";
 		}
 		else {
 			$src = '-';
@@ -980,9 +1141,13 @@ elseif ($job == 'custombb') {
 		?>
 		<tr>
 			<td class="mbox"><?php echo $bbcode['title']; ?></td>
-			<td class="mbox"><code><?php echo $bbcode['bbcodeexample']; ?></code></td>
+			<td class="mbox"><code>[<?php echo $bbcode['bbcodetag'].iif($bbcode['twoparams'], '={option}'); ?>]{param}[/<?php echo $bbcode['bbcodetag']; ?>]</code></td>
 			<td class="mbox" align="center"><?php echo $src; ?></td>
-			<td class="mbox">[<a href="admin.php?action=bbcodes&job=custombb_edit&id=<?php echo $bbcode['id']; ?>">Edit</a>] [<a href="admin.php?action=bbcodes&job=custombb_delete&id=<?php echo $bbcode['id']; ?>">Delete</a>]</td>
+			<td class="mbox">
+			[<a href="admin.php?action=bbcodes&job=custombb_edit&id=<?php echo $bbcode['id']; ?>">Edit</a>] 
+			[<a href="admin.php?action=bbcodes&job=custombb_export&id=<?php echo $bbcode['id']; ?>">Export</a>] 
+			[<a href="admin.php?action=bbcodes&job=custombb_delete&id=<?php echo $bbcode['id']; ?>">Delete</a>]
+			</td>
 		</tr>
 		<?
 	}

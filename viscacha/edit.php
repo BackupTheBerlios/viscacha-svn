@@ -106,7 +106,7 @@ else {
 	$p_upload = FALSE;
 }
 
-$allowed = (($info['name'] == $my->id || $my->mp[0] == 1) && $my->p['edit'] && ($edit_seconds >= $diff || $my->mp[0] == 1)) ? true : false;
+$allowed = (($info['name'] == $my->id || $my->mp[0] == 1) && $my->p['edit'] && $my->vlogin && ($edit_seconds >= $diff || $my->mp[0] == 1)) ? true : false;
 
 ($code = $plugins->load('edit_start')) ? eval($code) : null;
 

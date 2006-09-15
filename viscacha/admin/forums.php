@@ -8,8 +8,8 @@ function ForumSubs ($tree, $cat, $board, $char = '+', $level = 0) {
 		<tr> 
 			<td class="mmbox" width="50%"><?php echo str_repeat($char, $level).' <b>'.$cdata['name']; ?></b></td>
 			<td class="mmbox" width="10%"><?php echo $cdata['position']; ?>&nbsp;&nbsp;
-				<a href="admin.php?action=forums&job=move&temp1=c_<?php echo $cdata['id']; ?>&int1=-1"><img src="admin/html/images/asc.gif" border="0" alt="Up"></a>&nbsp;
-				<a href="admin.php?action=forums&job=move&temp1=c_<?php echo $cdata['id']; ?>&int1=1"><img src="admin/html/images/desc.gif" border="0" alt="Down"></a>
+				<a href="admin.php?action=forums&job=cat_move&id=<?php echo $cdata['id']; ?>&move=-1"><img src="admin/html/images/asc.gif" border="0" alt="Up"></a>&nbsp;
+				<a href="admin.php?action=forums&job=cat_move&id=<?php echo $cdata['id']; ?>&move=1"><img src="admin/html/images/desc.gif" border="0" alt="Down"></a>
 			</td>
 			<td class="mmbox" width="30%">
 			  <form name="act" action="admin.php?action=locate" method="post">
@@ -31,27 +31,27 @@ function ForumSubs ($tree, $cat, $board, $char = '+', $level = 0) {
 			  <tr>
 			    <td class="mbox"><?php echo str_repeat($char, $level+1).' '.$bdata['name']; ?></td>
 				<td class="mbox" width="10%" align="right"><?php echo $bdata['position']; ?>&nbsp;&nbsp;
-				<a href="admin.php?action=forums&job=move&temp1=f_<?php echo $bdata['id']; ?>&int1=-1"><img src="admin/html/images/asc.gif" border="0" alt="Up"></a>&nbsp;
-				<a href="admin.php?action=forums&job=move&temp1=f_<?php echo $bdata['id']; ?>&int1=1"><img src="admin/html/images/desc.gif" border="0" alt="Down"></a>
+				<a href="admin.php?action=forums&job=forum_move&id=<?php echo $bdata['id']; ?>&move=-1"><img src="admin/html/images/asc.gif" border="0" alt="Up"></a>&nbsp;
+				<a href="admin.php?action=forums&job=forum_move&id=<?php echo $bdata['id']; ?>&move=1"><img src="admin/html/images/desc.gif" border="0" alt="Down"></a>
 				</td>
 			   <td class="mbox" width="30%">
 				<form name="act" action="admin.php?action=locate" method="post">
 			  		<select size="1" name="url" onchange="locate(this.value)">
 			  		<option value="" selected="selected">Please choose</option>
 					 <optgroup label="General">
-					  <option value="admin.php?action=forums&job=edit&id=<?php echo $bdata['id']; ?>">Edit Forum</option>
-					  <option value="admin.php?action=forums&job=delete&id=<?php echo $bdata['id']; ?>">Delete Forum</option>
+					  <option value="admin.php?action=forums&job=forum_edit&id=<?php echo $bdata['id']; ?>">Edit Forum</option>
+					  <option value="admin.php?action=forums&job=forum_delete&id=<?php echo $bdata['id']; ?>">Delete Forum</option>
 					 </optgroup>
 					 <?php if ($bdata['opt'] != 're') { ?>
 					 <optgroup label="Permissions">
 					  <option value="admin.php?action=forums&job=rights&id=<?php echo $bdata['id']; ?>">Manage Usergroups</option>
-					  <option value="admin.php?action=forums&job=add_rights&id=<?php echo $bdata['id']; ?>">Add Usergroup</option>
+					  <option value="admin.php?action=forums&job=rights_add&id=<?php echo $bdata['id']; ?>">Add Usergroup</option>
 					 </optgroup>
 					 <optgroup label="Prefix">
 					  <option value="admin.php?action=forums&job=prefix&id=<?php echo $bdata['id']; ?>">Manage</option>
 					 </optgroup>
 					 <optgroup label="Statistics">
-					  <option value="admin.php?action=forums&job=updatestats&id=<?php echo $bdata['id']; ?>">Recount</option>
+					  <option value="admin.php?action=forums&job=forum_recount&id=<?php echo $bdata['id']; ?>">Recount</option>
 					 </optgroup>
 					 <optgroup label="Moderators">
 					  <option value="admin.php?action=forums&job=mods&id=<?php echo $bdata['id']; ?>">Manage</option>
@@ -292,15 +292,40 @@ elseif ($job == 'mods_add2') {
 		error('admin.php?action=forums&job=mods'.iif($bid > 0, '&id='.$id), 'Could not insert data into database.');
 	}
 }
-elseif ($job == 'delete') {
+elseif ($job == 'manage') {
+	send_nocache_header();
 	echo head();
+	?>
+<table class="border">
+  <tr><td class="obox" colspan="3">Manage Forums &amp; Categories</td></tr>
+  <tr> 
+	<td class="ubox" width="50%"><b>Title</b></td>
+	<td class="ubox" width="20%"><b>Ordering</b></td> 
+	<td class="ubox" width="30%"><b>Action</b></td> 
+	</tr>
+	<?php
+	$forumtree = $scache->load('forumtree');
+	$tree = $forumtree->get();
+	$categories_obj = $scache->load('categories');
+	$categories = $categories_obj->get();
+	$catbid = $scache->load('cat_bid');
+	$boards = $catbid->get();
+	ForumSubs($tree, $categories, $boards);
+	?>
+</table>
+	<?php
+	echo foot();
+}
+elseif ($job == 'forum_delete') {
+	echo head();
+	$id = $gpc->get('id', int);
 	?>
 	<table class="border">
 	<tr><td class="obox">Delete Forum</td></tr>
 	<tr><td class="mbox">
-	    <p align="center">Do you really want to delete this forum?</p>
+	    <p align="center">Do you really want to delete this forum with all data?</p>
 	    <p align="center">
-	        <a href="admin.php?action=forums&amp;job=delete2&amp;id=<?php echo $_GET['id']; ?>">
+	        <a href="admin.php?action=forums&amp;job=forum_delete2&amp;id=<?php echo $id; ?>">
 	        	<img alt="Yes" border="0" src="admin/html/images/yes.gif" /> Yes
 	        </a>
 	        &nbsp;&nbsp;&nbsp;&nbsp;
@@ -311,7 +336,7 @@ elseif ($job == 'delete') {
 	<?php
 	echo foot();
 }
-elseif ($job == 'delete2') {
+elseif ($job == 'forum_delete2') {
 	echo head();
 	$id = array();
 	$result = $db->query("SELECT id FROM {$db->pre}topics WHERE board = '{$_GET['id']}'", __LINE__, __FILE__);
@@ -356,72 +381,126 @@ elseif ($job == 'delete2') {
 	$delobj = $scache->load('parent_forums');
 	$delobj->delete();
 	
-	ok('admin.php?action=forums&job=manage', 'Board was successfully deleted!');
+	ok('admin.php?action=forums&job=manage', 'Forum successfully deleted!');
 }
-elseif ($job == 'edit') {
+elseif ($job == 'forum_edit') {
 	echo head();
 	$id = $gpc->get('id', int);
-	$result = $db->query('SELECT * FROM '.$db->pre.'forums WHERE id = '.$id, __LINE__, __FILE__);
+	$result = $db->query("SELECT * FROM {$db->pre}forums WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	if ($db->num_rows() == 0) {
 		error('admin.php?action=forums&job=manage', 'Invalid ID given');
 	}
 	$row = $db->fetch_assoc($result);
 	?>
-<form name="form" method="post" action="admin.php?action=forums&job=editforum2&id=<?php echo $id; ?>">
- <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
+<form name="form" method="post" action="admin.php?action=forums&job=addforum2">
+ <table class="border">
   <tr> 
-   <td class="obox" colspan="2">Edit a forum</td>
+   <td class="obox" colspan="2">Add a new forum</td>
   </tr>
   <tr> 
-   <td class="mbox" width="50%">Title:</td>
-   <td class="mbox" width="50%"><input type="text" name="name" size="50" value="<?php echo $gpc->prepare($row['name']); ?>"></td> 
+   <td class="mbox" width="45%">Title:</td>
+   <td class="mbox" width="55"><input type="text" name="name" size="70" value="<?php echo $row['name']; ?>" /></td> 
   </tr>
-  <tr> 
-   <td class="mbox" width="50%">Description:</font><br /><font class="stext">Optional. HTML is allowed.</td>
-   <td class="mbox" width="50%"><textarea name="desc" rows="4" cols="50"><?php echo $row['desc']; ?></textarea></td> 
+  <tr>
+   <td class="mbox">Description:<br />
+   <span class="stext">
+   You can optionally type in a short description for this category.<br />
+   HTML is allowed; BB-Code is not allowed!</span></td>
+   <td class="mbox"><textarea name="description" rows="3" cols="70"><?php echo $row['description']; ?></textarea></td> 
   </tr>
-  <tr> 
-   <td class="mbox" width="50%">Parent Forum/Category:</font></td>
-   <td class="mbox" width="50%">
-   <select name="parent">
-   <option value="NULL">Do not change</option>
-   <?php
-	$forumtree = $scache->load('forumtree');
-	$tree = $forumtree->get();
-	$categories_obj = $scache->load('categories');
-	$categories = $categories_obj->get();
-	$catbid = $scache->load('cat_bid');
-	$boards = $catbid->get();
-	AdminSelectForum($tree, $categories, $boards);
-   ?>
-   </select>
+  <tr>
+   <td class="mbox">Parent Category:</td>
+   <td class="mbox">
+   	<select name="parent" size="1">
+   	 <option value="0"<?php echo iif($row['parent'] == '0', ' selected="selected"'); ?>>No one</option>
+   	 <?php echo SelectBoardStructure('parent', ADMIN_SELECT_CATEGORIES, $row['parent'], true); ?>
+   	</select>
    </td> 
   </tr>
   <tr> 
-   <td class="mbox" width="50%">Forum Link:<br /><span class="stext">Entering a URL here will cause anyone clicking the forum link to be redirected to that URL.</span></td>
-   <td class="mbox" width="50%"><input type="text" value="<?php echo iif($row['opt'] == 're', $row['optvalue']); ?>" name="link" size="50" id="dis1" onmouseover="disable(this)" onmouseut="disable(this)"></td> 
+   <td class="mbox">Forum Link :<br /><span class="stext">Entering a URL here will cause anyone clicking the forum link to be redirected to that URL.</span></td>
+   <td class="mbox"><input type="text" name="link" size="70" id="dis1" onchange="disable(this)" value="<?php echo iif($row['opt'] == 're', $row['optvalue']); ?>" /></td> 
+  </tr>
+  <tr><td class="ubox" colspan="2">Override global Settings</td></tr>
+  <tr> 
+   <td class="mbox">Number of Posts per Page:<br /><span class="stext">0 = Use default value (<?php echo $config['topiczahl']; ?>)</span></td>
+   <td class="mbox"><input type="text" name="topiczahl" size="5" value="0" value="<?php echo $row['topiczahl']; ?>" /></td> 
   </tr>
   <tr> 
-   <td class="mbox" width="50%">Forum Password:<br /><span class="stext">Subforums are protected with this password, too!</span></td>
-   <td class="mbox" width="50%"><input type="text" value="<?php echo iif($row['opt'] == 'pw', $row['optvalue']); ?>" name="text" size="50" id="dis2" onmouseover="disable(this)" onmouseut="disable(this)"></td> 
+   <td class="mbox">Number of Topics per Forumpage:<br /><span class="stext">0 = Use default value (<?php echo $config['forumzahl']; ?>)</span></td>
+   <td class="mbox"><input type="text" name="forumzahl" size="5" value="0" value="<?php echo $row['forumzahl']; ?>" /></td> 
+  </tr>
+  <tr><td class="ubox" colspan="2">Moderation Options</td></tr>
+  <tr>
+   <td class="mbox">Automatically set topic status to:<br /><span class="stext">Selecting &quot;Article&quot; or &quot;News&quot; will cause that topics in this forum will automatically be marked as &quot;Article&quot; or &quot;News&quot;.</span></td>
+   <td class="mbox">
+    <select name="auto_status" size="1">
+     <option value=""<?php echo iif($row['auto_status'] == '', ' selected="selected"'); ?>>Do not set status</option>
+     <option value="a"<?php echo iif($row['auto_status'] == 'a', ' selected="selected"'); ?>>Article</option>
+     <option value="n"<?php echo iif($row['auto_status'] == 'n', ' selected="selected"'); ?>>News</option>
+    </select>
+   </td>
+  </tr>
+  <tr>
+   <td class="mbox">Email addresses to notify when there is a new topic:<br />
+   <span class="stext">Separate each address with a Newline/Carriage Return => Each address in an own row.</span></td>
+   <td class="mbox"><textarea name="topic_notification" rows="2" cols="70"><?php echo $row['topic_notification']; ?></textarea></td> 
+  </tr>
+  <tr>
+   <td class="mbox">Email addresses to notify when there is a new reply:<br />
+   <span class="stext">Separate each address with a Newline/Carriage Return => Each address in an own row.</span></td>
+   <td class="mbox"><textarea name="reply_notification" rows="2" cols="70"><?php echo $row['reply_notification']; ?></textarea></td> 
+  </tr>
+  <tr><td class="ubox" colspan="2">Access Options</td></tr>
+  <tr> 
+   <td class="mbox">Forum Password:<br /><span class="stext">Subforums are protected with this password, too!</span></td>
+   <td class="mbox"><input type="text" name="pw" size="40" id="dis2" onchange="disable(this)" value="<?php echo iif($row['opt'] == 'pw', $row['optvalue']); ?>" /></td> 
+  </tr>
+  <tr>
+   <td class="mbox" rowspan="3">Visibility:</td>
+   <td class="mbox">
+    <input type="radio" name="invisible" value="0"<?php echo iif($row['invisible'] == '0', ' checked="checked"'); ?> checked="checked" /> Show Forum to everyone<br />
+    <span class="stext">Forum will appear on the forum index, but it is locked for users without permission.</span>
+   </td></tr><tr><td class="mbox">
+    <input type="radio" name="invisible" value="1"<?php echo iif($row['invisible'] == '1', ' checked="checked"'); ?> /> Hide forum from users without authorization<br />
+    <span class="stext">Forum will not appear if it is locked and option is checked. This only affects forums without password.</span>
+   </td></tr><tr><td class="mbox">
+    <input type="radio" name="invisible" value="2"<?php echo iif($row['invisible'] == '2', ' checked="checked"'); ?> /> Hide forum completely<br />
+    <span class="stext">Forum will not appear and nobody can access it.</span>
+   </td> 
   </tr>
   <tr> 
-   <td class="mbox" width="50%">Number of Posts per Page:<br /><span class="stext">0 = Use default value (<?php echo $config['topiczahl']; ?>)</span></td>
-   <td class="mbox" width="50%"><input type="text" name="topiczahl" size="5" value="<?php echo $row['topiczahl']; ?>" /></td> 
+   <td class="mbox">Forum is read only:<br /><span class="stext">Check this to prevent any new posts being made in this forum.</span></td>
+   <td class="mbox"><input type="checkbox" name="readonly" value="1"<?php echo iif($row['readonly'] == '1', ' checked="checked"'); ?> /></td> 
   </tr>
   <tr> 
-   <td class="mbox" width="50%">Number of Topics per Forumpage:<br /><span class="stext">0 = Use default value (<?php echo $config['forumzahl']; ?>)</span></td>
-   <td class="mbox" width="50%"><input type="text" name="forumzahl" size="5" value="<?php echo $row['forumzahl']; ?>" /></td> 
+   <td class="mbox">Show topics in active topic list:<br /><span class="stext">If checked, the topics in this forum will be shown in the active topic lists.</span></td>
+   <td class="mbox"><input type="checkbox" name="active_topic" value="1"<?php echo iif($row['active_topic'] == '1', ' checked="checked""'); ?> /></td> 
+  </tr>
+  <tr><td class="ubox" colspan="2">Forum Rules (Announcement)</td></tr>
+  <tr>
+   <td class="mbox">Display Method:</td>
+   <td class="mbox">
+    <select name="message_active" size="1">
+     <option value="0"<?php echo iif($row['message_active'] == '0', ' selected="selected"'); ?>>Don't display rules</option>
+     <option value="1"<?php echo iif($row['message_active'] == '1', ' selected="selected"'); ?>>Display rules inline</option>
+     <option value="2"<?php echo iif($row['message_active'] == '2', ' selected="selected"'); ?>>Display a link to the rules</option>
+    </select>
+   </td>
+  </tr>
+  <tr>
+   <td class="mbox">Rules Title:</td>
+   <td class="mbox"><input type="text" name="message_title" size="70" value="<?php echo $row['message_title']; ?>" /></td>
+  </tr>
+  <tr>
+   <td class="mbox">Rules:<br /><span class="stext">HTML is allowed; BB-Code is not allowed!</span></td>
+   <td class="mbox"><textarea name="message_text" rows="3" cols="70"><?php echo $row['message_text']; ?></textarea></td>
   </tr>
   <tr> 
-   <td class="mbox" width="50%">Hide forum from users without authorization:<br /><span class="stext">Forum will not appear if it is locked and option is checked. This only affects forums without password.</span></td>
-   <td class="mbox" width="50%"><input type="checkbox" name="invisible" value="1"<?php echo iif($row['invisible'] == 1, ' checked="checked"'); ?> /></td> 
-  </tr>
-  <tr> 
-   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="Submit"></td> 
+   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="Submit" /></td> 
   </tr>
  </table>
-</form> 
+</form>
 	<?php
 	echo foot();
 }
@@ -499,16 +578,8 @@ elseif ($job == 'editforum2') {
 	
 	ok('admin.php?action=forums&job=manage','Forum changed successfully!');
 }
-elseif ($job == 'addforum') {
+elseif ($job == 'forum_add') {
 	echo head();
-	
-	$forumtree = $scache->load('forumtree');
-	$tree = $forumtree->get();
-	$categories_obj = $scache->load('categories');
-	$categories = $categories_obj->get();
-	$catbid = $scache->load('cat_bid');
-	$boards = $catbid->get();
-	
 	?>
 <form name="form" method="post" action="admin.php?action=forums&job=addforum2">
  <table class="border">
@@ -516,59 +587,124 @@ elseif ($job == 'addforum') {
    <td class="obox" colspan="2">Add a new forum</td>
   </tr>
   <tr> 
-   <td class="mbox" width="50%">Title:</td>
-   <td class="mbox" width="50%"><input type="text" name="name" size="50" /></td> 
+   <td class="mbox" width="45%">Title:</td>
+   <td class="mbox" width="55"><input type="text" name="name" size="70" /></td> 
   </tr>
-  <tr> 
-   <td class="mbox" width="50%">Description:<br /><span class="stext">Optional. HTML is allowed.</span></td>
-   <td class="mbox" width="50%"><textarea name="desc" rows="4" cols="50"></textarea></td> 
+  <tr>
+   <td class="mbox">Description:<br />
+   <span class="stext">
+   You can optionally type in a short description for this category.<br />
+   HTML is allowed; BB-Code is not allowed!</span></td>
+   <td class="mbox"><textarea name="description" rows="3" cols="70"></textarea></td> 
   </tr>
-  <tr> 
-   <td class="mbox" width="50%">Parent Forum/Category:</font></td>
-   <td class="mbox" width="50%">
-	<select name="parent" size="1">
-	 <?php AdminSelectForum($tree, $categories, $boards); ?>
-	</select>
-   </td> 
+  <tr>
+   <td class="mbox">Position:</td>
+   <td class="mbox">
+    <select name="sort_where">
+     <option value="-1">Before</option>
+     <option value="1" selected="selected">After</option>
+    </select>&nbsp;<?php echo SelectBoardStructure('sort', ADMIN_SELECT_FORUMS); ?>
+   </td>
   </tr>
-  <tr> 
-   <td class="mbox" width="50%">Forum Link :<br /><span class="stext">Entering a URL here will cause anyone clicking the forum link to be redirected to that URL.</span></td>
-   <td class="mbox" width="50%"><input type="text" name="link" size="50" id="dis1" onchange="disable(this)" /></td> 
-  </tr>
-  <tr> 
-   <td class="mbox" width="50%">Forum Password:<br /><span class="stext">Subforums are protected with this password, too!</span></td>
-   <td class="mbox" width="50%"><input type="text" name="pw" size="50" id="dis2" onchange="disable(this)" /></td> 
-  </tr>
-  <tr> 
-   <td class="mbox" width="50%">Number of Posts per Page:<br /><span class="stext">0 = Use default value (<?php echo $config['topiczahl']; ?>)</span></td>
-   <td class="mbox" width="50%"><input type="text" name="topiczahl" size="5" value="0" /></td> 
-  </tr>
-  <tr> 
-   <td class="mbox" width="50%">Number of Topics per Forumpage:<br /><span class="stext">0 = Use default value (<?php echo $config['forumzahl']; ?>)</span></td>
-   <td class="mbox" width="50%"><input type="text" name="forumzahl" size="5" value="0" /></td> 
-  </tr>
-  <tr> 
-   <td class="mbox" width="50%">Hide forum from users without authorization:<br /><span class="stext">Forum will not appear if it is locked and option is checked. This only affects forums without password.</span></td>
-   <td class="mbox" width="50%"><input type="checkbox" name="invisible" value="1" /></td> 
-  </tr>
-  <tr> 
-   <td class="mbox" width="50%">Copy permissions from:<br /><span class="stext">The forum will have the same permissions as the one you select here. If no forum is selected the default settings are used. <em>Caution: This is experimental! Use with care and report bugs, please.</em></span></td>
-   <td class="mbox" width="50%">
-	<select name="copypermissions">
-   		<option value="0">Default</option>
-   		<?php AdminSelectForum($tree, $categories, $boards); ?>
+  <tr>
+   <td class="mbox">Parent Category:</td>
+   <td class="mbox">
+   	<select name="parent" size="1">
+   	 <option value="0" selected="selected">No one</option>
+   	 <?php echo SelectBoardStructure('parent', ADMIN_SELECT_CATEGORIES, null, true); ?>
    	</select>
    </td> 
   </tr>
   <tr> 
-   <td class="mbox" width="50%">Sort in:</font></td>
-   <td class="mbox" width="50%"><select name="sort">
-   <option value="0">before existing forums</option>
-   <option value="1" selected="selected">after existing forums</option>
-   </select></td> 
+   <td class="mbox">Forum Link :<br /><span class="stext">Entering a URL here will cause anyone clicking the forum link to be redirected to that URL.</span></td>
+   <td class="mbox"><input type="text" name="link" size="70" id="dis1" onchange="disable(this)" /></td> 
+  </tr>
+  <tr><td class="ubox" colspan="2">Override global Settings</td></tr>
+  <tr> 
+   <td class="mbox">Number of Posts per Page:<br /><span class="stext">0 = Use default value (<?php echo $config['topiczahl']; ?>)</span></td>
+   <td class="mbox"><input type="text" name="topiczahl" size="5" value="0" /></td> 
   </tr>
   <tr> 
-   <td class="ubox" width="100%" colspan="2" align="center"><input type="submit" name="Submit" value="Submit" /></td> 
+   <td class="mbox">Number of Topics per Forumpage:<br /><span class="stext">0 = Use default value (<?php echo $config['forumzahl']; ?>)</span></td>
+   <td class="mbox"><input type="text" name="forumzahl" size="5" value="0" /></td> 
+  </tr>
+  <tr><td class="ubox" colspan="2">Moderation Options</td></tr>
+  <tr>
+   <td class="mbox">Automatically set topic status to:<br /><span class="stext">Selecting &quot;Article&quot; or &quot;News&quot; will cause that topics in this forum will automatically be marked as &quot;Article&quot; or &quot;News&quot;.</span></td>
+   <td class="mbox">
+    <select name="auto_status" size="1">
+     <option value="" selected="selected">Do not set status</option>
+     <option value="a">Article</option>
+     <option value="n">News</option>
+    </select>
+   </td>
+  </tr>
+  <tr>
+   <td class="mbox">Email addresses to notify when there is a new topic:<br />
+   <span class="stext">Separate each address with a Newline/Carriage Return => Each address in an own row.</span></td>
+   <td class="mbox"><textarea name="topic_notification" rows="2" cols="70"></textarea></td> 
+  </tr>
+  <tr>
+   <td class="mbox">Email addresses to notify when there is a new reply:<br />
+   <span class="stext">Separate each address with a Newline/Carriage Return => Each address in an own row.</span></td>
+   <td class="mbox"><textarea name="reply_notification" rows="2" cols="70"></textarea></td> 
+  </tr>
+  <tr><td class="ubox" colspan="2">Access Options</td></tr>
+  <tr> 
+   <td class="mbox">Forum Password:<br /><span class="stext">Subforums are protected with this password, too!</span></td>
+   <td class="mbox"><input type="text" name="pw" size="40" id="dis2" onchange="disable(this)" /></td> 
+  </tr>
+  <tr>
+   <td class="mbox" rowspan="3">Visibility:</td>
+   <td class="mbox">
+    <input type="radio" name="invisible" value="0" checked="checked" /> Show Forum to everyone<br />
+    <span class="stext">Forum will appear on the forum index, but it is locked for users without permission.</span>
+   </td></tr><tr><td class="mbox">
+    <input type="radio" name="invisible" value="1" /> Hide forum from users without authorization<br />
+    <span class="stext">Forum will not appear if it is locked and option is checked. This only affects forums without password.</span>
+   </td></tr><tr><td class="mbox">
+    <input type="radio" name="invisible" value="2" /> Hide forum completely<br />
+    <span class="stext">Forum will not appear and nobody can access it.</span>
+   </td> 
+  </tr>
+  <tr> 
+   <td class="mbox">Forum is read only:<br /><span class="stext">Check this to prevent any new posts being made in this forum.</span></td>
+   <td class="mbox"><input type="checkbox" name="readonly" value="1" /></td> 
+  </tr>
+  <tr> 
+   <td class="mbox">Show topics in active topic list:<br /><span class="stext">If checked, the topics in this forum will be shown in the active topic lists.</span></td>
+   <td class="mbox"><input type="checkbox" name="active_topic" value="1" checked="checked" /></td> 
+  </tr>
+  <tr> 
+   <td class="mbox">Copy permissions from:<br /><span class="stext">The forum will have the same permissions as the one you select here. If no forum is selected the default settings are used. <em>Caution: This is experimental! Use with care and report bugs, please.</em></span></td>
+   <td class="mbox">
+	<select name="copypermissions" size="1">
+   	 <option value="0" selected="selected">Default</option>
+   	 <?php echo SelectBoardStructure('copypermissions', ADMIN_SELECT_FORUMS, null, true); ?>
+   	</select>
+   </td>
+  </tr>
+  <tr><td class="ubox" colspan="2">Forum Rules (Announcement)</td></tr>
+  <tr>
+   <td class="mbox">Display Method:</td>
+   <td class="mbox">
+    <select name="message_active" size="1">
+     <option value="0" selected="selected">Don't display rules</option>
+     <option value="1">Display rules inline</option>
+     <option value="2">Display a link to the rules</option>
+    </select>
+   </td>
+  </tr>
+  <tr>
+   <td class="mbox">Rules Title:</td>
+   <td class="mbox"><input type="text" name="message_title" size="70" /></td>
+  </tr>
+  <tr>
+   <td class="mbox">Rules:<br /><span class="stext">HTML is allowed; BB-Code is not allowed!</span></td>
+   <td class="mbox"><textarea name="message_text" rows="3" cols="70"></textarea></td>
+  </tr>
+  <tr> 
+   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="Submit" /></td> 
   </tr>
  </table>
 </form> 
@@ -672,76 +808,35 @@ elseif ($job == 'addforum2') {
 	
 	ok('admin.php?action=forums&job=addforum', 'Forum successfully added!');
 }
-elseif ($job == 'manage') {
-	send_nocache_header();
+elseif ($job == 'forum_recount') {
 	echo head();
-	?>
-	<table class="border">
-	<tr><td class="obox" colspan="3">Manage Forums &amp; Categories</td></tr>
-	<tr> 
-	<td class="ubox" width="50%"><b>Title</b></td>
-	<td class="ubox" width="20%"><b>Ordering</b></td> 
-	<td class="ubox" width="30%"><b>Action</b></td> 
-	</tr>
-	<?php
-	$forumtree = $scache->load('forumtree');
-	$tree = $forumtree->get();
-	$categories_obj = $scache->load('categories');
-	$categories = $categories_obj->get();
-	$catbid = $scache->load('cat_bid');
-	$boards = $catbid->get();
-	ForumSubs($tree, $categories, $boards);
-	?>
-	</table>
-	<?php
-	echo foot();
-}
-elseif ($job == 'updatestats') {
-	echo head();
-	UpdateBoardStats($gpc->get('id', int));
-	ok('admin.php?action=forums&job=manage', 'Statistics successfully recounted!');
-}
-elseif ($job == 'move') {
-    $id = $gpc->get('temp1', str);
-	if (strpos($id, '_') === false) {
-		echo head();
-		error('admin.php?action=forums&job=manage', 'No correct data specified.');
-	}
-	list($type, $gid) = explode('_',$id);
-	$gid = $gpc->save_int($gid);
-	if (!is_id($gid)) {
+	$id = $gpc->get('id', int);
+	if (!is_id($id)) {
 		echo head();
 		error('admin.php?action=forums&job=manage', 'Forum or Category was not found on account of an invalid ID.');
 	}
-	$move = $gpc->get('int1', int);
-	
-	if ($move == -1 && $type == 'c') {
-		$db->query('UPDATE '.$db->pre.'categories SET position = position-1 WHERE id = '.$gid, __LINE__, __FILE__);
-	}
-	elseif ($move == 1 && $type == 'c') {
-		$db->query('UPDATE '.$db->pre.'categories SET position = position+1 WHERE id = '.$gid, __LINE__, __FILE__);
-	}
-	elseif ($move == -1 && $type == 'f') {
-		$db->query('UPDATE '.$db->pre.'forums SET position = position-1 WHERE id = '.$gid, __LINE__, __FILE__);
-	}
-	elseif ($move == 1 && $type == 'f') {
-		$db->query('UPDATE '.$db->pre.'forums SET position = position+1 WHERE id = '.$gid, __LINE__, __FILE__);
-	}
-	else {
+	UpdateBoardStats($id);
+	ok('admin.php?action=forums&job=manage', 'Statistics successfully recounted!');
+}
+elseif ($job == 'cat_move' || $job == 'forum_move') {
+    $id = $gpc->get('id', int);
+    $move = $gpc->get('move', int);
+    
+	if (!is_id($id)) {
 		echo head();
-		error('admin.php?action=forums&job=manage','Invalid data sent!');
+		error('admin.php?action=forums&job=manage', 'Forum or Category was not found on account of an invalid ID.');
 	}
+
+	$table = iif($job == 'cat_move', "{$db->pre}categories", "{$db->pre}forums");
+	$cache = iif($job == 'cat_move', "categories", "cat_bid");
+	$op = iif($move == 1, "+", "-");
+
+	$db->query("UPDATE {$table} SET position = position{$op}1 WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 
 	$delobj = $scache->load('forumtree');
 	$delobj->delete();
-	if ($type == 'c') {
-		$delobj = $scache->load('categories');
-		$delobj->delete();
-	}
-	else{
-		$delobj = $scache->load('cat_bid');
-		$delobj->delete();
-	}
+	$delobj = $scache->load($cache);
+	$delobj->delete();
 	
 	viscacha_header('Location: admin.php?action=forums&job=manage');
 }
@@ -751,75 +846,82 @@ elseif ($job == 'rights') {
 	if ($id == 0) {
 		error('admin.pgp?action=forums&job=manage', 'Forum not found');
 	}
-	$result = $db->query("SELECT f.*, g.name, g.title FROM {$db->pre}fgroups AS f LEFT JOIN {$db->pre}groups AS g ON g.id = f.gid WHERE f.bid = '{$id}' ORDER BY f.gid", __LINE__, __FILE__);
+	$result = $db->query("SELECT f.*, g.name, g.title, g.guest, g.core FROM {$db->pre}fgroups AS f LEFT JOIN {$db->pre}groups AS g ON g.id = f.gid WHERE f.bid = '{$id}' ORDER BY f.gid", __LINE__, __FILE__);
 	$cache = array();
+	$colspan = count($glk_forums)+2;
 	?>
-<form name="form" method="post" action="admin.php?action=forums&job=delete_rights&id=<?php echo $id; ?>">
+<form name="form" method="post" action="admin.php?action=forums&job=rights_delete&id=<?php echo $id; ?>">
  <table class="border">
   <tr> 
-   <td class="obox" colspan="10"><span style="float: right;">[<a href="admin.php?action=forums&job=add_rights&id=<?php echo $id; ?>">Add Usergroup</a>]</span>Forum Permission Manager</td>
+   <td class="obox" colspan="<?php echo $colspan; ?>"><span style="float: right;">[<a href="admin.php?action=forums&job=rights_add&id=<?php echo $id; ?>">Add Usergroup</a>]</span>Forum Permission Manager</td>
   </tr>
   <tr>
   	<td class="ubox" valign="bottom"><b>Delete</b></td>
     <td class="ubox" valign="bottom"><b>Name / Public Title</b></td>
-   	<td class="ubox" valign="bottom"><?php txt2img('Download Attachements'); ?></td>
-   	<td class="ubox" valign="bottom"><?php txt2img('View Forum'); ?></td>
-   	<td class="ubox" valign="bottom"><?php txt2img('Start a new Topic'); ?></td>
-   	<td class="ubox" valign="bottom"><?php txt2img('Write a reply'); ?></td>
-   	<td class="ubox" valign="bottom"><?php txt2img('Start a Poll'); ?></td>
-   	<td class="ubox" valign="bottom"><?php txt2img('Add Attachements'); ?></td>
-   	<td class="ubox" valign="bottom"><?php txt2img('Edit own Posts'); ?></td>
-   	<td class="ubox" valign="bottom"><?php txt2img('Can vote'); ?></td>
+    <?php foreach ($glk_forums as $key) { ?>
+   	<td class="ubox" valign="bottom" align="center"><?php txt2img($gls[$key]); ?></td>
+	<?php } ?>
   </tr>
-  <?php while ($row = $db->fetch_assoc($result)) { ?>
-  <tr>
-  	<td class="mbox">
-	<input type="checkbox" name="delete[]" value="<?php echo $row['fid']; ?>"></td>
-    <td class="mbox">
+  <?php
+  while ($row = $db->fetch_assoc($result)) {
+  	$guest = ($row['guest'] == 1 && $row['core'] == 1);
+  ?>
+  <tr class="mbox">
+  	<td><input type="checkbox" name="delete[]" value="<?php echo $row['fid']; ?>"></td>
+    <td>
     <?php
     if ($row['gid'] > 0) {
     	echo $row['name'].' / '.$row['title'];
-    } else {
+    }
+    else {
     	echo '<i>Valid for all groups except the groups shown below!</i>';
     }
-    $p1 = ' onmouseover="HandCursor(this)" onclick="ajax_noki(this, \'action=forums&job=ajax_changeperm&id='.$row['fid'].'&key=';
-    $p2 = '\')"';
+
     ?>
     </td>
-   	<td class="mbox"><?php echo noki($row['f_downloadfiles'], $p1.'f_downloadfiles'.$p2); ?></td>
-   	<td class="mbox"><?php echo noki($row['f_forum'], $p1.'f_forum'.$p2); ?></td>
-   	<td class="mbox"><?php echo noki($row['f_posttopics'], $p1.'f_posttopics'.$p2); ?></td>
-   	<td class="mbox"><?php echo noki($row['f_postreplies'], $p1.'f_postreplies'.$p2); ?></td>
-   	<td class="mbox"><?php echo noki($row['f_addvotes'], $p1.'f_addvotes'.$p2); ?></td>
-   	<td class="mbox"><?php echo noki($row['f_attachments'], $p1.'f_attachments'.$p2); ?></td>
-   	<td class="mbox"><?php echo noki($row['f_edit'], $p1.'f_edit'.$p2); ?></td>
-   	<td class="mbox"><?php echo noki($row['f_voting'], $p1.'f_voting'.$p2); ?></td>
+    <?php
+    foreach ($glk_forums as $key) {
+    	$clickable = !($guest && in_array($key, $guest_limitation));
+	   	$js = iif ($clickable, 
+	   			' onmouseover="HandCursor(this)" onclick="ajax_noki(this, \'action=forums&job=rights_ajax_changeperm&id='.$row['fid'].'&key='.$key.'\')"',
+	   			' style="-moz-opacity: 0.4; opacity: 0.4; filter:Alpha(opacity=40, finishopacity=0);"'
+	   		  );
+    ?>
+   	<td align="center"<?php echo iif(!$clickable, ' class="mmbox"'); ?>><?php echo noki($row["f_{$key}"], $js); ?></td>
+   	<?php } ?>
   </tr>
   <?php } ?>
   <tr> 
-   <td class="ubox" width="100%" colspan="10" align="center"><input type="submit" name="Submit" value="Delete"></td> 
+   <td class="ubox" width="100%" colspan="<?php echo $colspan; ?>" align="center"><input type="submit" name="Submit" value="Delete"></td> 
   </tr>
  </table>
 </form> 
 	<?php
 	echo foot();
 }
-elseif ($job == 'ajax_changeperm') {
+elseif ($job == 'rights_ajax_changeperm') {
 	$id = $gpc->get('id', int);
 	$key = $gpc->get('key', str);
-	if(!is_id($id) || empty($key)) {
+	if(!is_id($id) || !in_array($key, $glk_forums)) {
 		die('The id or the key is not valid!');
 	}
-	$result = $db->query("SELECT f.{$key} FROM {$db->pre}fgroups AS f WHERE f.fid = '{$id}' LIMIT 1", __LINE__, __FILE__);
+	$result = $db->query("SELECT `f_{$key}` AS `{$key}`, gid FROM {$db->pre}fgroups WHERE fid = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	$perm = $db->fetch_assoc($result);
 	if ($db->num_rows($result) == 0) {
 		die('Not found!');
 	}
+	if (in_array($key, $guest_limitation)) {
+		$result = $db->query("SELECT id FROM {$db->pre}groups WHERE guest = '1' LIMIT 1");
+		$row = $db->fetch_assoc($result);
+		if ($perm['gid'] == $row['id']) {
+			die('Guests can not vote or edit posts!');
+		}
+	}
 	$perm = invert($perm[$key]);
-	$db->query("UPDATE {$db->pre}fgroups AS f SET f.{$key} = '{$perm}' WHERE f.fid = '{$id}' LIMIT 1", __LINE__, __FILE__);
+	$db->query("UPDATE {$db->pre}fgroups SET `f_{$key}` = '{$perm}' WHERE fid = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	die(strval($perm));
 }
-elseif ($job == 'add_rights') {
+elseif ($job == 'rights_add') {
 	echo head();
 	$id = $gpc->get('id', int);
 	if ($id == 0) {
@@ -838,7 +940,7 @@ elseif ($job == 'add_rights') {
 		}
 	}
 	?>
-<form name="form" method="post" action="admin.php?action=forums&job=add_rights2&id=<?php echo $id; ?>">
+<form name="form" method="post" action="admin.php?action=forums&job=rights_add2&id=<?php echo $id; ?>">
  <table class="border">
   <tr> 
    <td class="obox" colspan="2">Add a new Usergroup - Settings and Permissions</td>
@@ -849,7 +951,7 @@ elseif ($job == 'add_rights') {
   <tr>
       <td class="mbox">Use for group(s):<br /><span class="stext">Choose the usergroup (or all groups) which will be affected by the below specified permissions.</span></td>
       <td class="mbox">
-      <select name="int1">
+      <select name="group">
       <option value="0">All Groups</option>
       <?php
       foreach($cache as $row) {
@@ -864,7 +966,7 @@ elseif ($job == 'add_rights') {
   </tr>
   <?php foreach ($glk_forums as $key) { ?>
   <tr>
-   <td class="mbox" width="50%"><?php echo $gls[$key]; ?><br /><span class="stext"><?php echo $gll[$key]; ?></span></td>
+   <td class="mbox" width="50%"><?php echo $gls[$key]; ?><br /><span class="stext"><?php echo $gll[$key].iif(in_array($key, $guest_limitation), ' (Guests are not allowed to do this!)'); ?></span></td>
    <td class="mbox" width="50%"><input type="checkbox" name="<?php echo $key; ?>" id="<?php echo $key; ?>" value="1" /></td>
   </tr>
   <?php } ?>
@@ -876,31 +978,46 @@ elseif ($job == 'add_rights') {
 	<?php
 	echo foot();
 }
-elseif ($job == 'add_rights2') {
+elseif ($job == 'rights_add2') {
 	echo head();
 
 	$id = $gpc->get('id', int);
-	$int1 = $gpc->get('int1', int);
+	$group = $gpc->get('group', int);
 
-	$db->query('SELECT * FROM '.$db->pre.'fgroups WHERE bid = "'.$id.'" AND gid = "'.$int1.'"', __LINE__, __FILE__);
+	$db->query("SELECT * FROM {$db->pre}fgroups WHERE bid = '{$id}' AND gid = '{$group}'", __LINE__, __FILE__);
 	if ($db->num_rows() > 0) {
 		error('admin.php?action=forums&job=rights&id='.$id, 'Für die angegebene Gruppe besteht schon ein Eintrag!');
 	}
+	
+	$result = $db->query("SELECT id FROM {$db->pre}groups WHERE guest = '1' LIMIT 1");
+	$row = $db->fetch_assoc($result);
+	if ($group == $row['id']) {
+		$edit = 0;
+		$voting = 0;
+	}
+	else {
+		$edit = $gpc->get('edit', int);
+		$voting = $gpc->get('voting', int);
+	}
+	$downloadfiles = $gpc->get('downloadfiles', int);
+	$forum = $gpc->get('forum', int);
+	$posttopics = $gpc->get('posttopics', int);
+	$postreplies = $gpc->get('postreplies', int);
+	$addvotes = $gpc->get('addvotes', int);
+	$attachments = $gpc->get('attachments', int);
 
-	// ToDo: Gäste-Limitierungen (kein voten und editieren) beachten!
-
-	$db->query('
-	INSERT INTO '.$db->pre.'fgroups (bid,gid,f_downloadfiles,f_forum,f_posttopics,f_postreplies,f_addvotes,f_attachments,f_edit,f_voting) 
-	VALUES ("'.$id.'","'.$int1.'","'.$gpc->get('downloadfiles', int).'","'.$gpc->get('forum', int).'","'.$gpc->get('posttopics', int).'","'.$gpc->get('postreplies', int).'","'.$gpc->get('addvotes', int).'","'.$gpc->get('attachments', int).'","'.$gpc->get('edit', int).'","'.$gpc->get('voting', int).'")
-	', __LINE__, __FILE__);
+	$db->query("
+	INSERT INTO {$db->pre}fgroups (bid,gid,f_downloadfiles,f_forum,f_posttopics,f_postreplies,f_addvotes,f_attachments,f_edit,f_voting) 
+	VALUES ('{$id}','{$group}','{$downloadfiles}','{$forum}','{$posttopics}','{$postreplies}','{$addvotes}','{$attachments}','{$edit}','{$voting}')
+	", __LINE__, __FILE__);
 	if ($db->affected_rows() == 1) {
 		ok('admin.php?action=forums&job=rights&id='.$id, 'Data successfully inserted!');
 	}
 	else {
-		error('admin.php?action=forums&job=add_rights&id='.$id, 'There was an error while inserting data!');
+		error('admin.php?action=forums&job=rights_add&id='.$id, 'There was an error while inserting data!');
 	}
 }
-elseif ($job == 'delete_rights') {
+elseif ($job == 'rights_delete') {
 	echo head();
 	$id = $gpc->get('id', int);
 	if (!is_id($id)) {

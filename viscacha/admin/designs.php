@@ -354,7 +354,7 @@ elseif ($job == 'design_import2') {
 		$my_uploader->set_path($dir);
 		if ($my_uploader->upload('upload')) {
 			if ($my_uploader->save_file()) {
-				$file = $dir.$my_uploader->fileinfo('name');
+				$file = $dir.$my_uploader->fileinfo('filename');
 				if (!file_exists($file)) {
 					$inserterrors[] = 'File ('.$file.') does not exist.';
 				}
@@ -661,7 +661,7 @@ elseif ($job == 'templates_add2') {
 		$my_uploader->set_path($dir);
 		if ($my_uploader->upload('upload')) {
 			if ($my_uploader->save_file()) {
-				$file = $dir.$my_uploader->fileinfo('name');
+				$file = $dir.$my_uploader->fileinfo('filename');
 				if (!file_exists($file)) {
 					$inserterrors[] = 'File ('.$file.') does not exist.';
 				}
@@ -1212,7 +1212,7 @@ elseif ($job == 'css_add2') {
 		$my_uploader->set_path($dir);
 		if ($my_uploader->upload('upload', $filetypes)) {
 			if ($my_uploader->save_file()) {
-				$file = $dir.$my_uploader->fileinfo('name');
+				$file = $dir.$my_uploader->fileinfo('filename');
 				if (!file_exists($file)) {
 					$inserterrors[] = 'File ('.$file.') does not exist.';
 				}
@@ -1398,7 +1398,7 @@ elseif ($job == 'images_add2') {
 		$my_uploader->set_path($dir);
 		if ($my_uploader->upload('upload')) {
 			if ($my_uploader->save_file()) {
-				$file = $dir.$my_uploader->fileinfo('name');
+				$file = $dir.$my_uploader->fileinfo('filename');
 				if (!file_exists($file)) {
 					$inserterrors[] = 'File ('.$file.') does not exist.';
 				}
