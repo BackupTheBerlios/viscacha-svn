@@ -56,6 +56,14 @@ elseif ($job == 'cache_view') {
 	$cache = new CacheItem($file);
 	$cache->import();
 	$data = $cache->get();
+
+	// ToDo: Better appearance
+	ob_start();
+	print_r($data);
+	$out = ob_get_contents();
+	ob_end_clean();
+	$out = htmlspecialchars($out);
+	
 	?>
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr> 
@@ -63,7 +71,7 @@ elseif ($job == 'cache_view') {
   </tr>
   <tr> 
    <td class="mbox">
-   <pre><?php print_r($data); ?></pre>
+   <pre><?php echo $out; ?></pre>
    </td>
   </tr>
  </table>

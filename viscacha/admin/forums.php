@@ -297,7 +297,10 @@ elseif ($job == 'manage') {
 	echo head();
 	?>
 <table class="border">
-  <tr><td class="obox" colspan="3">Manage Forums &amp; Categories</td></tr>
+  <tr><td class="obox" colspan="3">
+  <span style="float: right;">[<a href="admin.php?action=forums&job=cat_add">Add new Category</a>] [<a href="admin.php?action=forums&job=forum_add">Add new Forum</a>]</span>
+  Manage Forums &amp; Categories
+  </td></tr>
   <tr> 
 	<td class="ubox" width="50%"><b>Title</b></td>
 	<td class="ubox" width="20%"><b>Ordering</b></td> 
@@ -387,15 +390,22 @@ elseif ($job == 'forum_edit') {
 	echo head();
 	$id = $gpc->get('id', int);
 	$result = $db->query("SELECT * FROM {$db->pre}forums WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
-	if ($db->num_rows() == 0) {
+	if ($db->num_rows($result) == 0) {
 		error('admin.php?action=forums&job=manage', 'Invalid ID given');
 	}
 	$row = $db->fetch_assoc($result);
 	?>
-<form name="form" method="post" action="admin.php?action=forums&job=addforum2">
+<form name="form" method="post" action="admin.php?action=forums&amp;job=forum_edit2&amp;id=<?php echo $id; ?>">
  <table class="border">
   <tr> 
-   <td class="obox" colspan="2">Add a new forum</td>
+   <td class="obox" colspan="2">
+   <span style="float: right;">
+   [<a href="admin.php?action=forums&amp;job=prefix&amp;id=<?php echo $id; ?>">Manage Prefixes</a>] 
+   [<a href="admin.php?action=forums&amp;job=mods&amp;id=<?php echo $id; ?>">Manage Moderators</a>] 
+   [<a href="admin.php?action=forums&amp;job=rights&amp;id=<?php echo $id; ?>">Manage Permissions</a>] 
+   </span>
+   Edit a forum
+   </td>
   </tr>
   <tr> 
    <td class="mbox" width="45%">Title:</td>
@@ -418,17 +428,17 @@ elseif ($job == 'forum_edit') {
    </td> 
   </tr>
   <tr> 
-   <td class="mbox">Forum Link :<br /><span class="stext">Entering a URL here will cause anyone clicking the forum link to be redirected to that URL.</span></td>
-   <td class="mbox"><input type="text" name="link" size="70" id="dis1" onchange="disable(this)" value="<?php echo iif($row['opt'] == 're', $row['optvalue']); ?>" /></td> 
+   <td class="mbox">Forum Link :<br /><span class="stext">Entering a URL here will cause anyone clicking the forum link to be redirected to that URL. You can not specifiy a link if this forum has a password.</span></td>
+   <td class="mbox"><input type="text" name="link" size="70" value="<?php echo iif($row['opt'] == 're', $row['optvalue']); ?>" /></td> 
   </tr>
   <tr><td class="ubox" colspan="2">Override global Settings</td></tr>
   <tr> 
    <td class="mbox">Number of Posts per Page:<br /><span class="stext">0 = Use default value (<?php echo $config['topiczahl']; ?>)</span></td>
-   <td class="mbox"><input type="text" name="topiczahl" size="5" value="0" value="<?php echo $row['topiczahl']; ?>" /></td> 
+   <td class="mbox"><input type="text" name="topiczahl" size="5" value="<?php echo $row['topiczahl']; ?>" /></td> 
   </tr>
   <tr> 
    <td class="mbox">Number of Topics per Forumpage:<br /><span class="stext">0 = Use default value (<?php echo $config['forumzahl']; ?>)</span></td>
-   <td class="mbox"><input type="text" name="forumzahl" size="5" value="0" value="<?php echo $row['forumzahl']; ?>" /></td> 
+   <td class="mbox"><input type="text" name="forumzahl" size="5" value="<?php echo $row['forumzahl']; ?>" /></td> 
   </tr>
   <tr><td class="ubox" colspan="2">Moderation Options</td></tr>
   <tr>
@@ -453,8 +463,8 @@ elseif ($job == 'forum_edit') {
   </tr>
   <tr><td class="ubox" colspan="2">Access Options</td></tr>
   <tr> 
-   <td class="mbox">Forum Password:<br /><span class="stext">Subforums are protected with this password, too!</span></td>
-   <td class="mbox"><input type="text" name="pw" size="40" id="dis2" onchange="disable(this)" value="<?php echo iif($row['opt'] == 'pw', $row['optvalue']); ?>" /></td> 
+   <td class="mbox">Forum Password:<br /><span class="stext">Subforums are protected with this password, too! You can not specifiy a password if this forum is a link.</span></td>
+   <td class="mbox"><input type="text" name="pw" size="40" value="<?php echo iif($row['opt'] == 'pw', $row['optvalue']); ?>" /></td> 
   </tr>
   <tr>
    <td class="mbox" rowspan="3">Visibility:</td>
@@ -494,7 +504,7 @@ elseif ($job == 'forum_edit') {
   </tr>
   <tr>
    <td class="mbox">Rules:<br /><span class="stext">HTML is allowed; BB-Code is not allowed!</span></td>
-   <td class="mbox"><textarea name="message_text" rows="3" cols="70"><?php echo $row['message_text']; ?></textarea></td>
+   <td class="mbox"><textarea name="message_text" rows="4" cols="70"><?php echo $row['message_text']; ?></textarea></td>
   </tr>
   <tr> 
    <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="Submit" /></td> 
@@ -504,84 +514,150 @@ elseif ($job == 'forum_edit') {
 	<?php
 	echo foot();
 }
-elseif ($job == 'editforum2') {
+elseif ($job == 'forum_edit2') {
 	echo head();
-
+	
 	$id = $gpc->get('id', int);
 	$name = $gpc->get('name', str);
-	$desc = $gpc->get('desc', str);
-	$pw = $gpc->get('pw', str);
-	$link = $gpc->get('link', str);
-	$parent = $gpc->get('parent', str);
-	$invisible = $gpc->get('invisible', int);
+	$description = $gpc->get('description', str);
+	$parent = $gpc->get('parent', int);
+	$opt_re = $gpc->get('link', str);
 	$topiczahl = $gpc->get('topiczahl', int);
 	$forumzahl = $gpc->get('forumzahl', int);
+	$auto_status = $gpc->get('auto_status', none);
+	$topic_notification = $gpc->get('topic_notification', none);
+	$reply_notification = $gpc->get('reply_notification', none);
+	$opt_pw = $gpc->get('pw', str);
+	$invisible = $gpc->get('invisible', int);
+	$readonly = $gpc->get('readonly', int);
+	$active_topic = $gpc->get('active_topic', int);
+	$message_active = $gpc->get('message_active', int);
+	$message_title = $gpc->get('message_title', str);
+	$message_text = $gpc->get('message_text', str);
 
-	if (!$id) {
-		error('admin.php?action=forums&job=edit&id='.$id, 'EInvalid ID given');
+	$error = array();
+	$result = $db->query("SELECT * FROM {$db->pre}forums WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
+	if ($db->num_rows($result) == 0) {
+		$error[] = 'Invalid ID given';
 	}
-
-	$option = '';
-	if ($parent != 'NULL') {
-		if (preg_match("/c_\d{1,}/", $parent) == 1) {
-			$cid = str_replace("c_", "", $parent);
-			$array = $db->fetch_num($db->query("SELECT bid FROM {$db->pre}forums WHERE cid = $cid LIMIT 1", __LINE__, __FILE__));
-			$bid = $array[0];
+	$data = $db->fetch_assoc($result);
+	if (strlen($name) < 2) {
+		$error[] = 'Name is too short (Minimum: 2 characters)';
+	}
+	if (strlen($name) > 200) {
+		$error[] = 'Name is too long (Maximum: 200 characters)';
+	}
+	if ($message_active > 0 && strlen($message_title) < 2) {
+		$error[] = 'Title for Forum Rules is too short (Minimum: 2 characters)';
+	}
+	if ($message_active > 0 && strlen($message_title) > 200) {
+		$error[] = 'Title for Forum Rules is too long (Maximum: 200 characters)';
+	}
+	if (strlen($opt_re) > 255) {
+		$error[] = 'Link is too long (Maximum: 255 characters)';
+	}
+	$result = $db->query("SELECT id FROM {$db->pre}categories WHERE id = '{$parent}' LIMIT 1");
+	if ($db->num_rows($result) != 1) {
+		$error[] = 'No valid parent category choosen.';
+	}
+	if (count($error) > 0) {
+		error('admin.php?action=forums&job=forum_edit&id='.$id, $error);
+	}
+	else {
+		if ($message_active < 0 && $message_active > 2) {
+			$message_active = 0;
 		}
-		elseif (preg_match("/f_\d{1,}/", $parent) == 1) {
-			$bid = str_replace("f_", "", $parent);
-			$array = $db->fetch_num($db->query("SELECT cid FROM {$db->pre}forums WHERE bid = $bid LIMIT 1", __LINE__, __FILE__));
-			if ($array[0] < 1) {
-				$array2 = $db->fetch_num($db->query("SELECT name, c.desc FROM {$db->pre}forums AS c WHERE id = $bid LIMIT 1", __LINE__, __FILE__));
-				$db->query("INSERT INTO {$db->pre}categories (name, description, position) VALUES ('{$array2[0]}', '{$array2[1]}', 0)", __LINE__, __FILE__);
-				$cid = $db->insert_id();
+		if ($invisible < 0 && $invisible > 2) {
+			$invisible = 0;
+		}
+		if ($readonly != 0 && $readonly != 1) {
+			$readonly = 0;
+		}
+		if ($active_topic != 0 && $active_topic != 1) {
+			$active_topic = 0;
+		}
+		if ($auto_status != 'n' && $auto_status != 'a') {
+			$auto_status = '';
+		}
+		if ($topiczahl < 0) {
+			$topiczahl * -1;
+		}
+		if ($forumzahl < 0) {
+			$forumzahl * -1;
+		}
+		
+		$emails = preg_split('/[\r\n]+/', $reply_notification, -1, PREG_SPLIT_NO_EMPTY);
+		$reply_notification = array();
+		foreach ($emails as $email) {
+			if(check_mail($email)) {
+				$reply_notification[] = $email;
 			}
-			else {
-				$cid = $array[0];
+		}
+		$reply_notification = implode("\n", $reply_notification);
+		$emails = preg_split('/[\r\n]+/', $topic_notification, -1, PREG_SPLIT_NO_EMPTY);
+		$topic_notification = array();
+		foreach ($emails as $email) {
+			if(check_mail($email)) {
+				$topic_notification[] = $email;
+			}
+		}
+		$topic_notification = implode("\n", $topic_notification);
+		
+		if (strlen($opt_re) > 0) {
+			$opt = 're';
+			$optvalue = $opt_re;
+			if ($invisible == 1) {
+				$invisible = 0;
+			}
+		}
+		elseif (strlen($opt_pw) > 0) {
+			$opt = 'pw';
+			$optvalue = $opt_pw;
+			if ($invisible == 1) {
+				$invisible = 0;
 			}
 		}
 		else {
-			error('admin.php?action=forums&job=edit&id='.$id, 'Could not retrieve forum or categorie!');
+			$opt = '';
+			$optvalue = '';	
 		}
-		$option .= ", bid = '$bid', cid = '$cid'";
+		
+		$db->query("
+		UPDATE {$db->pre}forums SET 
+		  `name` = '{$name}',
+		  `description` = '{$description}',
+		  `parent` = '{$parent}',
+		  `opt` = '{$opt}',
+		  `optvalue` = '{$optvalue}',
+		  `forumzahl` = '{$forumzahl}',
+		  `topiczahl` = '{$topiczahl}',
+		  `invisible` = '{$invisible}',
+		  `readonly` = '{$readonly}',
+		  `auto_status` = '{$auto_status}',
+		  `reply_notification` = '{$reply_notification}',
+		  `topic_notification` = '{$topic_notification}',
+		  `active_topic` = '{$active_topic}',
+		  `message_active` = '{$message_active}',
+		  `message_title` = '{$message_title}',
+		  `message_text` = '{$message_text}' 
+		WHERE id = '{$id}' 
+		LIMIT 1;
+		", __LINE__, __FILE__);
+		
+		$delobj = $scache->load('cat_bid');
+		$delobj->delete();
+		$delobj = $scache->load('forumtree');
+		$delobj->delete();
+		$delobj = $scache->load('parent_forums');
+		$delobj->delete();
+		
+		ok('admin.php?action=forums&job=manage', 'Forum successfully added!');
 	}
-	
-	if (strlen($name) < 2) {
-		error('admin.php?action=forums&job=edit&id='.$id, 'Name is too short (< 2 chars)');
-	}
-	if (strlen($name) > 200) {
-		error('admin.php?action=forums&job=edit&id='.$id, 'Name is too long (> 200 chars)');
-	}
-	if (strlen($link) > 0) {
-		$opt = 're';
-		$optvalue = $link;
-	}
-	elseif (strlen($pw) > 0) {
-		$opt = 'pw';
-		$optvalue = $pw;
-		$invisible = 0;
-	}
-	else {
-		$opt = '';
-		$optvalue = '';	
-	}
-	$db->query("UPDATE {$db->pre}forums SET name = '{$name}', `desc` = '{$desc}', forumzahl = '{$forumzahl}', topiczahl = '{$topiczahl}', invisible = '{$invisible}', opt = '{$opt}', optvalue = '{$optvalue}' {$option} WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
-	
-	$delobj = $scache->load('categories');
-	$delobj->delete();
-	$delobj = $scache->load('cat_bid');
-	$delobj->delete();
-	$delobj = $scache->load('forumtree');
-	$delobj->delete();
-	$delobj = $scache->load('parent_forums');
-	$delobj->delete();
-	
-	ok('admin.php?action=forums&job=manage','Forum changed successfully!');
 }
 elseif ($job == 'forum_add') {
 	echo head();
 	?>
-<form name="form" method="post" action="admin.php?action=forums&job=addforum2">
+<form name="form" method="post" action="admin.php?action=forums&job=forum_add2">
  <table class="border">
   <tr> 
    <td class="obox" colspan="2">Add a new forum</td>
@@ -610,13 +686,12 @@ elseif ($job == 'forum_add') {
    <td class="mbox">Parent Category:</td>
    <td class="mbox">
    	<select name="parent" size="1">
-   	 <option value="0" selected="selected">No one</option>
    	 <?php echo SelectBoardStructure('parent', ADMIN_SELECT_CATEGORIES, null, true); ?>
    	</select>
    </td> 
   </tr>
   <tr> 
-   <td class="mbox">Forum Link :<br /><span class="stext">Entering a URL here will cause anyone clicking the forum link to be redirected to that URL.</span></td>
+   <td class="mbox">Forum Link :<br /><span class="stext">Entering a URL here will cause anyone clicking the forum link to be redirected to that URL. You can not specifiy a link if this forum has a password.</span></td>
    <td class="mbox"><input type="text" name="link" size="70" id="dis1" onchange="disable(this)" /></td> 
   </tr>
   <tr><td class="ubox" colspan="2">Override global Settings</td></tr>
@@ -651,7 +726,7 @@ elseif ($job == 'forum_add') {
   </tr>
   <tr><td class="ubox" colspan="2">Access Options</td></tr>
   <tr> 
-   <td class="mbox">Forum Password:<br /><span class="stext">Subforums are protected with this password, too!</span></td>
+   <td class="mbox">Forum Password:<br /><span class="stext">Subforums are protected with this password, too! You can not specifiy a password if this forum is a link.</span></td>
    <td class="mbox"><input type="text" name="pw" size="40" id="dis2" onchange="disable(this)" /></td> 
   </tr>
   <tr>
@@ -701,7 +776,7 @@ elseif ($job == 'forum_add') {
   </tr>
   <tr>
    <td class="mbox">Rules:<br /><span class="stext">HTML is allowed; BB-Code is not allowed!</span></td>
-   <td class="mbox"><textarea name="message_text" rows="3" cols="70"></textarea></td>
+   <td class="mbox"><textarea name="message_text" rows="4" cols="70"></textarea></td>
   </tr>
   <tr> 
    <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="Submit" /></td> 
@@ -711,102 +786,176 @@ elseif ($job == 'forum_add') {
 	<?php
 	echo foot();
 }
-elseif ($job == 'addforum2') {
+elseif ($job == 'forum_add2') {
 	echo head();
 	
 	$name = $gpc->get('name', str);
-	$desc = $gpc->get('desc', str);
+	$description = $gpc->get('description', str);
+	$sortx = $gpc->get('sort_where', int);
 	$sort = $gpc->get('sort', int);
-	$pw = $gpc->get('pw', str);
-	$link = $gpc->get('link', str);
-	$parent = $gpc->get('parent', str);
-	$invisible = $gpc->get('invisible', int);
+	$parent = $gpc->get('parent', int);
+	$opt_re = $gpc->get('link', str);
 	$topiczahl = $gpc->get('topiczahl', int);
 	$forumzahl = $gpc->get('forumzahl', int);
-	$perm = $gpc->get('copypermissions', str);
-	
-	if (preg_match("/c_\d{1,}/", $parent) == 1) {
-		$cid = str_replace("c_", "", $parent);
-		$array = $db->fetch_num($db->query("SELECT bid FROM {$db->pre}forums WHERE cid = '{$cid}' LIMIT 1", __LINE__, __FILE__));
-		$bid = $array[0];
-	}
-	elseif (preg_match("/f_\d{1,}/", $parent) == 1) {
-		$bid = str_replace("f_", "", $parent);
-		$array = $db->fetch_num($db->query("SELECT cid FROM {$db->pre}forums WHERE bid = '{$bid}' LIMIT 1", __LINE__, __FILE__));
-		if ($array[0] < 1) {
-			$array2 = $db->fetch_num($db->query("SELECT name, description FROM {$db->pre}forums WHERE id = $bid LIMIT 1", __LINE__, __FILE__));
-			$db->query("INSERT INTO {$db->pre}categories (name, description, position) VALUES ('{$array2[0]}', '{$array2[1]}', 0)", __LINE__, __FILE__);
-			$cid = $db->insert_id();
-		}
-		else {
-			$cid = $array[0];
-		}
-	}
-	else {
-		error('admin.php?action=forums&job=addforum','Could not retrieve forum or category!');
-	}
-	
-	if ($sort == 1) {
-		$sortx = $db->fetch_num($db->query("SELECT MAX(position) FROM {$db->pre}forums WHERE cid = {$cid} LIMIT 1", __LINE__, __FILE__));
-		$sort = $sortx[0]+1;
-	}
-	elseif ($sort == 0) {
-		$sortx = $db->fetch_num($db->query("SELECT MIN(position) FROM {$db->pre}forums WHERE cid = {$cid} LIMIT 1", __LINE__, __FILE__));
-		$sort = $sortx[0]-1;
-	}
-	else {
-		$sort = 0;
-	}
+	$auto_status = $gpc->get('auto_status', none);
+	$topic_notification = $gpc->get('topic_notification', none);
+	$reply_notification = $gpc->get('reply_notification', none);
+	$opt_pw = $gpc->get('pw', str);
+	$invisible = $gpc->get('invisible', int);
+	$readonly = $gpc->get('readonly', int);
+	$active_topic = $gpc->get('active_topic', int);
+	$perm = $gpc->get('copypermissions', int);
+	$message_active = $gpc->get('message_active', int);
+	$message_title = $gpc->get('message_title', str);
+	$message_text = $gpc->get('message_text', str);
+
+	$error = array();
 	if (strlen($name) < 2) {
-		error('admin.php?action=forums&job=addforum', 'Name is too short (< 2 chars)');
+		$error[] = 'Name is too short (Minimum: 2 characters)';
 	}
 	if (strlen($name) > 200) {
-		error('admin.php?action=forums&job=addforum', 'Name is too long (> 200 chars)');
+		$error[] = 'Name is too long (Maximum: 200 characters)';
 	}
-	if (strlen($link) > 0) {
-		$opt = 're';
-		$optvalue = $link;
+	if ($message_active > 0 && strlen($message_title) < 2) {
+		$error[] = 'Title for Forum Rules is too short (Minimum: 2 characters)';
 	}
-	elseif (strlen($pw) > 0) {
-		$opt = 'pw';
-		$optvalue = $pw;
-		$invisible = 0;
+	if ($message_active > 0 && strlen($message_title) > 200) {
+		$error[] = 'Title for Forum Rules is too long (Maximum: 200 characters)';
+	}
+	if (strlen($opt_re) > 255) {
+		$error[] = 'Link is too long (Maximum: 255 characters)';
+	}
+	$result = $db->query("SELECT id FROM {$db->pre}categories WHERE id = '{$parent}' LIMIT 1");
+	if ($db->num_rows($result) != 1) {
+		$error[] = 'No valid parent category choosen.';
+	}
+	if (count($error) > 0) {
+		error('admin.php?action=forums&job=forum_add', $error);
 	}
 	else {
-		$opt = '';
-		$optvalue = '';	
-	}
-	
-	$db->query("
-	INSERT INTO {$db->pre}forums (name, `desc`, bid, cid, position, opt, optvalue, forumzahl, topiczahl, invisible)
-	VALUES ('{$name}', '{$desc}', '{$bid}', '{$cid}', '{$sort}', '{$opt}', '{$optvalue}','{$forumzahl}','{$topiczahl}','{$invisible}')
-	", __LINE__, __FILE__);
-
-	if (preg_match("/f_\d{1,}/", $perm) == 1) {
-		$newid = $db->insert_id();
-		$fid = str_replace("f_", "", $perm);
-		$result = $db->query("SELECT * FROM {$db->pre}fgroups WHERE bid = '{$fid}'", __LINE__, __FILE__);
-		while($row = $db->fetch_assoc($result)) {
-			unset($row['bid'], $row['fid']);
-			$keys = array_keys($row);
-			sort($keys, SORT_STRING);
-			ksort($row, SORT_STRING);
-			$row_str = implode("','", $row);
-			$keys_str = implode(',', $keys);
-			$db->query("INSERT INTO {$db->pre}fgroups ({$keys_str}, bid) VALUES ('{$row_str}', '{$newid}')", __LINE__, __FILE__);
+		if ($message_active < 0 && $message_active > 2) {
+			$message_active = 0;
 		}
-	}
-
-	$delobj = $scache->load('cat_bid');
-	$delobj->delete();
-	$delobj = $scache->load('forumtree');
-	$delobj->delete();
-	$delobj = $scache->load('categories');
-	$delobj->delete();
-	$delobj = $scache->load('parent_forums');
-	$delobj->delete();
+		if ($invisible < 0 && $invisible > 2) {
+			$invisible = 0;
+		}
+		if ($readonly != 0 && $readonly != 1) {
+			$readonly = 0;
+		}
+		if ($active_topic != 0 && $active_topic != 1) {
+			$active_topic = 0;
+		}
+		if ($auto_status != 'n' && $auto_status != 'a') {
+			$auto_status = '';
+		}
+		if ($topiczahl < 0) {
+			$topiczahl * -1;
+		}
+		if ($forumzahl < 0) {
+			$forumzahl * -1;
+		}
+		
+		$emails = preg_split('/[\r\n]+/', $reply_notification, -1, PREG_SPLIT_NO_EMPTY);
+		$reply_notification = array();
+		foreach ($emails as $email) {
+			if(check_mail($email)) {
+				$reply_notification[] = $email;
+			}
+		}
+		$reply_notification = implode("\n", $reply_notification);
+		$emails = preg_split('/[\r\n]+/', $topic_notification, -1, PREG_SPLIT_NO_EMPTY);
+		$topic_notification = array();
+		foreach ($emails as $email) {
+			if(check_mail($email)) {
+				$topic_notification[] = $email;
+			}
+		}
+		$topic_notification = implode("\n", $topic_notification);
+		
+		$position = null;
+		$positions = array();
+		$result = $db->query("SELECT id, position FROM {$db->pre}forums WHERE parent = '{$parent}' ORDER BY position");
+		while ($pos = $db->fetch_assoc($result)) {
+			if ($pos['id'] == $sort) {
+				$position = $pos['position']+$sortx;
+			}
+			else {
+				$positions[$pos['id']] = $pos['position'];
+			}
+		}
+		if ($position == null) {
+			if (count($positions) > 0) {
+				$position = iif($sortx == 1, max($positions), min($positions));
+			}
+			else {
+				$position = 0;
+			}
+		}
+		else {
+			$id = array_search($position, $positions);
+			$move = array();
+			while (is_id($id)) {
+				$move[$id] = $positions[$id]+$sortx;
+				$id = array_search($move[$id], $positions);
+			}
+			if (count($move) > 0) {
+				$op = iif($sortx == 1, '+', '-');
+				$idlist = implode(',', array_keys($move));
+				$db->query("UPDATE {$db->pre}forums SET position = position {$op} 1 WHERE id IN({$idlist})");
+			}
+		}
+		
+		if (strlen($opt_re) > 0) {
+			$opt = 're';
+			$optvalue = $opt_re;
+			if ($invisible == 1) {
+				$invisible = 0;
+			}
+		}
+		elseif (strlen($opt_pw) > 0) {
+			$opt = 'pw';
+			$optvalue = $opt_pw;
+			if ($invisible == 1) {
+				$invisible = 0;
+			}
+		}
+		else {
+			$opt = '';
+			$optvalue = '';	
+		}
+		
+		$db->query("
+		INSERT INTO {$db->pre}forums (
+		  `name`,`description`,`parent`,`position`,`opt`,`optvalue`,`forumzahl`,`topiczahl`,`invisible`,`readonly`,
+		  `auto_status`,`reply_notification`,`topic_notification`,`active_topic`,`message_active`,`message_title`,`message_text`
+		)
+		VALUES (
+		  '{$name}','{$description}','{$parent}','{$position}','{$opt}','{$optvalue}','{$forumzahl}','{$topiczahl}','{$invisible}','{$readonly}',
+		  '{$auto_status}','{$reply_notification}','{$topic_notification}','{$active_topic}','{$message_active}','{$message_title}','{$message_text}'
+		);
+		", __LINE__, __FILE__);
+		$newid = $db->insert_id();
 	
-	ok('admin.php?action=forums&job=addforum', 'Forum successfully added!');
+		if ($perm > 0) {
+			$columns = implode(', ', array_keys($glk_forums));
+			$result = $db->query("SELECT {$columns} FROM {$db->pre}fgroups WHERE bid = '{$perm}'", __LINE__, __FILE__);
+			while($row = $db->fetch_assoc($result)) {
+				ksort($glk_forums, SORT_STRING);
+				ksort($row, SORT_STRING);
+				$row_str = implode("', '", $row);
+				$db->query("INSERT INTO {$db->pre}fgroups ({$columns}, bid) VALUES ('{$row_str}', '{$newid}')", __LINE__, __FILE__);
+			}
+		}
+		
+		$delobj = $scache->load('cat_bid');
+		$delobj->delete();
+		$delobj = $scache->load('forumtree');
+		$delobj->delete();
+		$delobj = $scache->load('parent_forums');
+		$delobj->delete();
+		
+		ok('admin.php?action=forums&job=manage', 'Forum successfully added!');
+	}
 }
 elseif ($job == 'forum_recount') {
 	echo head();
@@ -1253,9 +1402,12 @@ elseif ($job == 'cat_delete') {
 	ok('admin.php?action=forums&job=manage', 'Category successfully deleted!');
 }
 elseif ($job == 'prefix') {
-	$id = $gpc->get('id', int);
-	$result = $db->query('SELECT * FROM '.$db->pre.'prefix WHERE bid = "'.$id.'" ORDER BY value', __LINE__, __FILE__);
 	echo head();
+	$id = $gpc->get('id', int);
+	if (!is_id($id)) {
+		error('admin.php?action=forums&job=manage', 'Invalid ID given.');
+	}
+	$result = $db->query('SELECT * FROM '.$db->pre.'prefix WHERE bid = "'.$id.'" ORDER BY value', __LINE__, __FILE__);
 ?>
 <form name="form" method="post" action="admin.php?action=forums&job=prefix_delete&id=<?php echo $id; ?>">
  <table class="border">
