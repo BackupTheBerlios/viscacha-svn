@@ -1,5 +1,5 @@
 CREATE TABLE `{:=DBPREFIX=:}forums` (
-  `id` smallint(5) unsigned NOT NULL,
+  `id` smallint(5) unsigned NOT NULL auto_increment,
   `name` varchar(200) NOT NULL default '',
   `description` text NOT NULL,
   `topics` int(10) unsigned NOT NULL default '0',

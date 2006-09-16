@@ -47,7 +47,7 @@ function ForumSubs ($tree, $cat, $board, $char = '+', $level = 0) {
 					  <option value="admin.php?action=forums&job=rights&id=<?php echo $bdata['id']; ?>">Manage Usergroups</option>
 					  <option value="admin.php?action=forums&job=rights_add&id=<?php echo $bdata['id']; ?>">Add Usergroup</option>
 					 </optgroup>
-					 <optgroup label="Prefix">
+					 <optgroup label="Prefixes">
 					  <option value="admin.php?action=forums&job=prefix&id=<?php echo $bdata['id']; ?>">Manage</option>
 					 </optgroup>
 					 <optgroup label="Statistics">
@@ -1412,7 +1412,7 @@ elseif ($job == 'prefix') {
 <form name="form" method="post" action="admin.php?action=forums&job=prefix_delete&id=<?php echo $id; ?>">
  <table class="border">
   <tr> 
-   <td class="obox" colspan="3">Manage Prefix</td>
+   <td class="obox" colspan="3">Manage Prefixes</td>
   </tr>
   <tr> 
    <td class="ubox" width="10%">Delete</td>

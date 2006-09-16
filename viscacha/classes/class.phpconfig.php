@@ -1,9 +1,6 @@
 <?php
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "class.phpconfig.php") die('Error: Hacking Attempt');
 
-DEFINE('STRING','string');
-DEFINE('INT','int');
-
 class manageconfig {
 
 	var $file;
