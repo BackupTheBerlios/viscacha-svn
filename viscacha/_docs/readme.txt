@@ -163,7 +163,7 @@ Please add all the following files to each template pack (* = ID of language pac
 - templates/*/edit/prefix.html
 - templates/*/misc/board_rules.html
 
-Now execute the updater!
+Finally upload the install/ directory and execute the updater.
 
 == System requirements ==
 

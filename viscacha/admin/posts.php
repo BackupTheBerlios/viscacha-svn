@@ -12,17 +12,7 @@ if ($_GET['job'] == 'postrating') {
   <tr>
    <td class="mbox">Forum to show:</td>
    <td class="mbox">
-	<select name="board" size="1">
-	 <?php
-	$forumtree = $scache->load('forumtree');
-	$tree = $forumtree->get();
-	$categories_obj = $scache->load('categories');
-	$categories = $categories_obj->get();
-	$catbid = $scache->load('cat_bid');
-	$boards = $catbid->get();
-	AdminSelectForum($tree, $categories, $boards);
-	 ?>
-	</select>
+	 <?php echo SelectBoardStructure('board', ADMIN_SELECT_FORUMS); ?>
    </td>
   </tr>
   <tr> 
@@ -35,13 +25,8 @@ if ($_GET['job'] == 'postrating') {
 }
 elseif ($_GET['job'] == 'postrating2') {
 	echo head();
-	$id = $gpc->get('board', str);
+	$board = $gpc->get('board', int);
 	$page = $gpc->get('page', int, 1);
-	
-	list($type, $board) = explode('_', $id, 2);
-	if ($type != 'f') {
-		error('admin.php?action=posts&job=postrating', 'Please choose a valid forum (not a category)!');
-	}
 	
 	$count = $db->fetch_num($db->query("SELECT COUNT(*) FROM {$db->pre}postratings AS p LEFT JOIN {$db->pre}topics AS t ON p.tid = t.id  WHERE t.board = '{$board}' AND t.status != '2' GROUP BY p.tid"));
 	$temp = pages($count[0], "admin.php?action=members&job=memberrating&amp;", 25);
@@ -56,7 +41,7 @@ elseif ($_GET['job'] == 'postrating2') {
 
     $perpage = 30;
 
-	$pages = pages($count[0], 'admin.php?action=posts&amp;job=postrating2&amp;board='.$id.'&amp;', $perpage);
+	$pages = pages($count[0], 'admin.php?action=posts&amp;job=postrating2&amp;board='.$board.'&amp;', $perpage);
 	
 	$start = ($page-1)*$perpage;
 	

@@ -187,13 +187,7 @@ elseif ($job == 'manage') {
 	  </tr>
 	<?php
 	$attachments = explode(',', $config['tpcfiletypes']);
-	foreach ($attachments as $key => $value) {
-		$attachments[$key] = substr($value, 1);
-	}
 	$pics = explode(',', $config['avfiletypes']);
-	foreach ($pics as $key => $value) {
-		$pics[$key] = substr($value, 1);
-	}
 	while ($row = $gpc->prepare($db->fetch_assoc($result))) {
 		$extensions = explode(',', $row['extension']);
 		$extension_count = count($extensions);

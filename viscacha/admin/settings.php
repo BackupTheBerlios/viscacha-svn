@@ -1233,7 +1233,7 @@ elseif ($job == 'avupload') {
 	  </tr>
 	  <tr> 
 	   <td class="mbox" width="50%">Allowed file formats for profile pictures:<br /><span class="stext">Each fily type separated by ",". Without leading dot!<br />Possible file types: <?php echo implode(', ', $imagetype_extension); ?></span></td>
-	   <td class="mbox" width="50%"><input type="text" name="avfiletypes" value="<?php echo $ft; ?>" size="50"></td> 
+	   <td class="mbox" width="50%"><input type="text" name="avfiletypes" value="<?php echo $config['avfiletypes']; ?>" size="50"></td> 
 	  </tr>
 	  <tr> 
 	   <td class="mbox" width="50%">Max. file size for profile pictures in Bytes:<br /><span class="stext">1 KB = 1024 Byte</span></td>

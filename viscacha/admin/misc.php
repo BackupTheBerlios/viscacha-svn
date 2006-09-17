@@ -137,9 +137,6 @@ elseif ($job == 'onlinestatus') {
    </p>
    </td> 
   </tr>
-  <tr> 
-   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="Submit"></td> 
-  </tr>
  </table>
 	<?php
 	echo foot();

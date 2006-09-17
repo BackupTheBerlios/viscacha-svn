@@ -3,7 +3,8 @@ if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "slog.php")
 
 function getmonth($number) {
 	global $months;
-	return $months[$number - 1];
+	$index = intval($number)-1;
+	return isset($months[$index]) ? $months[$index] : $number.'.';
 }
 function getday($number) {
 	global $days, $lang;
@@ -72,9 +73,7 @@ URL: <?php echo $data[5]; ?></textarea>
     </td>
     <td class="stext"><?php echo date("D, j M Y", $data[6]); ?><br /><?php echo date("G:i:s O", $data[6]); ?></td>
    </tr>
-   <?php } ?>
-      </table>
-   <?php } ?>
+   <?php } } ?>
    </td>
   </tr>
   <tr> 
