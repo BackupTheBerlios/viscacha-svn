@@ -50,5 +50,4 @@ INSERT INTO `{:=DBPREFIX=:}spider` (`id`, `name`, `user_agent`, `type`, `last_vi
 (55, 'Twiceler', 'Twiceler', 'b', '', 0, '', '', ''),
 (61, 'Yahoo (Overture)', 'Yahoo! Slurp|Yahoo-MMCrawler', 'b', '', 0, '', '', ''),
 (60, 'IRL Crawler', 'IRLbot', 'b', '', 0, '', '', ''),
-(8, 'Forum Poster', 'Forum Poster', 'e', '', 0, '', '', ''),
-;
+(8, 'Forum Poster', 'Forum Poster', 'e', '', 0, '', '', '');

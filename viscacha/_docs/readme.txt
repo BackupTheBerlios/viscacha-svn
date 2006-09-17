@@ -65,8 +65,105 @@ Following files need CHMOD 666:
 
 First make a backup of your old data!
 
-...
+Replace/Upload:
+- All files in admin/html/ (admin.js, menu.js, standard.css)
+- All files in admin/lib/
+- All files in admin/ (bbcodes.php, cms.php, db.php, designs.php, 
+  explorer.php, filetypes.php, forums.php, frames.php, groups.php, 
+  language.php, members.php, misc.php, posts.php, settings.php, slog.php, 
+  start.php)
+- All files and directories in classes/
+- The file modules/16/login.php
+- The file modules/2/onlinelist.php
+- The file modules/3/latestnews.php
+- The file modules/5/login.php
+- The file modules/9/lastbox.php
+- The file templates/menu.js
+- All files in the root directory (addreply.php, admin.php, attachments.php, 
+  cron.php, edit.php, editprofile.php, external.php, log.php, manageforum.php, 
+  managemembers.php, managetopic.php, misc.php, newtopic.php, pdf.php, 
+  popup.php, print.php, profile.php, search.php, showforum.php, showtopic.php, 
+  team.php)
 
+Upload to each language directory on the server the files new_reply.php and 
+new_topic.php.
+You can find english files in the directory with the id 2 and german files in
+the directories 1 and 3. The files are in the subfolder mails. If you are 
+using a language other than english or German, use the English files and 
+translate them into your language. If you have questions regarding this step,
+contact me via Instant Messenger or use the support forums.
+If you have the English language pack installed, replace the complete directory 
+with the files in the directory language/2. You have to replace all files and 
+folders on account of many changes in this language pack.
+
+Open in each design (Folder: designs) the file standard.css.
+Replace the following line:
+#content h3 img, #window h3 img, .tables th img, .h3 {
+with this line:
+#content h3 img, #window h3 img, .tables th img, .h3 img {
+
+Find the following line:
+/* Tabellenlose Formulare */
+After that add this code:
+/* Start .plainlabel */
+.plainlabel {
+	float: none;
+	display: inline;
+	width: auto;
+	padding-right: 0px;
+	font-weight: normal;
+}
+/* End .plainlabel */
+
+Many changes were made in the template files. 
+(Remember: * = ID of language pack)
+
+Please update all the following files in each template pack:
+- templates/*/admin/forum/index_bit.html
+- templates/*/admin/members/edit.html
+- templates/*/admin/benchmark.html
+- templates/*/editprofile/attachments.html
+- templates/*/editprofile/notice.html
+- templates/*/editprofile/pic.html
+- templates/*/editprofile/settings.html
+- templates/*/misc/bbhelp.html
+- templates/*/misc/wwo_bit.html
+- templates/*/modules/11/legend.html
+- templates/*/modules/12/legend.html
+- templates/*/modules/13/legend.html
+- templates/*/modules/16/login.html
+- templates/*/modules/2/wwo.html
+- templates/*/modules/5/login_guest.html
+- templates/*/modules/5/login_member.html
+- templates/*/modules/6/newpms.html
+- templates/*/modules/7/message.html
+- templates/*/modules/9/last.html
+- templates/*/newtopic/index.html
+- templates/*/newtopic/index_prefix.html
+- templates/*/pm/delete.html
+- templates/*/popup/showpost.html
+- templates/*/profile/ims.html
+- templates/*/profile/index.html
+- templates/*/profile/mail.html
+- templates/*/search/active_bit.html
+- templates/*/search/index.html
+- templates/*/search/result.html
+- templates/*/search/result_bit.html
+- templates/*/showforum/index.html
+- templates/*/showforum/index_bit.html
+- templates/*/showtopic/index.html
+- templates/*/showtopic/index_bit.html
+- templates/*/showtopic/vote.html
+- templates/*/addreply.html
+- templates/*/categories.html
+
+Please add all the following files to each template pack (* = ID of language pack):
+- templates/*/edit/
+- templates/*/edit/edit.html
+- templates/*/edit/prefix.html
+- templates/*/misc/board_rules.html
+
+Now execute the updater!
 
 == System requirements ==
 
