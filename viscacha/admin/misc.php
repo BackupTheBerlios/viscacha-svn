@@ -623,7 +623,7 @@ elseif ($job == "credits") {
 		$mhashext = "<span style='color: red'>N/A</span>";
 	}
 	
-	if (version_compare(PHP_VERSION, '4.0.6', '>=')) {
+	if (version_compare(PHP_VERSION, '4.1.0', '>=')) {
 		$phpv = '<span style="color: green">Yes</span>';
 	}
 	else {
