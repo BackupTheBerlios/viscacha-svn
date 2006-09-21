@@ -686,7 +686,7 @@ function ok ($errormsg = NULL, $errorurl = "javascript:history.back(-1)", $EOS =
 function forum_opt($array, $check = 'forum') {
 	global $my, $lang, $tpl;
 	extract($array, EXTR_PREFIX_ALL, 'f');
-	if ($f_opt == 'pw' && (!isset($my->pwfaccess[$f_id]) || $my->pwfaccess[$f_id] != $optvalue)) {
+	if ($f_opt == 'pw' && (!isset($my->pwfaccess[$f_id]) || $my->pwfaccess[$f_id] != $f_optvalue)) {
     	if (!$tpl->tplsent('header')) {
     		echo $tpl->parse('header');
     	}

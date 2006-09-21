@@ -206,6 +206,7 @@ $db->query("ALTER TABLE `{$db->pre}prefix` ADD `standard` enum('0','1') NOT NULL
 $db->query("ALTER TABLE `{$db->pre}session` CHANGE `remoteaddr` `user_agent` text NOT NULL", __LINE__, __FILE__);
 
 $db->query("ALTER TABLE `{$db->pre}uploads` ADD `source` varchar(128) NOT NULL default '' AFTER `file`", __LINE__, __FILE__);
+$db->query("UPDATE `{$db->pre}uploads` SET source = file WHERE source = ''", __LINE__, __FILE__);
 
 // Refresh Cache
 $dirs = array('../cache/', '../cache/modules/');

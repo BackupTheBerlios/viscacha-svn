@@ -41,7 +41,7 @@ class BBCode {
 	var $benchmark = array();
 	var $author = -1;
 
-	function BBCode () {
+	function BBCode ($profile = 'viscacha') {
 	    $this->benchmark = array(
 	    	'smileys' => 0,
 	    	'bbcode' => 0
@@ -51,7 +51,7 @@ class BBCode {
 		if (!class_exists('ConvertRoman')) {
 			include('classes/class.convertroman.php');
 		}
-		$this->setProfile('standard', SP_NEW);
+		$this->setProfile($profile, SP_NEW);
 	}
 	function setName($name) {
 		$this->reader = $name;

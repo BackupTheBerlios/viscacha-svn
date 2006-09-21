@@ -1,8 +1,9 @@
 body {
 	background-color: #cccccc; 
-	font-family: Verdana, Arial, Helvetica, sans-serif;
 	margin: 5px;
 	font-size: 0.8em;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	color: #000000;
 }
 form {
 	margin: 0px;
@@ -21,13 +22,13 @@ ul {
 }
 input, select {
 	font-size: 11px;
-	font-family: Trebuchet MS, Verdana, Arial, Helvetica, sans-serif;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
 	background-color: #F5F8FA; 
 	border: 1px solid #336699;
 }
 textarea {
 	font-size: 12px;
-	font-family: Trebuchet MS, Verdana, Arial, Helvetica, sans-serif;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
 	background-color: #F5F8FA; 
 	border: 1px solid #336699;
 }
@@ -42,10 +43,6 @@ A {
 }
 A:hover {
 	color : #000000;
-}
-font, span {
-	font-family: Trebuchet MS, Verdana, Arial, Helvetica, sans-serif;
-	color: #000000;
 }
 .center {
     text-align: center;
@@ -104,4 +101,80 @@ font, span {
 }
 .valign {
 	vertical-align: middle;
+}
+
+/* BB-Code Ausgabe */
+.bb_table {
+	border: 1px dotted #BCCADA;
+	overflow: auto;
+	display: block;
+	padding: 1px;
+	margin-top: 5px;
+	margin-bottom: 5px;   
+}
+.bb_inlinecode {
+	color: #880000;
+}
+.bb_blockcode_header {
+	display: block;
+}
+.bb_blockcode {
+	border: 1px solid #839FBC;
+	background-color: #F5F8FA;
+	padding: 2px;
+	margin: 0px;
+	margin-left: 10px;
+	overflow: auto;
+	max-height: 400px;
+	min-height: 50px;
+	width: 550px;
+}
+.bb_blockcode td {
+	font-family: Courier New, monospace;
+	font-size: 11px;
+	line-Height: 13px;
+	white-space: nowrap;
+	vertical-align: top;
+}
+.bb_header {
+	margin: 0px;
+	margin-top: 10px;
+}
+.bb_size_extended {
+	letter-spacing: 3px;
+}
+.bb_quote {
+	margin: 0px;
+	width: 98%;
+	padding-left: 5px;
+	display: block;
+}
+.bb_quote cite {
+	border-bottom: 1px solid #839FBC;
+	border-top: 1px solid #839FBC;
+	padding-left: 10px;
+	font-size: 9pt;
+	display: block;
+	margin: 1px;
+}
+.bb_ot span {
+	border-top: 1px dashed #BCCADA;
+	border-bottom: 1px dashed #BCCADA;
+	padding-left: 10px;
+	color: #7E9AB8;
+	font-size: 9pt;
+	display: block;
+}
+.bb_edit ins {
+	margin-left: 10px;
+	display: block;
+	text-decoration: none;
+}
+.bb_hide {
+	color: #aaaaaa;
+	font-size: 9pt;
+}
+.bb_hide span {
+	margin-left: 10px;
+	display: block;
 }

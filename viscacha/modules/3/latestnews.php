@@ -37,7 +37,8 @@ while ($row = $gpc->prepare($db->fetch_assoc($result))) {
 		if ($intelliCut && preg_match("/[\.!\?]+[\s\r\n]+/", $row['comment'], $matches, PREG_OFFSET_CAPTURE, $teaserlength)) {
 			$pos = $matches[0][1];
 			if ($maxlength > $pos) {
-				$row['comment'] = substr($row['comment'], 0, $pos+2).$lang->phrase('dot_more');
+				$row['comment'] = substr($row['comment'], 0, $pos+2);
+				$row['comment'] = rtrim($row['comment'], "\r\n").$lang->phrase('dot_more');
 				$row['read_more'] = true;
 			}
 		}

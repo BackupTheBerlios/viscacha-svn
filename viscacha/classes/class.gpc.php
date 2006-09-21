@@ -207,6 +207,15 @@ class GPC {
 			return str_replace("\0", '', $data);
 		}
 	}
+	
+	function stripslashes($array) {
+		if(is_array($array)) {
+			return array_map(array($this, 'stripslashes'), $array); 
+		}
+		else {
+			return stripslashes($array);
+		}
+	}
 
 }
 

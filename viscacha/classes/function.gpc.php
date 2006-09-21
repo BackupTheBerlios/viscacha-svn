@@ -55,9 +55,9 @@ if (@ini_get('register_globals') == '1' || strtolower(@ini_get('register_globals
 }
 
 if (get_magic_quotes_gpc() == 1) {
-	array_walk_recursive($_GET, 'stripslashes');
-	array_walk_recursive($_POST, 'stripslashes');
-	array_walk_recursive($_REQUEST, 'stripslashes');
+	$_GET = $gpc->stripslashes($_GET);
+	$_POST = $gpc->stripslashes($_POST);
+	$_REQUEST = $gpc->stripslashes($_REQUEST);
 }
 
 // Thanks to phpBB for this 6 lines

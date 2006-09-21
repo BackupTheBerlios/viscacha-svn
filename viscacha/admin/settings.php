@@ -300,27 +300,27 @@ elseif ($job == 'signature') {
 	   <td class="mbox" width="50%"><input type="text" name="maxsiglength" value="<?php echo $config['maxsiglength']; ?>" size="4"></td> 
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">Allow [img]-BB-Code (Pictures):</td>
+	   <td class="mbox" width="50%">Disallow [img]-BB-Code (Pictures):</td>
 	   <td class="mbox" width="50%"><input type="checkbox" name="sig_bbimg" value="1"<?php echo iif($config['sig_bbimg'] == 1,' checked="checked"'); ?>></td> 
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">Allow [code]-BB-Code (Sourcecode):</td>
+	   <td class="mbox" width="50%">Disallow [code]-BB-Code (Sourcecode):</td>
 	   <td class="mbox" width="50%"><input type="checkbox" name="sig_bbcode" value="1"<?php echo iif($config['sig_bbcode'] == 1,' checked="checked"'); ?>></td> 
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">Allow [list]-BB-Code (Lists):</td>
+	   <td class="mbox" width="50%">Disallow [list]-BB-Code (Lists):</td>
 	   <td class="mbox" width="50%"><input type="checkbox" name="sig_bblist" value="1"<?php echo iif($config['sig_bblist'] == 1,' checked="checked"'); ?>></td> 
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">Allow [edit]-BB-Code (Additional edit):</td>
+	   <td class="mbox" width="50%">Disallow [edit]-BB-Code (Additional edit):</td>
 	   <td class="mbox" width="50%"><input type="checkbox" name="sig_bbedit" value="1"<?php echo iif($config['sig_bbedit'] == 1,' checked="checked"'); ?>></td> 
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">Allow [ot]-BB-Code (Off-Topic):</td>
+	   <td class="mbox" width="50%">Disallow [ot]-BB-Code (Off-Topic):</td>
 	   <td class="mbox" width="50%"><input type="checkbox" name="sig_bbot" value="1"<?php echo iif($config['sig_bbot'] == 1,' checked="checked"'); ?>></td> 
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">Allow [h]-BB-Code (Headlines):</td>
+	   <td class="mbox" width="50%">Disallow [h]-BB-Code (Headlines):</td>
 	   <td class="mbox" width="50%"><input type="checkbox" name="" value="1"<?php echo iif($config['sig_bbh'] == 1,' checked="checked"'); ?>></td> 
 	  </tr>
 	  <tr>
@@ -1695,6 +1695,9 @@ elseif ($job == 'textprocessing2') {
 	$c->updateconfig('smileypath',str);
 	$c->updateconfig('smileyurl',str);
 	$c->savedata();
+	
+	$delobj = $scache->load('smileys');
+	$delobj->delete();
 
 	ok('admin.php?action=settings&job=textprocessing');
 }

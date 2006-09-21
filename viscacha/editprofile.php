@@ -630,7 +630,10 @@ elseif ($_GET['action'] == "settings") {
 
 	$loaddesign_obj = $scache->load('loaddesign');
 	$design = $loaddesign_obj->get();
-	if (isset($design[$update['template']])) {
+	if (isset($design[$my->settings['q_tpl']])) {
+		$mydesign = $design[$my->settings['q_tpl']]['name'];
+	}
+	elseif (isset($design[$update['template']])) {
 		$mydesign = $design[$update['template']]['name'];
 	}
 	else {
@@ -639,7 +642,10 @@ elseif ($_GET['action'] == "settings") {
 	
 	$loadlanguage_obj = $scache->load('loadlanguage');
 	$language = $loadlanguage_obj->get();
-	if (isset($language[$update['language']])) {
+	if (isset($language[$my->settings['q_lng']])) {
+		$mylanguage = $language[$my->settings['q_lng']]['language'];
+	}
+	elseif (isset($language[$update['language']])) {
 		$mylanguage = $language[$update['language']]['language'];
 	}
 	else {

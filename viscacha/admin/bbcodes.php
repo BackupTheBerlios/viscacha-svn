@@ -1116,13 +1116,60 @@ elseif ($job == 'custombb_delete2'){
 	$delobj->delete();
 	ok('admin.php?action=bbcodes&job=custombb', 'Custom BB Code successfully deleted');
 }
+elseif ($job == 'custombb_test') {
+	echo head();
+	// reader-Tag not recognized
+	$file = 'admin/data/bbcode_test.php';
+	$test = $gpc->get('test', none);
+	$parsed_test = null;
+	if (!empty($test)) {
+		file_put_contents($file, $test);
+		$lang = new lang();
+		$lang->init();
+		BBProfile($bbcode);
+		$bbcode->setSmileys(1);
+		$bbcode->setReplace(0);
+		$bbcode->setAuthor($my->id);
+		$parsed_test = $bbcode->parse($test);
+		$smileys_time = round($bbcode->getBenchmark('smileys'), 3);
+		$bbcode_time = round($bbcode->getBenchmark(), 3);
+	}
+	else {
+		$test = file_get_contents($file);
+	}
+	if (!empty($parsed_test)) {
+?>
+<table align="center" class="border">
+  	<tr><td class="obox">Parsing Results</td></tr>
+  	<tr><td class="ubox">
+  		<strong>Benchmark:</strong><br />
+  		Smileys: <?php echo $smileys_time; ?> seconds<br />
+  		BB-Codes: <?php echo $bbcode_time; ?> seconds<br />
+  	</td></tr>
+  	<tr><td class="mbox"><?php echo $parsed_test; ?></td></tr>
+</table>
+<br /><?php } ?>
+<form action="admin.php?action=bbcodes&job=custombb_test" name="form2" method="post">
+	<table align="center" class="border">
+  		<tr><td class="obox">Test your custom BB Codes</td></tr>
+		<tr><td class="mbox" align="center"><textarea name="test" rows="10" cols="120"><?php echo $test; ?></textarea></td></tr>
+		<tr><td class="ubox" align="center"><input type="submit" value="Test" /></td></tr>
+	</table>
+</form>
+	<?php
+	echo foot();
+}
 elseif ($job == 'custombb') {
 	$result = $db->query("SELECT * FROM {$db->pre}bbcode", __LINE__, __FILE__);
 	echo head();
 	?>
 	<table align="center" class="border">
 	<tr>
-		<td class="obox" align="center" colspan="4"><span style="float: right;">[<a href="admin.php?action=bbcodes&job=custombb_add">Add new BB Code</a>] [<a href="admin.php?action=bbcodes&job=custombb_import">Import BB Code</a>]</span>Custom BB Code Manager</td>
+		<td class="obox" colspan="4"><span style="float: right;">
+		[<a href="admin.php?action=bbcodes&job=custombb_add">Add new BB Code</a>] 
+		[<a href="admin.php?action=bbcodes&job=custombb_import">Import BB Code</a>] 
+		[<a href="admin.php?action=bbcodes&job=custombb_test">Test BB Codes</a>]
+		</span>Custom BB Code Manager</td>
 	</tr>
 	<tr>
 		<td class="ubox" width="30%">Title</td>
