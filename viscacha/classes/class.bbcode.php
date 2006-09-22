@@ -862,12 +862,12 @@ class BBCode {
 				'highlight_class' => 0,
 				'highlight' => array(),
 				'disallow' => array(
-					'img' => FALSE,
-					'code' => FALSE,
-					'list' => FALSE,
-					'edit' => FALSE,
-					'ot' => FALSE,
-					'h' => FALSE
+					'img' => false,
+					'code' => false,
+					'list' => false,
+					'edit' => false,
+					'ot' => false,
+					'h' => false
 				)
 			);
 		}
@@ -875,7 +875,7 @@ class BBCode {
 		$this->profile = &$this->cfg[$name];
 	}
 	function setFunc($func) {
-		$this->profile['disallow'][$func] = TRUE;
+		$this->profile['disallow'][$func] = true;
 	}
 	function setSmileys ($use = 1) {
 		$this->profile['useSmileys'] = $use;
@@ -1113,6 +1113,7 @@ function BBProfile(&$bbcode, $profile = 'standard') {
 			$bbcode->setSmileyDir($config['smileyurl']);
 			$bbcode->setSmileys(1);
 			$bbcode->setReplace($config['wordstatus']);
+			// Disallow some bb-codes
 			if ($config['sig_bbimg'] == 1) {
 				$bbcode->setFunc('img');
 			}
@@ -1140,12 +1141,6 @@ function BBProfile(&$bbcode, $profile = 'standard') {
 			$bbcode->setURL($config['reduce_url'], $config['maxurllength'], $config['maxurltrenner']);
 			$bbcode->setName($my->name);
 			$bbcode->setSmileyDir($config['smileyurl']);
-			$bbcode->setFunc('img');
-			$bbcode->setFunc('code');
-			$bbcode->setFunc('list');
-			$bbcode->setFunc('edit');
-			$bbcode->setFunc('ot');
-			$bbcode->setFunc('h');
 		}
 	}
 	else {

@@ -225,14 +225,14 @@ function doctypes() {
 	return $arr;
 }
 
-function file2array($file) {
+function file2array($file, $delimiter = ';') {
 
 	$filearray = array();
 	$lines = file($file);
 	
 	foreach ($lines as $row) {
 		$row = rtrim($row);
-		$row = explode("\t",$row, 2);
+		$row = explode($delimiter,$row, 2);
 		$filearray[$row[0]] = $row[1];
 	}
 

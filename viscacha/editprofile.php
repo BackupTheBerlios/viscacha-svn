@@ -630,26 +630,32 @@ elseif ($_GET['action'] == "settings") {
 
 	$loaddesign_obj = $scache->load('loaddesign');
 	$design = $loaddesign_obj->get();
-	if (isset($design[$my->settings['q_tpl']])) {
+	if (!empty($my->settings['q_tpl']) && isset($design[$my->settings['q_tpl']])) {
 		$mydesign = $design[$my->settings['q_tpl']]['name'];
+		$my->template = $my->settings['q_tpl'];
 	}
 	elseif (isset($design[$update['template']])) {
 		$mydesign = $design[$update['template']]['name'];
+		$my->template = $update['template'];
 	}
 	else {
 		$mydesign = $design[$config['templatedir']]['name'];
+		$my->template = $config['templatedir'];
 	}
 	
 	$loadlanguage_obj = $scache->load('loadlanguage');
 	$language = $loadlanguage_obj->get();
-	if (isset($language[$my->settings['q_lng']])) {
+	if (!empty($my->settings['q_lng']) && isset($language[$my->settings['q_lng']])) {
 		$mylanguage = $language[$my->settings['q_lng']]['language'];
+		$my->language = $my->settings['q_lng'];
 	}
 	elseif (isset($language[$update['language']])) {
 		$mylanguage = $language[$update['language']]['language'];
+		$my->language = $update['language'];
 	}
 	else {
 		$mylanguage = $language[$config['langdir']]['language'];
+		$my->language = $config['langdir'];
 	}
 	
 	$customfields = editprofile_customfields(2, $my->id);

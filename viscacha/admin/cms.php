@@ -2444,7 +2444,7 @@ elseif ($job == 'com_readme') {
 elseif ($job == 'com_admin') {
 	$id = $gpc->get('cid', int);
 	$mod = $gpc->get('file', str, 'frontpage');
-	$result = $db->query("SELECT * FROM {$db->pre}component WHERE id = {$id} LIMIT 1", __LINE__, __FILE__);
+	$result = $db->query("SELECT * FROM {$db->pre}component WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	$row = $db->fetch_assoc($result);
 	$cfg = $myini->read('components/'.$row['id'].'/components.ini');
 	$cfg = array_merge($row, $cfg);
@@ -2452,6 +2452,18 @@ elseif ($job == 'com_admin') {
 		echo head();
 		error('admin.php?action=cms&job=com','Section not found!');
 	}
+
+	DEFINE('COM_ID', $id);
+	DEFINE('COM_DIR', 'components/'.COM_ID.'/');
+	if (!isset($cfg['admin'][$mod])) {
+		DEFINE('COM_MODULE', 'frontpage');
+	}
+	else {
+		DEFINE('COM_MODULE', $mod);
+	}
+	DEFINE('COM_MODULE_FILE', $cfg['admin'][COM_MODULE]);
+	DEFINE('COM_FILE', $cfg['admin']['frontpage']);
+
 	$uri = explode('?', $cfg['admin'][$mod]);
 	$file = basename($uri[0]);
 	if (isset($uri[1])) {
