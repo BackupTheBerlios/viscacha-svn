@@ -458,7 +458,7 @@ function ok ($url, $msg = "Settings were saved successfully!") {
 	?>
 <script language="Javascript" type="text/javascript">
 <!--
-window.setTimeout('location.href="<?php echo $url; ?>"', 1000);
+window.setTimeout('location.href="<?php echo $url; ?>"', 2000);
 -->
 </script>
 <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">

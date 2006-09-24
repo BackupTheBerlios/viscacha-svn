@@ -129,7 +129,7 @@ class CacheServer {
 			$object = new $class($name, $this->cachedir);
 		}
 		else {
-			// trigger_error('Cache Class of type '.$name.' could not be loaded.', E_USER_WARNING);
+			trigger_error('Cache Class of type '.$name.' could not be loaded.', E_USER_NOTICE);
 			$object = new CacheItem($name, $this->cachedir);
 		}
 		$this->data[$name] = $object;

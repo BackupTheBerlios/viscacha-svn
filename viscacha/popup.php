@@ -51,7 +51,7 @@ if ($_GET['action'] == "hlcode") {
 	}
 	$sourcecode = $codeObj->get();
 	
-	$sourcecode['source'] = @html_entity_decode($sourcecode['source'], ENT_QUOTES, $lang->phrase('charset'));
+	$sourcecode['source'] = html_entity_decode($sourcecode['source'], ENT_QUOTES);
 
 	($code = $plugins->load('popup_hlcode_start')) ? eval($code) : null;
 

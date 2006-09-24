@@ -2632,6 +2632,12 @@ elseif ($job == 'com_add2') {
 
 		if (isset($cfg['php']) && count($cfg['php']) > 0) {
 			$filesystem->mkdir("./components/{$id}");
+			if (!in_array($cfg['config']['install'], $cfg['php'])) {
+				$cfg['php'][] = $cfg['config']['install'];
+			}
+			if (!in_array($cfg['config']['uninstall'], $cfg['php'])) {
+				$cfg['php'][] = $cfg['config']['uninstall'];
+			}
 			foreach ($cfg['php'] as $file) {
 				$filesystem->copy("{$tdir}php/{$file}", "./components/{$id}/{$file}");
 			}
@@ -2691,7 +2697,13 @@ elseif ($job == 'com_add2') {
 			else {
 				$input = array();
 			}
-			include("components/{$id}/{$file}");
+			$path = "components/{$id}/{$file}";
+			if (!file_exists($path)) {
+				error('admin.php?action=cms&job=cms_add', 'Installation file not found.');
+			}
+			else {
+				include($path);
+			}
 		}	
 	}
 }
@@ -2783,28 +2795,9 @@ elseif ($job == 'com_delete2') {
 
 	$result = $db->query("SELECT template, stylesheet, images FROM {$db->pre}designs WHERE id = '{$config['templatedir']}'",__LINE__,__FILE__);
 	$design = $db->fetch_assoc($result);
-
-	rmdirr("./language/{$config['langdir']}/components/$id");
-	rmdirr("./templates/{$design['template']}/components/$id");
-	if (isset($cfg['image']) && count($cfg['image']) > 0) {
-		foreach ($cfg['image'] as $file) {
-			$filesystem->unlink("./images/{$design['images']}/$file");
-		}
-	}
-	if (isset($cfg['style']) && count($cfg['style']) > 0) {
-		foreach ($cfg['style'] as $file) {
-			$filesystem->unlink("./designs/{$design['stylesheet']}/$file");
-		}
-	}
-	rmdirr("./components/$id");
-
-	$delobj = $scache->load('components');
-	$delobj->delete();
 	
-	if (empty($cfg['config']['uninstall'])) {
-		ok('admin.php?action=cms&job=com', 'Component was successfully deinstalled!');
-	}
-	else {
+	$confirm = true;
+	if (!empty($cfg['config']['uninstall'])) {
 		$mod = $gpc->get('file', none, $cfg['config']['uninstall']);
 		$uri = explode('?', $mod);
 		$file = basename($uri[0]);
@@ -2814,7 +2807,35 @@ elseif ($job == 'com_delete2') {
 		else {
 			$input = array();
 		}
-		include("components/{$id}/{$file}");
+		$path = "components/{$id}/{$file}";
+		if (!file_exists($path)) {
+			error('admin.php?action=cms&job=cms_add', 'Installation file not found.');
+		}
+		else {
+			$confirm = false;
+			include($path);
+		}
+	}
+
+	rmdirr("./language/{$config['langdir']}/components/{$id}");
+	rmdirr("./templates/{$design['template']}/components/{$id}");
+	if (isset($cfg['image']) && count($cfg['image']) > 0) {
+		foreach ($cfg['image'] as $file) {
+			$filesystem->unlink("./images/{$design['images']}/{$file}");
+		}
+	}
+	if (isset($cfg['style']) && count($cfg['style']) > 0) {
+		foreach ($cfg['style'] as $file) {
+			$filesystem->unlink("./designs/{$design['stylesheet']}/{$file}");
+		}
+	}
+	rmdirr("./components/{$id}");
+
+	$delobj = $scache->load('components');
+	$delobj->delete();
+	
+	if (empty($cfg['config']['uninstall']) || $confirm == true) {
+		ok('admin.php?action=cms&job=com', 'Component successfully uninstalled!');
 	}
 }
 elseif ($job == 'doc') {

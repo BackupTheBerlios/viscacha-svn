@@ -562,7 +562,7 @@ function BoardSelect($board = 0) {
 
 
 function GoBoardPW ($bpw, $bid) {
-	global $my, $config, $tpl, $db, $slog, $phpdoc, $zeitmessung, $plugins;
+	extract($GLOBALS, EXTR_SKIP);
 	if(!isset($my->pwfaccess[$bid]) || $my->pwfaccess[$bid] != $bpw) {
 		($code = $plugins->load('frontend_goboardpw')) ? eval($code) : null;
         echo $tpl->parse("main/boardpw");
@@ -576,7 +576,8 @@ function GoBoardPW ($bpw, $bid) {
 }
 
 function errorLogin($errormsg=NULL,$errorurl=NULL,$EOS = NULL) {
-	global $config, $my, $tpl, $zeitmessung, $db, $slog, $phpdoc, $lang, $breadcrumb, $plugins;
+	extract($GLOBALS, EXTR_SKIP);
+	
 	if ($errormsg == NULL) {
 		$errormsg = $lang->phrase('not_allowed');
 	}
@@ -614,8 +615,12 @@ function errorLogin($errormsg=NULL,$errorurl=NULL,$EOS = NULL) {
 	exit;
 }
 
-function error ($errormsg=NULL,$errorurl='javascript:history.back(-1);', $EOS = NULL) {
-	global $config, $my, $tpl, $zeitmessung, $db, $slog, $phpdoc, $lang, $breadcrumb, $plugins;
+function error ($errormsg = null,$errorurl = 'javascript:history.back(-1);', $EOS = NULL) {
+	extract($GLOBALS, EXTR_SKIP);
+	
+	$js_errorurl = html_entity_decode($errorurl, ENT_NOQUOTES);
+	$errorurl = urldecode(str_replace('&', '&amp;', $js_errorurl));
+
 	if ($errormsg == NULL) {
 		$errormsg = $lang->phrase('unknown_error');
 	}
@@ -631,7 +636,7 @@ function error ($errormsg=NULL,$errorurl='javascript:history.back(-1);', $EOS = 
 	}
 	
 	($code = $plugins->load('frontend_error')) ? eval($code) : null;
-	$tpl->globalvars(compact("errormsg","errorurl"));
+	$tpl->globalvars(compact("errormsg","errorurl","js_errorurl"));
     echo $tpl->parse("main/error");
 
 	$slog->updatelogged();
@@ -651,7 +656,11 @@ function error ($errormsg=NULL,$errorurl='javascript:history.back(-1);', $EOS = 
 }
 
 function ok ($errormsg = NULL, $errorurl = "javascript:history.back(-1)", $EOS = NULL) {
-	global $config, $my, $tpl, $zeitmessung, $db, $slog, $phpdoc, $lang, $breadcrumb, $plugins;
+	extract($GLOBALS, EXTR_SKIP);
+
+	$js_errorurl = html_entity_decode($errorurl, ENT_NOQUOTES);
+	$errorurl = urldecode(str_replace('&', '&amp;', $js_errorurl));
+
 	if ($errormsg == NULL) {
 		$errormsg = $lang->phrase('unknown_ok');
 	}
@@ -664,7 +673,7 @@ function ok ($errormsg = NULL, $errorurl = "javascript:history.back(-1)", $EOS =
 	}
 	
 	($code = $plugins->load('frontend_ok')) ? eval($code) : null;
-	$tpl->globalvars(compact("errormsg","errorurl"));
+	$tpl->globalvars(compact("errormsg","errorurl","js_errorurl"));
     echo $tpl->parse("main/ok");
 
 	$slog->updatelogged();

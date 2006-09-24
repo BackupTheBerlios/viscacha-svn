@@ -788,7 +788,7 @@ elseif ($job == 'lang') {
 	<form name="form" method="post" action="admin.php?action=settings&job=lang2">
 	 <table class="border" border="0" cellspacing="0" cellpadding="4">
 	  <tr> 
-	   <td class="obox" colspan="2"><b>Internationalizement &amp; Languages </b></td>
+	   <td class="obox" colspan="2">Internationalization &amp; Languages</td>
 	  </tr>
 	  <tr> 
 	   <td class="mbox" width="50%">Activate Character sets:<br /><span class="stext">Activate support for asian languages. Should only be activated if problems occur.</span></td>
