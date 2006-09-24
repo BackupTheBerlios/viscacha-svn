@@ -212,7 +212,7 @@ class GPC {
 	
 	function stripslashes($array) {
 		if(is_array($array)) {
-			return array_map(array($this, 'stripslashes'), $array); 
+			return array_map(array(&$this, 'stripslashes'), $array); 
 		}
 		else {
 			return stripslashes($array);
