@@ -78,8 +78,8 @@
 	  <th><?php echo $lang->phrase('profile_instantmessenger'); ?></th>
 	</tr>
 	<tr class="tbody profiledata">
-	  <td valign="top">
-	  <ul class="hiddenl">
+	  <td valign="top" class="hiddenl">
+	  <ul>
 		<li><strong><?php echo $lang->phrase('profile_mail'); ?>:</strong> 
 		<?php if($row->opt_hidemail == 2) { ?>
 		<a href="profile.php?action=mail&amp;id=<?php echo $row->id.SID2URL_x; ?>"><?php echo $lang->phrase('profile_mail_2'); ?></a>

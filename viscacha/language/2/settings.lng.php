@@ -14,6 +14,6 @@ $lang['lang_code'] = 'en';
 $lang['lang_description'] = 'English language pack';
 $lang['lang_name'] = 'English';
 $lang['rss_language'] = 'en';
-$lang['spellcheck_dict'] = '_GB';
+$lang['spellcheck_dict'] = 'en';
 $lang['thousandssep'] = ',';
 ?>

@@ -246,6 +246,14 @@ elseif ($job == 'profile') {
 	   <td class="mbox" width="50%"><input type="checkbox" name="changename_allowed" value="1"<?php echo iif($config['changename_allowed'] == 1,' checked="checked"'); ?>></td> 
 	  </tr>
 	  <tr> 
+	   <td class="mbox" width="50%">Disallow users to change their design:</td>
+	   <td class="mbox" width="50%"><input type="checkbox" name="hidedesign" value="1"<?php echo iif($config['hidedesign'] == 1,' checked="checked"'); ?>></td> 
+	  </tr>
+	  <tr> 
+	   <td class="mbox" width="50%">Disallow users to change their language pack:</td>
+	   <td class="mbox" width="50%"><input type="checkbox" name="hidelanguage" value="1"<?php echo iif($config['hidelanguage'] == 1,' checked="checked"'); ?>></td> 
+	  </tr>
+	  <tr> 
 	   <td class="mbox" width="50%">Show number of written threads in profile:<br /><span class="stext">The complete number of contributed threads can be shown in the users profile. This option may slowdown the performance during big forums.</span></td>
 	   <td class="mbox" width="50%"><input type="checkbox" name="showpostcounter" value="1"<?php echo iif($config['showpostcounter'] == 1,' checked="checked"'); ?>></td> 
 	  </tr>
@@ -282,6 +290,8 @@ elseif ($job == 'profile2') {
 	$c->updateconfig('maxnoticelength', int);
 	$c->updateconfig('memberrating', int);
 	$c->updateconfig('memberrating_counter', int);
+	$c->updateconfig('hidedesign', int);
+	$c->updateconfig('hidelanguage', int);
 	$c->savedata();
 
 	ok('admin.php?action=settings&job=profile');
@@ -594,22 +604,62 @@ elseif ($job == 'boardcat2') {
 elseif ($job == 'user') {
 	$config = $gpc->prepare($config);
 	echo head();
+	
+	$mlistfields = explode(',', $config['mlist_fields']);
+	
 	?>
 	<form name="form" method="post" action="admin.php?action=settings&job=user2">
 	 <table class="border" border="0" cellspacing="0" cellpadding="4">
 	  <tr> 
-	   <td class="obox" colspan="2"><b>Member- &amp; Teamlist</b></td>
+	   <td class="obox" colspan="2"><b>Memberlist</b></td>
 	  </tr>
 	  <tr> 
 	   <td class="mbox" width="50%">Members per Page:<br /><span class="stext">Number of Members in the Memberlist shown per page.</span></td>
-	   <td class="mbox" width="50%"><input type="text" name="mlistenzahl" value="<?php echo $config['mlistenzahl']; ?>" size="4"></td> 
+	   <td class="mbox" width="50%"><input type="text" name="mlistenzahl" value="<?php echo $config['mlistenzahl']; ?>" size="4" /></td> 
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">Teamlist - Show time period of Moderator rights:<br /><span class="stext">Show in the moderator teamlist how long the user has moderator rights.</span></td>
-	   <td class="mbox" width="50%"><input type="checkbox" name="team_mod_dateuntil" value="1"<?php echo iif($config['team_mod_dateuntil'] == 1,' checked="checked"'); ?>></td> 
+	   <td class="mbox" width="50%">Memberlist Field Options:<br /><span class="stext">What user profile fields should be shown on the member list page?</span></td>
+	   <td class="mbox" width="50%">
+	   <input type="checkbox" name="mlistfields[]" value="fullname"<?php echo iif(in_array('fullname', $mlistfields), ' checked="checked"'); ?> /> Real name under Nickname<br />
+	   <input type="checkbox" name="mlistfields[]" value="mail"<?php echo iif(in_array('mail', $mlistfields), ' checked="checked"'); ?> /> E-mail (Icon)<br />
+	   <input type="checkbox" name="mlistfields[]" value="pm"<?php echo iif(in_array('pm', $mlistfields), ' checked="checked"'); ?> /> Private Message (Icon)<br />
+	   <input type="checkbox" name="mlistfields[]" value="regdate"<?php echo iif(in_array('regdate', $mlistfields), ' checked="checked"'); ?> /> Date or registration<br />
+	   <input type="checkbox" name="mlistfields[]" value="hp"<?php echo iif(in_array('hp', $mlistfields), ' checked="checked"'); ?> /> Homepage (Icon)<br />
+	   <input type="checkbox" name="mlistfields[]" value="location"<?php echo iif(in_array('location', $mlistfields), ' checked="checked"'); ?> /> Location<br />
+	   <input type="checkbox" name="mlistfields[]" value="gender"<?php echo iif(in_array('gender', $mlistfields), ' checked="checked"'); ?> /> Gender<br />
+	   <input type="checkbox" name="mlistfields[]" value="birthday"<?php echo iif(in_array('birthday', $mlistfields), ' checked="checked"'); ?> /> Date of Birth<br />
+	   <input type="checkbox" name="mlistfields[]" value="pic"<?php echo iif(in_array('pic', $mlistfields), ' checked="checked"'); ?> /> Profile picture / Avatar<br />
+	   <input type="checkbox" name="mlistfields[]" value="lastvisit"<?php echo iif(in_array('lastvisit', $mlistfields), ' checked="checked"'); ?> /> Last visit<br />
+	   <input type="checkbox" name="mlistfields[]" value="icq"<?php echo iif(in_array('icq', $mlistfields), ' checked="checked"'); ?> /> ICQ-UIN (Icon)<br />
+	   <input type="checkbox" name="mlistfields[]" value="yahoo"<?php echo iif(in_array('yahoo', $mlistfields), ' checked="checked"'); ?> /> Yahoo-Messenger(Icon)<br />
+	   <input type="checkbox" name="mlistfields[]" value="aol"<?php echo iif(in_array('aol', $mlistfields), ' checked="checked"'); ?> /> AOL- and Netscape-Messenger(Icon)<br />
+	   <input type="checkbox" name="mlistfields[]" value="msn"<?php echo iif(in_array('msn', $mlistfields), ' checked="checked"'); ?> /> MSN- and Windows-Messenger(Icon)<br />
+	   <input type="checkbox" name="mlistfields[]" value="jabber"<?php echo iif(in_array('jabber', $mlistfields), ' checked="checked"'); ?> /> Jabber(Icon)<br />
+	   <input type="checkbox" name="mlistfields[]" value="skype"<?php echo iif(in_array('skype', $mlistfields), ' checked="checked"'); ?> /> Skype(Icon)
+	   </td> 
+	  </tr>
+	  <tr>
+	   <td class="mbox" width="50%">Show inactive Users:<br /><span class="stext">Show members that has not been activated by admin or per e-mail.</span></td>
+	   <td class="mbox" width="50%"><input type="checkbox" name="mlist_showinactive"<?php echo iif($config['mlist_showinactive'] == 1,' checked="checked"'); ?> value="1" /></td> 
+	  </tr>
+	  <tr>
+	   <td class="mbox" width="50%">Allow users to show only members in a group:<br /><span class="stext">Activating this will show a select-box. You can select a Usergroup and show only members in this group.</span></td>
+	   <td class="mbox" width="50%"><input type="checkbox" name="mlist_filtergroups"<?php echo iif($config['mlist_filtergroups'] == 1,' checked="checked"'); ?> value="1" /></td> 
 	  </tr>
 	  <tr>
 	   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="Submit"></td> 
+	  </tr>
+	 </table><br />
+	 <table class="border" border="0" cellspacing="0" cellpadding="4">
+	  <tr> 
+	   <td class="obox" colspan="2"><b>Teamlist</b></td>
+	  </tr>
+	  <tr> 
+	   <td class="mbox" width="50%">Show time period of Moderator rights:<br /><span class="stext">Show in the moderator teamlist how long the user has moderator rights.</span></td>
+	   <td class="mbox" width="50%"><input type="checkbox" name="team_mod_dateuntil" value="1"<?php echo iif($config['team_mod_dateuntil'] == 1,' checked="checked"'); ?> /></td> 
+	  </tr>
+	  <tr>
+	   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="Submit" /></td> 
 	  </tr>
 	 </table>
 	</form> 
@@ -619,8 +669,16 @@ elseif ($job == 'user') {
 elseif ($job == 'user2') {
 	echo head();
 
+	$arraylist = $gpc->get('mlistfields', arr_str);
+	$arraylist = array_map('strtolower', $arraylist);
+	$arraylist = array_map('trim', $arraylist);
+	$list = implode(',',$arraylist);
+
 	$c->getdata();
 	$c->updateconfig('mlistenzahl', int);
+	$c->updateconfig('mlist_showinactive', int);
+	$c->updateconfig('mlist_filtergroups', int);
+	$c->updateconfig('mlist_fields', str, $list);
 	$c->updateconfig('team_mod_dateuntil', int);
 	$c->savedata();
 
