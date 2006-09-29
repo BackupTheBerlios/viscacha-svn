@@ -81,23 +81,28 @@
  <tr> 
   <td class="tbody center" colspan="<?php echo $colspan; ?>"><?php echo $lang->phrase('members_empty'); ?></td>
  </tr>
-<?php } if ($config['mlist_filtergroups'] == 1) { ?>
- <tr> 
-  <td class="tbody center" colspan="<?php echo $colspan; ?>">
-  <form action="members.php" method="get">
-	<input type="hidden" name="letter" value="<?php echo $_GET['letter']; ?>" />
-	<input type="hidden" name="sort" value="<?php echo $_GET['sort']; ?>" />
-	<input type="hidden" name="order" value="<?php echo $_GET['order']; ?>" />
-   <?php echo $lang->phrase('members_filtergroups_label'); ?>&nbsp;
-   <select name="id">
-   	<option value="0"<?php echo iif(0 == $_GET['id'], ' selected="selected"'); ?>><?php echo $lang->phrase('members_filtergroups_all'); ?></option>
-   	<?php foreach ($groups as $id => $title) { ?>
-    <option value="<?php echo $id; ?>"<?php echo iif($id == $_GET['id'], ' selected="selected"'); ?>><?php echo $title; ?></option>
-    <?php } ?>
-   </select>&nbsp;
-   <input type="submit" value="<?php echo $lang->phrase('members_show_form'); ?>" />
-  </form>
-  </td>
- </tr>
 <?php } ?>
 </table>
+<?php if ($config['mlist_filtergroups'] == 1) { ?>
+<br class="minibr" />
+<form action="members.php" method="get">
+ <input type="hidden" name="letter" value="<?php echo $_GET['letter']; ?>" />
+ <input type="hidden" name="sort" value="<?php echo $_GET['sort']; ?>" />
+ <input type="hidden" name="order" value="<?php echo $_GET['order']; ?>" />
+ <div class="border">
+  <h3><img id="img_filtergroups" alt="switch" src="<?php echo $tpl->img('minus'); ?>" title="<?php echo $lang->phrase('box_collapse'); ?>" /> <?php echo $lang->phrase('members_filtergroups'); ?></h3>
+  <div id="part_filtergroups">
+  <div class="bbody">
+   <label for="g[]"><?php echo $lang->phrase('members_filtergroups_label'); ?></label>
+   <select name="g[]" id="g[]" size="<?php echo count($groups); ?>" multiple="multiple" class="label">
+   	<?php foreach ($groups as $id => $title) { ?>
+    <option value="<?php echo $id; ?>"<?php echo iif(in_array($id, $g), ' selected="selected"'); ?>><?php echo $title; ?></option>
+    <?php } ?>
+   </select>
+   <br class="newinput" /><br class="iefix_br" />
+  </div>
+  <div class="bfoot center"><input type="submit" value="<?php echo $lang->phrase('members_show_form'); ?>" /></div>
+  </div>
+ </div>
+</form>
+<?php } ?>

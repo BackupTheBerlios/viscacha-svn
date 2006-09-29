@@ -46,6 +46,9 @@ if ($my->vlogin) {
 ($code = $plugins->load('register_start')) ? eval($code) : null;
 
 if ($_GET['action'] == "save") {
+	if ($config['disableregistration'] == 1) {
+		error($lang->phrase('register_disabled'));
+	}
 	$error = array();
 	if ($config['botgfxtest'] == 1) {
 		include("classes/graphic/class.veriword.php");
@@ -155,6 +158,20 @@ if ($_GET['action'] == "save") {
 		
 		($code = $plugins->load('register_save_end')) ? eval($code) : null;
 		
+		$emails = preg_split('/[\r\n]+/', $config['register_notification'], -1, PREG_SPLIT_NO_EMPTY);
+		$config['register_notification'] = array();
+		foreach ($emails as $email) {
+			if(check_mail($email)) {
+				$config['register_notification'][] = $email;
+			}
+		}
+		if (count($config['register_notification']) > 0) {
+			$to = array_combine(array_fill(1, count($config['register_notification']), 'mail'), $config['register_notification']);
+			$data = $lang->get_mail('new_member');
+			$from = array();
+			xmail($to, $from, $data['title'], $data['comment']);
+		}
+		
         ok($lang->phrase('register_confirm_'.$config['confirm_registration']), "log.php?action=login".SID2URL_x);
 	}
 
@@ -191,8 +208,11 @@ elseif ($_GET['action'] == 'confirm') {
 	
 }
 else {
-
 	($code = $plugins->load('register_form_start')) ? eval($code) : null;
+
+	if ($config['disableregistration'] == 1) {
+		error($lang->phrase('register_disabled'));
+	}
 
 	if ($config['botgfxtest'] == 1) {
 		include("classes/graphic/class.veriword.php");

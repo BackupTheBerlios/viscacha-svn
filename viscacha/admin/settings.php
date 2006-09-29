@@ -620,22 +620,22 @@ elseif ($job == 'user') {
 	  <tr> 
 	   <td class="mbox" width="50%">Memberlist Field Options:<br /><span class="stext">What user profile fields should be shown on the member list page?</span></td>
 	   <td class="mbox" width="50%">
-	   <input type="checkbox" name="mlistfields[]" value="fullname"<?php echo iif(in_array('fullname', $mlistfields), ' checked="checked"'); ?> /> Real name under Nickname<br />
+	   <input type="checkbox" name="mlistfields[]" value="fullname"<?php echo iif(in_array('fullname', $mlistfields), ' checked="checked"'); ?> /> Real name (placed under the Nickname)<br />
 	   <input type="checkbox" name="mlistfields[]" value="mail"<?php echo iif(in_array('mail', $mlistfields), ' checked="checked"'); ?> /> E-mail (Icon)<br />
 	   <input type="checkbox" name="mlistfields[]" value="pm"<?php echo iif(in_array('pm', $mlistfields), ' checked="checked"'); ?> /> Private Message (Icon)<br />
-	   <input type="checkbox" name="mlistfields[]" value="regdate"<?php echo iif(in_array('regdate', $mlistfields), ' checked="checked"'); ?> /> Date or registration<br />
+	   <input type="checkbox" name="mlistfields[]" value="regdate"<?php echo iif(in_array('regdate', $mlistfields), ' checked="checked"'); ?> /> Date or registration (Date)<br />
 	   <input type="checkbox" name="mlistfields[]" value="hp"<?php echo iif(in_array('hp', $mlistfields), ' checked="checked"'); ?> /> Homepage (Icon)<br />
 	   <input type="checkbox" name="mlistfields[]" value="location"<?php echo iif(in_array('location', $mlistfields), ' checked="checked"'); ?> /> Location<br />
 	   <input type="checkbox" name="mlistfields[]" value="gender"<?php echo iif(in_array('gender', $mlistfields), ' checked="checked"'); ?> /> Gender<br />
-	   <input type="checkbox" name="mlistfields[]" value="birthday"<?php echo iif(in_array('birthday', $mlistfields), ' checked="checked"'); ?> /> Date of Birth<br />
-	   <input type="checkbox" name="mlistfields[]" value="pic"<?php echo iif(in_array('pic', $mlistfields), ' checked="checked"'); ?> /> Profile picture / Avatar<br />
-	   <input type="checkbox" name="mlistfields[]" value="lastvisit"<?php echo iif(in_array('lastvisit', $mlistfields), ' checked="checked"'); ?> /> Last visit<br />
+	   <input type="checkbox" name="mlistfields[]" value="birthday"<?php echo iif(in_array('birthday', $mlistfields), ' checked="checked"'); ?> /> Date of Birth (Date)<br />
+	   <input type="checkbox" name="mlistfields[]" value="pic"<?php echo iif(in_array('pic', $mlistfields), ' checked="checked"'); ?> /> Profile picture / Avatar (Image)<br />
+	   <input type="checkbox" name="mlistfields[]" value="lastvisit"<?php echo iif(in_array('lastvisit', $mlistfields), ' checked="checked"'); ?> /> Last visit (Date and time)<br />
 	   <input type="checkbox" name="mlistfields[]" value="icq"<?php echo iif(in_array('icq', $mlistfields), ' checked="checked"'); ?> /> ICQ-UIN (Icon)<br />
-	   <input type="checkbox" name="mlistfields[]" value="yahoo"<?php echo iif(in_array('yahoo', $mlistfields), ' checked="checked"'); ?> /> Yahoo-Messenger(Icon)<br />
-	   <input type="checkbox" name="mlistfields[]" value="aol"<?php echo iif(in_array('aol', $mlistfields), ' checked="checked"'); ?> /> AOL- and Netscape-Messenger(Icon)<br />
-	   <input type="checkbox" name="mlistfields[]" value="msn"<?php echo iif(in_array('msn', $mlistfields), ' checked="checked"'); ?> /> MSN- and Windows-Messenger(Icon)<br />
-	   <input type="checkbox" name="mlistfields[]" value="jabber"<?php echo iif(in_array('jabber', $mlistfields), ' checked="checked"'); ?> /> Jabber(Icon)<br />
-	   <input type="checkbox" name="mlistfields[]" value="skype"<?php echo iif(in_array('skype', $mlistfields), ' checked="checked"'); ?> /> Skype(Icon)
+	   <input type="checkbox" name="mlistfields[]" value="yahoo"<?php echo iif(in_array('yahoo', $mlistfields), ' checked="checked"'); ?> /> Yahoo-Messenger (Icon)<br />
+	   <input type="checkbox" name="mlistfields[]" value="aol"<?php echo iif(in_array('aol', $mlistfields), ' checked="checked"'); ?> /> AOL- and Netscape-Messenger (Icon)<br />
+	   <input type="checkbox" name="mlistfields[]" value="msn"<?php echo iif(in_array('msn', $mlistfields), ' checked="checked"'); ?> /> MSN- and Windows-Messenger (Icon)<br />
+	   <input type="checkbox" name="mlistfields[]" value="jabber"<?php echo iif(in_array('jabber', $mlistfields), ' checked="checked"'); ?> /> Jabber (Icon)<br />
+	   <input type="checkbox" name="mlistfields[]" value="skype"<?php echo iif(in_array('skype', $mlistfields), ' checked="checked"'); ?> /> Skype( Icon)
 	   </td> 
 	  </tr>
 	  <tr>
@@ -643,8 +643,20 @@ elseif ($job == 'user') {
 	   <td class="mbox" width="50%"><input type="checkbox" name="mlist_showinactive"<?php echo iif($config['mlist_showinactive'] == 1,' checked="checked"'); ?> value="1" /></td> 
 	  </tr>
 	  <tr>
-	   <td class="mbox" width="50%">Allow users to show only members in a group:<br /><span class="stext">Activating this will show a select-box. You can select a Usergroup and show only members in this group.</span></td>
-	   <td class="mbox" width="50%"><input type="checkbox" name="mlist_filtergroups"<?php echo iif($config['mlist_filtergroups'] == 1,' checked="checked"'); ?> value="1" /></td> 
+	   <td class="mbox" width="50%">
+	    Allow users to filter members by group:<br />
+	    <span class="stext">
+	     "A" will disable this feature.<br />
+	     "B" will show a select-box. You can select one ore more usergroups and show only members in the selected groups.<br />
+	     "C" will not show a select-box, but you can filter groups by specifying the group ids in the url.
+	    </span></td>
+	   <td class="mbox" width="50%">
+	    <select name="mlist_filtergroups">
+	     <option <?php echo iif($config['mlist_filtergroups'] == 0,' selected="selected"'); ?> value="0" />A: Disable feature</option>
+	     <option <?php echo iif($config['mlist_filtergroups'] == 1,' selected="selected"'); ?> value="1" />B: Enable feature and show form</option>
+	     <option <?php echo iif($config['mlist_filtergroups'] == 2,' selected="selected"'); ?> value="2" />C: Enable feature, but hide form</option>
+	    </select>
+	   </td> 
 	  </tr>
 	  <tr>
 	   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="Submit"></td> 
@@ -979,7 +991,7 @@ elseif ($job == 'captcha2') {
 	echo head();
 
 	$c->getdata();
-	$c->updateconfig('botgfxtest',int);
+	$c->updateconfig('botgfxtest', int);
 	$c->updateconfig('botgfxtest_posts', int);
 	$c->updateconfig('botgfxtest_filter', int);
 	$c->updateconfig('botgfxtest_colortext', int);
@@ -989,7 +1001,7 @@ elseif ($job == 'captcha2') {
 	$c->updateconfig('botgfxtest_posts_height', int);
 	$c->updateconfig('botgfxtest_format', str);
 	$c->updateconfig('botgfxtest_quality', int);
-	$c->updateconfig('botgfxtest_text_verification',int);
+	$c->updateconfig('botgfxtest_text_verification', int);
 	$c->savedata();
 
 	ok('admin.php?action=settings&job=captcha');
@@ -1004,6 +1016,10 @@ elseif ($job == 'register') {
 	   <td class="obox" colspan="2"><b>Registration</b></td>
 	  </tr>
 	  <tr> 
+	   <td class="mbox" width="50%">Disable registration:<br /><span class="stext">Check this if you would like to temporarily (or permanently) prevent anyone new from registering. Anyone attempting to register will be told that you are not accepting new registrations at this time.</span></td>
+	   <td class="mbox" width="50%"><input type="checkbox" name="disableregistration" value="1"<?php echo iif($config['disableregistration'] == 1,' checked="checked"'); ?>></td> 
+	  </tr>
+	  <tr> 
 	   <td class="mbox" width="50%">User activation:<br /><span class="stext"></span></td>
 	   <td class="mbox" width="50%"><select name="confirm_registration">
 	   <option value="11"<?php echo iif($config['confirm_registration'] == '11', ' selected="selected"'); ?>>Users are activated immediately</option>
@@ -1012,8 +1028,13 @@ elseif ($job == 'register') {
 	   <option value="00"<?php echo iif($config['confirm_registration'] == '00', ' selected="selected"'); ?>>Activation per e-mail and through Administrator</option>
 	   </select></td> 
 	  </tr>
+  	  <tr>
+   		<td class="mbox">Email addresses to notify when there is a new member:<br />
+   		<span class="stext">Separate each address with a Newline/Carriage Return => Each address in an own row.</span></td>
+   		<td class="mbox"><textarea name="register_notification" rows="2" cols="70"></textarea></td> 
+  	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">User has to accept rules on registration:<br /><span class="stext">The behaviour conditions <!-- Ersetzen durch Link zu ACP -->(<a href="misc.php?action=rules" target="_blank">look up</a>) must be read and accepted.</span></td>
+	   <td class="mbox" width="50%">User has to accept rules on registration:<br /><span class="stext">The <a href="misc.php?action=rules" target="_blank">behaviour conditions</a> must be read and accepted.</span></td>
 	   <td class="mbox" width="50%"><input type="checkbox" name="acceptrules" value="1"<?php echo iif($config['acceptrules'] == 1,' checked="checked"'); ?>></td> 
 	  </tr>
 	   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="Submit"></td> 
@@ -1025,10 +1046,22 @@ elseif ($job == 'register') {
 }
 elseif ($job == 'register2') {
 	echo head();
+	
+	$register_notification = $gpc->get('register_notification', none);
+	$emails = preg_split('/[\r\n]+/', $register_notification, -1, PREG_SPLIT_NO_EMPTY);
+	$register_notification = array();
+	foreach ($emails as $email) {
+		if(check_mail($email)) {
+			$register_notification[] = $email;
+		}
+	}
+	$register_notification = implode("\n", $register_notification);
 
 	$c->getdata();
-	$c->updateconfig('confirm_registration',str);
-	$c->updateconfig('acceptrules',int);
+	$c->updateconfig('confirm_registration', str);
+	$c->updateconfig('register_notification', str, $register_notification);
+	$c->updateconfig('disableregistration', int);
+	$c->updateconfig('acceptrules', int);
 	$c->savedata();
 
 	ok('admin.php?action=settings&job=register');

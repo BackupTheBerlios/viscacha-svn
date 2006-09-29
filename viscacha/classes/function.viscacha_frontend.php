@@ -601,6 +601,7 @@ function errorLogin($errormsg=NULL,$errorurl=NULL,$EOS = NULL) {
 
 	$slog->updatelogged();
 	$zeitmessung = t2();
+	$tpl->globalvars(compact("zeitmessung"));
 	if ($EOS != NULL) {
 		echo $tpl->parse($EOS);
 	}
@@ -641,6 +642,7 @@ function error ($errormsg = null,$errorurl = 'javascript:history.back(-1);', $EO
 
 	$slog->updatelogged();
 	$zeitmessung = t2();
+	$tpl->globalvars(compact("zeitmessung"));
 	if ($EOS != NULL) {
 		echo $tpl->parse($EOS);
 	}
@@ -678,6 +680,7 @@ function ok ($errormsg = NULL, $errorurl = "javascript:history.back(-1)", $EOS =
 
 	$slog->updatelogged();
 	$zeitmessung = t2();
+	$tpl->globalvars(compact("zeitmessung"));
 	if ($EOS != NULL) {
 		echo $tpl->parse($EOS);
 	}

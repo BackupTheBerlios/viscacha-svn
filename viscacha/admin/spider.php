@@ -17,7 +17,7 @@ if ($job == 'ignore_pending' || $job == 'add_pending') {
 	$pending_number = $gpc->get('pending', int); 
 	$pending_data = $gpc->get('data', str); 
 
-	$result = $db->query("SELECT pending_{$pending_data} FROM {$db->pre}spider WHERE id = ".$id);
+	$result = $db->query("SELECT pending_{$pending_data} FROM {$db->pre}spider WHERE id = '{$id}'");
 
 	$row = $db->fetch_assoc($result);
 
@@ -30,11 +30,11 @@ if ($job == 'ignore_pending' || $job == 'add_pending') {
 	array_splice($pending_array, ($pending_number-1)*2, 2);
 	$pending = implode("|", array_empty_trim($pending_array));
 
-	$result = $db->query("UPDATE {$db->pre}spider SET pending_{$pending_data} = '{$pending}' WHERE id = ".$id);
+	$result = $db->query("UPDATE {$db->pre}spider SET pending_{$pending_data} = '{$pending}' WHERE id = '{$id}'");
 
 	if ($action == "add_pending") {
 	
-		$result = $db->query("SELECT bot_{$pending_data} FROM {$db->pre}spider WHERE id = ".$id);
+		$result = $db->query("SELECT bot_{$pending_data} FROM {$db->pre}spider WHERE id = '{$id}'");
 		$row = $db->fetch_assoc($result);
 
 		$pending_array = explode('|', $row['bot_' . $pending_data]);
@@ -95,7 +95,7 @@ if ($job == 'ignore_pending' || $job == 'add_pending') {
 
 		$pending = implode("|", array_empty_trim($pending_array));
 
-		$db->query("UPDATE {$db->pre}spider SET bot_{$pending_data} = '$pending' WHERE id = " . $id);
+		$db->query("UPDATE {$db->pre}spider SET bot_{$pending_data} = '{$pending}' WHERE id = '{$id}'");
 		
 		$delobj = $scache->load('spiders');
 		$delobj->delete();

@@ -79,7 +79,8 @@ if ($config['mlist_showinactive'] == 0) {
 	$sqlwhere[] = "confirm = '11'";
 }
 $groups = array();
-if ($config['mlist_filtergroups'] == 1) {
+$g = $gpc->get('g', arr_int);
+if ($config['mlist_filtergroups'] > 0) {
 	$group_status = $scache->load('group_status');;
 	$statusdata = $group_status->get();
 	foreach ($statusdata as $row) {
@@ -87,11 +88,20 @@ if ($config['mlist_filtergroups'] == 1) {
 			$groups[$row['id']] = $row['title'];
 		}
 	}
-	if (isset($statusdata[$_GET['id']])) {
-		$sqlwhere[] = "FIND_IN_SET({$_GET['id']},groups)";
+	$sqlwhere_findinset = array();
+	foreach ($g as $key => $value) {
+		if (isset($statusdata[$value])) {
+			$sqlwhere_findinset[] = "FIND_IN_SET({$value}, groups)";
+		}
+		else {
+			unset($g[$key]);
+		}
 	}
-	else {
-		$_GET['id'] = $_POST['id'] = 0;
+	if (count($sqlwhere_findinset) == 1) {
+		$sqlwhere[] = current($sqlwhere_findinset);
+	}
+	elseif (count($sqlwhere_findinset) > 1) {
+		$sqlwhere[] = '('.implode(' OR ', $sqlwhere_findinset).')';
 	}
 }
 if (count($sqlwhere) == 0) {
