@@ -30,6 +30,10 @@ if ($config['check_filesystem'] == 1) {
 @ini_set('default_charset', '');
 header('Content-type: text/html; charset: iso-8859-1');
 
+// Colours
+$txt2img_fg = '204a87';
+$txt2img_bg = '94B7DF';
+
 $htmlhead = '';
 
 // Arrays for Dates
@@ -117,7 +121,7 @@ require_once ("classes/function.global.php");
 function AdminLogInForm() {
 	?>
 	<form action="admin.php?action=login2" method="post" target="_top">
-	 <table class="border" style="width: 50%; margin: auto;">
+	 <table class="border" style="width: 50%;">
 	  <tr> 
 	   <td class="obox" colspan="2">Log in</td>
 	  </tr>
@@ -366,9 +370,10 @@ function pages ($anzposts, $uri, $teiler=50) {
 }
 
 
-function txt2img ($text,$op=NULL) {
-	$imgtag = '<img src="classes/graphic/text2image.php?text='.rawurlencode($text).'&amp;angle=90" border="0">';
-	if ($op == NULL) {
+function txt2img ($text, $op=null) {
+	global $txt2img_fg, $txt2img_bg;
+	$imgtag = '<img src="classes/graphic/text2image.php?text='.rawurlencode($text).'&amp;angle=90&amp;bg='.$txt2img_bg.'&amp;fg='.$txt2img_fg.'" border="0">';
+	if ($op == null) {
 		echo $imgtag;
 	}
 	else {

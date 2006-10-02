@@ -334,7 +334,7 @@ elseif ($job == 'smileys') {
 <form name="form" method="post" action="admin.php?action=bbcodes">
  <table class="border">
   <tr> 
-   <td class="obox" colspan="6"><span style="float: right;">[<a href="admin.php?action=bbcodes&amp;job=smileys_import">Import Smileypack</a>]</span>Manage Smileys (<?php echo $db->num_rows($result); ?> Smileys)</td>
+   <td class="obox" colspan="6"><span style="float: right;"><a class="button" href="admin.php?action=bbcodes&amp;job=smileys_import">Import Smileypack</a></span>Manage Smileys (<?php echo $db->num_rows($result); ?> Smileys)</td>
   </tr>
   <tr class="ubox">
    <td width="5%">Choose<br /><span class="stext"><input type="checkbox" onclick="check_all('id[]');" name="all" value="1" /> All</span></td>
@@ -373,7 +373,7 @@ elseif ($job == 'smileys') {
 <form name="form" method="post" enctype="multipart/form-data" action="admin.php?action=bbcodes&amp;job=smileys_add">
  <table class="border">
   <tr> 
-   <td class="obox" colspan="2"><span style="float: right;">[<a href="admin.php?action=bbcodes&amp;job=smileys_import">Import Smileypack</a>]</span>Add Smiley</td>
+   <td class="obox" colspan="2"><span style="float: right;"><a class="button" href="admin.php?action=bbcodes&amp;job=smileys_import">Import Smileypack</a></span>Add Smiley</td>
   </tr>
   <tr> 
    <td class="mbox" width="50%">Code:</td>
@@ -1166,9 +1166,9 @@ elseif ($job == 'custombb') {
 	<table align="center" class="border">
 	<tr>
 		<td class="obox" colspan="4"><span style="float: right;">
-		[<a href="admin.php?action=bbcodes&job=custombb_add">Add new BB Code</a>] 
-		[<a href="admin.php?action=bbcodes&job=custombb_import">Import BB Code</a>] 
-		[<a href="admin.php?action=bbcodes&job=custombb_test">Test BB Codes</a>]
+		<a class="button" href="admin.php?action=bbcodes&job=custombb_add">Add new BB Code</a> 
+		<a class="button" href="admin.php?action=bbcodes&job=custombb_import">Import BB Code</a> 
+		<a class="button" href="admin.php?action=bbcodes&job=custombb_test">Test BB Codes</a>
 		</span>Custom BB Code Manager</td>
 	</tr>
 	<tr>
@@ -1191,9 +1191,9 @@ elseif ($job == 'custombb') {
 			<td class="mbox"><code>[<?php echo $bbcode['bbcodetag'].iif($bbcode['twoparams'], '={option}'); ?>]{param}[/<?php echo $bbcode['bbcodetag']; ?>]</code></td>
 			<td class="mbox" align="center"><?php echo $src; ?></td>
 			<td class="mbox">
-			[<a href="admin.php?action=bbcodes&job=custombb_edit&id=<?php echo $bbcode['id']; ?>">Edit</a>] 
-			[<a href="admin.php?action=bbcodes&job=custombb_export&id=<?php echo $bbcode['id']; ?>">Export</a>] 
-			[<a href="admin.php?action=bbcodes&job=custombb_delete&id=<?php echo $bbcode['id']; ?>">Delete</a>]
+			<a class="button" href="admin.php?action=bbcodes&job=custombb_edit&id=<?php echo $bbcode['id']; ?>">Edit</a> 
+			<a class="button" href="admin.php?action=bbcodes&job=custombb_export&id=<?php echo $bbcode['id']; ?>">Export</a> 
+			<a class="button" href="admin.php?action=bbcodes&job=custombb_delete&id=<?php echo $bbcode['id']; ?>">Delete</a>
 			</td>
 		</tr>
 		<?

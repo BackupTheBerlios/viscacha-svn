@@ -399,7 +399,7 @@ if ($show == 1) {
   </tr>
   <tr> 
    <td class="mbox">
-	<table border="0" cellspacing="0" cellpadding="0" width="100%">
+	<table class="inlinetable">
 	<tr>
 	  <td>Members:</td><td><code><?php echo $members[0];?></code></td>
 	  <td colspan="2">&nbsp;</td>

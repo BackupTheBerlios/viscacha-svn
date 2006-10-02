@@ -118,8 +118,8 @@ if ($job == 'plugins') {
 						?>
 					</td>
 					<td>
-					 [<a href="admin.php?action=cms&job=plugins_edit&id=<?php echo $head['id']; ?>">Edit</a>] 
-					 [<a href="admin.php?action=cms&job=plugins_delete&id=<?php echo $head['id']; ?>">delete</a>]
+					 <a class="button" href="admin.php?action=cms&job=plugins_edit&id=<?php echo $head['id']; ?>">Edit</a> 
+					 <a class="button" href="admin.php?action=cms&job=plugins_delete&id=<?php echo $head['id']; ?>">delete</a>
 					</td>
 				</tr>
 				<?php
@@ -185,8 +185,8 @@ if ($job == 'plugins') {
 		 			<a href="admin.php?action=cms&job=plugins_move&id=<?php echo $head['id']; ?>&value=1"><img src="admin/html/images/desc.gif" border="0" alt="Down"></a>
 				</td>
 				<td>
-				 [<a href="admin.php?action=cms&job=plugins_edit&id=<?php echo $head['id']; ?>">Edit</a>] 
-				 [<a href="admin.php?action=cms&job=plugins_delete&id=<?php echo $head['id']; ?>">Delete</a>]
+				 <a class="button" href="admin.php?action=cms&job=plugins_edit&id=<?php echo $head['id']; ?>">Edit</a> 
+				 <a class="button" href="admin.php?action=cms&job=plugins_delete&id=<?php echo $head['id']; ?>">Delete</a>
 				</td>
 			</tr>
 			<?php
@@ -663,7 +663,7 @@ elseif ($job == 'package_template') {
 	<table class="border" border="0" cellspacing="0" cellpadding="4" align="center"> 
 	 <tr>
 	  <td class="obox" colspan="3">
-	  <span style="float: right;">[<a href="javascript: self.close();">Close Window</a>]</span>
+	  <span style="float: right;"><a class="button" href="javascript: self.close();">Close Window</a></span>
 	  Manage Templates for Package: <?php echo $data['title']; ?></td>
 	 </tr>
 	 <?php if (isset($ini['template']) && count($ini['template']) > 0) { ?>
@@ -923,12 +923,12 @@ elseif ($job == 'package_language') {
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr> 
    <td class="obox" colspan="<?php echo count($cache)+1; ?>">
-   <span style="float: right;">[<a href="admin.php?action=cms&job=package_language_add&id=<?php echo $id; ?>">Add new Phrase</a>]</span>
+   <span style="float: right;"><a class="button" href="admin.php?action=cms&job=package_language_add&id=<?php echo $id; ?>">Add new Phrase</a></span>
    Phrase Manager</td>
   </tr>
   <?php if (count($ini['language']) == 0) { ?>
   <tr>
-   <td class="mbox" colspan="<?php echo count($cache)+1; ?>">There were no phrases created. [<a href="admin.php?action=cms&job=package_language_add&id=<?php echo $id; ?>">Add new Phrase</a>]</td> 
+   <td class="mbox" colspan="<?php echo count($cache)+1; ?>">There were no phrases created. <a class="button" href="admin.php?action=cms&job=package_language_add&id=<?php echo $id; ?>">Add new Phrase</a></td> 
   </tr>
   <?php } else { ?>
   <tr>
@@ -939,12 +939,12 @@ elseif ($job == 'package_language') {
   </tr>
   <?php foreach ($ini['language'] as $phrase => $value) { ?>
   <tr>
-   <td class="mmbox"><input type="checkbox" name="delete[]" value="<?php echo $phrase; ?>">&nbsp;[<a href="admin.php?action=cms&job=package_language_edit&phrase=<?php echo $phrase; ?>&id=<?php echo $id; ?>">Edit</a>]&nbsp;<?php echo $phrase; ?></td>
+   <td class="mmbox"><input type="checkbox" name="delete[]" value="<?php echo $phrase; ?>">&nbsp;<a class="button" href="admin.php?action=cms&job=package_language_edit&phrase=<?php echo $phrase; ?>&id=<?php echo $id; ?>">Edit</a>&nbsp;<?php echo $phrase; ?></td>
    <?php
    foreach ($cache as $row) {
    	$status = in_array($phrase, $diff[$row['id']]);
    ?>
-   <td class="mbox" align="center"><?php echo noki($status).iif(!$status, ' [<a href="admin.php?action=cms&job=package_language_copy&language='.$row['id'].'&phrase='.$phrase.'&id='.$id.'">Add</a>]'); ?></td>
+   <td class="mbox" align="center"><?php echo noki($status).iif(!$status, ' <a class="button" href="admin.php?action=cms&job=package_language_copy&language='.$row['id'].'&phrase='.$phrase.'&id='.$id.'">Add</a>'); ?></td>
    <?php } ?>
   </tr>
   <?php } ?>
@@ -1706,9 +1706,9 @@ elseif ($job == 'nav') {
   <tr> 
    <td class="obox" colspan="4">
    	<span style="float: right;">
-   	[<a href="admin.php?action=cms&job=nav_add">Add Link</a>]
-   	[<a href="admin.php?action=cms&job=nav_addbox">Add Box</a>]
-   	[<a href="admin.php?action=cms&job=nav_addplugin">Add PlugIn</a>]
+   	<a class="button" href="admin.php?action=cms&job=nav_add">Add Link</a>
+   	<a class="button" href="admin.php?action=cms&job=nav_addbox">Add Box</a>
+   	<a class="button" href="admin.php?action=cms&job=nav_addplugin">Add PlugIn</a>
    	</span>Manage Navigation
    </td>
   </tr>
@@ -1764,8 +1764,8 @@ elseif ($job == 'nav') {
 	<a href="admin.php?action=cms&job=nav_move&id=<?php echo $head['id']; ?>&value=1"><img src="admin/html/images/desc.gif" border="0" alt="Down"></a>
 	</td>
 	<td width="35%">
-	 [<a href="admin.php?action=cms&job=nav_edit&id=<?php echo $head['id']; ?>">Edit</a>] 
-	 [<a href="admin.php?action=cms&job=nav_delete&id=<?php echo $head['id']; ?>">Delete</a>]	
+	 <a class="button" href="admin.php?action=cms&job=nav_edit&id=<?php echo $head['id']; ?>">Edit</a> 
+	 <a class="button" href="admin.php?action=cms&job=nav_delete&id=<?php echo $head['id']; ?>">Delete</a>	
 	</td>
 	</tr>
 	<?php
@@ -1798,8 +1798,8 @@ elseif ($job == 'nav') {
 				<a href="admin.php?action=cms&job=nav_move&id=<?php echo $link['id']; ?>&value=1"><img src="admin/html/images/desc.gif" border="0" alt="Down"></a>
 				</font></td>			
 				<td class="mbox" width="25%">
-				 [<a href="admin.php?action=cms&job=nav_edit&id=<?php echo $link['id'].SID2URL_x; ?>">Edit</a>] 
-				 [<a href="admin.php?action=cms&job=nav_delete&id=<?php echo $link['id'].SID2URL_x; ?>">Delete</a>]
+				 <a class="button" href="admin.php?action=cms&job=nav_edit&id=<?php echo $link['id'].SID2URL_x; ?>">Edit</a> 
+				 <a class="button" href="admin.php?action=cms&job=nav_delete&id=<?php echo $link['id'].SID2URL_x; ?>">Delete</a>
 				</td>
 				</tr>
 				<?php
@@ -1832,8 +1832,8 @@ elseif ($job == 'nav') {
 							<a href="admin.php?action=cms&job=nav_move&id=<?php echo $sublink['id']; ?>&value=1"><img src="admin/html/images/desc.gif" border="0" alt="Down"></a>
 							</td>			
 							<td class="mbox" width="25%">
-							 [<a href="admin.php?action=cms&job=nav_edit&id=<?php echo $sublink['id']; ?>">Edit</a>] 
-							 [<a href="admin.php?action=cms&job=nav_delete&id=<?php echo $sublink['id']; ?>">Delete</a>]
+							 <a class="button" href="admin.php?action=cms&job=nav_edit&id=<?php echo $sublink['id']; ?>">Edit</a> 
+							 <a class="button" href="admin.php?action=cms&job=nav_delete&id=<?php echo $sublink['id']; ?>">Delete</a>
 							</td>
 							</tr>
 							<?php
@@ -2366,7 +2366,7 @@ elseif ($job == 'com') {
 ?>
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr> 
-   <td class="obox" colspan="5"><span style="float: right;">[<a href="admin.php?action=cms&job=com_add">Upload new Component</a>]</span>Manage Components</td>
+   <td class="obox" colspan="5"><span style="float: right;"><a class="button" href="admin.php?action=cms&job=com_add">Upload new Component</a></span>Manage Components</td>
   </tr>
   <tr> 
    <td class="ubox">Name</b></td>
@@ -2846,7 +2846,7 @@ elseif ($job == 'doc') {
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr> 
    <td class="obox" colspan="7">
-   <span style="float: right;">[<a href="admin.php?action=cms&job=doc_add">Create new document</a>]</span>
+   <span style="float: right;"><a class="button" href="admin.php?action=cms&job=doc_add">Create new document</a></span>
    Manage Documents &amp; Pages
    </td>
   </tr>
@@ -2885,8 +2885,8 @@ elseif ($job == 'doc') {
    <td class="mbox" width="15%"><?php echo $row['update']; ?></td>
    <td class="mbox center" width="5%"><?php echo noki($row['active'], ' onmouseover="HandCursor(this)" onclick="ajax_noki(this, \'action=cms&job=doc_ajax_active&id='.$row['id'].'\')"'); ?></td>
    <td class="mbox" width="10%">
-   [<a href="docs.php?id=<?php echo $row['id'].SID2URL_x; ?>" target="_blank">View</a>]
-   [<a href="admin.php?action=cms&job=doc_edit&id=<?php echo $row['id']; ?>">Edit</a>]
+   <a class="button" href="docs.php?id=<?php echo $row['id'].SID2URL_x; ?>" target="_blank">View</a>
+   <a class="button" href="admin.php?action=cms&job=doc_edit&id=<?php echo $row['id']; ?>">Edit</a>
    </td>
   </tr>
 <?php } ?>
@@ -3260,7 +3260,7 @@ elseif ($job == 'feed') {
 <form name="form" method="post" action="admin.php?action=cms&job=feed_delete">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr> 
-   <td class="obox" colspan="5"><span style="float: right;">[<a href="admin.php?action=cms&job=feed_add">Add a new Newsfeed</a>]</span>Newsfeed Syndication</td>
+   <td class="obox" colspan="5"><span style="float: right;"><a class="button" href="admin.php?action=cms&job=feed_add">Add a new Newsfeed</a></span>Newsfeed Syndication</td>
   </tr>
   <tr>
    <td class="ubox" width="5%">Del</td>

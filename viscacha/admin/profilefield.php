@@ -258,7 +258,7 @@ elseif ($job == "manage") {
 	<table class="border">
 	  <tr> 
 	   <td class="obox" colspan="6">
-	    <span style="float: right;">[<a href="admin.php?action=profilefield&amp;job=add">Add new Profile Field</a>]</span>
+	    <span style="float: right;"><a class="button" href="admin.php?action=profilefield&amp;job=add">Add new Profile Field</a></span>
 		Custom Profile Field Manager
 		</td>
 	  </tr>

@@ -15,8 +15,12 @@ if ($job == 'menu') {
 	<script src="admin/html/menu.js" language="Javascript" type="text/javascript"></script>
 	</head>
 	<body onload="init()">
-	<a href="admin.php?action=index" target="Main"><img src="admin/html/images/logo.jpg" alt="Viscacha"></a><br />
-	<a href="javascript:All();">Expand All</a> | <a href="javascript:All(1);">Collapse All</a>
+	<div class="center">
+	<a href="admin.php?action=index" target="Main"><img src="admin/html/images/logo.png" alt="Viscacha" /></a>
+	<br />
+	<span class="stext"><a href="javascript:All();">Expand All</a> | <a href="javascript:All(1);">Collapse All</a></span>
+	</div>
+	<br class="minibr" />
 	 <div class="border">
 	  <h3><img id="img_admin_menu1" src="admin/html/images/plus.gif" alt="collapse" /> Settings</h3>
 	  <ul id="part_admin_menu1">
@@ -185,7 +189,7 @@ else {
   <meta http-equiv="pragma" content="no-cache" />
   <link rel="copyright" href="http://www.mamo-net.de" />
  </head>
- <frameset cols="190,*" frameborder="0" framespacing="0" border="0">
+ <frameset cols="200,*" frameborder="0" framespacing="0" border="0">
   <frame name="Menu" src="admin.php?action=frames&amp;job=menu" scrolling="yes" noresize="noresize" />
   <frame name="Main" src="admin.php?action=index" scrolling="auto" noresize="noresize" />
   <noframes>

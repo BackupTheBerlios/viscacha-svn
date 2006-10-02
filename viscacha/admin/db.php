@@ -446,16 +446,16 @@ elseif ($job == 'status') {
       </tr>
 		<tr>
 		   <td class="mbox" colspan="2">
-		   <table bgcolor="#cccccc" border="1" cellpadding="2" cellspacing="1" width="100%">
+		   <table class="inlinetable">
         		<tr>
         		  <?php for ($i = 0; $i < $db->num_fields($result12);$i++) { ?>
-                   <td class="ubox"><?php echo $db->field_name($result12, $i); ?></td>
+                   <th><?php echo $db->field_name($result12, $i); ?></th>
                   <?php } ?>
         		</tr>
         	<?php while ($data = $db->fetch_assoc($result12)) { ?>
         		<tr>
         		  <?php foreach ($data as $key => $val) { ?>
-                   <td class="mbox"><?php echo $val; ?></td>
+                   <td><?php echo $val; ?></td>
                   <?php } ?>
         		</tr>
         	<?php } ?>	   

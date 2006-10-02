@@ -32,11 +32,11 @@ elseif ($_GET['job'] == 'add') {
   <tr> 
    <td class="mbox" colspan="2"><span class="stext">
 <?php if ($config['pccron'] == 1) { ?>
-<b>Status: Cron Jobs are simulated</b> [<a href="admin.php?action=settings&job=cron<?php echo SID2URL_x; ?>">change</a>]<br>
+<b>Status: Cron Jobs are simulated</b> <a class="button" href="admin.php?action=settings&job=cron<?php echo SID2URL_x; ?>">change</a><br>
 Because original Cron Jobs are often not availible, Viscacha can simulate Cron Jobs. This works as follows:<br />
 On every page call it will be checked if there should have been a Cron Job, the due will be done if necessary.
 <?php } else { ?>
-<b>Status: Original Cron Jobs activated</b> [<a href="admin.php?action=settings&job=cron<?php echo SID2URL_x; ?>">change</a>]<br>
+<b>Status: Original Cron Jobs activated</b> <a class="button" href="admin.php?action=settings&job=cron<?php echo SID2URL_x; ?>">change</a><br>
 Normal Cron Jobs are used. You have to start an Cron Job for every entry (of the system or an external service), if not already done.
 <?php } ?>
    </span></td>

@@ -103,7 +103,7 @@ elseif ($job == 'mods') {
 <form name="form" method="post" action="admin.php?action=forums&job=mods_delete<?php echo iif($bid > 0, '&id='.$bid); ?>">
  <table class="border">
   <tr> 
-   <td class="obox" colspan="<?php echo $colspan; ?>"><span style="float: right;">[<a href="admin.php?action=forums&amp;job=mods_add&amp;id=<?php echo $bid; ?>">Add Moderator</a>]</span>Moderator Manager</td>
+   <td class="obox" colspan="<?php echo $colspan; ?>"><span style="float: right;"><a class="button" href="admin.php?action=forums&amp;job=mods_add&amp;id=<?php echo $bid; ?>">Add Moderator</a></span>Moderator Manager</td>
   </tr>
   <tr class="ubox">
     <td width="5%" rowspan="2">Delete</td>
@@ -298,7 +298,7 @@ elseif ($job == 'manage') {
 	?>
 <table class="border">
   <tr><td class="obox" colspan="3">
-  <span style="float: right;">[<a href="admin.php?action=forums&job=cat_add">Add new Category</a>] [<a href="admin.php?action=forums&job=forum_add">Add new Forum</a>]</span>
+  <span style="float: right;"><a class="button" href="admin.php?action=forums&job=cat_add">Add new Category</a> <a class="button" href="admin.php?action=forums&job=forum_add">Add new Forum</a></span>
   Manage Forums &amp; Categories
   </td></tr>
   <tr> 
@@ -400,9 +400,9 @@ elseif ($job == 'forum_edit') {
   <tr> 
    <td class="obox" colspan="2">
    <span style="float: right;">
-   [<a href="admin.php?action=forums&amp;job=prefix&amp;id=<?php echo $id; ?>">Manage Prefixes</a>] 
-   [<a href="admin.php?action=forums&amp;job=mods&amp;id=<?php echo $id; ?>">Manage Moderators</a>] 
-   [<a href="admin.php?action=forums&amp;job=rights&amp;id=<?php echo $id; ?>">Manage Permissions</a>] 
+   <a class="button" href="admin.php?action=forums&amp;job=prefix&amp;id=<?php echo $id; ?>">Manage Prefixes</a> 
+   <a class="button" href="admin.php?action=forums&amp;job=mods&amp;id=<?php echo $id; ?>">Manage Moderators</a> 
+   <a class="button" href="admin.php?action=forums&amp;job=rights&amp;id=<?php echo $id; ?>">Manage Permissions</a> 
    </span>
    Edit a forum
    </td>
@@ -1002,7 +1002,7 @@ elseif ($job == 'rights') {
 <form name="form" method="post" action="admin.php?action=forums&job=rights_delete&id=<?php echo $id; ?>">
  <table class="border">
   <tr> 
-   <td class="obox" colspan="<?php echo $colspan; ?>"><span style="float: right;">[<a href="admin.php?action=forums&job=rights_add&id=<?php echo $id; ?>">Add Usergroup</a>]</span>Forum Permission Manager</td>
+   <td class="obox" colspan="<?php echo $colspan; ?>"><span style="float: right;"><a class="button" href="admin.php?action=forums&job=rights_add&id=<?php echo $id; ?>">Add Usergroup</a></span>Forum Permission Manager</td>
   </tr>
   <tr>
   	<td class="ubox" valign="bottom"><b>Delete</b></td>

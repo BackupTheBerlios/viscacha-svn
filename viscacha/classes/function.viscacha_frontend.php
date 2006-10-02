@@ -430,17 +430,17 @@ function BoardSelect($board = 0) {
 
 			$forum['lname'] = is_id($forum['bname']) ? $forum['uname'] : $forum['bname'];
 
-    		if ($last != $forum['last_topic']) {
+    		if ($last != $forum['last_topic'] && check_forumperm($last)) {
     			$forum['id2'] = $last;
-    			$forum['last_topic'] = $sub_cache_last[$forum['id2']]['last_topic'];
-    			$forum['btopic_id'] = $sub_cache_last[$forum['id2']]['btopic_id'];
-    			$forum['btopic'] = $sub_cache_last[$forum['id2']]['btopic'];
-    			$forum['bdate'] = $sub_cache_last[$forum['id2']]['bdate'];
-    			if (!isset($sub_cache_last[$forum['id2']]['lname'])) {
-    				$forum['lname'] = is_id($sub_cache_last[$forum['id2']]['bname']) ? $sub_cache_last[$forum['id2']]['uname'] : $sub_cache_last[$forum['id2']]['bname'];
+    			$forum['last_topic'] = $sub_cache_last[$last]['last_topic'];
+    			$forum['btopic_id'] = $sub_cache_last[$last]['btopic_id'];
+    			$forum['btopic'] = $sub_cache_last[$last]['btopic'];
+    			$forum['bdate'] = $sub_cache_last[$last]['bdate'];
+    			if (!isset($sub_cache_last[$last]['lname'])) {
+    				$forum['lname'] = is_id($sub_cache_last[$last]['bname']) ? $sub_cache_last[$last]['uname'] : $sub_cache_last[$last]['bname'];
     			}
     			else {
-    				$forum['lname'] = $sub_cache_last[$forum['id2']]['lname'];
+    				$forum['lname'] = $sub_cache_last[$last]['lname'];
     			}
     		}
     		else {
@@ -482,8 +482,8 @@ function BoardSelect($board = 0) {
     				   	$forum['new'] = true;
     				}
 		    		if (!empty($forum['btopic'])) {
-		    			if (strxlen($forum['btopic']) >= 40) {
-		    				$forum['btopic'] = substr($forum['btopic'],0,40);
+		    			if (strxlen($forum['btopic']) > 40) {
+		    				$forum['btopic'] = substr($forum['btopic'], 0, 40);
 		    				$forum['btopic'] .= "...";
 		    			}
 		    			$forum['btopic'] = $gpc->prepare($forum['btopic']);
@@ -568,6 +568,7 @@ function GoBoardPW ($bpw, $bid) {
         echo $tpl->parse("main/boardpw");
 		$slog->updatelogged();
 		$zeitmessung = t2();
+		$tpl->globalvars(compact("zeitmessung"));
 		echo $tpl->parse("footer");
 		$phpdoc->Out();
 		$db->close();

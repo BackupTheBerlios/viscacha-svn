@@ -29,7 +29,7 @@ elseif ($job == 'cache') {
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr> 
    <td class="obox" colspan="4">
-   <span style="float: right;">[<a href="admin.php?action=misc&job=cache_refresh_all">Refresh All</a>]</span>
+   <span style="float: right;"><a class="button" href="admin.php?action=misc&job=cache_refresh_all">Refresh All</a></span>
    <b>Cache-Manager</b></td>
   </tr>
   <tr>
@@ -43,7 +43,7 @@ elseif ($job == 'cache') {
    <td class="mbox" width="40%"><?php echo $name; ?></td>
    <td class="mbox" width="10%" nowrap="nowrap" align="right"><?php echo formatFilesize($row['size']); ?></td>
    <td class="mbox" width="10%" nowrap="nowrap">ca. <?php echo fileAge($row['age']); ?></td>
-   <td class="mbox" width="40%" align="right">[<a href="admin.php?action=misc&job=cache_view&file=<?php echo $name; ?>">View Contents</a>] [<a href="admin.php?action=misc&job=cache_refresh&file=<?php echo $name; ?>">Refresh Cache</a>]</td>
+   <td class="mbox" width="40%" align="right"><a class="button" href="admin.php?action=misc&job=cache_view&file=<?php echo $name; ?>">View Contents</a> <a class="button" href="admin.php?action=misc&job=cache_refresh&file=<?php echo $name; ?>">Refresh Cache</a></td>
   </tr>
   <?php } ?>
  </table>
@@ -201,8 +201,8 @@ foreach ($data as $r) {
    <td class="mbox" width="10%"><input type="checkbox" name="delete[]" value="<?php echo $row[0]; ?>"></td>
    <td class="mbox" width="30%"><a href="external.php?action=<?php echo $row[0]; ?>" target="_blank" title="Show feed"><?php echo $row[2]; ?></a></td>
    <td class="mbox" width="30%"><?php echo $row[1]; ?> (<?php echo $row[0]; ?>)</td>
-   <td class="mbox" width="15%"><?php echo noki($row[3]); ?> [<a href="admin.php?action=misc&job=feedcreator_active&id=<?php echo $row[0]; ?>&key=3">Change</a>]</td>
-   <td class="mbox" width="15%"><?php echo noki($row[4]); ?> [<a href="admin.php?action=misc&job=feedcreator_active&id=<?php echo $row[0]; ?>&key=4">Change</a>]</td>
+   <td class="mbox" width="15%"><?php echo noki($row[3]); ?> <a class="button" href="admin.php?action=misc&job=feedcreator_active&id=<?php echo $row[0]; ?>&key=3">Change</a></td>
+   <td class="mbox" width="15%"><?php echo noki($row[4]); ?> <a class="button" href="admin.php?action=misc&job=feedcreator_active&id=<?php echo $row[0]; ?>&key=4">Change</a></td>
   </tr>
 <?php } ?>
   <tr> 
@@ -342,8 +342,8 @@ elseif ($job == "captcha") {
   <tr>
    <td class="mbox">
    <ul>
-   <li>Background pictures: <?php echo $noises; ?> [<a href="admin.php?action=misc&amp;job=captcha_noises">administrate</a>]</li>
-   <li>Fonts: <?php echo $fonts; ?> [<a href="admin.php?action=misc&amp;job=captcha_fonts">administrate</a>]</li>
+   <li>Background pictures: <?php echo $noises; ?> <a class="button" href="admin.php?action=misc&amp;job=captcha_noises">administrate</a></li>
+   <li>Fonts: <?php echo $fonts; ?> <a class="button" href="admin.php?action=misc&amp;job=captcha_fonts">administrate</a></li>
    <li><a href="admin.php?action=settings&amp;job=captcha">Settings</a></li>
    </ul>
    </td>

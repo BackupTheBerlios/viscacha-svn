@@ -7,7 +7,7 @@ if ($job == 'newsletter') {
 <form name="form" method="post" action="admin.php?action=members&job=newsletter2">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr> 
-   <td class="obox" colspan="2"><b><span style="float: right;">[<a href="admin.php?action=members&job=newsletter_archive">Newsletter-Archiv</a>]</span>Send newsletter</b></td>
+   <td class="obox" colspan="2"><b><span style="float: right;"><a class="button" href="admin.php?action=members&job=newsletter_archive">Newsletter-Archiv</a></span>Send newsletter</b></td>
   </tr>
   <tr> 
 	<td class="mbox" width="50%">Addressee:</td>
@@ -416,8 +416,8 @@ elseif ($job == 'manage') {
 		<tr> 
 		  <td class="obox" colspan="8">
 		  <span style="float: right;">
-		  [<a href="admin.php?action=members&job=search">Search for Members</a>]&nbsp;
-		  [<a href="admin.php?action=members&job=merge">Merge Users</a>]
+		  <a class="button" href="admin.php?action=members&job=search">Search for Members</a>&nbsp;
+		  <a class="button" href="admin.php?action=members&job=merge">Merge Users</a>
 		  </span>
 		  List of Members &amp; User Manager</td>
 		</tr>
@@ -591,17 +591,17 @@ elseif ($job == 'edit') {
 </td><td class="mbox">
 <input type="text" name="groups" id="groups" size="40" value="<?php echo $user['groups']; ?>" />
 <br />
-<table class="border">
+<table class="inlinetable">
 <tr>
-<td class="ubox">ID</td>
-<td class="ubox">Internal group name</td>
-<td class="ubox">Public group title</td>
+<th>ID</th>
+<th>Internal group name</th>
+<th>Public group title</th>
 </tr>
 <?php while ($row = $gpc->prepare($db->fetch_assoc($result))) { ?>
 <tr>
-<td class="mbox"><?php echo $row['id']; ?></td>
-<td class="mbox"><?php echo $row['name']; ?></td>
-<td class="mbox"><?php echo $row['title']; ?></td>
+<td><?php echo $row['id']; ?></td>
+<td><?php echo $row['name']; ?></td>
+<td><?php echo $row['title']; ?></td>
 </tr>
 <?php } ?>
 </table>
@@ -776,7 +776,7 @@ elseif ($job == 'edit') {
 <tr><td class="mbox"><?php echo $row1['name'] . iif(!empty($row1['description']), '<br /><span class="stext">'.$row1['description'].'</span>'); ?></td>
 <td class="mbox"> <?php echo $row1['input']; ?></td></tr>
 <?php } ?>
-<tr><td class="ubox" colspan="2"><input accesskey="s" type="submit" name="Submit1" value="Submit" /></td></tr>
+<tr><td class="ubox" colspan="2" align="center"><input accesskey="s" type="submit" name="Submit1" value="Submit" /></td></tr>
 </table>
 <br class="minibr" />
 
@@ -1751,7 +1751,7 @@ elseif ($job == 'ips') {
 					<li>
 					<a href="admin.php?action=members&amp;job=edit&amp;id=<?php echo $user['id']; ?>"><b><?php echo $user['name']; ?></b></a> &nbsp;&nbsp;&nbsp;
 					<a href="admin.php?action=members&amp;job=iphost&amp;ip=<?php echo $user['ip']; ?>" title="Resolve Address"><?php echo $user['ip']; ?></a> &nbsp;&nbsp;&nbsp; 
-					[<a href="admin.php?action=members&amp;job=ips&amp;id=<?php echo $user['id']; ?>&amp;username=<?php echo urlencode($user['name']); ?>">View other IP Addresses for this User</a>]
+					<a class="button" href="admin.php?action=members&amp;job=ips&amp;id=<?php echo $user['id']; ?>&amp;username=<?php echo urlencode($user['name']); ?>">View other IP Addresses for this User</a>
 					</li>
 					<?php
 				}
@@ -1780,7 +1780,7 @@ elseif ($job == 'ips') {
 					?>
 					<li>
 					<a href="admin.php?action=members&job=iphost&amp;ip=<?php echo $ip['ip']; ?>" title="Resolve Address"><?php echo $ip['ip']; ?></a> &nbsp;&nbsp;&nbsp;
-					[<a href="admin.php?action=members&amp;job=ips&amp;ipaddress=<?php echo $ip['ip']; ?>">Find more Users with this IP Address</a>]
+					<a class="button" href="admin.php?action=members&amp;job=ips&amp;ipaddress=<?php echo $ip['ip']; ?>">Find more Users with this IP Address</a>
 					</li>
 					<?php
 				}

@@ -219,7 +219,7 @@ class BBCode {
 				$fontsize = 0.8;
 			}
 			elseif ($size == 'large') {
-				$fontsize = 1.3;
+				$fontsize = 1.5;
 				$content = $this->wordwrap($content, ceil($this->profile['wordwrap_wordlength']*(1/1.5)));
 			}
 			else {
@@ -255,7 +255,7 @@ class BBCode {
 			list(,$url) = $url;
 		}
 
-		if ($img == true && (stristr($chop, '[/img]') !== false || stristr($chop, '[reader]') !== false || preg_match("/(([^?&=\[\]]+?)\.(png|gif|bmp|jpg|jpe|jpeg))/is", $url))) {
+		if ($img == true && (!preg_match("/\[\/\w\d\]+/is", $chop) || preg_match("/(([^?&=\[\]]+?)\.(png|gif|bmp|jpg|jpe|jpeg))/is", $url))) {
 			return $url.$chop;
 		}
 
@@ -657,8 +657,14 @@ class BBCode {
 			$text = empty($this->profile['disallow']['h']) ? preg_replace_callback('/\n?\[h=(middle|small|large)\](.+?)\[\/h\]\n?/is', array(&$this, 'cb_header'), $text) : $text;
 			$text = preg_replace_callback('/\[size=(small|extended|large)\](.+?)\[\/size\]/is', array(&$this, 'cb_size'), $text);
 
-			while (preg_match('/\[quote=(.+?)\](.+?)\[\/quote\]/is',$text)) {
-				$text = preg_replace('/\[quote=(.+?)\](.+?)\[\/quote\]\n?/is', "<blockquote class='bb_quote'><strong>".$lang->phrase('bb_quote_by')." \\1:</strong><br /><cite>\\2</cite></blockquote>", $text);
+			while (preg_match('/\[quote=(.+?)\](.+?)\[\/quote\]/is',$text, $values)) {
+				if (isset($values[1]) && check_hp($values[1])) {
+					$quote_html = '<a href="\1" target="_blank">\1</a>';
+				}
+				else {
+					$quote_html = "\\1";
+				}
+				$text = preg_replace('/\[quote=(.+?)\](.+?)\[\/quote\]\n?/is', "<blockquote class='bb_quote'><strong>".$lang->phrase('bb_quote_by')." {$quote_html}:</strong><br /><cite>\\2</cite></blockquote>", $text);
 			}
 			while (preg_match('/\[quote](.+?)\[\/quote\]/is',$text)) {
 				$text = preg_replace('/\[quote](.+?)\[\/quote\]\n?/is', "<blockquote class='bb_quote'><strong>".$lang->phrase('bb_quote')."</strong><br /><cite>\\1</cite></blockquote>", $text);

@@ -34,14 +34,14 @@ if ($job == 'manage') {
    <td class="mbox stext"><?php echo $row['detail']; ?></td>
    <td class="mbox" align="center"><?php echo noki($row['publicuse'], ' onmouseover="HandCursor(this)" onclick="ajax_noki(this, \'action=language&job=ajax_publicuse&id='.$row['id'].'\')"'); ?></td>
    <td class="mbox">
-   [<a href="admin.php?action=language&amp;job=lang_edit&amp;id=<?php echo $row['id']; ?>">Edit</a>]
-   [<a href="admin.php?action=language&amp;job=lang_copy&amp;id=<?php echo $row['id']; ?>" title="You can copy this language pack to translate it later.">Copy</a>]
-   [<a href="admin.php?action=language&amp;job=export&amp;id=<?php echo $row['id']; ?>">Export</a>]
-   [<a href="admin.php?action=language&amp;job=lang_delete&amp;id=<?php echo $row['id']; ?>">Delete</a>]
+   <a class="button" href="admin.php?action=language&amp;job=lang_edit&amp;id=<?php echo $row['id']; ?>">Edit</a>
+   <a class="button" href="admin.php?action=language&amp;job=lang_copy&amp;id=<?php echo $row['id']; ?>" title="You can copy this language pack to translate it later.">Copy</a>
+   <a class="button" href="admin.php?action=language&amp;job=export&amp;id=<?php echo $row['id']; ?>">Export</a>
+   <a class="button" href="admin.php?action=language&amp;job=lang_delete&amp;id=<?php echo $row['id']; ?>">Delete</a>
    <?php if ($row['publicuse'] == 1 && $config['langdir'] != $row['id']) { ?>
-   [<a href="admin.php?action=language&amp;job=lang_default&amp;id=<?php echo $row['id']; ?>">Set as default</a>]
+   <a class="button" href="admin.php?action=language&amp;job=lang_default&amp;id=<?php echo $row['id']; ?>">Set as default</a>
    <?php } ?>
-   [<a href="forum.php?language=<?php echo $row['id']; ?>" target="_blank">View</a>]
+   <a class="button" href="forum.php?language=<?php echo $row['id']; ?>" target="_blank">View</a>
    </td>
   </tr>
   <?php } ?>
@@ -1045,13 +1045,13 @@ elseif ($job == 'phrase') {
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr> 
    <td class="obox" colspan="<?php echo count($cache)+1; ?>">
-   <span style="float: right;">[<a href="admin.php?action=language&job=phrase_add_lngfile">Add new Language File</a>] [<a href="admin.php?action=language&job=phrase_add_mailfile">Add new Mail File</a>]</span>
+   <span style="float: right;"><a class="button" href="admin.php?action=language&job=phrase_add_lngfile">Add new Language File</a> <a class="button" href="admin.php?action=language&job=phrase_add_mailfile">Add new Mail File</a></span>
    Phrase Manager</td>
   </tr>
   <tr>
    <td class="mmbox" width="25%">&nbsp;</td>
    <?php foreach ($cache as $row) { ?>
-   <td class="mmbox" align="center" width="<?php echo $width; ?>%"><?php echo $row['language']; ?> [<a href="admin.php?action=language&job=lang_edit&id=<?php echo $row['id']; ?>">Edit</a>]</td>
+   <td class="mmbox" align="center" width="<?php echo $width; ?>%"><?php echo $row['language']; ?> <a class="button" href="admin.php?action=language&job=lang_edit&id=<?php echo $row['id']; ?>">Edit</a></td>
    <?php } ?>
   </tr>
   <?php foreach ($complete as $file) { ?>
@@ -1066,7 +1066,7 @@ elseif ($job == 'phrase') {
    foreach ($cache as $row) { 
    	$status = in_array($file, $diff[$row['id']]);
    ?>
-   <td class="mbox" align="center"><?php echo noki($status).iif(!$status, ' [<a href="admin.php?action=language&job=phrase_copy&file='.urlencode(base64_encode($file)).'&id='.$row['id'].'">Add</a>]'); ?></td>
+   <td class="mbox" align="center"><?php echo noki($status).iif(!$status, ' <a class="button" href="admin.php?action=language&job=phrase_copy&file='.urlencode(base64_encode($file)).'&id='.$row['id'].'">Add</a>'); ?></td>
    <?php } ?>
   </tr>
   <?php } ?>
@@ -1181,12 +1181,12 @@ elseif ($job == 'phrase_file') {
    <td class="obox" colspan="<?php echo count($cache)+1; ?>">
    <span style="float: right;">
    <?php if ($show == 'diff') { ?>
-    [<a href="admin.php?action=language&job=phrase_file&file=<?php echo $file; ?>">Show all phrases</a>] 
+    <a class="button" href="admin.php?action=language&job=phrase_file&file=<?php echo $file; ?>">Show all phrases</a> 
    <?php } else { ?>
-    [<a href="admin.php?action=language&job=phrase_file&file=<?php echo $file; ?>&show=diff">Show only differences</a>] 
+    <a class="button" href="admin.php?action=language&job=phrase_file&file=<?php echo $file; ?>&show=diff">Show only differences</a> 
    <?php } ?>
-    [<a href="admin.php?action=language&job=phrase_file_find&file=<?php echo $file; ?>">Find phrases</a>]
-    [<a href="admin.php?action=language&job=phrase_add&file=<?php echo $file; ?>">Add new phrase</a>]
+    <a class="button" href="admin.php?action=language&job=phrase_file_find&file=<?php echo $file; ?>">Find phrases</a>
+    <a class="button" href="admin.php?action=language&job=phrase_add&file=<?php echo $file; ?>">Add new phrase</a>
    </span>
    Phrase Manager &raquo; <?php echo $encfile; ?></td>
   </tr>
@@ -1196,7 +1196,7 @@ elseif ($job == 'phrase_file') {
   </tr>
   <?php } elseif (!isset($data[$page-1]) || count($data[$page-1]) == 0) { ?>
   <tr>
-   <td class="mbox" colspan="<?php echo count($cache)+1; ?>">No phrases have been saved yet. [<a href="admin.php?action=language&job=phrase_add&file=<?php echo $file; ?>">Add new Phrase</a>]</td> 
+   <td class="mbox" colspan="<?php echo count($cache)+1; ?>">No phrases have been saved yet. <a class="button" href="admin.php?action=language&job=phrase_add&file=<?php echo $file; ?>">Add new Phrase</a></td> 
   </tr>
   <?php } else { ?>
   <tr>
@@ -1210,12 +1210,12 @@ elseif ($job == 'phrase_file') {
   </tr>
   <?php foreach ($data[$page-1] as $phrase) { ?>
   <tr>
-   <td class="mmbox" nowrap="nowrap"><input type="checkbox" name="delete[]" value="<?php echo $phrase; ?>">&nbsp;[<a href="admin.php?action=language&job=phrase_file_edit&file=<?php echo $file; ?>&phrase=<?php echo $phrase; ?>">Edit</a>]&nbsp;<?php echo $phrase; ?></td>
+   <td class="mmbox" nowrap="nowrap"><input type="checkbox" name="delete[]" value="<?php echo $phrase; ?>">&nbsp;<a class="button" href="admin.php?action=language&job=phrase_file_edit&file=<?php echo $file; ?>&phrase=<?php echo $phrase; ?>">Edit</a>&nbsp;<?php echo $phrase; ?></td>
    <?php
    foreach ($cache as $row) {
    	$status = in_array($phrase, $diff[$row['id']]);
    ?>
-   <td class="mbox" align="center"><?php echo noki($status).iif(!$status, ' [<a href="admin.php?action=language&job=phrase_file_copy&file='.$file.'&id='.$row['id'].'&phrase='.$phrase.'">Add</a>]'); ?></td>
+   <td class="mbox" align="center"><?php echo noki($status).iif(!$status, ' <a class="button" href="admin.php?action=language&job=phrase_file_copy&file='.$file.'&id='.$row['id'].'&phrase='.$phrase.'">Add</a>'); ?></td>
    <?php } ?>
   </tr>
   <?php } ?>
