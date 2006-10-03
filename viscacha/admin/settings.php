@@ -59,7 +59,7 @@ elseif ($job == 'ftp2') {
 	$c->updateconfig('ftp_port', int);
 	$c->savedata();
 
-	ok('admin.php?action=settings&job=ftp');
+	ok('admin.php?action=settings&job=settings');
 }
 elseif ($job == 'posts') {
 	$config = $gpc->prepare($config);
@@ -190,7 +190,7 @@ elseif ($job == 'posts2') {
 	$c->updateconfig('abozahl', int);
 	$c->savedata();
 
-	ok('admin.php?action=settings&job=posts');
+	ok('admin.php?action=settings&job=settings');
 }
 elseif ($job == 'profile') {
 	$config = $gpc->prepare($config);
@@ -294,7 +294,7 @@ elseif ($job == 'profile2') {
 	$c->updateconfig('hidelanguage', int);
 	$c->savedata();
 
-	ok('admin.php?action=settings&job=profile');
+	ok('admin.php?action=settings&job=settings');
 }
 elseif ($job == 'signature') {
 	$config = $gpc->prepare($config);
@@ -354,7 +354,7 @@ elseif ($job == 'signature2') {
 	$c->updateconfig('sig_bbh', int);
 	$c->savedata();
 
-	ok('admin.php?action=settings&job=signature');
+	ok('admin.php?action=settings&job=settings');
 }
 elseif ($job == 'search') {
 	$config = $gpc->prepare($config);
@@ -404,7 +404,7 @@ elseif ($job == 'search2') {
 	$c->updateconfig('activezahl', int);
 	$c->savedata();
 
-	ok('admin.php?action=settings&job=search');
+	ok('admin.php?action=settings&job=settings');
 }
 elseif ($job == 'server') {
 	$config = $gpc->prepare($config);
@@ -498,7 +498,7 @@ elseif ($job == 'server2') {
 
 	$filesystem->unlink('.htaccess');
 
-	ok('admin.php?action=settings&job=server');
+	ok('admin.php?action=settings&job=settings');
 }
 elseif ($job == 'session') {
 	$config = $gpc->prepare($config);
@@ -559,7 +559,7 @@ elseif ($job == 'session2') {
 	$c->updateconfig('session_checkip', int);
 	$c->savedata();
 
-	ok('admin.php?action=settings&job=session');
+	ok('admin.php?action=settings&job=settings');
 }
 elseif ($job == 'boardcat') {
 	$config = $gpc->prepare($config);
@@ -599,7 +599,7 @@ elseif ($job == 'boardcat2') {
 	$c->updateconfig('updateboardstats', int);
 	$c->savedata();
 
-	ok('admin.php?action=settings&job=boardcat');
+	ok('admin.php?action=settings&job=settings');
 }
 elseif ($job == 'user') {
 	$config = $gpc->prepare($config);
@@ -694,7 +694,7 @@ elseif ($job == 'user2') {
 	$c->updateconfig('team_mod_dateuntil', int);
 	$c->savedata();
 
-	ok('admin.php?action=settings&job=user');
+	ok('admin.php?action=settings&job=settings');
 }
 elseif ($job == 'cmsp') {
 	$config = $gpc->prepare($config);
@@ -755,7 +755,7 @@ elseif ($job == 'pm2') {
 	$c->updateconfig('pmzahl', int);
 	$c->savedata();
 
-	ok('admin.php?action=settings&job=pm');
+	ok('admin.php?action=settings&job=settings');
 }
 elseif ($job == 'email') {
 	$config = $gpc->prepare($config);
@@ -831,7 +831,7 @@ elseif ($job == 'email2') {
 	$c->updateconfig('smtp_password', str);
 	$c->savedata();
 
-	ok('admin.php?action=settings&job=email');
+	ok('admin.php?action=settings&job=settings');
 }
 elseif ($job == 'lang') {
 	$config = $gpc->prepare($config);
@@ -889,7 +889,7 @@ elseif ($job == 'lang2') {
 	$c->updateconfig('asia_charset',str);
 	$c->savedata();
 
-	ok('admin.php?action=settings&job=lang');
+	ok('admin.php?action=settings&job=settings');
 }
 elseif ($job == 'captcha') {
 	$config = $gpc->prepare($config);
@@ -1004,7 +1004,7 @@ elseif ($job == 'captcha2') {
 	$c->updateconfig('botgfxtest_text_verification', int);
 	$c->savedata();
 
-	ok('admin.php?action=settings&job=captcha');
+	ok('admin.php?action=settings&job=settings');
 }
 elseif ($job == 'register') {
 	$config = $gpc->prepare($config);
@@ -1064,7 +1064,7 @@ elseif ($job == 'register2') {
 	$c->updateconfig('acceptrules', int);
 	$c->savedata();
 
-	ok('admin.php?action=settings&job=register');
+	ok('admin.php?action=settings&job=settings');
 }
 elseif ($job == 'spellcheck') {
 	$config = $gpc->prepare($config);
@@ -1123,7 +1123,7 @@ elseif ($job == 'spellcheck2') {
 	$c->updateconfig('pspell',str);
 	$c->savedata();
 
-	ok('admin.php?action=settings&job=spellcheck');
+	ok('admin.php?action=settings&job=settings');
 }
 elseif ($job == 'jabber') {
 	$config = $gpc->prepare($config);
@@ -1167,7 +1167,7 @@ elseif ($job == 'jabber2') {
 	$c->updateconfig('jabber_pass',str);
 	$c->savedata();
 
-	ok('admin.php?action=settings&job=jabber');
+	ok('admin.php?action=settings&job=settings');
 }
 elseif ($job == 'db') {
 	$config = $gpc->prepare($config);
@@ -1231,7 +1231,7 @@ elseif ($job == 'db2') {
 	$c->updateconfig('optimizetables',str);
 	$c->savedata();
 
-	ok('admin.php?action=settings&job=db');
+	ok('admin.php?action=settings&job=settings');
 }
 elseif ($job == 'attupload') {
 	$config = $gpc->prepare($config);
@@ -1310,7 +1310,7 @@ elseif ($job == 'attupload2') {
 	
 	$c->savedata();
 
-	ok('admin.php?action=settings&job=attupload');
+	ok('admin.php?action=settings&job=settings');
 }
 elseif ($job == 'avupload') {
 	$config = $gpc->prepare($config);
@@ -1365,7 +1365,7 @@ elseif ($job == 'avupload2') {
 	
 	$c->savedata();
 
-	ok('admin.php?action=settings&job=avupload');
+	ok('admin.php?action=settings&job=settings');
 }
 
 elseif ($job == 'cron') {
@@ -1416,7 +1416,7 @@ elseif ($job == 'cron2') {
 	$c->updateconfig('pccron_sendlog_email',str);
 	$c->savedata();
 
-	ok('admin.php?action=settings&job=cron');
+	ok('admin.php?action=settings&job=settings');
 }
 elseif ($job == 'general') {
 	echo head();
@@ -1479,7 +1479,7 @@ elseif ($job == 'general2') {
 	$c->updateconfig('benchmarkresult',int);
 	$c->savedata();
 
-	ok('admin.php?action=settings&job=general');
+	ok('admin.php?action=settings&job=settings');
 }
 elseif ($job == 'sitestatus') {
 	$obox = file_get_contents('data/offline.php');
@@ -1513,7 +1513,7 @@ elseif ($job == 'sitestatus2') {
 	$filesystem->file_put_contents('data/offline.php',$gpc->get('template', none));
 	$c->savedata();
 
-	ok('admin.php?action=settings&job=sitestatus');
+	ok('admin.php?action=settings&job=settings');
 }
 elseif ($job == 'ajax_sitestatus') {
 	$new = invert($config['foffline']);
@@ -1589,7 +1589,7 @@ elseif ($job == 'datetime2') {
 	$c->updateconfig('timezone',str);
 	$c->savedata();
 
-	ok('admin.php?action=settings&job=fgeneral');
+	ok('admin.php?action=settings&job=settings');
 }
 elseif ($job == 'http') {
 	$config = $gpc->prepare($config);
@@ -1653,7 +1653,7 @@ elseif ($job == 'http2') {
 	$c->updateconfig('cookie_prefix',str);
 	$c->savedata();
 
-	ok('admin.php?action=settings&job=http');
+	ok('admin.php?action=settings&job=settings');
 }
 elseif ($job == 'textprocessing') {
 	$config = $gpc->prepare($config);
@@ -1790,7 +1790,7 @@ elseif ($job == 'textprocessing2') {
 	$delobj = $scache->load('smileys');
 	$delobj->delete();
 
-	ok('admin.php?action=settings&job=textprocessing');
+	ok('admin.php?action=settings&job=settings');
 }
 elseif ($job == 'syndication') {
 	$config = $gpc->prepare($config);
@@ -1840,7 +1840,7 @@ elseif ($job == 'syndication2') {
 	$c->updateconfig('rsschars',int);
 	$c->savedata();
 
-	ok('admin.php?action=settings&job=syndication');
+	ok('admin.php?action=settings&job=settings');
 }
 elseif ($job == 'spiders') {
 	$config = $gpc->prepare($config);
@@ -1875,7 +1875,7 @@ elseif ($job == 'spiders2') {
 	$c->updateconfig('spider_logvisits',int);
 	$c->savedata();
 
-	ok('admin.php?action=settings&job=spiders');
+	ok('admin.php?action=settings&job=settings');
 }
 elseif ($job == 'version') {
 	echo head();

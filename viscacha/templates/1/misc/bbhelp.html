@@ -4,7 +4,10 @@
 <strong><?php echo $lang->phrase('what_are_bbcodes'); ?></strong><br />
 <?php echo $lang->phrase('what_are_bbcodes_answer'); ?>
 </div>
-<h3 class="inlineheader"><?php echo $lang->phrase('bbcode_help_overview'); ?><a name="top"></a></h3>
+</div>
+<br class="minibr" />
+<div class="border">
+<h3><?php echo $lang->phrase('bbcode_help_overview'); ?><a name="top"></a></h3>
 <div class="bbody">
 <ul>
 <li><strong><a href="#standard"><?php echo $lang->phrase('standard_bbcodes'); ?></a>:</strong>
@@ -36,7 +39,7 @@
 <table class="tables">
 <tr>
 	<th colspan="2">
-		<a name="cbb_<?php echo $bb['id']; ?>" href="#top" class="right">
+		<a name="bb_<?php echo $bb['tag']; ?>" href="#top" class="right">
 			<img src="<?php echo $tpl->img('asc'); ?>" alt="<?php echo $lang->phrase('top_of_page'); ?>" />
 		</a>
 		<?php echo $bb['title']; ?>
@@ -72,7 +75,7 @@
 <table class="tables">
 <tr>
 	<th colspan="2">
-		<a name="cbb_<?php echo $bb['id']; ?>" href="#top" class="right">
+		<a name="bb_<?php echo $bb['tag']; ?>" href="#top" class="right">
 			<img src="<?php echo $tpl->img('asc'); ?>" alt="<?php echo $lang->phrase('top_of_page'); ?>" />
 		</a>
 		<?php echo $bb['title']; ?>

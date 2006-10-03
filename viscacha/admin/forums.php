@@ -751,7 +751,7 @@ elseif ($job == 'forum_add') {
    <td class="mbox"><input type="checkbox" name="active_topic" value="1" checked="checked" /></td> 
   </tr>
   <tr> 
-   <td class="mbox">Copy permissions from:<br /><span class="stext">The forum will have the same permissions as the one you select here. If no forum is selected the default settings are used. <em>Caution: This is experimental! Use with care and report bugs, please.</em></span></td>
+   <td class="mbox">Copy permissions from:<br /><span class="stext">The forum will have the same permissions as the one you select here. If no forum is selected the default settings are used. (<em>Experimental</em>)</span></td>
    <td class="mbox">
 	<select name="copypermissions" size="1">
    	 <option value="0" selected="selected">Default</option>
@@ -938,12 +938,14 @@ elseif ($job == 'forum_add2') {
 	
 		if ($perm > 0) {
 			$columns = implode(', ', array_keys($glk_forums));
-			$result = $db->query("SELECT {$columns} FROM {$db->pre}fgroups WHERE bid = '{$perm}'", __LINE__, __FILE__);
+			$result = $db->query("SELECT {$columns}, gid FROM {$db->pre}fgroups WHERE bid = '{$perm}'", __LINE__, __FILE__);
 			while($row = $db->fetch_assoc($result)) {
+				$gid = $row['gid'];
+				unset($row['gid']);
 				ksort($glk_forums, SORT_STRING);
 				ksort($row, SORT_STRING);
 				$row_str = implode("', '", $row);
-				$db->query("INSERT INTO {$db->pre}fgroups ({$columns}, bid) VALUES ('{$row_str}', '{$newid}')", __LINE__, __FILE__);
+				$db->query("INSERT INTO {$db->pre}fgroups ({$columns}, bid, gid) VALUES ('{$row_str}', '{$newid}', '{$gid}')", __LINE__, __FILE__);
 			}
 		}
 		

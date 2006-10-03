@@ -375,6 +375,11 @@ elseif ($_GET['action'] == "bbhelp") {
 	
 	$codelang = $scache->load('syntaxhighlight');
 	$clang = $codelang->get();
+	$code_hl = array();
+	foreach ($clang as $l) {
+		$code_hl[] = "{$l['short']} ({$l['name']})";
+	}
+	$code_hl = implode(', ', $code_hl);
 	
 	$code = '&lt;?php phpinfo(); ?&gt;';
 	$phpcode = '&lt;?php'."\n".'echo phpversion();'."\n".'?&gt;';
@@ -505,11 +510,13 @@ elseif ($_GET['action'] == "bbhelp") {
 		),
 		array(
 			'tag' => 'sub',
-			'params' => 0
+			'params' => 0,
+			'example' => array('H[sub]2[/sub]O')
 		),
 		array(
 			'tag' => 'sup',
-			'params' => 0
+			'params' => 0,
+			'example' => array('cm[sup]2[/sup]')
 		),
 		array(
 			'tag' => 'tt',

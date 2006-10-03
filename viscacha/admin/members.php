@@ -586,8 +586,8 @@ elseif ($job == 'edit') {
 <tr><td class="mbox">New password:</td><td class="mbox">
 <input type="password" name="pw_<?php echo $random; ?>" size="40" value="" />
 </td></tr>
-<tr><td class="mbox" valign="top">Group affiliation:<br />
-<span class="stext">Several groups possible. Entry of the IDs with commas!</span>
+<tr><td class="mbox" valign="top">Group(s):<br />
+<span class="stext">Multiple groups possible. Separate multiple ids with commas!</span>
 </td><td class="mbox">
 <input type="text" name="groups" id="groups" size="40" value="<?php echo $user['groups']; ?>" />
 <br />
@@ -606,13 +606,13 @@ elseif ($job == 'edit') {
 <?php } ?>
 </table>
 </td></tr>
-<tr><td class="mbox">Civil-name:</td><td class="mbox">
+<tr><td class="mbox">Real name:</td><td class="mbox">
 <input type="text" name="fullname" id="fullname" size="40" value="<?php echo $user['fullname']; ?>" />
 </td></tr>
-<tr><td class="mbox">Emailaddress:</td><td class="mbox"> 
+<tr><td class="mbox">Email address:</td><td class="mbox"> 
 <input type="text" name="email" id="email" size="40" value="<?php echo $user['mail']; ?>" />
 </td></tr>
-<tr><td class="mbox">Residence:</td><td class="mbox"> 
+<tr><td class="mbox">Location:</td><td class="mbox"> 
 <input type="text" name="location" id="location" size="40" value="<?php echo $user['location']; ?>" />
 </td></tr>
 <tr><td class="mbox">Gender:</td><td class="mbox"> 
@@ -654,13 +654,13 @@ elseif ($job == 'edit') {
 <tr><td class="mbox">ICQ:</td><td class="mbox"> 
 <input type="text" name="icq" id="icq" size="40" value="<?php echo iif(!empty($user['icq']), $user['icq']); ?>" />
 </td></tr>
-<tr><td class="mbox">AOL- & Netscape-Messenger:</td><td class="mbox"> 
+<tr><td class="mbox">AOL- &amp; Netscape-Messenger:</td><td class="mbox"> 
 <input type="text" name="aol" id="aol" size="40" value="<?php echo $user['aol']; ?>" />
 </td></tr>
 <tr><td class="mbox">Yahoo-Messenger:</td><td class="mbox"> 
 <input type="text" name="yahoo" id="yahoo" size="40" value="<?php echo $user['yahoo']; ?>" />
 </td></tr>
-<tr><td class="mbox">MSN- & Windows-Messenger</td><td class="mbox"> 
+<tr><td class="mbox">MSN- &amp; Windows-Messenger</td><td class="mbox"> 
 <input type="text" name="msn" id="msn" size="40" value="<?php echo $user['msn']; ?>" />
 </td></tr>
 <tr><td class="mbox">Jabber:</td><td class="mbox"> 
@@ -678,7 +678,7 @@ elseif ($job == 'edit') {
 
 <br class="minibr" />
 <table class="border">
-<tr><td class="obox">Signatur</td></tr>
+<tr><td class="obox">Signature</td></tr>
 <tr><td class="mbox" align="center"><textarea name="signature" rows="4" cols="110"><?php echo $user['signature']; ?></textarea></td></tr>
 <tr><td class="ubox" align="center"><input accesskey="s" type="submit" name="Submit1" value="Submit" /></td></tr>
 </table>
