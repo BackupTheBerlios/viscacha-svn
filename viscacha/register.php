@@ -219,7 +219,7 @@ else {
 		$vword = new VeriWord();
 		$veriid = $vword->set_veriword($config['botgfxtest_text_verification']);
 		if ($config['botgfxtest_text_verification'] == 1) {
-			$code = $vword->output_word($veriid);
+			$textcode = $vword->output_word($veriid);
 		}
 	}
 	
