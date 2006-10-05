@@ -2711,7 +2711,7 @@ elseif ($job == 'com_export') {
 	$id = $gpc->get('id', int);
 	$tempdir = 'temp/';
 	
-	$result = $db->query("SELECT * FROM {$db->pre}component WHERE id = {$id} LIMIT 1", __LINE__, __FILE__);
+	$result = $db->query("SELECT * FROM {$db->pre}component WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	$row = $db->fetch_assoc($result);
 	$ini = $myini->read('components/'.$row['id'].'/components.ini');
 	$info = array_merge($row, $ini);

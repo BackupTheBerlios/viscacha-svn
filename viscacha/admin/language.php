@@ -1238,7 +1238,7 @@ elseif ($job == 'phrase_copy') {
 	$result = $db->query('SELECT * FROM '.$db->pre.'language ORDER BY language',__LINE__,__FILE__);
 	echo head();
 	?>
-<form name="form" method="post" action="admin.php?action=language&job=phrase_copy2&file=<?php echo $file; ?>&id=<?php echo $lang; ?>">
+<form name="form" method="post" action="admin.php?action=language&amp;job=phrase_copy2&amp;file=<?php echo $file; ?>&amp;id=<?php echo $lang; ?>">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr> 
    <td class="obox" colspan="2">Phrase Manager &raquo; <?php echo $encfile; ?> &raquo; Copy file</td>
@@ -1279,7 +1279,7 @@ elseif ($job == 'phrase_copy2') {
 	}
 	$filesystem->copy($source, $dest);
 	if (file_exists($dest)) {
-		ok('admin.php?action=language&job=phrase', 'File was copied successful');
+		ok('admin.php?action=language&job=phrase', 'File successfully copied.');
 	}
 	else {
 		error('admin.php?action=language&job=phrase', 'File could not be copied.');

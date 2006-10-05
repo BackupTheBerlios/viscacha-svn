@@ -172,6 +172,7 @@ $lang['box_reply'] = 'Add Reply';
 $lang['breadcrumb_errorok'] = 'System Message';
 $lang['by'] = 'by';
 $lang['cat_no_lastpost'] = '-';
+$lang['check_all'] = 'All';
 $lang['choose_newsfeed'] = 'Newsfeeds (RSS, ...)';
 $lang['close_window'] = 'Close Window';
 $lang['comment_too_long'] = 'Post is too long';
