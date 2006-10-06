@@ -208,7 +208,7 @@ class lang {
 	
 	function setdir($dirv) {
 		global $config;
-		if (is_dir($config['fpath'])) {
+		if (is_dir($config['fpath'].DIRECTORY_SEPARATOR)) {
 			$dir = "{$config['fpath']}/language/{$dirv}";
 		}
 		else {

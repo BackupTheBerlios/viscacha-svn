@@ -427,6 +427,7 @@ $lang['im_yahoo_1'] = 'View profile of <em>{@row->yahoo}</em>';
 $lang['im_yahoo_2'] = 'Send a message to <em>{@row->yahoo}</em>';
 $lang['index_headline'] = 'Announcement';
 $lang['ipadress'] = 'IP: ';
+$lang['ip_unknown'] = 'Unknown';
 $lang['jump_to_last_post'] = 'Jump to newest post';
 $lang['last_post'] = 'Last Post';
 $lang['listspacer'] = ', ';

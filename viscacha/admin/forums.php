@@ -68,6 +68,9 @@ function ForumSubs ($tree, $cat, $board, $char = '+', $level = 0) {
 	    }
 	}
 }
+
+($code = $plugins->load('admin_forums_jobs')) ? eval($code) : null;
+
 if ($job == 'mods_ajax_changeperm') {
 	$mid = $gpc->get('mid', int);
 	$bid = $gpc->get('bid', int);
@@ -106,7 +109,7 @@ elseif ($job == 'mods') {
    <td class="obox" colspan="<?php echo $colspan; ?>"><span style="float: right;"><a class="button" href="admin.php?action=forums&amp;job=mods_add&amp;id=<?php echo $bid; ?>">Add Moderator</a></span>Moderator Manager</td>
   </tr>
   <tr class="ubox">
-    <td width="5%" rowspan="2">Delete</td>
+    <td width="5%" rowspan="2">Delete<br /><span class="stext"><input type="checkbox" onclick="check_all('delete[]');" name="all" value="1" /> All</span></td>
     <td width="30%" rowspan="2">
     	<?php if ($bid == 0) { ?>
     	<a<?php echo iif($orderby == 'member', ' style="font-weight: bold;"'); ?> href="admin.php?action=forums&job=mods&order=member">
@@ -1007,7 +1010,7 @@ elseif ($job == 'rights') {
    <td class="obox" colspan="<?php echo $colspan; ?>"><span style="float: right;"><a class="button" href="admin.php?action=forums&job=rights_add&id=<?php echo $id; ?>">Add Usergroup</a></span>Forum Permission Manager</td>
   </tr>
   <tr>
-  	<td class="ubox" valign="bottom"><b>Delete</b></td>
+  	<td class="ubox" valign="bottom"><b>Delete</b><br /><span class="stext"><input type="checkbox" onclick="check_all('delete[]');" name="all" value="1" /> All</span></td>
     <td class="ubox" valign="bottom"><b>Name / Public Title</b></td>
     <?php foreach ($glk_forums as $key) { ?>
    	<td class="ubox" valign="bottom" align="center"><?php txt2img($gls[$key]); ?></td>
@@ -1417,7 +1420,7 @@ elseif ($job == 'prefix') {
    <td class="obox" colspan="3">Manage Prefixes</td>
   </tr>
   <tr> 
-   <td class="ubox" width="10%">Delete</td>
+   <td class="ubox" width="10%">Delete<br /><span class="stext"><input type="checkbox" onclick="check_all('delete[]');" name="all" value="1" /> All</span></td>
    <td class="ubox" width="70%">Value</td> 
    <td class="ubox" width="20%">Standard</td> 
   </tr>

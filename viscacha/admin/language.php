@@ -14,6 +14,8 @@ $langbase = array(
 
 require('lib/language.inc.php');
 
+($code = $plugins->load('admin_language_jobs')) ? eval($code) : null;
+
 if ($job == 'manage') {
 	echo head();
 	$result = $db->query('SELECT * FROM '.$db->pre.'language ORDER BY language',__LINE__,__FILE__);

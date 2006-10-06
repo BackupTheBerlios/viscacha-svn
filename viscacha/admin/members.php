@@ -1,6 +1,8 @@
 <?php
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "members.php") die('Error: Hacking Attempt');
 
+($code = $plugins->load('admin_members_jobs')) ? eval($code) : null;
+
 if ($job == 'newsletter') {
 	echo head();
 ?>
@@ -164,10 +166,10 @@ elseif ($job == 'newsletter_archive') {
 <form name="form" method="post" action="admin.php?action=members&job=newsletter_delete">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr> 
-   <td class="obox" colspan=4><b>Newsletter-Archive</b></td>
+   <td class="obox" colspan="4"><b>Newsletter Archive</b></td>
   </tr>
   <tr> 
-   <td class="ubox">Del</td>
+   <td class="ubox">Delete<br /><span class="stext"><input type="checkbox" onclick="check_all('delete[]');" name="all" value="1" /> All</span></td>
    <td class="ubox">Subject</td>
    <td class="ubox">Sent</td> 
    <td class="ubox">To</td> 
@@ -197,7 +199,7 @@ elseif ($job == 'newsletter_view') {
 <form name="form" method="post" action="admin.php?action=members&job=newsletter_delete">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr> 
-   <td class="obox" colspan=2><b>Newsletter-Archive: detail-view</b></td>
+   <td class="obox" colspan="2"><b>Newsletter-Archive: detail-view</b></td>
   </tr>
   <tr>
    <td class="mbox">Title:</td> 
@@ -212,13 +214,13 @@ elseif ($job == 'newsletter_view') {
    <td class="mbox"><?php echo $receiver[$row['receiver']]; ?></td>
   </tr>
   <tr> 
-   <td class="ubox" colspan=2>Newsletter-text</td>
+   <td class="ubox" colspan="2">Newsletter Text:</td>
   </tr>
   <tr>
-   <td class="mbox" colspan=2><pre><?php echo $row['content']; ?></pre></td>
+   <td class="mbox" colspan="2"><pre><?php echo $row['content']; ?></pre></td>
   </tr>
   <tr> 
-   <td class="ubox" colspan=2 align="center"><input type="hidden" name="delete[]" value="<?php echo $row['id']; ?>"><input type="submit" name="Submit" value="Delete"></td> 
+   <td class="ubox" colspan="2" align="center"><input type="hidden" name="delete[]" value="<?php echo $row['id']; ?>"><input type="submit" name="Submit" value="Delete"></td> 
   </tr>
  </table> 
 </form>
@@ -425,7 +427,7 @@ elseif ($job == 'manage') {
 		  <td class="ubox" colspan="8"><span style="float: right;"><?php echo $temp; ?></span><?php echo $count[0]; ?> Members</td>
 		</tr>
 		<tr>
-		  <td class="obox">Del</td>
+		  <td class="obox">Delete<br /><span class="stext"><input type="checkbox" onclick="check_all('delete[]');" name="all" value="1" /> All</span></td>
 		  <td class="obox">Name
 		  <a href="admin.php?action=members&job=manage&letter=<?php echo $letter; ?>&amp;page=<?php echo $page; ?>"><img src="admin/html/images/asc.gif" border=0 alt="Ascending"></a>
 		  <a href="admin.php?action=members&job=manage&order=1&amp;page=<?php echo $page; ?>&amp;letter=<?php echo $letter; ?>"><img src="admin/html/images/desc.gif" border=0 alt="Descending"></a></td>
@@ -503,7 +505,7 @@ elseif ($job == 'memberrating') {
 		  <td class="ubox" colspan="6"><span style="float: right;"><?php echo $temp; ?></span><?php echo $count[0]; ?> rated members</td>
 		</tr>
 		<tr>
-		  <td class="obox">Del</td>
+		  <td class="obox">Delete<br /><span class="stext"><input type="checkbox" onclick="check_all('delete[]');" name="all" value="1" /> All</span></td>
 		  <td class="obox">Name</td>
 		  <td class="obox">Rating (amount of ratings)</td>
 		  <td class="obox">Email</td>
@@ -1568,7 +1570,7 @@ elseif ($job == 'search2') {
 			  <td class="ubox" colspan="<?php echo $colspan; ?>"><?php echo $count; ?> members found.</td>
 			</tr>
 			<tr>
-			  <td class="obox">DEL</td>
+			  <td class="obox">Delete<br /><span class="stext"><input type="checkbox" onclick="check_all('delete[]');" name="all" value="1" /> All</span></td>
 			  <?php foreach ($show as $key) { ?>
 			  <td class="obox"><?php echo $fields[$key][0]; ?></td>
 			  <?php } ?>
@@ -1729,8 +1731,10 @@ elseif ($job == 'ips') {
 	echo head();
 	if (!empty($ipaddress) || $userid > 0) {
 		if (!empty($ipaddress)) {
-			$hostname = @gethostbyaddr($ipaddress);
-			if (!$hostname OR $hostname == $ipaddress) {
+		    if (check_ip($ipaddress)) {
+		        $hostname = @gethostbyaddr($ipaddress);
+		    }
+			if (empty($hostname) || $hostname == $ipaddress) {
 				$hostname = 'Could not resolve Hostname';
 			}
 			$users = $db->query("SELECT DISTINCT u.id, u.name, r.ip FROM {$db->pre}replies AS r, {$db->pre}user AS u  WHERE u.id = r.name AND r.ip LIKE '{$ipaddress}%' AND r.ip != '' ORDER BY u.name", __LINE__, __FILE__);
@@ -1748,7 +1752,7 @@ elseif ($job == 'ips') {
 				<td class="mbox">
 				<ul>
 				<?php while ($user = $db->fetch_assoc($users)) { ?>
-					<li>
+					<li style="padding: 3px;">
 					<a href="admin.php?action=members&amp;job=edit&amp;id=<?php echo $user['id']; ?>"><b><?php echo $user['name']; ?></b></a> &nbsp;&nbsp;&nbsp;
 					<a href="admin.php?action=members&amp;job=iphost&amp;ip=<?php echo $user['ip']; ?>" title="Resolve Address"><?php echo $user['ip']; ?></a> &nbsp;&nbsp;&nbsp; 
 					<a class="button" href="admin.php?action=members&amp;job=ips&amp;id=<?php echo $user['id']; ?>&amp;username=<?php echo urlencode($user['name']); ?>">View other IP Addresses for this User</a>
@@ -1822,8 +1826,10 @@ elseif ($job == 'ips') {
 }
 elseif ($job == 'iphost') {
 	$ip = $gpc->get('ip', str);
-	$resolvedip = @gethostbyaddr($ip);
-	if ($resolvedip == $ip) {
+	if (check_ip($ip)) {
+	    $resolvedip = @gethostbyaddr($ip);
+	}
+	if (empty($resolvedip) || $resolvedip == $ip) {
 		$host = '<i>Not Available</i>';
 	}
 	else {

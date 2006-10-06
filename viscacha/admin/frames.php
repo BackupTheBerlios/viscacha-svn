@@ -180,6 +180,11 @@ if ($job == 'menu') {
 	<?php
 }
 else {
+	 $addr = $gpc->get('addr', none);
+	 $file = basename($addr, '.php');
+	 if ($file != 'admin') {
+	 	$addr = 'admin.php?action=index';
+	 }
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Frameset//EN" "http://www.w3.org/TR/REC-html40/frameset.dtd">
 <html>
@@ -191,7 +196,7 @@ else {
  </head>
  <frameset cols="200,*" frameborder="0" framespacing="0" border="0">
   <frame name="Menu" src="admin.php?action=frames&amp;job=menu" scrolling="yes" noresize="noresize" />
-  <frame name="Main" src="admin.php?action=index" scrolling="auto" noresize="noresize" />
+  <frame name="Main" src="<?php echo $addr; ?>" scrolling="auto" noresize="noresize" />
   <noframes>
    <body>
     <p>Your browser does not seem to support frames or frame support has been disabled.</p>

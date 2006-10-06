@@ -1,12 +1,14 @@
 <?php
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "start.php") die('Error: Hacking Attempt');
 
+($code = $plugins->load('admin_start_jobs')) ? eval($code) : null;
+
 if ($job == 'save_notes') {
 	$location = $gpc->get('location', str, 'admin.php?action=index');
 	$filesystem->file_put_contents('admin/data/notes.php', $gpc->get('notes', none));
 	header('Location: '.$location);
 }
-else {
+elseif (empty($job) || $job == 'start') {
 	echo head();
 	$notes = file_get_contents('admin/data/notes.php');
 	$tasks = array();

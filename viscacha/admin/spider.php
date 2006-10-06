@@ -1,11 +1,11 @@
 <?php
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "spider.php") die('Error: Hacking Attempt');
 
+($code = $plugins->load('admin_spider_jobs')) ? eval($code) : null;
+
 // This bases on a phpBB Mod
 // I can not find any information about the author. Please tell me if you are the author!
-
 $bot_errors = array();
-
 $submit = ((isset($_POST['submit'])) ? true : false);
 $action = $gpc->get('job', str, 'manage');
 $id = $gpc->get('id', int);
@@ -202,6 +202,22 @@ elseif ($job == 'delete') {
 			$delobj = $scache->load('spiders');
 			$delobj->delete();
 			ok("admin.php?action=spider&job=manage", "Bot data successfully deleted.");
+		}
+	}
+	else {
+		error("admin.php?action=spider&job=manage", "No data chosen.");
+	}
+}
+elseif ($job == 'reset') {
+	$mark = array_empty_trim($mark);
+	if ($id > 0 || count($mark) > 0) {
+		$id = ($id > 0) ? " = {$id}" : ' IN (' . implode(', ', $mark) . ')';
+		$db->query("UPDATE {$db->pre}spider SET last_visit = '', bot_visits = '0' WHERE id {$id}", __LINE__, __FILE__);
+		if ($db->affected_rows() == 0) {
+			error("admin.php?action=spider&job=manage", "No entries reset.");
+		}
+		else {
+			ok("admin.php?action=spider&job=manage", "Bot data successfully reset.");
 		}
 	}
 	else {
@@ -413,7 +429,7 @@ elseif ($job == 'pending') {
 	<?php
 	echo foot();
 }
-else {
+elseif (empty($job) || $job == 'manage') {
 	?>
 	<table border="0" align="center" class="border">
 	<tr><td class="obox">Manage Bots</td></tr>
@@ -456,7 +472,7 @@ else {
 					<td class="ubox" nowrap="nowrap">Visits</td>
 					<td class="ubox" nowrap="nowrap">Last Visit</td>
 					<td class="ubox" nowrap="nowrap">Actions</td>
-					<td class="ubox" nowrap="nowrap">Mark</td>
+					<td class="ubox" nowrap="nowrap">Mark<br /><span class="stext"><input type="checkbox" onclick="check_all('mark[]');" name="all" value="1" /> All</span></td>
 				</tr>
 				<?php
 			}
@@ -489,11 +505,15 @@ else {
 			?>
 			<tr>
 				<td class="mbox" width="25%"><?php echo $row['name']; ?></td>
-				<td class="mbox" width="20%" nowrap="nowrap"><?php echo $useragent; ?></td>
+				<td class="mbox" width="25%" nowrap="nowrap"><?php echo $useragent; ?></td>
 				<td class="mbox" width="10%" align="center" nowrap="nowrap"><?php echo $row['bot_visits']; ?></td>
 				<td class="mbox" width="15%" align="center"><?php echo $last_visit; ?></td>
-				<td class="mbox" width="3%" align="center"><a class="button" href="admin.php?action=spider&id=<?php echo $row['id']; ?>&job=edit">Edit</a>&nbsp;<a class="button" href="admin.php?action=spider&id=<?php echo $row['id']; ?>&job=delete">Delete</a></td>
-				<td class="mbox" width="3%" align="center"><input type="checkbox" name="mark[]" value="<?php echo $row['id']; ?>" /></td>	
+				<td class="mbox" width="20%" align="center">
+					<a class="button" href="admin.php?action=spider&amp;id=<?php echo $row['id']; ?>&amp;job=edit">Edit</a>&nbsp;
+					<a class="button" href="admin.php?action=spider&amp;id=<?php echo $row['id']; ?>&amp;job=reset">Reset</a>&nbsp;
+					<a class="button" href="admin.php?action=spider&amp;id=<?php echo $row['id']; ?>&amp;job=delete">Delete</a>
+				</td>
+				<td class="mbox" width="5%" align="center"><input type="checkbox" name="mark[]" value="<?php echo $row['id']; ?>" /></td>	
 			</tr>
 			<?php
 		}
@@ -504,7 +524,7 @@ else {
 			<tr class="ubox">
 				<td align="right">
 				<select name="job">
-				<!-- <option value="edit">Edit</option> -->
+				<option value="reset">Reset</option>
 				<option value="delete">Delete</option>
 				</select> selected entries! <input type="submit" name="submit" value="Go" /></td>
 			</tr>

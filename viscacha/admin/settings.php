@@ -5,6 +5,8 @@ if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "settings.p
 include('classes/class.phpconfig.php');
 $c = new manageconfig();
 
+($code = $plugins->load('admin_settings_jobs')) ? eval($code) : null;
+
 if ($job == 'ftp') {
 	$config = $gpc->prepare($config);
 	

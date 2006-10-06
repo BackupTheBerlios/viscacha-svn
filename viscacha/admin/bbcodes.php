@@ -1,6 +1,8 @@
 <?php
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "bbcodes.php") die('Error: Hacking Attempt');
 
+($code = $plugins->load('admin_bbcodes_jobs')) ? eval($code) : null;
+
 if ($job == 'smileys_delete') {
 	$deleteid = $gpc->get('id', arr_int);
 	if (count($deleteid) > 0) {
@@ -492,7 +494,7 @@ elseif ($job == 'word') {
    <td class="obox" colspan="4">Manage Glossary</b></td>
   </tr>
   <tr>
-   <td class="ubox" width="5%">Delete</td>
+   <td class="ubox" width="5%">Delete<br /><span class="stext"><input type="checkbox" onclick="check_all('delete[]');" name="all" value="1" /> All</span></td>
    <td class="ubox" width="15%">Abbreviation</td> 
    <td class="ubox" width="30%">Phrase</td>
    <td class="ubox" width="50%">Description</td> 
@@ -543,10 +545,10 @@ elseif ($job == 'censor') {
 <form name="form" method="post" action="admin.php?action=bbcodes&job=del&tp=censor">
  <table class="border">
   <tr> 
-   <td class="obox" colspan=3>Manage Censorship</b></td>
+   <td class="obox" colspan="3">Manage Censorship</b></td>
   </tr>
   <tr>
-   <td class="ubox" width="10%">Delete</td>
+   <td class="ubox" width="10%">Delete<br /><span class="stext"><input type="checkbox" onclick="check_all('delete[]');" name="all" value="1" /> All</span></td>
    <td class="ubox" width="45%">Word</td> 
    <td class="ubox" width="45%">Censored Word</td>
   </tr>
@@ -589,13 +591,12 @@ elseif ($job == 'replace') {
 	$result = $db->query("SELECT * FROM {$db->pre}textparser WHERE type = 'replace'",__LINE__,__FILE__);
 ?>
 <form name="form" method="post" action="admin.php?action=bbcodes&job=del&tp=replace">
-<input name="tp" value="replace" type="hidden">
  <table class="border">
   <tr> 
-   <td class="obox" colspan=3>Manage Vocabulary</b></td>
+   <td class="obox" colspan="3">Manage Vocabulary</b></td>
   </tr>
   <tr>
-   <td class="ubox" width="10%">Delete</td>
+   <td class="ubox" width="10%">Delete<br /><span class="stext"><input type="checkbox" onclick="check_all('delete[]');" name="all" value="1" /> All</span></td>
    <td class="ubox" width="45%">Word</td> 
    <td class="ubox" width="45%">Replacement</td>
   </tr>
@@ -697,7 +698,7 @@ elseif ($job == 'codefiles') {
    <td class="obox" colspan="3">Syntax Highlighting Manager (<?php echo count($clang); ?> Languages)</b></td>
   </tr>
   <tr>
-   <td class="ubox" width="10%">Delete</td>
+   <td class="ubox" width="10%">Delete<br /><span class="stext"><input type="checkbox" onclick="check_all('delete[]');" name="all" value="1" /> All</span></td>
    <td class="ubox" width="45%">Language</td> 
    <td class="ubox" width="45%">File</td>
   </tr>

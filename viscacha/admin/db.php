@@ -69,6 +69,8 @@ function exec_query_form ($query = '') {
 	}
 }
 
+($code = $plugins->load('admin_db_jobs')) ? eval($code) : null;
+
 if ($job == 'optimize') {
 	echo head();
 	$tables = array();
@@ -310,7 +312,7 @@ elseif ($job == 'restore') {
   </tr>
   <tr> 
    <td class="ubox" width="5%">Restore</td>
-   <td class="ubox" width="5%">Delete</td>
+   <td class="ubox" width="5%">Delete<br /><span class="stext"><input type="checkbox" onclick="check_all('delete[]');" name="all" value="1" /> All</span></td>
    <td class="ubox" width="80%">Information</td>
    <td class="ubox" width="10%">File Size</td>
   </tr>

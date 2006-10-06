@@ -28,6 +28,8 @@ function SelectPackageLinks ($head) {
 	<?php
 }
 
+($code = $plugins->load('admin_cms_jobs')) ? eval($code) : null;
+
 if ($job == 'plugins') {
 	send_nocache_header();
 	echo head();
@@ -2851,7 +2853,7 @@ elseif ($job == 'doc') {
    </td>
   </tr>
   <tr>
-   <td class="ubox" width="5%">DEL</td>
+   <td class="ubox" width="5%">Delete<br /><span class="stext"><input type="checkbox" onclick="check_all('delete[]');" name="all" value="1" /> All</span></td>
    <td class="ubox" width="40%">Title</td>
    <td class="ubox" width="5%">ID</td>
    <td class="ubox" width="20%">Author</td>
@@ -3263,7 +3265,7 @@ elseif ($job == 'feed') {
    <td class="obox" colspan="5"><span style="float: right;"><a class="button" href="admin.php?action=cms&job=feed_add">Add a new Newsfeed</a></span>Newsfeed Syndication</td>
   </tr>
   <tr>
-   <td class="ubox" width="5%">Del</td>
+   <td class="ubox" width="5%">Delete<br /><span class="stext"><input type="checkbox" onclick="check_all('delete[]');" name="all" value="1" /> All</span></td>
    <td class="ubox" width="5%">ID</td>
    <td class="ubox" width="35%">Title</td> 
    <td class="ubox" width="45%">File</td>

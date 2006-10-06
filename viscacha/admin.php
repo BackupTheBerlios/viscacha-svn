@@ -138,14 +138,15 @@ else {
 		error('index.php'.SID2URL_1, 'You are not allowed to view this page!');
 	}
 	
+	$addr = $gpc->get('addr', none);
 	if ($action == "login2") {
 		$log_status = $slog->sid_login(true);
 		echo head();
 		if ($log_status == false) {
-			error('admin.php', 'You have entered an incorrect user name or password!');
+			error('admin.php'.iif(!empty($addr), '?addr='.rawurlencode($addr)), 'You have entered an incorrect user name or password!');
 		}
 		else {
-			ok('admin.php', 'You have successfully logged in!');
+			ok('admin.php'.iif(!empty($addr), '?addr='.rawurlencode($addr)), 'You have successfully logged in!');
 		}
 	}
 	else {

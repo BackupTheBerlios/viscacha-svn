@@ -16,6 +16,8 @@ function daynumber($time) {
 	return $daynumber;
 }
 
+($code = $plugins->load('admin_slog_jobs')) ? eval($code) : null;
+
 if ($job == 'empty') {
 	echo head();
 	$file = $gpc->get('file', str);

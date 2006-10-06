@@ -1,6 +1,8 @@
 <?php
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "misc.php") die('Error: Hacking Attempt');
 
+($code = $plugins->load('admin_misc_jobs')) ? eval($code) : null;
+
 if ($job == 'phpinfo') {
 	phpinfo();
 }
@@ -186,7 +188,7 @@ elseif ($job == 'feedcreator') {
    <td class="obox" colspan="5">Feedcreator (<?php echo count($data); ?>)</b></td>
   </tr>
   <tr>
-   <td class="ubox" width="10%">Delete</td>
+   <td class="ubox" width="10%">Delete<br /><span class="stext"><input type="checkbox" onclick="check_all('delete[]');" name="all" value="1" /> All</span></td>
    <td class="ubox" width="30%">Name</td> 
    <td class="ubox" width="30%">File (Class)</td>
    <td class="ubox" width="15%">Shown</td>
@@ -389,7 +391,7 @@ elseif ($job == "captcha_noises") {
    <td class="obox" colspan="3">Captcha Manager &raquo; background pictures</td>
   </tr>
   <tr>
-   <td class="ubox" width="10%">Delete</td>
+   <td class="ubox" width="10%">Delete<br /><span class="stext"><input type="checkbox" onclick="check_all('delete[]');" name="all" value="1" /> All</span></td>
    <td class="ubox" width="90%">Preview of the background image</td>
   </tr>
   <?php foreach ($fonts as $path) { ?>
@@ -455,7 +457,7 @@ elseif ($job == "captcha_fonts") {
    <td class="obox" colspan="3">Captcha Manager &raquo; Fonts</td>
   </tr>
   <tr>
-   <td class="ubox" width="10%">Delete</td>
+   <td class="ubox" width="10%">Delete<br /><span class="stext"><input type="checkbox" onclick="check_all('delete[]');" name="all" value="1" /> All</span></td>
    <td class="ubox" width="90%">Preview of the font</td>
   </tr>
   <?php foreach ($fonts as $path) { ?>
@@ -730,6 +732,4 @@ elseif ($job == 'license') {
 	<?php
 	echo foot();
 }
-
-($code = $plugins->load('admin_misc_jobs')) ? eval($code) : null;
 ?>

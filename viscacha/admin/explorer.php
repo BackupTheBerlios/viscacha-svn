@@ -7,6 +7,8 @@ include_once('classes/class.template.php');
 $tpl = new tpl();
 $ServerNavigator = new ServerNavigator();
 
+($code = $plugins->load('admin_explorer_jobs')) ? eval($code) : null;
+
 if ($job == 'upload') {
 
 	$cfg = $gpc->get('cfg', str);

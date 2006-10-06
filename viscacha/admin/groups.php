@@ -1,7 +1,7 @@
 <?php
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "groups.php") die('Error: Hacking Attempt');
 
-// moved arrays with group-language-data to function.viscacha_backend.php to use the arrays as well in the forums.php
+($code = $plugins->load('admin_groups_jobs')) ? eval($code) : null;
 
 if ($job == 'manage') {
 	echo head();

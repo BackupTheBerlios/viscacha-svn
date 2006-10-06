@@ -33,6 +33,8 @@ function export_template_list ($path, $d = 0) {
    	return ($dirlist);
 }
 
+($code = $plugins->load('admin_designs_jobs')) ? eval($code) : null;
+
 if ($job == 'design') {
 	echo head();
 	$result = $db->query('SELECT * FROM '.$db->pre.'designs ORDER BY name');

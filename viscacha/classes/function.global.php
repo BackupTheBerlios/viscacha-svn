@@ -665,6 +665,24 @@ function iif($if, $true, $false = '') {
 	return ($if ? $true : $false);
 }
 
+function check_ip($ip, $allow_private = false) {
+
+   	$private_ips = array("/^0\..+$/", "/^127\.0\.0\..+$/", "/^192\.168\..+$/", "/^172\.16\..+$/", "/^10..+$/", "/^224..+$/", "/^240..+$/");
+
+	$ok = true;
+	if (!preg_match("/[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}/", $ip)) {
+		$ok = false;
+	}
+	if ($allow_private == false) {
+		foreach ($private_ips as $pip) {
+			if (preg_match($pip, $ip)) {
+				$ok = false;
+			}
+		}
+	}
+	return $ok;
+}
+
 function getip($dots = 4) {
 	$ips = array();
 	$indices = array('REMOTE_ADDR', 'HTTP_X_FORWARDED_FOR', 'HTTP_CLIENT_IP');
@@ -679,19 +697,10 @@ function getip($dots = 4) {
 		}
 	}
 
-   	$private_ips = array("/^0\..+$/", "/^127\.0\.0\..+$/", "/^192\.168\..+$/", "/^172\.16\..+$/", "/^10..+$/", "/^224..+$/", "/^240..+$/", "/[^\d\.]+/");
 	$ips = array_unique($ips);
 
 	foreach ($ips as $ip) {
-		$found = false;
-		if (!preg_match("/[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}/", $ip)) {
-			$found = true;
-		}
-		foreach ($private_ips as $pip) {
-			if (preg_match($pip, trim($ip))) {
-				$found = true;
-			}
-		}
+		$found = !(check_ip($ip));
 		if ($found == false) {
 			return ext_iptrim(trim($ip), $dots);
 		}

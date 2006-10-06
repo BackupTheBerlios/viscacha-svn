@@ -1,6 +1,8 @@
 <?php
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "cron.php") die('Error: Hacking Attempt');
 
+($code = $plugins->load('admin_cron_jobs')) ? eval($code) : null;
+
 if ($_GET['job'] == 'upload') {
 	echo head();
 	?>
@@ -179,13 +181,13 @@ elseif ($_GET['job'] == 'manage') {
 	   <td class="obox" colspan="7">Manage Tasks</td>
 	  </tr>
 	  <tr> 
-	   <td class="ubox" width="5%"><font class="mtext">Delete</font></td>
-	   <td class="ubox" width="55%"><font class="mtext">File</font></td>
-	   <td class="ubox" width="8%"><font class="mtext">Minute</font></td>
-	   <td class="ubox" width="8%"><font class="mtext">Hour</font></td>
-	   <td class="ubox" width="8%"><font class="mtext">Day</font></td>
-	   <td class="ubox" width="8%"><font class="mtext">Month</font></td>
-	   <td class="ubox" width="8%"><font class="mtext">Weekday</font></td>
+	   <td class="ubox" width="5%">Delete</td>
+	   <td class="ubox" width="55%">File</td>
+	   <td class="ubox" width="8%">Minute</td>
+	   <td class="ubox" width="8%">Hour</td>
+	   <td class="ubox" width="8%">Day</td>
+	   <td class="ubox" width="8%">Month</td>
+	   <td class="ubox" width="8%">Weekday</td>
 	  </tr>
 	<?php
 	foreach ($cronjobs as $job) {
@@ -200,12 +202,12 @@ elseif ($_GET['job'] == 'manage') {
 		?>
 		<tr> 
 		   <td class="mbox" width="5%"><input type="checkbox" name="delete[]" value="<?php echo md5($job); ?>"></td>
-		   <td class="mbox" width="55%"><font class="mtext"><?php echo $row[5]; ?></font><br><font class="stext"><?php echo $row[6]; ?></font></td>
-		   <td class="mbox" width="8%"><font class="mtext"><?php echo $row[0]; ?></font></td>
-		   <td class="mbox" width="8%"><font class="mtext"><?php echo $row[1]; ?></font></td> 
-		   <td class="mbox" width="8%"><font class="mtext"><?php echo $row[2]; ?></font></td> 
-		   <td class="mbox" width="8%"><font class="mtext"><?php echo $row[3]; ?></font></td> 
-		   <td class="mbox" width="8%"><font class="mtext"><?php echo $row[4]; ?></font></td> 
+		   <td class="mbox" width="55%"><?php echo $row[5]; ?><br><span class="stext"><?php echo $row[6]; ?></span></td>
+		   <td class="mbox" width="8%"><?php echo $row[0]; ?></td>
+		   <td class="mbox" width="8%"><?php echo $row[1]; ?></td> 
+		   <td class="mbox" width="8%"><?php echo $row[2]; ?></td> 
+		   <td class="mbox" width="8%"><?php echo $row[3]; ?></td> 
+		   <td class="mbox" width="8%"><?php echo $row[4]; ?></td> 
 		</tr>
 	<?php } ?>
 	  <tr> 

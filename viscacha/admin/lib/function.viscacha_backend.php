@@ -119,8 +119,9 @@ include_once ("classes/class.language.php");
 require_once ("classes/function.global.php");
 
 function AdminLogInForm() {
+    $addr = $gpc->get('addr', none);
 	?>
-	<form action="admin.php?action=login2" method="post" target="_top">
+	<form action="admin.php?action=login2<?php echo iif(!empty($addr), '&amp;addr='.rawurlencode($addr)); ?>" method="post" target="_top">
 	 <table class="border" style="width: 50%;">
 	  <tr> 
 	   <td class="obox" colspan="2">Log in</td>
