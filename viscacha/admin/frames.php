@@ -3,6 +3,10 @@
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "frames.php") die('Error: Hacking Attempt');
 
 if ($job == 'menu') {
+	$interface = $gpc->get('interface', int);
+	if ($interface == 1) {
+		$admconfig['nav_interface'] = invert($admconfig['nav_interface']);
+	}
 	?>
 	<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 	<html>
@@ -15,12 +19,10 @@ if ($job == 'menu') {
 	<script src="admin/html/menu.js" language="Javascript" type="text/javascript"></script>
 	</head>
 	<body onload="init()">
-	<div class="center">
-	<a href="admin.php?action=index" target="Main"><img src="admin/html/images/logo.png" alt="Viscacha" /></a>
-	<br />
-	<span class="stext"><a href="javascript:All();">Expand All</a> | <a href="javascript:All(1);">Collapse All</a></span>
-	</div>
-	<br class="minibr" />
+	<p class="center"><a href="admin.php?action=index" target="Main"><img src="admin/html/images/logo.png" alt="Viscacha" /></a></p>
+	<p class="stext center"><a href="admin.php?action=frames&amp;job=menu&amp;interface=<?php echo invert($interface); ?>" target="Menu">Switch to <?php echo iif($admconfig['nav_interface'] == 1, 'simple', 'extended'); ?> Interface</a></p>
+	<p class="stext center"><a href="javascript:All();">Expand All</a> | <a href="javascript:All(1);">Collapse All</a></p>
+	<?php if ($admconfig['nav_interface'] == 1) { ?>
 	 <div class="border">
 	  <h3><img id="img_admin_menu1" src="admin/html/images/plus.gif" alt="collapse" /> Settings</h3>
 	  <ul id="part_admin_menu1">
@@ -130,12 +132,12 @@ if ($job == 'menu') {
 	 <div class="border">
 	   <h3><img id="img_admin_menu13" src="admin/html/images/plus.gif" alt="collapse" /> Statistics &amp; Logs</h3>
 	  <ul id="part_admin_menu13">
-	    <li>&raquo; <a href="admin.php?action=slog&amp;job=s_general" target="Main">General Statistics</a></li>
+	    <li>&raquo; <a href="admin.php?action=slog&amp;job=s_general" target="Main">Statistics</a></li>
 	    <li>&raquo; <a href="admin.php?action=slog&amp;job=l_cron" target="Main">Scheduled Task Log</a></li>
 	    <li>&raquo; <a href="admin.php?action=slog&amp;job=l_mysqlerror" target="Main">MySQL Error Log</a></li>
 	   </ul>
 	 </div>
-	 <?php ($code = $plugins->load('admin_navigation')) ? eval($code) : null; ?>
+	 <?php ($code = $plugins->load('admin_navigation_extended')) ? eval($code) : null; ?>
 	 <div class="border">
 	   <h3><img id="img_admin_menu14" src="admin/html/images/plus.gif" alt="collapse" /> Useful Links</h3>
 	  <ul id="part_admin_menu14">
@@ -145,6 +147,73 @@ if ($job == 'menu') {
 	   <li>&raquo; <a href="http://www.viscacha.org" target="_blank">Support</a></li>
 	  </ul>
 	 </div>
+	 <?php } else { ?>
+	 <div class="border">
+	  <h3><img id="img_admin_menu1_simple" src="admin/html/images/plus.gif" alt="collapse" /> Settings</h3>
+	  <ul id="part_admin_menu1_simple">
+		<li>&raquo; <a href="admin.php?action=settings" target="Main">Viscacha Settings</a></li>
+		<li>&raquo; <a href="admin.php?action=designs&amp;job=design&amp;interface=1" target="Main">Design Manager</a></li>
+		<li>&raquo; <a href="admin.php?action=language&amp;job=manage" target="Main">Language Manager</a></li>
+		<li>&raquo; <a href="admin.php?action=settings&amp;job=version" target="Main">Version Check</a></li>
+      </ul>
+     </div>
+	 <div class="border">
+	  <h3><img id="img_admin_menu2_simple" src="admin/html/images/plus.gif" alt="collapse" /> Content Management</h3>
+	  <ul id="part_admin_menu2_simple">
+	   <li>&raquo; <a href="admin.php?action=cms&amp;job=doc" target="Main">Documents &amp; Pages</a></li>
+	   <li>&raquo; <a href="admin.php?action=cms&amp;job=nav" target="Main">Navigation Manager</a></li>
+	   <li>&raquo; <a href="admin.php?action=cms&amp;job=com" target="Main">Component Manager</a></li>
+	   <li>&raquo; <a href="admin.php?action=cms&amp;job=plugins" target="Main">PlugIn Manager</a></li>
+	   <li>&raquo; <a href="admin.php?action=explorer" target="Main">File Manager</a></li>
+	  </ul>
+	 </div>
+	 <div class="border">
+	   <h3><img id="img_admin_menu3_simple" src="admin/html/images/plus.gif" alt="collapse" /> Forums &amp; Posts</h3>
+	  <ul id="part_admin_menu3_simple">
+	   <li>&raquo; <a href="admin.php?action=forums&amp;job=manage" target="Main">Forum &amp; Category Manager</a></li>
+	   <li>&raquo; <a href="admin.php?action=forums&amp;job=mods" target="Main">Moderator Manager</a></li>
+	   <li>&raquo; <a href="admin.php?action=posts&amp;job=postrating" target="Main">Postratings</a></li>
+	  </ul>
+	 </div>
+	 <div class="border">
+	   <h3><img id="img_admin_menu4_simple" src="admin/html/images/plus.gif" alt="collapse" /> Members</h3>
+	  <ul id="part_admin_menu4_simple">
+	   <li>&raquo; <a href="admin.php?action=members&amp;job=manage" target="Main">Member List</a></li>
+	   <li>&raquo; <a href="admin.php?action=members&amp;job=activate" target="Main">Moderate Members</a></li>
+	   <li>&raquo; <a href="admin.php?action=groups&amp;job=manage" target="Main">Usergroup Manager</a></li>
+	   <li>&raquo; <a href="admin.php?action=profilefield&amp;job=manage" target="Main">Profile Field Manager</a></li>
+	   <li>&raquo; <a href="admin.php?action=members&amp;job=newsletter" target="Main">Newsletter Manager</a></li>
+	   <li>&raquo; <a href="admin.php?action=members&amp;job=banned" target="Main">Blocked IP Addresses</a></li>
+	   <li>&raquo; <a href="admin.php?action=members&amp;job=ips" target="Main">Search IP Addresses</a></li>
+	  </ul>
+	 </div>
+	 <div class="border">
+	   <h3><img id="img_admin_menu5_simple" src="admin/html/images/plus.gif" alt="collapse" /> Text Processing</h3>
+	  <ul id="part_admin_menu5_simple">
+	   <li>&raquo; <a href="admin.php?action=bbcodes&amp;job=smileys" target="Main">Smiley Manager</a></li>
+	   <li>&raquo; <a href="admin.php?action=bbcodes&amp;job=censor" target="Main">Censorship Manager</a></li>
+       <li>&raquo; <a href="admin.php?action=bbcodes&amp;job=custombb" target="Main">Custom BB Code Manager</a></li>
+	  </ul>
+	 </div>
+	 <div class="border">
+	  <h3><img id="img_admin_menu6_simple" src="admin/html/images/plus.gif" alt="collapse" /> Managing Tools</h3>
+	  <ul id="part_admin_menu6_simple">
+	   <li>&raquo; <a href="admin.php?action=db&amp;job=backup" target="Main">Backup &amp; Restore Database</a></li>
+	   <li>&raquo; <a href="admin.php?action=spider&amp;job=manage" target="Main">Crawler &amp; Robot Manager</a></li>
+	   <li>&raquo; <a href="admin.php?action=filetypes&amp;job=manage" target="Main">File Type Manager</a></li>
+	   <li>&raquo; <a href="admin.php?action=slog&amp;job=s_general" target="Main">Statistics</a></li>
+      </ul>
+     </div>
+	 <?php ($code = $plugins->load('admin_navigation_simple')) ? eval($code) : null; ?>
+	 <div class="border">
+	   <h3><img id="img_admin_menu7_simple" src="admin/html/images/plus.gif" alt="collapse" /> Useful Links</h3>
+	  <ul id="part_admin_menu7_simple">
+	   <li>&raquo; <a href="index.php<?php echo SID2URL_1; ?>" target="_blank">Go to Forum</a></li>
+	   <li>&raquo; <a href="admin.php?action=misc&amp;job=phpinfo" target="Main">PHP Info</a></li>
+	   <li>&raquo; <a href="admin.php?action=logout<?php echo SID2URL_x; ?>" target="_top">Sign off</a></li>
+	  </ul>
+	 </div>
+	 <?php } ($code = $plugins->load('admin_navigation')) ? eval($code) : null; ?>
 	</body>
 	</html>
 	<?php
@@ -165,7 +234,7 @@ else {
   <link rel="copyright" href="http://www.mamo-net.de" />
  </head>
  <frameset cols="200,*" frameborder="0" framespacing="0" border="0">
-  <frame name="Menu" src="admin.php?action=frames&amp;job=menu" scrolling="yes" noresize="noresize" />
+  <frame name="Menu" src="admin.php?action=frames&amp;job=menu" scrolling="auto" noresize="noresize" />
   <frame name="Main" src="<?php echo $addr; ?>" scrolling="auto" noresize="noresize" />
   <noframes>
    <body>

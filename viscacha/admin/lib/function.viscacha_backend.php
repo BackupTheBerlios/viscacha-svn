@@ -426,8 +426,6 @@ function foot() {
 	<?php
 }
 
-
-
 function error ($errorurl, $errormsg='An unexpected error occurred') {
 	global $config, $my, $db;
 	if (!is_array($errormsg)) {
@@ -436,7 +434,7 @@ function error ($errorurl, $errormsg='An unexpected error occurred') {
 	?>
 <script language="Javascript" type="text/javascript">
 <!--
-window.setTimeout('location.href="<?php echo $errorurl; ?>"', 10000);
+window.setTimeout(<?php echo JS_URL($errorurl); ?>, 10000);
 -->
 </script>
 <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
@@ -466,7 +464,7 @@ function ok ($url, $msg = "Settings were saved successfully!") {
 	?>
 <script language="Javascript" type="text/javascript">
 <!--
-window.setTimeout('location.href="<?php echo $url; ?>"', 2000);
+window.setTimeout(<?php echo JS_URL($url); ?>, 2000);
 -->
 </script>
 <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">

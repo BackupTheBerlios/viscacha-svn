@@ -7,7 +7,38 @@ $c = new manageconfig();
 
 ($code = $plugins->load('admin_settings_jobs')) ? eval($code) : null;
 
-if ($job == 'ftp') {
+if ($job == 'admin') {
+	$config = $gpc->prepare($config);
+	
+	echo head();
+	?>
+	<form name="form" method="post" action="admin.php?action=settings&amp;job=admin2">
+	<table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
+	 <tr> 
+	  <td class="obox" colspan="2">Administration Control Panel Settings</td>
+	 </tr>
+	 <tr>
+	  <td class="mbox" width="50%">Use extended Navigation Interface:<br /><span class="stext">Checking this option will enable an advanced navigation interface on the left side.</span></td>
+	  <td class="mbox" width="50%"><input type="checkbox" name="nav_interface" value="1"<?php echo iif($admconfig['nav_interface'] == 1, ' checked="checked"'); ?> /></td> 
+	 </tr>
+	 </tr>
+	  <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="Submit" /></td> 
+	 </tr>
+	</table>
+	</form> 
+	<?php
+	echo foot();
+}
+elseif ($job == 'admin2') {
+	echo head();
+
+	$c->getdata('admin/data/config.inc.php', 'admconfig');
+	$c->updateconfig('nav_interface', int);
+	$c->savedata();
+
+	ok('admin.php?action=settings&job=settings');
+}
+elseif ($job == 'ftp') {
 	$config = $gpc->prepare($config);
 	
 	$path = 'N/A';
@@ -2187,6 +2218,23 @@ else {
 		<td nowrap="nowrap"><a href="admin.php?action=settings&amp;job=sitestatus">Switch Viscacha on or off</a></td>
 		<td class="stext">Here you can temporarily deactivate the system for non-administrators to do maintenance work or updates. Current website status: <b><?php echo iif($config['foffline'] == 1, 'Offline', 'Online'); ?></b></td>
 	    <td nowrap="nowrap">None</td>
+	  </tr>
+	  <tr class="mbox">
+		<td nowrap="nowrap"><a href="admin.php?action=settings&amp;job=admin">Administration Control Panel</a></td>
+		<td class="stext">Here you can set some options related to this Administration Control Panel.</td>
+	    <td nowrap="nowrap">None</td>
+	  </tr>
+	  <tr class="mbox">
+		<td nowrap="nowrap"><a href="admin.php?action=settings&amp;job=attupload">Attachments</a></td>
+		<td class="stext">Topic and post attachments: file size, file types, thumbnails, ...</td>
+		<td nowrap="nowrap">
+		  <form name="act" action="admin.php?action=locate" method="post">
+		    <select style="width: 80%" size="1" name="url" onchange="locate(this.value)">
+		      <option value="" style="font-weight: bold;">-- Tools --</option>
+		  	  <option value="admin.php?action=filetypes&job=manage">File Type Manager</option>
+		     </select> <input style="width: 18%" type="submit" value="Go">
+		  </form>
+		</td>
 	  </tr>
 	  <tr class="mbox">
 		<td nowrap="nowrap"><a href="admin.php?action=settings&amp;job=attupload">Attachments</a></td>

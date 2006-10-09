@@ -23,19 +23,27 @@ if ($job == 'manage') {
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr> 
    <td class="obox" colspan="6">
-    <span style="float: right;"><a class="button" href="admin.php?action=language&amp;job=import" target="Main">Import Language</a></span>
+    <span style="float: right;">
+	<a class="button" href="admin.php?action=language&amp;job=import" target="Main">Import Language</a>
+	<a class="button" href="admin.php?action=language&amp;job=phrase" target="Main">Phrase Manager</a>
+	</span>
 	Language Files
    </td>
   </tr>
   <tr>
    <td class="ubox" width="18%">Language</td>
-   <td class="ubox" width="43%">Description</td>
+   <td class="ubox" width="6%">Code</td>
+   <td class="ubox" width="37%">Description</td>
    <td class="ubox" width="5%">Published</td>
    <td class="ubox" width="34%">Action</td>
   </tr>
-  <?php while ($row = $db->fetch_assoc($result)) { ?>
+  <?php 
+  while ($row = $db->fetch_assoc($result)) {
+  	$settings = $gpc->prepare(return_array('settings', $row['id']));
+  ?>
   <tr>
    <td class="mbox"><?php echo $row['language'].iif($config['langdir'] == $row['id'], '<br /><span class="stext">Default</span>'); ?></td>
+   <td class="mbox"><?php echo $settings['lang_code'].iif(!empty($settings['country_code']), '_'.$settings['country_code']); ?></td>
    <td class="mbox stext"><?php echo $row['detail']; ?></td>
    <td class="mbox" align="center"><?php echo noki($row['publicuse'], ' onmouseover="HandCursor(this)" onclick="ajax_noki(this, \'action=language&job=ajax_publicuse&id='.$row['id'].'\')"'); ?></td>
    <td class="mbox">
@@ -310,7 +318,7 @@ elseif ($job == 'lang_settings') {
 		$settings['lang_code'] = 'en';
 	}
 	if (empty($settings['country_code'])) {
-		$settings['country_code'] = 'GB';
+		$settings['country_code'] = '';
 	}
 	
 	$rss = file2array('admin/data/rss.txt');
@@ -375,6 +383,7 @@ function errordefault(box) {
    <td class="mbox" width="50%">Country:<br /><span class="stext">Optionally specify country if this package contains special phrases for some country (for example the differences in British English and American English).</span></td>
    <td class="mbox" width="50%">
    <select name="country_code">
+   <option value=""<?php echo iif($settings['country_code'] == '', ' selected="selected"'); ?>>No specific Country</option>
    <?php foreach ($country as $key => $val) { ?>
    <option value="<?php echo $key; ?>"<?php echo iif($settings['country_code'] == $key, ' selected="selected"'); ?>><?php echo $val; ?></option>
    <?php } ?>
@@ -451,7 +460,7 @@ elseif ($job == 'lang_settings2') {
 		}
 	}
 	
-	$lc = $gpc->get('language_code', none);
+	$lc = $gpc->get('lang_code', none);
 	$cc = $gpc->get('country_code', none);
 	if (!empty($cc)) {
 		$scd = $lc.'_'.$cc;
@@ -467,8 +476,8 @@ elseif ($job == 'lang_settings2') {
 	$c->updateconfig('html_read_direction', str);
 	$c->updateconfig('rss_language', str);
 	$c->updateconfig('spellcheck_dict', str, $scd);
-	$c->updateconfig('lang_code', str, $lc);
-	$c->updateconfig('country_code', str, $cc);
+	$c->updateconfig('lang_code', str);
+	$c->updateconfig('country_code', str);
 	$c->updateconfig('thousandssep', str);
 	$c->updateconfig('decpoint', str);
 	$c->updateconfig('lang_name', str, $lang);

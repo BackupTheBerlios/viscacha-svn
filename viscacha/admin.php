@@ -27,6 +27,7 @@ error_reporting(E_ALL);
 DEFINE('SCRIPTNAME', 'admin');
 
 include ("data/config.inc.php");
+include ("admin/data/config.inc.php");
 include ("admin/lib/function.viscacha_backend.php");
 
 $benchmark = benchmarktime();
@@ -110,7 +111,13 @@ if ($my->p['admin'] == 1) {
 		}
 		else {
 			echo head();
-			error(htmlspecialchars($_SERVER['HTTP_REFERER']), 'Please choose a valid option!');
+			if (!empty($_SERVER['HTTP_REFERER']) && strpos($_SERVER['HTTP_REFERER'], 'action=locate') === false) {
+				$url = htmlspecialchars($_SERVER['HTTP_REFERER']);
+			}
+			else {
+				$url = 'javascript:history.back(-1);';
+			}
+			error($url, 'Please choose a valid option!');
 		}
 	}
 	else {

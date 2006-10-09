@@ -3,7 +3,7 @@ if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "settings.l
 $lang = array();
 $lang['charset'] = 'ISO-8859-1';
 $lang['compatible_version'] = '0.8 Beta 4';
-$lang['country_code'] = 'GB';
+$lang['country_code'] = '';
 $lang['decpoint'] = '.';
 $lang['dformat1'] = 'M d, Y g:i a';
 $lang['dformat2'] = 'M d, Y';

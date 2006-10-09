@@ -222,6 +222,7 @@ else {
 
 ($code = $plugins->load('frontend_init')) ? eval($code) : null;
 
+// ToDo: Auslagern
 $bannedip = file('data/bannedip.php');
 $bannedip = array_map('trim', $bannedip);
 if (count($bannedip) > 0) {

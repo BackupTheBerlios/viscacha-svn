@@ -435,6 +435,7 @@ elseif (empty($job) || $job == 'manage') {
 	<tr><td class="obox">
 	<span style="float: right;">
 	<a class="button" href="admin.php?action=spider&amp;job=add" target="Main">Add new Robot</a>
+	<a class="button" href="admin.php?action=spider&amp;job=pending" target="Main">Pending Robots</a>
 	</span>
 	Manage Bots
 	</td></tr>

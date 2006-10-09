@@ -128,6 +128,16 @@ function checkRemotePic($pic, $id) {
 	return $pic;
 }
 
+function JS_URL($url) {
+	if (preg_match('~javascript:\s?([^;]+);?~i', $url, $command) && isset($command[1])) {
+		$url = $command[1];
+	}
+	else {
+		$url = "'location.href=\"{$url}\"'";
+	}
+	return $url;
+}
+
 function ini_maxupload() {
     $keys = array(
     'post_max_size' => 0,

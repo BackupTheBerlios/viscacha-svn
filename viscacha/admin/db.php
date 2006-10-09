@@ -155,7 +155,12 @@ elseif ($job == 'backup') {
 <form name="form" method="post" action="admin.php?action=db&job=backup2">
  <table class="border">
   <tr> 
-   <td class="obox" colspan="5">Backup Tables</td>
+   <td class="obox" colspan="5">
+	<span style="float: right;">
+	<a class="button" href="admin.php?action=db&amp;job=restore">Restore</a>
+	</span>
+	Backup Tables
+	</td>
   </tr>
   <tr> 
    <td class="ubox" width="30%">Export</td>
@@ -308,7 +313,12 @@ elseif ($job == 'restore') {
 <form name="form" method="post" action="admin.php?action=db&job=restore2">
  <table class="border">
   <tr> 
-   <td class="obox" colspan="4">Restore Database</td>
+   <td class="obox" colspan="4">
+	<span style="float: right;">
+	<a class="button" href="admin.php?action=db&amp;job=restore">Backup</a>
+	</span>
+	Restore Database
+   </td>
   </tr>
   <tr> 
    <td class="ubox" width="5%">Restore</td>

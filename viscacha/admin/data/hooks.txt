@@ -412,6 +412,8 @@ admin/forums.php
 
 admin/frames.php
 -admin_navigation
+-admin_navigation_extended
+-admin_navigation_simple
 
 admin/groups.php
 -admin_groups_jobs

@@ -37,6 +37,7 @@ function export_template_list ($path, $d = 0) {
 
 if ($job == 'design') {
 	echo head();
+	$interface = $gpc->get('interface', int);
 	$result = $db->query('SELECT * FROM '.$db->pre.'designs ORDER BY name');
 	?>
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
@@ -70,6 +71,18 @@ if ($job == 'design') {
   </tr>
   <?php } ?>
  </table>
+ <?php if ($interface == 1) { ?>
+ <br class="minibr" />
+ <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
+  <tr> 
+   <td class="obox center">
+   <a class="button" href="admin.php?action=designs&job=templates">Template Manager</a>
+   <a class="button" href="admin.php?action=designs&job=css">Stylesheet Manager</a>
+   <a class="button" href="admin.php?action=designs&job=images">Image Manager</a>
+   </td>
+  </tr>
+ </table>
+ <?php } ?>
 	<?php
 	echo foot();
 }
