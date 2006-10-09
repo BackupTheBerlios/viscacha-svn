@@ -3,6 +3,7 @@ if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "function.v
 
 // Gets a file with php-functions
 @include_once("classes/function.phpcore.php");
+// Filesystem
 require_once("classes/class.filesystem.php");
 $filesystem = new filesystem($config['ftp_server'], $config['ftp_user'], $config['ftp_pw'], $config['ftp_port']);
 $filesystem->set_wd($config['ftp_path']);
@@ -119,6 +120,7 @@ include_once ("classes/class.language.php");
 require_once ("classes/function.global.php");
 
 function AdminLogInForm() {
+	global $gpc;
     $addr = $gpc->get('addr', none);
 	?>
 	<form action="admin.php?action=login2<?php echo iif(!empty($addr), '&amp;addr='.rawurlencode($addr)); ?>" method="post" target="_top">
@@ -252,22 +254,22 @@ function get_webserver() {
 function fileAge($age) {
     if($age>=30*24*60*60) {
         $age/=(30*24*60*60);
-        $string = 'Monate';
+        $string = 'Months';
     }
     elseif($age>=24*60*60) {
         $age/=(24*60*60);
-        $string = 'Tage';
+        $string = 'Days';
     }
     elseif($age>=60*60) {
         $age/=(60*60);
-        $string = 'Std.';
+        $string = 'Hours';
     }
     elseif($age>=60) {
         $age/=60;
-        $string = 'Min.';
+        $string = 'Minutes';
     }
 	else {
-		$string = 'Sek.';
+		$string = 'Seconds';
 	}
 	return round($age, 0).' '.$string;
 }

@@ -31,10 +31,6 @@ include ("admin/lib/function.viscacha_backend.php");
 
 $benchmark = benchmarktime();
 
-if (is_dir('install/')) {
-	die('For your security please completely remove the installation directory ('.realpath('install/').') including all files and sub-folders - then refresh this page');
-}
-
 $job = $gpc->get('job', str);
 
 $slog = new slog();

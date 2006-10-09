@@ -6,8 +6,6 @@ if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "misc.php")
 if ($job == 'phpinfo') {
 	phpinfo();
 }
-// Cache-Manager is deprecated (written for 1.1, current version is 2.0)
-// It is functional but the solution is bad... (Build Cache instantly instead of waiting for next need)
 elseif ($job == 'cache') {
 	echo head();
 	$result = array();
@@ -19,10 +17,31 @@ elseif ($job == 'cache') {
 			if ($nfo['extension'] == 'php') {
 				$name = str_replace('.inc.php', '', $nfo['basename']);
 				$result[$name] = array(
-				'file' => $nfo['basename'],
-				'size' => filesize($dir.$file),
-				'age' => time()-filemtime($dir.$file)
+					'file' => $nfo['basename'],
+					'size' => filesize($dir.$file),
+					'age' => time()-filemtime($dir.$file),
+					'rebuild' => file_exists("classes/cache/{$name}.inc.php"),
+					'cached' => true
 				);
+			}
+		}
+	}
+	$dir = "classes/cache/";
+	$handle = opendir($dir);
+	while ($file = readdir($handle)) {
+		if ($file != "." && $file != ".." && !is_dir($dir.$file)) {					  
+			$nfo = pathinfo($dir.$file);
+			if ($nfo['extension'] == 'php') {
+				$name = str_replace('.inc.php', '', $nfo['basename']);
+				if (!isset($result[$name])) {
+					$result[$name] = array(
+						'file' => $nfo['basename'],
+						'size' => null,
+						'age' => null,
+						'rebuild' => true,
+						'cached' => false
+					);
+				}
 			}
 		}
 	}
@@ -31,21 +50,31 @@ elseif ($job == 'cache') {
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr> 
    <td class="obox" colspan="4">
-   <span style="float: right;"><a class="button" href="admin.php?action=misc&job=cache_refresh_all">Refresh All</a></span>
+   <span style="float: right;">
+   	<a class="button" href="admin.php?action=misc&amp;job=cache_refresh_all">Rebuild All</a>
+   	<a class="button" href="admin.php?action=misc&amp;job=cache_delete_all">Delete All</a>
+   </span>
    <b>Cache-Manager</b></td>
   </tr>
   <tr>
-   <td class="ubox" width="40%">Cache Name</td>
-   <td class="ubox" width="10%">Size</td>
-   <td class="ubox" width="10%">Age</td>
+   <td class="ubox" width="35%">Cache Name</td>
+   <td class="ubox" width="10%">File Size</td>
+   <td class="ubox" width="15%">Approximate Age</td>
    <td class="ubox" width="40%">Options</td>
   </tr>
   <?php foreach ($result as $name => $row) { ?>
   <tr>
-   <td class="mbox" width="40%"><?php echo $name; ?></td>
-   <td class="mbox" width="10%" nowrap="nowrap" align="right"><?php echo formatFilesize($row['size']); ?></td>
-   <td class="mbox" width="10%" nowrap="nowrap">ca. <?php echo fileAge($row['age']); ?></td>
-   <td class="mbox" width="40%" align="right"><a class="button" href="admin.php?action=misc&job=cache_view&file=<?php echo $name; ?>">View Contents</a> <a class="button" href="admin.php?action=misc&job=cache_refresh&file=<?php echo $name; ?>">Refresh Cache</a></td>
+   <td class="mbox"><?php echo $name; ?></td>
+   <td class="mbox" nowrap="nowrap" align="right"><?php echo iif ($row['cached'], formatFilesize($row['size']), '-'); ?></td>
+   <td class="mbox" nowrap="nowrap"><?php echo iif($row['cached'], 'approx. '.fileAge($row['age']), '-'); ?></td>
+   <td class="mbox">
+   <?php if ($row['cached']) { ?>
+   <a class="button" href="admin.php?action=misc&amp;job=cache_view&amp;file=<?php echo $name; ?>">View Contents</a> 
+   <a class="button" href="admin.php?action=misc&amp;job=cache_delete&amp;file=<?php echo $name; ?>">Delete Cache</a>
+   <?php } if ($row['rebuild']) { ?>
+   <a class="button" href="admin.php?action=misc&amp;job=cache_refresh&amp;file=<?php echo $name; ?>">Rebuild Cache</a> 
+   <?php } ?>
+   </td>
   </tr>
   <?php } ?>
  </table>
@@ -80,27 +109,33 @@ elseif ($job == 'cache_view') {
 	<?php
 	echo foot();
 }
-elseif ($job == 'cache_refresh') {
+elseif ($job == 'cache_delete' || $job == 'cache_refresh') {
 	$file = $gpc->get('file', str);
 	echo head();
-	$cache = new CacheItem($file);
-	$data = $cache->delete();
-	ok('admin.php?action=misc&job=cache', 'The cache-file was deleted. Therefore, this file will not be listed in the overview for the time being. If it is necessary the next time the cache will be rebuild and listed automatically into the overview.');
+	$cache = $scache->load($file);
+	$cache->delete();
+	if ($job == 'cache_refresh') {
+		$cache->load();
+	}
+	ok('admin.php?action=misc&job=cache', iif($job == 'cache_refresh', 'The cache-file was rebuilt.', 'The cache-file was deleted. It will be rebuild the next time it is needed.'));
 }
-elseif ($job == 'cache_refresh_all') {
+elseif ($job == 'cache_delete_all' || $job == 'cache_refresh_all') {
 	echo head();
-	$dir = 'cache';
+	$dir = iif ($job == 'cache_refresh_all', 'classes/cache', 'cache');
 	if ($dh = @opendir($dir)) {
 		while (($file = readdir($dh)) !== false) {
 			if (strpos($file, '.inc.php') !== false) {
 				$file = str_replace('.inc.php', '', $file);
-				$cache = new CacheItem($file);
-				$data = $cache->delete();
+				$cache = $scache->load($file);
+				$cache->delete();
+				if ($job == 'cache_refresh_all') {
+					$cache->load();
+				}
 			}
 	    }
 		closedir($dh);
 	}
-	ok('admin.php?action=misc&job=cache', 'The cache-files were deleted. Therefore, this file will not be listed in the overview for the time being. If it is necessary the next time the cache will be rebuild and listed automatically into the overview.');
+	ok('admin.php?action=misc&job=cache', iif($job == 'cache_refresh_all', 'The cache-files were rebuilt.', 'The cache-files were deleted. They will be rebuild the next time they are needed.'));
 }
 elseif ($job == 'onlinestatus') {
 	echo head();
@@ -185,7 +220,7 @@ elseif ($job == 'feedcreator') {
 <form name="form" method="post" action="admin.php?action=misc&job=feedcreator_delete">
  <table class="border">
   <tr> 
-   <td class="obox" colspan="5">Feedcreator (<?php echo count($data); ?>)</b></td>
+   <td class="obox" colspan="5">Creation and Export of Newsfeeds (<?php echo count($data); ?>)</b></td>
   </tr>
   <tr>
    <td class="ubox" width="10%">Delete<br /><span class="stext"><input type="checkbox" onclick="check_all('delete[]');" name="all" value="1" /> All</span></td>
@@ -215,7 +250,7 @@ foreach ($data as $r) {
 <br>
 <form name="form2" method="post" enctype="multipart/form-data" action="admin.php?action=misc&job=feedcreator_add">
 <table class="border">
-<tr><td class="obox" colspan="2">Add Feedcreator</td></tr>
+<tr><td class="obox" colspan="2">Add new Feedcreator</td></tr>
 <tr class="mbox"><td>Upload file:<br /><span class="stext">permitted file types: .php<br />maximum file size: 200 KB</span></td><td><input type="file" name="upload" size="50" /></td></tr>
 <tr class="mbox"><td>Name:</td><td><input type="text" name="name" size="50" /></td></tr>
 <tr class="mbox"><td>Name of the class:<br /><span class="stext">If no value is mentioned Viscacha will try to filter the name itself.</span></td><td><input type="text" name="class" size="50" /></td></tr>
@@ -344,9 +379,9 @@ elseif ($job == "captcha") {
   <tr>
    <td class="mbox">
    <ul>
-   <li>Background pictures: <?php echo $noises; ?> <a class="button" href="admin.php?action=misc&amp;job=captcha_noises">administrate</a></li>
-   <li>Fonts: <?php echo $fonts; ?> <a class="button" href="admin.php?action=misc&amp;job=captcha_fonts">administrate</a></li>
-   <li><a href="admin.php?action=settings&amp;job=captcha">Settings</a></li>
+   <li style="padding: 3px;">Background pictures: <?php echo $noises; ?> <a class="button" href="admin.php?action=misc&amp;job=captcha_noises">administrate</a></li>
+   <li style="padding: 3px;">Fonts: <?php echo $fonts; ?> <a class="button" href="admin.php?action=misc&amp;job=captcha_fonts">administrate</a></li>
+   <li style="padding: 3px;"><a href="admin.php?action=settings&amp;job=captcha">Settings</a></li>
    </ul>
    </td>
   </tr>
@@ -388,7 +423,7 @@ elseif ($job == "captcha_noises") {
 <form action="admin.php?action=misc&job=captcha_noises_delete" name="form2" method="post">
  <table class="border">
   <tr> 
-   <td class="obox" colspan="3">Captcha Manager &raquo; background pictures</td>
+   <td class="obox" colspan="3">Captcha Manager &raquo; Background noises</td>
   </tr>
   <tr>
    <td class="ubox" width="10%">Delete<br /><span class="stext"><input type="checkbox" onclick="check_all('delete[]');" name="all" value="1" /> All</span></td>
@@ -408,7 +443,7 @@ elseif ($job == "captcha_noises") {
 <br />
 <form name="form2" method="post" enctype="multipart/form-data" action="admin.php?action=explorer&job=upload&cfg=captcha_noises">
  <table class="border" cellpadding="3" cellspacing="0" border="0">
-  <tr><td class="obox">Upload new font-files</td></tr>
+  <tr><td class="obox">Upload new background noises</td></tr>
   <tr>
    <td class="mbox">
 	To add a file, click on the "Browse"-button an select the file.

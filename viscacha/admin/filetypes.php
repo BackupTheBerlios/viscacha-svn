@@ -176,7 +176,10 @@ elseif ($job == 'manage') {
 	<form name="form" method="post" action="admin.php?action=filetypes&job=delete">
 	 <table class="border">
 	  <tr> 
-	   <td class="obox" colspan="7">Manage Filetypes</td>
+	   <td class="obox" colspan="7">
+		<span style="float: right;"><a class="button" href="admin.php?action=filetypes&amp;job=add">Add new File Type</a></span>
+		Manage Filetypes
+	   </td>
 	  </tr>
 	  <tr> 
 	   <td class="ubox" width="2%">Delete<br /><span class="stext"><input type="checkbox" onclick="check_all('delete[]');" name="all" value="1" /> All</span></td>

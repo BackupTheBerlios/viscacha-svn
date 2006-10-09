@@ -30,6 +30,10 @@ if (in_array('config', array_keys(array_change_key_case($_REQUEST)))) {
 
 // Gets a file with php-functions
 @include_once("classes/function.phpcore.php");
+// Filesystem
+require_once("classes/class.filesystem.php");
+$filesystem = new filesystem($config['ftp_server'], $config['ftp_user'], $config['ftp_pw'], $config['ftp_port']);
+$filesystem->set_wd($config['ftp_path']);
 // Variables
 require_once ("classes/function.gpc.php");
 /* 	Handling of _GET, _POST, _REQUEST, _COOKIE, _SERVER, _ENV
@@ -165,9 +169,6 @@ if ($config['avheight'] == 0) {
 	$config['avheight'] = 2048;
 }
 
-require_once("classes/class.filesystem.php");
-$filesystem = new filesystem($config['ftp_server'], $config['ftp_user'], $config['ftp_pw'], $config['ftp_port']);
-$filesystem->set_wd($config['ftp_path']);
 // Gets a file with php-functions
 @include_once("classes/function.chmod.php");
 // Permission and Logging Class

@@ -9,7 +9,13 @@ if ($job == 'newsletter') {
 <form name="form" method="post" action="admin.php?action=members&job=newsletter2">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr> 
-   <td class="obox" colspan="2"><b><span style="float: right;"><a class="button" href="admin.php?action=members&job=newsletter_archive">Newsletter-Archiv</a></span>Send newsletter</b></td>
+   <td class="obox" colspan="2">
+	<span style="float: right;">
+	<a class="button" href="admin.php?action=members&amp;job=emaillist">Export E-mail Addresses</a> 
+	<a class="button" href="admin.php?action=members&job=newsletter_archive">Newsletter Archive</a>
+	</span>
+	Send newsletter
+	</td>
   </tr>
   <tr> 
 	<td class="mbox" width="50%">Addressee:</td>
@@ -418,8 +424,9 @@ elseif ($job == 'manage') {
 		<tr> 
 		  <td class="obox" colspan="8">
 		  <span style="float: right;">
-		  <a class="button" href="admin.php?action=members&job=search">Search for Members</a>&nbsp;
-		  <a class="button" href="admin.php?action=members&job=merge">Merge Users</a>
+		  <a class="button" href="admin.php?action=members&amp;job=search">Search for Members</a> 
+		  <a class="button" href="admin.php?action=members&amp;job=memberrating">Memberratings</a> 
+		  <a class="button" href="admin.php?action=members&amp;job=merge">Merge Users</a>
 		  </span>
 		  List of Members &amp; User Manager</td>
 		</tr>
@@ -1782,7 +1789,7 @@ elseif ($job == 'ips') {
 				$ips = $db->query("SELECT DISTINCT ip FROM {$db->pre}replies WHERE name = '{$userid}' AND ip != '{$ipaddress}' AND ip != '' ORDER BY ip", __LINE__, __FILE__);
 				while ($ip = $db->fetch_assoc($ips)) {
 					?>
-					<li>
+					<li style="padding: 3px;">
 					<a href="admin.php?action=members&job=iphost&amp;ip=<?php echo $ip['ip']; ?>" title="Resolve Address"><?php echo $ip['ip']; ?></a> &nbsp;&nbsp;&nbsp;
 					<a class="button" href="admin.php?action=members&amp;job=ips&amp;ipaddress=<?php echo $ip['ip']; ?>">Find more Users with this IP Address</a>
 					</li>

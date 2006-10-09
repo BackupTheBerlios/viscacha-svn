@@ -797,7 +797,7 @@ elseif ($job == 'email') {
 	   <td class="mbox" width="50%"><input type="text" name="smtp_password" value="<?php echo $config['smtp_password']; ?>" size="50"></td> 
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">Block "Trash"-E-Mail Adresses:<br /><span class="stext">The Domains can be edited <a href="admin.php?action=misc&job=sessionmails">here</a>.</span></td>
+	   <td class="mbox" width="50%">Block "Trash"-E-Mail Addresses:<br /><span class="stext">The Domains can be edited <a href="admin.php?action=misc&job=sessionmails">here</a>.</span></td>
 	   <td class="mbox" width="50%"><input type="checkbox" name="sessionmails" value="1"<?php echo iif($config['sessionmails'] == 1,' checked="checked"'); ?>></td> 
 	  </tr>
 	  <tr>
@@ -1634,7 +1634,7 @@ elseif ($job == 'http') {
 	   <td class="mbox" width="50%"><input type="checkbox" name="nocache" value="1"<?php echo iif($config['nocache'],' checked'); ?>></td> 
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">Pefix for cookies:<br><font class="stext">Only characters (a-z) and "_"!</font></td>
+	   <td class="mbox" width="50%">Prefix for cookies:<br><font class="stext">Only characters (a-z) and "_"!</font></td>
 	   <td class="mbox" width="50%"><input type="text" size="10" name="cookie_prefix" value="<?php echo $config['cookie_prefix']; ?>"></td> 
 	  </tr>
 	  <tr> 
@@ -1881,26 +1881,27 @@ elseif ($job == 'spiders2') {
 }
 elseif ($job == 'version') {
 	echo head();
-	$comp = get_remote('http://version.viscacha.org/compare/?version='.base64_encode($config['version']));
-	$version = get_remote('http://version.viscacha.org/version');
-	$news = get_remote('http://version.viscacha.org/news');
-	if ($comp == '3') {
-		$res = "Your Viscacha is <strong>not up-to-date</strong>. The current version is {$version}!";
+	
+	$cache = $scache->load('version_check');
+	$data = $cache->get(60*60*24);
+	
+	if ($data['comp'] == '3') {
+		$res = "Your Viscacha is <strong>not up-to-date</strong>. The current version is {$data['version']}!";
 	}
-	elseif ($comp == '1') {
+	elseif ($data['comp'] == '1') {
 		$res = "Your Viscacha is a not yet approved test version.";
 	}
-	elseif ($comp == '2') {
+	elseif ($data['comp'] == '2') {
 		$res = "Your Viscacha is up-to-date!";
 	}
 	else {
 		$res = "Error on synchronization or no connection!";
 	}
-	if (!$news) {
-		$news = 'Could not connect to server.';
+	if (empty($data['news'])) {
+		$data['news'] = 'Could not connect to server.';
 	}
-	if (!$version) {
-		$version = 'No connection';
+	if (empty($data['version'])) {
+		$data['version'] = 'No connection';
 	}
 	?>
 	 <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
@@ -1911,7 +1912,7 @@ elseif ($job == 'version') {
 	   <td class="mmbox" width="25%">Your version:</td>
 	   <td class="mbox" width="25%"><?php echo $config['version']; ?></td>
 	   <td class="mmbox" width="25%">Current version:</td> 
-	   <td class="mbox" width="25%"><?php echo $version; ?></td>
+	   <td class="mbox" width="25%"><?php echo $data['version']; ?></td>
 	  </tr>
 	  <tr> 
 	   <td class="mbox" colspan="4"><?php echo $res; ?></td>
@@ -1922,7 +1923,7 @@ elseif ($job == 'version') {
 	   <td class="obox">Latest Announcement</td> 
 	  </tr>
 	  <tr> 
-	   <td class="mbox"><?php echo $news; ?></td>
+	   <td class="mbox"><?php echo $data['news']; ?></td>
 	  </tr>
 	 </table>
 	<?php
@@ -2173,165 +2174,392 @@ else {
 	echo head();
 	$result = $db->query("SELECT id, title, description FROM {$db->pre}settings_groups ORDER BY title");
 	?>
-<table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
- <tr> 
-  <td class="obox" colspan="2"><b>Viscacha Settings</b></td>
- </tr>
- <tr class="mbox"><td width="30%">
-  <a href="admin.php?action=settings&job=sitestatus">Switch Viscacha on or off</a>
- </td><td width="70%">
-  <span class="stext">Here you can temporarily deactivate the system for non-administrators to do maintenance work or updates.</span>
- </td></tr>
- <tr class="mbox"><td>
-  <a href="admin.php?action=settings&job=general">General Settings</a>
- </td><td>
-  <span class="stext">General settings like changing names or addresses.</span>
- </td></tr>
- <tr class="mbox"><td>
-  <a href="admin.php?action=settings&job=db">Datenbank</a>
- </td><td>
-  <span class="stext">Database configuration: Host, user, password, database, system etc.</span>
- </td></tr>
- <tr class="mbox"><td>
-  <a href="admin.php?action=settings&job=ftp">FTP</a>
- </td><td>
-  <span class="stext">FTP-User data: Host, user, password for FTP access, backups and file operations.</span>
- </td></tr>
- <tr class="mbox"><td>
-  <a href="admin.php?action=settings&job=datetime">Date- and Time</a>
- </td><td>
-  <span class="stext">Dateformat and timeoutput, timezone and something similar.</span>
- </td></tr>
- <tr class="mbox"><td>
-  <a href="admin.php?action=settings&job=cron">Scheduled Tasks</a>
- </td><td>
-  <span class="stext">"<a href="admin.php?action=cron&job=manage">Scheduled Tasks</a>" Settings.</span>
- </td></tr>
- <tr class="mbox"><td>
-  <a href="admin.php?action=settings&job=avupload">Profile pictures &amp; Avatars</a>
- </td><td>
-  <span class="stext">User pictures can be limited.</span>
- </td></tr>
- <tr class="mbox"><td>
-  <a href="admin.php?action=settings&job=attupload">Thread attachments</a>
- </td><td>
-  <span class="stext">Limits and settings for thread attachments.</span>
- </td></tr>
- <tr class="mbox"><td>
-  <a href="admin.php?action=settings&job=textprocessing">BB-Code &amp; Text processing</a>
- </td><td>
-  <span class="stext">BB-Code parser configuration (Wordwrap, pointing, censor ...)</span>
- </td></tr>
- <tr class="mbox"><td>
-  <a href="admin.php?action=settings&job=syndication">Syndication</a>
- </td><td>
-  <span class="stext">General settings for <a href="admin.php?action=misc&job=feedcreator">provided newsfeeds</a>(Javascript, RSS, Atom, Clipfolio).</span>
- </td></tr>
- <tr class="mbox"><td>
-  <a href="admin.php?action=settings&job=jabber">Jabber</a>
- </td><td>
-  <span class="stext">Jabber-Account settings and Jabber-delivery.</span>
- </td></tr>
- <tr class="mbox"><td>
-  <a href="admin.php?action=settings&job=spellcheck">Spellcheck</a>
- </td><td>
-  <span class="stext"><a href="admin.php?action=misc&job=spellcheck">Spell verification </a> settings.</span>
- </td></tr>
- <tr class="mbox"><td>
-  <a href="admin.php?action=settings&job=register">Registration</a>
- </td><td>
-  <span class="stext">Registration and Forum rules.</span>
- </td></tr>
- <tr class="mbox"><td>
-  <a href="admin.php?action=settings&job=email">E-mails</a>
- </td><td>
-  <span class="stext">E-mail-delivery (PHP, SMTP, Sendmail).</span>
- </td></tr>
- <tr class="mbox"><td>
-  <a href="admin.php?action=settings&job=lang">Internationalization &amp; Languages</a>
- </td><td>
-  <span class="stext">Internationalization (<a href="admin.php?action=language&job=manage">Languages</a> and character sets)</span>
- </td></tr>
- <tr class="mbox"><td>
-  <a href="admin.php?action=settings&job=profile">Profile (edit &amp; view)</a>
- </td><td>
-  <span class="stext">Profile settings. Minimum lengths, vCards etc.</span>
- </td></tr>
- <tr class="mbox"><td>
-  <a href="admin.php?action=settings&job=signature">Signatures</a>
- </td><td>
-  <span class="stext">Signature settings like BB-Code limits.</span>
- </td></tr>
- <tr class="mbox"><td>
-  <a href="admin.php?action=settings&job=posts">Topics &amp; Posts</a>
- </td><td>
-  <span class="stext">Minimum lengths and maximum lengths, PDF-output, editing and other settings for Threads an Topics.</span>
- </td></tr>
- <tr class="mbox"><td>
-  <a href="admin.php?action=settings&job=search">Search</a>
- </td><td>
-  <span class="stext">Search results and search settings.</span>
- </td></tr>
- <tr class="mbox"><td>
-  <a href="admin.php?action=settings&job=server">PHP, Webserver and Filesystem</a>
- </td><td>
-  <span class="stext">Webserver settings (.htaccess), PHP and files on the server.</span>
- </td></tr>
- <tr class="mbox"><td>
-  <a href="admin.php?action=settings&job=http">Headers, Cookies &amp; GZIP</a>
- </td><td>
-  <span class="stext">Cookies, Page compression and HTTP-Headers.</span>
- </td></tr>
- <tr class="mbox"><td>
-  <a href="admin.php?action=settings&job=session">Sessionsystem</a>
- </td><td>
-  <span class="stext">Flood blocking und Sessions in the Forum.</span>
- </td></tr>
- <tr class="mbox"><td>
-  <a href="admin.php?action=settings&job=boardcat">Forums &amp; categories</a>
- </td><td>
-  <span class="stext">Forums, subforums, statistics and categories.</span>
- </td></tr>
- <tr class="mbox"><td>
-  <a href="admin.php?action=settings&job=user">Member- &amp; Teamlist</a>
- </td><td>
-  <span class="stext">Member- &amp; Teamlist settings.</span>
- </td></tr>
- <tr class="mbox"><td>
-  <a href="admin.php?action=settings&job=pm">Private Messaging</a>
- </td><td>
-  <span class="stext">Private Messaging settings.</span>
- </td></tr>
- <tr class="mbox"><td>
-  <a href="admin.php?action=settings&job=captcha">Spam-Bot-Protection (CAPTCHA)</a>
- </td><td>
-  <span class="stext">Image based verification to prevent automatic registration or posting. Spam-Bot-Protection with <a href="admin.php?action=misc&job=captcha">CAPTCHA</a>-Images.</span>
- </td></tr>
- <tr class="mbox"><td>
-  <a href="admin.php?action=settings&job=spiders">Crawler &amp; Robots</a>
- </td><td>
-  <span class="stext">Logging of Crawlers and Robots that have visited the site.</span>
- </td></tr>
- <tr class="mbox"><td>
-  <a href="admin.php?action=settings&job=cmsp">CMS &amp; Portal</a>
- </td><td>
-  <span class="stext">Portal, homepage and site administration.</span>
- </td></tr>
-</table>
-<?php if ($db->num_rows($result)) { ?>
-</table><br class="minibr" />
-<table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
- <tr> 
-  <td class="obox" colspan="3"><b>Custom Settings</b></td>
- </tr>
- <?php while ($row = $db->fetch_assoc($result)) { ?>
- <tr class="mbox">
-  <td width="30%"><a href="admin.php?action=settings&job=custom&id=<?php echo $row['id']; ?>"><?php echo $row['title']; ?></a></td>
-  <td width="60%" class="stext"><?php echo $row['description']; ?></td>
-  <td width="10%"><a href="admin.php?action=settings&job=delete_group&id=<?php echo $row['id']; ?>">Delete Group</a></td>
- </tr>
- <?php } ?>
-</table>
+	<table class="border">
+	  <tr>
+		<td colspan="3" class="obox">Viscacha Settings</td>
+	  </tr>
+	  <tr class="ubox">
+		<td width="27%">Sections</td>
+		<td width="50%">Description</td>
+	    <td width="23%">Related Management Tools</td>
+	  </tr>
+	  <tr class="mbox">
+		<td nowrap="nowrap"><a href="admin.php?action=settings&amp;job=sitestatus">Switch Viscacha on or off</a></td>
+		<td class="stext">Here you can temporarily deactivate the system for non-administrators to do maintenance work or updates. Current website status: <b><?php echo iif($config['foffline'] == 1, 'Offline', 'Online'); ?></b></td>
+	    <td nowrap="nowrap">None</td>
+	  </tr>
+	  <tr class="mbox">
+		<td nowrap="nowrap"><a href="admin.php?action=settings&amp;job=attupload">Attachments</a></td>
+		<td class="stext">Topic and post attachments: file size, file types, thumbnails, ...</td>
+		<td nowrap="nowrap">
+		  <form name="act" action="admin.php?action=locate" method="post">
+		    <select style="width: 80%" size="1" name="url" onchange="locate(this.value)">
+		      <option value="" style="font-weight: bold;">-- Tools --</option>
+		  	  <option value="admin.php?action=filetypes&job=manage">File Type Manager</option>
+		     </select> <input style="width: 18%" type="submit" value="Go">
+		  </form>
+		</td>
+	  </tr>
+	  <tr class="mbox">
+		<td nowrap="nowrap"><a href="admin.php?action=settings&amp;job=textprocessing">BB-Code &amp; Text processing</a></td>
+		<td class="stext">BB-Codes, Wordwrap, Smileys, Censor, Glossary, Vocabulary, ...</td>
+		<td nowrap="nowrap">
+		  <form name="act" action="admin.php?action=locate" method="post">
+		    <select style="width: 80%" size="1" name="url" onchange="locate(this.value)">
+		      <option value="" style="font-weight: bold;">-- Tools --</option>
+		  	  <option value="admin.php?action=bbcodes&job=smileys">Smiley Manager</option>
+		  	  <option value="admin.php?action=bbcodes&job=word">Glossary Manager</option>
+		  	  <option value="admin.php?action=bbcodes&job=censor">Vocabulary Manager</option>
+		  	  <option value="admin.php?action=bbcodes&job=codefiles">Syntax Highlighting Manager</option>
+		  	  <option value="admin.php?action=bbcodes&job=custombb">Custom BB Code Manager</option>
+		  	  <option value="admin.php?action=bbcodes&job=custombb_test">Test BB Codes</option>
+		     </select> <input style="width: 18%" type="submit" value="Go">
+		  </form>
+		</td>
+	  </tr>
+	  <tr class="mbox">
+		<td nowrap="nowrap"><a href="admin.php?action=settings&amp;job=cmsp">CMS &amp; Portal</a></td>
+		<td class="stext">Portal, homepage and content management.</td>
+		<td>
+		  <form name="act" action="admin.php?action=locate" method="post">
+		    <select style="width: 80%" size="1" name="url" onchange="locate(this.value)">
+		      <option value="" style="font-weight: bold;">-- Tools --</option>
+		  	  <option value="admin.php?action=cms&job=nav">Navigation Manager</option>
+		  	  <option value="admin.php?action=cms&job=com">Component Manager</option>
+		  	  <option value="admin.php?action=cms&job=plugins">PlugIn Manager</option>
+		  	  <option value="admin.php?action=cms&job=doc">Documents & Pages</option>
+		  	  <option value="admin.php?action=explorer">File Manager</option>
+		     </select> <input style="width: 18%" type="submit" value="Go">
+		  </form>
+		</td>
+	  </tr>
+	  <tr class="mbox">
+		<td nowrap="nowrap"><a href="admin.php?action=settings&amp;job=spiders">Crawler &amp; Robots</a></td>
+		<td class="stext">Logging of visits, missing IPs and missing User Agents of Crawlers and Robots.</td>
+		<td>
+		  <form name="act" action="admin.php?action=locate" method="post">
+		    <select style="width: 80%" size="1" name="url" onchange="locate(this.value)">
+		      <option value="" style="font-weight: bold;">-- Tools --</option>
+		  	  <option value="admin.php?action=spider&amp;job=manage">Crawler &amp; Robot Manager</option>
+		  	  <option value="admin.php?action=spider&amp;job=pending">Pending Robots</option>
+		  	  <option value="admin.php?action=spider&amp;job=add">Add new Robot</option>
+		     </select> <input style="width: 18%" type="submit" value="Go">
+		  </form>
+		</td>
+	  </tr>
+	  <tr class="mbox">
+		<td nowrap="nowrap"><a href="admin.php?action=settings&amp;job=datetime">Date and Time</a></td>
+		<td class="stext">Dateformat and timeoutput, timezone and something similar.</td>
+		<td>None</td>
+	  </tr>
+	  <tr class="mbox">
+		<td nowrap="nowrap"><a href="admin.php?action=settings&amp;job=db">Database</a></td>
+		<td class="stext">Database configuration: Host, user, password, database, system etc.</td>
+		<td>
+		  <form name="act" action="admin.php?action=locate" method="post">
+		    <select style="width: 80%" size="1" name="url" onchange="locate(this.value)">
+		      <option value="" style="font-weight: bold;">-- Tools --</option>
+		  	  <option value="admin.php?action=db&amp;job=backup">Backup</option>
+		  	  <option value="admin.php?action=db&amp;job=restore">Restore</option>
+		  	  <option value="admin.php?action=db&amp;job=optimize">Optimize &amp; Repair Tables</option>
+		  	  <option value="admin.php?action=db&amp;job=execute">Execute SQL Queries</option>
+		  	  <option value="admin.php?action=db&amp;job=status">Status &amp; Database</option>
+		  	  <option value="admin.php?action=slog&amp;job=l_mysqlerror">MySQL Error Log</option>
+		     </select> <input style="width: 18%" type="submit" value="Go">
+		  </form>
+		</td>
+	  </tr>
+	  <tr class="mbox">
+		<td nowrap="nowrap"><a href="admin.php?action=settings&amp;job=email">E-mail Options</a></td>
+		<td class="stext">E-mail-delivery: PHP, SMTP, Sendmail</td>
+		<td>
+		  <form name="act" action="admin.php?action=locate" method="post">
+		    <select style="width: 80%" size="1" name="url" onchange="locate(this.value)">
+		      <option value="" style="font-weight: bold;">-- Tools --</option>
+		  	  <option value="admin.php?action=misc&amp;job=sessionmails">Trash-E-Mail addresses</option>
+		  	  <option value="admin.php?action=members&amp;job=newsletter">Newsletter Manager</option>
+		  	  <option value="admin.php?action=members&amp;job=emaillist">Export E-mail Addresses</option>
+		  	  <option value="admin.php?action=language&amp;job=lang_emails&amp;id=<?php echo $config['langdir']; ?>">E-mail-texts (only default language)</option>
+		     </select> <input style="width: 18%" type="submit" value="Go">
+		  </form>
+		</td>
+	  </tr>
+	  <tr class="mbox">
+		<td nowrap="nowrap"><a href="admin.php?action=settings&amp;job=boardcat">Forums &amp; categories</a></td>
+		<td class="stext">Forums, subforums, statistics and categories.</td>
+		<td>
+		<form name="act" action="admin.php?action=locate" method="post">
+		    <select style="width: 80%" size="1" name="url" onchange="locate(this.value)">
+		      <option value="" style="font-weight: bold;">-- Tools --</option>
+		  	  <option value="admin.php?action=forums&amp;job=manage">Forum &amp; Category Manager</option>
+		  	  <option value="admin.php?action=forums&amp;job=mods">Moderator Manager</option>
+		  	  <option value="admin.php?action=forums&amp;job=cat_add">Add new Category</option>
+		  	  <option value="admin.php?action=forums&amp;job=forum_add">Add new Forum</option>
+		  	  <option value="admin.php?action=forums&amp;job=mods_add">Add Moderator</option>
+		     </select> <input style="width: 18%" type="submit" value="Go">
+		  </form>
+		</td>
+	  </tr>
+	  <tr class="mbox">
+		<td nowrap="nowrap"><a href="admin.php?action=settings&amp;job=ftp">FTP</a></td>
+		<td class="stext">FTP-User data: Host, user, password for FTP access, backups and file operations.</td>
+		<td>
+		  <form name="act" action="admin.php?action=locate" method="post">
+		    <select style="width: 80%" size="1" name="url" onchange="locate(this.value)">
+		      <option value="" style="font-weight: bold;">-- Tools --</option>
+		  	  <option value="admin.php?action=explorer">File Manager</option>
+		     </select> <input style="width: 18%" type="submit" value="Go">
+		  </form>
+		</td>
+	  </tr>
+	  <tr class="mbox">
+		<td nowrap="nowrap"><a href="admin.php?action=settings&amp;job=general">General Settings</a></td>
+		<td class="stext">General settings like changing names or addresses.</td>
+		<td>None</td>
+	  </tr>
+	  <tr class="mbox">
+		<td nowrap="nowrap"><a href="admin.php?action=settings&amp;job=http">HTTP, Cookies &amp; Compression</a></td>
+		<td class="stext">Cookies, Page compression and HTTP-Headers.</td>
+		<td>None</td>
+	  </tr>
+	  <tr class="mbox">
+		<td nowrap="nowrap"><a href="admin.php?action=settings&amp;job=lang">Internationalization &amp; Languages</a></td>
+		<td class="stext">Internationalization (<a href="admin.php?action=language&amp;job=manage">Languages</a> and character sets)</td>
+		<td>
+		  <form name="act" action="admin.php?action=locate" method="post">
+		    <select style="width: 80%" size="1" name="url" onchange="locate(this.value)">
+		      <option value="" style="font-weight: bold;">-- Tools --</option>
+		  	  <option value="admin.php?action=language&amp;job=manage">Language Manager</option>
+		  	  <option value="admin.php?action=language&amp;job=import">Import Language</option>
+		  	  <option value="admin.php?action=language&amp;job=phrase">Phrase Manager</option>
+		     </select> <input style="width: 18%" type="submit" value="Go">
+		  </form>
+		</td>
+	  </tr>
+	  <tr class="mbox">
+		<td nowrap="nowrap"><a href="admin.php?action=settings&amp;job=jabber">Jabber</a></td>
+		<td class="stext">Jabber-Account settings and Jabber-delivery.</td>
+		<td>None</td>
+	  </tr>
+	  <tr class="mbox">
+		<td nowrap="nowrap"><a href="admin.php?action=settings&amp;job=user">Member List &amp; Team List</a></td>
+		<td class="stext">Member- &amp; Teamlist settings.</td>
+		<td>
+		  <form name="act" action="admin.php?action=locate" method="post">
+		    <select style="width: 80%" size="1" name="url" onchange="locate(this.value)">
+		      <option value="" style="font-weight: bold;">-- Tools --</option>
+		  	  <option value="admin.php?action=members&amp;job=manage">Manage Member</option>
+		  	  <option value="admin.php?action=members&amp;job=search">Search for Members</option>
+		  	  <option value="admin.php?action=members&amp;job=memberrating">Memberratings</option>
+		  	  <option value="admin.php?action=members&amp;job=activate">Moderate/Unlock Members</option>
+		  	  <option value="admin.php?action=groups&amp;job=manage">Usergroup Manager</option>
+		  	  <option value="admin.php?action=profilefield&amp;job=manage">Profile Field Manager</option>
+		  	  <option value="admin.php?action=members&amp;job=ips">Search IP Addresses</option>
+		  	  <option value="admin.php?action=members&amp;job=banned">Blocked IP Addresses</option>
+		  	  <option value="admin.php?action=forums&amp;job=mods">Moderator Manager</option>
+		  	  <option value="admin.php?action=members&amp;job=newsletter">Newsletter Manager</option>
+		  	  <option value="admin.php?action=members&amp;job=emaillist">Export E-mail Addresses</option>
+		     </select> <input style="width: 18%" type="submit" value="Go">
+		  </form>
+		</td>
+	  </tr>
+	  <tr class="mbox">
+		<td nowrap="nowrap"><a href="admin.php?action=settings&amp;job=server">Webserver &amp; PHP</a></td>
+		<td class="stext">Webserver settings (.htaccess), PHP and files on the server.</td>
+		<td>
+		  <form name="act" action="admin.php?action=locate" method="post">
+		    <select style="width: 80%" size="1" name="url" onchange="locate(this.value)">
+		      <option value="" style="font-weight: bold;">-- Tools --</option>
+		  	  <option value="admin.php?action=explorer">File Manager</option>
+		  	  <option value="admin.php?action=misc&amp;job=phpinfo">PHP Info</option>
+		  	  <option value="admin.php?action=misc&amp;job=cache">Cache Manager</option>
+		     </select> <input style="width: 18%" type="submit" value="Go">
+		  </form>
+		</td>
+	  </tr>
+	  <tr class="mbox">
+		<td nowrap="nowrap"><a href="admin.php?action=settings&amp;job=pm">Private Messaging</a></td>
+		<td class="stext">Private Messaging settings.</td>
+		<td>
+		  <form name="act" action="admin.php?action=locate" method="post">
+		    <select style="width: 80%" size="1" name="url" onchange="locate(this.value)">
+		      <option value="" style="font-weight: bold;">-- Tools --</option>
+			  <option value="admin.php?action=slog&job=s_general">Private Message Statistics</option>
+		     </select> <input style="width: 18%" type="submit" value="Go">
+		  </form>
+		</td>
+	  </tr>
+	  <tr class="mbox">
+		<td nowrap="nowrap"><a href="admin.php?action=settings&amp;job=profile">Profile (View &amp; Edit)</a></td>
+		<td class="stext">Profile settings. Fields Lengths, vCards and more.</td>
+		<td>
+		  <form name="act" action="admin.php?action=locate" method="post">
+		    <select style="width: 80%" size="1" name="url" onchange="locate(this.value)">
+		      <option value="" style="font-weight: bold;">-- Tools --</option>
+		  	  <option value="admin.php?action=members&amp;job=manage">Manage Member</option>
+		  	  <option value="admin.php?action=members&amp;job=search">Search for Members</option>
+		  	  <option value="admin.php?action=profilefield&amp;job=manage">Profile Field Manager</option>
+		  	  <option value="admin.php?action=misc&amp;job=onlinestatus">Online Status Indication</option>
+		     </select> <input style="width: 18%" type="submit" value="Go">
+		  </form>
+		</td>
+	  </tr>
+	  <tr class="mbox">
+		<td nowrap="nowrap"><a href="admin.php?action=settings&amp;job=avupload">Profile pictures (Avatars)</a></td>
+		<td class="stext">User pictures can be limited.</td>
+		<td>
+		  <form name="act" action="admin.php?action=locate" method="post">
+		    <select style="width: 80%" size="1" name="url" onchange="locate(this.value)">
+		      <option value="" style="font-weight: bold;">-- Tools --</option>
+		  	  <option value="admin.php?action=members&amp;job=manage">Manage Member</option>
+		  	  <option value="admin.php?action=members&amp;job=search">Search for Members</option>
+		     </select> <input style="width: 18%" type="submit" value="Go">
+		  </form>
+		</td>
+	  </tr>
+	  <tr class="mbox">
+		<td nowrap="nowrap"><a href="admin.php?action=settings&amp;job=register">Registration</a></td>
+		<td class="stext">Registration and Forum rules.</td>
+		<td>
+		  <form name="act" action="admin.php?action=locate" method="post">
+		    <select style="width: 80%" size="1" name="url" onchange="locate(this.value)">
+		      <option value="" style="font-weight: bold;">-- Tools --</option>
+		  	  <option value="admin.php?action=misc&amp;job=captcha">Captcha Manager</option>
+		  	  <option value="admin.php?action=misc&amp;job=sessionmails">Trash-E-Mail adresses</option>
+		  	  <option value="admin.php?action=slog&job=s_general">Registration Statistics</option>
+		  	  <option value="admin.php?action=language&amp;job=lang_rules&amp;id=<?php echo $config['langdir']; ?>">Terms of behaviour (only default language)</option>
+		     </select> <input style="width: 18%" type="submit" value="Go">
+		  </form>
+		</td>
+	  </tr>
+	  <tr class="mbox">
+		<td nowrap="nowrap"><a href="admin.php?action=settings&amp;job=cron">Scheduled Tasks (Cron Jobs)</a></td>
+		<td class="stext">Settings related to the <a href="admin.php?action=cron&amp;job=manage">Scheduled Tasks</a> (Cron Jobs).</td>
+		<td>
+		  <form name="act" action="admin.php?action=locate" method="post">
+		    <select style="width: 80%" size="1" name="url" onchange="locate(this.value)">
+		      <option value="" style="font-weight: bold;">-- Tools --</option>
+		  	  <option value="admin.php?action=cron&amp;job=manage">Scheduled Tasks Manager</option>
+		  	  <option value="admin.php?action=cron&amp;job=add">Add new Task</option>
+		  	  <option value="admin.php?action=slog&amp;job=l_cron">Scheduled Tasks Log</option>
+		     </select> <input style="width: 18%" type="submit" value="Go">
+		  </form>
+		</td>
+	  </tr>
+	  <tr class="mbox">
+		<td nowrap="nowrap"><a href="admin.php?action=settings&amp;job=search">Search</a></td>
+		<td class="stext">Search results and search settings.</td>
+		<td>
+		  <form name="act" action="admin.php?action=locate" method="post">
+		    <select style="width: 80%" size="1" name="url" onchange="locate(this.value)">
+		      <option value="" style="font-weight: bold;">-- Tools --</option>
+		  	  <option value="admin.php?action=language&amp;job=lang_ignore&amp;id=<?php echo $config['langdir']; ?>">Ignored search words (only default language)</option>
+		     </select> <input style="width: 18%" type="submit" value="Go">
+		  </form>
+		</td>
+	  </tr>
+	  <tr class="mbox">
+		<td nowrap="nowrap"><a href="admin.php?action=settings&amp;job=session">Sessionsystem</a></td>
+		<td class="stext">Flood blocking und Sessions in the Forum.</td>
+		<td>
+		  <form name="act" action="admin.php?action=locate" method="post">
+		    <select style="width: 80%" size="1" name="url" onchange="locate(this.value)">
+		      <option value="" style="font-weight: bold;">-- Tools --</option>
+		  	  <option value="admin.php?action=groups&amp;job=manage">Usergroup Manager</option>
+		     </select> <input style="width: 18%" type="submit" value="Go">
+		  </form>
+		</td>
+	  </tr>
+	  <tr class="mbox">
+		<td nowrap="nowrap"><a href="admin.php?action=settings&amp;job=signature">Signatures</a></td>
+		<td class="stext">Signature settings like BB-Code limits.</td>
+		<td>
+		  <form name="act" action="admin.php?action=locate" method="post">
+		    <select style="width: 80%" size="1" name="url" onchange="locate(this.value)">
+		      <option value="" style="font-weight: bold;">-- Tools --</option>
+		  	  <option value="admin.php?action=members&amp;job=manage">Manage Member</option>
+		  	  <option value="admin.php?action=members&amp;job=search">Search for Members</option>
+		     </select> <input style="width: 18%" type="submit" value="Go">
+		  </form>
+		</td>
+	  </tr>
+	  <tr class="mbox">
+		<td nowrap="nowrap"><a href="admin.php?action=settings&amp;job=captcha">Spam-Bot-Protection</a></td>
+		<td class="stext">Image based verification to prevent automatic registration or posting. Spam-Bot-Protection with <a href="admin.php?action=misc&amp;job=captcha">CAPTCHA</a>-Images.</td>
+		<td>
+		  <form name="act" action="admin.php?action=locate" method="post">
+		    <select style="width: 80%" size="1" name="url" onchange="locate(this.value)">
+		      <option value="" style="font-weight: bold;">-- Tools --</option>
+		  	  <option value="admin.php?action=misc&amp;job=captcha_noises">Captcha Background Noises</option>
+		  	  <option value="admin.php?action=misc&amp;job=captcha_fonts">Captcha Fonts</option>
+		     </select> <input style="width: 18%" type="submit" value="Go">
+		  </form>
+		</td>
+	  </tr>
+	  <tr class="mbox">
+		<td nowrap="nowrap"><a href="admin.php?action=settings&amp;job=spellcheck">Spell Check</a></td>
+		<td class="stext">Settings related to the <a href="admin.php?action=misc&amp;job=spellcheck">Spell Check</a> feature.</td>
+		<td>
+		  <form name="act" action="admin.php?action=locate" method="post">
+		    <select style="width: 80%" size="1" name="url" onchange="locate(this.value)">
+		      <option value="" style="font-weight: bold;">-- Tools --</option>
+		  	  <option value="admin.php?action=misc&amp;job=spellcheck">Spell Check Manager</option>
+		     </select> <input style="width: 18%" type="submit" value="Go">
+		  </form>
+		</td>
+	  </tr>
+	  <tr class="mbox">
+		<td nowrap="nowrap"><a href="admin.php?action=settings&amp;job=syndication">Syndication</a></td>
+		<td class="stext">General settings for <a href="admin.php?action=misc&amp;job=feedcreator">provided newsfeeds</a> (Javascript, RSS, Atom, Klipfolio).</td>
+		<td>
+		  <form name="act" action="admin.php?action=locate" method="post">
+		    <select style="width: 80%" size="1" name="url" onchange="locate(this.value)">
+		      <option value="" style="font-weight: bold;">-- Tools --</option>
+		  	  <option value="admin.php?action=cms&amp;job=feed">Import Feeds</option>
+		  	  <option value="admin.php?action=misc&amp;job=feedcreator">Export/Create Feeds</option>
+		     </select> <input style="width: 18%" type="submit" value="Go">
+		  </form>
+		</td>
+	  </tr>
+	  <tr class="mbox">
+		<td nowrap="nowrap"><a href="admin.php?action=settings&amp;job=posts">Topics &amp; Posts</a></td>
+		<td class="stext">Minimum lengths and maximum lengths, PDF-output, editing and other settings for Threads an Topics.</td>
+		<td>
+		  <form name="act" action="admin.php?action=locate" method="post">
+		    <select style="width: 80%" size="1" name="url" onchange="locate(this.value)">
+		      <option value="" style="font-weight: bold;">-- Tools --</option>
+		  	  <option value="admin.php?action=posts&job=postrating">Postratings</option>
+		  	  <option value="admin.php?action=slog&job=s_general">Topic &amp; Posts Statistics</option>
+		     </select> <input style="width: 18%" type="submit" value="Go">
+		  </form>
+		</td>
+	  </tr>
+	</table>
+<?php if ($db->num_rows($result) > 0) { ?>
+	<br class="minibr" />
+	<table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
+	 <tr> 
+	  <td class="obox" colspan="3">
+	  <span style="float: right;">
+		<a class="button" href="admin.php?action=settings&amp;job=new">Add new Setting</a> 
+		<a class="button" href="admin.php?action=settings&amp;job=new_group">Add Setting Group</a>
+	  </span>
+	  Custom Settings
+	  </td>
+	 </tr>
+	 <tr class="ubox">
+	  <td nowrap="nowrap" width="27%">Sections</td>
+	  <td class="stext" width="50%">Description</td>
+	  <td nowrap="nowrap" width="23%">Options</td>
+	 </tr>
+	 <?php while ($row = $db->fetch_assoc($result)) { ?>
+	 <tr class="mbox">
+	  <td nowrap="nowrap"><a href="admin.php?action=settings&job=custom&id=<?php echo $row['id']; ?>"><?php echo $row['title']; ?></a></td>
+	  <td class="stext"><?php echo $row['description']; ?></td>
+	  <td nowrap="nowrap"><a class="button" href="admin.php?action=settings&job=delete_group&id=<?php echo $row['id']; ?>">Delete Group</a></td>
+	 </tr>
+	 <?php } ?>
+	</table>
 	<?php
 	}
 	echo foot();

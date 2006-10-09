@@ -432,7 +432,12 @@ elseif ($job == 'pending') {
 elseif (empty($job) || $job == 'manage') {
 	?>
 	<table border="0" align="center" class="border">
-	<tr><td class="obox">Manage Bots</td></tr>
+	<tr><td class="obox">
+	<span style="float: right;">
+	<a class="button" href="admin.php?action=spider&amp;job=add" target="Main">Add new Robot</a>
+	</span>
+	Manage Bots
+	</td></tr>
 	<tr><td class="mbox">
 	<p>Bots (also known as crawlers or spiders) are automated agents most commonly used to index information on the internet. Very few of these bots support sessions and can therefore fail to index your site correctly. Here you can define the assigning of session ids to these bots to solve this problem.</p>
 	<?php if ($config['spider_logvisits'] == 0) { ?>

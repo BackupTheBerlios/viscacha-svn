@@ -10,6 +10,9 @@ body {
 form {
 	margin: 0px;
 }
+em, i {
+	margin-right: 2px;
+}
 hr {
     height: 1px;
     border: 0; 

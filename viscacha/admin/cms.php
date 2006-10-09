@@ -3262,7 +3262,7 @@ elseif ($job == 'feed') {
 <form name="form" method="post" action="admin.php?action=cms&job=feed_delete">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr> 
-   <td class="obox" colspan="5"><span style="float: right;"><a class="button" href="admin.php?action=cms&job=feed_add">Add a new Newsfeed</a></span>Newsfeed Syndication</td>
+   <td class="obox" colspan="5"><span style="float: right;"><a class="button" href="admin.php?action=cms&job=feed_add">Add a new Newsfeed</a></span>Import of Newsfeeds (<?php echo $db->num_rows(); ?>)</td>
   </tr>
   <tr>
    <td class="ubox" width="5%">Delete<br /><span class="stext"><input type="checkbox" onclick="check_all('delete[]');" name="all" value="1" /> All</span></td>

@@ -1,3 +1,4 @@
+<?php $filesystem->file_put_contents('./locked.txt', ''); ?>
 <div class="bbody">
 <p>The update is completed. You can visit the Admin Control Panel with your username ans password. 
 Please go through the settings, templates, language packs ... and change all things to fit your needs. 

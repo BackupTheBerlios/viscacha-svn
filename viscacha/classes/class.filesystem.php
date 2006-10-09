@@ -88,20 +88,25 @@ class filesystem {
 		if (is_array($data)) {
 			$data = implode("\n", $data);
 		}
-		if (@file_put_contents($file, $data) == false) {
-			$fp = tmpfile();
-			if (!is_resource($fp)) {
+		if (file_put_contents($file, $data) == false) {
+			if ($this->init()) {
+				$fp = tmpfile();
+				if (!is_resource($fp)) {
+					return false;
+				}
+				fwrite($fp, $data);
+				fseek($fp, 0);
+				if ($this->ftp->put(&$fp, $file) == false) {
+					return false;
+				}
+				if (is_resource($fp)) {
+					fclose($fp);
+				}
+				return true;
+			}
+			else {
 				return false;
 			}
-			fwrite($fp, $data);
-			fseek($fp, 0);
-			if ($this->ftp->put(&$fp, $file) == false) {
-				return false;
-			}
-			if (is_resource($fp)) {
-				fclose($fp);
-			}
-			return true;
 		}
 		else {
 			return true;

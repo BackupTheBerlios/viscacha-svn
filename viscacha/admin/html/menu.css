@@ -33,12 +33,21 @@ img {
 	vertical-align: middle;
 }
 ul, .boxbody {
-	margin: 2px;
+	margin: 0px;
 	list-style-type: none;
 	text-align: left;
 	padding: 0px;
 }
-ul li, .boxobdy {
+ul li {
+	display: block;
+	border-bottom: 1px solid #F7F8F9;
+	padding: 2px;
+}
+ul li:hover {
+	background-color: #F7F8F9;
+	border-bottom: 1px solid #A40000;
+}
+ul li, .boxbody {
 	font-size: 9pt;
 }
 .stext {

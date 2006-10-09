@@ -510,12 +510,19 @@ elseif ($job == 'status') {
 	   <td class="obox">Table of Contents</td>
 	  </tr>
 	  <tr> 
-	   <td class="mbox"><ul>
-		<?php foreach ($result as $row) { ?>
-		<li><a href="admin.php?action=db&amp;job=status&amp;table=<?php echo $row; ?>">Table Information: <?php echo $row; ?></a></li>
-		<?php } ?>
+	   <td class="mbox">
+	   <strong>Server Information</strong>:<br />
+	   <ul>
 		<li><a href="admin.php?action=db&amp;job=status&amp;status=1#sv">Server Variables</a></li>
 		<li><a href="admin.php?action=db&amp;job=status&amp;status=1#ssi">Server Status Information</a></li>
+	   </ul>
+	   <br />
+	   <strong>Table Information</strong>:<br />
+	   <ul>
+		<?php foreach ($result as $row) { ?>
+		<li><a href="admin.php?action=db&amp;job=status&amp;table=<?php echo $row; ?>"><?php echo $row; ?></a></li>
+		<?php } ?>
+	   </ul>
 	   </td>
 	  </tr>  
 	  </table>

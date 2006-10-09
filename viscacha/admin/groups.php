@@ -19,7 +19,10 @@ if ($job == 'manage') {
 <form name="form" method="post" action="admin.php?action=groups&job=delete">
  <table class="border">
   <tr> 
-   <td class="obox" colspan="<?php echo $colspan+4; ?>">Usergroup Manager</td>
+   <td class="obox" colspan="<?php echo $colspan+4; ?>">
+	<span style="float: right;"><a class="button" href="admin.php?action=groups&job=add">Add new Usergroup</a></span>
+	Usergroup Manager
+  </td>
   </tr>
   <tr class="ubox">
   	<?php if ($delete == 1) { ?><td valign="bottom"><b>Delete</b></td><?php } ?>

@@ -22,7 +22,10 @@ if ($job == 'manage') {
 	?>
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr> 
-   <td class="obox" colspan="6">Language Files</td>
+   <td class="obox" colspan="6">
+    <span style="float: right;"><a class="button" href="admin.php?action=language&amp;job=import" target="Main">Import Language</a></span>
+	Language Files
+   </td>
   </tr>
   <tr>
    <td class="ubox" width="18%">Language</td>

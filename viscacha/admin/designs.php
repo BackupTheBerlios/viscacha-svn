@@ -101,7 +101,7 @@ elseif ($job == 'design_edit') {
 	$templates = array();
 	$d = dir($dir);
 	while (false !== ($entry = $d->read())) {
-		if (is_dir($dir.$entry) && preg_match('/^\d{1,}$/', $entry) && $entry != '.' && $entry != '..') {
+		if ($entry != '..' && $entry != '.' && preg_match('/^\d{1,}$/', $entry) && is_dir($dir.$entry)) {
 			$templates[] = $entry;
 		}
 	}
@@ -111,7 +111,7 @@ elseif ($job == 'design_edit') {
 	$images = array();
 	$d = dir($dir);
 	while (false !== ($entry = $d->read())) {
-		if (is_dir($dir.$entry) && preg_match('/^\d{1,}$/', $entry) && $entry != '.' && $entry != '..') {
+		if ($entry != '..' && $entry != '.' && preg_match('/^\d{1,}$/', $entry) && is_dir($dir.$entry)) {
 			$images[] = $entry;
 		}
 	}
@@ -121,7 +121,7 @@ elseif ($job == 'design_edit') {
 	$stylesheet = array();
 	$d = dir($dir);
 	while (false !== ($entry = $d->read())) {
-		if (is_dir($dir.$entry) && preg_match('/^\d{1,}$/', $entry) && $entry != '.' && $entry != '..') {
+		if ($entry != '..' && $entry != '.' && preg_match('/^\d{1,}$/', $entry) && is_dir($dir.$entry)) {
 			$stylesheet[] = $entry;
 		}
 	}
@@ -225,7 +225,7 @@ elseif ($job == 'design_add') {
 	$templates = array();
 	$d = dir($dir);
 	while (false !== ($entry = $d->read())) {
-		if (is_dir($dir.$entry) && preg_match('/^\d{1,}$/', $entry) && $entry != '.' && $entry != '..') {
+		if ($entry != '..' && $entry != '.' && preg_match('/^\d{1,}$/', $entry) && is_dir($dir.$entry)) {
 			$templates[] = $entry;
 		}
 	}
@@ -235,7 +235,7 @@ elseif ($job == 'design_add') {
 	$images = array();
 	$d = dir($dir);
 	while (false !== ($entry = $d->read())) {
-		if (is_dir($dir.$entry) && preg_match('/^\d{1,}$/', $entry) && $entry != '.' && $entry != '..') {
+		if ($entry != '..' && $entry != '.' && preg_match('/^\d{1,}$/', $entry) && is_dir($dir.$entry)) {
 			$images[] = $entry;
 		}
 	}
@@ -245,7 +245,7 @@ elseif ($job == 'design_add') {
 	$stylesheet = array();
 	$d = dir($dir);
 	while (false !== ($entry = $d->read())) {
-		if (is_dir($dir.$entry) && preg_match('/^\d{1,}$/', $entry) && $entry != '.' && $entry != '..') {
+		if ($entry != '..' && $entry != '.' && preg_match('/^\d{1,}$/', $entry) && is_dir($dir.$entry)) {
 			$stylesheet[] = $entry;
 		}
 	}
@@ -606,7 +606,7 @@ elseif ($job == 'templates') {
   </tr>
   <?php 
 	while (false !== ($entry = $d->read())) {
-		if (is_dir($dir.$entry) && preg_match('/^\d{1,}$/', $entry) && $entry != '.' && $entry != '..') {
+		if ($entry != '..' && $entry != '.' && preg_match('/^\d{1,}$/', $entry) && is_dir($dir.$entry)) {
 			$files = count_dir($dir.$entry);
   ?>
   <tr>
@@ -1114,7 +1114,7 @@ elseif ($job == 'css') {
   </tr>
   <?php 
 	while (false !== ($entry = $d->read())) {
-		if (is_dir($dir.$entry) && preg_match('/^\d{1,}$/', $entry) && $entry != '.' && $entry != '..') {
+		if ($entry != '..' && $entry != '.' && preg_match('/^\d{1,}$/', $entry) && is_dir($dir.$entry)) {
 			$files = count_dir($dir.$entry);
   ?>
   <tr>
@@ -1330,7 +1330,7 @@ elseif ($job == 'images') {
   </tr>
   <?php 
 	while (false !== ($entry = $d->read())) {
-		if (is_dir($dir.$entry) && preg_match('/^\d{1,}$/', $entry) && $entry != '.' && $entry != '..') {
+		if ($entry != '..' && $entry != '.' && preg_match('/^\d{1,}$/', $entry) && is_dir($dir.$entry)) {
 			$files = count_dir($dir.$entry);
   ?>
   <tr>
@@ -1486,3 +1486,4 @@ elseif ($job == 'images_export') {
 		$filesystem->unlink($tempdir.$file);
 	}
 }
+?>

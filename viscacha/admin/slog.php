@@ -28,7 +28,7 @@ if ($job == 'empty') {
 	    $filename = 'data/cron/cron.log';
 	}
 	if (isset($filename) && file_exists($filename)) {
-	    $filesystem->file_put_contents($filename,'');
+	    $filesystem->file_put_contents($filename, '');
 	    ok('admin.php?action=slog&job='.$file, 'Logfile was successfully deleted');
 	}
 	else {

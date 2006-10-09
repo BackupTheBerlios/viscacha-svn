@@ -115,7 +115,12 @@ if ($_GET['action'] == "save") {
 		}
 		
 		if($type == "multiselect" || $type == "checkbox") {
-			$options = implode("\n", $value);
+			if (is_array($value)) {
+				$options = implode("\n", $value);
+			}
+			else {
+				$options = '';
+			}
 		}
 		else {
 			$options = $value;
