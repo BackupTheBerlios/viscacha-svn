@@ -287,8 +287,12 @@ elseif ($job == 'profile') {
 	   <td class="mbox" width="50%"><input type="checkbox" name="hidelanguage" value="1"<?php echo iif($config['hidelanguage'] == 1,' checked="checked"'); ?>></td> 
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">Show number of written threads in profile:<br /><span class="stext">The complete number of contributed threads can be shown in the users profile. This option may slowdown the performance during big forums.</span></td>
+	   <td class="mbox" width="50%">Show posts per day in profile:</td>
 	   <td class="mbox" width="50%"><input type="checkbox" name="showpostcounter" value="1"<?php echo iif($config['showpostcounter'] == 1,' checked="checked"'); ?>></td> 
+	  </tr>
+	  <tr> 
+	   <td class="mbox" width="50%">Update posts immediately:<br /><span class="stext">Activating this option will update the users post counters immediately after posting or deleting. Disabling this option will recount the users post counters every six hours (time between recount depends on your settings in the scheduled tasks for the job recountpostcounts.php).</span></td>
+	   <td class="mbox" width="50%"><input type="checkbox" name="updatepostcounter" value="1"<?php echo iif($config['updatepostcounter'] == 1,' checked="checked"'); ?>></td> 
 	  </tr>
 	  <tr> 
 	   <td class="mbox" width="50%">Show Memberrating:<br /><span class="stext">Show the rating based on the postrating.</span></td>
@@ -657,6 +661,7 @@ elseif ($job == 'user') {
 	   <input type="checkbox" name="mlistfields[]" value="mail"<?php echo iif(in_array('mail', $mlistfields), ' checked="checked"'); ?> /> E-mail (Icon)<br />
 	   <input type="checkbox" name="mlistfields[]" value="pm"<?php echo iif(in_array('pm', $mlistfields), ' checked="checked"'); ?> /> Private Message (Icon)<br />
 	   <input type="checkbox" name="mlistfields[]" value="regdate"<?php echo iif(in_array('regdate', $mlistfields), ' checked="checked"'); ?> /> Date or registration (Date)<br />
+	   <input type="checkbox" name="mlistfields[]" value="posts"<?php echo iif(in_array('posts', $mlistfields), ' checked="checked"'); ?> /> Posts<br />
 	   <input type="checkbox" name="mlistfields[]" value="hp"<?php echo iif(in_array('hp', $mlistfields), ' checked="checked"'); ?> /> Homepage (Icon)<br />
 	   <input type="checkbox" name="mlistfields[]" value="location"<?php echo iif(in_array('location', $mlistfields), ' checked="checked"'); ?> /> Location<br />
 	   <input type="checkbox" name="mlistfields[]" value="gender"<?php echo iif(in_array('gender', $mlistfields), ' checked="checked"'); ?> /> Gender<br />
@@ -668,7 +673,7 @@ elseif ($job == 'user') {
 	   <input type="checkbox" name="mlistfields[]" value="aol"<?php echo iif(in_array('aol', $mlistfields), ' checked="checked"'); ?> /> AOL- and Netscape-Messenger (Icon)<br />
 	   <input type="checkbox" name="mlistfields[]" value="msn"<?php echo iif(in_array('msn', $mlistfields), ' checked="checked"'); ?> /> MSN- and Windows-Messenger (Icon)<br />
 	   <input type="checkbox" name="mlistfields[]" value="jabber"<?php echo iif(in_array('jabber', $mlistfields), ' checked="checked"'); ?> /> Jabber (Icon)<br />
-	   <input type="checkbox" name="mlistfields[]" value="skype"<?php echo iif(in_array('skype', $mlistfields), ' checked="checked"'); ?> /> Skype( Icon)
+	   <input type="checkbox" name="mlistfields[]" value="skype"<?php echo iif(in_array('skype', $mlistfields), ' checked="checked"'); ?> /> Skype (Icon)
 	   </td> 
 	  </tr>
 	  <tr>
@@ -2223,18 +2228,6 @@ else {
 		<td nowrap="nowrap"><a href="admin.php?action=settings&amp;job=admin">Administration Control Panel</a></td>
 		<td class="stext">Here you can set some options related to this Administration Control Panel.</td>
 	    <td nowrap="nowrap">None</td>
-	  </tr>
-	  <tr class="mbox">
-		<td nowrap="nowrap"><a href="admin.php?action=settings&amp;job=attupload">Attachments</a></td>
-		<td class="stext">Topic and post attachments: file size, file types, thumbnails, ...</td>
-		<td nowrap="nowrap">
-		  <form name="act" action="admin.php?action=locate" method="post">
-		    <select style="width: 80%" size="1" name="url" onchange="locate(this.value)">
-		      <option value="" style="font-weight: bold;">-- Tools --</option>
-		  	  <option value="admin.php?action=filetypes&job=manage">File Type Manager</option>
-		     </select> <input style="width: 18%" type="submit" value="Go">
-		  </form>
-		</td>
 	  </tr>
 	  <tr class="mbox">
 		<td nowrap="nowrap"><a href="admin.php?action=settings&amp;job=attupload">Attachments</a></td>

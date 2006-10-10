@@ -38,6 +38,10 @@ $slog = new slog();
 $my = $slog->logged();
 $my->p = $slog->Permissions();
 
+if (!isset($my->settings['admin_interface'])) {
+	$my->settings['admin_interface'] = $admconfig['nav_interface'];
+}
+
 ($code = $plugins->load('admin_start')) ? eval($code) : null;
 
 if ($my->p['admin'] == 1) {

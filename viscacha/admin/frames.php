@@ -5,7 +5,7 @@ if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "frames.php
 if ($job == 'menu') {
 	$interface = $gpc->get('interface', int);
 	if ($interface == 1) {
-		$admconfig['nav_interface'] = invert($admconfig['nav_interface']);
+		$my->settings['admin_interface'] = invert($my->settings['admin_interface']);
 	}
 	?>
 	<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
@@ -20,9 +20,9 @@ if ($job == 'menu') {
 	</head>
 	<body onload="init()">
 	<p class="center"><a href="admin.php?action=index" target="Main"><img src="admin/html/images/logo.png" alt="Viscacha" /></a></p>
-	<p class="stext center"><a href="admin.php?action=frames&amp;job=menu&amp;interface=<?php echo invert($interface); ?>" target="Menu">Switch to <?php echo iif($admconfig['nav_interface'] == 1, 'simple', 'extended'); ?> Interface</a></p>
+	<p class="stext center"><a href="admin.php?action=frames&amp;job=menu&amp;interface=1" target="Menu">Switch to <?php echo iif($my->settings['admin_interface'] == 1, 'simple', 'extended'); ?> Interface</a></p>
 	<p class="stext center"><a href="javascript:All();">Expand All</a> | <a href="javascript:All(1);">Collapse All</a></p>
-	<?php if ($admconfig['nav_interface'] == 1) { ?>
+	<?php if ($my->settings['admin_interface'] == 1) { ?>
 	 <div class="border">
 	  <h3><img id="img_admin_menu1" src="admin/html/images/plus.gif" alt="collapse" /> Settings</h3>
 	  <ul id="part_admin_menu1">
@@ -52,6 +52,8 @@ if ($job == 'menu') {
 	   <h3><img id="img_admin_menu4" src="admin/html/images/plus.gif" alt="collapse" /> Members</h3>
 	  <ul id="part_admin_menu4">
 	   <li>&raquo; <a href="admin.php?action=members&amp;job=manage" target="Main">Member List</a></li>
+	   <li>&raquo; <a href="admin.php?action=members&amp;job=search" target="Main">Search Members</a></li>
+	   <li>&raquo; <a href="admin.php?action=members&amp;job=inactive" target="Main">Inactive Members</a></li>
 	   <li>&raquo; <a href="admin.php?action=members&amp;job=activate" target="Main">Moderate Members</a></li>
 	   <li>&raquo; <a href="admin.php?action=groups&amp;job=manage" target="Main">Usergroup Manager</a></li>
 	   <li>&raquo; <a href="admin.php?action=profilefield&amp;job=manage" target="Main">Profile Field Manager</a></li>

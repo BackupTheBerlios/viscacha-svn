@@ -233,7 +233,10 @@ elseif ($job == 'manage') {
 	 <table class="border">
 	  <tr> 
 	   <td class="obox" colspan="7">
-	    <span style="float: right;"><a class="button" href="admin.php?action=cron&job=add">Add new Task</a></span>
+	    <span style="float: right;">
+		<a class="button" href="admin.php?action=cron&job=add">Add new Task</a>
+		<a class="button" href="admin.php?action=slog&job=l_cron">Tasks Log File</a>
+		</span>
 	   	Manage Tasks
 	   </td>
 	  </tr>

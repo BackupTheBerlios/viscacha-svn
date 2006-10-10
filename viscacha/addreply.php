@@ -235,11 +235,11 @@ if ($_GET['action'] == "save") {
 			}
 		}
 		
-		$db->query ('
-		UPDATE '.$db->pre.'forums 
-		SET replies = replies+1, last_topic = "'.$_POST['id'].'" 
-		WHERE id = '.$info['board']
-		,__LINE__,__FILE__);
+		if ($config['updatepostcounter'] == 1 && $last['count_posts'] == 1) {
+			$db->query ("UPDATE {$db->pre}user SET posts = posts+1 WHERE id = '{$my->id}'",__LINE__,__FILE__);
+		}
+		
+		$db->query ("UPDATE {$db->pre}forums SET replies = replies+1, last_topic = '{$_POST['id']}' WHERE id = '{$info['board']}'",__LINE__,__FILE__);
 
         $result = $db->query('
         SELECT t.id, t.topic, u.name, u.mail, u.language 

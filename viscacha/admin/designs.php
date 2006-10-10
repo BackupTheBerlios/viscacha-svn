@@ -37,7 +37,6 @@ function export_template_list ($path, $d = 0) {
 
 if ($job == 'design') {
 	echo head();
-	$interface = $gpc->get('interface', int);
 	$result = $db->query('SELECT * FROM '.$db->pre.'designs ORDER BY name');
 	?>
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
@@ -71,7 +70,7 @@ if ($job == 'design') {
   </tr>
   <?php } ?>
  </table>
- <?php if ($interface == 1) { ?>
+ <?php if ($my->settings['admin_interface'] == 0) { ?>
  <br class="minibr" />
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr> 

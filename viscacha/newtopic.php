@@ -344,7 +344,11 @@ elseif ($_GET['action'] == "save") {
 			}
 		}
 
-		$db->query ("UPDATE {$db->pre}forums SET topics = topics+1, last_topic = '{$tredirect}' WHERE id = '{$board}'");	
+		if ($config['updatepostcounter'] == 1 && $last['count_posts'] == 1) {
+			$db->query ("UPDATE {$db->pre}user SET posts = posts+1 WHERE id = '{$my->id}'",__LINE__,__FILE__);
+		}
+
+		$db->query ("UPDATE {$db->pre}forums SET topics = topics+1, last_topic = '{$tredirect}' WHERE id = '{$board}'",__LINE__,__FILE__);
 		$catobj = $scache->load('cat_bid');
 		$catobj->delete();
 
@@ -354,7 +358,7 @@ elseif ($_GET['action'] == "save") {
 			$from = array();
 			xmail($to, $from, $data['title'], $data['comment']);
 		}
-				
+
 		($code = $plugins->load('newtopic_save_end')) ? eval($code) : null;
 		
 		if ($_POST['opt_2'] == '1') {

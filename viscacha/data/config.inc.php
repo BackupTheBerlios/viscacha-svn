@@ -177,6 +177,7 @@ $config['tpcthumbheight'] = 150;
 $config['tpcthumbwidth'] = 200;
 $config['tpcwidth'] = 2048;
 $config['updateboardstats'] = 1;
+$config['updatepostcounter'] = 1;
 $config['vcard_dl'] = 1;
 $config['vcard_dl_guests'] = 0;
 $config['version'] = '0.8 Beta 4';

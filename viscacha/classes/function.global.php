@@ -671,6 +671,14 @@ function UpdateBoardStats ($board) {
 	}
 }
 
+function UpdateMemberStats($id) {
+	global $db;
+	$result = $db->query("SELECT COUNT(*) FROM {$db->pre}replies WHERE name = '{$id}' AND guest = '0'",__LINE__,__FILE__);
+	$count = $db->fetch_num ($result);
+	$db->query("UPDATE {$db->pre}user SET posts = '{$count[0]}' WHERE id = '{$id}'",__LINE__,__FILE__);
+	return $count[0];
+}
+
 function iif($if, $true, $false = '') {
 	return ($if ? $true : $false);
 }

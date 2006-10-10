@@ -182,6 +182,9 @@ while ($row = $gpc->prepare($db->fetch_assoc($result))) {
 			$row['gender'] = $lang->phrase('gender_na');
 		}
 	}
+	if (isset($row['posts'])) {
+		$row['posts'] = numbers($row['posts']);
+	}
 	if (isset($row['birthday'])) {
 		$bday = explode('-', $row['birthday']);
 		if ($row['birthday'] != null && $row['birthday'] != '0000-00-00') {

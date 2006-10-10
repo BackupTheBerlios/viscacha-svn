@@ -490,6 +490,10 @@ elseif ($job == 'forum_edit') {
    <td class="mbox">Show topics in active topic list:<br /><span class="stext">If checked, the topics in this forum will be shown in the active topic lists.</span></td>
    <td class="mbox"><input type="checkbox" name="active_topic" value="1"<?php echo iif($row['active_topic'] == '1', ' checked="checked""'); ?> /></td> 
   </tr>
+  <tr> 
+   <td class="mbox">Count posts made in this forum towards user post counts:<br /><span class="stext">If this is not checked, posts made in this forum will not be added to users' post counts. The current post counts are <b>not</b> affected if you change this. You have to <a href="admin.php?page=<?php echo rawurldecode('admin.php?action=members&amp;job=recount'); ?>" target="_blank">recount the post counts manually</a>.</span></td>
+   <td class="mbox"><input type="checkbox" name="count_posts" value="1"<?php echo iif($row['count_posts'] == '1', ' checked="checked""'); ?> /></td> 
+  </tr>
   <tr><td class="ubox" colspan="2">Forum Rules (Announcement)</td></tr>
   <tr>
    <td class="mbox">Display Method:</td>
@@ -534,6 +538,7 @@ elseif ($job == 'forum_edit2') {
 	$invisible = $gpc->get('invisible', int);
 	$readonly = $gpc->get('readonly', int);
 	$active_topic = $gpc->get('active_topic', int);
+	$count_posts = $gpc->get('count_posts', int);
 	$message_active = $gpc->get('message_active', int);
 	$message_title = $gpc->get('message_title', str);
 	$message_text = $gpc->get('message_text', str);
@@ -578,6 +583,9 @@ elseif ($job == 'forum_edit2') {
 		}
 		if ($active_topic != 0 && $active_topic != 1) {
 			$active_topic = 0;
+		}
+		if ($count_posts != 0 && $count_posts != 1) {
+			$count_posts = 1;
 		}
 		if ($auto_status != 'n' && $auto_status != 'a') {
 			$auto_status = '';
@@ -640,6 +648,7 @@ elseif ($job == 'forum_edit2') {
 		  `reply_notification` = '{$reply_notification}',
 		  `topic_notification` = '{$topic_notification}',
 		  `active_topic` = '{$active_topic}',
+		  `count_posts` = '{$count_posts}',
 		  `message_active` = '{$message_active}',
 		  `message_title` = '{$message_title}',
 		  `message_text` = '{$message_text}' 
@@ -754,6 +763,10 @@ elseif ($job == 'forum_add') {
    <td class="mbox"><input type="checkbox" name="active_topic" value="1" checked="checked" /></td> 
   </tr>
   <tr> 
+   <td class="mbox">Count posts made in this forum towards user post counts:<br /><span class="stext">If this is not checked, posts made in this forum will not be added to users' post counts.</span></td>
+   <td class="mbox"><input type="checkbox" name="count_posts" value="1" checked="checked" /></td> 
+  </tr>
+  <tr> 
    <td class="mbox">Copy permissions from:<br /><span class="stext">The forum will have the same permissions as the one you select here. If no forum is selected the default settings are used. (<em>Experimental</em>)</span></td>
    <td class="mbox">
 	<select name="copypermissions" size="1">
@@ -807,6 +820,7 @@ elseif ($job == 'forum_add2') {
 	$invisible = $gpc->get('invisible', int);
 	$readonly = $gpc->get('readonly', int);
 	$active_topic = $gpc->get('active_topic', int);
+	$count_posts = $gpc->get('count_posts', int);
 	$perm = $gpc->get('copypermissions', int);
 	$message_active = $gpc->get('message_active', int);
 	$message_title = $gpc->get('message_title', str);
@@ -847,6 +861,9 @@ elseif ($job == 'forum_add2') {
 		}
 		if ($active_topic != 0 && $active_topic != 1) {
 			$active_topic = 0;
+		}
+		if ($count_posts != 0 && $count_posts != 1) {
+			$count_posts = 1;
 		}
 		if ($auto_status != 'n' && $auto_status != 'a') {
 			$auto_status = '';
@@ -929,11 +946,11 @@ elseif ($job == 'forum_add2') {
 		
 		$db->query("
 		INSERT INTO {$db->pre}forums (
-		  `name`,`description`,`parent`,`position`,`opt`,`optvalue`,`forumzahl`,`topiczahl`,`invisible`,`readonly`,
+		  `name`,`description`,`parent`,`position`,`opt`,`optvalue`,`forumzahl`,`topiczahl`,`invisible`,`readonly`,'count_posts',
 		  `auto_status`,`reply_notification`,`topic_notification`,`active_topic`,`message_active`,`message_title`,`message_text`
 		)
 		VALUES (
-		  '{$name}','{$description}','{$parent}','{$position}','{$opt}','{$optvalue}','{$forumzahl}','{$topiczahl}','{$invisible}','{$readonly}',
+		  '{$name}','{$description}','{$parent}','{$position}','{$opt}','{$optvalue}','{$forumzahl}','{$topiczahl}','{$invisible}','{$readonly}','{$count_posts}',
 		  '{$auto_status}','{$reply_notification}','{$topic_notification}','{$active_topic}','{$message_active}','{$message_title}','{$message_text}'
 		);
 		", __LINE__, __FILE__);
