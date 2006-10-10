@@ -156,14 +156,6 @@ function isInvisibleHook($hook) {
 	}
 }
 
-function makeOSPath($array) {
-	$dir = implode(DIRECTORY_SEPARATOR, $array);
-	if (is_dir($dir)) {
-		$dir .= DIRECTORY_SEPARATOR;
-	}
-	return $dir;
-}
-
 function pluginSettingGroupUninstall($pluginid) {
 	global $db;
 	$result = $db->query("SELECT id, name FROM {$db->pre}settings_groups WHERE name = 'module_{$pluginid}' LIMIT 1");

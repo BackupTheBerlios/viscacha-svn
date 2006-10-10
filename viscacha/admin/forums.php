@@ -794,6 +794,11 @@ elseif ($job == 'forum_add') {
    <td class="mbox">Rules:<br /><span class="stext">HTML is allowed; BB-Code is not allowed!</span></td>
    <td class="mbox"><textarea name="message_text" rows="4" cols="70"></textarea></td>
   </tr>
+  <tr><td class="ubox" colspan="2">Prefixes</td></tr>
+  <tr>
+   <td class="mbox">Prefixes:<br /><span class="stext">Every prefix into an own line. A prefix is an addition for the title of a topic. It is supposed to explain the sense of the topic. If prefixes are activated, the user can select from a pre-set list with prefixes.</span></td>
+   <td class="mbox"><textarea name="prefix" rows="3" cols="70"></textarea></td>
+  </tr>
   <tr> 
    <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="Submit" /></td> 
   </tr>
@@ -825,6 +830,7 @@ elseif ($job == 'forum_add2') {
 	$message_active = $gpc->get('message_active', int);
 	$message_title = $gpc->get('message_title', str);
 	$message_text = $gpc->get('message_text', str);
+	$prefix = $gpc->get('prefix', none);
 
 	$error = array();
 	if (strlen($name) < 2) {
@@ -946,7 +952,7 @@ elseif ($job == 'forum_add2') {
 		
 		$db->query("
 		INSERT INTO {$db->pre}forums (
-		  `name`,`description`,`parent`,`position`,`opt`,`optvalue`,`forumzahl`,`topiczahl`,`invisible`,`readonly`,'count_posts',
+		  `name`,`description`,`parent`,`position`,`opt`,`optvalue`,`forumzahl`,`topiczahl`,`invisible`,`readonly`,`count_posts`,
 		  `auto_status`,`reply_notification`,`topic_notification`,`active_topic`,`message_active`,`message_title`,`message_text`
 		)
 		VALUES (
@@ -967,6 +973,14 @@ elseif ($job == 'forum_add2') {
 				$row_str = implode("', '", $row);
 				$db->query("INSERT INTO {$db->pre}fgroups ({$columns}, bid, gid) VALUES ('{$row_str}', '{$newid}', '{$gid}')", __LINE__, __FILE__);
 			}
+		}
+		$prefixes = preg_split('/[\r\n]+/', $prefix, -1, PREG_SPLIT_NO_EMPTY);
+		if (count($prefixes) > 0) {
+			$sql_values = array();
+			foreach ($prefixes as $p) {
+				$sql_values[] = "('{$newid}', '{$p}')";
+			}
+			$db->query("INSERT INTO {$db->pre}prefix (bid,value) VALUES ".implode(', ', $sql_values), __LINE__, __FILE__);
 		}
 		
 		$delobj = $scache->load('cat_bid');

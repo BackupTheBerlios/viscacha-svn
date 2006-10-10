@@ -1180,7 +1180,7 @@ elseif ($job == 'package_language_edit') {
 <form name="form" method="post" action="admin.php?action=cms&job=package_language_save2&id=<?php echo $id; ?>">
  <table class="border" border="0" cellspacing="0" cellpediting="4" align="center">
   <tr> 
-   <td class="obox" colspan="2">Phrase Manager &raquo; Edit new Phrase to Package</td>
+   <td class="obox" colspan="2">Phrase Manager &raquo; Edit Phrase</td>
   </tr>
   <tr>
    <td class="mbox" width="50%">Varname:<br />
@@ -1391,10 +1391,49 @@ elseif ($job == 'package_import2') {
 		copyr($tempdir, $dir);
 
 		if (isset($ini['language']) && count($ini['language']) > 0) {
-			$result = $db->query("SELECT id FROM {$db->pre}language",__LINE__,__FILE__);
-			while($row = $db->fetch_assoc($result)) {
-				$c->getdata("language/{$row['id']}/modules.lng.php", 'lang');
-				foreach ($ini['language'] as $varname => $text) {
+			$codes = array();
+			$keys = array_keys($ini);
+			foreach ($keys as $entry) {
+			   	if (preg_match('~language_(\w{2})_?(\w{0,2})~i', $entry, $code)) {
+			   		if (!isset($codes[$code[1]])) {
+			   			$codes[$code[1]] = array();
+			   		}
+			   		if (isset($code[2])) {
+			   			$codes[$code[1]][] = $code[2];
+			   		}
+			   		else {
+			   			if (!in_array('', $codes[$code[1]])) {
+			   				$codes[$code[1]][] = '';
+			   			}
+			   		}
+			   	}
+			}
+			$langcodes = getLangCodes();
+			foreach ($langcodes as $code => $lid) {
+				$ldat = explode('_', $code);
+				if (isset($codes[$ldat[0]])) {
+					$count = count($codes[$ldat[0]]); 
+					if (in_array('', $codes[$ldat[0]])) {
+						$count--;
+					}
+				}
+				else {
+					$count = -1;
+				}
+				if (isset($codes[$ldat[0]]) && !empty($ldat[1]) && in_array($ldat[1], $codes[$ldat[0]])) { // Nehme Original
+					$src = 'language_'.$code;
+				}
+				elseif(isset($codes[$ldat[0]]) && in_array('', $codes[$ldat[0]])) { // Nehme gleichen Langcode, aber ohne Countrycode
+					$src = 'language_'.$ldat[0];
+				}
+				elseif(isset($codes[$ldat[0]]) && $count > 0) { // Nehme gleichen Langcode, aber falchen Countrycode
+					$src = 'language_'.$ldat[0].'_'.reset($codes[$ldat[0]]);
+				}
+				else { // Nehme Standard
+					$src = 'language';
+				}
+				$c->getdata("language/{$lid}/modules.lng.php", 'lang');
+				foreach ($ini[$src] as $varname => $text) {
 					$c->updateconfig($varname, str, $text);
 				}
 				$c->savedata();
@@ -1512,21 +1551,44 @@ elseif ($job == 'package_export2') {
 	if (empty($file)) {
 		$file = convert2adress($data['title']).'.zip';
 	}
+	
 	$ini = $myini->read("modules/{$data['id']}/config.ini");
+	
+	$dirs = array();
+	$langcodes = getLangCodes();
+	foreach ($langcodes as $code => $lid) {
+		$langdata = return_array('modules', $lid);
+		$langdata = array_intersect_key($langdata, $ini['language']);
+		if ($lid == $config['langdir']) {
+			$ini['language'] = $langdata;
+		}
+		else {
+			$ini['language_'.$code] = $langdata;
+		}
+	}
+	$myini->write("modules/{$data['id']}/config.ini", $ini);
+	
 	$tpl = $gpc->get('tpl', int);
 	$tempdir = "temp/";
 	$error = false;
 	
 	require_once('classes/class.zip.php');
 	$archive = new PclZip($tempdir.$file);
-	$v_list = $archive->create(makeOSPath(array("modules", $id)), PCLZIP_OPT_REMOVE_PATH, makeOSPath(array("modules", $id)));
+	$v_list = $archive->create(
+		"modules/{$id}/", 
+		PCLZIP_OPT_REMOVE_PATH, "modules/{$id}/"
+	);
 	if ($v_list == 0) {
 		$error = true;
 	}
 	else {
 		if (isset($ini['template']) && count($ini['template']) > 0) {
 			$archive = new PclZip($tempdir.$file);
-			$v_list = $archive->add(makeOSPath(array('templates', $tpl, 'modules', $id)), PCLZIP_OPT_REMOVE_PATH, makeOSPath(array('templates', $tpl, 'modules', $id)), PCLZIP_OPT_ADD_PATH, makeOSPath(array("templates")));
+			$v_list = $archive->add(
+				"templates/{$tpl}/modules/{$id}/", 
+				PCLZIP_OPT_REMOVE_PATH, "templates/{$tpl}/modules/{$id}/", 
+				PCLZIP_OPT_ADD_PATH, "templates/"
+			);
 			if ($v_list == 0) {
 				$error = true;
 				break;
