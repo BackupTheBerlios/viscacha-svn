@@ -111,6 +111,10 @@ Upload to each image pack (Folder: "images/") the file "tt.gif" in the folger "b
 Many changes were made in the langauge files. You have to update all files. If you 
 translated the files, make a backup and diff the files later manually. You can not
 update them. English files are in the folder "2". German files are in the folder "1".
+Please remember: After updating please check the settings for all languages in your admin
+control panel. Please check that the settings "Country code" and "Language_code" are set 
+correctly. If they are not correct there can occur problems with updating to a newer version
+or with plugins an components.
 
 If you have installed the quick reply plugin copy the file "quick-reply.php" into the 
 folder where the plugin is installed (Standard: 17). 

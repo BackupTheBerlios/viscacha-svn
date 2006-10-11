@@ -12,6 +12,7 @@ define('CHEX', 777);
 define('CHWR', 666);
 require('lib/function.chmod.php');
 $chmod = array(
+array('path' => 'install', 'chmod' => CHEX, 'recursive' => false, 'req' => true),
 array('path' => 'data', 'chmod' => CHEX, 'recursive' => false, 'req' => true),
 array('path' => 'data/cron', 'chmod' => CHEX, 'recursive' => false, 'req' => true),
 array('path' => 'feeds', 'chmod' => CHEX, 'recursive' => false, 'req' => true),

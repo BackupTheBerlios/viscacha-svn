@@ -64,7 +64,7 @@ if ($_GET['order'] != 'desc') {
 	$_GET['order'] = 'asc';
 }
 $_GET['sort'] = strtolower($_GET['sort']);
-if ($_GET['sort'] != 'regdate' && $_GET['sort'] != 'location' && $_GET['sort'] != 'gender' && $_GET['sort'] != 'birthday' && $_GET['sort'] != 'lastvisit') {
+if ($_GET['sort'] != 'posts' && $_GET['sort'] != 'regdate' && $_GET['sort'] != 'location' && $_GET['sort'] != 'gender' && $_GET['sort'] != 'birthday' && $_GET['sort'] != 'lastvisit') {
 	$sqlorderby = "name {$_GET['order']}";
 }
 else {

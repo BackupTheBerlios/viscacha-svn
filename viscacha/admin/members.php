@@ -140,10 +140,10 @@ elseif ($job == 'newsletter3') {
 ?>
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr> 
-   <td class="obox"><b>Echelon <?php echo $page+1; ?> von <?php echo $steps+1; ?>...</b></td>
+   <td class="obox"><b>Step <?php echo $page+1; ?> of <?php echo $steps+1; ?>...</b></td>
   </tr>
   <tr> 
-   <td class="mbox">E-mail echelon <?php echo $page; ?> sent.<br>Alltogether <?php echo $ready; ?> e-mails sent!<br><br>All e-mails have been send successful! <a href="admin.php?action=members&job=newsletter">Redirect to the administration.</a></td>
+   <td class="mbox">Part <?php echo $page; ?> sent.<br>Alltogether <?php echo $ready; ?> e-mails sent!<br><br>All e-mails have been send successful! <a href="admin.php?action=members&job=newsletter">Redirect to the administration.</a></td>
   </tr>
  </table>	
 <?php
@@ -154,10 +154,10 @@ elseif ($job == 'newsletter3') {
 ?>
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr> 
-   <td class="obox"><b>Staffel <?php echo $page+1; ?> von <?php echo $steps+1; ?>...</b></td>
+   <td class="obox"><b>Step <?php echo $page+1; ?> of <?php echo $steps+1; ?>...</b></td>
   </tr>
   <tr> 
-   <td class="mbox">E-mail-echelon <?php echo $page; ?> sent.<br>Alltogether <?php echo $ready; ?> e-mails-sent!</td>
+   <td class="mbox">Part <?php echo $page; ?> sent.<br>Alltogether <?php echo $ready; ?> e-mails-sent!</td>
   </tr>
  </table>	
 <?php
@@ -189,7 +189,7 @@ elseif ($job == 'newsletter_archive') {
   </tr>
 <?php } ?>
   <tr> 
-   <td class="ubox" colspan=4 align="center"><input type="submit" name="Submit" value="Delete"></td> 
+   <td class="ubox" colspan="4" align="center"><input type="submit" name="Submit" value="Delete"></td> 
   </tr>
  </table>
 </form> 
@@ -458,7 +458,8 @@ elseif ($job == 'manage') {
 		$row->regdate = gmdate('d.m.Y', times($row->regdate));
 		if ($row->lastvisit == 0) {
 			$row->lastvisit = 'Never';
-		} else {
+		}
+		else {
 			$row->lastvisit = gmdate('d.m.Y H:i', times($row->lastvisit));
 		}
 		?>
@@ -537,7 +538,12 @@ elseif ($job == 'memberrating') {
 	<?php
 	while ($row = $gpc->prepare($db->fetch_object($result))) { 
 		$row->regdate = gmdate('d.m.Y', times($row->regdate));
-		$row->lastvisit = gmdate('d.m.Y H:i', times($row->lastvisit));
+		if ($row->lastvisit == 0) {
+			$row->lastvisit = 'Never';
+		}
+		else {
+			$row->lastvisit = gmdate('d.m.Y H:i', times($row->lastvisit));
+		}
 		$percent = round((($row->ravg*50)+50));
 		?>
 		<tr>
@@ -600,7 +606,7 @@ elseif ($job == 'recount') {
 			while ($row = $db->fetch_assoc($result)) {
 				if ($row['new'] != $row['posts']) {
 					$i++;
-					$db->query("UPDATE {$db->pre}user SET posts = '{$row['posts']}' WHERE id = '{$row['id']}'",__LINE__,__FILE__);
+					$db->query("UPDATE {$db->pre}user SET posts = '{$row['new']}' WHERE id = '{$row['id']}'",__LINE__,__FILE__);
 				}
 			}
 			
@@ -1296,7 +1302,7 @@ elseif ($job == 'inactive2') {
 	foreach ($fields as $key => $data) {
 		$value = $gpc->get($key, $data[1], DONT_CARE);
 		if ($key == 'regdate' || $key == 'lastvisit') {
-			if (array_sum($value) != 0) { // for php version >= 5.1.0
+			if (is_array($value) && array_sum($value) != 0) { // for php version >= 5.1.0
 				$input[$key] =  @mktime(0, 0, 0, intval($value[2]), intval($value[1]), intval($value[3]));
 				if ($input[$key] == -1 || $input[$key] == false) { // -1 for php version < 5.1.0, false for php version >= 5.1.0
 					$input[$key] = DONT_CARE;
@@ -1307,6 +1313,9 @@ elseif ($job == 'inactive2') {
 			}
 		}
 		else {
+			if (!isset($_REQUEST[$key])) {
+				$_REQUEST[$key] = null;
+			}
 			if (empty($_REQUEST[$key]) && $_REQUEST[$key] != '0') {
 				$input[$key] = DONT_CARE;
 			}
@@ -1356,8 +1365,11 @@ elseif ($job == 'inactive2') {
 			</tr>
 			<?php
 			while ($row = $gpc->prepare($db->fetch_assoc($result))) {
-				if (isset($row['lastvisit'])) {
-					$row['lastvisit'] = date('d.m.Y H:i', $row['lastvisit']);
+				if (empty($row['lastvisit'])) {
+					$row['lastvisit'] = 'Never';
+				}
+				else {
+					$row['lastvisit'] = gmdate('d.m.Y H:i', times($row['lastvisit']));
 				}
 				if (isset($row['regdate'])) {
 					$row['regdate'] = date('d.m.Y', $row['regdate']);
@@ -1752,7 +1764,7 @@ elseif ($job == 'search2') {
 			$value = $gpc->get($key, $data[1], DONT_CARE);
 		}
 		if ($key == 'regdate' || $key == 'lastvisit') {
-			if (array_sum($value) != 0) { // for php version >= 5.1.0
+			if (is_array($value) && array_sum($value) != 0) { // for php version >= 5.1.0
 				$input[$key] =  @mktime(0, 0, 0, intval($value[2]), intval($value[1]), intval($value[3]));
 				if ($input[$key] == -1 || $input[$key] == false) { // -1 for php version < 5.1.0, false for php version >= 5.1.0
 					$input[$key] = DONT_CARE;
@@ -1799,6 +1811,9 @@ elseif ($job == 'search2') {
 			}
 		}
 		else {
+			if (!isset($_REQUEST[$key])) {
+				$_REQUEST[$key] = null;
+			}
 			if (empty($_REQUEST[$key]) && $_REQUEST[$key] != '0') {
 				$input[$key] = DONT_CARE;
 			}
@@ -1856,10 +1871,10 @@ elseif ($job == 'search2') {
 			<?php
 			while ($row = $gpc->prepare($db->fetch_assoc($result))) {
 				if (isset($row['lastvisit'])) {
-					$row['lastvisit'] = date('d.m.Y H:i', $row['lastvisit']);
+					$row['lastvisit'] = gmdate('d.m.Y H:i', times($row['lastvisit']));
 				}
 				if (isset($row['regdate'])) {
-					$row['regdate'] = date('d.m.Y', $row['regdate']);
+					$row['regdate'] = gmdate('d.m.Y', times($row['regdate']));
 				}
 				if (empty($row['icq'])) {
 					$row['icq'] = '-';
