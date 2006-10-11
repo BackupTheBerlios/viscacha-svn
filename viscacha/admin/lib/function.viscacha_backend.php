@@ -9,7 +9,7 @@ $filesystem = new filesystem($config['ftp_server'], $config['ftp_user'], $config
 $filesystem->set_wd($config['ftp_path']);
 @include_once("classes/function.chmod.php");
 if ($config['check_filesystem'] == 1) {
-	check_writable('admin/data/notes.php');
+	check_writable_r('admin/data');
 	check_writable_r('docs');
 	check_writable_r('language');
 	check_executable_r('admin/backup');
