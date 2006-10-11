@@ -1,6 +1,8 @@
 <?php 
-define('VISCACHA_VERSION', '0.8 Beta 3');
 error_reporting(E_ALL);
+
+define('VISCACHA_VERSION', '0.8 Beta 4');
+define('VISCACHA_VERSION_OLD', '0.8 Beta 3');
 
 $locked = file_exists('./locked.txt');
 
@@ -19,7 +21,7 @@ if (!$locked) {
 			'description' => 'Choose this if you want to install a new copy of this software.'
 		),
 		'update' => array(
-			'title' => 'Update: 0.8 Beta 2 => '.VISCACHA_VERSION,
+			'title' => 'Update: '.VISCACHA_VERSION_OLD.' => '.VISCACHA_VERSION,
 			'description' => 'Already running Viscacha? Then choose this option to update to the new Version!'
 		)
 	);
