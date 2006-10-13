@@ -18,7 +18,7 @@
 	<br class="newinput" /><br class="iefix_br" />
 </div>
 <div class="bfoot center">
-	 <?php echo iif(!empty($loc), '<input type="hidden" name="redirect" value="'.$loc.'" />'); ?>
+	 <input type="hidden" name="redirect" value="<?php echo $loc; ?>" />
 	 <input tabindex="3" type="submit" accesskey="s" name="Submit1" value="<?php echo $lang->phrase('submit_form'); ?>" />
 </div> 
 </div>

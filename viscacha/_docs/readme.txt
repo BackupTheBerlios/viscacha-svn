@@ -96,6 +96,7 @@ Upload/Replace the following files in the "classes/" folder:
 - class.upload.php
 - function.frontend_init.php
 - function.global.php
+- function.gpc.php
 - function.phpcore.php
 - function.profilefields.php
 - function.viscacha_frontend.php
@@ -118,8 +119,15 @@ or with plugins an components.
 
 If you have installed the quick reply plugin copy the file "quick-reply.php" into the 
 folder where the plugin is installed (Standard: 17). 
+
 If you have installed the plugin to display the news on the portal copy the file 
 "latestnews.php" into the folder where the plugin is installed (Standard: 3).
+
+If you have installed the plugin to display the login box under the forum copy the 
+file "login.php" into the folder where the plugin is installed (Standard: 16).
+
+If you have installed the plugin to display the personal box in the navigation copy the 
+file "login.php" into the folder where the plugin is installed (Standard: 5).
 
 Upload the file templates/global.js.
 
@@ -157,6 +165,7 @@ Upload the following files into your Viscacha root folder:
 - docs.php
 - edit.php
 - editprofile.php
+- log.php
 - manageforum.php
 - managemembers.php
 - managetopic.php

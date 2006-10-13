@@ -207,8 +207,9 @@ class GPC {
     		}
     	}
 		else {
-			return str_replace("\0", '', $data);
+			$data = str_replace("\0", '', $data);
 		}
+		return $data;
 	}
 	
 	function stripslashes($array) {

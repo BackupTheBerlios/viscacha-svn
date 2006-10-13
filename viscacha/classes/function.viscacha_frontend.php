@@ -26,15 +26,60 @@ if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "function.v
 
 require_once("classes/function.frontend_init.php");
 
-function basefilename($file) {
-	$file = basename($file);
-	if (strpos($file, '?') !== false) {
-		$parts = explode('?', $file, 2);
-		return $parts[0];
+function getRedirectURL($standard = true) {
+	global $gpc;
+	$loc = strip_tags($gpc->get('redirect', none));
+	$loc = preg_replace('~(\?|&)s=[A-Za-z0-9]*~i', '', $loc);
+	if (check_hp($loc)) {
+		$url = parse_url($loc);
+		$file = isset($url['path']) ? basename($url['path']) : '';
 	}
 	else {
-		return $file;
+		$file = basename($loc);
 	}
+	if (strpos($file, '?') !== false) {
+		$parts = explode('?', $file, 2);
+		$file = $parts[0];
+	}
+	if (empty($loc) || !file_exists($file) || $file == 'log.php') {
+		if ($standard == true) {
+			$loc = 'index.php';
+ 		}
+ 		else {
+ 			$loc = '';
+ 		}
+	}
+	if (!empty($loc)) {
+		if (strpos($loc, '?') === false) {
+			$loc .= SID2URL_1;
+		}
+		else {
+			$loc .= SID2URL_x;
+		}
+	}
+	return $loc;
+}
+
+function getRefererURL() {
+	global $config;
+	$request_uri = '';
+	if (check_hp($_SERVER['HTTP_REFERER'])) {
+		$url = parse_url($_SERVER['HTTP_REFERER']);
+		if (strpos($config['furl'], $url['host']) !== FALSE) {
+			$request_uri = $_SERVER['HTTP_REFERER'];
+		}
+	}
+	$request_uri = preg_replace('~(\?|&)s=[A-Za-z0-9]*~i', '', $request_uri);
+	$file = basename($url['path']);
+	if (!empty($loc) && file_exists($file) && $file != 'log.php') {
+		if (strpos($loc, '?') === false) {
+			$request_uri .= SID2URL_1;
+		}
+		else {
+			$request_uri .= SID2URL_x;
+		}
+	}
+	return $request_uri;
 }
 
 function cmp_edit_date($a, $b) {
@@ -771,5 +816,4 @@ function get_pmdir ($dir) {
 	}
 	return $dir_name;
 }
-
 ?>
