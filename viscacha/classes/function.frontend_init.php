@@ -30,6 +30,14 @@ if (in_array('config', array_keys(array_change_key_case($_REQUEST)))) {
 
 // Gets a file with php-functions
 @include_once("classes/function.phpcore.php");
+
+if (empty($config['cryptkey']) || empty($config['database']) || empty($config['dbsystem'])) {
+	trigger_error('Viscacha is currently not installed. How to install Viscacha is described in the file "_docs/readme.txt"!', E_USER_ERROR);
+}
+if (empty($config['dbpw']) || empty($config['dbuser'])) {
+	trigger_error('You have specified database authentification data that is not safe. Please change your database user and the database password!', E_USER_ERROR);
+}
+
 // Filesystem
 require_once("classes/class.filesystem.php");
 $filesystem = new filesystem($config['ftp_server'], $config['ftp_user'], $config['ftp_pw'], $config['ftp_port']);

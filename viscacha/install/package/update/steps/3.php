@@ -41,6 +41,16 @@ $filesystem->unlink('../images/1/bbcodes/wiki.gif');
 $db->query("ALTER TABLE `{$db->pre}forums` ADD `count_posts` enum('0','1') NOT NULL default '1' AFTER `last_topic`", __LINE__, __FILE__);
 $db->query("ALTER TABLE `{$db->pre}user` ADD `posts` mediumint(7) unsigned NOT NULL default '0' AFTER `regdate`", __LINE__, __FILE__);
 
+// Update Postcounts
+$result = $db->query("SELECT COUNT(*) AS new, u.posts, u.id FROM {$db->pre}replies AS r LEFT JOIN {$db->pre}user AS u ON u.id = r.name WHERE r.guest = '0' GROUP BY u.id", __LINE__, __FILE__);		
+$i = 0;
+while ($row = $db->fetch_assoc($result)) {
+	if ($row['new'] != $row['posts']) {
+		$i++;
+		$db->query("UPDATE {$db->pre}user SET posts = '{$row['new']}' WHERE id = '{$row['id']}'",__LINE__,__FILE__);
+	}
+}
+
 // Refresh Cache
 $dirs = array('../cache/', '../cache/modules/');
 foreach ($dirs as $dir) {

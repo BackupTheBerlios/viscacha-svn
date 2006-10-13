@@ -1,9 +1,9 @@
 ########################################
-# Installation Viscacha 0.8 Beta 3     #
+# Installation Viscacha 0.8 Beta 4     #
 ########################################
 
 
-== Preambel ==
+== Preamble ==
 
 This is the third public release of Viscacha (0.8). Some of the Feature
 are missing, but I am working to complete these features for version 0.9.
@@ -13,7 +13,7 @@ will check these entries and fix or implement them in most cases.
 This version is meant only for testing purposes only and in productive use
 there can occur some problems. This is version 0.8 and not 1.0. Until 
 version 1.0 is released there will be some major changes that can affect 
-the compatibility and may result in lost data. Plugins and Components are 
+the compatibility and may result in lost data. plugins and components are 
 currently on the newest state, but there can be some minor changes in the
 API of plugins and components. All available hooks of the plugin system you
 can find in the file hooks.txt. If there is a hook missing, please contact 
@@ -107,9 +107,9 @@ Replace the following line:
 with this line:
 .hiddenl ul {
 
-Upload to each image pack (Folder: "images/") the file "tt.gif" in the folger "bbcodes/".
+Upload to each image pack (Folder: "images/") the file "tt.gif" in the folder "bbcodes/".
 
-Many changes were made in the langauge files. You have to update all files. If you 
+Many changes were made in the language files. You have to update all files. If you 
 translated the files, make a backup and diff the files later manually. You can not
 update them. English files are in the folder "2". German files are in the folder "1".
 Please remember: After updating please check the settings for all languages in your admin
@@ -178,7 +178,6 @@ Upload the following files into your Viscacha root folder:
 - register.php
 - showtopic.php
 
-
 Finally upload the install/ directory and execute the update script.
 
 == System requirements ==
@@ -200,7 +199,7 @@ Optimal system requirements:
  - MySQL Version: 4.1 and above
 
 If you are testing Viscacha, please give me some feedback how Viscacha worked,
-which errors occured and which server configuration was used.
+which errors occurred and which server configuration was used.
 
 Following information interest me:
 - Operating system (of the server)
@@ -214,8 +213,7 @@ Following information interest me:
   - safe_mode
   - magic_quotes_gpc
   - register_globals
-  - register_long_arrays
-  - sql.safe_mode
+  - open_basedir
 
 
 == Contact ==

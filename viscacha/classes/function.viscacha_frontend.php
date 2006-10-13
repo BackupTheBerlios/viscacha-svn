@@ -68,18 +68,21 @@ function getRefererURL() {
 		if (strpos($config['furl'], $url['host']) !== FALSE) {
 			$request_uri = $_SERVER['HTTP_REFERER'];
 		}
-	}
-	$request_uri = preg_replace('~(\?|&)s=[A-Za-z0-9]*~i', '', $request_uri);
-	$file = basename($url['path']);
-	if (!empty($loc) && file_exists($file) && $file != 'log.php') {
-		if (strpos($loc, '?') === false) {
-			$request_uri .= SID2URL_1;
+		$request_uri = preg_replace('~(\?|&)s=[A-Za-z0-9]*~i', '', $request_uri);
+		$file = basename($url['path']);
+		if (!empty($loc) && file_exists($file) && $file != 'log.php') {
+			if (strpos($loc, '?') === false) {
+				$request_uri .= SID2URL_1;
+			}
+			else {
+				$request_uri .= SID2URL_x;
+			}
 		}
-		else {
-			$request_uri .= SID2URL_x;
-		}
+		return $request_uri;
 	}
-	return $request_uri;
+	else {
+		return '';
+	}
 }
 
 function cmp_edit_date($a, $b) {
