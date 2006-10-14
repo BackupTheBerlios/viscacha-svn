@@ -95,16 +95,9 @@ a:hover {
     letter-spacing: 1px;
 	font-weight: bold;
 }
-.obox a.button, .obox a.button:hover {
-	margin-left: 5px;
-	color: #ffffff;
-	margin-right: 0px;
-}
-.button {
-	margin-right: 5px;
-}
 .button, .obox a.button {
 	text-Decoration: none;
+	white-space: nowrap;
 	padding: 1px;
 	padding-left: 4px;
 	padding-right: 4px;
@@ -114,12 +107,22 @@ a:hover {
 	border-top-color: #dddddd;
 	border-right-color: #333333;
 	border-bottom-color: #333333;
+	line-height: 1.75em;
 }
 .button:hover, .obox a.button:hover {
 	border-left-color: #333333;
 	border-top-color: #333333;
 	border-right-color: #dddddd;
 	border-bottom-color: #dddddd;
+}
+.obox a.button, .obox a.button:hover {
+	margin-left: 5px;
+	color: #ffffff;
+	margin-right: 0px;
+	line-height: 1em;
+}
+.button {
+	margin-right: 5px;
 }
 .ubox {
 	background-color: #94B7DF;

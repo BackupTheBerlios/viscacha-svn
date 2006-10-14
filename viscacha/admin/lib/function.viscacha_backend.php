@@ -506,7 +506,7 @@ function SelectBoardStructure($name = 'id', $group = ADMIN_SELECT_ALL, $standard
 	$boards = $catbid->get();
 	
 	$tree2 = array();
-	SelectBoardStructure_html(&$tree2, $tree, $categories, $boards, $group, $standard);
+	SelectBoardStructure_html($tree2, $tree, $categories, $boards, $group, $standard);
 	$forums = iif($no_select == false, '<select name="'.$name.'" size="1">');
 	$forums .= implode("\n", $tree2);
 	$forums .= iif($no_select == false, '</select>');
@@ -534,7 +534,7 @@ function SelectBoardStructure_html(&$html, $tree, $cat, $board, $group, $standar
 				$value = iif($group == ADMIN_SELECT_ALL, 'forums_').$bdata['id'];
 				$html[] = '<option '.iif($standard != null && $standard == $value, ' selected="selected"').' value="'.$value.'">'.str_repeat($char, $level+1).$bdata['name'].'</option>';
 			}
-	    	SelectBoardStructure_html(&$html, $sub, $cat, $board, $group, $standard, $char, $level+2);
+	    	SelectBoardStructure_html($html, $sub, $cat, $board, $group, $standard, $char, $level+2);
 	    }
 	    if ($group == ADMIN_SELECT_FORUMS && $i == 0) {
 	    	$x = array_pop($html);

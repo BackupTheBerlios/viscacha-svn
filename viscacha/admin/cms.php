@@ -107,7 +107,7 @@ if ($job == 'plugins') {
 			if ($head['name'] != null) {
 				?>
 				<tr class="mbox">
-					<td><?php echo $head['name']; ?><?php echo iif ($head['active'] == 0, ' (<em>Inaktiv</em>)'); ?></td>
+					<td><?php echo $head['name']; ?><?php echo iif ($head['active'] == 0, ' (<em>Inactive</em>)'); ?></td>
 					<td nowrap="nowrap"><?php echo $head['position']; ?></td>
 					<td nowrap="nowrap">
 						<?php 
@@ -167,7 +167,7 @@ if ($job == 'plugins') {
 			}
 			?>
 			<tr class="mbox">
-				<td><?php echo $head['name']; ?><?php echo iif ($head['active'] == 0, ' (<em>Inaktiv</em>)'); ?></td>
+				<td><?php echo $head['name']; ?><?php echo iif ($head['active'] == 0, ' (<em>Inactvie</em>)'); ?></td>
 				<td nowrap="nowrap" title="<?php echo htmlspecialchars($head['title']); ?>">
 					<?php SelectPackageLinks($head); echo $head['module']; ?>&nbsp;&nbsp;	
 				</td>
