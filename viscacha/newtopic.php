@@ -184,14 +184,14 @@ elseif ($_GET['action'] == "save") {
 		if ($config['botgfxtest_posts'] == 1) {
 			include("classes/graphic/class.veriword.php");
 			$vword = new VeriWord();
-		    if($_POST['letter']) {
-		        if ($vword->check_session($_POST['captcha'], $_POST['letter']) == FALSE) {
-		        	$error[] = $lang->phrase('veriword_mistake');
-		        }
-		    }
-		    else {
-		        $error[] = $lang->phrase('veriword_failed');
-		    }
+			if($_POST['letter']) {
+				if ($vword->check_session($_POST['captcha'], $_POST['letter']) == FALSE) {
+					$error[] = $lang->phrase('veriword_mistake');
+				}
+			}
+			else {
+				$error[] = $lang->phrase('veriword_failed');
+			}
 		}
 		if (!check_mail($_POST['email']) && ($config['guest_email_optional'] == 0 || !empty($_POST['email']))) {
 			$error[] = $lang->phrase('illegal_mail');
@@ -353,11 +353,18 @@ elseif ($_GET['action'] == "save") {
 		$catobj->delete();
 
 		if (count($last['topic_notification']) > 0) {
-			$to = array_combine(array_fill(1, count($last['topic_notification']), 'mail'), $last['topic_notification']);
+			$to = array();
+			foreach ($last['topic_notification'] as $mail) {
+				$to[] = array('mail' => $mail);
+			}
+			$lang_dir = $lang->getdir(true);
+			$lang->setdir($config['langdir']);
 			$data = $lang->get_mail('new_topic');
+			$lang->setdir($lang_dir);
 			$from = array();
 			xmail($to, $from, $data['title'], $data['comment']);
 		}
+
 
 		($code = $plugins->load('newtopic_save_end')) ? eval($code) : null;
 		
