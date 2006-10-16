@@ -153,7 +153,7 @@ else {
 		error('index.php'.SID2URL_1, 'You are not allowed to view this page!');
 	}
 	
-	$addr = $gpc->get('addr', none);
+	$addr = rawurldecode($gpc->get('addr', none));
 	if ($action == "login2") {
 		$log_status = $slog->sid_login(true);
 		echo head();

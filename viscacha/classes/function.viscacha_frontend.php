@@ -32,7 +32,7 @@ function getRedirectURL($standard = true) {
 	$loc = preg_replace('~(\?|&)s=[A-Za-z0-9]*~i', '', $loc);
 	if (check_hp($loc)) {
 		$url = parse_url($loc);
-		$file = isset($url['path']) ? basename($url['path']) : '';
+		$file = !empty($url['path']) ? basename($url['path']) : '';
 	}
 	else {
 		$file = basename($loc);
@@ -65,10 +65,13 @@ function getRefererURL() {
 	$request_uri = '';
 	if (check_hp($_SERVER['HTTP_REFERER'])) {
 		$url = parse_url($_SERVER['HTTP_REFERER']);
-		if (strpos($config['furl'], $url['host']) !== FALSE) {
+		if (!empty($url['host']) && strpos($config['furl'], $url['host']) !== FALSE) {
 			$request_uri = $_SERVER['HTTP_REFERER'];
 		}
 		$request_uri = preg_replace('~(\?|&)s=[A-Za-z0-9]*~i', '', $request_uri);
+		if (empty($url['path'])) {
+			$url['path'] = '';
+		}
 		$file = basename($url['path']);
 		if (!empty($loc) && file_exists($file) && $file != 'log.php') {
 			if (strpos($loc, '?') === false) {

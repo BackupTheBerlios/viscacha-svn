@@ -221,11 +221,17 @@ if ($job == 'menu') {
 	<?php
 }
 else {
-	 $addr = $gpc->get('addr', none);
-	 $file = basename($addr, '.php');
-	 if ($file != 'admin') {
-	 	$addr = 'admin.php?action=index';
-	 }
+	$addr = rawurldecode($gpc->get('addr', none));
+	$path = parse_url($addr);
+	if (!empty($path['path'])) {
+		$file = basename($path['path'], '.php');
+	}
+	else {
+		$file = null;
+	}
+	if ($file != 'admin') {
+		$addr = 'admin.php?action=index';
+	}
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Frameset//EN" "http://www.w3.org/TR/REC-html40/frameset.dtd">
 <html>
