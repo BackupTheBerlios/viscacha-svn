@@ -649,22 +649,20 @@ elseif ($job == 'edit') {
 	
 	$chars = $config['maxaboutlength'];
 	
-	if (empty($user['template'])) {
-		$user['template'] = $config['templatedir'];
-	}
-	if (empty($user['language'])) {
-		$user['language'] = $config['langdir'];
-	}		
-	
-	// Settings
 	$loaddesign_obj = $scache->load('loaddesign');
 	$design = $loaddesign_obj->get();
-	$mydesign = $design[$user['template']]['name'];
-	
+	if (!isset($language[$user['language']]['language'])) {
+		$user['template'] = $config['templatedir'];
+	}
+	$mylanguage = $language[$user['language']]['language'];
+
 	$loadlanguage_obj = $scache->load('loadlanguage');
 	$language = $loadlanguage_obj->get();
-	$mylanguage = $language[$user['language']]['language'];
-	
+	if (!isset($design[$user['template']]['name'])) {
+		$user['language'] = $config['langdir'];
+	}
+	$mydesign = $design[$user['template']]['name'];
+
 	// Profile
 	$bday = explode('-',$user['birthday']);
 	$year = gmdate('Y');

@@ -51,12 +51,12 @@ if ($_GET['action'] == 'show') {
 	$result = $db->query("
 	SELECT 
 		   p.dir, p.status, p.id, p.topic, p.comment, p.date, p.pm_from as mid, 
-		   u.name, u.mail, u.regdate, u.fullname, u.hp, u.signature, u.location, u.gender, u.birthday, u.pic, u.lastvisit, u.icq, u.yahoo, u.aol, u.msn, u.jabber, u.skype, u.groups, 
+		   u.id as mid, u.name, u.mail, u.regdate, u.fullname, u.hp, u.signature, u.location, u.gender, u.birthday, u.pic, u.lastvisit, u.icq, u.yahoo, u.aol, u.msn, u.jabber, u.skype, u.groups, 
 		   f.* 
 	FROM {$db->pre}pm AS p 
 		LEFT JOIN {$db->pre}user AS u ON p.pm_from = u.id 
 		LEFT JOIN {$db->pre}userfields AS f ON u.id = f.ufid 
-	WHERE p.pm_to = '".$my->id."' AND p.id = '{$_GET['id']}' 
+	WHERE p.pm_to = '{$my->id}' AND p.id = '{$_GET['id']}' 
 	ORDER BY p.date ASC
 	",__LINE__,__FILE__);
 	if ($db->num_rows() != 1) {
@@ -65,7 +65,9 @@ if ($_GET['action'] == 'show') {
 	
 	$row = $gpc->prepare($db->fetch_assoc($result));
 	
-	$db->query("UPDATE {$db->pre}pm SET status = '1' WHERE id = ".$_GET['id'],__LINE__,__FILE__);
+	if ($row['status'] == '0') {
+		$db->query("UPDATE {$db->pre}pm SET status = '1' WHERE id = '{$row['id']}'",__LINE__,__FILE__);
+	}
 
 	if (empty($row['name'])) {
 		$row['regdate'] = '-';
@@ -92,6 +94,11 @@ if ($_GET['action'] == 'show') {
 	$row['date'] = str_date($lang->phrase('dformat1'), times($row['date']));
 	$row['read'] = iif($row['status'] == 1,'old','new');
 	$row['level'] = $slog->getStatus($row['groups'], ', ');
+
+	if ($my->opt_showsig == 1) {
+		BBProfile($bbcode, 'signature');
+		$row['signature'] = $bbcode->parse($row['signature']);
+	}
 
 	($code = $plugins->load('pm_show_prepared')) ? eval($code) : null;
 
