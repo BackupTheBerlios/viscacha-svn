@@ -39,8 +39,8 @@ class cache_fgroups extends CacheItem {
 		}
 		foreach ($groups as $gid) {
 			if (isset($this->data[$gid])) {
-				foreach ($this->data[$gid] as $bid => $values) {
-					if (in_array($bid, $boards)) {
+				foreach ($boards as $bid) {
+					if (isset($this->data[$gid][$bid])) {
 						$data[$bid][$gid] = $this->data[$gid][$bid];
 					}
 				}
