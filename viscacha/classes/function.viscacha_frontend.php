@@ -533,8 +533,8 @@ function BoardSelect($board = 0) {
     				   	$forum['new'] = true;
     				}
 		    		if (!empty($forum['btopic'])) {
-		    			if (strxlen($forum['btopic']) > 40) {
-		    				$forum['btopic'] = substr($forum['btopic'], 0, 40);
+		    			if (strxlen($forum['btopic']) > $config['lasttopic_chars']) {
+		    				$forum['btopic'] = substr($forum['btopic'], 0, $config['lasttopic_chars']);
 		    				$forum['btopic'] .= "...";
 		    			}
 		    			$forum['btopic'] = $gpc->prepare($forum['btopic']);

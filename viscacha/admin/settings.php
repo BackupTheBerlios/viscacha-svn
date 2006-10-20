@@ -612,6 +612,10 @@ elseif ($job == 'boardcat') {
 	   <td class="mbox" width="50%"><input type="text" name="forumzahl" value="<?php echo $config['forumzahl']; ?>" size="4"></td> 
 	  </tr>
 	  <tr> 
+	   <td class="mbox" width="50%">Length of Last Topic:<br /><span class="stext">Here you can specifiy a length after that the title in the last topic column in the board overview will be cutted.</span></td>
+	   <td class="mbox" width="50%"><input type="text" size="5" name="lasttopic_chars" value="<?php echo $config['lasttopic_chars']; ?>" /></td> 
+	  </tr>
+	  <tr> 
 	   <td class="mbox" width="50%">Show Subforums in Forumoverview:</font></td>
 	   <td class="mbox" width="50%"><input type="checkbox" name="showsubfs" value="1"<?php echo iif($config['showsubfs'] == 1,' checked="checked"'); ?>></td> 
 	  </tr>
@@ -632,6 +636,7 @@ elseif ($job == 'boardcat2') {
 
 	$c->getdata();
 	$c->updateconfig('forumzahl', int);
+	$c->updateconfig('lasttopic_chars', int);
 	$c->updateconfig('showsubfs', int);
 	$c->updateconfig('updateboardstats', int);
 	$c->savedata();

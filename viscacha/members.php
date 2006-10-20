@@ -81,8 +81,8 @@ if ($config['mlist_showinactive'] == 0) {
 $groups = array();
 $g = $gpc->get('g', arr_int);
 if ($config['mlist_filtergroups'] > 0) {
-	$group_status = $scache->load('group_status');;
-	$statusdata = $group_status->get();
+	$groups = $scache->load('groups');
+	$statusdata = $groups->status();
 	foreach ($statusdata as $row) {
 		if ($row['guest'] != 1) {
 			$groups[$row['id']] = $row['title'];

@@ -70,6 +70,7 @@ $config['jabber_pass'] = 'Viscacha';
 $config['jabber_server'] = 'jabber.ccc.de';
 $config['jabber_user'] = 'ViscachaIM';
 $config['langdir'] = 1;
+$config['lasttopic_chars'] = 40;
 $config['maxaboutlength'] = 10000;
 $config['maxeditlength'] = 128;
 $config['maxmultiquote'] = 10;
@@ -180,7 +181,7 @@ $config['updateboardstats'] = 1;
 $config['updatepostcounter'] = 1;
 $config['vcard_dl'] = 1;
 $config['vcard_dl_guests'] = 0;
-$config['version'] = '0.8 Beta 4';
+$config['version'] = '0.8 RC1';
 $config['wordstatus'] = 1;
 $config['wordwrap'] = 1;
 ?>

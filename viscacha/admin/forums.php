@@ -382,6 +382,8 @@ elseif ($job == 'forum_delete2') {
 	
 	$delobj = $scache->load('cat_bid');
 	$delobj->delete();
+	$delobj = $scache->load('fgroups');
+	$delobj->delete();
 	$delobj = $scache->load('forumtree');
 	$delobj->delete();
 	$delobj = $scache->load('parent_forums');
@@ -985,6 +987,8 @@ elseif ($job == 'forum_add2') {
 		
 		$delobj = $scache->load('cat_bid');
 		$delobj->delete();
+		$delobj = $scache->load('fgroups');
+		$delobj->delete();
 		$delobj = $scache->load('forumtree');
 		$delobj->delete();
 		$delobj = $scache->load('parent_forums');
@@ -1104,6 +1108,8 @@ elseif ($job == 'rights_ajax_changeperm') {
 	}
 	$perm = invert($perm[$key]);
 	$db->query("UPDATE {$db->pre}fgroups SET `f_{$key}` = '{$perm}' WHERE fid = '{$id}' LIMIT 1", __LINE__, __FILE__);
+	$delobj = $scache->load('fgroups');
+	$delobj->delete();
 	die(strval($perm));
 }
 elseif ($job == 'rights_add') {
@@ -1196,6 +1202,8 @@ elseif ($job == 'rights_add2') {
 	VALUES ('{$id}','{$group}','{$downloadfiles}','{$forum}','{$posttopics}','{$postreplies}','{$addvotes}','{$attachments}','{$edit}','{$voting}')
 	", __LINE__, __FILE__);
 	if ($db->affected_rows() == 1) {
+		$delobj = $scache->load('fgroups');
+		$delobj->delete();
 		ok('admin.php?action=forums&job=rights&id='.$id, 'Data successfully inserted!');
 	}
 	else {
@@ -1211,7 +1219,9 @@ elseif ($job == 'rights_delete') {
 	$did = $gpc->get('delete', arr_int);
 	if (count($did) > 0) {
 		$db->query('DELETE FROM '.$db->pre.'fgroups WHERE fid IN('.implode(',',$did).') AND bid = "'.$id.'"', __LINE__, __FILE__);
-		$anz = $db->affected_rows();	
+		$anz = $db->affected_rows();
+		$delobj = $scache->load('fgroups');
+		$delobj->delete();
 		ok('admin.php?action=forums&job=rights&id='.$id, $anz.' entries deleted!');
 	}
 	else {

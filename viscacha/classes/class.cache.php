@@ -79,10 +79,13 @@ class CacheItem {
 			$age = time()-filemtime($this->file);
 			return $age;
 		}
+		else {
+			return -1;
+		}
 	}
 	
 	function exists($max_age = null) {
-	    if (file_exists($this->file) && filesize($this->file) > 4) {
+	    if (file_exists($this->file) && filesize($this->file) > 0) {
 			if ($max_age != null) {
 				return !($this->expired($max_age));
 			}
