@@ -410,7 +410,7 @@ elseif ($job == 'plugins_edit2') {
 	$filesystem->file_put_contents($dir.$file, $code);
 
 	if ($data['position'] != $hook) {
-		$ini['php'][$hook] == $file;
+		$ini['php'][$hook] = $file;
 		unset($ini['php'][$data['position']]);
 		$myini->write($dir."config.ini", $ini);
 		$filesystem->unlink('cache/modules/'.$plugins->_group($hook).'.php');

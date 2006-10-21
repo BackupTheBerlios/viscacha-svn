@@ -2595,7 +2595,7 @@ else {
 	 </tr>
 	 <tr class="ubox">
 	  <td nowrap="nowrap" width="27%">Sections</td>
-	  <td class="stext" width="50%">Description</td>
+	  <td width="50%">Description</td>
 	  <td nowrap="nowrap" width="23%">Options</td>
 	 </tr>
 	 <?php while ($row = $db->fetch_assoc($result)) { ?>

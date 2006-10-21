@@ -163,6 +163,7 @@ h1 a, h1 a:hover {
 }
 #content h3 img, #window h3 img, .tables th img, .h3 img {
 	vertical-align: middle;
+	/* display: none */
 }
 .inlineheader {
 	border-top: 1px solid #839FBC;
@@ -292,14 +293,6 @@ h1 a, h1 a:hover {
 }
 
 /* Tabellenlose Formulare */
-.plainlabel {
-	float: none;
-	display: inline;
-	width: auto;
-	padding-right: 0px;
-	font-weight: normal;
-}
-
 .label, label, .labeldiv {
 	float: left;
 	display: block;
@@ -391,12 +384,18 @@ label, .labeldiv {
 .highlight_pos {
 	color: green;
 }
+.profiledata br {
+	line-height: 0px;
+}
+.profiledata em br {
+	line-height: 1em;
+}
 .profiledata em {
 	font-style: normal;
 	margin-left: 7px;
+	display: block;
 }
 .profiledata h5 {
-/*  display: inline;  */
 	font-weight: bold;
 	font-family: Trebuchet MS, Verdana, Arial, Helvetica, sans-serif;
 	font-size: 9pt;
@@ -410,7 +409,7 @@ label, .labeldiv {
 	list-style-image: none;
 }
 
-/* Inder der Einstellungen */
+/* Index der Einstellungen */
 .editprofile_index {
 	margin: auto;
 	text-align: center;
@@ -620,6 +619,7 @@ label, .labeldiv {
 }
 .bb_inlinecode {
 	color: #880000;
+	white-space: normal;
 }
 .bb_blockcode_header {
 	display: block;
@@ -653,14 +653,12 @@ label, .labeldiv {
 	margin: 0px;
 	width: 98%;
 	padding-left: 5px;
-	display: block;
 }
-.bb_quote cite {
+.bb_quote blockquote {
 	border-bottom: 1px solid #839FBC;
 	border-top: 1px solid #839FBC;
 	padding-left: 10px;
 	font-size: 9pt;
-	display: block;
 	margin: 1px;
 }
 .bb_ot span {
@@ -670,11 +668,14 @@ label, .labeldiv {
 	color: #7E9AB8;
 	font-size: 9pt;
 	display: block;
+	margin: 1px;
 }
 .bb_edit ins {
-	margin-left: 10px;
 	display: block;
+	margin: 1px;
+	padding-left: 5px;
 	text-decoration: none;
+	border-left: 2px solid #BCCADA;
 }
 .bb_hide {
 	color: #aaaaaa;
@@ -724,7 +725,13 @@ label, .labeldiv {
 .nowrap {
 	white-space: nowrap;
 }
-
+.plainlabel {
+	float: none;
+	display: inline;
+	width: auto;
+	padding-right: 0px;
+	font-weight: normal;
+}
 /* IE Fix */
 .iefix_br {
 	line-height: 0px;

@@ -339,7 +339,7 @@ function viscacha_dirname($path) {
 function getDocumentRoot(){
 	//sets up the localpath
 	$localpath = getenv("SCRIPT_NAME");
- 	$localpath = substr($localpath,strpos($localpath,'/',1),strlen($localpath));
+ 	$localpath = substr($localpath, strpos($localpath, '/', iif(strlen($localpath) >= 1, 1, 0)), strlen($localpath));
 	 
 	//realpath sometimes doesn't work, but gets the full path of the file
 	$absolutepath = realpath($localpath);

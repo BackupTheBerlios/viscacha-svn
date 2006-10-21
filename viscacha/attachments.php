@@ -265,11 +265,6 @@ else {
 					array_push($inserterrors, $my_uploader->get_error());
 				}
 			}
-			
-			if (count($inserterrors) > 0) {
-				echo $tpl->parse('popup/header');
-				error($inserterrors, 'attachments.php?type='.$_GET['type'].'&amp;id='.$_GET['id'].SID2URL_x);
-			}
 	
 			if ($_GET['type'] == 'edit' && ($my->mp[0] == 1 || $upinfo['name'] == $my->id)) {
 				$upper = $upinfo['name'];
@@ -290,7 +285,13 @@ else {
 			
 			($code = $plugins->load('attachments_upload_save_add_end')) ? eval($code) : null;
 			
-			viscacha_header('Location: attachments.php?type='.$_GET['type'].'&id='.$_GET['id'].SID2URL_JS_x);
+			if (count($inserterrors) > 0) {
+				echo $tpl->parse('popup/header');
+				error($inserterrors, 'attachments.php?type='.$_GET['type'].'&amp;id='.$_GET['id'].SID2URL_x);
+			}
+			else {
+				viscacha_header('Location: attachments.php?type='.$_GET['type'].'&id='.$_GET['id'].SID2URL_JS_x);
+			}
 		}
 	}
 	else {

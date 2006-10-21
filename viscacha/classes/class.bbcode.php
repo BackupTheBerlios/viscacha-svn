@@ -111,11 +111,16 @@ class BBCode {
 		$code = preg_replace('/^([\s\t]*(\r\n|\r|\n))?(.+?)((\r\n|\r|\n)[\s\t]*)?$/s', '\3', $code);
 		return $code;
 	}
-	function code_prepare($code) {
+	function code_prepare($code, $inline = false) {
 		$code = str_replace("]", "&#93;", $code);
 		$code = str_replace("[", "&#91;", $code);
 		$code = str_replace("\t", "&nbsp;&nbsp;&nbsp;&nbsp;", $code);
-		$code = str_replace(" ", "&nbsp;", $code);
+		if ($inline == true) {
+			$code = str_replace("  ", "&nbsp;&nbsp;", $code);
+		}
+		else {
+			$code = str_replace(" ", "&nbsp;", $code);
+		}
 		return $code;
 	}
 	function cb_code ($matches) {
@@ -123,9 +128,8 @@ class BBCode {
 		$pid = $this->noparse_id();
 		list(,$code,$nl) = $matches;
 		
-		$code = $this->code_prepare($code);
 	    $rows = preg_split('/(\r\n|\r|\n)/',$code);
-	    $code2 = $this->code_prepare($code);
+	    $code = $this->code_prepare($code, (count($rows) <= 1));
 		
 	    if (count($rows) > 1) {
 	    	$a = 0;
@@ -137,10 +141,10 @@ class BBCode {
 
 			$aa = implode("<br />",$aa);
 
-		    $this->noparse[$pid] = '<strong class="bb_blockcode_header">'.$lang->phrase('bb_sourcecode').'</strong><div class="bb_blockcode"><table><tr><td width="1%">'.$aa.'</td><td width="99%">'.$this->nl2br($code2).'</td></tr></table></div>';
+		    $this->noparse[$pid] = '<strong class="bb_blockcode_header">'.$lang->phrase('bb_sourcecode').'</strong><div class="bb_blockcode"><table><tr><td width="1%">'.$aa.'</td><td width="99%">'.$this->nl2br($code).'</td></tr></table></div>';
 		}
 		else {
-			$this->noparse[$pid] = '<code class="bb_inlinecode">'.$code2.'</code>';
+			$this->noparse[$pid] = '<code class="bb_inlinecode">'.$code.'</code>';
 			if (!empty($nl)) {
 				$this->noparse[$pid] .= '<br />';
 			}
@@ -152,11 +156,11 @@ class BBCode {
 		$pid = $this->noparse_id();
 		list(, $sclang, $code, $nl) = $matches;
 		
-		$code = $this->code_prepare($code);
+		
 	    $rows = preg_split('/(\r\n|\r|\n)/',$code);
-	    $code2 = $this->code_prepare($code);
 
 	    if (count($rows) > 1) {
+	    	$code = $code2 = $this->code_prepare($code);
 		    $a = 0;
 		    $aa = array();
 			$unique = md5($code);
@@ -181,6 +185,7 @@ class BBCode {
 		    $this->noparse[$pid] = '<strong class="bb_blockcode_header"><a target="_blank" href="popup.php?action=hlcode&amp;fid='.$unique.SID2URL_x.'">'.$lang->phrase('bb_ext_sourcecode').'</a></strong><div class="bb_blockcode"><table><tr><td width="1%">'.$aa.'</td><td width="99%">'.$this->nl2br($code2).'</td></tr></table></div>';
 		}
 		else {
+			$code2 = $this->code_prepare($code, (count($rows) <= 1));
 			$this->noparse[$pid] = '<code class="bb_inlinecode">'.$code2.'</code>';
 			if (!empty($nl)) {
 				$this->noparse[$pid] .= '<br />';
@@ -664,10 +669,10 @@ class BBCode {
 				else {
 					$quote_html = "\\1";
 				}
-				$text = preg_replace('/\[quote=(.+?)\](.+?)\[\/quote\]\n?/is', "<blockquote class='bb_quote'><strong>".$lang->phrase('bb_quote_by')." {$quote_html}:</strong><br /><cite>\\2</cite></blockquote>", $text);
+				$text = preg_replace('/\[quote=(.+?)\](.+?)\[\/quote\]\n?/is', "<div class='bb_quote'><strong>".$lang->phrase('bb_quote_by')." {$quote_html}:</strong><br /><blockquote>\\2</blockquote></div>", $text);
 			}
 			while (preg_match('/\[quote](.+?)\[\/quote\]/is',$text)) {
-				$text = preg_replace('/\[quote](.+?)\[\/quote\]\n?/is', "<blockquote class='bb_quote'><strong>".$lang->phrase('bb_quote')."</strong><br /><cite>\\1</cite></blockquote>", $text);
+				$text = preg_replace('/\[quote](.+?)\[\/quote\]\n?/is', "<div class='bb_quote'><strong>".$lang->phrase('bb_quote')."</strong><br /><blockquote>\\1</blockquote></div>", $text);
 			}
 			while (empty($this->profile['disallow']['edit']) && preg_match('/\[edit\](.+?)\[\/edit\]/is',$text)) {
 				$text = preg_replace('/\[edit\](.+?)\[\/edit\]\n?/is', "<div class='bb_edit'><strong>".$lang->phrase('bb_edit_author')."</strong><br /><ins>\\1</ins></div>", $text);

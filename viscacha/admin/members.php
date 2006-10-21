@@ -648,18 +648,18 @@ elseif ($job == 'edit') {
 	$user = $gpc->prepare($db->fetch_assoc($result));
 	
 	$chars = $config['maxaboutlength'];
-	
-	$loaddesign_obj = $scache->load('loaddesign');
-	$design = $loaddesign_obj->get();
-	if (!isset($language[$user['language']]['language'])) {
-		$user['template'] = $config['templatedir'];
-	}
-	$mylanguage = $language[$user['language']]['language'];
 
 	$loadlanguage_obj = $scache->load('loadlanguage');
 	$language = $loadlanguage_obj->get();
-	if (!isset($design[$user['template']]['name'])) {
+	if (!isset($language[$user['language']]['language'])) {
 		$user['language'] = $config['langdir'];
+	}
+	$mylanguage = $language[$user['language']]['language'];
+
+	$loaddesign_obj = $scache->load('loaddesign');
+	$design = $loaddesign_obj->get();
+	if (!isset($design[$user['template']]['name'])) {
+		$user['template'] = $config['templatedir'];
 	}
 	$mydesign = $design[$user['template']]['name'];
 
