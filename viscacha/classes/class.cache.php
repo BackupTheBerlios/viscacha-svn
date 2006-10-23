@@ -110,6 +110,10 @@ class CacheItem {
 		// Will be implemented in sub-class
 	}
 	
+	function rebuildable() {
+		return true;
+	}
+
 	function get($max_age = null) {
 		if ($this->data == null || $this->expired($max_age)) {
 			$this->load();

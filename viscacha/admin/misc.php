@@ -42,6 +42,8 @@ elseif ($job == 'cache') {
 						'cached' => false
 					);
 				}
+				$cache = $scache->load($name);
+				$result[$name]['rebuild'] = $cache->rebuildable();
 			}
 		}
 	}
@@ -116,6 +118,9 @@ elseif ($job == 'cache_delete' || $job == 'cache_refresh') {
 	$cache->delete();
 	if ($job == 'cache_refresh') {
 		$cache->load();
+		if ($cache->rebuildable() == false){
+			error('admin.php?action=misc&job=cache', iif($job == 'cache_refresh', 'The cache file is not rebuildable. It is only deleted. It will be created the next time it is needed.'));
+		}
 	}
 	ok('admin.php?action=misc&job=cache', iif($job == 'cache_refresh', 'The cache-file was rebuilt.', 'The cache-file was deleted. It will be rebuild the next time it is needed.'));
 }
@@ -128,14 +133,14 @@ elseif ($job == 'cache_delete_all' || $job == 'cache_refresh_all') {
 				$file = str_replace('.inc.php', '', $file);
 				$cache = $scache->load($file);
 				$cache->delete();
-				if ($job == 'cache_refresh_all') {
+				if ($job == 'cache_refresh_all' && $cache->rebuildable() == true) {
 					$cache->load();
 				}
 			}
 	    }
 		closedir($dh);
 	}
-	ok('admin.php?action=misc&job=cache', iif($job == 'cache_refresh_all', 'The cache-files were rebuilt.', 'The cache-files were deleted. They will be rebuild the next time they are needed.'));
+	ok('admin.php?action=misc&job=cache', iif($job == 'cache_refresh_all', 'The cache-files were rebuilt. Some files are only deleted and will be rebuild the next time they are needed.', 'The cache-files were deleted. They will be rebuild the next time they are needed.'));
 }
 elseif ($job == 'onlinestatus') {
 	echo head();
