@@ -13,7 +13,7 @@ class cache_groups extends CacheItem {
 			
 			$result = $db->query('SELECT * FROM '.$db->pre.'groups', __LINE__, __FILE__);
 			$this->data = array();
-			$this->data['groupstandard'] = array();
+			$this->data['groupstandard'] = $this->data['team_ag'] = $this->data['team_ag']['admin'] = $this->data['team_ag']['gmod'] = $this->data['group_status'] = array();
 			while ($row = $db->fetch_assoc($result)) {
 				// groups
 				$this->data['groups'][$row['id']] = array_intersect_key($row, $keys);
@@ -35,7 +35,6 @@ class cache_groups extends CacheItem {
 				);
 				
 				// team_ag
-				$this->data['team_ag']['admin'] = $this->data['team_ag']['gmod'] = array();
 		    	if ($row['admin'] == 1) {
 		        	$this->data['team_ag']['admin'][] = $row['id'];
 		        }

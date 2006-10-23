@@ -114,27 +114,47 @@ elseif ($job == 'cache_view') {
 elseif ($job == 'cache_delete' || $job == 'cache_refresh') {
 	$file = $gpc->get('file', str);
 	echo head();
-	$cache = $scache->load($file);
-	$cache->delete();
-	if ($job == 'cache_refresh') {
-		$cache->load();
-		if ($cache->rebuildable() == false){
-			error('admin.php?action=misc&job=cache', iif($job == 'cache_refresh', 'The cache file is not rebuildable. It is only deleted. It will be created the next time it is needed.'));
+	if (strpos($file, '.inc.php') === false) {
+		error('admin.php?action=misc&job=cache', 'No valid cache-file specified.');
+	}
+	$not = true;
+	if (file_exists('classes/cache/'.$file)) {
+		$cache = $scache->load($file);
+		$cache->delete();
+		if ($job == 'cache_refresh') {
+			$cache->load();
+			if ($cache->rebuildable() == false){
+				$not = false;
+			}
 		}
+	}
+	else {
+		$filesystem->unlink('cache/'.$file);
+		$not = false;
+	}
+	if ($not == false) {
+		error('admin.php?action=misc&job=cache', iif($job == 'cache_refresh', 'The cache file is only deleted. It will be created the next time it is needed.'));
 	}
 	ok('admin.php?action=misc&job=cache', iif($job == 'cache_refresh', 'The cache-file was rebuilt.', 'The cache-file was deleted. It will be rebuild the next time it is needed.'));
 }
 elseif ($job == 'cache_delete_all' || $job == 'cache_refresh_all') {
 	echo head();
-	$dir = iif ($job == 'cache_refresh_all', 'classes/cache', 'cache');
+	$classesdir = 'classes/cache/';
+	$cachedir = 'cache/';
+	$dir = iif ($job == 'cache_refresh_all', $classesdir, $cachedir);
 	if ($dh = @opendir($dir)) {
 		while (($file = readdir($dh)) !== false) {
 			if (strpos($file, '.inc.php') !== false) {
 				$file = str_replace('.inc.php', '', $file);
-				$cache = $scache->load($file);
-				$cache->delete();
-				if ($job == 'cache_refresh_all' && $cache->rebuildable() == true) {
-					$cache->load();
+				if (file_exists($classesdir.$file)) {
+					$cache = $scache->load($file);
+					$cache->delete();
+					if ($job == 'cache_refresh_all' && $cache->rebuildable() == true) {
+						$cache->load();
+					}
+				}
+				else {
+					$filesystem->unlink($cachedir.$file);
 				}
 			}
 	    }

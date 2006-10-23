@@ -272,7 +272,10 @@ elseif ($_GET['action'] == "save") {
 		($code = $plugins->load('newtopic_save_errordata')) ? eval($code) : null;
 		$fid = save_error_data($data);
 		if (!empty($_POST['Preview'])) {
+			$slog->updatelogged();
+			$db->close();
 			viscacha_header("Location: newtopic.php?action=preview&id={$board}&fid=".$fid.SID2URL_JS_x);
+			exit;
 		}
 		else {
 			error($error,"newtopic.php?id={$board}&amp;fid=".$fid.SID2URL_x);

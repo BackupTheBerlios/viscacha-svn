@@ -177,7 +177,10 @@ if ($_GET['action'] == "save") {
 		($code = $plugins->load('addreply_save_errordata')) ? eval($code) : null;
 		$fid = save_error_data($data);
 		if (!empty($_POST['Preview'])) {
+			$slog->updatelogged();
+			$db->close();
 			viscacha_header("Location: addreply.php?action=preview&id={$_POST['id']}&fid=".$fid.SID2URL_JS_x);
+			exit;
 		}
 		else {
 			error($error,"addreply.php?id={$_POST['id']}&amp;fid=".$fid.SID2URL_x);

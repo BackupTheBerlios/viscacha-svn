@@ -84,6 +84,7 @@ if ($_GET['action'] == 'firstnew') {
 		if ($pgs < 1) {
 			$pgs = 1;
 		}
+		$db->close();
 		viscacha_header('Location: showtopic.php?id='.$info['id'].'&page='.$pgs.$qUrl.SID2URL_JS_x.'#firstnew');
 		exit;
 	}
@@ -93,6 +94,7 @@ elseif ($_GET['action'] == 'last') {
 	$result = $db->query('SELECT id FROM '.$db->pre.'replies WHERE topic_id = '.$info['id'].' ORDER BY date DESC LIMIT 1',__LINE__,__FILE__);
 	$new = $db->fetch_num($result);
 	$pgs = ceil(($info['posts']+1)/$last['topiczahl']);
+	$db->close();
 	viscacha_header('Location: showtopic.php?id='.$info['id'].'&page='.$pgs.$qUrl.SID2URL_JS_x.'#p'.$new[0]);
 	exit;
 }
@@ -106,6 +108,7 @@ elseif ($_GET['action'] == 'mylast') {
 	if ($pgs < 1) {
 		$pgs = 1;
 	}
+	$db->close();
 	viscacha_header('Location: showtopic.php?id='.$info['id'].'&page='.$pgs.$qUrl.SID2URL_JS_x.'#p'.$mylast[1]);
 	exit;
 }
@@ -119,6 +122,7 @@ elseif ($_GET['action'] == 'jumpto') {
 	if ($pgs < 1) {
 		$pgs = 1;
 	}
+	$db->close();
 	viscacha_header('Location: showtopic.php?id='.$info['id'].'&page='.$pgs.$qUrl.SID2URL_JS_x.'#p'.$mylast[1]);
 	exit;
 }

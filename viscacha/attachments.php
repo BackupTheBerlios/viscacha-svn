@@ -154,6 +154,8 @@ elseif ($_GET['action'] == "attachment") {
 			readfile($uppath);
 		}
 		($code = $plugins->load('attachments_attachment_end')) ? eval($code) : null;
+		$slog->updatelogged();
+		$db->close();
 		exit();
 	}
 }
@@ -233,7 +235,10 @@ else {
 				WHERE mid = "'.$upinfo['name'].'" AND id IN ('.implode(',', $ids).')
 				',__LINE__,__FILE__);
 				
+				$slog->updatelogged();
+				$db->close();
 				viscacha_header('Location: attachments.php?type='.$_GET['type'].'&id='.$_GET['id'].SID2URL_JS_x);
+				exit;
 			}
 		}
 		else {
@@ -290,7 +295,10 @@ else {
 				error($inserterrors, 'attachments.php?type='.$_GET['type'].'&amp;id='.$_GET['id'].SID2URL_x);
 			}
 			else {
+				$slog->updatelogged();
+				$db->close();
 				viscacha_header('Location: attachments.php?type='.$_GET['type'].'&id='.$_GET['id'].SID2URL_JS_x);
+				exit;
 			}
 		}
 	}

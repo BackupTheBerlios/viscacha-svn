@@ -207,7 +207,10 @@ if ($_GET['action'] == "search") {
 		}
 		$fid = md5(microtime());
 		file_put_contents('cache/search/'.$fid.'.inc.php', serialize($data));
+		$slog->updatelogged();
+		$db->close();
 		viscacha_header('Location: search.php?action=result&fid='.$fid.SID2URL_JS_x);
+		exit;
 	}
 	else {
 		error($lang->phrase('search_nothingfound'), 'search.php'.SID2URL_1);

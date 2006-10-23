@@ -119,7 +119,9 @@ if ($my->p['admin'] == 1) {
 	elseif ($action == 'locate') {
 		$url = $gpc->get('url', none);
 		if (!empty($url)) {
+			$db->close();
 			viscacha_header('Location: '.$url);
+			exit;
 		}
 		else {
 			echo head();

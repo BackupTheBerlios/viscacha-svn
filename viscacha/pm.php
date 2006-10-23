@@ -230,7 +230,10 @@ elseif ($_GET['action'] == "save") {
 		($code = $plugins->load('pm_save_errordata')) ? eval($code) : null;
 		$fid = save_error_data($data);
 		if (!empty($_POST['Preview'])) {
+			$slog->updatelogged();
+			$db->close();
 			viscacha_header("Location: pm.php?action=preview&fid=".$fid.SID2URL_JS_x);
+			exit;
 		}
 		else {
 			error($error,"pm.php?action=new&amp;fid=".$fid.SID2URL_x);

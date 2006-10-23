@@ -513,7 +513,7 @@ function logged () {
 		$my->id = 0;
 	}
 
-	if (!is_array($my->pwfaccess)) {
+	if (!isset($my->pwfaccess)) {
 		$my->pwfaccess = array();
 	}
 	else {
@@ -793,17 +793,35 @@ function sid_login($remember = true) {
 	$pw = $gpc->get('pw', str);
 
 	$result = $db->query("
-	SELECT u.*, f.*, s.lastvisit as clv, s.ip, s.mark, s.pwfaccess, s.sid, s.settings, s.is_bot  
+	SELECT u.*, f.*, s.lastvisit as clv, s.ip, s.mark, s.pwfaccess, s.sid, s.settings, s.is_bot   
 	FROM {$db->pre}user AS u 
-		LEFT JOIN {$db->pre}session AS s ON s.sid = '{$my->sid}'
+		LEFT JOIN {$db->pre}session AS s ON (u.id = s.mid OR s.sid = '{$my->sid}') 
 		LEFT JOIN {$db->pre}userfields as f ON f.ufid = u.id 
 	WHERE u.name = '{$username}' AND u.pw = MD5('{$pw}') AND s.is_bot = '0'
-	LIMIT 1
 	",__LINE__,__FILE__);
+	$sessions = $db->num_rows($result);
+	
+	if ($sessions > 1) {
+		while ($row = $db->fetch_object($result)) {
+			if ($row->sid == $my->sid) {
+				$mytemp = $gpc->prepare($row);
+				break;
+			}
+		}
+		if (!isset($mytemp)) {
+			$mytemp = $gpc->prepare($row);
+			unset($row);
+		}
+		else {
+			unset($row);
+			$db->query("DELETE FROM {$db->pre}session WHERE mid = '{$mytemp->id}' AND sid != '{$mytemp->sid}'");
+		}
+	}
+	else {
+		$mytemp = $gpc->prepare($db->fetch_object($result));
+	}
 
-	$mytemp = $gpc->prepare($db->fetch_object($result));
-
-	if ($db->num_rows($result) == 1 && $mytemp->confirm == '11') {
+	if ($sessions > 0 && $mytemp->confirm == '11') {
 	
 		$mytemp->mark = $my->mark;
 		$my = $mytemp;

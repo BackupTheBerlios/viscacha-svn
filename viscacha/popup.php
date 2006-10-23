@@ -56,11 +56,12 @@ if ($_GET['action'] == "hlcode") {
 	($code = $plugins->load('popup_hlcode_start')) ? eval($code) : null;
 
 	if ($_GET['temp'] == 1) {
-		viscacha_header('Cache-control: private');
 		viscacha_header('Content-Type: text/plain');
 		viscacha_header('Content-Length: '.strlen($sourcecode['source']));
-		viscacha_header('Content-Disposition: attachment; filename='.date('d-m-Y_H-i').'.txt');
+		viscacha_header('Content-Disposition: attachment; filename="'.date('d-m-Y_H-i').'.txt"');
 		echo $sourcecode['source'];
+		$slog->updatelogged();
+		$db->close();
 		exit;
 	}
 	else {

@@ -29,7 +29,7 @@ if ($config['check_filesystem'] == 1) {
 }
 
 @ini_set('default_charset', '');
-header('Content-type: text/html; charset: iso-8859-1');
+header('Content-type: text/html; charset=iso-8859-1');
 
 // Colours
 $txt2img_fg = '204a87';

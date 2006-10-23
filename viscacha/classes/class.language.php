@@ -47,7 +47,7 @@ class lang {
 		
 		@ini_set('default_charset', '');
 		if (!headers_sent()) {
-			viscacha_header('Content-type: text/html; charset: '.$this->phrase('charset'));
+			viscacha_header('Content-type: text/html; charset='.$this->phrase('charset'));
 		}
 		
 		global $slog;
