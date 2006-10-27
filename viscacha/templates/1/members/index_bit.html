@@ -1,14 +1,15 @@
  <tr class="tbody">
-  <?php if (!empty($row['pic'])) { ?>
-  <td class="center">
-   <img src="<?php echo $row['pic']; ?>" alt="<?php echo $row['name']; ?>" />
-  </td>
-  <?php } ?>
   <td>
    <a href="profile.php?id=<?php echo $row['id'].SID2URL_x; ?>"><?php echo $row['name']; ?></a>
    <?php echo iif(!empty($row['fullname']),"<br /><em>{$row['fullname']}</em>"); ?>
   </td>
-  <?php if ($pm) { ?>
+  <?php if (isset($row['pic'])) { ?>
+  <td class="center">
+   <?php if (!empty($row['pic'])) { ?>
+   <img src="<?php echo $row['pic']; ?>" alt="<?php echo $row['name']; ?>" />
+   <?php } ?>
+  </td>
+  <?php } if ($pm) { ?>
   <td class="center">
    <a href="pm.php?action=new&amp;id=<?php echo $row['id'].SID2URL_x; ?>"><img src="<?php echo $tpl->img('pm'); ?>" alt="" /></a>
   </td>

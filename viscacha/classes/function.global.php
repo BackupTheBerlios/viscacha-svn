@@ -128,6 +128,14 @@ function checkRemotePic($pic, $id) {
 	return $pic;
 }
 
+function saveCommaSeparated($list) {
+	$list = preg_replace('~[^\d,]+~i', '', $list);
+	$list = explode(',', $list);
+	$list = array_empty_trim($list);
+	$list = implode(',', $list);
+	return $list;
+}
+
 function JS_URL($url) {
 	if (preg_match('~javascript:\s?([^;]+);?~i', $url, $command) && isset($command[1])) {
 		$url = $command[1];
@@ -198,10 +206,15 @@ function array_empty($array) {
 
 function array_empty_trim($arr) {
 	$array = array();
-	foreach($arr as $key => $val) {
-		$trimmed = trim($val);
-		if (!empty($trimmed)) {
-			$array[$key] = $val;
+	if (!is_array($arr)) {
+		trigger_error('array_empty_trim() expected argument to be an array!', E_USER_NOTICE);
+	}
+	else {
+		foreach($arr as $key => $val) {
+			$trimmed = trim($val);
+			if (!empty($trimmed)) {
+				$array[$key] = $val;
+			}
 		}
 	}
 	return $array;
