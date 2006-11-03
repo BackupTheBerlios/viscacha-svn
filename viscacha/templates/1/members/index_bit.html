@@ -1,7 +1,9 @@
  <tr class="tbody">
   <td>
    <a href="profile.php?id=<?php echo $row['id'].SID2URL_x; ?>"><?php echo $row['name']; ?></a>
-   <?php echo iif(!empty($row['fullname']),"<br /><em>{$row['fullname']}</em>"); ?>
+   <?php if(!empty($row['fullname'])) { ?>
+   	<br /><em><?php echo $row['fullname']; ?></em>
+   	<?php } ?>
   </td>
   <?php if (isset($row['pic'])) { ?>
   <td class="center">

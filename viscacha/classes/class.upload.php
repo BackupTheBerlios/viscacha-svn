@@ -405,7 +405,6 @@ class uploader {
 					$message = "Max. imagesize reached. Image is not allowed to be greater than {$miw} x {$mih} pixels.";
 				break;
 				case UPLOAD_ERR_FILE_TYPE:
-					$lang->assign('aft', implode($lang->phrase('listspacer'), $this->file_types));
 					$message = 'Only '.implode(', ', $this->file_types).' files are allowed to be uploaded.';
 				break;
 				case UPLOAD_ERR_COPY:

@@ -260,7 +260,7 @@ class BBCode {
 			list(,$url) = $url;
 		}
 
-		if ($img == true && (!preg_match("/\[\/\w\d\]+/is", $chop) || preg_match("/(([^?&=\[\]]+?)\.(png|gif|bmp|jpg|jpe|jpeg))/is", $url))) {
+		if ($img == true && (preg_match("~(\[/?[\w\d]{1,10}\])~", $chop) || preg_match("/(([^?&=\[\]]+?)\.(png|gif|bmp|jpg|jpe|jpeg))/is", $url))) {
 			return $url.$chop;
 		}
 

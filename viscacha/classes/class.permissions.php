@@ -369,7 +369,7 @@ function updatelogged () {
 		$sqlwhere[] = "mid = '{$my->id}'";
 	}
 	else {
-		$sqlwhere[] = "sid = '{$my->sid}'";
+		$sqlwhere[] = "sid = '{$this->sid}'";
 	}
 	$action = $gpc->get('action', str);
 	$qid = $gpc->get('id', int);
@@ -773,7 +773,7 @@ function sid_logout() {
 	$db->query ("
 	UPDATE {$db->pre}session 
 	SET wiw_script = '".SCRIPTNAME."', wiw_action = '{$action}', wiw_id = '{$qid}', active = '{$time}', mid = '0' 
-	WHERE ".iif($my->id > 0, "mid = '{$my->id}'", "sid = '{$my->sid}'")." 
+	WHERE ".iif($my->id > 0, "mid = '{$my->id}'", "sid = '{$this->sid}'")." 
 	LIMIT 1
 	",__LINE__,__FILE__);
 	$db->query("UPDATE {$db->pre}user SET lastvisit = '{$time}' WHERE id = '{$my->id}'",__LINE__,__FILE__);
@@ -795,7 +795,7 @@ function sid_login($remember = true) {
 	$result = $db->query("
 	SELECT u.*, f.*, s.lastvisit as clv, s.ip, s.mark, s.pwfaccess, s.sid, s.settings, s.is_bot   
 	FROM {$db->pre}user AS u 
-		LEFT JOIN {$db->pre}session AS s ON (u.id = s.mid OR s.sid = '{$my->sid}') 
+		LEFT JOIN {$db->pre}session AS s ON (u.id = s.mid OR s.sid = '{$this->sid}') 
 		LEFT JOIN {$db->pre}userfields as f ON f.ufid = u.id 
 	WHERE u.name = '{$username}' AND u.pw = MD5('{$pw}') AND s.is_bot = '0'
 	",__LINE__,__FILE__);
@@ -803,7 +803,7 @@ function sid_login($remember = true) {
 	
 	if ($sessions > 1) {
 		while ($row = $db->fetch_object($result)) {
-			if ($row->sid == $my->sid) {
+			if ($row->sid == $this->sid) {
 				$mytemp = $gpc->prepare($row);
 				break;
 			}

@@ -1113,10 +1113,10 @@ elseif ($job == 'spellcheck') {
 	$config = $gpc->prepare($config);
 	$ext = get_loaded_extensions();
 	if (in_array("pspell", $ext)) {
-		$ps = "<span style='color: green;'>vorhanden</span>";
+		$ps = "<span style='color: green;'>available</span>";
 	}
 	else {
-		$ps = "<span style='color: red;'>nicht vorhanden</span>";
+		$ps = "<span style='color: red;'>not available</span>";
 	}
 	echo head();
 	?>
@@ -1126,11 +1126,11 @@ elseif ($job == 'spellcheck') {
 	   <td class="obox" colspan="2"><b>Spellcheck</b></td>
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">Enable Spellchecker:<br /><span class="stext">Weitere Einstellungen finden Sie unter "<a href="admin.php?action=misc&job=spellcheck">Spellchecking</a>".</span></td>
+	   <td class="mbox" width="50%">Enable Spellchecker:<br /><span class="stext">You can find more settings on this page: <a href="admin.php?action=misc&job=spellcheck">Spell Check Manager</a>.</span></td>
 	   <td class="mbox" width="50%"><input type="checkbox" name="spellcheck" value="1"<?php echo iif($config['spellcheck'] == 1,' checked="checked"'); ?>></td> 
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">Spellcheck-System:<br /><span class="stext">It is recommended to use Pspell, because both MySQL and as well Textfiles may extremely stress the server. Pspell is on your system <?php echo $ps; ?>.</span></td>
+	   <td class="mbox" width="50%">Spellcheck-System:<br /><span class="stext">It is recommended to use Pspell, because both MySQL and as well Textfiles may use much resources of the server. Pspell is <?php echo $ps; ?> on your system.</span></td>
 	   <td class="mbox" width="50%"><select name="pspell">
 	   <option value="pspell"<?php echo iif($config['pspell'] == 'pspell', ' selected="selected"'); ?>>PSpell/Aspell (recommended)</option>
 	   <option value="mysql"<?php echo iif($config['pspell'] == 'mysql', ' selected="selected"'); ?>>MySQL/PHP</option>
@@ -1789,7 +1789,7 @@ elseif ($job == 'textprocessing') {
 	   <td class="obox" colspan="2"><b>BB-Code &amp; Text processing &raquo; Smileys</b></td>
 	  </tr>
 	  <tr> 
-	   <td class="mbox" width="50%">Number of smileys shown in a row:</td>
+	   <td class="mbox" width="50%">Number of smileys shown in a row:<br /><span class="stext">This has to be a positive integer. All invalid input will be ignored.</span></td>
 	   <td class="mbox" width="50%"><input type="text" name="smileysperrow" value="<?php echo $config['smileysperrow']; ?>" size="8"></td> 
 	  </tr>
 	  <tr> 
@@ -1824,7 +1824,11 @@ elseif ($job == 'textprocessing2') {
 	$c->updateconfig('reduce_url',int);
 	$c->updateconfig('maxurllength',int);
 	$c->updateconfig('maxurltrenner',str);
-	$c->updateconfig('smileysperrow',int);
+	$smileysperrow = $gpc->get('smileysperrow', int);
+	if ($smileysperrow < 1) {
+		$smileysperrow = $config['smileysperrow']; 
+	}
+	$c->updateconfig('smileysperrow',int,$smileysperrow);
 	$c->updateconfig('topicuppercase',int);
 	$c->updateconfig('smileypath',str);
 	$c->updateconfig('smileyurl',str);

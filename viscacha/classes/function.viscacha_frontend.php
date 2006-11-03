@@ -147,17 +147,21 @@ function GroupCheck($groups) {
     }
 }
 
-function numbers ($nvar,$deci=NULL) {
+function numbers ($nvar,$deci=null) {
 	global $config, $lang;
 	
-	if ($nvar == '-') return $nvar;
+	if (!is_numeric($nvar)) {
+		return $nvar;
+	}
 	
-	if (strstr($nvar,'.') == false) $deci = '0';
-	else $deci = $config['decimals'];
+	if ($deci == null) {
+		$deci = $config['decimals'];
+	}
+	if (strpos($nvar, '.') === false) {
+		$deci = 0;
+	}
 	
-	$var = number_format($nvar, $deci, $lang->phrase('decpoint'), $lang->phrase('thousandssep'));
-	
-	return $var;
+	return number_format($nvar, $deci, $lang->phrase('decpoint'), $lang->phrase('thousandssep'));
 }
 
 function formatFilesize($byte) {
@@ -798,7 +802,7 @@ function save_error_data($fc) {
 function count_filled($array) {
 	$int = 0;	
 	foreach ($array as $val) {
-		if (!empty($val)) {
+		if (!empty($val) || strlen($val) > 0) {
 			$int++;
 		}
 	}

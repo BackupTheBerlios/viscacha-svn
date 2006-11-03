@@ -183,7 +183,7 @@ elseif ($job == 'mods_delete') {
 		}
 		$db->query("DELETE FROM {$db->pre}moderators WHERE ".implode(' OR ',$deleteids), __LINE__, __FILE__);
 		$anz = $db->affected_rows();
-		$delobj = $scache->load('index-moderators');
+		$delobj = $scache->load('index_moderators');
 		$delobj->delete();
 		ok('admin.php?action=forums&job=mods'.iif($id > 0, '&id='.$id), $anz.' entries deleted!');
 	}
@@ -287,7 +287,7 @@ elseif ($job == 'mods_add2') {
 	", __LINE__, __FILE__);
 	
 	if ($db->affected_rows() == 1) {
-		$delobj = $scache->load('index-moderators');
+		$delobj = $scache->load('index_moderators');
 		$delobj->delete();
 		ok('admin.php?action=forums&job=mods'.iif($bid > 0, '&id='.$id), 'Moderator successfully added!');
 	}
