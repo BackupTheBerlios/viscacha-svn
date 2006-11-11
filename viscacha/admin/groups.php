@@ -221,7 +221,7 @@ elseif ($job == 'add2') {
 	$gid = $db->insert_id();
 
 	$copyf = $gpc->get('copyf', int);
-	if ($copy == 1 && $copyf == 1) {
+	if ($copy > 0 && $copyf == 1) {
 		$fields = array('f_downloadfiles', 'f_forum', 'f_posttopics', 'f_postreplies', 'f_addvotes', 'f_attachments', 'f_edit', 'f_voting');
 		$result = $db->query("SELECT * FROM {$db->pre}fgroups WHERE gid = '{$gid}'");
 		while ($row = $db->fetch_assoc($result)) {

@@ -1,14 +1,14 @@
 CREATE TABLE `{:=DBPREFIX=:}documents` (
   `id` int(10) unsigned NOT NULL auto_increment,
   `title` varchar(255) NOT NULL default '',
-  `content` longtext NOT NULL,
+  `content` longtext NOT NULL default '',
   `author` mediumint(7) unsigned NOT NULL default '0',
   `date` int(10) unsigned NOT NULL default '0',
   `update` int(10) unsigned NOT NULL default '0',
   `type` tinyint(2) NOT NULL default '0',
   `groups` varchar(150) NOT NULL default '',
   `active` enum('0','1') NOT NULL default '0',
-  `file` tinytext NOT NULL,
+  `file` tinytext NOT NULL default '',
   PRIMARY KEY  (`id`)
 ) TYPE=MyISAM AUTO_INCREMENT=3 ;
 

@@ -1,11 +1,11 @@
 ########################################
-# Installation Viscacha 0.8 Beta 4     #
+# Installation Viscacha 0.8 RC 1       #
 ########################################
 
 
 == Preamble ==
 
-This is the third public release of Viscacha (0.8). Some of the Feature
+This is the fifth public release of Viscacha (0.8). Some of the Feature
 are missing, but I am working to complete these features for version 0.9.
 You can commit bugs and suggestions to the bugtracker (see below) and I 
 will check these entries and fix or implement them in most cases.
@@ -65,118 +65,7 @@ Following files need CHMOD 666:
 
 First make a backup of your old data!
 
-Delete all old files in the folder "admin/data/" except the file "notes.php" and 
-then upload all new files in the folder "admin/data/" except the file "notes.php".
-
-Upload/Replace the complete folders "admin/html" and "admin/lib".
-
-Upload all php files in the folder "admin".
-
-Upload/Replace the following files in the "classes/" folder:
-- cache/cat_bid.inc.php
-- cache/parent_forums.inc.php
-- cache/syntaxhighlight.inc.php
-- cache/version_check.inc.php
-- cron/jobs/digestdaily.php
-- cron/jobs/digestweekly.php
-- cron/jobs/recountpostcounts.php
-- cron/function.cron.php
-- database/mysql.inc.php
-- ftp/class.ftp.php
-- graphic/class.text2image.php
-- graphic/text2image.php
-- mail/extended.phpmailer.php
-- class.bbcode.php
-- class.cache.php
-- class.docoutput.php
-- class.filesystem.php
-- class.geshi.php
-- class.gpc.php
-- class.language.php
-- class.upload.php
-- function.frontend_init.php
-- function.global.php
-- function.gpc.php
-- function.phpcore.php
-- function.profilefields.php
-- function.viscacha_frontend.php
-
-Open in each design (Folder: "designs/") the file "standard.css".
-Replace the following line:
-.hiddenl {
-with this line:
-.hiddenl ul {
-
-Upload to each image pack (Folder: "images/") the file "tt.gif" in the folder "bbcodes/".
-
-Many changes were made in the language files. You have to update all files. If you 
-translated the files, make a backup and diff the files later manually. You can not
-update them. English files are in the folder "2". German files are in the folder "1".
-Please remember: After updating please check the settings for all languages in your admin
-control panel. Please check that the settings "Country code" and "Language_code" are set 
-correctly. If they are not correct there can occur problems with updating to a newer version
-or with plugins an components.
-
-If you have installed the quick reply plugin copy the file "quick-reply.php" into the 
-folder where the plugin is installed (Standard: 17). 
-
-If you have installed the plugin to display the news on the portal copy the file 
-"latestnews.php" into the folder where the plugin is installed (Standard: 3).
-
-If you have installed the plugin to display the login box under the forum copy the 
-file "login.php" into the folder where the plugin is installed (Standard: 16).
-
-If you have installed the plugin to display the personal box in the navigation copy the 
-file "login.php" into the folder where the plugin is installed (Standard: 5).
-
-Upload the file templates/global.js.
-
-Many changes were made in the template files. (* = ID of language pack)
-Please update all the following files in each template pack:
-- templates/*/admin/forum/index.html
-- templates/*/editprofile/abos.html
-- templates/*/editprofile/attachments.html
-- templates/*/editprofile/settings.html
-- templates/*/log/login.html
-- templates/*/main/bbhtml.html
-- templates/*/main/error.html
-- templates/*/main/ok.html
-- templates/*/members/index.html
-- templates/*/members/index_bit.html
-- templates/*/members/index_letter.html
-- templates/*/misc/bbhelp.html
-- templates/*/misc/wwo_bit.html
-- templates/*/modules/17/quick-reply.html
-- templates/*/modules/3/news.html
-- templates/*/modules/5/login_guest.html
-- templates/*/newtopic/index.html
-- templates/*/pm/browse.html
-- templates/*/pm/browse_bit.html
-- templates/*/profile/index.html
-- templates/*/showtopic/upload_box.html
-- templates/*/team/moderator_bit.html
-- templates/*/addreply.html
-- templates/*/menu.html
-- templates/*/register.html
-
-Upload the following files into your Viscacha root folder:
-- addreply.php
-- admin.php
-- docs.php
-- edit.php
-- editprofile.php
-- log.php
-- manageforum.php
-- managemembers.php
-- managetopic.php
-- members.php
-- misc.php
-- newtopic.php
-- pm.php
-- popup.php
-- profile.php
-- register.php
-- showtopic.php
+[...]
 
 Finally upload the install/ directory and execute the update script.
 
@@ -185,18 +74,18 @@ Finally upload the install/ directory and execute the update script.
 Minimum system requirements:
  - PHP Version: 4.1.0 and above
  - PHP-Extensions: mysql, pcre, gd, zlib
- - MySQL Version: 3.23.57 and above
+ - MySQL Version: 4.0 and above
   
 Normal system requirements:
  - PHP Version: 4.3.0 and above
  - PHP-Extensions: mysql, pcre, gd, zlib, xml
- - MySQL Version: 4.0 and above
+ - MySQL Version: 4.1 and above
   
 Optimal system requirements:
  - PHP Version: 5.0.0 and above
  - PHP-Extensions: mysql, pcre, gd, zlib, xml, pspell, iconv, mbstring, mhash, 
                    sockets, mime_magic
- - MySQL Version: 4.1 and above
+ - MySQL Version: 5.0 and above (Strict mode off)
 
 If you are testing Viscacha, please give me some feedback how Viscacha worked,
 which errors occurred and which server configuration was used.

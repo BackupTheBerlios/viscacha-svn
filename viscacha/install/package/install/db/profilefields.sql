@@ -1,9 +1,9 @@
 CREATE TABLE `{:=DBPREFIX=:}profilefields` (
   `fid` smallint(5) unsigned NOT NULL auto_increment,
   `name` varchar(100) NOT NULL default '',
-  `description` text NOT NULL,
+  `description` text NOT NULL default '',
   `disporder` smallint(5) unsigned NOT NULL default '0',
-  `type` text NOT NULL,
+  `type` text NOT NULL default '',
   `length` smallint(5) unsigned NOT NULL default '0',
   `maxlength` smallint(5) unsigned NOT NULL default '0',
   `required` enum('0','1') NOT NULL default '0',

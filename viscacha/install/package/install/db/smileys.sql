@@ -1,8 +1,8 @@
 CREATE TABLE `{:=DBPREFIX=:}smileys` (
   `id` smallint(5) unsigned NOT NULL auto_increment,
   `search` varchar(255) NOT NULL default '',
-  `replace` text NOT NULL,
-  `desc` text NOT NULL,
+  `replace` text NOT NULL default '',
+  `desc` text NOT NULL default '',
   `show` enum('0','1') NOT NULL default '0',
   PRIMARY KEY  (`id`)
 ) TYPE=MyISAM AUTO_INCREMENT=32 ;
