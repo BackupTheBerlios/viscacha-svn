@@ -28,6 +28,141 @@ function SelectPackageLinks ($head) {
 	<?php
 }
 
+function BBCodeToolBox() {
+	global $db, $scache, $config;
+	
+	$cache = $scache->load('smileys');
+	$cache->seturl($config['smileyurl']);
+	$csmileys = $cache->get();
+	$smileys = array(0 => array(), 1 => array());
+	foreach ($csmileys as $bb) {
+	   	if ($bb['show'] == 1) {
+			$smileys[1][] = $bb;
+		}
+		else {
+			$smileys[0][] = $bb;
+		}
+	}
+	$smileys[1] = array_chunk($smileys[1], 5);
+
+	$cache = $scache->load('custombb');
+	$cbb = $cache->get();
+	foreach ($cbb as $key => $bb) {
+   		if (empty($bb['buttonimage'])) {
+			unset($cbb[$key]);
+			continue;
+		}
+		$cbb[$key]['title'] = htmlspecialchars($bb['title']);
+		if ($bb['twoparams']) {
+			$cbb[$key]['href'] = "InsertTagsParams('[{$bb['bbcodetag']}={param1}]{param2}','[/{$bb['bbcodetag']}]');";
+		}
+		else {
+			$cbb[$key]['href'] = "InsertTags('[{$bb['bbcodetag']}]','[/{$bb['bbcodetag']}]');";
+		}
+	}
+	?>
+<script type="text/javascript" src="admin/html/editor.js"></script>
+<table class="invisibletable">
+ <tr>
+  <td width="30%">
+	<table style="margin-bottom: 5px;width: 140px">
+	<?php foreach ($smileys[1] as $row) { ?>
+		<tr>
+		<?php foreach ($row as $bb) { ?>
+			<td class="center"><a href="javascript:InsertTagsMenu(' <?php echo $bb['jssearch'] ?> ', '', 'bbsmileys')"><img border="0" src="<?php echo $bb['replace']; ?>" alt="<?php echo $bb['desc']; ?>" /></a></td>
+		<?php } ?>
+		</tr>
+	<?php } ?>
+	</table>
+	<a id="menu_bbsmileys" style="display: block;text-align: center;width: 140px;" href="javascript:Link()"><img border="0" src="admin/html/images/desc.gif" alt="" /> more Smileys...</a>
+	<script type="text/javascript">RegisterMenu('bbsmileys');</script>
+	<div class="popup" id="popup_bbsmileys" style="height: 200px;width: 255px;overflow: auto;">
+	<strong>Smileys</strong>
+	<table style="width: 250px;border-collapse: collapse;margin-bottom: 5px;">
+	<?php foreach ($smileys[0] as $bb) { ?>
+	  <tr class="mbox">
+		<td width="20%" class="center"><a href="javascript:InsertTagsMenu(' <?php echo $bb['jssearch'] ?>', ' ', 'bbsmileys')"><img border="0" src="<?php echo $bb['replace']; ?>" alt="<?php echo $bb['desc']; ?>" /></a></td>
+		<td width="20%" class="center"><?php echo $bb['search']; ?></td>
+		<td width="60%"><span class="stext"><?php echo $bb['desc']; ?></span></td>
+	  </tr>
+	<?php } ?>
+	</table>
+	</div>
+  </td>
+  <td width="70%">
+	<div class="label" id="codebuttons">
+	<a id="menu_bbcolor" href="javascript:Link()"><img src="admin/html/images/desc.gif" alt="" /> Color</a>
+		<script type="text/javascript">RegisterMenu('bbcolor');</script>
+		<DIV class="popup" id="popup_bbcolor">
+		<strong>Choose Color</strong>
+		<div class="bbody">
+		<script type="text/javascript">document.write(writeRow());</script>
+		</div>
+		</DIV>
+	<a id="menu_bbsize" href="javascript:Link()"><img src="admin/html/images/desc.gif" alt="" /> Size</a>
+		<script type="text/javascript">RegisterMenu('bbsize');</script>
+		<div class="popup" id="popup_bbsize">
+		<strong>Choose Size</strong>
+	   	<ul>
+			<li><span class="popup_line" onclick="InsertTagsMenu('[size=large]','[/size]','bbsize')" style="font-size: 1.3em;">Big Font</span></li>
+			<li><span class="popup_line" onclick="InsertTagsMenu('[size=small]','[/size]','bbsize')" style="font-size: 0.8em;">Small Font</span></li>
+			<li><span class="popup_line" onclick="InsertTagsMenu('[size=extended]','[/size]','bbsize')" style="letter-spacing: 3px;">Extended Font</span></li>
+		</ul>
+		</div>
+	<a id="menu_bbalign" href="javascript:Link()"><img src="admin/html/images/desc.gif" alt="" /> Alignment</a>
+		<script type="text/javascript">RegisterMenu('bbalign');</script>
+		<DIV class="popup" id="popup_bbalign">
+	   <strong>Choose Alignment</strong>
+		<ul>
+			<li><span class="popup_line" onclick="InsertTagsMenu('[align=left]','[/align]','bbalign')" style="text-align: left;">Left</span></li>
+			<li><span class="popup_line" onclick="InsertTagsMenu('[align=center]','[/align]','bbalign')" style="text-align: center;">Center</span></li>
+			<li><span class="popup_line" onclick="InsertTagsMenu('[align=right]','[/align]','bbalign')" style="text-align: right;">Right</span></li>
+			<li><span class="popup_line" onclick="InsertTagsMenu('[align=justify]','[/align]','bbalign')" style="text-align: justify;">Justify</span></li>
+		</ul>
+		</DIV>
+	<a id="menu_bbhx" href="javascript:Link()"><img src="admin/html/images/desc.gif" alt="" /> Heading</a>
+		<script type="text/javascript">RegisterMenu('bbhx');</script>
+		<div class="popup" id="popup_bbhx">
+		<strong>Choose Heading</strong>
+		<ul>
+			<li><h4 class="popup_line" onclick="InsertTagsMenu('[h=large]','[/h]','bbhx')" style="margin: 0px; font-size: 14pt;">Heading 1</h4></li>
+			<li><h5 class="popup_line" onclick="InsertTagsMenu('[h=middle]','[/h]','bbhx')" style=" margin: 0px; font-size: 13pt;">Heading 2</h5></li>
+			<li><h6 class="popup_line" onclick="InsertTagsMenu('[h=small]','[/h]','bbhx')" style="margin: 0px; font-size: 12pt;">Heading 3</h6></li>
+		</ul>
+		</div>
+	<a id="menu_help" href="misc.php?action=bbhelp<?php echo SID2URL_x; ?>" style="cursor: help;" target="_blank"><img src="./images/1/bbcodes/help.gif" alt="" /> <strong>Help</strong></a>
+	<?php if ($config['spellcheck'] == 1) { ?>
+	<script type="text/javascript" src="templates/spellChecker.js"></script>
+	<a href="javascript:openSpellChecker(textfield);"><img src="./images/1/bbcodes/spellcheck.gif" alt="Spell Check" /></a>
+	<?php } ?>
+	<br />
+	<a href="javascript:InsertTags('[b]','[/b]');" title="Boldface"><img src="./images/1/bbcodes/b.gif" alt="Boldface" /></a>
+	<a href="javascript:InsertTags('[i]','[/i]');" title="Italic"><img src="./images/1/bbcodes/i.gif" alt="Italic" /></a>
+	<a href="javascript:InsertTags('[u]','[/u]');" title="Underline"><img src="./images/1/bbcodes/u.gif" alt="Underline" /></a>
+	<a href="javascript:InsertTags('[hr]','');" title="Horizontal Ruler"><img src="./images/1/bbcodes/hr.gif" alt="Horizontal Ruler" /></a>
+	<a href="javascript:InsertTags('[img]','[/img]');" title="Image"><img src="./images/1/bbcodes/img.gif" alt="Image" /></a>
+	<a href="javascript:InsertTagsParams('[url={param1}]{param2}','[/url]','Please provide URL (with http://)','Please provide text for the link');" title="Internet address (URL)"><img src="./images/1/bbcodes/url.gif" alt="Internet address (URL)" /></a>
+	<a href="javascript:InsertTags('[email]','[/email]');" title="E-mail address"><img src="./images/1/bbcodes/email.gif" alt="E-mail address" /></a>
+	<a href="javascript:InsertTags('[quote]','[/quote]');" title="Quote"><img src="./images/1/bbcodes/quote.gif" alt="Quote" /></a>
+	<a href="javascript:InsertTags('[ot]','[/ot]');" title="Off Topic"><img src="./images/1/bbcodes/ot.gif" alt="Off Topic" /></a>
+	<a href="javascript:popup_code();" title="Source Code (Syntax Highlighting)"><img src="./images/1/bbcodes/code.gif" alt="Source Code (Syntax Highlighting)" /></a>
+	<a href="javascript:InsertTags('[edit]','[/edit]');" title="Later additions / Marking of edited passages"><img src="./images/1/bbcodes/edit.gif" alt="Later additions / Marking of edited passages" /></a>
+	<a href="javascript:list();" title="Unordered list"><img src="./images/1/bbcodes/ul.gif" alt="Unordered list" /></a>
+	<a href="javascript:list('ol');" title="Ordered list"><img src="./images/1/bbcodes/ol.gif" alt="Ordered list" /></a>
+	<a title="Definition / Explanation" href="javascript:InsertTagsParams('[note={param1}]{param2}','[/note]','Please enter the definition of the word','Please enter the word to be defined');"><img src="./images/1/bbcodes/note.gif" alt="Definition / Explanation" /></a>
+	<a href="javascript:InsertTags('[tt]','[/tt]');" title="Typewriter text"><img src="./images/1/bbcodes/tt.gif" alt="Typewriter text" /></a>
+	<a href="javascript:InsertTags('[sub]','[/sub]');" title="Subscript"><img src="./images/1/bbcodes/sub.gif" alt="Subscript" /></a>
+	<a href="javascript:InsertTags('[sup]','[/sup]');" title="Superscript"><img src="./images/1/bbcodes/sup.gif" alt="Superscript" /></a>
+	<?php foreach ($cbb as $bb) { ?>
+	<a href="javascript:<?php echo $bb['href']; ?>" title="<?php echo $bb['title']; ?>"><img src="<?php echo $bb['buttonimage']; ?>" alt="<?php echo $bb['title']; ?>" /></a>
+	<?php } ?>
+	</div>
+  </td>
+ </tr>
+</table>
+	<?php
+}
+
 ($code = $plugins->load('admin_cms_jobs')) ? eval($code) : null;
 
 if ($job == 'plugins') {
@@ -352,8 +487,8 @@ elseif ($job == 'plugins_edit') {
 	  <td>
 	  Code:<br /><br />
 	  <ul>
-	    <li><a href="admin.php?action=cms&amp;job=package_template&amp;id=<?php echo $package['module']; ?>" target="_blank">Add Template</a></li>
-	    <li><a href="admin.php?action=cms&amp;job=package_language&amp;id=<?php echo $package['module']; ?>" target="_blank">Add Phrase</a></li>
+		<li><a href="admin.php?action=cms&amp;job=package_template&amp;id=<?php echo $package['module']; ?>" target="_blank">Add Template</a></li>
+		<li><a href="admin.php?action=cms&amp;job=package_language&amp;id=<?php echo $package['module']; ?>" target="_blank">Add Phrase</a></li>
 	  </ul>
 	  <?php if (count($cp) > 0) { ?>
 	  <br /><br /><span class="stext"><strong>Caution</strong>: Changes to the code also affect the following hooks:</span>
@@ -541,8 +676,8 @@ elseif ($job == 'plugins_add2') {
 	  <span class="stext">At this place you can insert PHP-Code which will be executed in the indicated hook. You don't need to use &lt;?php bzw. ?&gt;-Tags at the beginning and the end of your code. You also can use templates and phrases for this plugin (more information down of this page). More information can be found in the documentation.</span>
 	  <br /><br />
 	  <ul>
-	    <li><a href="admin.php?action=cms&amp;job=package_template&amp;id=<?php echo $package['id']; ?>" target="_blank">Add Template</a></li>
-	    <li><a href="admin.php?action=cms&amp;job=package_language&amp;id=<?php echo $package['id']; ?>" target="_blank">Add Phrase</a></li>
+		<li><a href="admin.php?action=cms&amp;job=package_template&amp;id=<?php echo $package['id']; ?>" target="_blank">Add Template</a></li>
+		<li><a href="admin.php?action=cms&amp;job=package_language&amp;id=<?php echo $package['id']; ?>" target="_blank">Add Phrase</a></li>
 	  </ul>
 	  </td>
 	  <td><textarea name="code" rows="10" cols="80" class="texteditor"></textarea></td>
@@ -701,7 +836,7 @@ elseif ($job == 'package_template') {
 	  <td>
 	  Code:<br /><br />
 	  <ul>
-	    <li><a href="admin.php?action=cms&amp;job=package_language&amp;id=<?php echo $data['id']; ?>" target="_blank">Add Phrase</a></li>
+		<li><a href="admin.php?action=cms&amp;job=package_language&amp;id=<?php echo $data['id']; ?>" target="_blank">Add Phrase</a></li>
 	  </ul>
 	  </td>
 	  <td><textarea name="code" rows="8" cols="80" class="texteditor"></textarea></td>
@@ -817,8 +952,8 @@ elseif ($job == 'package_template_edit') {
 		 </tr>
 		 <tr class="mbox" valign="top">
 		  <td rowspan="<?php echo count($tpldirs); ?>">
-		    Code:<br /><br />
-		    <ul><li><a href="admin.php?action=cms&amp;job=package_language&amp;id=<?php echo $data['id']; ?>" target="_blank">Add Phrase</a></li></ul>
+			Code:<br /><br />
+			<ul><li><a href="admin.php?action=cms&amp;job=package_language&amp;id=<?php echo $data['id']; ?>" target="_blank">Add Phrase</a></li></ul>
 		  </td>
 		  <?php
 		  $first = true;
@@ -1517,11 +1652,11 @@ elseif ($job == 'package_export') {
   <tr>
    <td class="mbox">Export Templates of Package:</td>
    <td class="mbox">
-    <select name="tpl">
-    <?php foreach ($templates as $id => $default) { ?>
-     <option value="<?php echo $id; ?>"<?php echo iif($default, ' selected="selected"'); ?>><?php echo $id.iif($default, ' (Default)'); ?></option>
-    <?php } ?>
-    </select>
+	<select name="tpl">
+	<?php foreach ($templates as $id => $default) { ?>
+	 <option value="<?php echo $id; ?>"<?php echo iif($default, ' selected="selected"'); ?>><?php echo $id.iif($default, ' (Default)'); ?></option>
+	<?php } ?>
+	</select>
    </td>
   </tr>
   <?php } ?>
@@ -1553,7 +1688,9 @@ elseif ($job == 'package_export2') {
 	}
 	
 	$ini = $myini->read("modules/{$data['id']}/config.ini");
-	
+	if (!isset($ini['language']) || !is_array($ini['language']) || (is_array($ini['language']) && count($ini['language']) == 0)) {
+		$ini['language'] = array();
+	}
 	$dirs = array();
 	$langcodes = getLangCodes();
 	foreach ($langcodes as $code => $lid) {
@@ -1901,9 +2038,9 @@ elseif ($job == 'nav') {
 							</td>
 							</tr>
 							<?php
-					    }
+						}
 					}
-		    }
+			}
 		}
 	}
 	?></table><?php
@@ -1986,7 +2123,7 @@ elseif ($job == 'nav_edit') {
    <td class="mbox" width="50%">Groups:<br /><span class="stext">Groups which have the ability to view the box.</span></td>
    <td class="mbox" width="50%">
    <?php while ($row = $db->fetch_assoc($groups)) { ?>
-    <input type="checkbox" name="groups[]"<?php echo iif($data['groups'] == 0 || in_array($row['id'], $data['group_array']), ' checked="checked"'); ?> value="<?php echo $row['id']; ?>"> <?php echo $row['name']; ?><br />
+	<input type="checkbox" name="groups[]"<?php echo iif($data['groups'] == 0 || in_array($row['id'], $data['group_array']), ' checked="checked"'); ?> value="<?php echo $row['id']; ?>"> <?php echo $row['name']; ?><br />
    <?php } ?>
    </td>
   </tr>
@@ -2167,7 +2304,7 @@ elseif ($job == 'nav_addplugin') {
    <td class="mbox" width="50%">
    <select name="sort">
    <?php while ($row = $db->fetch_assoc($sort)) { ?>
-    <option value="<?php echo $row['ordering']; ?>"><?php echo $row['name']; ?></option>
+	<option value="<?php echo $row['ordering']; ?>"><?php echo $row['name']; ?></option>
    <?php } ?>
    </select>
    </td>
@@ -2176,7 +2313,7 @@ elseif ($job == 'nav_addplugin') {
    <td class="mbox" width="50%">Groups:<br /><span class="stext">Groups which have the ability to view the PlugIn.</span></td>
    <td class="mbox" width="50%">
    <?php while ($row = $db->fetch_assoc($groups)) { ?>
-    <input type="checkbox" name="groups[]" checked="checked" value="<?php echo $row['id']; ?>"> <?php echo $row['name']; ?><br />
+	<input type="checkbox" name="groups[]" checked="checked" value="<?php echo $row['id']; ?>"> <?php echo $row['name']; ?><br />
    <?php } ?>
    </td>
   </tr>
@@ -2266,8 +2403,8 @@ elseif ($job == 'nav_add') {
    <td class="mbox" width="50%">Sort in:</td>
    <td class="mbox" width="50%">
    <select name="sort">
-    <option value="0">at the Beginning</option>
-    <option value="1">at the End</option>
+	<option value="0">at the Beginning</option>
+	<option value="1">at the End</option>
    </select>
    </td>
   </tr>
@@ -2275,7 +2412,7 @@ elseif ($job == 'nav_add') {
    <td class="mbox" width="50%">Groups:<br /><span class="stext">Groups which have the ability to view the box.</span></td>
    <td class="mbox" width="50%">
    <?php while ($row = $db->fetch_assoc($groups)) { ?>
-    <input type="checkbox" name="groups[]" checked="checked" value="<?php echo $row['id']; ?>"> <?php echo $row['name']; ?><br />
+	<input type="checkbox" name="groups[]" checked="checked" value="<?php echo $row['id']; ?>"> <?php echo $row['name']; ?><br />
    <?php } ?>
    </td>
   </tr>
@@ -2341,7 +2478,7 @@ elseif ($job == 'nav_addbox') {
    <td class="mbox" width="50%">
    <select name="sort">
    <?php while ($row = $db->fetch_assoc($sort)) { ?>
-    <option value="<?php echo $row['ordering']; ?>"><?php echo $row['name']; ?></option>
+	<option value="<?php echo $row['ordering']; ?>"><?php echo $row['name']; ?></option>
    <?php } ?>
    </select>
    </td>
@@ -2350,7 +2487,7 @@ elseif ($job == 'nav_addbox') {
    <td class="mbox" width="50%">Groups:<br /><span class="stext">Groups which have the ability to view the box.</span></td>
    <td class="mbox" width="50%">
    <?php while ($row = $db->fetch_assoc($groups)) { ?>
-    <input type="checkbox" name="groups[]" checked="checked" value="<?php echo $row['id']; ?>"> <?php echo $row['name']; ?><br />
+	<input type="checkbox" name="groups[]" checked="checked" value="<?php echo $row['id']; ?>"> <?php echo $row['name']; ?><br />
    <?php } ?>
    </td>
   </tr>
@@ -2551,35 +2688,35 @@ elseif ($job == 'com_info') {
   <tr> 
    <td class="obox" colspan="2">Information</b></td>
   </tr>
-    <?php
-    foreach ($cfg as $key => $row) {
-    	if (is_array($row)) {
-    	?>
+	<?php
+	foreach ($cfg as $key => $row) {
+		if (is_array($row)) {
+		?>
 		  <tr> 
 		   <td class="ubox" colspan="2"><?php echo $key; ?></td> 
 		  </tr>
-    	<?php
-    		foreach ($row as $subkey => $subrow) {
+		<?php
+			foreach ($row as $subkey => $subrow) {
 			?>
 			  <tr> 
 			   <td class="mbox" width="25%"><?php echo ucfirst($subkey); ?></td>
 			   <td class="mbox" width="75%"><?php echo $subrow; ?></td> 
 			  </tr>
-		    <?php
-	    	}
-    	} 
-    	else {
-	    ?>
+			<?php
+			}
+		} 
+		else {
+		?>
 		  <tr> 
 		   <td class="mbox" width="25%"><?php echo ucfirst($key); ?></td>
 		   <td class="mbox" width="75%"><?php echo $row; ?></td> 
 		  </tr>
-	    <?php
-    	}
-    }
-    ?>
-    </table>
-    <?php
+		<?php
+		}
+	}
+	?>
+	</table>
+	<?php
 	echo foot();
 }
 elseif ($job == 'com_active') {
@@ -3112,6 +3249,9 @@ elseif ($job == 'doc_add2') {
 	else {
 		$preload = '';
 	}
+	if($format['parser'] == 3) {
+		BBCodeToolBox();
+	}
 	?>
 	<textarea id="template" name="template" rows="20" cols="110" class="texteditor"><?php echo $preload; ?></textarea>
 	<?php if ($format['parser'] == 1) { ?>
@@ -3151,7 +3291,7 @@ elseif ($job == 'doc_add2') {
   <tr> 
    <td class="mbox"><span class="stext right">Groups which have the ability to view the box.</span>Groups:<br />
    <?php while ($row = $db->fetch_assoc($groups)) { ?>
-    <input type="checkbox" name="groups[]" checked="checked" value="<?php echo $row['id']; ?>"> <?php echo $row['name']; ?><br />
+	<input type="checkbox" name="groups[]" checked="checked" value="<?php echo $row['id']; ?>"> <?php echo $row['name']; ?><br />
    <?php } ?>
    </td>
   </tr>
@@ -3279,7 +3419,12 @@ elseif ($job == 'doc_edit') {
   <?php if($format['remote'] != 1) { ?>
   <tr>
    <td class="mbox">
-	Sourcecode:<br /> 
+	Sourcecode:<br />
+	<?php
+	if($format['parser'] == 3) {
+		BBCodeToolBox();
+	}
+	?>
 	<textarea id="template" name="template" rows="20" cols="110" class="texteditor"><?php echo $row['content']; ?></textarea>
 	<?php if ($format['parser'] == 1) { ?>
 	<link rel="stylesheet" type="text/css" href="templates/editor/rte.css" />
@@ -3318,7 +3463,7 @@ elseif ($job == 'doc_edit') {
   <tr> 
    <td class="mbox"><span class="stext right">Groups which have the ability to view the box.</span>Groups:<br />
    <?php while ($g = $db->fetch_assoc($groups)) { ?>
-    <input type="checkbox" name="groups[]"<?php echo iif($row['groups'] == 0 || in_array($g['id'], $garr),'checked="checked"'); ?> value="<?php echo $g['id']; ?>"> <?php echo $g['name']; ?><br />
+	<input type="checkbox" name="groups[]"<?php echo iif($row['groups'] == 0 || in_array($g['id'], $garr),'checked="checked"'); ?> value="<?php echo $g['id']; ?>"> <?php echo $g['name']; ?><br />
    <?php } ?>
    </td>
   </tr>
@@ -3387,7 +3532,27 @@ elseif ($job == 'doc_edit2') {
 
 	ok('admin.php?action=cms&job=doc', 'Document successfully changed!');
 }
-
+elseif ($job == 'doc_code') {
+	echo head();
+	$codelang = $scache->load('syntaxhighlight');
+	$clang = $codelang->get();
+	?>
+	<script src="admin/html/editor.js" type="text/javascript"></script>
+	<table class="border">
+	<tr><td class="obox">BB-Code Tag: Code</td></tr>
+	<tr><td class="mbox">
+	<strong>Choose the programming language for the highlighting:</strong><br /><br />
+	<ul>
+	   <li><input type="radio" name="data" onclick="InsertTagsCode('[code]','[/code]')" /> No Syntax Highlighting</li>
+	   <?php foreach ($clang as $row) { ?>
+	   <li><input type="radio" name="data" onclick="InsertTagsCode('[code=<?php echo $row['short']; ?>]','[/code]')" /> <?php echo $row['name']; ?></li>
+	   <?php } ?>
+	</ul>
+	</td></tr>
+	</table>
+	<?php
+	echo foot();
+}
 elseif ($job == 'feed') {
 	$result = $db->query('SELECT * FROM '.$db->pre.'grab', __LINE__, __FILE__);
 	echo head();

@@ -21,4 +21,6 @@ $lang['js_one_changed'] = 'Ein Wort geändert.';
 $lang['js_sc_complete'] = 'Rechtschreibprüfung beendet:';
 $lang['js_submitted'] = 'Sende...';
 $lang['js_x_changed'] = ' Wörter geändert.';
+$lang['js_quote_multi'] = 'Beitrag zum Zitieren merken (Multiquote)';
+$lang['js_quote_multi_2'] = 'Gemerktes Zitat entfernen (Multiquote)';
 ?>

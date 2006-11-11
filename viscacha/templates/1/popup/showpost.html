@@ -37,7 +37,7 @@ if (!empty($inner['upload_box'])) {
    <br class="uploadbox_br" />
 <?php } if ($bottom) { ?>
    <hr />
-  <?php if (!empty($row->fullname)) { ?>
+  <?php if (!empty($row->fullname) && $config['fullname_posts'] == 1) { ?>
    <div class="fullname stext"><?php echo $row->fullname; ?></div>
   <?php } if (!empty($row->signature) && $my->opt_showsig == 1) { ?>
    <div class="signature"><?php echo $row->signature; ?></div>

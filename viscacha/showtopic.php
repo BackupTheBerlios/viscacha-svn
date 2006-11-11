@@ -345,7 +345,7 @@ while ($row = $gpc->prepare($db->fetch_object($result))) {
 		$row->location = $lang->phrase('showtopic_na');
 	}
 
-	if (!empty($row->fullname) || (!empty($row->signature) && $my->opt_showsig == 1)) {
+	if ((!empty($row->fullname) && $config['fullname_posts'] == 1) || (!empty($row->signature) && $my->opt_showsig == 1)) {
 		$bottom = TRUE;
 	}
 	else {

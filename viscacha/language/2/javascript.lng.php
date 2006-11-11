@@ -21,4 +21,6 @@ $lang['js_one_changed'] = 'One word changed.';
 $lang['js_sc_complete'] = 'Spell check complete:';
 $lang['js_submitted'] = 'Submitting..';
 $lang['js_x_changed'] = ' words changed.';
+$lang['js_quote_multi'] = 'Save post for quoting (Multiquote)';
+$lang['js_quote_multi_2'] = 'Removed saved post (Multiquote)';
 ?>

@@ -157,6 +157,10 @@ elseif ($job == 'posts') {
 	   <td class="mbox" width="50%">Number of Subscriptions/Favorites per Page:</td>
 	   <td class="mbox" width="50%"><input type="text" name="abozahl" value="<?php echo $config['abozahl']; ?>" size="4"></td> 
 	  </tr>
+	  <tr> 
+	   <td class="mbox" width="50%">Show real name under posts:</td>
+	   <td class="mbox" width="50%"><input type="checkbox" name="fullname_posts" value="1"<?php echo iif($config['fullname_posts'] == 1,' checked="checked"'); ?>></td> 
+	  </tr>
 	  <tr>
 	   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="Submit"></td> 
 	  </tr>
@@ -221,6 +225,7 @@ elseif ($job == 'posts2') {
 	$c->updateconfig('postrating_counter', int);
 	$c->updateconfig('guest_email_optional', int);
 	$c->updateconfig('abozahl', int);
+	$c->updateconfig('fullname_posts', int);
 	$c->savedata();
 
 	ok('admin.php?action=settings&job=settings');

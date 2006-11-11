@@ -204,7 +204,7 @@ elseif ($_GET['action'] == "showpost") {
 	if (empty($row->location)) {
 		$row->location = $lang->phrase('showtopic_na');
 	}
-	if ($row->groups != NULL && (!empty($row->fullname) || (!empty($row->signature) && $my->opt_showsig == 1))) {
+	if ($row->groups != NULL && ((!empty($row->fullname) && $config['fullname_posts'] == 1) || (!empty($row->signature) && $my->opt_showsig == 1))) {
 		$bottom = TRUE;
 	}
 	else {

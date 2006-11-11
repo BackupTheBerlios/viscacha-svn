@@ -56,6 +56,7 @@ $config['ftp_port'] = 21;
 $config['ftp_pw'] = '';
 $config['ftp_server'] = '';
 $config['ftp_user'] = '';
+$config['fullname_posts'] = 1;
 $config['furl'] = '';
 $config['gdversion'] = 2;
 $config['guest_email_optional'] = 0;

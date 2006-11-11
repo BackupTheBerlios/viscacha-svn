@@ -52,7 +52,6 @@ class CacheItem {
 	}
 	
 	function import() {
-	
 		if (file_exists($this->file)) {
 	        $data = file_get_contents($this->file);
 	        $this->data = unserialize($data);
@@ -115,7 +114,7 @@ class CacheItem {
 	}
 
 	function get($max_age = null) {
-		if ($this->data == null || $this->expired($max_age)) {
+		if ($this->data == null || ($max_age != null && $this->expired($max_age))) {
 			$this->load();
 		}
 		return $this->data;

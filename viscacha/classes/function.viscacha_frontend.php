@@ -427,8 +427,8 @@ function BoardSelect($board = 0) {
 	
 	if ($db->num_rows($result) == 0) {
 		$errormsg = array('There are currently no boards to show. Pleas visit the <a href="admin.php'.SID2URL_1.'">Admin Control Panel</a> and create some forums.');
-		$errorurl = '';
-		$tpl->globalvars(compact("errorurl","errormsg"));
+		$errorurl = $js_errorurl = '';
+		$tpl->globalvars(compact("js_errorurl", "errorurl","errormsg"));
 		echo $tpl->parse('main/error');
 		return $found;
 	} 
