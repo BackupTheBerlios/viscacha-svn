@@ -355,7 +355,7 @@ class uploader {
 
 		global $lang;
 
-		if (is_object($lang)) {
+		if (is_object($lang) && method_exists($lang, 'group_is_loaded') == true && $lang->group_is_loaded('global') == true) {
 			switch($this->error) {
 				case UPLOAD_ERR_FILE_INDEX:
 					$message = $lang->phrase('upload_error_noupload');

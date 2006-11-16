@@ -48,6 +48,19 @@ elseif ($job == 'cache') {
 		}
 	}
 	ksort($result);
+	
+	$pluginsize = 0;
+	$files = 0;
+	$dir = 'cache/modules/';
+	if ($dh = @opendir($dir)) {
+		while (($file = readdir($dh)) !== false) {
+			if (strpos($file, '.php') !== false) {
+				$files++;
+				$pluginsize += filesize($dir.$file);
+			}
+	    }
+		closedir($dh);
+	}
 	?>
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr> 
@@ -63,6 +76,12 @@ elseif ($job == 'cache') {
    <td class="ubox" width="10%">File Size</td>
    <td class="ubox" width="15%">Approximate Age</td>
    <td class="ubox" width="40%">Options</td>
+  </tr>
+  <tr>
+   <td class="mbox"><b>Plugins</b> (<?php echo $files; ?> Files)</td>
+   <td class="mbox" nowrap="nowrap" align="right"><?php echo iif ($pluginsize > 0, formatFilesize($pluginsize), '-'); ?></td>
+   <td class="mbox" nowrap="nowrap">-</td>
+   <td class="mbox"><a class="button" href="admin.php?action=misc&amp;job=cache_delete_plugins">Delete Cache</a></td>
   </tr>
   <?php foreach ($result as $name => $row) { ?>
   <tr>
@@ -112,14 +131,12 @@ elseif ($job == 'cache_view') {
 	echo foot();
 }
 elseif ($job == 'cache_delete' || $job == 'cache_refresh') {
-	$file = $gpc->get('file', str);
+	$name = $gpc->get('file', str);
+	$file = $name.'.inc.php';
 	echo head();
-	if (strpos($file, '.inc.php') === false) {
-		error('admin.php?action=misc&job=cache', 'No valid cache-file specified.');
-	}
 	$not = true;
 	if (file_exists('classes/cache/'.$file)) {
-		$cache = $scache->load($file);
+		$cache = $scache->load($name);
 		$cache->delete();
 		if ($job == 'cache_refresh') {
 			$cache->load();
@@ -129,8 +146,16 @@ elseif ($job == 'cache_delete' || $job == 'cache_refresh') {
 		}
 	}
 	else {
-		$filesystem->unlink('cache/'.$file);
-		$not = false;
+		if (file_exists('cache/'.$file)) {
+			$filesystem->unlink('cache/'.$file);
+			$not = null;
+		}
+		else {
+			$not = false;
+		}
+	}
+	if ($not == null) {
+		error('admin.php?action=misc&job=cache', 'No valid cache-file specified.');
 	}
 	if ($not == false) {
 		error('admin.php?action=misc&job=cache', iif($job == 'cache_refresh', 'The cache file is only deleted. It will be created the next time it is needed.'));
@@ -161,6 +186,19 @@ elseif ($job == 'cache_delete_all' || $job == 'cache_refresh_all') {
 		closedir($dh);
 	}
 	ok('admin.php?action=misc&job=cache', iif($job == 'cache_refresh_all', 'The cache-files were rebuilt. Some files are only deleted and will be rebuild the next time they are needed.', 'The cache-files were deleted. They will be rebuild the next time they are needed.'));
+}
+elseif ($job == 'cache_delete_plugins') {
+	echo head();
+	$dir = 'cache/modules/';
+	if ($dh = @opendir($dir)) {
+		while (($file = readdir($dh)) !== false) {
+			if (strpos($file, '.php') !== false) {
+				$filesystem->unlink($dir.$file);
+			}
+	    }
+		closedir($dh);
+	}
+	ok('admin.php?action=misc&job=cache', 'The cache-files were deleted. They will be rebuild the next time they are needed.');
 }
 elseif ($job == 'onlinestatus') {
 	echo head();

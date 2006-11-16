@@ -191,10 +191,10 @@ class lang {
 	function group($group) {
 		$file = $this->dir.DIRECTORY_SEPARATOR.$group.'.lng.php';
 		if (file_exists($file) && !isset($this->cache[$file])) {
-			@require($file);
+			@include($file);
 			if (isset($lang) && is_array($lang)) {
 				$this->lngarray += $lang;
-				$this->cache[$group] = TRUE;
+				$this->cache[$group] = true;
 			}
 			else {
 				echo "<!-- Could not parse language-file {$file} -->";
@@ -231,6 +231,15 @@ class lang {
 		}
 		else {
 			return $this->dir;
+		}
+	}
+
+	function group_is_loaded($group) {
+		if (isset($this->cache[$group]) && $this->cache[$group] == true) {
+			return true;
+		}
+		else {
+			return false;
 		}
 	}
 
