@@ -1,13 +1,13 @@
 CREATE TABLE `{:=DBPREFIX=:}spider` (
   `id` mediumint(6) unsigned NOT NULL auto_increment,
   `name` varchar(255) NOT NULL default '',
-  `user_agent` text NOT NULL default '',
+  `user_agent` text NOT NULL,
   `type` enum('b','e','v') NOT NULL default 'b',
   `last_visit` varchar(255) NOT NULL default '',
   `bot_visits` int(10) unsigned NOT NULL default '0',
-  `pending_agent` text NOT NULL default '',
-  `pending_ip` text NOT NULL default '',
-  `bot_ip` text NOT NULL default '',
+  `pending_agent` text NOT NULL,
+  `pending_ip` text NOT NULL,
+  `bot_ip` text NOT NULL,
   PRIMARY KEY  (`id`)
 ) TYPE=MyISAM;
 

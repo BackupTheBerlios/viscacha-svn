@@ -2,7 +2,7 @@ CREATE TABLE `{:=DBPREFIX=:}settings_groups` (
   `id` smallint(4) unsigned NOT NULL auto_increment,
   `title` varchar(120) NOT NULL default '',
   `name` varchar(120) NOT NULL default '',
-  `description` tinytext NOT NULL default '',
+  `description` tinytext NOT NULL,
   PRIMARY KEY  (`id`)
 ) TYPE=MyISAM PACK_KEYS=0 AUTO_INCREMENT=7 ;
 

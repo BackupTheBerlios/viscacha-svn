@@ -1,8 +1,8 @@
 CREATE TABLE `{:=DBPREFIX=:}filetypes` (
   `id` int(10) unsigned NOT NULL auto_increment,
   `extension` varchar(20) NOT NULL default '',
-  `program` tinytext NOT NULL default '',
-  `desctxt` text NOT NULL default '',
+  `program` tinytext NOT NULL,
+  `desctxt` text NOT NULL,
   `icon` varchar(50) NOT NULL default '',
   `mimetype` varchar(64) NOT NULL default 'application/octet-stream',
   `stream` enum('inline','attachment') NOT NULL default 'attachment',

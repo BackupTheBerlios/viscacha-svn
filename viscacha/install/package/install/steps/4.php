@@ -216,6 +216,6 @@ foreach ($files as $arr) {
 <?php if (!$failure) { ?>
 <input type="submit" value="Continue" />
 <?php } else { ?>
-<a class="submit" href="index.php?step=<?php echo $step; ?>">Reload page</a>
+<a class="submit" href="index.php?package=install&amp;step=<?php echo $step; ?>">Reload page</a>
 <?php } ?>
 </div>
