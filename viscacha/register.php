@@ -54,13 +54,16 @@ if ($_GET['action'] == "save") {
 		include("classes/graphic/class.veriword.php");
 		$vword = new VeriWord();
 	    if($_POST['letter']) {
-	        if ($vword->check_session($_POST['captcha'], $_POST['letter']) == FALSE) {
+	        if ($vword->check_session($_POST['captcha'], $_POST['letter']) == false) {
 	        	$error[] = $lang->phrase('veriword_mistake');
 	        }
 	    }
 	    else {
 	        $error[] = $lang->phrase('veriword_failed');
 	    }
+	}
+	if (flood_protect() == false) {
+		$error[] = $lang->phrase('flood_control');
 	}
     if ($config['acceptrules'] == 1 && $_POST['temp'] != 1) {
     	$error[] = $lang->phrase('you_had_to_accept_agb');
@@ -137,6 +140,7 @@ if ($_GET['action'] == "save") {
 		error($error,"register.php?name={$_POST['name']}&amp;email=".$_POST['email'].SID2URL_x);
 	}
 	else {
+		set_flood();
 	    $reg = time();
 	    $confirmcode = md5($config['cryptkey'].$reg);
 	    $pw_md5 = md5($_POST['pwx']);
@@ -179,10 +183,8 @@ if ($_GET['action'] == "save") {
 
         ok($lang->phrase('register_confirm_'.$config['confirm_registration']), "log.php?action=login".SID2URL_x);
 	}
-
 }
 elseif ($_GET['action'] == 'resend') {
-
 	($code = $plugins->load('register_resend_start')) ? eval($code) : null;
 	$breadcrumb->Add($lang->phrase('register_title'), "register.php".SID2URL_1);
 	$breadcrumb->Add($lang->phrase('register_resend_title'));
@@ -200,7 +202,6 @@ elseif ($_GET['action'] == 'resend') {
 	($code = $plugins->load('register_resend_form_start')) ? eval($code) : null;
 	echo $tpl->parse("register/resend");
 	($code = $plugins->load('register_resend_form_end')) ? eval($code) : null;
-
 }
 elseif ($_GET['action'] == 'resend2') {
 	$breadcrumb->Add($lang->phrase('register_title'), "register.php".SID2URL_1);
@@ -213,11 +214,14 @@ elseif ($_GET['action'] == 'resend2') {
 	if ($db->num_rows($result) != 1) {
 		$error[] = $lang->phrase('register_resend_no_user');
 	}
+	if (flood_protect() == false) {
+		$error[] = $lang->phrase('flood_control');
+	}
 	if ($config['botgfxtest'] == 1) {
 		include("classes/graphic/class.veriword.php");
 		$vword = new VeriWord();
 	    if($_POST['letter']) {
-	        if ($vword->check_session($_POST['captcha'], $_POST['letter']) == FALSE) {
+	        if ($vword->check_session($_POST['captcha'], $_POST['letter']) == false) {
 	        	$error[] = $lang->phrase('veriword_mistake');
 	        }
 	    }
@@ -230,6 +234,7 @@ elseif ($_GET['action'] == 'resend2') {
 		error($error, "register.php?action=resend&amp;name=".$_POST['name'].SID2URL_x);
 	}
 	else {
+		set_flood();
 		$row = $db->fetch_assoc($result);
 		$row['name'] = $_POST['name'] = $gpc->prepare($row['name']);
 		$confirmcode = md5($config['cryptkey'].$row['regdate']);
@@ -301,7 +306,7 @@ else {
 	$rules = $lang->get_words('rules');
 
 	($code = $plugins->load('register_form_prepared')) ? eval($code) : null;
-	echo $tpl->parse("register");
+	echo $tpl->parse("register/register");
 	($code = $plugins->load('register_form_end')) ? eval($code) : null;
 }
 

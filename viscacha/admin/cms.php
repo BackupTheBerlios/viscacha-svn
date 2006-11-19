@@ -11,15 +11,15 @@ function SelectPackageLinks ($head) {
 	 <option value="" selected="selected">Please choose</option>
 	 <optgroup label="Management">
 	  <option value="admin.php?action=cms&job=plugins_add&id=<?php echo $head['module']; ?>">Add Plugin</option>
-	  <option value="admin.php?action=cms&job=package_info&id=<?php echo $head['module']; ?>">Information</option> 
+	  <option value="admin.php?action=cms&job=package_info&id=<?php echo $head['module']; ?>">Information</option>
 	  <?php if (isset($configs[$head['module']]) == true) { ?>
 	   <option value="admin.php?action=settings&job=custom&id=<?php echo $configs[$head['module']]; ?>">Configuration</option>
 	  <?php } ?>
 	  <option value="admin.php?action=cms&job=package_export&id=<?php echo $head['module']; ?>">Export</option>
-	  <option value="admin.php?action=cms&job=package_delete&id=<?php echo $head['module']; ?>">Delete</option> 
+	  <option value="admin.php?action=cms&job=package_delete&id=<?php echo $head['module']; ?>">Delete</option>
 	 </optgroup>
 	 <optgroup label="Status">
-	  <option value="admin.php?action=cms&job=plugins_active_all&value=1&id=<?php echo $head['module']; ?>">Activate all</option> 
+	  <option value="admin.php?action=cms&job=plugins_active_all&value=1&id=<?php echo $head['module']; ?>">Activate all</option>
 	  <option value="admin.php?action=cms&job=plugins_active_all&value=0&id=<?php echo $head['module']; ?>">Deactivate all</option>
 	 </optgroup>
 	</select>
@@ -30,7 +30,7 @@ function SelectPackageLinks ($head) {
 
 function BBCodeToolBox() {
 	global $db, $scache, $config;
-	
+
 	$cache = $scache->load('smileys');
 	$cache->seturl($config['smileyurl']);
 	$csmileys = $cache->get();
@@ -174,10 +174,10 @@ if ($job == 'plugins') {
 	$sort = $gpc->get('sort', int, $my->settings['admin_plugins_sort']);
 	?>
 	 <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
-	  <tr> 
+	  <tr>
 	   <td class="obox">Manage Plugins</td>
 	  </tr>
-	  <tr> 
+	  <tr>
 	   <td class="mbox">
 	   <ul>
 		   <li><a href="admin.php?action=cms&job=package_add">Add Package</a></li>
@@ -185,7 +185,7 @@ if ($job == 'plugins') {
 		   <li><a href="admin.php?action=cms&job=plugins_add">Add Plugin</a></li>
 		   <li>
 			   <form method="get" name="admin.php" style="display: inline;">
-			   Display of: 
+			   Display of:
 			   	<select name="sort">
 			   		<option value="0"<?php echo iif($sort == 0, ' selected="selected"'); ?>>Hooks</option>
 			   		<option value="1"<?php echo iif($sort == 1, ' selected="selected"'); ?>>Packages</option>
@@ -204,7 +204,7 @@ if ($job == 'plugins') {
 	if ($sort == 1) {
 		$package = null;
 		$my->settings['admin_plugins_sort'] = 1;
-		
+
 		$configs = array();
 		$result = $db->query("SELECT id, name FROM {$db->pre}settings_groups WHERE LEFT(name, 7) = 'module_'");
 		while ($row = $db->fetch_assoc($result)) {
@@ -215,11 +215,11 @@ if ($job == 'plugins') {
 		$result = $db->query("
 		SELECT p.*, m.title, m.id as module
 		FROM {$db->pre}packages AS m
-			LEFT JOIN {$db->pre}plugins AS p ON p.module = m.id 
+			LEFT JOIN {$db->pre}plugins AS p ON p.module = m.id
 		ORDER BY m.id, p.position
 		", __LINE__, __FILE__);
 		?>
-		 <table class="border" border="0" cellspacing="0" cellpadding="4" align="center"> 
+		 <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
 		  <tr class="obox">
 		   <td>Plugin</td>
 		   <td>Hook</td>
@@ -245,7 +245,7 @@ if ($job == 'plugins') {
 					<td><?php echo $head['name']; ?><?php echo iif ($head['active'] == 0, ' (<em>Inactive</em>)'); ?></td>
 					<td nowrap="nowrap"><?php echo $head['position']; ?></td>
 					<td nowrap="nowrap">
-						<?php 
+						<?php
 						if ($head['active'] == 1) {
 							echo '<a href="admin.php?action=cms&amp;job=plugins_active&amp;id='.$head['id'].'&amp;value=0">Deactivate</a>';
 						}
@@ -255,7 +255,7 @@ if ($job == 'plugins') {
 						?>
 					</td>
 					<td>
-					 <a class="button" href="admin.php?action=cms&amp;job=plugins_edit&amp;id=<?php echo $head['id']; ?>">Edit</a> 
+					 <a class="button" href="admin.php?action=cms&amp;job=plugins_edit&amp;id=<?php echo $head['id']; ?>">Edit</a>
 					 <a class="button" href="admin.php?action=cms&amp;job=plugins_delete&amp;id=<?php echo $head['id']; ?>">Delete</a>
 					</td>
 				</tr>
@@ -274,15 +274,15 @@ if ($job == 'plugins') {
 	else {
 		$pos = null;
 		$my->settings['admin_plugins_sort'] = 0;
-		
+
 		$result = $db->query("
-		SELECT p.*, m.title 
+		SELECT p.*, m.title
 		FROM {$db->pre}plugins AS p
-			LEFT JOIN {$db->pre}packages AS m ON p.module = m.id 
+			LEFT JOIN {$db->pre}packages AS m ON p.module = m.id
 		ORDER BY p.position, p.ordering
 		", __LINE__, __FILE__);
 		?>
-		 <table class="border" border="0" cellspacing="0" cellpadding="4" align="center"> 
+		 <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
 		  <tr class="obox">
 		   <td width="30%">Plugin</td>
 		   <td width="28%">Package</td>
@@ -304,10 +304,10 @@ if ($job == 'plugins') {
 			<tr class="mbox">
 				<td><?php echo $head['name']; ?><?php echo iif ($head['active'] == 0, ' (<em>Inactvie</em>)'); ?></td>
 				<td nowrap="nowrap" title="<?php echo htmlspecialchars($head['title']); ?>">
-					<?php SelectPackageLinks($head); echo $head['module']; ?>&nbsp;&nbsp;	
+					<?php SelectPackageLinks($head); echo $head['module']; ?>&nbsp;&nbsp;
 				</td>
 				<td nowrap="nowrap">
-					<?php 
+					<?php
 					if ($head['active'] == 1) {
 						echo '<a href="admin.php?action=cms&amp;job=plugins_active&amp;id='.$head['id'].'&amp;value=0">Deactivate</a>';
 					}
@@ -322,7 +322,7 @@ if ($job == 'plugins') {
 		 			<a href="admin.php?action=cms&amp;job=plugins_move&amp;id=<?php echo $head['id']; ?>&amp;value=1"><img src="admin/html/images/desc.gif" border="0" alt="Down"></a>
 				</td>
 				<td>
-				 <a class="button" href="admin.php?action=cms&amp;job=plugins_edit&amp;id=<?php echo $head['id']; ?>">Edit</a> 
+				 <a class="button" href="admin.php?action=cms&amp;job=plugins_edit&amp;id=<?php echo $head['id']; ?>">Edit</a>
 				 <a class="button" href="admin.php?action=cms&amp;job=plugins_delete&amp;id=<?php echo $head['id']; ?>">Delete</a>
 				</td>
 			</tr>
@@ -358,7 +358,7 @@ elseif ($job == 'plugins_active') {
 	}
 
 	$db->query('UPDATE '.$db->pre.'plugins SET active = "'.$active.'" WHERE id = '.$id, __LINE__, __FILE__);
-	
+
 	$result = $db->query("SELECT position FROM {$db->pre}plugins WHERE id = '{$id}'", __LINE__, __FILE__);
 	$row = $db->fetch_assoc($result);
 	$filesystem->unlink('cache/modules/'.$plugins->_group($row['position']).'.php');
@@ -372,7 +372,7 @@ elseif ($job == 'plugins_active_all') {
 	}
 
 	$db->query('UPDATE '.$db->pre.'plugins SET active = "'.$active.'" WHERE module = '.$id, __LINE__, __FILE__);
-	
+
 	$result = $db->query("SELECT position FROM {$db->pre}plugins WHERE module = '{$id}'", __LINE__, __FILE__);
 	while ($row = $db->fetch_assoc($result)) {
 		$filesystem->unlink('cache/modules/'.$plugins->_group($row['position']).'.php');
@@ -402,7 +402,7 @@ elseif ($job == 'plugins_delete2') {
 
 	$result = $db->query("SELECT * FROM {$db->pre}plugins WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	$data = $db->fetch_assoc($result);
-	
+
 	$dir = "modules/{$data['module']}/";
 	$ini = $myini->read($dir."config.ini");
 	$delete = true;
@@ -421,7 +421,7 @@ elseif ($job == 'plugins_delete2') {
 	$db->query("DELETE FROM {$db->pre}plugins WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 
 	$filesystem->unlink('cache/modules/'.$plugins->_group($data['position']).'.php');
-	
+
 	echo head();
 	ok('admin.php?action=cms&job=plugins', 'Plugin successfully deleted!');
 }
@@ -429,10 +429,10 @@ elseif ($job == 'plugins_edit') {
 	echo head();
 	$pluginid = $gpc->get('id', int);
 	$result = $db->query("
-	SELECT p.*, m.title 
+	SELECT p.*, m.title
 	FROM {$db->pre}plugins AS p
 		LEFT JOIN {$db->pre}packages AS m ON p.module = m.id
-	WHERE p.id = '{$pluginid}' 
+	WHERE p.id = '{$pluginid}'
 	LIMIT 1
 	", __LINE__, __FILE__);
 	if ($db->num_rows($result) != 1) {
@@ -459,7 +459,7 @@ elseif ($job == 'plugins_edit') {
 	sort($cp);
 	?>
 	<form method="post" action="admin.php?action=cms&job=plugins_edit2&id=<?php echo $pluginid; ?>">
-	<table class="border" border="0" cellspacing="0" cellpadding="4" align="center"> 
+	<table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
 	 <tr>
 	  <td class="obox" colspan="2">Edit Plugin</td>
 	 </tr>
@@ -524,7 +524,7 @@ elseif ($job == 'plugins_edit2') {
 	$hook = $gpc->get('hook', str);
 	$code = $gpc->get('code', none);
 	$active = $gpc->get('active', int);
-	
+
 	$result = $db->query("SELECT module, position FROM {$db->pre}plugins WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	$data = $db->fetch_assoc($result);
 	$dir = "modules/{$data['module']}/";
@@ -568,7 +568,7 @@ elseif ($job == 'plugins_add') {
 	$hooks = getHookArray();
 	?>
 	<form method="post" action="admin.php?action=cms&job=plugins_add2">
-	<table class="border" border="0" cellspacing="0" cellpadding="4" align="center"> 
+	<table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
 	 <tr>
 	  <td class="obox" colspan="2">Add Plugin - Step 1 of 3</td>
 	 </tr>
@@ -629,14 +629,14 @@ elseif ($job == 'plugins_add2') {
 	if (strlen($title) > 200) {
 		error('admin.php?action=cms&job=plugins_add&id='.$package['id'], 'Maximum number of characters for title: 200');
 	}
-	
+
 	if (!$isInvisibleHook) {
 		$hookPriority = $db->query("SELECT id, name, ordering FROM {$db->pre}plugins WHERE position = '{$hook}' ORDER BY ordering", __LINE__, __FILE__);
 
 		$db->query("
-		INSERT INTO {$db->pre}plugins 
-		(`name`,`module`,`ordering`,`active`,`position`) 
-		VALUES 
+		INSERT INTO {$db->pre}plugins
+		(`name`,`module`,`ordering`,`active`,`position`)
+		VALUES
 		('{$title}','{$package['id']}','-1','0','{$hook}')
 		", __LINE__, __FILE__);
 		$pluginid = $db->insert_id();
@@ -650,11 +650,11 @@ elseif ($job == 'plugins_add2') {
 		$codefile = "{$filetitle}_{$i}.php";
 		$i++;
 	}
-	
+
 	$last = null;
 	?>
 	<form method="post" action="admin.php?action=cms&job=plugins_add3&id=<?php echo $pluginid; ?>&package=<?php echo $package['id']; ?>">
-	<table class="border" border="0" cellspacing="0" cellpadding="4" align="center"> 
+	<table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
 	 <tr>
 	  <td class="obox" colspan="2">Add Plugin - Step 2 of 3</td>
 	 </tr>
@@ -717,18 +717,18 @@ elseif ($job == 'plugins_add3') {
 	$file = $gpc->get('file', none);
 	$priority = $gpc->get('priority', none);
 	$active = $gpc->get('active', int);
-	
+
 	$result = $db->query("SELECT module, name, position FROM {$db->pre}plugins WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	$data = $db->fetch_assoc($result);
 	$isInvisibleHook = isInvisibleHook($data['position']);
-	
+
 	if (!$isInvisibleHook) {
 		$dir = "modules/{$data['module']}/";
 	}
 	else {
 		$dir = "modules/{$package}/";
 	}
-	
+
 	if (strlen($title) < 4 || strlen($title) > 200) {
 		$title = $data['title'];
 	}
@@ -748,12 +748,12 @@ elseif ($job == 'plugins_add3') {
 
 		$db->query("UPDATE {$db->pre}plugins SET `name` = '{$title}', `ordering` = '{$priority}', `active` = '{$active}' WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	}
-	
+
 	if (file_exists($dir.$file) == false) {
 		$filesystem->file_put_contents($dir.$file, $code);
 		$filesystem->chmod($dir.$file, 0666);
 	}
-	
+
 	$ini = $myini->read($dir."config.ini");
 	$ini['php'][$data['position']] = $file;
 	$myini->write($dir."config.ini", $ini);
@@ -770,7 +770,7 @@ elseif ($job == 'plugins_add3') {
 }
 elseif ($job == 'package_template') {
 	$id = $gpc->get('id', int);
-	
+
 	$result = $db->query("SELECT id, title FROM {$db->pre}packages WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	if ($db->num_rows() != 1) {
 		echo head();
@@ -779,7 +779,7 @@ elseif ($job == 'package_template') {
 	$data = $db->fetch_assoc($result);
 	$dir = "modules/{$data['id']}/";
 	$ini = $myini->read($dir."config.ini");
-	
+
 	$designObj = $scache->load('loaddesign');
 	$designs = $designObj->get(true);
 	$standardDesign = $designs[$config['templatedir']]['template'];
@@ -797,7 +797,7 @@ elseif ($job == 'package_template') {
 	echo head();
 	?>
 	<form method="post" action="admin.php?action=cms&job=package_template_edit&id=<?php echo $data['id']; ?>">
-	<table class="border" border="0" cellspacing="0" cellpadding="4" align="center"> 
+	<table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
 	 <tr>
 	  <td class="obox" colspan="3">
 	  <span style="float: right;"><a class="button" href="javascript: self.close();">Close Window</a></span>
@@ -828,7 +828,7 @@ elseif ($job == 'package_template') {
 	</form>
 	<br class="minibr" />
 	<form method="post" action="admin.php?action=cms&job=package_template_add&id=<?php echo $data['id']; ?>">
-	<table class="border" border="0" cellspacing="0" cellpadding="4" align="center"> 
+	<table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
 	 <tr>
 	  <td class="obox" colspan="2">Add Template to Package</td>
 	 </tr>
@@ -857,7 +857,7 @@ elseif ($job == 'package_template_add') {
 	$id = $gpc->get('id', int);
 	$code = $gpc->get('code', none);
 	$file = $gpc->get('file', none);
-	
+
 	$result = $db->query("SELECT id, title FROM {$db->pre}packages WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	if ($db->num_rows() != 1) {
 		echo head();
@@ -875,22 +875,22 @@ elseif ($job == 'package_template_add') {
 	}
 	$filesystem->file_put_contents($tpldir.$file, $code);
 	$filesystem->chmod($tpldir.$file, 0666);
-	
+
 	$ini = $myini->read($dir."config.ini");
 	$ini['template'][] = $file;
 	$myini->write($dir."config.ini", $ini);
 
-	echo head();	
+	echo head();
 	ok('admin.php?action=cms&job=package_template&id='.$data['id']);
 }
 elseif ($job == 'package_template_edit') {
 	echo head();
-	
+
 	$id = $gpc->get('id', int);
 	$editId = $gpc->get('edit', int, -1);
 	$deleteId = $gpc->get('delete', arr_int);
 	$output = -1;
-	
+
 	$result = $db->query("SELECT id, title FROM {$db->pre}packages WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	if ($db->num_rows() != 1) {
 		echo head();
@@ -903,7 +903,7 @@ elseif ($job == 'package_template_edit') {
 	if (count($deleteId) > 0) {
 		$designObj = $scache->load('loaddesign');
 		$designs = $designObj->get(true);
-		
+
 		foreach ($deleteId as $key) {
 			if (!isset($ini['template'][$key])) {
 				continue;
@@ -917,11 +917,11 @@ elseif ($job == 'package_template_edit') {
 			}
 			unset($ini['template'][$key]);
 		}
-		
+
 		$myini->write($dir."config.ini", $ini);
 		$output = 0;
 	}
-	
+
 	if ($editId > -1 && isset($ini['template'][$editId])) {
 		if ($output == 0) {
 			?>
@@ -934,7 +934,7 @@ elseif ($job == 'package_template_edit') {
 		$codefile = $ini['template'][$editId];
 		$designObj = $scache->load('loaddesign');
 		$designs = $designObj->get(true);
-		
+
 		$tpldirs = array();
 		foreach ($designs as $designId => $row) {
 			$dir = "templates/{$row['template']}/modules/{$data['id']}/";
@@ -943,10 +943,10 @@ elseif ($job == 'package_template_edit') {
 				$tpldirs[$row['template']]['ids'][] = $row['id'];
 			}
 		}
-		
+
 		?>
 		<form method="post" action="admin.php?action=cms&job=package_template_edit2&id=<?php echo $data['id']; ?>&edit=<?php echo $editId; ?>">
-		<table class="border" border="0" cellspacing="0" cellpadding="4" align="center"> 
+		<table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
 		 <tr>
 		  <td class="obox" colspan="2">Add Template to Package</td>
 		 </tr>
@@ -989,7 +989,7 @@ elseif ($job == 'package_template_edit') {
 		<?php
 		$output = 1;
 	}
-	
+
 	if ($output == -1) {
 		error('admin.php?action=cms&job=package_template&id='.$data['id'], 'Please choose at least one template...');
 	}
@@ -1001,7 +1001,7 @@ elseif ($job == 'package_template_edit2') {
 	$id = $gpc->get('id', int);
 	$editId = $gpc->get('edit', int, -1);
 	$code = $gpc->get('code', arr_none);
-	
+
 	$result = $db->query("SELECT id FROM {$db->pre}packages WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	if ($db->num_rows() != 1) {
 		echo head();
@@ -1014,7 +1014,7 @@ elseif ($job == 'package_template_edit2') {
 		error('javascript: self.close();', 'Specified template ('.$id.') does not exist in INI-File.');
 	}
 	$file = $ini['template'][$editId];
-	
+
 	foreach ($code as $tpldir => $html) {
 		$filepath = "templates/{$tpldir}/modules/{$data['id']}/";
 		if (is_dir($filepath)) {
@@ -1026,7 +1026,7 @@ elseif ($job == 'package_template_edit2') {
 }
 elseif ($job == 'package_language') {
 	echo head();
-	
+
 	$id = $gpc->get('id', int);
 	$result = $db->query("SELECT id, title FROM {$db->pre}packages WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	if ($db->num_rows() != 1) {
@@ -1034,13 +1034,13 @@ elseif ($job == 'package_language') {
 		error('javascript: self.close();', 'Specified package ('.$id.') does not exist.');
 	}
 	$data = $db->fetch_assoc($result);
-	
+
 	$dir = "modules/{$data['id']}/";
 	$ini = $myini->read($dir."config.ini");
 	if (!isset($ini['language'])) {
 		$ini['language'] = array();
 	}
-	
+
 	$file = 'modules.lng.php';
 	$group = substr($file, 0, strlen($file)-8);
 	$page = $gpc->get('page', int, 1);
@@ -1058,14 +1058,14 @@ elseif ($job == 'package_language') {
 	?>
 <form name="form" method="post" action="admin.php?action=cms&job=package_language_delete&id=<?php echo $id; ?>">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
-  <tr> 
+  <tr>
    <td class="obox" colspan="<?php echo count($cache)+1; ?>">
    <span style="float: right;"><a class="button" href="admin.php?action=cms&job=package_language_add&id=<?php echo $id; ?>">Add new Phrase</a></span>
    Phrase Manager</td>
   </tr>
   <?php if (count($ini['language']) == 0) { ?>
   <tr>
-   <td class="mbox" colspan="<?php echo count($cache)+1; ?>">There were no phrases created. <a class="button" href="admin.php?action=cms&job=package_language_add&id=<?php echo $id; ?>">Add new Phrase</a></td> 
+   <td class="mbox" colspan="<?php echo count($cache)+1; ?>">There were no phrases created. <a class="button" href="admin.php?action=cms&job=package_language_add&id=<?php echo $id; ?>">Add new Phrase</a></td>
   </tr>
   <?php } else { ?>
   <tr>
@@ -1085,7 +1085,7 @@ elseif ($job == 'package_language') {
    <?php } ?>
   </tr>
   <?php } ?>
-  <tr> 
+  <tr>
    <td class="ubox" align="center" colspan="<?php echo count($cache)+1; ?>"><input type="submit" value="Delete selected phrases"></td>
   </tr>
   <?php } ?>
@@ -1096,7 +1096,7 @@ elseif ($job == 'package_language') {
 }
 elseif ($job == 'package_language_add') {
 	echo head();
-	
+
 	$id = $gpc->get('id', int);
 	$result = $db->query("SELECT id, title FROM {$db->pre}packages WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	if ($db->num_rows() != 1) {
@@ -1104,12 +1104,12 @@ elseif ($job == 'package_language_add') {
 		error('javascript: self.close();', 'Specified package ('.$id.') does not exist.');
 	}
 	$data = $db->fetch_assoc($result);
-	
+
 	$result = $db->query('SELECT * FROM '.$db->pre.'language ORDER BY language',__LINE__,__FILE__);
 	?>
 <form name="form" method="post" action="admin.php?action=cms&job=package_language_save2&id=<?php echo $id; ?>">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
-  <tr> 
+  <tr>
    <td class="obox" colspan="2">Phrase Manager &raquo; Add new Phrase to Package</td>
   </tr>
   <tr>
@@ -1122,14 +1122,14 @@ elseif ($job == 'package_language_add') {
    <span class="stext">This is the default language used also in the exported packages. It is recommended to write English here.</span></td>
    <td class="mbox" width="50%"><input type="text" name="text" size="50" /></td>
   </tr>
-  <tr> 
+  <tr>
    <td class="obox" colspan="2">Translations</td>
   </tr>
   <tr>
    <td class="ubox" colspan="2"><ul>
 	<li>When inserting a custom phrase, you may also specify the translations into whatever languages you have installed.</li>
 	<li>If you do leave a translation box blank, it will inherit the text from the 'Text' box.</li>
-   </ul></td> 
+   </ul></td>
   </tr>
   <?php while($row = $db->fetch_assoc($result)) { ?>
   <tr>
@@ -1138,7 +1138,7 @@ elseif ($job == 'package_language_add') {
   </tr>
   <?php } ?>
   <tr>
-   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="Save" /></td> 
+   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="Save" /></td>
   </tr>
  </table>
 </form>
@@ -1147,21 +1147,21 @@ elseif ($job == 'package_language_add') {
 }
 elseif ($job == 'package_language_save2') {
 	// This is used for adding AND editing!
-	
+
 	echo head();
-	
+
 	$id = $gpc->get('id', int);
 	$varname = $gpc->get('varname', none);
 	$text = $gpc->get('text', none);
 	$lang = $gpc->get('langt', none);
-	
+
 	$result = $db->query("SELECT id, title FROM {$db->pre}packages WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	if ($db->num_rows() != 1) {
 		echo head();
 		error('javascript: self.close();', 'Specified package ('.$id.') does not exist.');
 	}
 	$data = $db->fetch_assoc($result);
-	
+
 	$dir = "modules/{$data['id']}/";
 	$ini = $myini->read($dir."config.ini");
 	if (!isset($ini['language'])) {
@@ -1169,7 +1169,7 @@ elseif ($job == 'package_language_save2') {
 	}
 	$ini['language'][$varname] = $text;
 	$myini->write($dir."config.ini", $ini);
-	
+
 	$c = new manageconfig();
 	foreach ($lang as $id => $t) {
 		if (empty($t)) {
@@ -1179,22 +1179,22 @@ elseif ($job == 'package_language_save2') {
 		$c->updateconfig($varname, str, $t);
 		$c->savedata();
 	}
-	
-	ok('admin.php?action=cms&job=package_language&id='.$data['id']);	
+
+	ok('admin.php?action=cms&job=package_language&id='.$data['id']);
 }
 elseif ($job == 'package_language_delete') {
 	echo head();
-	
+
 	$id = $gpc->get('id', int);
 	$delete = $gpc->get('delete', arr_str);
-	
+
 	$result = $db->query("SELECT id, title FROM {$db->pre}packages WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	if ($db->num_rows() != 1) {
 		echo head();
 		error('javascript: self.close();', 'Specified package ('.$id.') does not exist.');
 	}
 	$data = $db->fetch_assoc($result);
-	
+
 	$dir = "modules/{$data['id']}/";
 	$ini = $myini->read($dir."config.ini");
 	foreach ($delete as $phrase) {
@@ -1218,7 +1218,7 @@ elseif ($job == 'package_language_delete') {
 }
 elseif ($job == 'package_language_copy') {
 	echo head();
-	
+
 	$id = $gpc->get('id', int);
 	$result = $db->query("SELECT id, title FROM {$db->pre}packages WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	if ($db->num_rows() != 1) {
@@ -1235,7 +1235,7 @@ elseif ($job == 'package_language_copy') {
 	?>
 <form name="form" method="post" action="admin.php?action=cms&job=package_language_copy2&phrase=<?php echo $phrase; ?>&language=<?php echo $language; ?>&id=<?php echo $id; ?>">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
-  <tr> 
+  <tr>
    <td class="obox" colspan="2">Phrase Manager &raquo; Copy</td>
   </tr>
   <tr>
@@ -1253,7 +1253,7 @@ elseif ($job == 'package_language_copy') {
 	<?php } } } ?>
    </select></td>
   </tr>
-  <tr> 
+  <tr>
    <td class="ubox" align="center" colspan="2"><input type="submit" value="Copy phrase"></td>
   </tr>
  </table>
@@ -1263,7 +1263,7 @@ elseif ($job == 'package_language_copy') {
 }
 elseif ($job == 'package_language_copy2') {
 	echo head();
-	
+
 	$id = $gpc->get('id', int);
 	$result = $db->query("SELECT id, title FROM {$db->pre}packages WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	if ($db->num_rows() != 1) {
@@ -1271,7 +1271,7 @@ elseif ($job == 'package_language_copy2') {
 		error('javascript: self.close();', 'Specified package ('.$id.') does not exist.');
 	}
 	$data = $db->fetch_assoc($result);
-	
+
 	$dest = $gpc->get('language', int);
 	$source = $gpc->get('dir', int);
 	$file = 'modules.lng.php';
@@ -1294,7 +1294,7 @@ elseif ($job == 'package_language_copy2') {
 }
 elseif ($job == 'package_language_edit') {
 	echo head();
-	
+
 	$phrase = $gpc->get('phrase', none);
 	$id = $gpc->get('id', int);
 	$result = $db->query("SELECT id, title FROM {$db->pre}packages WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
@@ -1303,18 +1303,18 @@ elseif ($job == 'package_language_edit') {
 		error('javascript: self.close();', 'Specified package ('.$id.') does not exist.');
 	}
 	$data = $db->fetch_assoc($result);
-	
+
 	$dir = "modules/{$data['id']}/";
 	$ini = $myini->read($dir."config.ini");
 	if (!isset($ini['language'][$phrase])) {
 		error('admin.php?action=cms&job=plugins_edit&id=7', 'Phrase not found!');
 	}
-	
+
 	$result = $db->query('SELECT * FROM '.$db->pre.'language ORDER BY language',__LINE__,__FILE__);
 	?>
 <form name="form" method="post" action="admin.php?action=cms&job=package_language_save2&id=<?php echo $id; ?>">
  <table class="border" border="0" cellspacing="0" cellpediting="4" align="center">
-  <tr> 
+  <tr>
    <td class="obox" colspan="2">Phrase Manager &raquo; Edit Phrase</td>
   </tr>
   <tr>
@@ -1325,16 +1325,16 @@ elseif ($job == 'package_language_edit') {
   <tr>
    <td class="mbox" width="50%">Text:<br />
    <span class="stext">This is the default language used also in the exported packages. It is recommended to write English here.</span></td>
-   <td class="mbox" width="50%"><input type="text" name="text" size="50" value="<?php echo htmlspecialchars($ini['language'][$phrase]); ?>" /></td>
+   <td class="mbox" width="50%"><input type="text" name="text" size="50" value="<?php echo htmlspecialchars(nl2whitespace($ini['language'][$phrase])); ?>" /></td>
   </tr>
-  <tr> 
+  <tr>
    <td class="obox" colspan="2">Translations</td>
   </tr>
   <tr>
    <td class="ubox" colspan="2"><ul>
 	<li>When editing a custom phrase, you may also specify the translations into whatever languages you have installed.</li>
 	<li>If you do leave a translation box blank, it will inherit the text from the 'Text' box.</li>
-   </ul></td> 
+   </ul></td>
   </tr>
   <?php
   while($row = $db->fetch_assoc($result)) {
@@ -1345,11 +1345,11 @@ elseif ($job == 'package_language_edit') {
   ?>
   <tr>
    <td class="mbox" width="50%"><em><?php echo $row['language']; ?></em> Translation:<br /><span class="stext">Optional. HTML is allowed but not recommended.</span></td>
-   <td class="mbox" width="50%"><input type="text" name="langt[<?php echo $row['id']; ?>]" size="50" value="<?php echo htmlspecialchars($phrases[$phrase]); ?>" /></td>
+   <td class="mbox" width="50%"><input type="text" name="langt[<?php echo $row['id']; ?>]" size="50" value="<?php echo htmlspecialchars(nl2whitespace($phrases[$phrase])); ?>" /></td>
   </tr>
   <?php } ?>
   <tr>
-   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="Save" /></td> 
+   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="Save" /></td>
   </tr>
  </table>
 </form>
@@ -1360,7 +1360,7 @@ elseif ($job == 'package_add') {
 	echo head();
 	?>
 	<form method="post" action="admin.php?action=cms&job=package_add2">
-	<table class="border" border="0" cellspacing="0" cellpadding="4" align="center"> 
+	<table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
 	 <tr>
 	  <td class="obox" colspan="2">Add Package</td>
 	 </tr>
@@ -1398,9 +1398,9 @@ elseif ($job == 'package_add2') {
 
 	$db->query("INSERT INTO {$db->pre}packages (`title`) VALUES ('{$title}')");
 	$packageid = $db->insert_id();
-	
+
 	$filesystem->mkdir("modules/{$packageid}/", 0777);
-	
+
 	$ini = array(
 		'info' => array(
 			'title' => $title,
@@ -1411,7 +1411,7 @@ elseif ($job == 'package_add2') {
 	);
 	$myini->write("modules/{$packageid}/config.ini", $ini);
 	$filesystem->chmod("modules/{$packageid}/config.ini", 0666);
-	
+
 	ok('admin.php?action=cms&job=plugins_add&id='.$packageid, 'Package successfully added.');
 }
 elseif ($job == 'package_import') {
@@ -1437,15 +1437,15 @@ elseif ($job == 'package_import2') {
 	$server = $gpc->get('server', none);
 	$del = $gpc->get('delete', int);
 	$inserterrors = array();
-	
+
 	if (!empty($_FILES['upload']['name'])) {
 		$filesize = ini_maxupload();
 		$filetypes = array('zip');
 		$dir = realpath('temp').DIRECTORY_SEPARATOR;
-	
+
 		$insertuploads = array();
 		require("classes/class.upload.php");
-		 
+
 		$my_uploader = new uploader();
 		$my_uploader->max_filesize($filesize);
 		$my_uploader->file_types($filetypes);
@@ -1498,7 +1498,7 @@ elseif ($job == 'package_import2') {
 	else {
 		$c = new manageconfig();
 		$ini = $myini->read("{$tempdir}config.ini");
-	
+
 		$db->query("INSERT INTO {$db->pre}packages (`title`) VALUES ('{$ini['info']['title']}')");
 		$packageid = $db->insert_id();
 		$dir = "modules/{$packageid}/";
@@ -1547,7 +1547,7 @@ elseif ($job == 'package_import2') {
 			foreach ($langcodes as $code => $lid) {
 				$ldat = explode('_', $code);
 				if (isset($codes[$ldat[0]])) {
-					$count = count($codes[$ldat[0]]); 
+					$count = count($codes[$ldat[0]]);
 					if (in_array('', $codes[$ldat[0]])) {
 						$count--;
 					}
@@ -1574,7 +1574,7 @@ elseif ($job == 'package_import2') {
 				$c->savedata();
 			}
 		}
-		
+
 		if (isset($ini['php']) && count($ini['php']) > 0) {
 			foreach ($ini['php'] as $hook => $plugfile) {
 				if (isInvisibleHook($hook)) {
@@ -1582,21 +1582,21 @@ elseif ($job == 'package_import2') {
 				}
 				$result = $db->query("SELECT MAX(ordering) AS maximum FROM {$db->pre}plugins WHERE position = '{$hook}'", __LINE__, __FILE__);
 				$row = $db->fetch_assoc($result);
-				$priority = $row['maximum']+1;	
+				$priority = $row['maximum']+1;
 				$db->query("
-				INSERT INTO {$db->pre}plugins 
-				(`name`,`module`,`ordering`,`active`,`position`) 
-				VALUES 
+				INSERT INTO {$db->pre}plugins
+				(`name`,`module`,`ordering`,`active`,`position`)
+				VALUES
 				('{$ini['info']['title']}','{$packageid}','{$priority}','0','{$hook}')
 				", __LINE__, __FILE__);
 				$filesystem->unlink('cache/modules/'.$plugins->_group($hook).'.php');
 			}
 		}
-		
+
 		$confirm = true;
 		$pluginid = $packageid;
 		($code = $plugins->install($packageid)) ? eval($code) : null;
-		
+
 		rmdirr($tempdir);
 	}
 	unset($archive);
@@ -1619,7 +1619,7 @@ elseif ($job == 'package_export') {
 	$data = $db->fetch_assoc($result);
 	$file = convert2adress($data['title']).'.zip';
 	$ini = $myini->read("modules/{$data['id']}/config.ini");
-	
+
 	$templates = array();
 	if (isset($ini['template']) && count($ini['template']) > 0) {
 		$desobj = $scache->load('loaddesign');
@@ -1686,7 +1686,7 @@ elseif ($job == 'package_export2') {
 	if (empty($file)) {
 		$file = convert2adress($data['title']).'.zip';
 	}
-	
+
 	$ini = $myini->read("modules/{$data['id']}/config.ini");
 	if (!isset($ini['language']) || !is_array($ini['language']) || (is_array($ini['language']) && count($ini['language']) == 0)) {
 		$ini['language'] = array();
@@ -1704,15 +1704,15 @@ elseif ($job == 'package_export2') {
 		}
 	}
 	$myini->write("modules/{$data['id']}/config.ini", $ini);
-	
+
 	$tpl = $gpc->get('tpl', int);
 	$tempdir = "temp/";
 	$error = false;
-	
+
 	require_once('classes/class.zip.php');
 	$archive = new PclZip($tempdir.$file);
 	$v_list = $archive->create(
-		"modules/{$id}/", 
+		"modules/{$id}/",
 		PCLZIP_OPT_REMOVE_PATH, "modules/{$id}/"
 	);
 	if ($v_list == 0) {
@@ -1722,8 +1722,8 @@ elseif ($job == 'package_export2') {
 		if (isset($ini['template']) && count($ini['template']) > 0) {
 			$archive = new PclZip($tempdir.$file);
 			$v_list = $archive->add(
-				"templates/{$tpl}/modules/{$id}/", 
-				PCLZIP_OPT_REMOVE_PATH, "templates/{$tpl}/modules/{$id}/", 
+				"templates/{$tpl}/modules/{$id}/",
+				PCLZIP_OPT_REMOVE_PATH, "templates/{$tpl}/modules/{$id}/",
 				PCLZIP_OPT_ADD_PATH, "templates/"
 			);
 			if ($v_list == 0) {
@@ -1843,7 +1843,7 @@ elseif ($job == 'package_delete') {
 }
 elseif ($job == 'package_delete2') {
 	$id = $gpc->get('id', int);
-	
+
 	if (!is_id($id)) {
 		echo head();
 		error('javascript: history.back(-1);', 'Specified package ('.$id.') does not exist.');
@@ -1893,7 +1893,7 @@ elseif ($job == 'package_delete2') {
 	if (file_exists($dir)) {
 		rmdirr($dir);
 	}
-	
+
 	if ($confirm) {
 		echo head();
 		ok('admin.php?action=cms&job=plugins&sort=1', 'Package successfully deleted!');
@@ -1904,7 +1904,7 @@ elseif ($job == 'nav') {
 	echo head();
 ?>
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
-  <tr> 
+  <tr>
    <td class="obox" colspan="4">
    	<span style="float: right;">
    	<a class="button" href="admin.php?action=cms&job=nav_add">Add Link</a>
@@ -1913,7 +1913,7 @@ elseif ($job == 'nav') {
    	</span>Manage Navigation
    </td>
   </tr>
-  <tr> 
+  <tr>
    <td class="ubox">Link</td>
    <td class="ubox">Status</td>
    <td class="ubox">Order</td>
@@ -1951,7 +1951,7 @@ elseif ($job == 'nav') {
 	<?php echo $head['name']; ?><?php echo iif(count($type) > 0, ' ('.implode('; ', $type).')' ); ?>
 	</td>
 	<td width="10%">
-	<?php 
+	<?php
 	if ($head['active'] == 1) {
 		echo '<a href="admin.php?action=cms&job=nav_active&id='.$head['id'].iif($head['module'] > 0, '&plug='.$head['module']).'&act=0">Deactivate</a>';
 	}
@@ -1965,8 +1965,8 @@ elseif ($job == 'nav') {
 	<a href="admin.php?action=cms&job=nav_move&id=<?php echo $head['id']; ?>&value=1"><img src="admin/html/images/desc.gif" border="0" alt="Down"></a>
 	</td>
 	<td width="35%">
-	 <a class="button" href="admin.php?action=cms&job=nav_edit&id=<?php echo $head['id']; ?>">Edit</a> 
-	 <a class="button" href="admin.php?action=cms&job=nav_delete&id=<?php echo $head['id']; ?>">Delete</a>	
+	 <a class="button" href="admin.php?action=cms&job=nav_edit&id=<?php echo $head['id']; ?>">Edit</a>
+	 <a class="button" href="admin.php?action=cms&job=nav_delete&id=<?php echo $head['id']; ?>">Delete</a>
 	</td>
 	</tr>
 	<?php
@@ -1981,11 +1981,11 @@ elseif ($job == 'nav') {
 			}
 			else {
 				?>
-				<a href="<?php echo $link['link']; ?>" target="<?php echo $link['param']; ?>"><?php echo $link['name']; ?></a>			
+				<a href="<?php echo $link['link']; ?>" target="<?php echo $link['param']; ?>"><?php echo $link['name']; ?></a>
 				<?php } echo iif ($link['active'] == '0', ' (<em>Inactive</em>)'); ?><br />
 				</td>
 				<td class="mbox" width="10%">
-				<?php 
+				<?php
 				if ($link['active'] == 1) {
 					echo '<a href="admin.php?action=cms&job=nav_active&id='.$link['id'].'&act=0">Deactivate</a>';
 				}
@@ -1997,9 +1997,9 @@ elseif ($job == 'nav') {
 				<td class="mbox" width="15%" nowrap="nowrap" align="center"><?php echo $link['ordering']; ?>&nbsp;&nbsp;
 				<a href="admin.php?action=cms&job=nav_move&id=<?php echo $link['id']; ?>&value=-1"><img src="admin/html/images/asc.gif" border="0" alt="Up"></a>&nbsp;
 				<a href="admin.php?action=cms&job=nav_move&id=<?php echo $link['id']; ?>&value=1"><img src="admin/html/images/desc.gif" border="0" alt="Down"></a>
-				</font></td>			
+				</font></td>
 				<td class="mbox" width="25%">
-				 <a class="button" href="admin.php?action=cms&job=nav_edit&id=<?php echo $link['id'].SID2URL_x; ?>">Edit</a> 
+				 <a class="button" href="admin.php?action=cms&job=nav_edit&id=<?php echo $link['id'].SID2URL_x; ?>">Edit</a>
 				 <a class="button" href="admin.php?action=cms&job=nav_delete&id=<?php echo $link['id'].SID2URL_x; ?>">Delete</a>
 				</td>
 				</tr>
@@ -2015,11 +2015,11 @@ elseif ($job == 'nav') {
 						}
 						else {
 							?>
-							<a href='<?php echo $sublink['link']; ?>' target='<?php echo $sublink['param']; ?>'><?php echo $sublink['name']; ?></a>			
+							<a href='<?php echo $sublink['link']; ?>' target='<?php echo $sublink['param']; ?>'><?php echo $sublink['name']; ?></a>
 							<?php } echo iif ($sublink['active'] == '0', ' (<i>Inactive</i>)'); ?></font><br>
 							</td>
 							<td class="mbox" width="10%">
-							<?php 
+							<?php
 							if ($sublink['active'] == 1) {
 								echo '<a href="admin.php?action=cms&job=nav_active&id='.$sublink['id'].'&act=0">Deactivate</a>';
 							}
@@ -2031,9 +2031,9 @@ elseif ($job == 'nav') {
 							<td class="mbox" width="15%" nowrap="nowrap" align="right"><?php echo $sublink['ordering']; ?>&nbsp;&nbsp;
 							<a href="admin.php?action=cms&job=nav_move&id=<?php echo $sublink['id']; ?>&value=-1"><img src="admin/html/images/asc.gif" border="0" alt="Up"></a>&nbsp;
 							<a href="admin.php?action=cms&job=nav_move&id=<?php echo $sublink['id']; ?>&value=1"><img src="admin/html/images/desc.gif" border="0" alt="Down"></a>
-							</td>			
+							</td>
 							<td class="mbox" width="25%">
-							 <a class="button" href="admin.php?action=cms&job=nav_edit&id=<?php echo $sublink['id']; ?>">Edit</a> 
+							 <a class="button" href="admin.php?action=cms&job=nav_edit&id=<?php echo $sublink['id']; ?>">Edit</a>
 							 <a class="button" href="admin.php?action=cms&job=nav_delete&id=<?php echo $sublink['id']; ?>">Delete</a>
 							</td>
 							</tr>
@@ -2052,9 +2052,9 @@ elseif ($job == 'nav_edit') {
 	$result = $db->query("SELECT * FROM {$db->pre}menu WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	$data = $db->fetch_assoc($result);
 	$data['group_array'] = explode(',', $data['groups']);
-	
+
 	$groups = $db->query("SELECT id, name FROM {$db->pre}groups", __LINE__, __FILE__);
-	
+
 	if ($data['sub'] > 0) {
 		$result = $db->query("SELECT id, name, sub FROM {$db->pre}menu WHERE module = '0' ORDER BY ordering, id", __LINE__, __FILE__);
 		$cache = array(0 => array());
@@ -2065,22 +2065,22 @@ elseif ($job == 'nav_edit') {
 			$cache[$row['sub']][] = $row;
 		}
 	}
-	
+
 	if ($data['module'] > 0) {
 		$plugs = $db->query("SELECT * FROM {$db->pre}plugins WHERE position = 'navigation' ORDER BY ordering", __LINE__, __FILE__);
 	}
 	?>
 <form name="form" method="post" action="admin.php?action=cms&job=nav_edit2&id=<?php echo $id; ?>">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
-  <tr> 
+  <tr>
    <td class="obox" colspan="2">Edit <?php echo iif ($data['sub'] > 0, 'link', 'box'); ?></td>
   </tr>
-  <tr> 
+  <tr>
    <td class="mbox" width="50%">Title:</td>
    <td class="mbox" width="50%"><input type="text" name="title" size="40" value="<?php echo $data['name']; ?>" /></td>
   </tr>
 <?php if ($data['sub'] > 0) { ?>
-  <tr> 
+  <tr>
    <td class="mbox" width="50%">File/URL:<br />
    <span class="stext">
    - <a href="javascript:docs();">Existing Documents</a><br />
@@ -2088,7 +2088,7 @@ elseif ($job == 'nav_edit') {
    </span></td>
    <td class="mbox" width="50%"><input type="text" name="url" size="40" value="<?php echo $data['link']; ?>" /></td>
   </tr>
-  <tr> 
+  <tr>
    <td class="mbox" width="50%">Target:<br /><span class="stext">All links will be opened in the same window by default. This option defines the target window for the link. For example: "_blank" will open links in a new window.</span></td>
    <td class="mbox" width="50%"><input type="text" name="target" size="40" value="<?php echo $data['param']; ?>" /></td>
   </tr>
@@ -2119,7 +2119,7 @@ elseif ($job == 'nav_edit') {
    </td>
   </tr>
 <?php } ?>
-  <tr> 
+  <tr>
    <td class="mbox" width="50%">Groups:<br /><span class="stext">Groups which have the ability to view the box.</span></td>
    <td class="mbox" width="50%">
    <?php while ($row = $db->fetch_assoc($groups)) { ?>
@@ -2127,7 +2127,7 @@ elseif ($job == 'nav_edit') {
    <?php } ?>
    </td>
   </tr>
-  <tr> 
+  <tr>
    <td class="mbox" width="50%">Active:</td>
    <td class="mbox" width="50%"><input type="checkbox" name="active" value="1"<?php echo iif($data['active'] == 1, ' checked="checked"'); ?> /></td>
   </tr>
@@ -2141,11 +2141,11 @@ elseif ($job == 'nav_edit') {
 }
 elseif ($job == 'nav_edit2') {
 	echo head();
-	
+
 	$id = $gpc->get('id', int);
 	$result = $db->query("SELECT * FROM {$db->pre}menu WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	$data = $db->fetch_assoc($result);
-	
+
 	$title = $gpc->get('title', str);
 	$title = trim($title);
 	if (empty($title)) {
@@ -2161,11 +2161,11 @@ elseif ($job == 'nav_edit2') {
 	else {
 		$groups = implode(',', $groups);
 	}
-	if ($data['sub'] > 0) { 
+	if ($data['sub'] > 0) {
 		$target = $gpc->get('target', str);
 		$url = $gpc->get('url', str);
 		$sub = $gpc->get('sub', int);
-		$db->query("UPDATE {$db->pre}menu SET name = '{$title}', link = '{$url}', param = '{$target}', groups = '{$groups}', sub = '{$sub}', active = '{$active}' WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);	
+		$db->query("UPDATE {$db->pre}menu SET name = '{$title}', link = '{$url}', param = '{$target}', groups = '{$groups}', sub = '{$sub}', active = '{$active}' WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	}
 	else {
 		if ($data['module'] > 0) {
@@ -2209,7 +2209,7 @@ elseif ($job == 'nav_delete2') {
 	echo head();
 	$id = $gpc->get('id', int);
 	$delete = array($id);
-	
+
 	$result = $db->query("SELECT id, sub FROM {$db->pre}menu WHERE sub = '{$id}'", __LINE__, __FILE__);
 	while($row = $db->fetch_assoc($result)) {
 		$delete[] = $row['id'];
@@ -2218,15 +2218,15 @@ elseif ($job == 'nav_delete2') {
 			$delete[] = $row2['id'];
 		}
 	}
-	
+
 	$count = count($delete);
 	$ids = implode(',', $delete);
 	$db->query("DELETE FROM {$db->pre}menu WHERE id IN ({$ids}) LIMIT {$count}", __LINE__, __FILE__);
 	$anz = $db->affected_rows();
-	
+
 	$delobj = $scache->load('modules_navigation');
 	$delobj->delete();
-	
+
 	ok('admin.php?action=cms&job=nav', $anz.' entries deleted.');
 }
 elseif ($job == 'nav_move') {
@@ -2241,7 +2241,7 @@ elseif ($job == 'nav_move') {
 	elseif ($pos > 0) {
 		$db->query('UPDATE '.$db->pre.'menu SET ordering = ordering+1 WHERE id = '.$id, __LINE__, __FILE__);
 	}
-	
+
 	$delobj = $scache->load('modules_navigation');
 	$delobj->delete();
 
@@ -2257,9 +2257,9 @@ elseif ($job == 'nav_active') {
 		error('admin.php?action=cms&job=nav', 'Invalid status specified');
 	}
 	$db->query('UPDATE '.$db->pre.'menu SET active = "'.$pos.'" WHERE id = '.$id, __LINE__, __FILE__);
-	
+
 	$plug = $gpc->get('plug', int);
-	if ($plug > 0) { 
+	if ($plug > 0) {
 		$result = $db->query("SELECT position FROM {$db->pre}plugins WHERE id = '{$plug}'", __LINE__, __FILE__);
 		if ($db->num_rows($result) > 0) {
 			$module_sql = ", module = '{$plug}'";
@@ -2268,7 +2268,7 @@ elseif ($job == 'nav_active') {
 			$db->query("UPDATE {$db->pre}plugins SET active = '{$pos}' WHERE id = '{$plug}' LIMIT 1", __LINE__, __FILE__);
 		}
 	}
-	
+
 	$delobj = $scache->load('modules_navigation');
 	$delobj->delete();
 	viscacha_header('Location: admin.php?action=cms&job=nav');
@@ -2282,10 +2282,10 @@ elseif ($job == 'nav_addplugin') {
 	?>
 <form name="form" method="post" action="admin.php?action=cms&job=nav_addplugin2">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
-  <tr> 
+  <tr>
    <td class="obox" colspan="2">Add Plugin to navigation</td>
   </tr>
-  <tr> 
+  <tr>
    <td class="mbox" width="50%">Title:<br /><span class="stext">Leave empty to use default.</span></td>
    <td class="mbox" width="50%"><input type="text" name="title" size="40" /></td>
   </tr>
@@ -2299,7 +2299,7 @@ elseif ($job == 'nav_addplugin') {
    </select>
    </td>
   </tr>
-  <tr> 
+  <tr>
    <td class="mbox" width="50%">Sort in after:</td>
    <td class="mbox" width="50%">
    <select name="sort">
@@ -2309,7 +2309,7 @@ elseif ($job == 'nav_addplugin') {
    </select>
    </td>
   </tr>
-  <tr> 
+  <tr>
    <td class="mbox" width="50%">Groups:<br /><span class="stext">Groups which have the ability to view the PlugIn.</span></td>
    <td class="mbox" width="50%">
    <?php while ($row = $db->fetch_assoc($groups)) { ?>
@@ -2317,7 +2317,7 @@ elseif ($job == 'nav_addplugin') {
    <?php } ?>
    </td>
   </tr>
-  <tr> 
+  <tr>
    <td class="ubox" colspan="2" align="center"><input type="submit" value="Add" /></td>
   </tr>
  </table>
@@ -2364,14 +2364,14 @@ elseif ($job == 'nav_add') {
 	?>
 <form name="form" method="post" action="admin.php?action=cms&job=nav_add2">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
-  <tr> 
+  <tr>
    <td class="obox" colspan="2">Add a new link</td>
   </tr>
-  <tr> 
+  <tr>
    <td class="mbox" width="50%">Title:</td>
    <td class="mbox" width="50%"><input type="text" name="title" size="40" /></td>
   </tr>
-  <tr> 
+  <tr>
    <td class="mbox" width="50%">File/URL:<br />
    <span class="stext">
    - <a href="javascript:docs();">Existing Documents</a><br />
@@ -2379,7 +2379,7 @@ elseif ($job == 'nav_add') {
    </span></td>
    <td class="mbox" width="50%"><input type="text" name="url" size="40" /></td>
   </tr>
-  <tr> 
+  <tr>
    <td class="mbox" width="50%">Target:<br /><span class="stext">All links will be opened in the same window by default. This option defines the target window for the link. For example: "_blank" will open links in a new window.</span></td>
    <td class="mbox" width="50%"><input type="text" name="target" size="40" /></td>
   </tr>
@@ -2408,7 +2408,7 @@ elseif ($job == 'nav_add') {
    </select>
    </td>
   </tr>
-  <tr> 
+  <tr>
    <td class="mbox" width="50%">Groups:<br /><span class="stext">Groups which have the ability to view the box.</span></td>
    <td class="mbox" width="50%">
    <?php while ($row = $db->fetch_assoc($groups)) { ?>
@@ -2416,7 +2416,7 @@ elseif ($job == 'nav_add') {
    <?php } ?>
    </td>
   </tr>
-  <tr> 
+  <tr>
    <td class="ubox" colspan="2" align="center"><input type="submit" value="Add" /></td>
   </tr>
  </table>
@@ -2466,14 +2466,14 @@ elseif ($job == 'nav_addbox') {
 	?>
 <form name="form" method="post" action="admin.php?action=cms&job=nav_addbox2">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
-  <tr> 
+  <tr>
    <td class="obox" colspan="2">Create a new box</td>
   </tr>
-  <tr> 
+  <tr>
    <td class="mbox" width="50%">Title:</td>
    <td class="mbox" width="50%"><input type="text" name="title" size="40" /></td>
   </tr>
-  <tr> 
+  <tr>
    <td class="mbox" width="50%">Sort in after:</td>
    <td class="mbox" width="50%">
    <select name="sort">
@@ -2483,7 +2483,7 @@ elseif ($job == 'nav_addbox') {
    </select>
    </td>
   </tr>
-  <tr> 
+  <tr>
    <td class="mbox" width="50%">Groups:<br /><span class="stext">Groups which have the ability to view the box.</span></td>
    <td class="mbox" width="50%">
    <?php while ($row = $db->fetch_assoc($groups)) { ?>
@@ -2491,7 +2491,7 @@ elseif ($job == 'nav_addbox') {
    <?php } ?>
    </td>
   </tr>
-  <tr> 
+  <tr>
    <td class="ubox" colspan="2" align="center"><input type="submit" value="Add" /></td>
   </tr>
  </table>
@@ -2525,10 +2525,10 @@ elseif ($job == 'nav_docslist') {
 	$result = $db->query('SELECT id, title FROM '.$db->pre.'documents');
 	?>
 	 <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
-	  <tr> 
+	  <tr>
 	   <td class="obox">Existing Documents and Pages</td>
 	  </tr>
-	  <tr> 
+	  <tr>
 	   <td class="mbox">
 	   <?php while ($row = $db->fetch_assoc($result)) { ?>
 	   <input type="radio" name="data" onclick="insert_doc('docs.php?id=<?php echo $row['id']; ?>','<?php echo htmlentities($row['title']); ?>')"> <?php echo $row['title']; ?><br>
@@ -2543,10 +2543,10 @@ elseif ($job == 'nav_comslist') {
 	$result = $db->query("SELECT * FROM {$db->pre}component ORDER BY active", __LINE__, __FILE__);
 	?>
 	 <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
-	  <tr> 
+	  <tr>
 	   <td class="obox">Existing Components</td>
 	  </tr>
-	  <tr> 
+	  <tr>
 	   <td class="mbox">
 	   <?php
 		while ($row = $db->fetch_assoc($result)) {
@@ -2566,10 +2566,10 @@ elseif ($job == 'com') {
 	echo head();
 ?>
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
-  <tr> 
+  <tr>
    <td class="obox" colspan="5"><span style="float: right;"><a class="button" href="admin.php?action=cms&job=com_add">Upload new Component</a></span>Manage Components</td>
   </tr>
-  <tr> 
+  <tr>
    <td class="ubox">Name</b></td>
    <td class="ubox">Status</b></td>
    <td class="ubox">Version</b></td>
@@ -2587,7 +2587,7 @@ elseif ($job == 'com') {
 	<?php echo $head['config']['name']; ?><?php echo iif ($head['active'] == '0', ' (<i>Inactive</i>)'); ?>
 	</td>
 	<td class="mbox" width="15%">
-	<?php 
+	<?php
 	if ($head['active'] == 1) {
 		echo '<a href="admin.php?action=cms&job=com_active&id='.$head['id'].'&value=0">Deactivate</a>';
 	} else {
@@ -2617,7 +2617,7 @@ elseif ($job == 'com') {
 	<?php
 }
 ?>
- </table> 
+ </table>
 <?php
 	echo foot();
 }
@@ -2681,35 +2681,35 @@ elseif ($job == 'com_info') {
 	$row = $db->fetch_assoc($result);
 	$cfg = $myini->read('components/'.$row['id'].'/components.ini');
 	$cfg = array_merge($row, $cfg);
-	
+
 	echo head();
 	?>
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
-  <tr> 
+  <tr>
    <td class="obox" colspan="2">Information</b></td>
   </tr>
 	<?php
 	foreach ($cfg as $key => $row) {
 		if (is_array($row)) {
 		?>
-		  <tr> 
-		   <td class="ubox" colspan="2"><?php echo $key; ?></td> 
+		  <tr>
+		   <td class="ubox" colspan="2"><?php echo $key; ?></td>
 		  </tr>
 		<?php
 			foreach ($row as $subkey => $subrow) {
 			?>
-			  <tr> 
+			  <tr>
 			   <td class="mbox" width="25%"><?php echo ucfirst($subkey); ?></td>
-			   <td class="mbox" width="75%"><?php echo $subrow; ?></td> 
+			   <td class="mbox" width="75%"><?php echo $subrow; ?></td>
 			  </tr>
 			<?php
 			}
-		} 
+		}
 		else {
 		?>
-		  <tr> 
+		  <tr>
 		   <td class="mbox" width="25%"><?php echo ucfirst($key); ?></td>
-		   <td class="mbox" width="75%"><?php echo $row; ?></td> 
+		   <td class="mbox" width="75%"><?php echo $row; ?></td>
 		  </tr>
 		<?php
 		}
@@ -2738,12 +2738,12 @@ elseif ($job == 'com_add') {
 	?>
 <form name="form" method="post" action="admin.php?action=cms&job=com_add2" enctype="multipart/form-data">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
-  <tr> 
+  <tr>
    <td class="obox" colspan="2">Import a new Component</td>
   </tr>
-  <tr> 
+  <tr>
    <td class="mbox" width="50%"><em>Either</em> upload a file:<br /><span class="stext">Compressed file (.zip) containing the component. Maximum file size: <?php echo formatFilesize(ini_maxupload()); ?>. You should install only components from confidential sources!</td>
-   <td class="mbox" width="50%"><input type="file" name="upload" size="40" /></td> 
+   <td class="mbox" width="50%"><input type="file" name="upload" size="40" /></td>
   </tr>
   <tr>
    <td class="mbox"><em>or</em> select a file from the server:<br /><span class="stext">Path starting from the Viscacha-root-directory: <?php echo $config['fpath']; ?></span></td>
@@ -2753,21 +2753,21 @@ elseif ($job == 'com_add') {
    <td class="mbox">Delete file after import:</td>
    <td class="mbox"><input type="checkbox" name="delete" value="1" checked="checked" /></td>
   </tr>
-  <tr> 
-   <td class="ubox" width="100%" colspan="2" align="center"><input type="submit" name="Submit" value="Upload"></td> 
+  <tr>
+   <td class="ubox" width="100%" colspan="2" align="center"><input type="submit" name="Submit" value="Upload"></td>
   </tr>
  </table>
-</form> 
+</form>
 	<?php
 	echo foot();
 }
 elseif ($job == 'com_add2') {
 	echo head();
-	
+
 	$del = $gpc->get('delete', int);
 	$server = $gpc->get('server', none);
 	$inserterrors = array();
-	
+
 	$sourcefile = '';
 	if (!empty($_FILES['upload']['name'])) {
 		require("classes/class.upload.php");
@@ -2828,7 +2828,7 @@ elseif ($job == 'com_add2') {
 
 		$result = $db->query("SELECT template, stylesheet, images FROM {$db->pre}designs WHERE id = '{$config['templatedir']}'",__LINE__,__FILE__);
 		$design = $db->fetch_assoc($result);
-			
+
 		$result = $db->query("SELECT stylesheet FROM {$db->pre}designs GROUP BY stylesheet",__LINE__,__FILE__);
 
 		if (isset($cfg['php']) && count($cfg['php']) > 0) {
@@ -2866,7 +2866,7 @@ elseif ($job == 'com_add2') {
 			foreach ($langcodes as $code => $lid) {
 				$ldat = explode('_', $code);
 				if (isset($codes[$ldat[0]])) {
-					$count = count($codes[$ldat[0]]); 
+					$count = count($codes[$ldat[0]]);
 					if (in_array('', $codes[$ldat[0]])) {
 						$count--;
 					}
@@ -2893,7 +2893,7 @@ elseif ($job == 'com_add2') {
 				}
 			}
 		}
-			
+
 		if (isset($cfg['template']) && count($cfg['template']) > 0) {
 			$filesystem->mkdir("./templates/{$design['template']}/components/{$id}", 0777);
 			foreach ($cfg['template'] as $file) {
@@ -2901,13 +2901,13 @@ elseif ($job == 'com_add2') {
 				$filesystem->chmod("./templates/{$design['template']}/components/{$id}/{$file}", 0666);
 			}
 		}
-			
+
 		if (isset($cfg['image']) && count($cfg['image']) > 0) {
 			foreach ($cfg['image'] as $file) {
 				$filesystem->copy("{$tdir}image/{$file}", "./images/{$design['images']}/{$file}");
 			}
 		}
-			
+
 		if (isset($cfg['style']) && count($cfg['style']) > 0) {
 			while ($css = $db->fetch_assoc($result)) {
 				foreach ($cfg['style'] as $file) {
@@ -2921,13 +2921,13 @@ elseif ($job == 'com_add2') {
 
 		$delobj = $scache->load('components');
 		$delobj->delete();
-			
+
 		rmdirr($tdir);
 		unset($archive);
 		if ($del > 0) {
 			$filesystem->unlink($sourcefile);
 		}
-			
+
 		if (empty($cfg['config']['install'])) {
 			ok('admin.php?action=cms&job=com', 'Component successfully imported!');
 		}
@@ -2948,13 +2948,13 @@ elseif ($job == 'com_add2') {
 			else {
 				include($path);
 			}
-		}	
+		}
 	}
 }
 elseif ($job == 'com_export') {
 	$id = $gpc->get('id', int);
 	$tempdir = 'temp/';
-	
+
 	$result = $db->query("SELECT * FROM {$db->pre}component WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	$row = $db->fetch_assoc($result);
 	$ini = $myini->read('components/'.$row['id'].'/components.ini');
@@ -2962,7 +2962,7 @@ elseif ($job == 'com_export') {
 
 	$result = $db->query("SELECT * FROM {$db->pre}designs WHERE id = '{$config['templatedir']}' LIMIT 1", __LINE__, __FILE__);
 	$design = $db->fetch_assoc($result);
-	
+
 	$file = convert2adress($info['config']['name']).'.zip';
 	$dirs = array(
 		'template' => "templates/{$design['template']}/components/{$id}/",
@@ -2982,7 +2982,7 @@ elseif ($job == 'com_export') {
 
 	$error = false;
 	$settings = $dirs['php']."components.ini";
-	
+
 	require_once('classes/class.zip.php');
 	$archive = new PclZip($tempdir.$file);
 	$v_list = $archive->create($settings, PCLZIP_OPT_REMOVE_PATH, $dirs['php']);
@@ -3045,11 +3045,11 @@ elseif ($job == 'com_delete') {
 elseif ($job == 'com_delete2') {
 	echo head();
 	$id = $gpc->get('id', int);
-	
+
 	$cfg = $myini->read('components/'.$id.'/components.ini');
 
 	$db->query("DELETE FROM {$db->pre}component WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
-	
+
 	$cache = array();
 	$result = $db->query("SELECT template, stylesheet, images FROM {$db->pre}designs",__LINE__,__FILE__);
 	$design = $db->fetch_assoc($result);
@@ -3058,7 +3058,7 @@ elseif ($job == 'com_delete2') {
 	}
 	$result = $db->query("SELECT id FROM {$db->pre}language",__LINE__,__FILE__);
 	$languages = $db->fetch_assoc($result);
-	
+
 	$confirm = true;
 	if (!empty($cfg['config']['uninstall'])) {
 		$mod = $gpc->get('file', none, $cfg['config']['uninstall']);
@@ -3083,7 +3083,7 @@ elseif ($job == 'com_delete2') {
 	while ($row = $db->fetch_assoc($languages)) {
 		rmdirr("./language/{$row['id']}/components/{$id}");
 	}
-	
+
 	foreach ($cache as $design) {
 		rmdirr("./templates/{$design['template']}/components/{$id}");
 	}
@@ -3105,7 +3105,7 @@ elseif ($job == 'com_delete2') {
 
 	$delobj = $scache->load('components');
 	$delobj->delete();
-	
+
 	if (empty($cfg['config']['uninstall']) || $confirm == true) {
 		ok('admin.php?action=cms&job=com', 'Component successfully uninstalled!');
 	}
@@ -3116,7 +3116,7 @@ elseif ($job == 'doc') {
 ?>
 <form name="form" method="post" action="admin.php?action=cms&job=doc_delete">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
-  <tr> 
+  <tr>
    <td class="obox" colspan="7">
    <span style="float: right;"><a class="button" href="admin.php?action=cms&job=doc_add">Create new document</a></span>
    Manage Documents &amp; Pages
@@ -3134,8 +3134,8 @@ elseif ($job == 'doc') {
 <?php
 	$memberdata_obj = $scache->load('memberdata');
 	$memberdata = $memberdata_obj->get();
-	
-	while ($row = $db->fetch_assoc($result)) {	
+
+	while ($row = $db->fetch_assoc($result)) {
 		if(is_id($row['author']) && isset($memberdata[$row['author']])) {
 			$row['author'] = $memberdata[$row['author']];
 		}
@@ -3162,11 +3162,11 @@ elseif ($job == 'doc') {
    </td>
   </tr>
 <?php } ?>
-  <tr> 
-   <td class="ubox" width="100%" colspan="7" align="center"><input type="submit" name="Submit" value="Delete"></td> 
+  <tr>
+   <td class="ubox" width="100%" colspan="7" align="center"><input type="submit" name="Submit" value="Delete"></td>
   </tr>
  </table>
-</form> 
+</form>
 <?php
 	echo foot();
 }
@@ -3191,7 +3191,7 @@ elseif ($job == 'doc_add') {
 	);
 	?>
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
-  <tr> 
+  <tr>
    <td class="obox" colspan="4">Create a new document - Step 1</td>
   </tr>
   <tr>
@@ -3226,7 +3226,7 @@ elseif ($job == 'doc_add2') {
 ?>
 <form id="form" method="post" action="admin.php?action=cms&job=doc_add3&type=<?php echo $type; ?>">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
-  <tr> 
+  <tr>
    <td class="obox" colspan="4">Create a new document - Step 2</td>
   </tr>
   <tr>
@@ -3239,7 +3239,7 @@ elseif ($job == 'doc_add2') {
   <?php if($format['remote'] != 1) { ?>
   <tr>
    <td class="mbox">
-	Sourcecode:<br /> 
+	Sourcecode:<br />
 	<?php
 	$editorpath = 'templates/editor/';
 	$path = $tpl->altdir.'docs/'.$format['template'].'.html';
@@ -3265,9 +3265,9 @@ elseif ($job == 'doc_add2') {
 		forms = FetchElement('form');
 		ta = FetchElement('template');
 		forms.onsubmit = function() {
-	   		updateRTE('rte'); 
+	   		updateRTE('rte');
 	  		ta.value = forms.rte.value;
-	  		forms.submit(); 
+	  		forms.submit();
 		};
 		ta.style.display = 'none';
 	};
@@ -3288,7 +3288,7 @@ elseif ($job == 'doc_add2') {
 	<input type="text" name="file" size="60" />
    </td>
   </tr>
-  <tr> 
+  <tr>
    <td class="mbox"><span class="stext right">Groups which have the ability to view the box.</span>Groups:<br />
    <?php while ($row = $db->fetch_assoc($groups)) { ?>
 	<input type="checkbox" name="groups[]" checked="checked" value="<?php echo $row['id']; ?>"> <?php echo $row['name']; ?><br />
@@ -3297,7 +3297,7 @@ elseif ($job == 'doc_add2') {
   </tr>
   <tr>
    <td class="mbox">
-	Active:<br /> 
+	Active:<br />
 	<input type="checkbox" value="1" name="active" />
    </td>
   </tr>
@@ -3329,7 +3329,7 @@ elseif ($job == 'doc_add3') {
   			$file = '';
   		}
   	}
-	
+
 	if (empty($title)) {
 		error('admin.php?action=cms&job=doc_add', 'Title is empty!');
 	}
@@ -3342,9 +3342,9 @@ elseif ($job == 'doc_add3') {
 	else {
 		$groups = implode(',', $groups);
 	}
-	
+
 	$time = time();
-	
+
 	$db->query("INSERT INTO {$db->pre}documents ( `title` , `content` , `author` , `date` , `update` , `type` , `groups` , `active` , `file` ) VALUES ('{$title}', '{$content}', '{$my->id}', '{$time}' , '{$time}' , '{$type}', '{$groups}', '{$active}', '{$file}')", __LINE__, __FILE__);
 
 	$delobj = $scache->load('wraps');
@@ -3358,7 +3358,7 @@ elseif ($job == 'doc_delete') {
 	if (count($delete) > 0) {
 		$deleteids = array();
 		foreach ($delete as $did) {
-			$deleteids[] = 'id = '.$did; 
+			$deleteids[] = 'id = '.$did;
 		}
 		$result = $db->query('SELECT file FROM '.$db->pre.'documents WHERE '.implode(' OR ',$deleteids), __LINE__, __FILE__);
 		while ($row = $db->fetch_assoc($result)) {
@@ -3398,15 +3398,15 @@ elseif ($job == 'doc_edit') {
 	}
 	$groups = $db->query("SELECT id, name FROM {$db->pre}groups", __LINE__, __FILE__);
 	$garr = explode(',', $row['groups']);
-	
+
 	$memberdata_obj = $scache->load('memberdata');
 	$memberdata = $memberdata_obj->get();
-	
+
 	echo head();
 ?>
 <form id="form" method="post" action="admin.php?action=cms&job=doc_edit2&id=<?php echo $id.SID2URL_x; ?>">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
-  <tr> 
+  <tr>
    <td class="obox" colspan="4">Create a new document - Step 2</td>
   </tr>
   <tr>
@@ -3437,9 +3437,9 @@ elseif ($job == 'doc_edit') {
 		forms = FetchElement('form');
 		ta = FetchElement('template');
 		forms.onsubmit = function() {
-	   		updateRTE('rte'); 
+	   		updateRTE('rte');
 	  		ta.value = forms.rte.value;
-	  		forms.submit(); 
+	  		forms.submit();
 		};
 		ta.style.display = 'none';
 	};
@@ -3460,7 +3460,7 @@ elseif ($job == 'doc_edit') {
 	<input type="text" name="file" value="<?php echo $row['file']; ?>" size="60" />
    </td>
   </tr>
-  <tr> 
+  <tr>
    <td class="mbox"><span class="stext right">Groups which have the ability to view the box.</span>Groups:<br />
    <?php while ($g = $db->fetch_assoc($groups)) { ?>
 	<input type="checkbox" name="groups[]"<?php echo iif($row['groups'] == 0 || in_array($g['id'], $garr),'checked="checked"'); ?> value="<?php echo $g['id']; ?>"> <?php echo $g['name']; ?><br />
@@ -3469,14 +3469,14 @@ elseif ($job == 'doc_edit') {
   </tr>
   <tr>
    <td class="mbox">
-	Author:<br /> 
+	Author:<br />
 	<input type="radio" value="<?php echo $row['author']; ?>" name="author" checked="checked" /> Keep current Author: <strong><?php echo isset($memberdata[$row['author']]) ? $memberdata[$row['author']] : 'Unknown'; ?></strong><br />
 	<input type="radio" value="<?php echo $my->id; ?>" name="author" /> Change author to: <strong><?php echo $my->name; ?></strong>
    </td>
   </tr>
   <tr>
    <td class="mbox">
-	Active:<br /> 
+	Active:<br />
 	<input type="checkbox" value="1" name="active"<?php echo iif($row['active'] == 1, ' checked="checked"'); ?> />
    </td>
   </tr>
@@ -3509,7 +3509,7 @@ elseif ($job == 'doc_edit2') {
   			$file = '';
   		}
   	}
-	
+
 	if (empty($title)) {
 		error('admin.php?action=cms&job=doc_edit&id='.$id, 'Title is empty!');
 	}
@@ -3522,9 +3522,9 @@ elseif ($job == 'doc_edit2') {
 	else {
 		$groups = implode(',', $groups);
 	}
-	
+
 	$time = time();
-	
+
 	$db->query("UPDATE {$db->pre}documents SET `title` = '{$title}', `content` = '{$content}', `update` = '{$time}', `groups` = '{$groups}', `active` = '{$active}', `file` = '{$file}', `author` = '{$author}' WHERE id = '{$id}' LIMIT 1",__LINE__,__FILE__);
 
 	$delobj = $scache->load('wraps');
@@ -3559,17 +3559,17 @@ elseif ($job == 'feed') {
 ?>
 <form name="form" method="post" action="admin.php?action=cms&job=feed_delete">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
-  <tr> 
+  <tr>
    <td class="obox" colspan="5"><span style="float: right;"><a class="button" href="admin.php?action=cms&job=feed_add">Add a new Newsfeed</a></span>Import of Newsfeeds (<?php echo $db->num_rows(); ?>)</td>
   </tr>
   <tr>
    <td class="ubox" width="5%">Delete<br /><span class="stext"><input type="checkbox" onclick="check_all('delete[]');" name="all" value="1" /> All</span></td>
    <td class="ubox" width="5%">ID</td>
-   <td class="ubox" width="35%">Title</td> 
+   <td class="ubox" width="35%">Title</td>
    <td class="ubox" width="45%">File</td>
-   <td class="ubox" width="10%">Entries</td> 
+   <td class="ubox" width="10%">Entries</td>
   </tr>
-<?php 
+<?php
 	while ($row = $db->fetch_assoc($result)) {
 	if ($row['entries'] == 0) {
 		$row['entries'] = 'All';
@@ -3577,17 +3577,17 @@ elseif ($job == 'feed') {
 ?>
   <tr>
    <td class="mbox" width="5%"><input type="checkbox" name="delete[]" value="<?php echo $row['id']; ?>"></td>
-   <td class="mbox" width="5%"><?php echo $row['id']; ?></td> 
-   <td class="mbox" width="35%"><a href="admin.php?action=cms&job=feed_edit&id=<?php echo $row['id'].SID2URL_x; ?>"><?php echo $row['title']; ?></a></td> 
+   <td class="mbox" width="5%"><?php echo $row['id']; ?></td>
+   <td class="mbox" width="35%"><a href="admin.php?action=cms&job=feed_edit&id=<?php echo $row['id'].SID2URL_x; ?>"><?php echo $row['title']; ?></a></td>
    <td class="mbox" width="45%"><a href="<?php echo $row['file']; ?>" target="_blank"><?php echo $row['file']; ?></a></td>
-   <td class="mbox" width="10%"><?php echo $row['entries']; ?></td> 
+   <td class="mbox" width="10%"><?php echo $row['entries']; ?></td>
   </tr>
 <?php } ?>
-  <tr> 
-   <td class="ubox" width="100%" colspan="5" align="center"><input type="submit" name="Submit" value="Delete"></td> 
+  <tr>
+   <td class="ubox" width="100%" colspan="5" align="center"><input type="submit" name="Submit" value="Delete"></td>
   </tr>
  </table>
-</form> 
+</form>
 <?php
 	echo foot();
 }
@@ -3596,26 +3596,26 @@ echo head();
 ?>
 <form name="form" method="post" action="admin.php?action=cms&job=feed_add2">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
-  <tr> 
+  <tr>
    <td class="obox" colspan="2">Add a new Newsfeed</td>
   </tr>
   <tr>
-   <td class="mbox">Titel:<br><span class="stext">If no title can be read from the newsfeed.</td> 
-   <td class="mbox"><input type="text" name="temp1" size="60"></td> 
+   <td class="mbox">Titel:<br><span class="stext">If no title can be read from the newsfeed.</td>
+   <td class="mbox"><input type="text" name="temp1" size="60"></td>
   </tr>
   <tr>
    <td class="mbox">URL of the Newsfeed:<br><span class="stext">RSS 0.91, RSS 1.0, RSS 2.0 or ATOM-Newsfeed</td>
    <td class="mbox"><input type="text" name="temp2" size="60"></td>
   </tr>
   <tr>
-   <td class="mbox">Number of Entries:<br><span class="stext">Maximum number of entries to show, 0 = all. Newsfeed are (normally) limited to 15 entries!</td> 
-   <td class="mbox"><input type="text" name="value" size="3"></td> 
+   <td class="mbox">Number of Entries:<br><span class="stext">Maximum number of entries to show, 0 = all. Newsfeed are (normally) limited to 15 entries!</td>
+   <td class="mbox"><input type="text" name="value" size="3"></td>
   </tr>
-  <tr> 
-   <td class="ubox" width="100%" colspan="2" align="center"><input type="submit" name="Submit" value="Send"></td> 
+  <tr>
+   <td class="ubox" width="100%" colspan="2" align="center"><input type="submit" name="Submit" value="Send"></td>
   </tr>
  </table>
-</form> 
+</form>
 <?php
 	echo foot();
 }
@@ -3635,7 +3635,7 @@ elseif ($job == 'feed_add2') {
 	if (empty($entries)) {
 		$entries = 0;
 	}
-	
+
 	$db->query('INSERT INTO '.$db->pre.'grab (title, file, entries) VALUES ("'.$title.'","'.$file.'","'.$entries.'")', __LINE__, __FILE__);
 
 	$delobj = $scache->load('grabrss');
@@ -3649,15 +3649,15 @@ elseif ($job == 'feed_delete') {
 	if (count($delete) > 0) {
 		$deleteids = array();
 		foreach ($delete as $did) {
-			$deleteids[] = 'id = '.$did; 
+			$deleteids[] = 'id = '.$did;
 		}
 
 		$db->query('DELETE FROM '.$db->pre.'grab WHERE '.implode(' OR ',$deleteids), __LINE__, __FILE__);
 		$anz = $db->affected_rows();
-		
+
 		$delobj = $scache->load('grabrss');
 		$delobj->delete();
-			
+
 		ok('admin.php?action=cms&job=feed'.SID2URL_x, $anz.' Newsfeed(s) successfully deleted');
 	}
 	else {
@@ -3676,26 +3676,26 @@ $row = $db->fetch_assoc($result);
 ?>
 <form name="form" method="post" action="admin.php?action=cms&job=feed_edit2&id=<?php echo $id.SID2URL_x; ?>">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
-  <tr> 
+  <tr>
    <td class="obox" colspan="2">Edit Document</td>
   </tr>
   <tr>
-   <td class="mbox">Title:<br><span class="stext">If no title can be read from the newsfeed.</span></td> 
-   <td class="mbox"><input type="text" name="temp1" size="60" value="<?php echo $gpc->prepare($row['title']); ?>"></td> 
+   <td class="mbox">Title:<br><span class="stext">If no title can be read from the newsfeed.</span></td>
+   <td class="mbox"><input type="text" name="temp1" size="60" value="<?php echo $gpc->prepare($row['title']); ?>"></td>
   </tr>
   <tr>
    <td class="mbox">URL of the Newsfeed:<br><span class="stext">RSS 0.91, RSS 1.0, RSS 2.0 or ATOM-Newsfeed</span></td>
    <td class="mbox"><input type="text" name="temp2" size="60" value="<?php echo $row['file']; ?>"></td>
   </tr>
   <tr>
-   <td class="mbox">Number of Entries:<br><span class="stext">Maximum number of entries for output, 0 = all. Newsfeed are (normally) limited to 15 entries!</span></td> 
-   <td class="mbox"><input type="text" name="value" size="3" value="<?php echo $row['entries']; ?>"></td> 
+   <td class="mbox">Number of Entries:<br><span class="stext">Maximum number of entries for output, 0 = all. Newsfeed are (normally) limited to 15 entries!</span></td>
+   <td class="mbox"><input type="text" name="value" size="3" value="<?php echo $row['entries']; ?>"></td>
   </tr>
-  <tr> 
-   <td class="ubox" width="100%" colspan=2 align="center"><input type="submit" name="Submit" value="Send"></td> 
+  <tr>
+   <td class="ubox" width="100%" colspan=2 align="center"><input type="submit" name="Submit" value="Send"></td>
   </tr>
  </table>
-</form> 
+</form>
 <?php
 	echo foot();
 }
@@ -3718,7 +3718,7 @@ elseif ($job == 'feed_edit2') {
 	if (empty($entries)) {
 		$entries = 0;
 	}
-	
+
 	$db->query('UPDATE '.$db->pre.'grab SET file = "'.$file.'", title = "'.$title.'", entries = "'.$entries.'" WHERE id = "'.$id.'"', __LINE__, __FILE__);
 
 	$delobj = $scache->load('grabrss');
