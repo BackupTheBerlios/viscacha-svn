@@ -5,7 +5,11 @@
    	<br /><em><?php echo $row['fullname']; ?></em>
    	<?php } ?>
   </td>
-  <?php if (isset($row['pic'])) { ?>
+  <?php if ($online) { ?>
+  <td class="center">
+   <img src="<?php echo $tpl->img(iif($row['online'] == 1, 'online', 'offline')); ?>"  title="<?php echo $row['lang_online']; ?>" alt="<?php echo $row['lang_online']; ?>" />
+  </td>
+  <?php } if (isset($row['pic'])) { ?>
   <td class="center">
    <?php if (!empty($row['pic'])) { ?>
    <img src="<?php echo $row['pic']; ?>" alt="<?php echo $row['name']; ?>" />

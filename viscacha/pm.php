@@ -46,16 +46,19 @@ $breadcrumb->Add($lang->phrase('editprofile_pm'), 'pm.php'.SID2URL_x);
 if ($_GET['action'] == 'show') {
 
 	BBProfile($bbcode);
-	
+
+	$sql_select = iif($config['pm_user_status'] == 1, ", IF (s.mid > 0, 1, 0) AS online");
+	$sql_join = iif($config['pm_user_status'] == 1, "LEFT JOIN {$db->pre}session AS s ON s.mid = u.id");	
 	($code = $plugins->load('pm_show_query')) ? eval($code) : null;
 	$result = $db->query("
 	SELECT 
 		   p.dir, p.status, p.id, p.topic, p.comment, p.date, p.pm_from as mid, 
 		   u.id as mid, u.name, u.mail, u.regdate, u.fullname, u.hp, u.signature, u.location, u.gender, u.birthday, u.pic, u.lastvisit, u.icq, u.yahoo, u.aol, u.msn, u.jabber, u.skype, u.groups, 
-		   f.* 
+		   f.* {$sql_select}
 	FROM {$db->pre}pm AS p 
 		LEFT JOIN {$db->pre}user AS u ON p.pm_from = u.id 
 		LEFT JOIN {$db->pre}userfields AS f ON u.id = f.ufid 
+		{$sql_join}
 	WHERE p.pm_to = '{$my->id}' AND p.id = '{$_GET['id']}' 
 	ORDER BY p.date ASC
 	",__LINE__,__FILE__);
@@ -94,6 +97,9 @@ if ($_GET['action'] == 'show') {
 	$row['date'] = str_date($lang->phrase('dformat1'), times($row['date']));
 	$row['read'] = iif($row['status'] == 1,'old','new');
 	$row['level'] = $slog->getStatus($row['groups'], ', ');
+	if ($config['pm_user_status'] == 1) {
+		$row['lang_online'] = $lang->phrase('profile_'.iif($row['online'] == 1, 'online', 'offline'));
+	}
 
 	if ($my->opt_showsig == 1) {
 		BBProfile($bbcode, 'signature');

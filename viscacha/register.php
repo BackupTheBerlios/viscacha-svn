@@ -1,8 +1,8 @@
-<?php 
+<?php
 /*
 	Viscacha - A bulletin board solution for easily managing your content
 	Copyright (C) 2004-2006  Matthias Mohr, MaMo Net
-	
+
 	Author: Matthias Mohr
 	Publisher: http://www.mamo-net.de
 	Start Date: May 22, 2004
@@ -113,7 +113,7 @@ if ($_GET['action'] == "save") {
 		if($profilefield['maxlength'] > 0 && ((is_string($value) && strlen($value) > $profilefield['maxlength']) || (is_array($value) && count($value) > $profilefield['maxlength']))) {
 			$error[] = $lang->phrase('error_customfieldtoolong');
 		}
-		
+
 		if($type == "multiselect" || $type == "checkbox") {
 			if (is_array($value)) {
 				$options = implode("\n", $value);
@@ -140,9 +140,9 @@ if ($_GET['action'] == "save") {
 	    $reg = time();
 	    $confirmcode = md5($config['cryptkey'].$reg);
 	    $pw_md5 = md5($_POST['pwx']);
-	    
+
 	    ($code = $plugins->load('register_save_queries')) ? eval($code) : null;
-		$db->query("INSERT INTO {$db->pre}user (name, pw, mail, regdate, confirm) VALUES ('{$_POST['name']}', '{$pw_md5}', '{$_POST['email']}', '{$reg}', '{$config['confirm_registration']}')",__LINE__,__FILE__); 
+		$db->query("INSERT INTO {$db->pre}user (name, pw, mail, regdate, confirm) VALUES ('{$_POST['name']}', '{$pw_md5}', '{$_POST['email']}', '{$reg}', '{$config['confirm_registration']}')",__LINE__,__FILE__);
         $redirect = $db->insert_id();
 
 		// Custom profile fields
@@ -157,12 +157,12 @@ if ($_GET['action'] == "save") {
 			$from = array();
 			xmail($to, $from, $data['title'], $data['comment']);
 		}
-		
+
 		$com = $scache->load('memberdata');
 		$cache = $com->delete();
-		
+
 		($code = $plugins->load('register_save_end')) ? eval($code) : null;
-		
+
 		$emails = preg_split('/[\r\n]+/', $config['register_notification'], -1, PREG_SPLIT_NO_EMPTY);
 		$config['register_notification'] = array();
 		foreach ($emails as $email) {
@@ -176,26 +176,91 @@ if ($_GET['action'] == "save") {
 			$from = array();
 			xmail($to, $from, $data['title'], $data['comment']);
 		}
-		
+
         ok($lang->phrase('register_confirm_'.$config['confirm_registration']), "log.php?action=login".SID2URL_x);
 	}
 
 }
+elseif ($_GET['action'] == 'resend') {
+
+	($code = $plugins->load('register_resend_start')) ? eval($code) : null;
+	$breadcrumb->Add($lang->phrase('register_title'), "register.php".SID2URL_1);
+	$breadcrumb->Add($lang->phrase('register_resend_title'));
+	echo $tpl->parse("header");
+	echo $tpl->parse("menu");
+	if ($config['botgfxtest'] == 1) {
+		include("classes/graphic/class.veriword.php");
+		$vword = new VeriWord();
+		$veriid = $vword->set_veriword($config['botgfxtest_text_verification']);
+		if ($config['botgfxtest_text_verification'] == 1) {
+			$textcode = $vword->output_word($veriid);
+		}
+	}
+	$name = $gpc->get('name', str);
+	($code = $plugins->load('register_resend_form_start')) ? eval($code) : null;
+	echo $tpl->parse("register/resend");
+	($code = $plugins->load('register_resend_form_end')) ? eval($code) : null;
+
+}
+elseif ($_GET['action'] == 'resend2') {
+	$breadcrumb->Add($lang->phrase('register_title'), "register.php".SID2URL_1);
+	$breadcrumb->Add($lang->phrase('register_resend_title'));
+
+	($code = $plugins->load('register_resend2_start')) ? eval($code) : null;
+
+	$error = array();
+	$result = $db->query("SELECT id, name, mail, regdate, confirm FROM {$db->pre}user WHERE name = '{$_POST['name']}' AND (confirm = '10' OR confirm = '00') LIMIT 1",__LINE__,__FILE__);
+	if ($db->num_rows($result) != 1) {
+		$error[] = $lang->phrase('register_resend_no_user');
+	}
+	if ($config['botgfxtest'] == 1) {
+		include("classes/graphic/class.veriword.php");
+		$vword = new VeriWord();
+	    if($_POST['letter']) {
+	        if ($vword->check_session($_POST['captcha'], $_POST['letter']) == FALSE) {
+	        	$error[] = $lang->phrase('veriword_mistake');
+	        }
+	    }
+	    else {
+	        $error[] = $lang->phrase('veriword_failed');
+	    }
+	}
+
+	if (count($error) > 0) {
+		error($error, "register.php?action=resend&amp;name=".$_POST['name'].SID2URL_x);
+	}
+	else {
+		$row = $db->fetch_assoc($result);
+		$row['name'] = $_POST['name'] = $gpc->prepare($row['name']);
+		$confirmcode = md5($config['cryptkey'].$row['regdate']);
+
+		($code = $plugins->load('register_resend2_check')) ? eval($code) : null;
+
+		$data = $lang->get_mail('register_'.$row['confirm']);
+		$to = array('0' => array('name' => $row['name'], 'mail' => $row['mail']));
+		$from = array();
+		xmail($to, $from, $data['title'], $data['comment']);
+
+		($code = $plugins->load('register_resend2_end')) ? eval($code) : null;
+
+		ok($lang->phrase('register_resend_success'), "log.php?action=login".SID2URL_x);
+	}
+}
 elseif ($_GET['action'] == 'confirm') {
-	
+
 	($code = $plugins->load('register_confirm_start')) ? eval($code) : null;
-	
+
 	$result = $db->query("SELECT id, name, regdate, confirm FROM {$db->pre}user WHERE id = '{$_GET['id']}' AND confirm != '01' AND confirm != '11' LIMIT 1",__LINE__,__FILE__);
 	if ($db->num_rows($result) != 1) {
 		error($lang->phrase('register_code_no_user'), "log.php?action=login".SID2URL_x);
 	}
-	
+
 	$row = $db->fetch_assoc($result);
 	$row['name'] = $gpc->prepare($row['name']);
 	$confirmcode = md5($config['cryptkey'].$row['regdate']);
-	
+
 	($code = $plugins->load('register_confirm_check')) ? eval($code) : null;
-	
+
 	if ($confirmcode == $_GET['fid']) {
 		if ($row['confirm'] == '00') {
 			$cn = '01';
@@ -210,7 +275,7 @@ elseif ($_GET['action'] == 'confirm') {
 	else {
 		error($lang->phrase('register_code_not_valid'), "log.php?action=login".SID2URL_x);
 	}
-	
+
 }
 else {
 	($code = $plugins->load('register_form_start')) ? eval($code) : null;
@@ -227,7 +292,7 @@ else {
 			$textcode = $vword->output_word($veriid);
 		}
 	}
-	
+
 	$breadcrumb->Add($lang->phrase('register_title'));
 	echo $tpl->parse("header");
 	echo $tpl->parse("menu");
@@ -244,5 +309,5 @@ $slog->updatelogged();
 $zeitmessung = t2();
 echo $tpl->parse("footer");
 $phpdoc->Out();
-$db->close();		
+$db->close();
 ?>

@@ -20,7 +20,7 @@ if ($job == 'menu') {
 	</head>
 	<body onload="init()">
 	<p class="center"><a href="admin.php?action=index" target="Main"><img src="admin/html/images/logo.png" alt="Viscacha" /></a></p>
-	<p class="stext center"><a href="admin.php?action=frames&amp;job=menu&amp;interface=1" target="Menu">Switch to <?php echo iif($my->settings['admin_interface'] == 1, 'simple', 'extended'); ?> Interface</a></p>
+	<p class="stext center"><a href="admin.php?action=frames&amp;job=menu&amp;interface=1" target="_self">Switch to <?php echo iif($my->settings['admin_interface'] == 1, 'simple', 'extended'); ?> Interface</a></p>
 	<p class="stext center"><a href="javascript:All();">Expand All</a> | <a href="javascript:All(1);">Collapse All</a></p>
 	<?php if ($my->settings['admin_interface'] == 1) { ?>
 	 <div class="border">

@@ -27,7 +27,7 @@ if (isset($thisfeed)) {
 		else {
 			$slide = 0;
 			if (count($items) == 0) {
-				$item = array('link' => 'javascript:return;','title' => 'Kein Eintrag vorhanden!');
+				$item = array('link' => 'javascript:return;','title' => '---');
 			}
 			else {
 				if (isset($items[0]['description'])) {
@@ -46,7 +46,7 @@ if (isset($thisfeed)) {
 			$items[$key] = $crow;
 		}
 		$a = 0;
-		$tpl->globalvars(compact("a", "items", "feed", "slide", "row", "title", "pluginid"));
+		$tpl->globalvars(compact("a", "items", "feed", "slide", "title", "pluginid", "item"));
 		echo $tpl->parse("modules/{$pluginid}/grabrss");
 		if (!defined('newsbox_js_loaded')) {
 			define('newsbox_js_loaded', true);

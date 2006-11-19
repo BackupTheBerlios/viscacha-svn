@@ -121,17 +121,20 @@ elseif ($_GET['action'] == "code") {
 elseif ($_GET['action'] == "showpost") {
 	echo $tpl->parse("popup/header");
 
+	$sql_select = iif($config['pm_user_status'] == 1, ", IF (s.mid > 0, 1, 0) AS online");
+	$sql_join = iif($config['pm_user_status'] == 1, "LEFT JOIN {$db->pre}session AS s ON s.mid = u.id");
 	($code = $plugins->load('popup_showpost_query')) ? eval($code) : null;
 	$result = $db->query("
 	SELECT 
 		t.status, t.prefix, 
 		r.topic_id, r.board, r.edit, r.dosmileys, r.dowords, r.id, r.topic, r.comment, r.date, r.name as gname, r.email as gmail, r.guest, 
 		u.id as mid, u.name as uname, u.mail, u.regdate, u.fullname, u.hp, u.signature, u.location, u.gender, u.birthday, u.pic, u.lastvisit, u.icq, u.yahoo, u.aol, u.msn, u.jabber, u.skype, u.groups, 
-		f.* 
+		f.* {$sql_select}
 	FROM {$db->pre}replies AS r 
 		LEFT JOIN {$db->pre}user AS u ON r.name=u.id 
 		LEFT JOIN {$db->pre}topics AS t ON t.id = r.topic_id 
 		LEFT JOIN {$db->pre}userfields AS f ON u.id = f.ufid 
+		{$sql_join}
 	WHERE r.id = '{$_GET['id']}' 
 	LIMIT 1
 	",__LINE__,__FILE__);
@@ -197,7 +200,10 @@ elseif ($_GET['action'] == "showpost") {
 		BBProfile($bbcode, 'signature');
 		$row->signature = $bbcode->parse($row->signature);
 	}
-	
+
+	if ($config['post_user_status'] == 1) {
+		$row->lang_online = $lang->phrase('profile_'.iif($row->online == 1, 'online', 'offline'));
+	}
 	$row->date = str_date($lang->phrase('dformat1'), times($row->date));
 	$row->regdate = gmdate($lang->phrase('dformat2'), times($row->regdate));
 	$row->level = $slog->getStatus($row->groups, ', ');

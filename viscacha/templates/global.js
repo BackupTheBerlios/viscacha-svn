@@ -62,7 +62,7 @@ function edithistory(Link) {
 	window.open(Link.href, "edithistory", "width=640,height=380,resizable=yes,scrollbars=yes,location=no");
 }
 function adduploads(Link) {
-	window.open(Link.href, "adduploads", "width=480,height=480,resizable=yes,scrollbars=yes,status=yes");  
+	window.open(Link.href, "adduploads", "width=480,height=480,resizable=yes,scrollbars=yes,status=yes");
 }
 function filetypeinfo(ftype) {
 	window.open(Link.href, "filetypeinfo", "width=400,height=250,resizable=no,scrollbars=yes");
@@ -116,14 +116,14 @@ function ResizeImg(img,maxwidth) {
 		img.width = maxwidth;
 		img.height = Math.round(oheight/(owidth/maxwidth));
 		img.title = lng['imgtitle'];
-		
+
 		try {
 			img.style.cursor = "pointer";
 		}
 		catch(e) {
 			img.style.cursor = "hand";
 		}
-		
+
 		img.onclick = function() {
 			var width = screen.width-30;
 			if (width > owidth) {
@@ -138,7 +138,7 @@ function ResizeImg(img,maxwidth) {
 	}
 }
 
-/* 
+/*
 XHConn - Simple XMLHTTP interface - bfults@gmail.com - 2005-04-08
 Code licensed under Creative Commons Attribution-ShareAlike License
 http://creativecommons.org/licenses/by-sa/2.0/
@@ -194,7 +194,7 @@ function ieRand() {
 	}
 }
 
-// 
+//
 // AJAX
 //
 
@@ -318,7 +318,7 @@ function ajax_search(words) {
 //
 // Multiquote
 //
-var mq_cookiename = cookieprefix+'_vquote'; 
+var mq_cookiename = cookieprefix+'_vquote';
 function mq_init() {
 	var cookie = mqgetCookie();
 	if(cookie) {
@@ -343,7 +343,7 @@ function mqgetCookie() {
 	if(document.cookie == '') {
 		return false;
 	}
-	
+
 	var name = mq_cookiename;
 	var firstPos;
 	var lastPos;
@@ -368,7 +368,7 @@ function multiquote(id) {
 	values = new Array();
 	newval = new Array();
 	add	   = 1;
-	
+
 	if(cookie) {
 		values = cookie.split(',');
 		for(var i = 0; i < values.length; i++) {
@@ -389,14 +389,14 @@ function multiquote(id) {
 		img.src = mq_img_off;
 		link.innerHTML = lng['js_quote_multi'];
 	}
-	
+
 	mqmakeCookie(newval.join(','));
 }
 
 // Namen richtig setzen beim PM schreiben
 function edit_pmto() {
-	FetchElement('membersuggest_val').name = 'name';	
-	FetchElement('membersuggest_val2').name = 'name2';	
+	FetchElement('membersuggest_val').name = 'name';
+	FetchElement('membersuggest_val2').name = 'name2';
 	FetchElement('membersuggest_val').disabled = '';
-	FetchElement('edit_pmto').style.display = 'none';	
+	FetchElement('edit_pmto').style.display = 'none';
 }
