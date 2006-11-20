@@ -55,14 +55,14 @@ class BBCode {
 		$this->noparse = array();
 		$this->pid = 0;
 		$this->author = -1;
-		
+
 		$this->cache_bbcode();
 		$this->cache_custombb();
-		
+
 		if (!class_exists('ConvertRoman')) {
 			include('classes/class.convertroman.php');
 		}
-		
+
 		$this->setProfile($profile, SP_NEW);
 	}
 	function setName($name) {
@@ -127,10 +127,10 @@ class BBCode {
 		global $lang;
 		$pid = $this->noparse_id();
 		list(,$code,$nl) = $matches;
-		
+
 	    $rows = preg_split('/(\r\n|\r|\n)/',$code);
 	    $code = $this->code_prepare($code, (count($rows) <= 1));
-		
+
 	    if (count($rows) > 1) {
 	    	$a = 0;
 	    	$aa = array();
@@ -155,8 +155,8 @@ class BBCode {
 		global $lang;
 		$pid = $this->noparse_id();
 		list(, $sclang, $code, $nl) = $matches;
-		
-		
+
+
 	    $rows = preg_split('/(\r\n|\r|\n)/',$code);
 
 	    if (count($rows) > 1) {
@@ -164,7 +164,7 @@ class BBCode {
 		    $a = 0;
 		    $aa = array();
 			$unique = md5($code);
-			
+
 			$cache = new CacheItem($unique, 'cache/geshicode/');
 			if ($cache->exists() == false) {
 				$export = array(
@@ -346,7 +346,7 @@ class BBCode {
 	function cb_pdf_code ($matches) {
 		global $lang;
 		$pid = $this->noparse_id();
-		
+
 		list(,,$code,$nl) = $matches;
 	    $rows = preg_split('/(\r\n|\r|\n)/',$code);
 		$code = $this->code_prepare($code);
@@ -445,7 +445,7 @@ class BBCode {
 	function cb_plain_code ($matches) {
 		global $lang;
 		$pid = $this->noparse_id();
-		
+
 		list(,,$code) = $matches;
 	    $rows = preg_split('/(\r\n|\r|\n)/',$code);
 		$code = $this->code_prepare($code);
@@ -557,7 +557,7 @@ class BBCode {
 			while (empty($this->profile['disallow']['list']) && preg_match('/\[list(?:=(a|A|I|i|OL|ol))?\](.+?)\[\/list\]/is',$text)) {
 				$text = preg_replace_callback('/\[list(?:=(a|A|I|i|OL|ol))?\](.+?)\[\/list\]/is', array(&$this, 'cb_plain_list'), $text);
 			}
-			
+
 			$text = preg_replace('/\[note=([^\]]+?)\](.+?)\[\/note\]/is', "\\1 (\\2)", $text);
 			$text = preg_replace('/\[color=(\#?[0-9A-F]{3,6})\](.+?)\[\/color\]/is', "\\2", $text);
 			$text = preg_replace('/\[align=(left|center|right|justify)\](.+?)\[\/align\]/is', "\\2", $text);
@@ -645,7 +645,7 @@ class BBCode {
 					$text = preg_replace_callback('/\n?'.$char.'\[list(?:=(a|A|I|i|OL|ol))?\]([^'.$char.']+)\[\/list\]'.$char.'\n?/is', array(&$this, 'cb_list'), $text);
 				}
 			}
-			
+
 			$text = preg_replace_callback('/\[note=([^\]]+?)\](.+?)\[\/note\]/is', array(&$this, 'cb_note'), $text);
 
 			$text = preg_replace_callback("~\[url\]((telnet://|callto://|irc://|teamspeak://|http://|https://|ftp://|www.|mailto:|ed2k://|\w+?.\w{2,7})+:\/\/[a-z0-9;\/\?:@=\&\$\-_\.\+!\*'\(\),\~%#]+?)\[\/url\]~is", array(&$this, 'cb_url'), $text);
@@ -1009,7 +1009,7 @@ class BBCode {
 	            foreach ($letters as $letter) {
 	                $word['search'][] = preg_quote($letter, '~');
 	            }
-	            $word['search'] = implode("(\s|\.|\[[^\]]+?\])?", $word['search']); 
+	            $word['search'] = implode("(\s|\.|\[[^\]]+?\])?", $word['search']);
 	            $text = preg_replace("~".$word['search']."~is", $word['replace'], $text);
             }
         }
@@ -1052,7 +1052,7 @@ class BBCode {
 		if ($length == FALSE) {
 			$length = $this->profile['wordwrap_wordlength'];
 		}
-		$text = preg_replace("~([^\n\r ?&./<>\"\\-\[\]]{".$length.'})~i', "\\1".$this->profile['wordwrap_char'], $text);
+		$text = preg_replace("~([^\n\r\s&\./<>\[\]\\\]{".$length.'})~i', "\\1".$this->profile['wordwrap_char'], $text);
 		if ($this->profile['wordwrap_asia'] == 0) {
 			$text = preg_replace("~(&amp;#?\w{2,5};)(&amp;#?\w{2,5};)(&amp;#?\w{2,5};)(&amp;#?\w{2,5};)(&amp;#?\w{2,5};)~iU", "\\1\\2\\3\\4\\5 ", $text);
 		}

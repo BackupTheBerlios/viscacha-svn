@@ -1,6 +1,6 @@
 /* Allgemeine Einstellungen */
 body {
-	background-color: #cccccc; 
+	background-color: #cccccc;
 	font-family: Trebuchet MS, Verdana, Arial, Helvetica, sans-serif;
 	font-size: 9pt;
 	margin: 5px;
@@ -28,18 +28,18 @@ input, select, textarea {
 }
 acronym {
 	border-bottom: 1px dotted #8B8060;
-	cursor: help; 
+	cursor: help;
 }
 input, select {
 	font-size: 9pt;
 	font-family: Trebuchet MS, Verdana, Arial, Helvetica, sans-serif;
-	background-color: #F5F8FA; 
+	background-color: #F5F8FA;
 	border: 1px solid #336699;
 }
 textarea {
 	font-size: 9pt;
 	font-family: Trebuchet MS, Verdana, Arial, Helvetica, sans-serif;
-	background-color: #F5F8FA; 
+	background-color: #F5F8FA;
 	border: 1px solid #336699;
 
 }
@@ -49,7 +49,7 @@ img {
 }
 hr {
 	height: 1px;
-	border: 0; 
+	border: 0;
 	border-bottom: 1px #839FBC solid;
 }
 
@@ -83,18 +83,18 @@ hr {
 h1 {
 	margin: 0px;
 	padding: 0px;
-	padding-top: 27px;
 	background-image: url('standard/header.jpg');
-	height: 34px;
+	height: 61px;
 	width: 765px;
 	border: 1px solid #839FBC;
-	color: white;
+}
+h1 a, h1 a:hover {
 	font-size: 25px;
 	text-align: center;
 	font-family: Trebuchet MS, Verdana, Arial, Helvetica, sans-serif;
 	font-weight: normal;
-}
-h1 a, h1 a:hover {
+	padding-top: 27px;
+	display: block;
 	text-decoration: none;
 	color: white;
 }
@@ -105,33 +105,28 @@ h1 a, h1 a:hover {
  	background-image: url(standard/breadcrumb.jpg);
 	float: right;
 	margin-top: -1px;
- 	margin-bottom: 6px;
+ 	margin-bottom: 5px;
 	margin-left: 5px;
-	width: 596px;
-	padding: 3px;
-	padding-left: 4px;
+	width: 595px;
+	padding: 4px;
  	font-size: 11px;
  	color: #ffffff;
 }
-.breadcrumb a {
-	color: #ffffff; 
-	border-bottom: 1px dotted #ffffff;
-}
-.breadcrumb a:hover {
+.breadcrumb a, .breadcrumb a:hover {
 	color: #ffffff;
-	border-bottom: 1px solid #ffffff;
+	border-bottom: 1px dotted #ffffff;
 }
 
 /* Offline und Banned-Seite */
 #blank {
-	width: 767px;
+	width: 765px;
 	margin: auto;
 }
 
 /* Inhalt */
 #content {
 	float: right;
-	width: 603px;
+	width: 605px;
 	margin-left: 5px;
 }
 .bbody {
@@ -140,8 +135,11 @@ h1 a, h1 a:hover {
 	border-top: 1px solid #839FBC;
 }
 .bbody ul, .bbody ol, .tbody ul, .tbody ol {
+	margin: 0px;
+	padding: 0px;
 	margin-bottom: 2px;
 	margin-top: 2px;
+	padding-left: 26px;
 }
 .bbody ul, .tbody ul {
 	list-style-image: url(standard/list.gif);
@@ -158,7 +156,6 @@ h1 a, h1 a:hover {
 }
 .border {
 	border: 1px solid #839FBC;
-	width: 100%;
 	background-color: #ffffff;
 }
 #content h3 img, #window h3 img, .tables th img, .h3 img {
@@ -252,8 +249,6 @@ h1 a, h1 a:hover {
 	height:5em;
 }
 
-
-
 #content h3, .outline {
 	border: 1px solid #839FBC;
 }
@@ -267,8 +262,7 @@ h1 a, h1 a:hover {
 
 /* Oberes Menü im Forum */
 .topmenu {
-	padding: 0px; 
-	margin: 0px; 
+	margin: 0px;
 	list-style-type: none;
 	text-align: center;
 	display: block;
@@ -279,13 +273,13 @@ h1 a, h1 a:hover {
 .topmenu li {
 	display: inline;
 	font-weight: bold;
-	padding-right: 0.5em; 
+	padding-right: 0.5em;
 	padding-left: 0.5em;
 }
 
 /* Footer */
 #copyright {
-	padding-top: 1em;
+	padding-top: 1.5em;
 	clear: both;
 	font-size: 8pt;
 	text-align: center;
@@ -314,7 +308,7 @@ label, .labeldiv {
 .formsep {
 	height: 1px;
 	line-height: 1px;
-	border: 0; 
+	border: 0;
 	border-bottom: 1px #839FBC dotted;
 }
 
@@ -445,7 +439,7 @@ label, .labeldiv {
 .popup_noscript li {
 	display: inline;
 	font-weight: bold;
-	padding-right: 0.8em; 
+	padding-right: 0.8em;
 	padding-left: 0.8em;
 }
 .popup_noscript strong {
@@ -459,18 +453,18 @@ label, .labeldiv {
 	font-size: 9pt;
 }
 .popup_noscript ul {
-	padding: 4px; 
-	margin: 0px; 
+	padding: 4px;
+	margin: 0px;
 	list-style-type: none;
 }
 
 .popup {
-	z-index: 10; 
-	left: 0px; 
-	visibility: hidden; 
+	z-index: 10;
+	left: 0px;
+	visibility: hidden;
 	width: 200px;
-	position: absolute; 
-	top: 0px; 
+	position: absolute;
+	top: 0px;
 	border: 1px solid #336699;
 	border-top: 0px solid;
 	text-align: left;
@@ -481,18 +475,18 @@ label, .labeldiv {
 }
 .popup strong {
 	display: block;
-	padding: 2px;  
-	font-size: 9pt; 
+	padding: 2px;
+	font-size: 9pt;
 	color: #336699;
 	background-color: #BCCADA;
 	border-top: 1px solid #336699;
 }
 .popup ul {
-	padding: 0px; 
-	margin: 0px; 
-	list-style-type: none;	
+	padding: 0px;
+	margin: 0px;
+	list-style-type: none;
 }
-.popup li { 
+.popup li {
 	font-size: 9pt;
 	background-color: #ffffff;
 	font-weight: normal;
@@ -506,13 +500,13 @@ label, .labeldiv {
 }
 .popup li a, .popup_line {
 	padding: 2px;
-	color: #336699; 
+	color: #336699;
 	text-decoration: none;
 	display: block;
 	cursor: pointer;
 	background-color: #ffffff;
 }
-.popup li a:hover, .popup_line:hover { 
+.popup li a:hover, .popup_line:hover {
 	color: #000000;
 	background-color: #F5F8FA;
 }
@@ -537,7 +531,7 @@ label, .labeldiv {
 /* Smiley Interface */
 #menu_bbsmileys {
 	display: block;
-	text-align: center;	
+	text-align: center;
 	width: 140px;
 }
 #popup_bbsmileys {
@@ -614,7 +608,7 @@ label, .labeldiv {
 	display: block;
 	padding: 1px;
 	margin-top: 5px;
-	margin-bottom: 5px;   
+	margin-bottom: 5px;
 }
 .bb_inlinecode {
 	color: #880000;
@@ -689,7 +683,7 @@ label, .labeldiv {
 .disabled {
 	font-size: 11px;
 	font-family: Trebuchet MS, Verdana, Arial, Helvetica, sans-serif;
-	background-color: #F5F8FA; 
+	background-color: #F5F8FA;
 	border: 1px solid #336699;
 	color: #cccccc;
 }

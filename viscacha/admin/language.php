@@ -9,7 +9,8 @@ $langbase = array(
 	'javascript' => 'JavaScript',
 	'wwo' => 'Who is where online',
 	'thumbnail.class' => 'Graphics',
-	'phpmailer.class' => 'Email Class'
+	'phpmailer.class' => 'Email Class',
+	'custom' => 'Custom Phrases'
 );
 
 require('lib/language.inc.php');
@@ -790,7 +791,7 @@ elseif ($job == 'lang_array') {
 	$file = $gpc->get('file', str);
 	$lng = return_array($file, $id);
 	$lng = array_map('htmlspecialchars', $lng);
-	$lng = array_map('nl2whitespace', lng);
+	$lng = array_map('nl2whitespace', $lng);
 	ksort($lng);
 	$lng = array_chunk($lng, 50, true);
 	$pages = count($lng);
@@ -892,7 +893,7 @@ elseif ($job == 'lang_com') {
 
 	$lng = return_array('components/'.$cid.'/'.$file, $id);
 	$lng = array_map('htmlspecialchars', $lng);
-	$lng = array_map('nl2whitespace', lng);
+	$lng = array_map('nl2whitespace', $lng);
 	ksort($lng);
 	sort($files);
 	$pages_html = "Dateien:";

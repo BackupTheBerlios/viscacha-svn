@@ -498,7 +498,7 @@ elseif ($job == 'server') {
 	   <option value="8"<?php echo iif($config['error_reporting'] == 8, ' selected="selected"'); ?>>E_NOTICE: Information on runtime.</option>
 	   <option value="2047"<?php echo iif($config['error_reporting'] == 2047, ' selected="selected"'); ?>>E_ALL: All Errors and Warnings (Exception: E_STRICT).</option>
 	   <?php if (version_compare(PHP_VERSION, '5.0.0', '>=')) { ?>
-	   <option value="2048"<?php echo iif($config['error_reporting'] == 2048, ' selected="selected"'); ?>>E_STRICT: Information by the runtime-system (PHP5).</option>
+	   <option value="2048"<?php echo iif($config['error_reporting'] == 2048, ' selected="selected"'); ?>>E_STRICT: Information by the runtime-system (only PHP5; currently not supported).</option>
 	   <?php } ?>
 	   </select></td>
 	  </tr>
@@ -1097,7 +1097,7 @@ elseif ($job == 'register') {
   	  <tr>
    		<td class="mbox">Email addresses to notify when there is a new member:<br />
    		<span class="stext">Separate each address with a Newline/Carriage Return => Each address in an own row.</span></td>
-   		<td class="mbox"><textarea name="register_notification" rows="2" cols="70"></textarea></td>
+   		<td class="mbox"><textarea name="register_notification" rows="2" cols="70"><?php echo $config['register_notification']; ?></textarea></td>
   	  </tr>
 	  <tr>
 	   <td class="mbox" width="50%">User has to accept rules on registration:<br /><span class="stext">The <a href="misc.php?action=rules" target="_blank">behaviour conditions</a> must be read and accepted.</span></td>

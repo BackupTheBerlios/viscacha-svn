@@ -44,6 +44,7 @@ class lang {
 		$this->group('settings');
 		$this->group('global');
 		$this->group('modules');
+		$this->group('custom');
 
 		@ini_set('default_charset', '');
 		if (!headers_sent()) {
