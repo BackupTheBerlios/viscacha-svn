@@ -858,22 +858,20 @@ function check_forumperm($forum) {
 
 	$parent_forums = $scache->load('parent_forums');
 	$tree = $parent_forums->get();
-
+	
 	$catbid = $scache->load('cat_bid');
 	$forums = $catbid->get();
-
 	if (isset($tree[$forum['id']]) && is_array($tree[$forum['id']])) {
 		foreach ($tree[$forum['id']] as $id) {
-			if ($forums[$id]['opt'] == 'pw') {
-				if (!isset($my->pwfaccess[$id]) || $forums[$id]['optvalue'] != $my->pwfaccess[$id]) {
-					return false;
-				}
+			if ($forums[$id]['opt'] == 'pw' && (!isset($my->pwfaccess[$id]) || $forums[$id]['optvalue'] != $my->pwfaccess[$id])) {
+				return false;
 			}
 			if ($forums[$id]['invisible'] == 2) {
 				return false;
 			}
 		}
 	}
+
 	if ($my->p['forum'] == 0) {
 		if (isset($my->pb[$forum['id']]) && $my->pb[$forum['id']]['forum'] == 1) {
 			return true;
