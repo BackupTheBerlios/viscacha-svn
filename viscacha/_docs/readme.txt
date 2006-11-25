@@ -108,6 +108,7 @@ Upload the following files (and maybe overwrite them):
 - classes/class.gpc.php
 - classes/class.language.php
 - classes/class.permissions.php
+- classes/class.phpconfig.php
 - classes/class.template.php
 - classes/class.upload.php
 - classes/function.global.php

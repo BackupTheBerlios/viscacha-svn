@@ -1,11 +1,37 @@
 <div class="bbody">
-Preparing update...<br />
 <?php
+echo "<strong>Starting Update:</strong><br />";
+
 require('../data/config.inc.php');
 require_once('lib/function.variables.php');
 require_once('../classes/class.phpconfig.php');
 
-echo "<strong>Starting Update:</strong><br />";
+function return_array($group, $id) {
+	$file = "../language/{$id}/{$group}.lng.php";
+	if (file_exists($file)) {
+		include($file);
+	}
+	if (!isset($lang) || !is_array($lang)) {
+		$lang = array();
+	}
+	return $lang;
+}
+
+function getLangCodes() {
+	global $db;
+	$l = array();
+	$result = $db->query('SELECT id FROM '.$db->pre.'language ORDER BY language',__LINE__,__FILE__);
+	while($row = $db->fetch_assoc($result)) {
+		$settings = return_array('settings', $row['id']);
+		if (!isset($l[$settings['spellcheck_dict']])) {
+			$l[$settings['spellcheck_dict']] = array();
+		}
+		$l[$settings['spellcheck_dict']] = $row['id'];
+	}
+	return $l;
+}
+
+echo "- Source files loaded<br />";
 
 if (!class_exists('filesystem')) {
 	require_once('../classes/class.filesystem.php');
@@ -80,7 +106,6 @@ while (false !== ($entry = $d->read())) {
 $d->close();
 foreach ($tplids as $id) {
 	$tpldir = $dir.$id;
-	$filesystem->mkdir($tpldir.'/register', 0777);
 	$filesystem->unlink($tpldir.'/register.html');
 	$filesystem->chmod($tpldir.'/header.html', 0666);
 	$header = file_get_contents($tpldir.'/header.html');
@@ -167,59 +192,54 @@ $ini = array(
 	)
 );
 
-$lang[''] = '';
-
-
 $c = new manageconfig();
-if (isset($ini['language']) && count($ini['language']) > 0) {
-	$codes = array();
-	$keys = array_keys($ini);
-	foreach ($keys as $entry) {
-	   	if (preg_match('~language_(\w{2})_?(\w{0,2})~i', $entry, $code)) {
-	   		if (!isset($codes[$code[1]])) {
-	   			$codes[$code[1]] = array();
-	   		}
-	   		if (isset($code[2])) {
-	   			$codes[$code[1]][] = $code[2];
-	   		}
-	   		else {
-	   			if (!in_array('', $codes[$code[1]])) {
-	   				$codes[$code[1]][] = '';
-	   			}
-	   		}
-	   	}
+$codes = array();
+$keys = array('language', 'language_de');
+foreach ($keys as $entry) {
+   	if (preg_match('~language_(\w{2})_?(\w{0,2})~i', $entry, $code)) {
+   		if (!isset($codes[$code[1]])) {
+   			$codes[$code[1]] = array();
+   		}
+   		if (isset($code[2])) {
+   			$codes[$code[1]][] = $code[2];
+   		}
+   		else {
+   			if (!in_array('', $codes[$code[1]])) {
+   				$codes[$code[1]][] = '';
+   			}
+   		}
+   	}
+}
+$langcodes = getLangCodes();
+foreach ($langcodes as $code => $lid) {
+	$ldat = explode('_', $code);
+	if (isset($codes[$ldat[0]])) {
+		$count = count($codes[$ldat[0]]);
+		if (in_array('', $codes[$ldat[0]])) {
+			$count--;
+		}
 	}
-	$langcodes = getLangCodes();
-	foreach ($langcodes as $code => $lid) {
-		$ldat = explode('_', $code);
-		if (isset($codes[$ldat[0]])) {
-			$count = count($codes[$ldat[0]]);
-			if (in_array('', $codes[$ldat[0]])) {
-				$count--;
-			}
+	else {
+		$count = -1;
+	}
+	if (isset($codes[$ldat[0]]) && !empty($ldat[1]) && in_array($ldat[1], $codes[$ldat[0]])) { // Nehme Original
+		$src = 'language_'.$code;
+	}
+	elseif(isset($codes[$ldat[0]]) && in_array('', $codes[$ldat[0]])) { // Nehme gleichen Langcode, aber ohne Countrycode
+		$src = 'language_'.$ldat[0];
+	}
+	elseif(isset($codes[$ldat[0]]) && $count > 0) { // Nehme gleichen Langcode, aber falchen Countrycode
+		$src = 'language_'.$ldat[0].'_'.reset($codes[$ldat[0]]);
+	}
+	else { // Nehme Standard
+		$src = 'language';
+	}
+	foreach($ini as $file => $data){
+		$c->getdata("../language/{$lid}/{$file}.lng.php", 'lang');
+		foreach ($data[$src] as $varname => $text) {
+			$c->updateconfig($varname, str, $text);
 		}
-		else {
-			$count = -1;
-		}
-		if (isset($codes[$ldat[0]]) && !empty($ldat[1]) && in_array($ldat[1], $codes[$ldat[0]])) { // Nehme Original
-			$src = 'language_'.$code;
-		}
-		elseif(isset($codes[$ldat[0]]) && in_array('', $codes[$ldat[0]])) { // Nehme gleichen Langcode, aber ohne Countrycode
-			$src = 'language_'.$ldat[0];
-		}
-		elseif(isset($codes[$ldat[0]]) && $count > 0) { // Nehme gleichen Langcode, aber falchen Countrycode
-			$src = 'language_'.$ldat[0].'_'.reset($codes[$ldat[0]]);
-		}
-		else { // Nehme Standard
-			$src = 'language';
-		}
-		foreach($ini as $file => $data){
-			$c->getdata("language/{$lid}/{$file}.lng.php", 'lang');
-			foreach ($data[$src] as $varname => $text) {
-				$c->updateconfig($varname, str, $text);
-			}
-			$c->savedata();
-		}
+		$c->savedata();
 	}
 }
 
