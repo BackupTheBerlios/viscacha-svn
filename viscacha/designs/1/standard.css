@@ -112,9 +112,13 @@ h1 a, h1 a:hover {
  	font-size: 11px;
  	color: #ffffff;
 }
-.breadcrumb a, .breadcrumb a:hover {
+.breadcrumb a {
 	color: #ffffff;
 	border-bottom: 1px dotted #ffffff;
+}
+.breadcrumb a:hover {
+	color: #ffffff;
+	border-bottom: 1px solid #ffffff;
 }
 
 /* Offline und Banned-Seite */
