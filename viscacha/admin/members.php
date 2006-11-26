@@ -184,7 +184,7 @@ elseif ($job == 'newsletter_archive') {
   <tr>
    <td class="mbox"><input type="checkbox" name="delete[]" value="<?php echo $row['id']; ?>"></td> 
    <td class="mbox"><a href="admin.php?action=members&job=newsletter_view&id=<?php echo $row['id']; ?>"><?php echo $row['title']; ?></a></td>
-   <td class="mbox"><?php echo date('d.m.Y, H:i', $row['time']); ?></td>
+   <td class="mbox"><?php echo gmdate('d.m.Y, H:i', times($row['time'])); ?></td>
    <td class="mbox"><?php echo $receiver[$row['receiver']]; ?></td>
   </tr>
 <?php } ?>
@@ -213,7 +213,7 @@ elseif ($job == 'newsletter_view') {
   </tr>
   <tr>
    <td class="mbox">Sent:</td> 
-   <td class="mbox"><?php echo date('d.m.Y, H:i', $row['time']); ?></td>
+   <td class="mbox"><?php echo gmdate('d.m.Y, H:i', times($row['time'])); ?></td>
   </tr>
   <tr>
    <td class="mbox">Addressee:</td> 
@@ -1256,9 +1256,9 @@ elseif ($job == 'inactive') {
    <td class="mbox">Last visit:</td>
    <td class="mbox" align="center">&lt;</td>
    <td class="mbox">
-   <input type="text" name="lastvisit[1]" size="3" value="<?php echo date('d', $two_month); ?>" />. 
-   <input type="text" name="lastvisit[2]" size="3" value="<?php echo date('m', $two_month); ?>" />. 
-   <input type="text" name="lastvisit[3]" size="5" value="<?php echo date('Y', $two_month); ?>" /> (DD. MM. YYYY)
+   <input type="text" name="lastvisit[1]" size="3" value="<?php echo gmdate('d', times($two_month)); ?>" />. 
+   <input type="text" name="lastvisit[2]" size="3" value="<?php echo gmdate('m', times($two_month)); ?>" />. 
+   <input type="text" name="lastvisit[3]" size="5" value="<?php echo gmdate('Y', times($two_month)); ?>" /> (DD. MM. YYYY)
    </td> 
   </tr>
   <tr> 
@@ -1371,7 +1371,7 @@ elseif ($job == 'inactive2') {
 					$row['lastvisit'] = gmdate('d.m.Y H:i', times($row['lastvisit']));
 				}
 				if (isset($row['regdate'])) {
-					$row['regdate'] = date('d.m.Y', $row['regdate']);
+					$row['regdate'] = gmdate('d.m.Y', times($row['regdate']));
 				}
 				if (isset($row['confirm'])) {
 				  	if ($row['confirm'] == "11") { $row['confirm'] = 'Activated'; }

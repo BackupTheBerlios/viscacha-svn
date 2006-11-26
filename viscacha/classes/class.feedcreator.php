@@ -545,7 +545,7 @@ class FeedDate {
 	 * @param mixed $dateString optional the date this FeedDate will represent. If not specified, the current date and time is used.
 	 */
 	function FeedDate($dateString="") {
-		if ($dateString=="") $dateString = date("r");
+		if ($dateString=="") $dateString = dateSpec(SPEC_RFC2822);
 		
 		// MOD: changed is_integer to is_numeric
 		if (is_numeric($dateString)) {
@@ -598,8 +598,7 @@ class FeedDate {
 	 * @return a date in RFC 822 format
 	 */
 	function rfc822() {
-		$date = date("D, d M Y H:i:s O", $this->unix);
-		return $date;
+		return dateSpec(SPEC_RFC822, $this->unix);
 	}
 	
 	/**
@@ -608,12 +607,7 @@ class FeedDate {
 	 * @return a date in ISO 8601 format
 	 */
 	function iso8601() {
-	  	//$int_date: current date in UNIX timestamp
-	   	$date_mod = date('Y-m-d\TH:i:s', $this->unix);
-	   	$pre_timezone = date('O', $this->unix);
-	   	$time_zone = substr($pre_timezone, 0, 3).":".substr($pre_timezone, 3, 2);
-	   	$date_mod .= $time_zone;
-	   	return $date_mod;
+	   	return dateSpec(SPEC_ISO8601, $this->unix);
 	}
 	
 	/**

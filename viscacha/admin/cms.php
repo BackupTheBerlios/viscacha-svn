@@ -3143,7 +3143,7 @@ elseif ($job == 'doc') {
 			$row['author'] = 'Unknown';
 		}
 		if ($row['update'] > 0) {
-			$row['update'] = date('d.m.Y H:i', $row['update']);
+			$row['update'] = gmdate('d.m.Y H:i', times($row['update']));
 		}
 		else {
 			$row['update'] = 'Unknown';

@@ -22,7 +22,7 @@ function logMessage($msg) {
 	if ($useLog) {
 		$logfile = $writeDir."cron.log";
 		$file = fopen($logfile,"a");
-		fputs($file,date("r",time())."  ".$msg);
+		fputs($file,date("r")."  ".$msg);
 		fclose($file);
 	}
 }

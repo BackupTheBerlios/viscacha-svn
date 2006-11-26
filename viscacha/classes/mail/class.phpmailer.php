@@ -1404,11 +1404,11 @@ class PHPMailer
      * @return string
      */
     function RFCDate() {
-        $tz = date("Z");
+        $tz = (time()-times())*-1;
         $tzs = ($tz < 0) ? "-" : "+";
         $tz = abs($tz);
         $tz = ($tz/3600)*100 + ($tz%3600)/60;
-        $result = sprintf("%s %s%04d", date("D, j M Y H:i:s"), $tzs, $tz);
+        $result = sprintf("%s %s%04d", gmdate("D, j M Y H:i:s", times()), $tzs, $tz);
 
         return $result;
     }

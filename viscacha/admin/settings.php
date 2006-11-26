@@ -1876,6 +1876,10 @@ elseif ($job == 'syndication') {
 	   <td class="mbox" width="50%"><input type="checkbox" name="syndication" value="1"<?php echo iif($config['syndication'],' checked'); ?>></td>
 	  </tr>
 	  <tr>
+	   <td class="mbox" width="50%">Insert E-mails into created news feeds:<br /><span class="stext">It is recommended to disable this option to prevent spam.</span></td>
+	   <td class="mbox" width="50%"><input type="checkbox" name="syndication_insert_email" value="1"<?php echo iif($config['syndication_insert_email'],' checked'); ?>></td>
+	  </tr>
+	  <tr>
 	   <td class="mbox" width="50%">Maximum number of characters in a text:</td>
 	   <td class="mbox" width="50%"><input type="text" name="rsschars" value="<?php echo $config['rsschars']; ?>" size="4"></td>
 	  </tr>
@@ -1904,6 +1908,7 @@ elseif ($job == 'syndication2') {
 
 	$c->getdata();
 	$c->updateconfig('syndication',int);
+	$c->updateconfig('syndication_insert_email',int);
 	$c->updateconfig('syndication_klipfolio_banner',str);
 	$c->updateconfig('syndication_klipfolio_icon',str);
 	$c->updateconfig('rssttl',int);

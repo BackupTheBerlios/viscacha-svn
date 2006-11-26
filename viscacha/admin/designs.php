@@ -923,7 +923,7 @@ elseif ($job == 'templates_file_history') {
   <?php if (!$default && file_exists($path.'/'.$file)) { $revert = true; ?>
   <tr>
    <td class="mbox">Current Version (ID: <?php echo $id; ?>)</td>
-   <td class="mbox"><?php echo date('d.m.Y H:i', filemtime($path.'/'.$file)); ?></td>
+   <td class="mbox"><?php echo gmdate('d.m.Y H:i', times(filemtime($path.'/'.$file))); ?></td>
    <td class="mbox">&nbsp;</td>
    <td class="mbox"><a class="button" href="admin.php?action=designs&job=templates_file_edit&id=<?php echo $id; ?>&dir=<?php echo rawurlencode( iif(!empty($sub), $sub.'/')); ?>&file=<?php echo rawurldecode($file); ?>">Edit</a></td>
    <td class="mbox"><a class="button" href="admin.php?action=designs&job=templates_file_delete&id=<?php echo $id; ?>&dir=<?php echo rawurlencode( iif(!empty($sub), $sub.'/')); ?>&file=<?php echo rawurldecode($file); ?>">Delete</a></td>
@@ -939,7 +939,7 @@ elseif ($job == 'templates_file_history') {
   ?>
   <tr>
    <td class="mbox">Historical <?php echo $i; ?></td>
-   <td class="mbox"><?php echo date('d.m.Y H:i', filemtime($path.'/'.$hfile)); ?></td>
+   <td class="mbox"><?php echo gmdate('d.m.Y H:i', times(filemtime($path.'/'.$hfile))); ?></td>
    <td class="mbox"><a class="button" href="admin.php?action=designs&job=templates_file_revert&id=<?php echo $id; ?>&dir=<?php echo rawurlencode( iif(!empty($sub), $sub.'/')); ?>&file=<?php echo rawurldecode($hfile); ?>">Revert</a></td>
    <td class="mbox"><a class="button" href="admin.php?action=designs&job=templates_file_edit&id=<?php echo $id; ?>&dir=<?php echo rawurlencode( iif(!empty($sub), $sub.'/')); ?>&file=<?php echo rawurldecode($hfile); ?>&readonly=1">View</a></td>
    <td class="mbox"><a class="button" href="admin.php?action=designs&job=templates_file_delete&id=<?php echo $id; ?>&dir=<?php echo rawurlencode( iif(!empty($sub), $sub.'/')); ?>&file=<?php echo rawurldecode($hfile); ?>">Delete</a></td>
@@ -949,7 +949,7 @@ elseif ($job == 'templates_file_history') {
   <?php } ?>
   <tr>
    <td class="mbox">Current Default (ID: <?php echo $design['template']; ?>)</td>
-   <td class="mbox"><?php echo date('d.m.Y H:i', filemtime($defpath.'/'.$file)); ?></td>
+   <td class="mbox"><?php echo gmdate('d.m.Y H:i', times(filemtime($defpath.'/'.$file))); ?></td>
    <td class="mbox">
    <?php echo iif($revert, '<a class="button" href="admin.php?action=designs&job=templates_file_revert&id='.$id.'&dir='.rawurlencode( iif(!empty($sub), $sub.'/')).'&file='.rawurldecode($file).'&default=1">Revert</a>', '&nbsp;'); ?></td>
    <td class="mbox"><a class="button" href="admin.php?action=designs&job=templates_file_edit&id=<?php echo $design['template']; ?>&dir=<?php echo rawurlencode( iif(!empty($sub), $sub.'/')); ?>&file=<?php echo rawurldecode($file); ?>">Edit</a></td>

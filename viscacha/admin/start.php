@@ -36,10 +36,10 @@ elseif (empty($job) || $job == 'start') {
 				$date = str_replace('.sql', '', $date);
 				$valid = preg_match('/(\d{1,2})_(\d{1,2})_(\d{2,4})-(\d{1,2})_(\d{1,2})_(\d{1,2})/', $date, $mktime);
 				if ($valid == 0) {
-					$diff = filemtime($dir.$file);
+					$diff = times(filemtime($dir.$file));
 				}
 				else {
-					$diff = mktime($mktime[4], $mktime[5], $mktime[6], $mktime[2], $mktime[1], $mktime[3]);
+					$diff = times(gmmktime($mktime[4], $mktime[5], $mktime[6], $mktime[2], $mktime[1], $mktime[3]));
 				}
 				if ($diff > $highest) {
 					$highest = $diff;

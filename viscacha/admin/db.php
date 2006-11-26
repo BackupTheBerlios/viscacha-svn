@@ -203,7 +203,7 @@ elseif ($job == 'backup2') {
 	$ok = "Backup successfully created!";
 	if (!empty($sqldata) && strlen($sqldata) > 0) {
         // Speichern der Backup-Datei
-        $file_path = "admin/backup/".date('d_m_Y-H_i_s');
+        $file_path = "admin/backup/".gmdate('d_m_Y-H_i_s');
         if ($zip == 1) {
         	$filesystem->file_put_contents($file_path.'.sql', $sqldata);
 

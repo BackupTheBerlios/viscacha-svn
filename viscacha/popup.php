@@ -58,7 +58,7 @@ if ($_GET['action'] == "hlcode") {
 	if ($_GET['temp'] == 1) {
 		viscacha_header('Content-Type: text/plain');
 		viscacha_header('Content-Length: '.strlen($sourcecode['source']));
-		viscacha_header('Content-Disposition: attachment; filename="'.date('d-m-Y_H-i').'.txt"');
+		viscacha_header('Content-Disposition: attachment; filename="'.gmdate('d-m-Y_H-i', times()).'.txt"');
 		echo $sourcecode['source'];
 		$slog->updatelogged();
 		$db->close();

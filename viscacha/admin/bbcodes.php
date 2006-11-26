@@ -286,7 +286,7 @@ elseif ($job == 'smileys_export') {
 		$sqlwhere = "";
 	}
 	
-	$file = 'smileys_'.date('Ymd').'.zip';
+	$file = 'smileys_'.gmdate('Ymd', times()).'.zip';
 	$tempdir = "temp/";
 	$smilieconfig = $config['smileypath'].'/smileys.ini';
 	

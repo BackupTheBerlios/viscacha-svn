@@ -1056,7 +1056,7 @@ class vCard
     {
 	if ($passt == 0) 
 	{
-    		$this->birthday = (int) date('Ymd',$timestamp);
+    		$this->birthday = (int) gmdate('Ymd',times($timestamp));
 	}
 	else 
 	{

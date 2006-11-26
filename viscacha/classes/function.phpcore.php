@@ -72,7 +72,7 @@ function msg_handler($errno, $errtext, $errfile, $errline) {
 		case E_NOTICE:
 		case E_USER_WARNING:
 		case E_USER_NOTICE:
-			echo "<br /><strong>".$errortype[$errno]."</strong>: ".$errtext." (File: <tt>$errfile</tt> on line <tt>$errline</tt>)";
+			echo "<br /><strong>".$errortype[$errno]."</strong>: ".$errtext." (File: <tt>".$errfile."</tt> on line <tt>".$errline."</tt>)";
 		break;
 		case E_USER_ERROR:
 		case E_ERROR:
