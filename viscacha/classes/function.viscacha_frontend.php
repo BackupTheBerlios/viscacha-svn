@@ -73,7 +73,7 @@ function getRefererURL() {
 			$url['path'] = '';
 		}
 		$file = basename($url['path']);
-		if (!empty($loc) && file_exists($file) && $file != 'log.php') {
+		if (!empty($loc) && file_exists($file) && $file != 'log.php' && $file != 'register.php') {
 			if (strpos($loc, '?') === false) {
 				$request_uri .= SID2URL_1;
 			}

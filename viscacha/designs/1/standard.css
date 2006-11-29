@@ -490,7 +490,7 @@ label, .labeldiv {
 	margin: 0px;
 	list-style-type: none;
 }
-.popup li {
+.popup li, .topmenu .popup li {
 	font-size: 9pt;
 	background-color: #ffffff;
 	font-weight: normal;
