@@ -50,14 +50,14 @@ $fields = explode(',', $config['mlist_fields']);
 
 $im = false;
 $colspan = 1+count($fields);
-if (in_array('fullname', $fields)) 	$colspan--;
-if (in_array('icq', $fields)) 		$colspan--; $im = true;
-if (in_array('aol', $fields)) 		$colspan--; $im = true;
-if (in_array('yahoo', $fields))		$colspan--; $im = true;
-if (in_array('msn', $fields)) 		$colspan--; $im = true;
-if (in_array('jabber', $fields))	$colspan--; $im = true;
-if (in_array('skype', $fields)) 	$colspan--; $im = true;
-if ($im == true)					$colspan++;
+if (in_array('fullname', $fields)) {$colspan--; }
+if (in_array('icq', $fields)) {		$colspan--; $im = true; }
+if (in_array('aol', $fields)) {		$colspan--; $im = true; }
+if (in_array('yahoo', $fields))	{	$colspan--; $im = true; }
+if (in_array('msn', $fields)) {		$colspan--; $im = true; }
+if (in_array('jabber', $fields)) {	$colspan--; $im = true; }
+if (in_array('skype', $fields)) {	$colspan--; $im = true; }
+if ($im == true) {					$colspan++; }
 
 $_GET['order'] = strtolower($_GET['order']);
 if ($_GET['order'] != 'desc') {
@@ -163,7 +163,12 @@ if ($key !== false) {
 else {
 	$pm = false;
 }
-$sqlselect = implode(',', $fields);
+$sqlselect = $fields;
+$key = array_search('lastvisit', $sqlselect);
+if ($key !== false) {
+	$sqlselect[$key] = 'u.lastvisit';
+}
+$sqlselect = implode(',', $sqlselect);
 if ($online_key !== false) {
 	$sqlselect .= ", IF (s.mid > 0, 1, 0) AS online";
 }
