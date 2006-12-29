@@ -81,11 +81,11 @@ if ($config['mlist_showinactive'] == 0) {
 $groups = array();
 $g = $gpc->get('g', arr_int);
 if ($config['mlist_filtergroups'] > 0) {
-	$groups = $scache->load('groups');
-	$statusdata = $groups->status();
-	foreach ($statusdata as $row) {
+	$group_cache = $scache->load('groups');
+	$statusdata = $group_cache->status();
+	foreach ($statusdata as $id => $row) {
 		if ($row['guest'] != 1) {
-			$groups[$row['id']] = $row['title'];
+			$groups[$id] = $row['title'];
 		}
 	}
 	$sqlwhere_findinset = array();
