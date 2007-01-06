@@ -1444,7 +1444,7 @@ elseif ($job == 'cron') {
 	   <td class="obox" colspan="2"><b>Scheduled Settings</b></td>
 	  </tr>
 	  <tr>
-	   <td class="mbox" width="50%">Scheduled Tasks in page:<br><span class="stext">If this option is activated, Viscacha will check if there are Tasks to be done at every page call. For a better Performance you can page out this task, by loading the file <a href="cron.php" target="_blank">cron.php</a>with a scheduled cron job.</span></td>
+	   <td class="mbox" width="50%">Scheduled Tasks in page:<br><span class="stext">If this option is activated Viscacha will check every page call if there are Tasks to be done. For a better Performance you can disable this setting and run the file <a href="cron.php" target="_blank">cron.php</a> with a real cron job that runs at least every hour.</span></td>
 	   <td class="mbox" width="50%"><input type="checkbox" name="pccron" value="1"<?php echo iif($config['pccron'],' checked'); ?>></td>
 	  </tr>
 	  <tr>

@@ -213,6 +213,9 @@ elseif ($job == 'smileys_import2') {
 			$d->close();
 		break;
 		default: // viscacha_ini
+			if (!file_exists($tempdir.'/smileys.ini')) {
+				error('admin.php?action=bbcodes&job=smileys_import', 'smileys.ini is missing');
+			}
 			$package = $myini->read($tempdir.'/smileys.ini');
 		break;
 	}
