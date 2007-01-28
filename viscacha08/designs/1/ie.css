@@ -1,0 +1,37 @@
+body {
+	text-align: center;
+}
+#container {
+	text-align: left;
+}
+#window {
+	text-align: left;
+}
+#blank {
+	text-align: left;
+}
+#content {
+	width: 603px;
+}
+.border {
+	width: 100%;
+}
+.popup li {
+	float: left;
+	width: 100%;
+}
+.editprofile_index li {
+	width: 30%;
+}
+.editprofile_index ul {
+	margin-bottom: 0px;
+}
+.iefix_left {
+	float: left;
+}
+.tables_bbsmileys td {
+	border: 0px;
+}
+.iefix_br {
+    line-height: 2px;
+}
