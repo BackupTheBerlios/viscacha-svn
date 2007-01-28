@@ -20,6 +20,10 @@ if (isset($config['error_handler']) && $config['error_handler'] == 1) {
 	set_error_handler('msg_handler');
 }
 
+function iif($if, $true, $false = '') {
+	return ($if ? $true : $false);
+}
+
 /**
 * Error and message handler, call with trigger_error if required
 */

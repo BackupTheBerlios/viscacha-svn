@@ -736,10 +736,6 @@ function UpdateMemberStats($id) {
 	return $count[0];
 }
 
-function iif($if, $true, $false = '') {
-	return ($if ? $true : $false);
-}
-
 function check_ip($ip, $allow_private = false) {
 
    	$private_ips = array("/^0\..+$/", "/^127\.0\.0\..+$/", "/^192\.168\..+$/", "/^172\.16\..+$/", "/^10..+$/", "/^224..+$/", "/^240..+$/");
