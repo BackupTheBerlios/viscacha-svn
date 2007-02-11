@@ -1065,7 +1065,7 @@ elseif ($job == 'templates_browse') {
 		  <tr>
 		   <td class="mmbox" colspan="2">
 		   <a style="color: <?php echo $color; ?>" href="admin.php?action=designs&job=templates_browse&id=<?php echo $id; ?>&dir=<?php echo rawurlencode( iif(!empty($sub), $sub.'/') . $dir['name'] ); ?>">
-		   <?php echo $dir['name'].iif($empty, ' (Kein Inhalt)', ' ('.count($dir['content']).')'); ?>
+		   <?php echo $dir['name'].iif($empty, ' (Empty)', ' ('.count($dir['content']).')'); ?>
 		   </a></td>
 		  </tr>
 			<?php

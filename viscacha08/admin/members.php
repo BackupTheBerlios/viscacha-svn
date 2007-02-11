@@ -1957,7 +1957,8 @@ elseif ($job == 'activate') {
 		$row->regdate = gmdate('d.m.Y', times($row->regdate));
 		if ($row->lastvisit == 0) {
 			$row->lastvisit = 'Never';
-		} else {
+		}
+		else {
 			$row->lastvisit = gmdate('d.m.Y', times($row->lastvisit));
 		}
 		?>
@@ -1967,9 +1968,9 @@ elseif ($job == 'activate') {
 		  <td class="mbox"><?php echo $row->regdate; ?></td>
 		  <td class="mbox"><ul>
 		  <?php if ($row->confirm == '00' || $row->confirm == '01') { ?>
-		  <li><strong><a href="admin.php?action=members&job=confirm&id=<?php echo $row->id; ?>">Activate user</a></strong></li>
+		  <li><strong><a href="admin.php?action=members&job=confirm&id=<?php echo $row->id; ?>">Confirm User only</a></strong></li>
 		  <?php } if ($row->confirm == '00' || $row->confirm == '10') { ?>
-		  <li>User has to activate the account per e-mail</li>
+		  <li>User has to activate the account per e-mail [<a href="admin.php?action=members&job=confirm2&id=<?php echo $row->id; ?>">Activate User completely</a>]</li>
 		  <?php } ?>
 		  <li>Delete user: <input type="checkbox" name="delete[]" value="<?php echo $row->id; ?>"></li>
 		  </ul></td>
@@ -2005,7 +2006,21 @@ elseif ($job == 'confirm') {
 	$content = $lang->get_mail('admin_confirmed');
 	xmail(array('0' => array('mail' => $row['mail'])), array(), $content['title'], $content['comment']);
 
-	ok('admin.php?action=members&job=activate', 'Member has been activated!');
+	ok('admin.php?action=members&job=activate', 'Member has been confirmed!');
+}
+elseif ($job == 'confirm2') {
+	echo head();
+
+	$id = $gpc->get('id', int);
+	$result = $db->query('SELECT id, name, mail FROM '.$db->pre.'user WHERE id = "'.$id.'" LIMIT 1');
+	$row = $db->fetch_assoc($result);
+
+	$db->query("UPDATE {$db->pre}user SET confirm = '11' WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
+
+	$content = $lang->get_mail('admin_confirmed');
+	xmail(array('0' => array('mail' => $row['mail'])), array(), $content['title'], $content['comment']);
+
+	ok('admin.php?action=members&job=activate', 'Member has been activated completely!');
 }
 elseif ($job == 'ips') {
 	$username = $gpc->get('username', str);
