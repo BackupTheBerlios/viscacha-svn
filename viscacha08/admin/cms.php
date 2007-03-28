@@ -1,8 +1,8 @@
 <?php
-if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "cms.php") die('Error: Hacking Attempt');
+if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
 
 require('classes/class.phpconfig.php');
-require('lib/language.inc.php');
+require('admin/lib/language.inc.php');
 
 function SelectPackageLinks ($head) {
 	?>

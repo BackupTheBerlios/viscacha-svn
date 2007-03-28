@@ -25,7 +25,7 @@
 	This class is part of Viscacha.
 */
 
-if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "class.cache.php") die('Error: Hacking Attempt');
+if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
 
 class CacheItem {
 

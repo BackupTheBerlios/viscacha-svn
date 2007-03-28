@@ -22,7 +22,7 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "function.frontend_init.php") die('Error: Hacking Attempt');
+if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
 
 if (in_array('config', array_keys(array_change_key_case($_REQUEST)))) {
 	die('Error: Hacking Attemp (Config variable)');

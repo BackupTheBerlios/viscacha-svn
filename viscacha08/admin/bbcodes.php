@@ -1,5 +1,5 @@
 <?php
-if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "bbcodes.php") die('Error: Hacking Attempt');
+if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
 
 ($code = $plugins->load('admin_bbcodes_jobs')) ? eval($code) : null;
 
@@ -735,7 +735,7 @@ elseif ($job == 'del_codefiles') {
 			$filesystem->unlink($file);
 		}
 	}
-	$delobj = $scache->load('syntax-highlight');
+	$delobj = $scache->load('syntaxhighlight');
 	$delobj->delete();
     ok('admin.php?action=bbcodes&job=codefiles', 'Files successfully deleted!');
 }
@@ -1119,7 +1119,7 @@ elseif ($job == 'custombb_test') {
 	$parsed_test = null;
 	if (!empty($test)) {
 		file_put_contents($file, $test);
-		$lang = new lang();
+		$lang = new lang(false, E_USER_WARNING);
 		$lang->init();
 		BBProfile($bbcode);
 		$bbcode->setSmileys(1);

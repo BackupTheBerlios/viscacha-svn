@@ -1,4 +1,5 @@
 <?php
+if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
 
 class lang {
 
@@ -12,7 +13,7 @@ class lang {
 	var $js;
 
 	// ToDo: Alternatives Verzeichnis für den Fall, dass eine ID übergeben wurde, die nichtmehr aktiv ist...
-	function lang($js = false) {
+	function lang($js = false, $level = E_USER_ERROR) {
 		$this->js = $js;
 		$this->file = '';
 		$this->vars = array();
@@ -32,7 +33,7 @@ class lang {
 				die('alert("Language-Directory not found!");');
 			}
 			else {
-				die('Language-Directory not found!');
+				trigger_error('Language-Directory not found!', $level);
 			}
 		}
 	}

@@ -24,6 +24,7 @@
 error_reporting(E_ALL);
 
 DEFINE('SCRIPTNAME', 'team');
+define('VISCACHA_CORE', '1');
 
 include ("data/config.inc.php");
 include ("classes/function.viscacha_frontend.php");

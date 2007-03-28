@@ -1,4 +1,6 @@
 <?php
+if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
+
 if (!class_exists('ftp')) {
 	if (is_dir("classes/ftp/")) {
 		$path = 'classes';

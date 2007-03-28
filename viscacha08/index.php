@@ -2,7 +2,7 @@
 /*
 	Viscacha - A bulletin board solution for easily managing your content
 	Copyright (C) 2004-2006  Matthias Mohr, MaMo Net
-	
+
 	Author: Matthias Mohr
 	Publisher: http://www.mamo-net.de
 	Start Date: May 22, 2004
@@ -22,7 +22,8 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 error_reporting(E_ALL);
-DEFINE('IS_INCLUDED', true);
+define('IS_INCLUDED', true);
+define('VISCACHA_CORE', '1');
 require_once("data/config.inc.php");
 include_once($config['indexpage'].'.php');
 ?>

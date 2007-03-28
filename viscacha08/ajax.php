@@ -25,6 +25,7 @@
 error_reporting(E_ALL);
 
 DEFINE('SCRIPTNAME', 'ajax');
+define('VISCACHA_CORE', '1');
 
 include ("data/config.inc.php");
 DEFINE('TEMPSHOWLOG', 1);

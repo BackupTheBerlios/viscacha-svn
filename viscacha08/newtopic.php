@@ -25,6 +25,7 @@
 error_reporting(E_ALL);
 
 DEFINE('SCRIPTNAME', 'newtopic');
+define('VISCACHA_CORE', '1');
 
 include ("data/config.inc.php");
 include ("classes/function.viscacha_frontend.php");
@@ -176,11 +177,11 @@ elseif ($_GET['action'] == "savevote") {
 		$db->query("INSERT INTO {$db->pre}vote (tid, answer) VALUES {$sqlwhere}",__LINE__,__FILE__);
 		$inserted = $db->affected_rows();
 		if ($inserted > 1) {
-			ok($lang->phrase('data_success'),"showtopic.php?id={$topic_id}");
+			ok($lang->phrase('data_success'),"showtopic.php?id={$topic_id}".SID2URL_x);
 		}
 		else {
 			$db->query("UPDATE {$db->pre}topics SET vquestion = '' WHERE id = '{$topic_id}'",__LINE__,__FILE__);
-			error($lang->phrase('add_vote_failed'),"showtopic.php?id={$topic_id}");
+			error($lang->phrase('add_vote_failed'),"showtopic.php?id={$topic_id}".SID2URL_x);
 		}
 	}
 }
@@ -383,7 +384,7 @@ elseif ($_GET['action'] == "save") {
 			ok($lang->phrase('new_thread_vote_success'),"newtopic.php?action=startvote&amp;id={$board}&amp;topic_id={$tredirect}&amp;temp={$_POST['temp']}");
 		}
 		else {
-			ok($lang->phrase('data_success'),"showtopic.php?id={$tredirect}");
+			ok($lang->phrase('data_success'),"showtopic.php?id={$tredirect}".SID2URL_x);
 		}
 	}
 

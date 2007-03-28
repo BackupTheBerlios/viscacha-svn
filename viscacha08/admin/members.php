@@ -1,5 +1,5 @@
 <?php
-if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "members.php") die('Error: Hacking Attempt');
+if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
 
 ($code = $plugins->load('admin_members_jobs')) ? eval($code) : null;
 
@@ -2053,7 +2053,7 @@ elseif ($job == 'ips') {
 			</tr>
 			<tr>
 				<td class="ubox">
-				<a href="usertools.php?do=iphost&amp;ip=<?php echo $ipaddress; ?>"><?php echo $ipaddress; ?></a>: <b><?php echo htmlspecialchars($hostname); ?></b>
+				<a href="http://ripe.net/fcgi-bin/whois?searchtext=<?php echo $ipaddress; ?>" target="_blank" title="Visit ripe.net for more information"><?php echo $ipaddress; ?></a>: <b><?php echo htmlspecialchars($hostname); ?></b>
 				</td>
 			</tr>
 			<tr>
@@ -2151,7 +2151,7 @@ elseif ($job == 'iphost') {
 	</tr>
 	<tr>
 		<td class="mbox">IP Address</td>
-		<td class="mbox"><a href="http://www.ripe.net/perl/whois?form_type=simple&amp;do_search=Search&amp;searchtext=<?php echo $ip; ?>" target="_blank"><?php echo $ip; ?></a></td>
+		<td class="mbox"><a href="http://ripe.net/fcgi-bin/whois?searchtext=<?php echo $ip; ?>" target="_blank"><?php echo $ip; ?></a></td>
 	</tr>
 	<tr>
 		<td class="mbox">Host Name</td>

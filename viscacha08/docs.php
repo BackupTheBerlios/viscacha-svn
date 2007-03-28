@@ -25,6 +25,8 @@
 error_reporting(E_ALL);
 
 DEFINE('SCRIPTNAME', 'docs');
+define('VISCACHA_CORE', '1');
+
 //DEFINE('TEMPSHOWLOG', 1);
 include ("data/config.inc.php");
 include ("classes/function.viscacha_frontend.php");

@@ -25,6 +25,7 @@
 error_reporting(E_ALL);
 
 DEFINE('SCRIPTNAME', 'manageforum');
+define('VISCACHA_CORE', '1');
 
 include ("data/config.inc.php");
 include ("classes/function.viscacha_frontend.php");
@@ -41,7 +42,7 @@ $tpl = new tpl();
 $catbid = $scache->load('cat_bid');
 $fc = $catbid->get();
 
-if (empty($board) || !isset($fc[$board])) {
+if (empty($board) || !isset($fc[$board]) || empty($_GET['action'])) {
 	error($lang->phrase('query_string_error'));
 }
 $info = $fc[$board];
@@ -169,7 +170,13 @@ if ($my->vlogin && $my->mp[0] == 1) {
 		if (count($_POST['delete']) == 0) {
 			$slog->updatelogged();
 			$db->close();
-			viscacha_header('Location: manageforum.php?action=index&id='.$board.'&type='.$_GET['type'].SID2URL_JS_x);
+			if (empty($_GET['action'])) {
+				$url = 'showforum.php?id='.$board.SID2URL_JS_x;
+			}
+			else {
+				$url = 'manageforum.php?action=index&id='.$board.'&type='.$_GET['action'].SID2URL_JS_x;
+			}
+			viscacha_header('Location: '.$url);
 			exit;
 		}
 		$db->query("UPDATE {$db->pre}topics SET status = '1' WHERE board = '{$board}' AND id IN(".implode(',', $_POST['delete']).")",__LINE__,__FILE__);
@@ -184,7 +191,13 @@ if ($my->vlogin && $my->mp[0] == 1) {
 		if (count($_POST['delete']) == 0) {
 			$slog->updatelogged();
 			$db->close();
-			viscacha_header('Location: manageforum.php?action=index&id='.$board.'&type='.$_GET['type'].SID2URL_JS_x);
+			if (empty($_GET['action'])) {
+				$url = 'showforum.php?id='.$board.SID2URL_JS_x;
+			}
+			else {
+				$url = 'manageforum.php?action=index&id='.$board.'&type='.$_GET['action'].SID2URL_JS_x;
+			}
+			viscacha_header('Location: '.$url);
 			exit;
 		}
 		$db->query("UPDATE {$db->pre}topics SET status = '0' WHERE board = '{$board}' AND id IN(".implode(',', $_POST['delete']).")",__LINE__,__FILE__);
@@ -196,6 +209,15 @@ if ($my->vlogin && $my->mp[0] == 1) {
 		}
 	}
 	elseif ($_GET['action'] == "move") {
+		if (count($_POST['delete']) == 0) {
+			if (empty($_GET['action'])) {
+				$url = 'showforum.php?id='.$board.SID2URL_JS_x;
+			}
+			else {
+				$url = 'manageforum.php?action=index&id='.$board.'&type='.$_GET['action'].SID2URL_JS_x;
+			}
+			viscacha_header('Location: '.$url);
+		}
 		$my->pb = $slog->GlobalPermissions();
 		if ($my->mp[0] == 1 && $my->mp[5] == 0) {
 			errorLogin($lang->phrase('not_allowed'), 'showforum.php?id='.$board.SID2URL_x);
@@ -206,7 +228,7 @@ if ($my->vlogin && $my->mp[0] == 1) {
 	}
 	elseif ($_GET['action'] == "move2") {
 		if ($my->mp[0] == 1 && $my->mp[5] == 0) {
-			errorLogin($lang->phrase('not_allowed'), 'manageforum.php?action=index&amp;id='.$board.'&amp;type='.$_GET['type'].SID2URL_x.'&amp;');
+			errorLogin($lang->phrase('not_allowed'), 'manageforum.php?action=index&amp;id='.$board.'&amp;type='.$_GET['action'].SID2URL_x);
 		}
 		$anz = 0;
 		foreach ($_POST['delete'] as $id) {
@@ -245,12 +267,18 @@ if ($my->vlogin && $my->mp[0] == 1) {
 	}
 	elseif ($_GET['action'] == "delete") {
 		if ($my->mp[0] == 1 && $my->mp[4] == 0) {
-			errorLogin($lang->phrase('not_allowed'),'manageforum.php?action=index&amp;id='.$board.'&amp;type='.$_GET['type'].SID2URL_x.'&amp;');
+			errorLogin($lang->phrase('not_allowed'),'manageforum.php?action=index&amp;id='.$board.'&amp;type='.$_GET['action'].SID2URL_x);
 		}
 		if (count($_POST['delete']) == 0) {
 			$slog->updatelogged();
 			$db->close();
-			viscacha_header('Location: manageforum.php?action=index&id='.$board.'&type='.$_GET['type'].SID2URL_JS_x);
+			if (empty($_GET['action'])) {
+				$url = 'showforum.php?id='.$board.SID2URL_JS_x;
+			}
+			else {
+				$url = 'manageforum.php?action=index&id='.$board.'&type='.$_GET['action'].SID2URL_JS_x;
+			}
+			viscacha_header('Location: '.$url);
 			exit;
 		}
 		$ids = implode(',', $_POST['delete']);

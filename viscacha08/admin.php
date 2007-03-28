@@ -24,7 +24,8 @@
 
 error_reporting(E_ALL);
 
-DEFINE('SCRIPTNAME', 'admin');
+define('SCRIPTNAME', 'admin');
+define('VISCACHA_CORE', '1');
 
 include ("data/config.inc.php");
 include ("admin/data/config.inc.php");

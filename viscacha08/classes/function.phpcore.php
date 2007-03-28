@@ -1,4 +1,6 @@
 <?php
+if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
+
 /*
 This is a file with functions that emulate the needed php-functions for backward compatibility.
 The following functions are emulated:

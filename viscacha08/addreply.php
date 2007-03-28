@@ -2,7 +2,7 @@
 /*
 	Viscacha - A bulletin board solution for easily managing your content
 	Copyright (C) 2004-2006  Matthias Mohr, MaMo Net
-	
+
 	Author: Matthias Mohr
 	Publisher: http://www.mamo-net.de
 	Start Date: May 22, 2004
@@ -24,7 +24,8 @@
 
 error_reporting(E_ALL);
 
-DEFINE('SCRIPTNAME', 'addreply');
+define('SCRIPTNAME', 'addreply');
+define('VISCACHA_CORE', '1');
 
 include ("data/config.inc.php");
 include ("classes/function.viscacha_frontend.php");
@@ -46,9 +47,9 @@ if (!empty($_GET['id'])) {
 ($code = $plugins->load('addreply_topic_query')) ? eval($code) : null;
 
 $result = $db->query('
-SELECT id, prefix, topic, board, posts, status 
-FROM '.$db->pre.'topics 
-WHERE id = "'.$_GET['id'].'" 
+SELECT id, prefix, topic, board, posts, status
+FROM '.$db->pre.'topics
+WHERE id = "'.$_GET['id'].'"
 LIMIT 1
 ',__LINE__,__FILE__);
 
@@ -85,7 +86,7 @@ if ($info['status'] != 0) {
 }
 
 $p_upload = 0;
-if ($config['tpcallow'] == 1 && $my->p['attachments'] == 1) { 
+if ($config['tpcallow'] == 1 && $my->p['attachments'] == 1) {
 	$p_upload = 1;
 }
 
@@ -197,25 +198,25 @@ if ($_GET['action'] == "save") {
 		}
 
 		$date = time();
-		
+
 		($code = $plugins->load('addreply_save_queries')) ? eval($code) : null;
-		
+
 		$db->query("
-		UPDATE {$db->pre}topics 
-		SET last_name = '".$pnameid."', last = '".$date."', posts = posts+1 
+		UPDATE {$db->pre}topics
+		SET last_name = '".$pnameid."', last = '".$date."', posts = posts+1
 		WHERE id = '{$_POST['id']}'
 		",__LINE__,__FILE__);
-		
+
 		$db->query("
-		INSERT INTO {$db->pre}replies (board,topic,topic_id,name,comment,dosmileys,dowords,email,date,ip,guest) 
+		INSERT INTO {$db->pre}replies (board,topic,topic_id,name,comment,dosmileys,dowords,email,date,ip,guest)
 		VALUES ('{$info['board']}','{$_POST['topic']}','{$_POST['id']}','{$pnameid}','{$_POST['comment']}','{$_POST['dosmileys']}','{$_POST['dowords']}','{$_POST['email']}','{$date}','{$my->ip}','{$guest}')
-		",__LINE__,__FILE__); 
+		",__LINE__,__FILE__);
 		$redirect = $db->insert_id();
-		
+
 		// Set uploads to correct reply
 		$db->query("
-		UPDATE {$db->pre}uploads 
-		SET tid = '{$redirect}' 
+		UPDATE {$db->pre}uploads
+		SET tid = '{$redirect}'
 		WHERE mid = '{$pid}' AND topic_id = '{$_POST['id']}' AND tid = '0'
 		",__LINE__,__FILE__);
 
@@ -232,24 +233,24 @@ if ($_GET['action'] == "save") {
 			}
 			if ($type != -1) {
 				$db->query("
-				INSERT INTO {$db->pre}abos (mid,tid,type) 
+				INSERT INTO {$db->pre}abos (mid,tid,type)
 				VALUES ('{$my->id}','{$_POST['id']}','{$type}')
 				",__LINE__,__FILE__);
 			}
 		}
-		
+
 		if ($config['updatepostcounter'] == 1 && $last['count_posts'] == 1) {
 			$db->query ("UPDATE {$db->pre}user SET posts = posts+1 WHERE id = '{$my->id}'",__LINE__,__FILE__);
 		}
-		
+
 		$db->query ("UPDATE {$db->pre}forums SET replies = replies+1, last_topic = '{$_POST['id']}' WHERE id = '{$info['board']}'",__LINE__,__FILE__);
 
 		$lang_dir = $lang->getdir(true);
 		$result = $db->query('
-		SELECT t.id, t.topic, u.name, u.mail, u.language 
-		FROM '.$db->pre.'abos AS a 
-			LEFT JOIN '.$db->pre.'user AS u ON u.id = a.mid 
-			LEFT JOIN '.$db->pre.'topics AS t ON t.id = a.tid 
+		SELECT t.id, t.topic, u.name, u.mail, u.language
+		FROM '.$db->pre.'abos AS a
+			LEFT JOIN '.$db->pre.'user AS u ON u.id = a.mid
+			LEFT JOIN '.$db->pre.'topics AS t ON t.id = a.tid
 		WHERE a.type = "" AND a.tid = "'.$_POST['id'].'" AND a.mid != "'.$my->id.'"
 		',__LINE__,__FILE__);
 		while ($row = $db->fetch_assoc($result)) {
@@ -270,7 +271,7 @@ if ($_GET['action'] == "save") {
 			xmail($to, $from, $data['title'], $data['comment']);
 		}
 		$lang->setdir($lang_dir);
-		
+
 		$close = $gpc->get('close', int);
 		if ($close == 1 && $my->vlogin) {
 			$my->mp = $slog->ModPermissions($info['board']);
@@ -289,7 +290,7 @@ else {
 	$qids = array();
 	$my->mp = $slog->ModPermissions($info['board']);
 	BBProfile($bbcode);
-	
+
 	($code = $plugins->load('addreply_form_start')) ? eval($code) : null;
 
 	if (strlen($_GET['fid']) == 32) {
@@ -318,7 +319,7 @@ else {
 
 		$memberdata_obj = $scache->load('memberdata');
 		$memberdata = $memberdata_obj->get();
-		
+
 		// Multiquote
 		$qids = $gpc->get('qid', arr_int);
 		$pids = getcookie('vquote');
@@ -327,16 +328,16 @@ else {
 			$qids = array_unique($qids);
 			makecookie($config['cookie_prefix'].'_vquote', '', 0);
 		}
-		
+
 		if (count($qids) > 0) {
-		
+
 			$result = $db->query('
-			SELECT name, comment, guest 
-			FROM '.$db->pre.'replies 
-			WHERE id IN('.implode(',',$qids).') 
+			SELECT name, comment, guest
+			FROM '.$db->pre.'replies
+			WHERE id IN('.implode(',',$qids).')
 			LIMIT '.$config['maxmultiquote']
 			,__LINE__,__FILE__);
-			
+
 			while($row = $gpc->prepare($db->fetch_assoc($result))) {
 				if ($row['guest'] == 0) {
 					if (isset($memberdata[$row['name']])) {
@@ -364,20 +365,20 @@ else {
 			$textcode = $vword->output_word($veriid);
 		}
 	}
-	
-	if ($my->vlogin) { 
-		$result = $db->query('SELECT id FROM '.$db->pre.'abos WHERE mid = '.$my->id.' AND tid = '.$_GET['id'],__LINE__,__FILE__); 
+
+	if ($my->vlogin) {
+		$result = $db->query('SELECT id FROM '.$db->pre.'abos WHERE mid = '.$my->id.' AND tid = '.$_GET['id'],__LINE__,__FILE__);
 		$abox = $db->fetch_object($result);
 	}
 
 	$inner['smileys'] = $bbcode->getsmileyhtml($config['smileysperrow']);
 	$inner['bbhtml'] = $bbcode->getbbhtml();
-	
+
 	echo $tpl->parse("header");
 	echo $tpl->parse("menu");
-	
+
 	($code = $plugins->load('addreply_form_prepared')) ? eval($code) : null;
-	
+
 	echo $tpl->parse("addreply");
 
 	($code = $plugins->load('addreply_form_end')) ? eval($code) : null;

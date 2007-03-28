@@ -22,7 +22,7 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "function.global.php") die('Error: Hacking Attempt');
+if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
 
 // Caching-Class
 require_once('classes/class.cache.php');
@@ -39,7 +39,12 @@ include_once ("classes/class.bbcode.php");
 
 $scache = new CacheServer();
 $myini = new INI();
-$lang = new lang();
+if (SCRIPTNAME == 'admin') {
+	$lang = new lang(false, E_USER_WARNING);
+}
+else {
+	$lang = new lang();
+}
 $plugins = new PluginSystem();
 
 // Database functions
