@@ -3,6 +3,8 @@ error_reporting(E_ALL);
 
 define('VISCACHA_VERSION', '0.8 RC2');
 define('VISCACHA_VERSION_OLD', '0.8 RC1');
+define('VISCACHA_CORE', '1');
+define('SCRIPTNAME', 'install');
 
 $locked = file_exists('./locked.txt');
 

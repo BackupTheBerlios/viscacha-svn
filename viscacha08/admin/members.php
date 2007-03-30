@@ -393,6 +393,9 @@ elseif ($job == 'merge2') {
 	// Step 12: Delete old user
 	$db->query("DELETE FROM {$db->pre}user WHERE id = '".$old['id']."'");
 
+	$cache = $scache->load('memberdata');
+	$cache = $cache->delete();
+
 	ok('admin.php?action=members&job=manage', "{$old['name']}'s data is converted to {$base['name']}'s Account.");
 }
 elseif ($job == 'manage') {
@@ -1096,6 +1099,10 @@ elseif ($job == 'delete') {
 		$anz = $db->affected_rows();
 		// Step 13: Delete user's custom profile fields
 		$db->query("DELETE FROM {$db->pre}userfields WHERE ufid IN ({$did})");
+
+		$cache = $scache->load('memberdata');
+		$cache = $cache->delete();
+
 		ok('javascript:history.back(-1);', $anz.' members deleted');
 	}
 	else {
@@ -1930,6 +1937,10 @@ elseif ($job == 'disallow') {
 		$db->query("DELETE FROM {$db->pre}user WHERE id IN ({$did}) AND confirm != '11'");
 		$anz = $db->affected_rows();
 		$db->query("DELETE FROM {$db->pre}userfields WHERE ufid IN ({$did})");
+
+		$cache = $scache->load('memberdata');
+		$cache = $cache->delete();
+
 		ok('admin.php?action=members&job=activate', $anz.' members deleted');
 	}
 	else {

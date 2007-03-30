@@ -554,6 +554,7 @@ $lang['pm_manage'] = 'Manage Message';
 $lang['pm_massmanage'] = 'Manage Messages';
 $lang['pm_newicon'] = 'Read PM';
 $lang['pm_new_title'] = 'Write new Private Message';
+$lang['pm_not_found'] = 'Private Message not found.';
 $lang['pm_oldicon'] = 'Unread PM';
 $lang['pm_outgoing_by'] = 'to';
 $lang['pm_postarea'] = 'Message:';

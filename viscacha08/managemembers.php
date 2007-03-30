@@ -101,6 +101,9 @@ if ($my->vlogin && $my->p['admin'] == 1) {
 		// Step 13: Delete user's custom profilefields
 		$db->query("DELETE FROM {$db->pre}userfields WHERE ufid = '{$user['id']}'");
 
+		$cache = $scache->load('memberdata');
+		$cache = $cache->delete();
+
 		($code = $plugins->load('managemembers_delete_end')) ? eval($code) : null;
 
 		ok($lang->phrase('member_deleted'),'members.php'.SID2URL_1);

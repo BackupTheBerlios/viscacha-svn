@@ -208,15 +208,25 @@ class lang {
 	}
 
 
-	function setdir($dirv) {
+	function setdir($dirId) {
 		global $config;
-		$dir = "language/{$dirv}";
-		if (@is_dir("{$config['fpath']}/{$dir}") == true) {
-			$dir = "{$config['fpath']}/{$dir}";
+		if ($dirId < 1) {
+			$dirId = $config['langdir'];
 		}
+
+		$dir = "language/{$dirId}";
+		if (@is_dir($dir) == false) {
+			$dir = "{$config['fpath']}/language/{$dirId}";
+			if (@is_dir($dir) == false) {
+				$dir = extract_dir(dirname(__FILE__));
+				$dir = "{$dir}/language/{$dirId}";
+			}
+		}
+
 		$dir = realpath($dir);
+
 		if (file_exists($dir)) {
-			$this->dirid = $dirv;
+			$this->dirid = $dirId;
 			$this->dir = $dir;
 			return true;
 		}

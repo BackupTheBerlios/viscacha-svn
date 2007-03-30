@@ -554,6 +554,7 @@ $lang['pm_manage'] = 'Nachricht verwalten';
 $lang['pm_massmanage'] = 'Nachrichten verwalten';
 $lang['pm_newicon'] = 'Gelesene PN';
 $lang['pm_new_title'] = 'Neue PN schreiben';
+$lang['pm_not_found'] = 'Die PN wurde nicht gefunden.';
 $lang['pm_oldicon'] = 'Ungelesene PN';
 $lang['pm_outgoing_by'] = 'an';
 $lang['pm_postarea'] = 'Beitrag:';
