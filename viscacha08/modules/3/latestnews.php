@@ -66,7 +66,7 @@ while ($row = $gpc->prepare($db->fetch_assoc($result))) {
 		}
 		while(($top = array_shift($stack)) != null) {
 			$top = preg_replace("/(\w+?)(=[^\/\r\n\[\]]+)?/i", "\\1", $top);
-			if ($top == '*') { // Listenelemnte nicht schließen
+			if ($top == '*' || $top == 'reader') { // Listenelemnte nicht schließen
 				continue;
 			}
 			$row['comment'] = "{$row['comment']}[/{$top}]";

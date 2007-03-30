@@ -139,7 +139,7 @@ This permissions will be checked and the result will be shown below.</p>
 <p>The following states can appear:<br />
 <strong class="hl_true">OK</strong>: The permissions are set correctly.<br />
 <strong class="hl_null">Failure*</strong>: The permissions are not correct, but these files are only required for changing a couple of things at the Admin Control Panel. You need not to change them until you edit these files.<br />
-<strong class="hl_false">Failure</strong>: The permissions are not correct and you have to set them manually (per FTP). You can not continue this setup until this permissions<br />
+<strong class="hl_false">Failure</strong>: The permissions are not correct and you have to set them manually (per FTP). You can not continue this setup until this permissions are set correctly.<br />
 </p>
 <table class="tables">
 <tr>

@@ -82,11 +82,11 @@ $ini = array(
 	'global' => array(
 		'language' => array(
 			'post_settings' => 'Options:',
-			'pm_not_found' = 'Private Message not found.',
+			'pm_not_found' => 'Private Message not found.'
 		),
 		'language_de' => array(
 			'register_resend_desc' => 'Sollten Sie sich bereits registriert - aber den Bestätigungslink der Registrierungs-E-Mail noch nicht angeklickt haben, konnte Ihre Registrierung nicht vollständig abgeschlossen werden. Sie haben hier die Möglichkeit, Ihnen diese E-Mail erneut zuschicken zu lassen, ohne den Registrierungsvorgang wiederholen zu müssen. Dazu tragen Sie lediglich den bereits von Ihnen beantragten Benutzernamen ein - und die E-Mail wird Ihnen erneut an Ihre bereits bei der Registrierung angegebene E-Mail-Adresse übersandt.',
-			'pm_not_found' = 'Die PN wurde nicht gefunden.',
+			'pm_not_found' => 'Die PN wurde nicht gefunden.'
 		)
 	)
 );
