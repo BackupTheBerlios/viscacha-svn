@@ -4,10 +4,8 @@
  * ----------
  * Author: Alan Juden (alan@judenware.org)
  * Copyright: (c) 2004 Alan Juden, Nigel McNie (http://qbnz.com/highlighter/)
- * Release Version: 1.0.7.12
- * CVS Revision Version: $Revision: 1.14.2.3 $
+ * Release Version: 1.0.7.18
  * Date Started: 2004/06/04
- * Last Modified: $Date: 2006/07/22 11:30:32 $
  *
  * C# language file for GeSHi.
  *

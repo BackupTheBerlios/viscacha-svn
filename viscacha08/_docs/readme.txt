@@ -42,7 +42,7 @@ Following directories need CHMOD 777:
 - All subdirectories of "uploads"
 
 Following files need CHMOD 666:
-- All files in the directories "admin/data/"
+- All files in the directory "admin/data/"
 - All files in the directories "data" and "data/cron"
 - All files in the directory "docs"
 - All files in the directory "language" and all files in the subdirectories of
@@ -55,7 +55,241 @@ Following files need CHMOD 666:
 
 First make a backup of your (old) data!
 
-...
+Upload (and overwrite) the following files (* = an ID):
+
+- All files in the directory "admin":
+   - admin/bbcodes.php
+   - admin/cms.php
+   - admin/cron.php
+   - admin/db.php
+   - admin/designs.php
+   - admin/explorer.php
+   - admin/filetypes.php
+   - admin/forums.php
+   - admin/frames.php
+   - admin/groups.php
+   - admin/language.php
+   - admin/members.php
+   - admin/misc.php
+   - admin/posts.php
+   - admin/profilefield.php
+   - admin/settings.php
+   - admin/slog.php
+   - admin/spider.php
+   - admin/start.php
+
+- All *.php and all .htaccess files in the directory "classes" and all subdirectories of the directory "classes":
+   - classes/cron/jobs/dboptimize.php
+   - classes/cron/jobs/deletegeshi.php
+   - classes/cron/jobs/deletesearch.php
+   - classes/cron/jobs/deletetemp.php
+   - classes/cron/jobs/deletethumbnails.php
+   - classes/cron/jobs/digestdaily.php
+   - classes/cron/jobs/digestweekly.php
+   - classes/cron/jobs/recountpostcounts.php
+   - classes/cron/class.parser.php
+   - classes/cron/function.cron.php
+   - classes/database/mysql.inc.php
+   - classes/diff/class.diff.php
+   - classes/diff/function.diff.php
+   - classes/feedcreator/klipfolio.inc.php
+   - classes/feedcreator/rss091.inc.php
+   - classes/feedcreator/rss20.inc.php
+   - classes/fpdf/class.php
+   - classes/fpdf/extension.php
+   - classes/ftp/class.ftp.php
+   - classes/ftp/class.ftp_pure.php
+   - classes/ftp/class.ftp_sockets.php
+   - classes/geshi/actionscript.php
+   - classes/geshi/ada.php
+   - classes/geshi/apache.php
+   - classes/geshi/applescript.php
+   - classes/geshi/asm.php
+   - classes/geshi/asp.php
+   - classes/geshi/autoit.php
+   - classes/geshi/bash.php
+   - classes/geshi/blitzbasic.php
+   - classes/geshi/bnf.php
+   - classes/geshi/c.php
+   - classes/geshi/c_mac.php
+   - classes/geshi/caddcl.php
+   - classes/geshi/cadlisp.php
+   - classes/geshi/cfdg.php
+   - classes/geshi/cfm.php
+   - classes/geshi/cpp.php
+   - classes/geshi/csharp.php
+   - classes/geshi/css.php
+   - classes/geshi/d.php
+   - classes/geshi/delphi.php
+   - classes/geshi/diff.php
+   - classes/geshi/div.php
+   - classes/geshi/dos.php
+   - classes/geshi/eiffel.php
+   - classes/geshi/fortran.php
+   - classes/geshi/freebasic.php
+   - classes/geshi/gml.php
+   - classes/geshi/groovy.php
+   - classes/geshi/html4strict.php
+   - classes/geshi/idl.php
+   - classes/geshi/ini.php
+   - classes/geshi/inno.php
+   - classes/geshi/io.php
+   - classes/geshi/java.php
+   - classes/geshi/java5.php
+   - classes/geshi/javascript.php
+   - classes/geshi/latex.php
+   - classes/geshi/lisp.php
+   - classes/geshi/lua.php
+   - classes/geshi/matlab.php
+   - classes/geshi/mirc.php
+   - classes/geshi/mpasm.php
+   - classes/geshi/mysql.php
+   - classes/geshi/nsis.php
+   - classes/geshi/objc.php
+   - classes/geshi/ocaml.php
+   - classes/geshi/oobas.php
+   - classes/geshi/oracle8.php
+   - classes/geshi/pascal.php
+   - classes/geshi/perl.php
+   - classes/geshi/php.php
+   - classes/geshi/python.php
+   - classes/geshi/qbasic.php
+   - classes/geshi/reg.php
+   - classes/geshi/robots.php
+   - classes/geshi/ruby.php
+   - classes/geshi/sas.php
+   - classes/geshi/scheme.php
+   - classes/geshi/sdlbasic.php
+   - classes/geshi/smalltalk.php
+   - classes/geshi/smarty.php
+   - classes/geshi/sql.php
+   - classes/geshi/tcl.php
+   - classes/geshi/thinbasic.php
+   - classes/geshi/tsql.php
+   - classes/geshi/vb.php
+   - classes/geshi/vbnet.php
+   - classes/geshi/vhdl.php
+   - classes/geshi/visualfoxpro.php
+   - classes/geshi/winbatch.php
+   - classes/geshi/xml.php
+   - classes/graphic/class.text2image.php
+   - classes/graphic/class.thumbnail.php
+   - classes/graphic/class.veriword.php
+   - classes/graphic/text2image.php
+   - classes/magpie_rss/rss_cache.inc.php
+   - classes/magpie_rss/rss_fetch.inc.php
+   - classes/magpie_rss/rss_parse.inc.php
+   - classes/magpie_rss/rss_utils.inc.php
+   - classes/mail/class.phpmailer.php
+   - classes/mail/class.smtp.php
+   - classes/mail/extended.phpmailer.php
+   - classes/spellchecker/dict/HERE YOU CAN GET DICTIONARIES
+   - classes/spellchecker/function.php
+   - classes/spellchecker/mysql.class.php
+   - classes/spellchecker/php.class.php
+   - classes/spellchecker/pspell.class.php
+   - classes/class.bbcode.php
+   - classes/class.breadcrumb.php
+   - classes/class.cache.php
+   - classes/class.charts.php
+   - classes/class.convertroman.php
+   - classes/class.docoutput.php
+   - classes/class.feedcreator.php
+   - classes/class.filesystem.php
+   - classes/class.geshi.php
+   - classes/class.gpc.php
+   - classes/class.imageconverter.php
+   - classes/class.imstatus.php
+   - classes/class.ini.php
+   - classes/class.jabber.php
+   - classes/class.language.php
+   - classes/class.permissions.php
+   - classes/class.phpconfig.php
+   - classes/class.plugins.php
+   - classes/class.snoopy.php
+   - classes/class.tar.php
+   - classes/class.template.php
+   - classes/class.upload.php
+   - classes/class.vCard.inc.php
+   - classes/class.zip.php
+   - classes/function.chmod.php
+   - classes/function.flood.php
+   - classes/function.frontend_init.php
+   - classes/function.global.php
+   - classes/function.gpc.php
+   - classes/function.jabber.php
+   - classes/function.phpcore.php
+   - classes/function.profilefields.php
+   - classes/function.viscacha_frontend.php
+   - classes/cache/.htaccess
+   - classes/cron/.htaccess
+   - classes/database/.htaccess
+   - classes/diff/.htaccess
+   - classes/feedcreator/.htaccess
+   - classes/fpdf/.htaccess
+   - classes/ftp/.htaccess
+   - classes/geshi/.htaccess
+   - classes/geshi/cpp-qt.php
+   - classes/geshi/plsql.php
+   - classes/geshi/z80.php
+   - classes/magpie_rss/.htaccess
+   - classes/mail/.htaccess
+
+- admin/html/standard.css
+- admin/lib/class.servernavigator.php
+- admin/lib/function.viscacha_backend.php
+
+- designs/*/ie.css
+- Only if you are using the standard stylesheet re-upload designs/1/standard.css
+
+- modules/3/latestnews.php ( The ID [3] can differ at your installation)
+
+- templates/lang2js.php
+
+- templates/*/main/smileys.html
+- templates/*/members/index.html
+- templates/*/members/index_bit.html
+- templates/*/modules/11/legend.html
+- templates/*/modules/12/legend.html
+- templates/*/modules/13/legend.html
+- templates/*/pm/delete.html
+- templates/*/pm/show.html
+- templates/*/pm/move.html
+
+- All .php files in the main Viscacha folder:
+   - addreply.php
+   - admin.php
+   - ajax.php
+   - attachments.php
+   - components.php
+   - cron.php
+   - docs.php
+   - edit.php
+   - editprofile.php
+   - external.php
+   - forum.php
+   - images.php
+   - index.php
+   - log.php
+   - manageforum.php
+   - managemembers.php
+   - managetopic.php
+   - members.php
+   - misc.php
+   - newtopic.php
+   - pdf.php
+   - pm.php
+   - popup.php
+   - portal.php
+   - print.php
+   - profile.php
+   - register.php
+   - search.php
+   - showforum.php
+   - showtopic.php
+   - spellcheck.php
+   - team.php
+
 
 Finally upload the install/ directory and execute the update script.
 
