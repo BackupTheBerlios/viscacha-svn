@@ -769,7 +769,7 @@ if(!function_exists('checkdnsrr')) {
  * @require     PHP 4.0.0 (trigger_error)
  */
 if(!function_exists('image_type_to_extension')) {
-	function image_type_to_extension($imagetype, $include_dot = false) {
+	function image_type_to_extension($imagetype, $include_dot = true) {
 		if(empty($imagetype)) {
 			return false;
 		}

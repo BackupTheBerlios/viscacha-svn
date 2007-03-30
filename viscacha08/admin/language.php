@@ -13,7 +13,7 @@ $langbase = array(
 	'custom' => 'Custom Phrases'
 );
 
-require('lib/language.inc.php');
+require('admin/lib/language.inc.php');
 
 ($code = $plugins->load('admin_language_jobs')) ? eval($code) : null;
 

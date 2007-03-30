@@ -3,7 +3,7 @@ if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
 
 /*
 	Viscacha - A bulletin board solution for easily managing your content
-	Copyright (C) 2004-2006  Matthias Mohr, MaMo Net
+	Copyright (C) 2004-2007  Matthias Mohr, MaMo Net
 
 	Author: Matthias Mohr
 	Publisher: http://www.mamo-net.de
