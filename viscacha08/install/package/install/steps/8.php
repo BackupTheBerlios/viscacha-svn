@@ -71,15 +71,13 @@ if (isset($_REQUEST['save']) && $_REQUEST['save'] == 1) {
 				}
 				$done[$value]++;
 			}
-			$s1 = $gpc->get('sample_d1', int);
-			$s2 = $gpc->get('sample_d2', int);
-			if ($s1 == 1) {
+			if (isset($_REQUEST['sample_d1']) && $_REQUEST['sample_d1'] == 1) {
 				$sql = implode('', file('package/install/db/sample1.dat'));
 				$sql = str_replace('{:=DBPREFIX=:}', $db->pre, $sql);
 				$db->multi_query($sql);
 				$done[] = 'Sample Data (Forum) have been installed.';
 			}
-			if ($s2 == 1) {
+			if (isset($_REQUEST['sample_d2']) && $_REQUEST['sample_d2'] == 1) {
 				$sql = implode('', file('package/install/db/sample2.dat'));
 				$sql = str_replace('{:=DBPREFIX=:}', $db->pre, $sql);
 				$db->multi_query($sql);
