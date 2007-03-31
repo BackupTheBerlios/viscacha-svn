@@ -137,6 +137,12 @@ a:hover {
 	font-weight: bold;
 	color: #204a87;
 }
+.ubox a {
+	border-bottom: 1px dotted #204A87;
+}
+.ubox a:hover {
+	border-bottom: 1px dotted #A40000;
+}
 .mbox {
 	background-color: #ffffff;
 	font-size: 9pt;

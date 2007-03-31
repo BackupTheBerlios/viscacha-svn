@@ -712,6 +712,7 @@ elseif ($job == 'codefiles') {
 <form name="form2" method="post" enctype="multipart/form-data" action="admin.php?action=explorer&job=upload&cfg=codefiles">
 <table class="border">
 <tr><td class="obox">Add Syntax Highlighting Files</td></tr>
+<tr><td class="ubox">GeSHi is used a syntax highlighter. You can use all compatible language files you can get from <a href="http://qbnz.com/highlighter/" target="_blank">http://qbnz.com/highlighter/</a>. Just download GeSHi and upload the language files you want. To create your own language files just read the GeSHi documentation on how to create them.</td></tr>
 <tr><td class="mbox">
 To attach a file, click on the &quot;browse&quot;-button and select a file.
 Then click on &quot;upload&quot; in order to complete the procedure.<br /><br />
