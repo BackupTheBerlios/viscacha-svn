@@ -95,6 +95,7 @@ if ($config['tpcallow'] == 1 && $my->p['attachments'] == 1) {
 if ($_GET['action'] == "save") {
 	$digest = $gpc->get('digest', int);
 	$error = array();
+	$human = null;
 	if (!$my->vlogin) {
 		if ($config['botgfxtest_posts'] == 1) {
 			include("classes/graphic/class.veriword.php");
@@ -102,6 +103,12 @@ if ($_GET['action'] == "save") {
 			if($_POST['letter']) {
 				if ($vword->check_session($_POST['captcha'], $_POST['letter']) == FALSE) {
 					$error[] = $lang->phrase('veriword_mistake');
+				}
+				else {
+				     $human = array(
+                            'captcha' => $_POST['captcha'],
+							'letter' => $_POST['letter']
+					 );
 				}
 			}
 			else {
@@ -163,7 +170,8 @@ if ($_GET['action'] == "save") {
 			'dowords' => $_POST['dowords'],
 			'id' => $_POST['id'],
 			'digest' => $digest,
-			'guest' => 0
+			'guest' => 0,
+			'human' => $human
 		);
 		if (!$my->vlogin) {
 			if ($config['guest_email_optional'] == 0 && empty($_POST['email'])) {
@@ -314,7 +322,8 @@ else {
 			'dosmileys' => 1,
 			'dowords' => 1,
 			'digest' => 0,
-			'topic' => $lang->phrase('reply_prefix').$info['topic']
+			'topic' => $lang->phrase('reply_prefix').$info['topic'],
+			'human' => null
 		);
 
 		$memberdata_obj = $scache->load('memberdata');
@@ -357,7 +366,7 @@ else {
 		}
 	}
 
-	if ($config['botgfxtest_posts'] == 1) {
+	if ($config['botgfxtest_posts'] == 1 && $data['human'] == null) {
 		include("classes/graphic/class.veriword.php");
 		$vword = new VeriWord();
 		$veriid = $vword->set_veriword($config['botgfxtest_text_verification']);

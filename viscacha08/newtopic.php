@@ -188,6 +188,7 @@ elseif ($_GET['action'] == "savevote") {
 elseif ($_GET['action'] == "save") {
 
 	$error = array();
+	$human = null;
 
 	if (!$my->vlogin) {
 		if ($config['botgfxtest_posts'] == 1) {
@@ -196,6 +197,12 @@ elseif ($_GET['action'] == "save") {
 			if($_POST['letter']) {
 				if ($vword->check_session($_POST['captcha'], $_POST['letter']) == FALSE) {
 					$error[] = $lang->phrase('veriword_mistake');
+				}
+				else {
+				     $human = array(
+                     		'captcha' => $_POST['captcha'],
+							'letter' => $_POST['letter']
+					 );
 				}
 			}
 			else {
@@ -266,7 +273,8 @@ elseif ($_GET['action'] == "save") {
 			'dowords' => $_POST['dowords'],
 			'vote' => $_POST['opt_2'],
 			'replies' => $_POST['temp'],
-			'guest' => 1
+			'guest' => 1,
+			'human' => $human
 		);
 		if (!$my->vlogin) {
 			if ($config['guest_email_optional'] == 0 && empty($_POST['email'])) {
@@ -431,7 +439,8 @@ else {
 			'comment' => '',
 			'dosmileys' => 1,
 			'dowords' => 1,
-			'topic' => ''
+			'topic' => '',
+			'human' => null
 		);
 		$_GET['action'] = '';
 	}
@@ -463,7 +472,7 @@ else {
 		$inner['index_prefix'] = '';
 	}
 
-	if ($config['botgfxtest_posts'] == 1) {
+	if ($config['botgfxtest_posts'] == 1 && $data['human'] == null) {
 		include("classes/graphic/class.veriword.php");
 		$vword = new VeriWord();
 		$veriid = $vword->set_veriword($config['botgfxtest_text_verification']);

@@ -3011,9 +3011,10 @@ elseif ($job == 'com_export') {
 	}
 	if ($error) {
 		echo head();
+		$error = $archive->errorInfo(true);
 		unset($archive);
 		$filesystem->unlink($tempdir.$file);
-		error('admin.php?action=cms&job=com', $archive->errorInfo(true));
+		error('admin.php?action=cms&job=com', $error);
 	}
 	else {
 		viscacha_header('Content-Type: application/zip');
