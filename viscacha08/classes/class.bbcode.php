@@ -1132,7 +1132,9 @@ function BBProfile(&$bbcode, $profile = 'standard') {
 			$bbcode->setWordwrap($config['wordwrap'], $config['maxwordlength'], $config['maxwordlengthchar'], $config['asia']);
 			$bbcode->setDoc($config['reduce_endchars'], $config['reduce_nl'], $config['topicuppercase']);
 			$bbcode->setURL($config['reduce_url'], $config['maxurllength'], $config['maxurltrenner']);
-			$bbcode->setName($my->name);
+			if (isset($my->name)) {
+				$bbcode->setName($my->name);
+			}
 			$bbcode->setSmileyDir($config['smileyurl']);
 			$bbcode->setSmileys(1);
 			$bbcode->setReplace($config['wordstatus']);
@@ -1162,7 +1164,9 @@ function BBProfile(&$bbcode, $profile = 'standard') {
 			$bbcode->setWordwrap($config['wordwrap'], $config['maxwordlength'], $config['maxwordlengthchar'], $config['asia']);
 			$bbcode->setDoc($config['reduce_endchars'], $config['reduce_nl'], $config['topicuppercase']);
 			$bbcode->setURL($config['reduce_url'], $config['maxurllength'], $config['maxurltrenner']);
-			$bbcode->setName($my->name);
+			if (isset($my->name)) {
+				$bbcode->setName($my->name);
+			}
 			$bbcode->setSmileyDir($config['smileyurl']);
 		}
 	}

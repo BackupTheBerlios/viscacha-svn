@@ -6,7 +6,6 @@ class ftp extends ftp_base {
 		$this->LocalEcho = $le;
 		$this->Verbose = $verb;
 		$this->ftp_base(TRUE);
-		$this->SendMSG('Connect with pure Sochets-Extension.');
 	}
 
 // <!-- --------------------------------------------------------------------------------------- -->
@@ -14,12 +13,12 @@ class ftp extends ftp_base {
 // <!-- --------------------------------------------------------------------------------------- -->
 
 	function _settimeout($sock) {
-		if(!@socket_set_option($sock, 1, SO_RCVTIMEO, array("sec"=>$this->_timeout, "usec"=>0))) {
+		if(!@socket_set_option($sock, SOL_SOCKET, SO_RCVTIMEO, array("sec"=>$this->_timeout, "usec"=>0))) {
 			$this->PushError('_connect','socket set receive timeout',socket_strerror(socket_last_error($sock)));
 			@socket_close($sock);
 			return FALSE;
 		}
-		if(!@socket_set_option($sock, 1, SO_SNDTIMEO, array("sec"=>$this->_timeout, "usec"=>0))) {
+		if(!@socket_set_option($sock, SOL_SOCKET , SO_SNDTIMEO, array("sec"=>$this->_timeout, "usec"=>0))) {
 			$this->PushError('_connect','socket set send timeout',socket_strerror(socket_last_error($sock)));
 			@socket_close($sock);
 			return FALSE;
@@ -29,8 +28,7 @@ class ftp extends ftp_base {
 
 	function _connect($host, $port) {
 		$this->SendMSG("Creating socket");
-		$sock = @socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
-		if ($sock < 0) {
+		if(!($sock = @socket_create(AF_INET, SOCK_STREAM, SOL_TCP))) {
 			$this->PushError('_connect','socket create failed',socket_strerror(socket_last_error($sock)));
 			return FALSE;
 		}
@@ -59,13 +57,12 @@ class ftp extends ftp_base {
 			if($tmp===false) {
 				$go=$result=false;
 				$this->PushError($fnction,'Read failed', socket_strerror(socket_last_error($this->_ftp_control_sock)));
-			} elseif($tmp=="") $go=false;
-			else {
+			} else {
 				$this->_message.=$tmp;
 //				for($i=0; $i<strlen($this->_message); $i++)
 //					if(ord($this->_message[$i])<32) echo "#".ord($this->_message[$i]); else echo $this->_message[$i];
 //				echo CRLF;
-				if(preg_match("/^([0-9]{3})(-(.*".CRLF.")+\\1)? [^".CRLF."]+".CRLF."$/", $this->_message, $regs)) $go=false;
+				$go = !preg_match("/^([0-9]{3})(-.+\\1)? [^".CRLF."]+".CRLF."$/Us", $this->_message, $regs);
 			}
 		} while($go);
 		if($this->LocalEcho) echo "GET < ".rtrim($this->_message, CRLF).CRLF;
@@ -90,11 +87,7 @@ class ftp extends ftp_base {
 	}
 
 	function _data_prepare($mode=FTP_ASCII) {
-		if($mode==FTP_BINARY) {
-			if(!$this->_exec("TYPE I", "_data_prepare")) return FALSE;
-		} else {
-			if(!$this->_exec("TYPE A", "_data_prepare")) return FALSE;
-		}
+		if(!$this->_settype($mode)) return FALSE;
 		$this->SendMSG("Creating data socket");
 		$this->_ftp_data_sock = @socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
 		if ($this->_ftp_data_sock < 0) {

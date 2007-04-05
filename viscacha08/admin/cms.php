@@ -2802,7 +2802,7 @@ elseif ($job == 'com_add2') {
 	}
 	else {
 		$tdir = "temp/".md5(microtime()).'/';
-		$filesystem->mkdir($tdir);
+		$filesystem->mkdir($tdir, 0777);
 		if (!is_dir($tdir)) {
 			error('admin.php?action=cms&job=com_add', 'Directory could not be created for extraction.');
 		}

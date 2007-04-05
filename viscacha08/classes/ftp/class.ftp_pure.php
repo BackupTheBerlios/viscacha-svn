@@ -6,7 +6,6 @@ class ftp extends ftp_base {
 		$this->LocalEcho = $le;
 		$this->Verbose = $verb;
 		$this->ftp_base();
-		$this->SendMSG('Connect with pure PHP.');
 	}
 
 // <!-- --------------------------------------------------------------------------------------- -->
@@ -77,11 +76,7 @@ class ftp extends ftp_base {
 	}
 
 	function _data_prepare($mode=FTP_ASCII) {
-		if($mode==FTP_BINARY) {
-			if(!$this->_exec("TYPE I", "_data_prepare")) return FALSE;
-		} else {
-			if(!$this->_exec("TYPE A", "_data_prepare")) return FALSE;
-		}
+		if(!$this->_settype($mode)) return FALSE;
 		if($this->_passive) {
 			if(!$this->_exec("PASV", "pasv")) {
 				$this->_data_close();
