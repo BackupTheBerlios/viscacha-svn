@@ -44,13 +44,17 @@ class filesystem {
 			$this->ftp = new ftp(false, false);
 			if(!$this->ftp->SetServer($this->server, $this->port)) {
 				$this->ftp->quit();
+				trigger_error('Could not set server for FTP.', E_NOTICE);
 				return false;
 			}
 			if (!$this->ftp->connect()) {
+				$this->ftp->quit();
+				trigger_error('Could not connect to FTP.', E_NOTICE);
 				return false;
 			}
 			if (!$this->ftp->login($this->user, $this->pw)) {
 				$this->ftp->quit();
+				trigger_error('Could not login to FTP.', E_NOTICE);
 				return false;
 			}
 			$this->ftp->SetType(FTP_AUTOASCII);
@@ -59,6 +63,7 @@ class filesystem {
 			if (!$this->ftp->chdir($this->installed_path)) {
 				$this->ftp->chdir(DIRECTORY_SEPARATOR);
 				trigger_error('Could not change working directory for FTP connection.', E_WARNING);
+				return false;
 			}
 
 			$this->connected = true;
@@ -90,10 +95,11 @@ class filesystem {
 		if (is_array($data)) {
 			$data = implode("\n", $data);
 		}
-		if (file_put_contents($file, $data) == false) {
+		if (@file_put_contents($file, $data) === false) {
 			if ($this->init()) {
 				$fp = tmpfile();
 				if (!is_resource($fp)) {
+					trigger_error('tmpfile() failed!');
 					return false;
 				}
 				fwrite($fp, $data);
@@ -142,6 +148,7 @@ class filesystem {
 			}
 		}
 		else {
+			$this->chmod($file, $chmod);
 			return true;
 		}
 	}

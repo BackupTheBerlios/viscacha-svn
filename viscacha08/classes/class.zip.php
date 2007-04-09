@@ -3208,6 +3208,7 @@ if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
   // --------------------------------------------------------------------------------
   function privExtractFile(&$p_entry, $p_path, $p_remove_path, $p_remove_all_path, &$p_options)
   {
+  	global $filesystem;
     $v_result=1;
 
     // ----- Read the file header
@@ -3409,6 +3410,8 @@ if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
         if ($p_entry['compression'] == 0) {
 
 		  // ----- Opening destination file
+          $filesystem->file_put_contents($p_entry['filename'], '');
+          $filesystem->chmod($p_entry['filename'], 0666);
           if (($v_dest_file = @fopen($p_entry['filename'], 'wb')) == 0)
           {
 
@@ -3474,8 +3477,9 @@ if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
           }
 
           // ----- Opening destination file
+          $filesystem->file_put_contents($p_entry['filename'], '');
+          $filesystem->chmod($p_entry['filename'], 0666);
           if (($v_dest_file = @fopen($p_entry['filename'], 'wb')) == 0) {
-
             // ----- Change the file status
             $p_entry['status'] = "write_error";
             return $v_result;
@@ -3496,7 +3500,7 @@ if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
         if (isset($p_options[PCLZIP_OPT_SET_CHMOD])) {
 
           // ----- Change the mode of the file
-          @chmod($p_entry['filename'], $p_options[PCLZIP_OPT_SET_CHMOD]);
+          @$filesystem->chmod($p_entry['filename'], $p_options[PCLZIP_OPT_SET_CHMOD]);
         }
       }
     }
@@ -4404,6 +4408,7 @@ if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
   // --------------------------------------------------------------------------------
   function privDirCheck($p_dir, $p_is_dir=false)
   {
+  	global $filysystem;
     $v_result = 1;
 
     // ----- Remove the final '/'
@@ -4435,7 +4440,7 @@ if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
     }
 
     // ----- Create the directory
-    if (!@mkdir($p_dir, 0777))
+    if (!@$filesystem->mkdir($p_dir, 0777))
     {
       // ----- Error log
       PclZip::privErrorLog(PCLZIP_ERR_DIR_CREATE_FAIL, "Unable to create directory '$p_dir'");

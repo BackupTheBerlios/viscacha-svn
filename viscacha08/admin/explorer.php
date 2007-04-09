@@ -76,7 +76,7 @@ if ($job == 'upload') {
 	    if (empty($_FILES['upload_'.$i]['name'])) {
 	    	continue;
 	    }
-	 
+
 	    $my_uploader = new uploader();
 		$my_uploader->max_filesize($filesize);
 		$my_uploader->file_types($filetypes);
@@ -102,7 +102,7 @@ if ($job == 'upload') {
 	if ($success == 0) {
 	    $inserterrors[] = 'No file successfully uploaded!';
 	}
-	
+
 	if (count($inserterrors) > 0) {
 		error($url, $inserterrors);
 	}
@@ -131,14 +131,14 @@ elseif ($job == 'newdir') {
 <form name="form" method="post" action="admin.php?action=explorer&job=newdir2">
 <input type="hidden" name="path" value="<?php echo $path; ?>">
  <table class="border">
-  <tr> 
+  <tr>
    <td class="obox" colspan="2">Create new directory</td>
   </tr>
-  <tr> 
+  <tr>
    <td class="mbox">Name for the new directory:</td>
    <td class="mbox"><input type="text" name="name" size="30"></td>
   </tr>
-  <tr> 
+  <tr>
    <td class="mbox">CHMOD:<br /><span class="stext">If you are not sure, use CHMOD 755. You can change it later.</span></td>
    <td class="mbox"><select name="chmod">
    <option value="777">777</option>
@@ -151,7 +151,7 @@ elseif ($job == 'newdir') {
    </select></td>
   </tr>
   <tr>
-   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="Create"></td> 
+   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="Create"></td>
   </tr>
  </table>
 </form>
@@ -179,14 +179,14 @@ elseif ($job == "chmod") {
 <form name="form" method="post" action="admin.php?action=explorer&job=chmod2">
 <input type="hidden" name="path" value="<?php echo $path; ?>">
  <table class="border">
-  <tr> 
+  <tr>
    <td class="obox" colspan="2">Set CHMOD</td>
   </tr>
-  <tr> 
+  <tr>
    <td class="mbox">New CHMOD:</td>
    <td class="mbox"><input type="text" name="chmod" id="chmod" value="<?php echo $chmod; ?>" size="4" onKeyUp="octalchange()"></td>
   </tr>
-  <tr> 
+  <tr>
    <td class="mbox">CHMOD-Helper:
    <noscript><br /><span class="stext">You can not use this Helper, until JavaScript is enabled.</span></noscript>
    </td>
@@ -220,7 +220,7 @@ elseif ($job == "chmod") {
    </td>
   </tr>
   <tr>
-   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="&nbsp;Set&nbsp;"></td> 
+   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="&nbsp;Set&nbsp;"></td>
   </tr>
  </table>
 </form>
@@ -249,15 +249,15 @@ elseif ($job == "rename") {
 <input type="hidden" name="path" value="<?php echo $path; ?>">
 <input type="hidden" name="type" value="<?php echo $type; ?>">
  <table class="border">
-  <tr> 
+  <tr>
    <td class="obox" colspan="2">Rename a <?php echo $name; ?></td>
   </tr>
-  <tr> 
+  <tr>
    <td class="mbox">New name of <?php echo $name; ?>:<?php echo iif($type != 'dir', '<br /><span class="stext">Append the extension!</span>'); ?></td>
    <td class="mbox"><input type="text" name="name" size="30"></td>
   </tr>
   <tr>
-   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="Rename"></td> 
+   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="Rename"></td>
   </tr>
  </table>
 </form>
@@ -272,7 +272,7 @@ elseif ($job == "rename2") {
 	if (empty($newname)) {
 		error('admin.php?action=explorer&job=rename&path='.urlencode($source), 'No new name specified!');
 	}
-	
+
 	$repath = urlencode(extract_dir($source, false));
 	if ($type == 'dir') {
 		$dest = extract_dir($source).$newname;
@@ -324,7 +324,7 @@ elseif ($job == "delete2") {
 	$type = $gpc->get('type', str);
 	$name = iif($type == 'dir', 'directory', 'file');
 	echo head();
-	
+
 	$repath = urlencode(extract_dir($path, false));
 	if (@rmdirr($path)) {
 		ok('admin.php?action=explorer&path='.$repath, ucfirst($name).' successfully deleted!');
@@ -344,15 +344,15 @@ elseif ($job == "edit") {
 	?>
 <form name="form" method="post" action="admin.php?action=explorer&job=edit2&path=<?php echo urlencode($file); ?>">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
-  <tr> 
+  <tr>
    <td class="obox" colspan="2"><b>Edit a File</b></td>
   </tr>
   <tr>
-   <td class="mbox" width="15%">Content:</td> 
-   <td class="mbox" width="85%"><textarea name="content" rows="20" cols="110" class="texteditor"><?php echo htmlspecialchars($content); ?></textarea></td> 
+   <td class="mbox" width="15%">Content:</td>
+   <td class="mbox" width="85%"><textarea name="content" rows="20" cols="110" class="texteditor"><?php echo htmlspecialchars($content); ?></textarea></td>
   </tr>
-  <tr> 
-   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="Save" /></td> 
+  <tr>
+   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="Save" /></td>
   </tr>
  </table>
 </form>
@@ -380,17 +380,17 @@ elseif ($job == "extract") {
 	$newdir .= DIRECTORY_SEPARATOR.$filename;
 	?>
 <form name="form" method="post" action="admin.php?action=explorer&job=extract2">
-<input type="hidden" name="path" value="<?php echo $path; ?>">
+<input type="hidden" name="path" value="<?php echo $file; ?>">
  <table class="border">
-  <tr> 
+  <tr>
    <td class="obox" colspan="2">Extract an compressed archive (<?php echo implode(', ', $ServerNavigator->extract); ?>)</td>
   </tr>
-  <tr> 
+  <tr>
    <td class="mbox">Extract to:<br /><span class="stext">The directory must not exist. Please specify the <strong>absolute path</strong>!</span></td>
    <td class="mbox"><input type="text" name="to" size="60" value="<?php echo $newdir; ?>"></td>
   </tr>
   <tr>
-   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="Extract"></td> 
+   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="Extract"></td>
   </tr>
  </table>
 </form>

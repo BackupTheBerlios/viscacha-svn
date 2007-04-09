@@ -51,7 +51,7 @@ elseif ($job == 'ftp') {
 	<form name="form" method="post" action="admin.php?action=settings&job=ftp2">
 	<table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
 	 <tr>
-	  <td class="obox" colspan="2"><b>FTP Settings</b></td>
+	  <td class="obox" colspan="2"><span class="right"><a class="button" href="admin.php?action=settings&amp;job=ftptest">Test FTP Connection</a></span>FTP Settings</b></td>
 	 </tr>
 	 <tr>
 	  <td class="mbox" width="50%">FTP-Server:<br /><span class="stext">You can leave it empty for disabling FTP.</span></td>
@@ -93,6 +93,47 @@ elseif ($job == 'ftp2') {
 	$c->savedata();
 
 	ok('admin.php?action=settings&job=settings');
+}
+elseif ($job == 'ftptest') {
+	echo head();
+	require_once("classes/ftp/class.ftp.php");
+	require_once("classes/ftp/class.ftp_".pemftp_class_module().".php");
+
+	?>
+	<table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
+	 <tr>
+	  <td class="obox" colspan="2"><span class="right"><a class="button" href="admin.php?action=settings&amp;job=ftp">Configure FTP Connection</a></span>FTP Connection Test</td>
+	 </tr>
+	 <tr>
+	  <td class="mbox" width="100%"><strong>FTP-Command-Log</strong>:<br /><pre><?php
+	$ftp = new ftp(true, true);
+	if(!$ftp->SetServer($config['ftp_server'], $config['ftp_port'])) {
+		?></pre>Server and/or port have the wrong format.<?php
+	}
+	else {
+		if (!$ftp->connect()) {
+			?></pre>Could not connect to ftp server! Pleasy check the ftp server settings (server, port)!<?php
+		}
+		else {
+			if (!$ftp->login($config['ftp_user'], $config['ftp_pw'])) {
+				$ftp->quit();
+				?></pre>Could not authenticate to ftp server! Pleasy try again later or check the ftp authentication settings (username, password)!<?php
+			}
+			else {
+				if (!$ftp->chdir($config['ftp_path'])) {
+					$ftp->quit();
+					?></pre>Directory "<?php echo $config['ftp_path']; ?>" does not exist!<?php
+				}
+				else {
+					?></pre>Connection seems to be ok!<?php
+				}
+			}
+		}
+	}
+	?>
+	</td></tr></table>
+	<?php
+	echo foot();
 }
 elseif ($job == 'posts') {
 	$config = $gpc->prepare($config);
