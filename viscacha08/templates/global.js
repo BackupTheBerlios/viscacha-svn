@@ -77,7 +77,7 @@ function ReloadCountdown(iv) {
 	}
 	else {
 		countdown = FetchElement('countdown');
-		countdown.innerHTML = iv;
+		countdown.firstChild.nodeValue = iv;
 		iv = iv - 1;
 		setTimeout("ReloadCountdown("+iv+")", 1000);
 	}

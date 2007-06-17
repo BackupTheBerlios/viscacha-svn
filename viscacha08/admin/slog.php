@@ -44,7 +44,7 @@ elseif ($job == 'l_mysqlerror') {
 	?>
 <form name="form" method="post" action="admin.php?action=slog&file=l_mysqlerror&job=empty">
  <table class="border">
-  <tr> 
+  <tr>
    <td class="obox" colspan="8">MySQL-Error-Logfile</td>
   </tr>
    <?php
@@ -78,11 +78,11 @@ URL: <?php echo $data[5]; ?></textarea>
    <?php } } ?>
    </td>
   </tr>
-  <tr> 
-   <td class="ubox" align="center" colspan="8"><input type="submit" name="Submit" value="Delete the log file now!"></td> 
+  <tr>
+   <td class="ubox" align="center" colspan="8"><input type="submit" name="Submit" value="Delete the log file now!"></td>
   </tr>
  </table>
-</form> 
+</form>
 	<?php
 	echo foot();
 }
@@ -98,22 +98,22 @@ elseif ($job == 'l_cron') {
 	?>
 <form name="form" method="post" action="admin.php?action=slog&file=l_cron&job=empty">
  <table class="border">
-  <tr> 
+  <tr>
    <td class="obox">Scheduled Tasks: Log file</td>
   </tr>
-  <tr> 
+  <tr>
    <td class="mbox"><?php echo $log; ?></td>
   </tr>
-  <tr> 
-   <td class="ubox" align="center"><input type="submit" name="Submit" value="Delete the log file now!"></td> 
+  <tr>
+   <td class="ubox" align="center"><input type="submit" name="Submit" value="Delete the log file now!"></td>
   </tr>
  </table>
-</form> 
+</form>
 	<?php
 	echo foot();
 }
 elseif ($job == 's_general_image') {
-	
+
 	require_once('classes/class.charts.php');
 	$PG = new PowerGraphic();
 
@@ -123,29 +123,29 @@ elseif ($job == 's_general_image') {
 	$type = $gpc->get('dtype', int);
 	$sql = '';
 	switch ($type) {
-		case 1: 
+		case 1:
 			$table = $db->pre."user";
 			$datefield = "regdate";
 			$stats_name = 'Registration';
 		break;
-		case 2: 
+		case 2:
 			$table = $db->pre."topics";
 			$datefield = "date";
 			$stats_name = 'Topics';
 		break;
-		case 3: 
+		case 3:
 			$table = $db->pre."replies";
 			$datefield = "date";
 			$stats_name = 'Posts';
 		break;
-		default: 
+		default:
 			$table = $db->pre."pm";
 			$datefield = "date";
 			$sql = ' AND dir != "2" ';
 			$stats_name = 'Private Messages';
 		break;
 	}
-	
+
 	$timeorder = $gpc->get('timeorder', int);
 	switch ($timeorder) {
 		case 1:
@@ -160,7 +160,7 @@ elseif ($job == 's_general_image') {
 			$sqlformat = "%m %Y";
 			$phpformat = "n~ Y";
 	}
-	
+
 	$sort = $gpc->get('sortorder', str);
 	if ($sort == 'asc' || $sort == 'desc') {
 		$sort = strtoupper($sort);
@@ -168,16 +168,16 @@ elseif ($job == 's_general_image') {
 	else {
 		$sort = 'ASC';
 	}
-	
+
 	$to = mktime(24, 0, 0, $gpc->get('to_month', int), $gpc->get('to_day', int), $gpc->get('to_year', int));
 	$from = mktime(0, 0, 0, $gpc->get('from_month', int), $gpc->get('from_day', int), $gpc->get('from_year', int));
-	
+
 	$max = 0;
 	$cache = array();
 	$result = $db->query("SELECT COUNT(*) AS nr, DATE_FORMAT(FROM_UNIXTIME($datefield),'$sqlformat') AS timeorder, MAX($datefield) AS statdate FROM $table WHERE $datefield > '$from' AND $datefield < '$to' $sql GROUP BY timeorder ORDER BY $datefield $sort", __LINE__, __FILE__);
 	while ($row = $db->fetch_assoc($result)) {
 		$statdate = date($phpformat, $row['statdate']);
-		
+
 		if ($timeorder == 1) {
 			$statdate = preg_replace("/(\d+)~/e", "getday('\\1')", $statdate);
 		}
@@ -193,11 +193,11 @@ elseif ($job == 's_general_image') {
 			}
 			$statdate = str_replace("#", "#".$week, $statdate);
 		}
-			
+
 		if ($row['nr'] > $max) $max = $row['nr'];
 		$cache[] = array($row['nr'], $statdate);
 	}
-	
+
 	$PG->title     = $stats_name;
 	$PG->axis_x    = '';
 	$PG->axis_y    = $stats_name;
@@ -205,7 +205,7 @@ elseif ($job == 's_general_image') {
 	$PG->skin      = $skin;
 	$PG->dp 	   = '.';
 	$PG->ds 	   = '';
-	
+
 	if (count($cache)) {
 		while (list($key, $row) = each($cache)) {
 			$PG->x[] = $row[1];
@@ -214,15 +214,15 @@ elseif ($job == 's_general_image') {
 	}
 
 	$PG->credits   = 'Viscacha '.$config['version'];
-	
+
 	$PG->start();
 }
 elseif ($job == 's_general') {
 	echo head();
-	
+
 	$result = $db->query('SELECT MIN(regdate) as date FROM '.$db->pre.'user LIMIT 1');
 	$install = $db->fetch_assoc($result);
-	
+
 	$show = $gpc->get('show', int);
 	require_once("classes/class.charts.php");
 	$PG = new PowerGraphic();
@@ -319,9 +319,9 @@ elseif ($job == 's_general') {
   <tr class="mbox">
    <td>Time interval:</td>
    <td><select name="timeorder">
-    <option value="1"<?php echo iif($timeorder == 1,' selected="selected"'); ?>>T&auml;glich</option>
-    <option value="2"<?php echo iif($timeorder == 2,' selected="selected"'); ?>>W&ouml;chentlich</option>
-    <option value="3"<?php echo iif($timeorder == 3,' selected="selected"'); ?>>Monatlich</option>
+    <option value="1"<?php echo iif($timeorder == 1,' selected="selected"'); ?>>Daily</option>
+    <option value="2"<?php echo iif($timeorder == 2,' selected="selected"'); ?>>Weekly</option>
+    <option value="3"<?php echo iif($timeorder == 3,' selected="selected"'); ?>>Monthly</option>
    </select></td>
   </tr>
   <tr class="mbox">
@@ -382,7 +382,7 @@ if ($show == 1) {
 
 	$result = $db->query('SELECT COUNT(*) FROM '.$db->pre.'user',__LINE__,__FILE__);
 	$members = $db->fetch_num($result);
-	
+
 	$result = $db->query('SELECT COUNT(*) FROM '.$db->pre.'abos WHERE type != "f"',__LINE__,__FILE__);
 	$abos = $db->fetch_num($result);
 
@@ -391,15 +391,15 @@ if ($show == 1) {
 
 	$result = $db->query('SELECT COUNT(*) FROM '.$db->pre.'uploads',__LINE__,__FILE__);
 	$uploads = $db->fetch_num($result);
-	
+
 	$result = $db->query('SELECT COUNT(*) FROM '.$db->pre.'votes',__LINE__,__FILE__);
 	$votes = $db->fetch_num($result);
 ?>
  <table class="border">
-  <tr> 
+  <tr>
    <td class="obox">General Statistics</td>
   </tr>
-  <tr> 
+  <tr>
    <td class="mbox">
 	<table class="inlinetable">
 	<tr>
@@ -423,7 +423,7 @@ if ($show == 1) {
 	  <td width="25%">Participants in the votes:</td><td width="25%"><code><?php echo $votes[0];?></code></td>
 	</tr>
 	</table>
-   </td> 
+   </td>
   </tr>
  </table>
 	<?php
