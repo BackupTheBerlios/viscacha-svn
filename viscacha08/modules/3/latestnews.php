@@ -66,10 +66,12 @@ while ($row = $gpc->prepare($db->fetch_assoc($result))) {
 		}
 		while(($top = array_shift($stack)) != null) {
 			$top = preg_replace("/(\w+?)(=[^\/\r\n\[\]]+)?/i", "\\1", $top);
-			if ($top == '*' || $top == 'reader') { // Listenelemnte nicht schließen
+			if (preg_match('/[^\w\d]+/i', $top) == 1 || $top == 'reader') {
 				continue;
 			}
-			$row['comment'] = "{$row['comment']}[/{$top}]";
+			else {
+				$row['comment'] = "{$row['comment']}[/{$top}]";
+			}
 		}
 	}
 	// IntelliCut - End

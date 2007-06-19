@@ -302,7 +302,7 @@ elseif ($job == 'lang_delete2') {
 	$info = $db->fetch_assoc($result);
 
 	if ($info['publicuse'] == 1) {
-		error('admin.php?action=language&job=manage', 'You can not unpublish this language until you have defined another default language!');
+		error('admin.php?action=language&job=manage', 'You can not unpublish this language until you have unpublished it!');
 	}
 
 	$db->query("DELETE FROM {$db->pre}language WHERE id = '{$id}' LIMIT 1");
