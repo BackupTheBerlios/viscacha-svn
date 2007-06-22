@@ -2,7 +2,7 @@
 /*
 	Viscacha - A bulletin board solution for easily managing your content
 	Copyright (C) 2004-2007  Matthias Mohr, MaMo Net
-	
+
 	Author: Matthias Mohr
 	Publisher: http://www.mamo-net.de
 	Start Date: May 22, 2004
@@ -58,9 +58,9 @@ foreach ($t as $row) {
 }
 
 $result = $db->query('
-SELECT id, name, mail, hp, location, fullname, groups 
-FROM '.$db->pre.'user 
-WHERE '.implode(' OR ',$cache).' 
+SELECT id, name, mail, hp, location, fullname, groups
+FROM '.$db->pre.'user
+WHERE '.implode(' OR ',$cache).'
 ORDER BY name ASC
 ',__LINE__,__FILE__);
 
@@ -78,11 +78,11 @@ while($row = $gpc->prepare($db->fetch_object($result))) {
 		}
 	}
 }
-	
+
 $result = $db->query('
-SELECT m.time, m.mid, u.name as member, m.bid, f.name as board, u.mail, u.hp, u.location, u.fullname 
-FROM '.$db->pre.'moderators AS m 
-	LEFT JOIN '.$db->pre.'user AS u ON u.id = m.mid 
+SELECT m.time, m.mid, u.name as member, m.bid, f.name as board, u.mail, u.hp, u.location, u.fullname
+FROM '.$db->pre.'moderators AS m
+	LEFT JOIN '.$db->pre.'user AS u ON u.id = m.mid
 	LEFT JOIN '.$db->pre.'forums AS f ON f.id = m.bid
 ORDER BY u.name ASC
 ',__LINE__,__FILE__);
@@ -90,24 +90,24 @@ ORDER BY u.name ASC
 $inner['moderator_bit'] = '';
 if ($db->num_rows() > 0) {
 	$mod_cache = array();
-	$mid_cache = array(); 
-	while($row = $gpc->prepare($db->fetch_object($result))) {  
+	$mid_cache = array();
+	while($row = $gpc->prepare($db->fetch_object($result))) {
 		$mod_cache[$row->mid][] = $row;
 		$mid_cache[] = $row->mid;
 	}
-	
+
 	if(isset($mid_cache)) {
 		$mid_cache = array_unique($mid_cache);
 		$lastmod = '';
 		$echoline = '';
 		foreach ($mid_cache as $mid) {
 			$inner['moderator_bit_forum'] = array();
-			if(isset($mod_cache[$mid])) {  
+			if(isset($mod_cache[$mid])) {
 				$mod  = $mod_cache[$mid];
 				$anz2 = count($mod);
 				$forschleife = $anz2-1;
 				for($i = 0; $i < $anz2; $i++) {
-					if ($config['team_mod_dateuntil'] == 1) {
+					if ($config['team_mod_dateuntil'] == 1 && !empty($mod[$i]->time)) {
 						$mod[$i]->time = gmdate($lang->phrase('dformat2'),times($mod[$i]->time));
 					}
 					else {
@@ -134,5 +134,5 @@ $slog->updatelogged();
 $zeitmessung = t2();
 echo $tpl->parse("footer");
 $phpdoc->Out();
-$db->close();		
+$db->close();
 ?>

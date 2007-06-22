@@ -1979,7 +1979,7 @@ elseif ($job == 'activate') {
 		  <td class="mbox"><?php echo $row->regdate; ?></td>
 		  <td class="mbox"><ul>
 		  <?php if ($row->confirm == '00' || $row->confirm == '01') { ?>
-		  <li><strong><a href="admin.php?action=members&job=confirm&id=<?php echo $row->id; ?>">Confirm User only</a></strong></li>
+		  <li><strong><a href="admin.php?action=members&job=confirm&id=<?php echo $row->id; ?>">Confirm User</a></strong></li>
 		  <?php } if ($row->confirm == '00' || $row->confirm == '10') { ?>
 		  <li>User has to activate the account per e-mail [<a href="admin.php?action=members&job=confirm2&id=<?php echo $row->id; ?>">Activate User completely</a>]</li>
 		  <?php } ?>

@@ -64,12 +64,18 @@ while ($row = $gpc->prepare($db->fetch_assoc($result))) {
 				}
 			}
 		}
+		$bbcodes =	array(	'hide', 'code', 'list', 'note', 'url', 'img', 'color', 'align', 'email', 'h', 'size', 
+												'quote', 'edit', 'ot', 'b', 'i', 'u', 'sub', 'sup', 'tt', 'table'
+								);
+								// reader, tab, hr, *
+		$custom = $bbcode->getCustomBB();
+		foreach ($custom as $re) {
+			$bbcodes[] = strtolower($re['bbcodetag']);
+		}
 		while(($top = array_shift($stack)) != null) {
 			$top = preg_replace("/(\w+?)(=[^\/\r\n\[\]]+)?/i", "\\1", $top);
-			if (preg_match('/[^\w\d]+/i', $top) == 1 || $top == 'reader') {
-				continue;
-			}
-			else {
+			$top = strtolower($top);
+			if (in_array($top, $bbcodes) == true) {
 				$row['comment'] = "{$row['comment']}[/{$top}]";
 			}
 		}

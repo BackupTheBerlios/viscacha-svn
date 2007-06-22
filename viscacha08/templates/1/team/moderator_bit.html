@@ -6,7 +6,7 @@
   <td><ul>
   <?php foreach ($inner['moderator_bit_forum'] as $modb) { ?>
 	<li><a href="showforum.php?id=<?php echo $modb->bid.SID2URL_x; ?>"><?php echo $modb->board; ?></a>
-	<?php echo iif($modb->time,'<br /><span class="stext">(<em>'.$lang->phrase('team_moderator_until').$modb->time.'</em>)</span>'); ?></li>
+	<?php echo iif($modb->time > 0,'<br /><span class="stext">(<em>'.$lang->phrase('team_moderator_until').$modb->time.'</em>)</span>'); ?></li>
   <?php } ?>
   </ul></td>
  </tr>

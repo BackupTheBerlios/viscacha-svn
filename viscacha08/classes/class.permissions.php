@@ -1291,7 +1291,7 @@ function ModPermissions ($bid) {
 	    	return array(1,1,1,1,1,1);
 	    }
 	    else {
-		    $result = $db->query("SELECT s_rating, s_news, s_article, p_delete, p_mc FROM {$db->pre}moderators WHERE mid = '{$my->id}' AND bid = '{$bid}' AND time > ".time(),__LINE__,__FILE__);
+		    $result = $db->query("SELECT s_rating, s_news, s_article, p_delete, p_mc FROM {$db->pre}moderators WHERE mid = '{$my->id}' AND bid = '{$bid}' AND (time > ".time()." OR time IS NULL)",__LINE__,__FILE__);
 	        if ($db->num_rows() > 0) {
 	        	$row = $db->fetch_assoc($result);
 	            return array(1, $row['s_rating'], $row['s_news'], $row['s_article'], $row['p_delete'], $row['p_mc']);
