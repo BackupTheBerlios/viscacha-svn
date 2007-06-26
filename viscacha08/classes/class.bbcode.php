@@ -1089,7 +1089,14 @@ class BBCode {
 			}
 		}
 		$smileys[1] = array_chunk($smileys[1], $perrow);
-		$tpl->globalvars(compact("smileys"));
+
+		end($smileys[1]);
+		$last = current($smileys[1]);
+		$lastKey = key($smileys[1]);
+		reset($smileys[1]);
+		$colspan = $perrow - count($last);
+
+		$tpl->globalvars(compact("smileys", "colspan", "lastKey"));
 		return $tpl->parse("main/smileys");
 	}
 	function getbbhtml ($file = "main/bbhtml") {

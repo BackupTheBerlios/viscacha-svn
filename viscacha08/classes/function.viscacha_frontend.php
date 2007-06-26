@@ -319,29 +319,6 @@ function pages ($anzposts, $epp, $uri, $p = 0, $template = '') {
     return $tpl->parse("main/pages".$template);
 }
 
-function double_udata ($opt,$val) {
-	global $db;
-	$result = $db->query('SELECT id FROM '.$db->pre.'user WHERE '.$opt.' = "'.$val.'" LIMIT 1',__LINE__,__FILE__);
-	if ($db->num_rows($result) == 0) {
-		if ($opt == 'name') {
-			$olduserdata = file('data/deleteduser.php');
-			foreach ($olduserdata as $row) {
-				$row = trim($row);
-				if (!empty($row)) {
-					$row = explode("\t", $row);
-					if (strtolower($row[1]) == strtolower($val)) {
-						return false;
-					}
-				}
-			}
-		}
-		return true;
-	}
-	else {
-		return false;
-	}
-}
-
 function t1 () {
 	return benchmarktime();
 }

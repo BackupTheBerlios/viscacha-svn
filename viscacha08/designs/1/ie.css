@@ -32,5 +32,8 @@
 	border: 0px;
 }
 * html .iefix_br {
-  line-height: 2px;
+	line-height: 2px;
+}
+* html #popup_bbsmileys {
+	height: 200px;
 }

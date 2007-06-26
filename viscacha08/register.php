@@ -90,9 +90,6 @@ if ($_GET['action'] == "save") {
 	if (strxlen($_POST['email']) > 200) {
 		$error[] = $lang->phrase('email_too_long');
 	}
-	if (double_udata('mail', $_POST['email']) == false) {
-		 $error[] = $lang->phrase('email_already_used');
-	}
 	if (check_mail($_POST['email']) == false) {
 		$error[] = $lang->phrase('illegal_mail');
 	}

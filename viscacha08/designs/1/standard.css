@@ -526,17 +526,18 @@ label, .labeldiv {
 	width: 140px;
 }
 #popup_bbsmileys {
-	height: 200px;
+	max-height: 200px;
 	width: 255px;
 	overflow: auto;
 }
 .tables_bbsmileys {
-	width: 250px;
+	width: 100%;
 	border-collapse: collapse;
-	margin-bottom: 5px;
+	margin-bottom: 0px;
 }
 .tables_bbsmileys td {
 	border: 1px solid #839FBC;
+	border-width: 1px 0px 0px 1px;
 	padding: 3px;
 }
 .bbsmileys {

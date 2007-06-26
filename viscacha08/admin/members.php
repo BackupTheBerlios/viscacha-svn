@@ -429,6 +429,7 @@ elseif ($job == 'manage') {
 		  <td class="obox" colspan="8">
 		  <?php if ($my->settings['admin_interface'] == 1) { ?>
 		  <span style="float: right;">
+		  <a class="button" href="admin.php?action=members&amp;job=register">Add new Member</a>
 		  <a class="button" href="admin.php?action=members&amp;job=memberrating">Memberratings</a>
 		  <a class="button" href="admin.php?action=members&amp;job=merge">Merge Users</a>
 		  <a class="button" href="admin.php?action=members&amp;job=recount">Recount Post Counts</a>
@@ -442,21 +443,21 @@ elseif ($job == 'manage') {
 		<tr>
 		  <td class="obox">Delete<br /><span class="stext"><input type="checkbox" onclick="check_all('delete[]');" name="all" value="1" /> All</span></td>
 		  <td class="obox">Name
-		  <a href="admin.php?action=members&job=manage&letter=<?php echo $letter; ?>&amp;page=<?php echo $page; ?>"><img src="admin/html/images/asc.gif" border=0 alt="Ascending"></a>
-		  <a href="admin.php?action=members&job=manage&order=1&amp;page=<?php echo $page; ?>&amp;letter=<?php echo $letter; ?>"><img src="admin/html/images/desc.gif" border=0 alt="Descending"></a></td>
+		  <a href="admin.php?action=members&amp;job=manage&amp;letter=<?php echo $letter; ?>&amp;page=<?php echo $page; ?>"><img src="admin/html/images/asc.gif" border=0 alt="Ascending"></a>
+		  <a href="admin.php?action=members&amp;job=manage&amp;order=1&amp;page=<?php echo $page; ?>&amp;letter=<?php echo $letter; ?>"><img src="admin/html/images/desc.gif" border=0 alt="Descending"></a></td>
 		  <td class="obox">Email</td>
 		  <td class="obox">Posts
-		  <a href="admin.php?action=members&job=manage&sort=posts&amp;letter=<?php echo $letter; ?>&amp;page=<?php echo $page; ?>"><img src="admin/html/images/asc.gif" border=0 alt="Ascending"></a>
-		  <a href="admin.php?action=members&job=manage&sort=posts&amp;letter=<?php echo $letter; ?>&amp;order=1&amp;page=<?php echo $page; ?>"><img src="admin/html/images/desc.gif" border=0 alt="Descending"></a></td>
+		  <a href="admin.php?action=members&amp;job=manage&amp;sort=posts&amp;letter=<?php echo $letter; ?>&amp;page=<?php echo $page; ?>"><img src="admin/html/images/asc.gif" border=0 alt="Ascending"></a>
+		  <a href="admin.php?action=members&amp;job=manage&amp;sort=posts&amp;letter=<?php echo $letter; ?>&amp;order=1&amp;page=<?php echo $page; ?>"><img src="admin/html/images/desc.gif" border=0 alt="Descending"></a></td>
 		  <td class="obox">Residence
-		  <a href="admin.php?action=members&job=manage&sort=location&amp;letter=<?php echo $letter; ?>&amp;page=<?php echo $page; ?>"><img src="admin/html/images/asc.gif" border=0 alt="Ascending"></a>
-		  <a href="admin.php?action=members&job=manage&sort=location&amp;letter=<?php echo $letter; ?>&amp;order=1&amp;page=<?php echo $page; ?>"><img src="admin/html/images/desc.gif" border=0 alt="Descending"></a></td>
+		  <a href="admin.php?action=members&amp;job=manage&samp;ort=location&amp;letter=<?php echo $letter; ?>&amp;page=<?php echo $page; ?>"><img src="admin/html/images/asc.gif" border=0 alt="Ascending"></a>
+		  <a href="admin.php?action=members&amp;job=manage&amp;sort=location&amp;letter=<?php echo $letter; ?>&amp;order=1&amp;page=<?php echo $page; ?>"><img src="admin/html/images/desc.gif" border=0 alt="Descending"></a></td>
 		  <td class="obox">Last Visit
-		  <a href="admin.php?action=members&job=manage&sort=lastvisit&amp;letter=<?php echo $letter; ?>&amp;page=<?php echo $page; ?>"><img src="admin/html/images/asc.gif" border=0 alt="Ascending"></a>
-		  <a href="admin.php?action=members&job=manage&sort=lastvisit&amp;letter=<?php echo $letter; ?>&amp;order=1&amp;page=<?php echo $page; ?>"><img src="admin/html/images/desc.gif" border=0 alt="Descending"></a></td>
+		  <a href="admin.php?action=members&amp;job=manage&amp;sort=lastvisit&amp;letter=<?php echo $letter; ?>&amp;page=<?php echo $page; ?>"><img src="admin/html/images/asc.gif" border=0 alt="Ascending"></a>
+		  <a href="admin.php?action=members&amp;job=manage&amp;sort=lastvisit&amp;letter=<?php echo $letter; ?>&amp;order=1&amp;page=<?php echo $page; ?>"><img src="admin/html/images/desc.gif" border=0 alt="Descending"></a></td>
 		  <td class="obox">Registered on
-		  <a href="admin.php?action=members&job=manage&sort=regdate&amp;letter=<?php echo $letter; ?>&amp;page=<?php echo $page; ?>"><img src="admin/html/images/asc.gif" border=0 alt="Ascending"></a>
-		  <a href="admin.php?action=members&job=manage&sort=regdate&amp;letter=<?php echo $letter; ?>&amp;order=1&amp;page=<?php echo $page; ?>"><img src="admin/html/images/desc.gif" border=0 alt="Descending"></a></td>
+		  <a href="admin.php?action=members&amp;job=manage&amp;sort=regdate&amp;letter=<?php echo $letter; ?>&amp;page=<?php echo $page; ?>"><img src="admin/html/images/asc.gif" border=0 alt="Ascending"></a>
+		  <a href="admin.php?action=members&amp;job=manage&amp;sort=regdate&amp;letter=<?php echo $letter; ?>&amp;order=1&amp;page=<?php echo $page; ?>"><img src="admin/html/images/desc.gif" border=0 alt="Descending"></a></td>
 		</tr>
 	<?php
 	while ($row = $gpc->prepare($db->fetch_object($result))) {
@@ -490,6 +491,7 @@ elseif ($job == 'manage') {
 	 <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
 	  <tr>
 	   <td class="obox center">
+		  <a class="button" href="admin.php?action=members&amp;job=register">Add new Member</a>
 		  <a class="button" href="admin.php?action=members&amp;job=search">Search for Members</a>
 		  <a class="button" href="admin.php?action=members&amp;job=inactive">Inactive Members</a>
 		  <a class="button" href="admin.php?action=members&amp;job=memberrating">Memberratings</a>
@@ -638,6 +640,160 @@ elseif ($job == 'recount') {
 
 			<?php
 		}
+	}
+}
+elseif ($job == 'register') {
+	include_once ("classes/function.profilefields.php");
+	$customfields = addprofile_customfields();
+
+	echo head();
+	?>
+	<form name="form2" method="post" action="admin.php?action=members&amp;job=register2">
+	<table class="border">
+	<tr><td class="obox" colspan="2">Add a new Member</td></tr>
+	<tr>
+		<td class="mbox">
+			User Name:<br />
+	    	<span class="stext">Min. <?php echo $config['minnamelength']; ?> chars, max. <?php echo $config['maxnamelength']; ?> chars</span>
+	    </td>
+		<td class="mbox">
+	    	<input type="text" name="name" size="40" />
+		</td>
+	</tr><tr>
+		<td class="mbox">
+			Password:<br />
+	    	<span class="stext">Min. <?php echo $config['minpwlength']; ?> chars, max. <?php echo $config['maxpwlength']; ?> chars</span>
+	    </td>
+	    <td class="mbox">
+			<input type="password" name="pw" size="40" />
+		</td>
+	</tr><tr>
+		<td class="mbox">
+			Confirm Password:
+		</td>
+		<td class="mbox">
+			<input type="password" name="pwx" size="40" />
+		</td>
+	</tr><tr>
+		<td class="mbox">
+	    	E-mail address:
+		    <?php if ($config['sessionmails'] == 1) { ?>
+			  <br /><span class="stext">Disposable e-mail accounts are not allowed!</span>
+		    <?php } ?>
+		</td>
+		<td class="mbox">
+			<input type="text" name="email" size="40" />
+		</td>
+	</tr>
+	<?php foreach ($customfields as $row) { ?>
+	<tr>
+	  <td class="mbox">
+	  	<?php echo $row['name']; ?>
+	  	<?php if(!empty($row['description'])) { ?>
+	  	  <br /><span class="stext"><?php echo $row['description']; ?></span>
+	  	<?php } ?>
+	  </td>
+	  <td class="mbox">
+	  	<?php echo $row['input']; ?>
+	  </td>
+	</tr>
+	<?php } ?>
+	<tr>
+		<td class="ubox" align="center" colspan="2">
+			<input accesskey="s" type="submit" name="Submit1" value="Submit" />
+		</td>
+	</tr>
+	</table>
+	</form>
+	<?php
+	echo foot();
+}
+elseif ($job == 'register2') {
+	include_once ("classes/function.profilefields.php");
+
+	$error = array();
+	if (double_udata('name',$_POST['name']) == false) {
+		$error[] = 'User Name is already in use';
+	}
+	if (double_udata('mail',$_POST['email']) == false) {
+		$error[] = 'E-mail address is already in use';
+	}
+	if (strxlen($_POST['name']) > $config['maxnamelength']) {
+		$error[] = 'Name is too long';
+	}
+	if (strxlen($_POST['name']) < $config['minnamelength']) {
+		$error[] = 'Name is too short';
+	}
+	if (strxlen($_POST['pw']) > $config['maxpwlength']) {
+		$error[] = 'Password is too long';
+	}
+	if (strxlen($_POST['pw']) < $config['minpwlength']) {
+		$error[] = 'Password is too short';
+	}
+	if (strxlen($_POST['email']) > 200) {
+		$error[] = 'E-mail address is too long';
+	}
+	if (check_mail($_POST['email']) == false) {
+		$error[] = 'E-mail adress is not valid';
+	}
+	if ($_POST['pw'] != $_POST['pwx']) {
+		$error[] = 'The two passwords are different';
+	}
+
+	// Custom profile fields
+	$upquery = array();
+	$query = $db->query("SELECT * FROM {$db->pre}profilefields WHERE editable != '0' AND required = '1' ORDER BY disporder");
+	while($profilefield = $db->fetch_assoc($query)) {
+		$profilefield['type'] = $gpc->prepare($profilefield['type']);
+		$thing = explode("\n", $profilefield['type'], 2);
+		$type = $thing[0];
+		$field = "fid{$profilefield['fid']}";
+
+		$value = $gpc->get($field, none);
+
+		if((is_string($value) && strlen($value) == 0) || (is_array($value) && count($value) == 0)) {
+			$error[] = 'You did not insert a value for a required additional field';
+		}
+		if($profilefield['maxlength'] > 0 && ((is_string($value) && strlen($value) > $profilefield['maxlength']) || (is_array($value) && count($value) > $profilefield['maxlength']))) {
+			$error[] = 'You entered too many chars for one of the required additional fields';
+		}
+
+		if($type == "multiselect" || $type == "checkbox") {
+			if (is_array($value)) {
+				$options = implode("\n", $value);
+			}
+			else {
+				$options = '';
+			}
+		}
+		else {
+			$options = $value;
+		}
+		$options = $gpc->save_str($options);
+		$upquery[] = "`{$field}` = '{$options}'";
+	}
+
+	if (count($error) > 0) {
+		echo head();
+		error("admin.php?action=members&job=register", $error);
+	}
+	else {
+	    $reg = time();
+	    $pw_md5 = md5($_POST['pwx']);
+
+		$db->query("INSERT INTO {$db->pre}user (name, pw, mail, regdate, confirm) VALUES ('{$_POST['name']}', '{$pw_md5}', '{$_POST['email']}', '{$reg}', '11')",__LINE__,__FILE__);
+        $redirect = $db->insert_id();
+
+		if (count($upquery) > 0) {
+			$upquery[] = "`ufid` = '{$redirect}'";
+			$db->query("INSERT INTO {$db->pre}userfields SET ".implode(', ', $upquery));
+		}
+
+		$com = $scache->load('memberdata');
+		$cache = $com->delete();
+
+		echo head();
+        ok("admin.php?action=members&job=edit&id=".$redirect, "Member successfully added. You will be redirected to the User Editor.");
 	}
 }
 elseif ($job == 'edit') {
