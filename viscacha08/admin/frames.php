@@ -136,7 +136,7 @@ if ($job == 'menu') {
 	  <ul id="part_admin_menu13">
 	    <li>&raquo; <a href="admin.php?action=slog&amp;job=s_general" target="Main">Statistics</a></li>
 	    <li>&raquo; <a href="admin.php?action=slog&amp;job=l_cron" target="Main">Scheduled Task Log</a></li>
-	    <li>&raquo; <a href="admin.php?action=slog&amp;job=l_mysqlerror" target="Main">MySQL Error Log</a></li>
+	    <li>&raquo; <a href="admin.php?action=slog&amp;job=l_mysqlerror" target="Main">SQL Error Log</a></li>
 	   </ul>
 	 </div>
 	 <?php ($code = $plugins->load('admin_navigation_extended')) ? eval($code) : null; ?>

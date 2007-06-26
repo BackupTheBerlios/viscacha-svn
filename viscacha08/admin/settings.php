@@ -1286,35 +1286,39 @@ elseif ($job == 'db') {
 	   <td class="obox" colspan="2">Database</td>
 	  </tr>
 	  <tr>
-	   <td class="mbox" width="50%">Database Driver:</td>
-	   <td class="mbox" width="50%"><select name="dbsystem"><option value="mysql"<?php echo iif($config['dbsystem'] == 'mysql', ' selected="selected"'); ?>>MySQL</option></select></td>
+	   <td class="ubox" colspan="2">Some of these settings can not be changed in the Admin CP. You have to change them manually in the file "data/config.inc.php". Contact the support for more information.</td>
 	  </tr>
 	  <tr>
-	   <td class="mbox" width="50%">Server on which the database resides:<br /><span class="stext">Usually "localhost".</span></td>
-	   <td class="mbox" width="50%"><input type="text" name="host" value="<?php echo $config['host']; ?>" size="50" /></td>
+	   <td class="mbox" width="50%">Database Driver:</td>
+	   <td class="mbox" width="50%">
+	   	<select name="dbsystem">
+	   		<option value="mysql"<?php echo iif($config['dbsystem'] == 'mysql', ' selected="selected"'); ?>>MySQL Standard (mysql)</option>
+	   		<option value="mysqli"<?php echo iif($config['dbsystem'] == 'mysqli', ' selected="selected"'); ?>>MySQL Improved (mysqli)</option>
+	   	</select>
+	   </td>
+	  </tr>
+	  <tr>
+	   <td class="mbox" width="50%">Server on which the database resides:</td>
+	   <td class="mbox" width="50%"><code><?php echo $config['host']; ?></code></td>
 	  </tr>
 	  <tr>
 	   <td class="mbox" width="50%">Database Username:</td>
-	   <td class="mbox" width="50%"><input type="text" name="dbuser" value="<?php echo $config['dbuser']; ?>" size="50" /></td>
+	   <td class="mbox" width="50%"><code><?php echo $config['dbuser']; ?></code></td>
 	  </tr>
 	  <tr>
-	   <td class="mbox" width="50%">Database Password:</td>
-	   <td class="mbox" width="50%"><input type="password" name="dbpw" value="<?php echo $config['dbpw']; ?>" size="50"></td>
+	   <td class="mbox" width="50%">Database Name:</td>
+	   <td class="mbox" width="50%"><code><?php echo $config['database']; ?></code></td>
 	  </tr>
 	  <tr>
-	   <td class="mbox" width="50%">Database Name:<br /><span class="stext">Database where the tables for the Forum are saved to.</span></td>
-	   <td class="mbox" width="50%"><input type="text" name="database" value="<?php echo $config['database']; ?>" size="50"></td>
-	  </tr>
-	  <tr>
-	   <td class="mbox" width="50%">Database Tables Prefix:<br><span class="stext">Prefix for the tables of this Viscacha installation.<br>Attention: Tables won't be renamed automatically!</span></td>
-	   <td class="mbox" width="50%"><input type="text" name="dbprefix" value="<?php echo $config['dbprefix']; ?>" size="10"></td>
+	   <td class="mbox" width="50%">Database Tables Prefix:<br><span class="stext">Prefix for the tables of this Viscacha installation.!</span></td>
+	   <td class="mbox" width="50%"><code><?php echo $config['dbprefix']; ?></code></td>
 	  </tr>
 	  <tr>
 	   <td class="mbox" width="50%">Important Tables:<br /><span class="stext">Those Tables will automatically be optimized by cron job! Indicate Tables separated by "," without their prefix.</span></td>
 	   <td class="mbox" width="50%"><input type="text" name="optimizetables" value="<?php echo $config['optimizetables']; ?>" size="50"></td>
 	  </tr>
 	  <tr>
-	   <td class="mbox" width="50%">Use a persistent connection:<br /><span class="stext">SQL connections won't be closed after the End of the Script. If a connection is requested, it will be checked if a connection has already been established.<br />For more information visit: <a href="http://www.php.net/manual/features.persistent-connections.php" target="_blank">php.net - Persistent Database Connections</a></span></td>
+	   <td class="mbox" width="50%">Use a persistent connection:<br /><span class="stext">Only for "MySQL Standard". SQL connections won't be closed after the End of the Script. If a connection is requested, it will be checked if a connection has already been established.<br />For more information visit: <a href="http://www.php.net/manual/features.persistent-connections.php" target="_blank">php.net - Persistent Database Connections</a></span></td>
 	   <td class="mbox" width="50%"><input type="checkbox" name="pconnect" value="1"<?php echo iif($config['pconnect'],' checked'); ?>></td>
 	  </tr>
 	   <td class="ubox" width="100%" colspan="2" align="center"><input type="submit" name="Submit" value="Submit"></td>
@@ -1328,10 +1332,6 @@ elseif ($job == 'db2') {
 	echo head();
 
 	$c->getdata();
-	$c->updateconfig('host',str);
-	$c->updateconfig('dbuser',str);
-	$c->updateconfig('dbpw',str);
-	$c->updateconfig('database',str);
 	$c->updateconfig('pconnect',int);
 	$c->updateconfig('dbprefix',str);
 	$c->updateconfig('dbsystem',str);
@@ -2384,7 +2384,7 @@ else {
 		  	  <option value="admin.php?action=db&amp;job=optimize">Optimize &amp; Repair Tables</option>
 		  	  <option value="admin.php?action=db&amp;job=execute">Execute SQL Queries</option>
 		  	  <option value="admin.php?action=db&amp;job=status">Status &amp; Database</option>
-		  	  <option value="admin.php?action=slog&amp;job=l_mysqlerror">MySQL Error Log</option>
+		  	  <option value="admin.php?action=slog&amp;job=l_mysqlerror">SQL Error Log</option>
 		     </select> <input style="width: 18%" type="submit" value="Go">
 		  </form>
 		</td>

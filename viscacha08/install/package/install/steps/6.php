@@ -21,42 +21,62 @@ if (isset($_REQUEST['save']) && $_REQUEST['save'] == 1) {
 		$c->updateconfig('pccron_sendlog_email',str,$c->data['forenmail']);
 	}
 	$c->savedata();
+
+	if (extension_loaded('mysql') == true) {
+		$mysqlext = '<span style="color: green;">Available</span>';
+	}
+	else {
+		$mysqlext = '<span style="color: red;">Unavailable</span>';
+	}
+	if (extension_loaded('mysqli') == true) {
+		$mysqliext = '<span style="color: green;">Available</span>';
+	}
+	else {
+		$mysqliext = '<span style="color: red;">Unavailable</span>';
+	}
 ?>
 <div class="bfoot center">Basic Settings saved!</div>
 <?php } ?>
 <div class="bbody">
 	<input type="hidden" name="save" value="1" />
 	<table class="tables">
-	 <tr> 
-	  <td class="mbox" width="50%">Database Driver:</td>
+	 <tr>
+	  <td class="mbox" width="50%">
+	  	Database Driver:<br />
+	  	<span class="stext">
+	  	<a href="http://www.php.net/manual/ref.mysqli.php" target="_blank">mysqli</a>-Extension only for MySQL >= 4.1: <?php echo $mysqliext; ?><br />
+	  	<a href="http://www.php.net/manual/ref.mysql.php" target="_blank">mysql</a>-Extension: <?php echo $mysqlext; ?>
+	  	</span>
+	  </td>
 	  <td class="mbox" width="50%">
 	  <select name="dbsystem">
-	  	<option value="mysql">MySQL</option>
+	  	<option value="mysql">MySQL Standard (mysql)</option>
+	  	<option value="mysqli">MySQL Improved (mysqli)</option>
 	  </select>
-	  </td> 
+	  </td>
 	 </tr>
-	 <tr> 
+	 <tr>
 	  <td class="mbox" width="50%">Server on which the database resides:</td>
-	  <td class="mbox" width="50%"><input type="text" name="host" value="localhost" size="50" /></td> 
+	  <td class="mbox" width="50%"><input type="text" name="host" value="localhost" size="50" /></td>
 	 </tr>
-	 <tr> 
+	 <tr>
 	  <td class="mbox" width="50%">Database Username:</td>
-	  <td class="mbox" width="50%"><input type="text" name="dbuser" value="" size="50" /></td> 
+	  <td class="mbox" width="50%"><input type="text" name="dbuser" value="" size="50" /></td>
 	 </tr>
-	 <tr> 
+	 <tr>
 	  <td class="mbox" width="50%">Database Password:</td>
-	  <td class="mbox" width="50%"><input type="password" name="dbpw" value="" size="50" /></td> 
+	  <td class="mbox" width="50%"><input type="password" name="dbpw" value="" size="50" /></td>
 	 </tr>
-	 <tr> 
+	 <tr>
 	  <td class="mbox" width="50%">Database Name:<br /><span class="stext">Database where the tables for the Forum are saved to</span></td>
-	  <td class="mbox" width="50%"><input type="text" name="database" value="" size="50" /></td> 
+	  <td class="mbox" width="50%"><input type="text" name="database" value="" size="50" /></td>
 	 </tr>
-	 <tr> 
+	 <tr>
 	  <td class="mbox" width="50%">Database Tables Prefix:<br /><span class="stext">Don't use the same prefix for two installs!</span></td>
-	  <td class="mbox" width="50%"><input type="text" name="dbprefix" value="v_" size="10" /></td> 
+	  <td class="mbox" width="50%"><input type="text" name="dbprefix" value="v_" size="10" /></td>
 	 </tr>
-	 <tr> 
-	  <td class="mbox" width="50%">Use a persistent connection:<br /><span class="stext">For more information visit: <a href="http://www.php.net/manual/features.persistent-connections.php" target="_blank">php.net - Persistent Database Connections</a></span></td>
+	 <tr>
+	  <td class="mbox" width="50%">Use a persistent connection:<br /><span class="stext">Only for "MySQL Standard". For more information visit: <a href="http://www.php.net/manual/features.persistent-connections.php" target="_blank">php.net - Persistent Database Connections</a></span></td>
 	  <td class="mbox" width="50%"><input type="checkbox" name="pconnect" value="1" /></td>
 	 </tr>
 	</table>

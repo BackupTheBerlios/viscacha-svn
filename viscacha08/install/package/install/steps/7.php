@@ -8,6 +8,9 @@ if (isset($_REQUEST['save']) && $_REQUEST['save'] == 1) {
 	if (isset($_REQUEST['host'])) {
 		$config['host'] = trim($_REQUEST['host']);
 	}
+	else {
+		$config['host'] = 'localhost';
+	}
 	if (isset($_REQUEST['dbuser'])) {
 		$config['dbuser'] = trim($_REQUEST['dbuser']);
 	}
@@ -17,14 +20,23 @@ if (isset($_REQUEST['save']) && $_REQUEST['save'] == 1) {
 	if (isset($_REQUEST['database'])) {
 		$config['database'] = trim($_REQUEST['database']);
 	}
-	if (isset($_REQUEST['pconnect'])) {
+	if (isset($_REQUEST['pconnect']) && isset($_REQUEST['dbsystem']) && $_REQUEST['dbsystem'] == 'mysql') {
 		$config['pconnect'] = $_REQUEST['pconnect'];
+	}
+	else {
+		$config['pconnect'] = 0;
 	}
 	if (isset($_REQUEST['dbprefix'])) {
 		$config['dbprefix'] = trim($_REQUEST['dbprefix']);
 	}
+	else {
+		$config['dbprefix'] = '';
+	}
 	if (isset($_REQUEST['dbsystem'])) {
 		$config['dbsystem'] = $_REQUEST['dbsystem'];
+	}
+	else {
+		$config['dbsystem'] = 'mysql';
 	}
 	$c = new manageconfig();
 	$c->getdata('../data/config.inc.php');

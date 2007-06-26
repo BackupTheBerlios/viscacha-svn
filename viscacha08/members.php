@@ -234,7 +234,7 @@ $letter = $lang->phrase('members_all');
 $row = array('letter' => '');
 $inner['index_letter'] = $tpl->parse("members/index_letter");
 $result = $db->query("SELECT DISTINCT UPPER(LEFT(name,1)) AS letter FROM {$db->pre}user ORDER BY letter",__LINE__,__FILE__);
-while ($row = mysql_fetch_assoc($result)) {
+while ($row = $db->fetch_assoc($result)) {
 	$letter = &$row['letter'];
 	$inner['index_letter'] .= $tpl->parse("members/index_letter");
 }

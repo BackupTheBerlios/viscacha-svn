@@ -45,7 +45,7 @@ elseif ($job == 'l_mysqlerror') {
 <form name="form" method="post" action="admin.php?action=slog&file=l_mysqlerror&job=empty">
  <table class="border">
   <tr>
-   <td class="obox" colspan="8">MySQL-Error-Logfile</td>
+   <td class="obox" colspan="8">SQL-Error-Logfile</td>
   </tr>
    <?php
 	if (!is_array($log)) {

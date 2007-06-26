@@ -680,6 +680,12 @@ elseif ($job == "credits") {
 	else {
 		$mylibext = "<span style='color: red'>N/A</span>";
 	}
+	if (in_array("mysqli", $ext)) {
+		$myilibext = "<span style='color: green'>OK</span>";
+	}
+	else {
+		$myilibext = "<span style='color: red'>N/A</span>";
+	}
 	if (in_array("pcre", $ext)) {
 		$relibext = "<span style='color: green'>OK</span>";
 	}
@@ -783,7 +789,7 @@ elseif ($job == "credits") {
 		<strong>My PHP-Extensions</strong>:
 		<ul>
 		<li>PCRE-Extension: <?php echo $relibext; ?></li>
-		<li>MySQL-Extension: <?php echo $mylibext; ?></li>
+		<li>MySQL-Extension: <?php echo $mylibext; ?> / MySQLi-Extension: <?php echo $myilibext; ?></li>
 		<li>GD-Extension: <?php echo $gdlibext; ?></li>
 		<li>Zlib-Extension: <?php echo $zlibext; ?></li>
 		<li>XML-Extension: <?php echo $xmllibext; ?></li>

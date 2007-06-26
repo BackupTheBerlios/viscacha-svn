@@ -26,40 +26,60 @@ if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
 
 include_once("classes/database/class.db_driver.php");
 
-class DB extends DB_Driver { // MySQL
+class DB extends DB_Driver { // MySQLi
 
-	var $persist;
-	var $escaper;
 	var $system;
+	var $fieldType;
 
 	function DB($host="localhost",$user="root",$pwd="",$dbname="",$persist=0,$open=false, $dbprefix='') {
-	    $this->persist = $persist;
-	    $this->system = 'mysql';
-		if (version_compare(PHP_VERSION, "4.3.0", ">=")) {
-			$this->escaper = 'mysql_real_escape_string';
-		}
-		else {
-			$this->escaper = 'mysql_escape_string';
-		}
+	    $this->persist = 0;
+	    $this->system = 'mysqli';
 		$this->errlogfile = 'data/errlog_'.$this->system.'.inc.php';
 		parent::DB_Driver($host, $user, $pwd, $dbname, $dbprefix, $open);
-		$this->freeResult = ($persist == 1);
+		$this->freeResult = false;
+		$this->fieldType = array(
+			0 => "decimal",
+			1 => "tinyint",
+			2 => "smallint",
+			3 => "integer",
+			4 => "float",
+			5 => "double",
+			7 => "timestamp",
+			8 => "bigint",
+			9 => "mediumint",
+			10 => "date",
+			11 => "time",
+			12 => "datetime",
+			13 => "year",
+			14 => "date",
+			16 => "bit",
+			246 => "decimal",
+			247 => "enum",
+			248 => "set",
+			249 => "tinyblob",
+			250 => "mediumblob",
+			251 => "longblob",
+			252 => "blob",
+			253 => "varchar",
+			254 => "char",
+			255 => "geometry"
+		);
 	}
 
 	function version () {
-		return @mysql_get_server_info();
+		return @mysqli_get_server_info($this->conn);
 	}
 
 	function affected_rows() {
-		return mysql_affected_rows($this->conn);
+		return mysqli_affected_rows($this->conn);
 	}
 
 	function free_result($result = null) {
-		if (!is_resource($result)) {
+		if (empty($result)) {
 	    	$result = $this->result;
 	    }
 	    if (is_resource($result)) {
-	    	return @mysql_free_result($result);
+	    	return @mysqli_free_result($result);
 	    }
 	    else {
 	    	return false;
@@ -70,27 +90,20 @@ class DB extends DB_Driver { // MySQL
 		if ($this->freeResult == true) {
 	    	$this->free_result();
 	    }
-		return mysql_close($this->conn);
+		return mysqli_close($this->conn);
 	}
 
 	function connect($die = true) {
-		if ($this->persist == 1) {
-			$func = 'mysql_pconnect';
-		}
-		else {
-			$func = 'mysql_connect';
-		}
-
 		ob_start();
-		$this->conn = $func($this->host, $this->user, $this->pwd);
+		$this->conn = mysqli_connect($this->host, $this->user, $this->pwd);
 		ob_end_clean();
 
-		if (!is_resource($this->conn)) {
+		if (!is_object($this->conn)) {
 			if ($die == true) {
-				trigger_error('Could not connect to database! Pleasy try again later or check the database settings: host, username and password!<br /><strong>Database returned</strong>: '.$this->errstr(), E_USER_ERROR);
+				trigger_error('Could not connect to database! Pleasy try again later or check the database settings: host, username and password!<br /><strong>Database returned</strong>: '.mysqli_connect_error(), E_USER_ERROR);
 			}
 			else {
-				trigger_error('Could not connect to database!<br /><strong>Database returned</strong>: '.$this->errstr(), E_USER_WARNING);
+				trigger_error('Could not connect to database!<br /><strong>Database returned</strong>: '.mysqli_connect_error(), E_USER_WARNING);
 			}
 		}
 	}
@@ -99,22 +112,22 @@ class DB extends DB_Driver { // MySQL
 		if(empty($dbname)) {
 			$dbname = $this->database;
 		}
-		return mysql_select_db($dbname,$this->conn);
+		return mysqli_select_db($this->conn, $dbname);
 	}
 
 	function errno() {
-		return mysql_errno();
+		return mysqli_errno($this->conn);
 	}
 
 	function errstr() {
-		return mysql_error();
+		return mysqli_error($this->conn);
 	}
 
 	function query($sql, $line = 0, $file = '', $die = true) {
 		$errfunc = ($die == true) ? E_USER_ERROR : E_USER_NOTICE;
 		$zm1 = $this->benchmarktime();
 
-		$this->result = mysql_query($sql, $this->conn) or trigger_error($this->error($line, $file, $sql), $errfunc);
+		$this->result = mysqli_query($this->conn, $sql) or trigger_error($this->error($line, $file, $sql), $errfunc);
 
 		$zm2 = $this->benchmarktime();
 		$zm=$zm2-$zm1;
@@ -127,52 +140,52 @@ class DB extends DB_Driver { // MySQL
 		if (!is_resource($result)) {
 	    	$result = $this->result;
 	    }
-	    return @mysql_num_rows($result);
+	    return @mysqli_num_rows($result);
 	}
+
     function insert_id() {
-	    return @mysql_insert_id($this->conn);
+	    return @mysqli_insert_id($this->conn);
 	}
 
 	function fetch_object($result = null) {
 		if (!is_resource($result)) {
 	    	$result = $this->result;
 	    }
-	    return @mysql_fetch_object($result);
+	    return @mysqli_fetch_object($result);
 	}
 
 	function fetch_num($result = null) {
 		if (!is_resource($result)) {
 	    	$result = $this->result;
 	    }
-	    return @mysql_fetch_row($result);
+	    return @mysqli_fetch_row($result);
 	}
 
 	function fetch_assoc($result = null) {
 		if (!is_resource($result)) {
 	    	$result = $this->result;
 	    }
-	    return @mysql_fetch_assoc($result);
+	    return @mysqli_fetch_assoc($result);
 	}
 
 	function escape_string($value) {
-		$func = $this->escaper;
-		return $func($value);
+		return mysqli_real_escape_string($this->conn, $value);
 	}
 
 	function num_fields($result = null) {
 		if (!is_resource($result)) {
 	    	$result = $this->result;
 	    }
-		return mysql_num_fields($result);
+		return mysqli_num_fields($result);
 	}
 
 	function field_len($result = null, $k) {
 		if (!is_resource($result)) {
 	    	$result = $this->result;
 	    }
-	    $data = mysql_field_len($result, $k);
-	    if (!empty($data)) {
-			return $data;
+	    $data = mysqli_fetch_field_direct($result, $k);
+	    if (!empty($data->length)) {
+			return $data->length;
 	    }
 	    else {
 	    	return null;
@@ -183,9 +196,10 @@ class DB extends DB_Driver { // MySQL
 		if (!is_resource($result)) {
 	    	$result = $this->result;
 	    }
-	    $data = mysql_field_type($result, $k);
-	    if (!empty($data)) {
-			return $data;
+
+	    $data = mysqli_fetch_field_direct($result, $k);
+	    if ($data != false && isset($this->fieldType[$data])) {
+			return $this->fieldType[$data];
 	    }
 	    else {
 	    	return null;
@@ -196,9 +210,12 @@ class DB extends DB_Driver { // MySQL
 		if (!is_resource($result)) {
 	    	$result = $this->result;
 	    }
-	    $data = mysql_field_name($result, $k);
-	    if (!empty($data)) {
-			return $data;
+	    $data = mysqli_fetch_field_direct($result, $k);
+	    if (!empty($data->orgname)) {
+			return $data->orgname;
+	    }
+	    elseif (!empty($data->name)) {
+	    	return $data->name;
 	    }
 	    else {
 	    	return null;
@@ -209,9 +226,12 @@ class DB extends DB_Driver { // MySQL
 		if (!is_resource($result)) {
 	    	$result = $this->result;
 	    }
-	    $data = mysql_field_table($result, $k);
-	    if (!empty($data)) {
-			return $data;
+	    $data = mysqli_fetch_field_direct($result, $k);
+	    if (!empty($data->orgtable)) {
+			return $data->orgtable;
+	    }
+	    elseif (!empty($data->table)) {
+	    	return $data->table;
 	    }
 	    else {
 	    	return null;

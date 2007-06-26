@@ -12,12 +12,12 @@ elseif (empty($job) || $job == 'start') {
 	echo head();
 	$notes = file_get_contents('admin/data/notes.php');
 	$tasks = array();
-	
+
 	// Install-folder
 	if (is_dir('./install/')) {
 		$tasks[] = '<span style="color: red;">Please completely remove the installation directory ('.realpath('install/').') including all files and sub-folders. Leaving it on your server <strong>can compromise</strong> the security of your system. <strong><a href="admin.php?action=explorer&amp;path='.rawurlencode('./install/').'&amp;job=delete&amp;type=dir">Click here to remove the installation directory.</a></strong></span>';
 	}
-	
+
 	// Count the inactive members
 	$result = $db->query('SELECT COUNT(*) as activate FROM '.$db->pre.'user WHERE confirm = "00" OR confirm = "01"');
 	$user = $db->fetch_assoc($result);
@@ -29,7 +29,7 @@ elseif (empty($job) || $job == 'start') {
 	$handle = opendir($dir);
 	$highest = 0;
 	while ($file = readdir($handle)) {
-		if ($file != "." && $file != ".." && !is_dir($dir.$file)) {					  
+		if ($file != "." && $file != ".." && !is_dir($dir.$file)) {
 			$nfo = pathinfo($dir.$file);
 			if ($nfo['extension'] == 'zip' || $nfo['extension'] == 'sql') {
 				$date = str_replace('.zip', '', $nfo['basename']);
@@ -62,26 +62,26 @@ elseif (empty($job) || $job == 'start') {
 	// Version Check
 	$cache = $scache->load('version_check');
 	$age = time();
-	if ($cache->exists()) { 
+	if ($cache->exists()) {
 		$age = $cache->age();
 	}
 	if ($age > 14*24*60*60) {
 		$tasks[] = 'Your last <a href="admin.php?action=settings&amp;job=version">Viscacha version check</a> is more than 14 days ago. Please check for a new version.';
 	}
-	
+
 	$frontpage_content = '';
 	$webserver = get_webserver();
 	($code = $plugins->load('admin_start_tasks')) ? eval($code) : null;
-	
+
 	?>
 	 <table class="border">
-	  <tr> 
+	  <tr>
 	   <td class="obox">
 		<span class="right"><a class="button" href="admin.php?action=logout<?php echo SID2URL_x; ?>" target="_top">Sign off</a></span>
 		Welcome to the Viscacha Admin Control Panel, <?php echo $my->name; ?>!
 	   </td>
 	  </tr>
-	  <tr> 
+	  <tr>
 		<td class="mbox"><strong>Upcoming Tasks:</strong>
 		<ul>
 		<?php if (count($tasks) == 0) { ?>
@@ -93,22 +93,22 @@ elseif (empty($job) || $job == 'start') {
 	 </table>
 	<br />
 	 <table class="border">
-	  <tr> 
+	  <tr>
 	   <td class="obox" align="center" colspan="4">Program Statistics</td>
 	  </tr>
-	  <tr> 
+	  <tr>
 		<td class="mmbox" width="25%">Viscacha Version:</td>
 		<td class="mbox"  width="25%"><a href="admin.php?action=settings&job=version"><?php echo $config['version']; ?></a></td>
 		<td class="mmbox" width="25%">Website Offline:</td>
 		<td class="mbox"  width="25%"><?php echo noki($config['foffline'], ' onmouseover="HandCursor(this)" onclick="ajax_noki(this, \'action=settings&job=ajax_sitestatus\')"'); ?></td>
 	  </tr>
-	  <tr> 
+	  <tr>
 		<td class="mmbox" width="25%">PHP Version:</td>
 		<td class="mbox"  width="25%"><?php echo PHP_VERSION; ?></td>
-		<td class="mmbox" width="25%">MySQL Version:</td>
+		<td class="mmbox" width="25%">Database Version:</td>
 		<td class="mbox"  width="25%"><?php echo $db->version(); ?></td>
 	  </tr>
-	  <tr> 
+	  <tr>
 		<td class="mmbox" width="25%">Web Server:</td>
 		<td class="mbox"  width="25%"><?php echo $webserver; ?></td>
 		<td class="mmbox" width="25%">Server Load:</td>
@@ -119,20 +119,20 @@ elseif (empty($job) || $job == 'start') {
 	<?php echo $frontpage_content; ?>
 	<form action="admin.php?action=index&job=save_notes" method="post">
 	 <table class="border">
-	  <tr> 
+	  <tr>
 	   <td class="obox" align="center">Administrator Notes</td>
 	  </tr>
-	  <tr> 
+	  <tr>
 		<td class="mbox" align="center"><textarea name="notes" rows="6" cols="120"><?php echo $notes; ?></textarea></td>
 	  </tr>
-	  <tr> 
+	  <tr>
 	   <td class="ubox" align="center"><input type="submit" value="Save"></td>
 	  </tr>
 	 </table>
 	</form>
 	<br />
 	 <table class="border">
-	  <tr> 
+	  <tr>
 	   <td class="obox" align="center" colspan="2">Useful Links</td>
 	  </tr>
 	  <tr>

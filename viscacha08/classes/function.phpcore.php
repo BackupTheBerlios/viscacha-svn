@@ -52,6 +52,9 @@ function msg_handler($errno, $errtext, $errfile, $errline) {
 			case E_USER_ERROR:
 			case E_ERROR:
 				$errlogfile = 'data/errlog_php.inc.php';
+				if (file_exists($errlogfile) == false) {
+					$errlogfile = $config['fpath'].'/data/errlog_php.inc.php';
+				}
 				$new = array();
 				if (file_exists($errlogfile)) {
 					$lines = file($errlogfile);

@@ -633,7 +633,7 @@ elseif ($job == 'query2') {
 		if (!empty($error)) {
 			?>
 			 <table class="border" align="center">
-			  <tr><td class="obox">MySQL Error</td></tr>
+			  <tr><td class="obox">SQL Error</td></tr>
 			  <tr><td class="mbox"><?php echo strip_tags($error); ?></td></tr>
 			 </table>
 			<?php
