@@ -376,7 +376,7 @@ else {
 	}
 
 	if ($my->vlogin) {
-		$result = $db->query('SELECT id FROM '.$db->pre.'abos WHERE mid = '.$my->id.' AND tid = '.$_GET['id'],__LINE__,__FILE__);
+		$result = $db->query("SELECT id FROM {$db->pre}abos WHERE mid = '{$my->id}' AND tid = '{$_GET['id']}'",__LINE__,__FILE__);
 		$abox = $db->fetch_object($result);
 	}
 

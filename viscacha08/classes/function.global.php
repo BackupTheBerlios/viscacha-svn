@@ -698,7 +698,7 @@ function dateSpec($format, $timestamp = null) {
 		$timestamp = time();
 	}
 	if (is_int($timestamp) == false) {
-		trigger_error('dateSpec(): Second argument has to be integer or null.', E_NOTICE);
+		trigger_error('dateSpec(): Second argument has to be an integer or null.', E_USER_NOTICE);
 	}
 	$timestamp = times($timestamp);
 	$tz = array();

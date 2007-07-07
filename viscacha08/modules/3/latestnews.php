@@ -1,5 +1,6 @@
 $anznews = $config['module_'.$pluginid]['items'];
 $teaserlength = $config['module_'.$pluginid]['teaserlength'];
+$cutat = "[".$config['module_'.$pluginid]['cutat']."]";
 
 $intelliCut = version_compare(PHP_VERSION, "4.3.3", ">=");
 
@@ -27,61 +28,68 @@ while ($row = $gpc->prepare($db->fetch_assoc($result))) {
 
 	$row['date'] = str_date($lang->phrase('dformat1'), times($row['date']));
 
-	// IntelliCut - Start
 	$row['read_more'] = false;
-	$stack = array();
-	if (strlen($row['comment']) > $teaserlength) {
-		$culance = $teaserlength*0.1;
-		$teaserlength -= $culance;
-		$maxlength = $teaserlength+(2*$culance);
-		if ($intelliCut && preg_match("/[\.!\?]+[\s\r\n]+/", $row['comment'], $matches, PREG_OFFSET_CAPTURE, $teaserlength)) {
-			$pos = $matches[0][1];
-			if ($maxlength > $pos) {
-				$row['comment'] = substr($row['comment'], 0, $pos+2);
-				$row['comment'] = rtrim($row['comment'], "\r\n").$lang->phrase('dot_more');
+	$pos = stripos($row['comment'], $cutat);
+	if ($pos !== false) {
+		$row['comment'] = substr($row['comment'], 0, $pos);
+		$row['comment'] = rtrim($row['comment'], "\r\n").$lang->phrase('dot_more');
+		$row['read_more'] = true;
+	}
+	else {
+		// IntelliCut - Start
+		$stack = array();
+		if (strlen($row['comment']) > $teaserlength) {
+			$culance = $teaserlength*0.1;
+			$teaserlength -= $culance;
+			$maxlength = $teaserlength+(2*$culance);
+			if ($intelliCut && preg_match("/[\.!\?]+[\s\r\n]+/", $row['comment'], $matches, PREG_OFFSET_CAPTURE, $teaserlength)) {
+				$pos = $matches[0][1];
+				if ($maxlength > $pos) {
+					$row['comment'] = substr($row['comment'], 0, $pos+2);
+					$row['comment'] = rtrim($row['comment'], "\r\n").$lang->phrase('dot_more');
+					$row['read_more'] = true;
+				}
+			}
+			if ($row['read_more'] == false) {
+				$pos = $teaserlength+$culance;
+				if (($offset = strpos($row['comment'], ' ', $pos)) !== false) {
+					$newpos = $pos+$offset+1;
+					if ($maxlength > $newpos) {
+						$pos = $newpos;
+					}
+				}
+				$row['comment'] = substr($row['comment'], 0, $pos).$lang->phrase('dot_more');
 				$row['read_more'] = true;
 			}
-		}
-		if ($row['read_more'] == false) {
-			$pos = $teaserlength+$culance;
-			if (($offset = strpos($row['comment'], ' ', $pos)) !== false) {
-				$newpos = $pos+$offset+1;
-				if ($maxlength > $newpos) {
-					$pos = $newpos;
+			$token = preg_split('/(\[[^\/\r\n\[\]]+?\]|\[\/[^\/\s\r\n\[\]]+?\])/', $row['comment'], -1, PREG_SPLIT_DELIM_CAPTURE);
+			foreach ($token as $t) {
+				if (substr($t, 0, 1) == '[' && preg_match('/(\[([^\/\r\n\[\]]+?)\]|\[\/([^\/\s\r\n\[\]]+?)\])/', $t, $match)) {
+					if (isset($match[3])) {
+						$top = array_shift($stack);
+					}
+					else {
+						array_unshift($stack, $match[2]);
+					}
 				}
 			}
-			$row['comment'] = substr($row['comment'], 0, $pos).$lang->phrase('dot_more');
-			$row['read_more'] = true;
-		}
-		$token = preg_split('/(\[[^\/\r\n\[\]]+?\]|\[\/[^\/\s\r\n\[\]]+?\])/', $row['comment'], -1, PREG_SPLIT_DELIM_CAPTURE);
-		foreach ($token as $t) {
-			if (substr($t, 0, 1) == '[' && preg_match('/(\[([^\/\r\n\[\]]+?)\]|\[\/([^\/\s\r\n\[\]]+?)\])/', $t, $match)) {
-				if (isset($match[3])) {
-					$top = array_shift($stack);
-				}
-				else {
-					array_unshift($stack, $match[2]);
+			$bbcodes =	array(	'hide', 'code', 'list', 'note', 'url', 'img', 'color', 'align', 'email', 'h', 'size',
+													'quote', 'edit', 'ot', 'b', 'i', 'u', 'sub', 'sup', 'tt', 'table'
+									);
+									// reader, tab, hr, *
+			$custom = $bbcode->getCustomBB();
+			foreach ($custom as $re) {
+				$bbcodes[] = strtolower($re['bbcodetag']);
+			}
+			while(($top = array_shift($stack)) != null) {
+				$top = preg_replace("/(\w+?)(=[^\/\r\n\[\]]+)?/i", "\\1", $top);
+				$top = strtolower($top);
+				if (in_array($top, $bbcodes) == true) {
+					$row['comment'] = "{$row['comment']}[/{$top}]";
 				}
 			}
 		}
-		$bbcodes =	array(	'hide', 'code', 'list', 'note', 'url', 'img', 'color', 'align', 'email', 'h', 'size', 
-												'quote', 'edit', 'ot', 'b', 'i', 'u', 'sub', 'sup', 'tt', 'table'
-								);
-								// reader, tab, hr, *
-		$custom = $bbcode->getCustomBB();
-		foreach ($custom as $re) {
-			$bbcodes[] = strtolower($re['bbcodetag']);
-		}
-		while(($top = array_shift($stack)) != null) {
-			$top = preg_replace("/(\w+?)(=[^\/\r\n\[\]]+)?/i", "\\1", $top);
-			$top = strtolower($top);
-			if (in_array($top, $bbcodes) == true) {
-				$row['comment'] = "{$row['comment']}[/{$top}]";
-			}
-		}
+		// IntelliCut - End
 	}
-	// IntelliCut - End
-
 	$bbcode->setSmileys($row['dosmileys']);
 	if ($config['wordstatus'] == 0) {
 		$row['dowords'] = 0;
