@@ -24,7 +24,7 @@
 
 if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
 
-include_once("classes/database/class.db_driver.php");
+include_once(dirname(__FILE__)."/class.db_driver.php");
 
 class DB extends DB_Driver { // MySQL
 
@@ -85,7 +85,7 @@ class DB extends DB_Driver { // MySQL
 		$this->conn = $func($this->host, $this->user, $this->pwd);
 		ob_end_clean();
 
-		if (!is_resource($this->conn)) {
+		if (!$this->hasConnection($this->conn)) {
 			if ($die == true) {
 				trigger_error('Could not connect to database! Pleasy try again later or check the database settings: host, username and password!<br /><strong>Database returned</strong>: '.$this->errstr(), E_USER_ERROR);
 			}
@@ -93,6 +93,10 @@ class DB extends DB_Driver { // MySQL
 				trigger_error('Could not connect to database!<br /><strong>Database returned</strong>: '.$this->errstr(), E_USER_WARNING);
 			}
 		}
+	}
+
+	function hasConnection(){
+		return is_resource($this->conn);
 	}
 
 	function select_db($dbname = null) {

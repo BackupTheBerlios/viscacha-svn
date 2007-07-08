@@ -166,17 +166,19 @@ if ($_GET['action'] == "save") {
 		($code = $plugins->load('register_save_end')) ? eval($code) : null;
 
 		$emails = preg_split('/[\r\n]+/', $config['register_notification'], -1, PREG_SPLIT_NO_EMPTY);
-		$config['register_notification'] = array();
-		foreach ($emails as $email) {
-			if(check_mail($email)) {
-				$config['register_notification'][] = $email;
+
+		if (count($emails) > 0) {
+			$to = array();
+			foreach ($emails as $email) {
+				if(check_mail($email, true)) {
+					$to[] = array('mail' => $email);
+				}
 			}
-		}
-		if (count($config['register_notification']) > 0) {
-			$to = array_combine(array_fill(1, count($config['register_notification']), 'mail'), $config['register_notification']);
-			$data = $lang->get_mail('new_member');
-			$from = array();
-			xmail($to, $from, $data['title'], $data['comment']);
+			if (count($to) > 0) {
+				$data = $lang->get_mail('new_member');
+				$from = array();
+				xmail($to, $from, $data['title'], $data['comment']);
+			}
 		}
 
         ok($lang->phrase('register_confirm_'.$config['confirm_registration']), "log.php?action=login".SID2URL_x);

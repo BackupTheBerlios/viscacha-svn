@@ -18,6 +18,11 @@ elseif (empty($job) || $job == 'start') {
 		$tasks[] = '<span style="color: red;">Please completely remove the installation directory ('.realpath('install/').') including all files and sub-folders. Leaving it on your server <strong>can compromise</strong> the security of your system. <strong><a href="admin.php?action=explorer&amp;path='.rawurlencode('./install/').'&amp;job=delete&amp;type=dir">Click here to remove the installation directory.</a></strong></span>';
 	}
 
+	// Offline-check
+	if ($config['foffline'] == 1) {
+		$tasks[] = '<span style="color: red;">The website is currently in offline mode (and only administrators can see the website). <a href="admin.php?action=settings&amp;job=sitestatus">To change this setting click here!</a><strong</span>';
+	}
+
 	// Count the inactive members
 	$result = $db->query('SELECT COUNT(*) as activate FROM '.$db->pre.'user WHERE confirm = "00" OR confirm = "01"');
 	$user = $db->fetch_assoc($result);

@@ -48,6 +48,12 @@ if (isset($_REQUEST['save']) && $_REQUEST['save'] == 1) {
 	$c->updateconfig('dbprefix',str);
 	$c->updateconfig('dbsystem',str);
 	$c->savedata();
+	
+	$errlog = '../data/errlog_'.$config['dbsystem'].'.inc.php';
+	if (!file_exists($errlog)) {
+		$filesystem->file_put_contents($errlog, '');
+		$filesysten->chmod($errlog, 0666);
+	}
 ?>
 <div class="bfoot center">Database Settings saved!</div>
 <?php
@@ -57,7 +63,7 @@ require_once('../classes/database/'.$config['dbsystem'].'.inc.php');
 $db = new DB($config['host'], $config['dbuser'], $config['dbpw'], $config['database'], $config['pconnect'], false, $config['dbprefix']);
 $db->pre = $db->prefix();
 $db->connect(false);
-if (!is_resource($db->conn)) {
+if (!$db->hasConnection()) {
 	?>
 <div class="bbody">Could not connect to database! Pleasy try again later or check the database settings!</div>
 <div class="bfoot center"><a class="submit" href="index.php?package=install&amp;step=<?php echo $step-1; ?>">Go back</a> <a class="submit" href="index.php?package=install&amp;step=<?php echo $step; ?>">Refresh</a></div>

@@ -567,19 +567,19 @@ function check_hp($hp) {
 		return false;
 	}
 }
-function check_mail($email) {
+function check_mail($email, $simple = false) {
 	global $config;
 	if(preg_match("/^([_a-zA-Zäöü0-9-]+(\.[_a-zA-Z0-9äöu-]+)*@[a-zA-Zäöu0-9-]+(\.[a-zA-Z0-9äöü-]+)*(\.[a-zA-Z]{2,}))/si", $email)) {
 	 	list(, $domain) = explode('@', $email);
 	 	$domain = strtolower($domain);
 		// Check MX record.
 	 	// The idea for this is from UseBB/phpBB
-	 	if ($config['email_check_mx']) {
+	 	if ($config['email_check_mx'] && !$simple) {
 	 		if (checkdnsrr($domain, 'MX') === false) {
 	 			return false;
 	 		}
 	 	}
-		if ($config['sessionmails'] == 1) {
+		if ($config['sessionmails'] == 1 && !$simple) {
 	    	// get the known domains in lower case
 	    	$sessionmails = file('data/sessionmails.php');
 	    	$sessionmails = array_map("trim", $sessionmails);

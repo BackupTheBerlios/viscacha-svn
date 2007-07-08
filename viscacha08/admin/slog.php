@@ -22,7 +22,7 @@ if ($job == 'empty') {
 	echo head();
 	$file = $gpc->get('file', str);
 	if ($file == 'l_mysqlerror') {
-	    $filename = 'data/errlog_mysql.inc.php';
+	    $filename = 'data/errlog_'.$db->system.'.inc.php';
 	}
 	elseif ($file == 'l_cron') {
 	    $filename = 'data/cron/cron.log';
@@ -37,7 +37,7 @@ if ($job == 'empty') {
 }
 elseif ($job == 'l_mysqlerror') {
     echo head();
-	$log = @file('data/errlog_mysql.inc.php');
+	$log = @file('data/errlog_'.$db->system.'.inc.php');
 	if (!is_array($log) || count($log) < 1) {
 		$log = 'Logfile is empty!';
 	}

@@ -1158,7 +1158,7 @@ elseif ($job == 'register2') {
 	$emails = preg_split('/[\r\n]+/', $register_notification, -1, PREG_SPLIT_NO_EMPTY);
 	$register_notification = array();
 	foreach ($emails as $email) {
-		if(check_mail($email)) {
+		if(check_mail($email, true)) {
 			$register_notification[] = $email;
 		}
 	}
