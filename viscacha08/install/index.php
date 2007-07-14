@@ -59,7 +59,7 @@ if (!$locked) {
 	<link rel="stylesheet" type="text/css" href="designs/ie.css" />
 	<![endif]-->
 	<link rel="up" href="javascript:self.scrollTo(0,0);" />
-	<link rel="copyright" href="http://www.mamo-net.de" />
+	<link rel="copyright" href="http://www.viscacha.org" />
 </head>
 <body>
 <div id="container">

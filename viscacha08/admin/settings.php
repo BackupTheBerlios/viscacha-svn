@@ -556,7 +556,7 @@ elseif ($job == 'server') {
 	   <td class="mbox" width="50%"><input type="checkbox" name="check_filesystem" value="1"<?php echo iif($config['check_filesystem'] == 1,' checked="checked"'); ?>></td>
 	  </tr>
 	  <tr>
-	   <td class="mbox" width="50%">.htaccess: Redirect all Subdomains to Top-Domain:<br /><span class="stext">http://www.mamo-net.de will be http://mamo-net.de. Though eventually all other subdomains will be redirected!</span></td>
+	   <td class="mbox" width="50%">.htaccess: Redirect all Subdomains to Top-Domain:<br /><span class="stext">http://www.viscacha.org will be http://viscacha.org. Though eventually all other subdomains will be redirected!</span></td>
 	   <td class="mbox" width="50%"><input type="checkbox" name="correctsubdomains" value="1"<?php echo iif($config['hterrordocs'] == 1,' checked="checked"'); ?>></td>
 	  </tr>
 	  <tr>

@@ -393,7 +393,7 @@ function head($onload = '') {
 	<meta http-equiv="Cache-Control" content="no-cache" />
 	<link rel="stylesheet" type="text/css" href="admin/html/standard.css">
 	<link rel="up" href="javascript:self.scrollTo(0,0);">
-	<link rel="copyright" href="http://www.mamo-net.de">
+	<link rel="copyright" href="http://www.viscacha.org">
 	<script type="text/javascript">
 	<!--
 		var sidx = '<?php echo SID2URL_JS_x; ?>';

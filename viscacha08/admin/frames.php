@@ -15,7 +15,7 @@ if ($job == 'menu') {
 	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 	<meta http-equiv="pragma" content="no-cache">
 	<link rel="stylesheet" type="text/css" href="admin/html/menu.css">
-	<link rel="copyright" href="http://www.mamo-net.de">
+	<link rel="copyright" href="http://www.viscacha.org">
 	<script src="admin/html/menu.js" language="Javascript" type="text/javascript"></script>
 	</head>
 	<body onload="init()">
@@ -239,7 +239,7 @@ else {
   <title><?php echo $config['fname']; ?>: Viscacha Admin Control Panel</title>
   <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1" />
   <meta http-equiv="pragma" content="no-cache" />
-  <link rel="copyright" href="http://www.mamo-net.de" />
+  <link rel="copyright" href="http://www.viscacha.org" />
  </head>
  <frameset cols="200,*" frameborder="0" framespacing="0" border="0">
   <frame name="Menu" src="admin.php?action=frames&amp;job=menu" scrolling="auto" noresize="noresize" />

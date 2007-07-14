@@ -1535,7 +1535,7 @@ if (!function_exists('array_intersect_key')) {
  *
  * @category    PHP
  * @link        http://php.net/function.array_fill
- * @author      Matthias Mohr <webmaster@mamo-net.de>
+ * @author      Matthias Mohr <webmaster@viscacha.org>
  * @version     $Revision: 1.0 $
  * @since       PHP 4.2.0
  * @require     PHP 3
