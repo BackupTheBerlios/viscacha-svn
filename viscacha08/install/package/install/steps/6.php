@@ -14,7 +14,7 @@ if (isset($_REQUEST['save']) && $_REQUEST['save'] == 1) {
 	$c->updateconfig('fpath',str);
 	$c->updateconfig('forenmail',str);
 	$c->updateconfig('cookie_prefix',str);
-	if ($c->data['cryptkey'] == true) {
+	if (empty($c->data['cryptkey']) == true) {
 		$c->updateconfig('cryptkey',str,md5(microtime()));
 	}
 	$c->updateconfig('foffline',int,1);
