@@ -1,5 +1,5 @@
 <?php
-if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "config.inc.php") die('Error: Hacking Attempt');
+if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
 $config = array();
 $config['abozahl'] = 20;
 $config['acceptrules'] = 1;
