@@ -570,7 +570,7 @@ function GoBoardPW ($bpw, $bid) {
         echo $tpl->parse("main/boardpw");
 		$slog->updatelogged();
 		$zeitmessung = t2();
-		$tpl->globalvars(compact("zeitmessung"));
+		$tpl->globalvars(compact("zeitmessung", "bid"));
 		echo $tpl->parse("footer");
 		$phpdoc->Out();
 		$db->close();

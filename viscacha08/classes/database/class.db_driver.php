@@ -146,7 +146,7 @@ class DB_Driver {
 			if (strlen($h) > 10) {
 				unset($result);
 				$result = $this->query($h, __LINE__, __FILE__, $die);
-				if (is_resource($result)) {
+				if ($this->isResultSet($result)) {
 					if ($this->num_rows($result) > 0) {
 						$x = array();
 						while ($row = $this->fetch_assoc($result)) {

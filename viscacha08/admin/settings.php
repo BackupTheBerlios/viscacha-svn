@@ -1333,7 +1333,6 @@ elseif ($job == 'db2') {
 
 	$c->getdata();
 	$c->updateconfig('pconnect',int);
-	$c->updateconfig('dbprefix',str);
 	$c->updateconfig('dbsystem',str);
 	$c->updateconfig('optimizetables',str);
 	$c->savedata();

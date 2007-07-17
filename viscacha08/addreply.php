@@ -366,7 +366,7 @@ else {
 		}
 	}
 
-	if ($config['botgfxtest_posts'] == 1 && $data['human'] == null) {
+	if ($config['botgfxtest_posts'] == 1 && ((isset($data['human']) && $data['human'] == null) || !isset($data['human']))) {
 		include("classes/graphic/class.veriword.php");
 		$vword = new VeriWord();
 		$veriid = $vword->set_veriword($config['botgfxtest_text_verification']);

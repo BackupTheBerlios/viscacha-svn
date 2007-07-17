@@ -12,6 +12,7 @@ CREATE TABLE `{:=DBPREFIX=:}settings` (
 INSERT INTO `{:=DBPREFIX=:}settings` (`name`, `title`, `description`, `type`, `optionscode`, `value`, `sgroup`) VALUES ('relatednum', 'Number of smiliar topics', 'Maximum number of topics found as similar topics', 'text', '', '5', 1),
 ('items', 'Number of news', 'Number of news shown on the frontpage', 'text', '', '5', 2),
 ('teaserlength', 'Shortening news', 'Maximal characters shown in the preview of the article.', 'text', '', '300', 2),
+('cutat', 'Code to cut after', 'You can cut the preview (teaser) manually by placing the specified code in the text. All text after this code will be removed from the preview.', 'select', 'teaser=[teaser]', 'teaser', 2),
 ('feed', 'ID of Newsfeed', 'ID of Newsfeed to show. Look up ID here: <a href="admin.php?action=cms&job=feed" target="_blank">Newsfeed Syndication</a>', 'text', '', '1', 3),
 ('title', 'Title for Newsfeed', '', 'text', '', 'Ticker', 3),
 ('text', 'Text to show', 'You can enter the message here. You can use HTML.', 'textarea', '', '', 4),

@@ -99,6 +99,13 @@ class DB extends DB_Driver { // MySQL
 		return is_resource($this->conn);
 	}
 
+	function isResultSet($result = null){
+		if (!is_resource($result)) {
+	    	$result = $this->result;
+	    }
+		return is_resource($result);
+	}
+
 	function select_db($dbname = null) {
 		if(empty($dbname)) {
 			$dbname = $this->database;

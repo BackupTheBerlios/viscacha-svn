@@ -112,6 +112,13 @@ class DB extends DB_Driver { // MySQLi
 		return is_object($this->conn);
 	}
 
+	function isResultSet($result = null){
+		if (!is_object($result)) {
+	    	$result = $this->result;
+	    }
+		return is_object($result);
+	}
+
 	function select_db($dbname = null) {
 		if(empty($dbname)) {
 			$dbname = $this->database;
