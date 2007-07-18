@@ -2,10 +2,13 @@
 if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
 
 class ftp extends ftp_base {
+
 	function ftp($verb=FALSE, $le=FALSE) {
-		$this->LocalEcho = $le;
-		$this->Verbose = $verb;
-		$this->ftp_base(TRUE);
+		$this->__construct($verb, $le);
+	}
+
+	function __construct($verb=FALSE, $le=FALSE) {
+		parent::__construct(true, $verb, $le);
 	}
 
 // <!-- --------------------------------------------------------------------------------------- -->
@@ -59,9 +62,6 @@ class ftp extends ftp_base {
 				$this->PushError($fnction,'Read failed', socket_strerror(socket_last_error($this->_ftp_control_sock)));
 			} else {
 				$this->_message.=$tmp;
-//				for($i=0; $i<strlen($this->_message); $i++)
-//					if(ord($this->_message[$i])<32) echo "#".ord($this->_message[$i]); else echo $this->_message[$i];
-//				echo CRLF;
 				$go = !preg_match("/^([0-9]{3})(-.+\\1)? [^".CRLF."]+".CRLF."$/Us", $this->_message, $regs);
 			}
 		} while($go);
@@ -151,7 +151,7 @@ class ftp extends ftp_base {
 	}
 
 	function _data_read($mode=FTP_ASCII, $fp=NULL) {
-		$NewLine=$this->NewLineCode[$this->OS_local];
+		$NewLine=$this->_eol_code[$this->OS_local];
 		if(is_resource($fp)) $out=0;
 		else $out="";
 		if(!$this->_passive) {
@@ -163,26 +163,18 @@ class ftp extends ftp_base {
 				return FALSE;
 			}
 		}
-		if($mode!=FTP_BINARY) {
-			while(($tmp=@socket_read($this->_ftp_temp_sock, 8192, PHP_NORMAL_READ))!==false) {
-				$line.=$tmp;
-				if(!preg_match("/".CRLF."$/", $line)) continue;
-				$line=rtrim($line,CRLF).$NewLine;
-				if(is_resource($fp)) $out+=fwrite($fp, $line, strlen($line));
-				else $out.=$line;
-				$line="";
-			}
-		} else {
-			while($block=@socket_read($this->_ftp_temp_sock, 8192, PHP_BINARY_READ)) {
-				if(is_resource($fp)) $out+=fwrite($fp, $block, strlen($block));
-				else $out.=$line;
-			}
+
+		while(($block=@socket_read($this->_ftp_temp_sock, $this->_ftp_buff_size, PHP_BINARY_READ))!==false) {
+			if($block==="") break;
+			if($mode!=FTP_BINARY) $block=preg_replace("/\r\n|\r|\n/", $this->_eol_code[$this->OS_local], $block);
+			if(is_resource($fp)) $out+=fwrite($fp, $block, strlen($block));
+			else $out.=$block;
 		}
 		return $out;
 	}
 
 	function _data_write($mode=FTP_ASCII, $fp=NULL) {
-		$NewLine=$this->NewLineCode[$this->OS_local];
+		$NewLine=$this->_eol_code[$this->OS_local];
 		if(is_resource($fp)) $out=0;
 		else $out="";
 		if(!$this->_passive) {
@@ -191,32 +183,29 @@ class ftp extends ftp_base {
 			if($this->_ftp_temp_sock===FALSE) {
 				$this->PushError("_data_write","socket_accept", socket_strerror(socket_last_error($this->_ftp_temp_sock)));
 				$this->_data_close();
-				return FALSE;
+				return false;
 			}
 		}
 		if(is_resource($fp)) {
 			while(!feof($fp)) {
-				$line=fgets($fp, 4096);
-				if($mode!=FTP_BINARY) $line=rtrim($line, CRLF).CRLF;
-				do {
-					if(($res=@socket_write($this->_ftp_temp_sock, $line))===FALSE) {
-						$this->PushError("_data_write","socket_write", socket_strerror(socket_last_error($this->_ftp_temp_sock)));
-						return FALSE;
-					}
-					$line=substr($line, $res);
-				}while($line!="");
+				$block=fread($fp, $this->_ftp_buff_size);
+				if(!$this->_data_write_block($mode, $block)) return false;
 			}
-		} else {
-			if($mode!=FTP_BINARY) $fp=rtrim($fp, $NewLine).CRLF;
-			do {
-				if(($res=@socket_write($this->_ftp_temp_sock, $fp))===FALSE) {
-					$this->PushError("_data_write","socket_write", socket_strerror(socket_last_error($this->_ftp_temp_sock)));
-					return FALSE;
-				}
-				$fp=substr($fp, $res);
-			}while($fp!="");
-		}
-		return TRUE;
+		} elseif(!$this->_data_write_block($mode, $fp)) return false;
+		return true;
+	}
+
+	function _data_write_block($mode, $block) {
+		if($mode!=FTP_BINARY) $block=preg_replace("/\r\n|\r|\n/", $this->_eol_code[$this->OS_remote], $block);
+		do {
+			if(($t=@socket_write($this->_ftp_temp_sock, $block))===FALSE) {
+				$this->PushError("_data_write","socket_write", socket_strerror(socket_last_error($this->_ftp_temp_sock)));
+				$this->_data_close();
+				return FALSE;
+			}
+			$block=substr($block, $t);
+		} while(!empty($block));
+		return true;
 	}
 
 	function _data_close() {
