@@ -6,5 +6,3 @@ CREATE TABLE `{:=DBPREFIX=:}textparser` (
   `desc` tinytext NOT NULL,
   PRIMARY KEY  (`id`)
 ) TYPE=MyISAM PACK_KEYS=1 AUTO_INCREMENT=1 ;
-
-INSERT INTO `{:=DBPREFIX=:}textparser` (`search`,`replace`,`type`,`desc`) VALUES ('[teaser]','','censor','');

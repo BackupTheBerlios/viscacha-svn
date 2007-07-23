@@ -148,7 +148,7 @@ class DB extends DB_Driver { // MySQLi
 	}
 
 	function num_rows($result = null) {
-		if (!is_resource($result)) {
+		if (!is_object($result)) {
 	    	$result = $this->result;
 	    }
 	    return @mysqli_num_rows($result);
@@ -159,21 +159,21 @@ class DB extends DB_Driver { // MySQLi
 	}
 
 	function fetch_object($result = null) {
-		if (!is_resource($result)) {
+		if (!is_object($result)) {
 	    	$result = $this->result;
 	    }
 	    return @mysqli_fetch_object($result);
 	}
 
 	function fetch_num($result = null) {
-		if (!is_resource($result)) {
+		if (!is_object($result)) {
 	    	$result = $this->result;
 	    }
 	    return @mysqli_fetch_row($result);
 	}
 
 	function fetch_assoc($result = null) {
-		if (!is_resource($result)) {
+		if (!is_object($result)) {
 	    	$result = $this->result;
 	    }
 	    return @mysqli_fetch_assoc($result);
@@ -184,14 +184,14 @@ class DB extends DB_Driver { // MySQLi
 	}
 
 	function num_fields($result = null) {
-		if (!is_resource($result)) {
+		if (!is_object($result)) {
 	    	$result = $this->result;
 	    }
 		return mysqli_num_fields($result);
 	}
 
 	function field_len($result = null, $k) {
-		if (!is_resource($result)) {
+		if (!is_object($result)) {
 	    	$result = $this->result;
 	    }
 	    $data = mysqli_fetch_field_direct($result, $k);
@@ -204,7 +204,7 @@ class DB extends DB_Driver { // MySQLi
 	}
 
 	function field_type($result = null, $k) {
-		if (!is_resource($result)) {
+		if (!is_object($result)) {
 	    	$result = $this->result;
 	    }
 
@@ -218,7 +218,7 @@ class DB extends DB_Driver { // MySQLi
 	}
 
 	function field_name($result = null, $k) {
-		if (!is_resource($result)) {
+		if (!is_object($result)) {
 	    	$result = $this->result;
 	    }
 	    $data = mysqli_fetch_field_direct($result, $k);
@@ -234,7 +234,7 @@ class DB extends DB_Driver { // MySQLi
 	}
 
 	function field_table($result = null, $k) {
-		if (!is_resource($result)) {
+		if (!is_object($result)) {
 	    	$result = $this->result;
 	    }
 	    $data = mysqli_fetch_field_direct($result, $k);

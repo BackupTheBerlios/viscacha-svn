@@ -87,6 +87,19 @@ if (isset($_REQUEST['save']) && $_REQUEST['save'] == 1) {
 		}
 	}
 }
+
+// Cache löschen
+$cachedir = 'cache/';
+if ($dh = @opendir($dir)) {
+	while (($file = readdir($dh)) !== false) {
+		if (strpos($file, '.inc.php') !== false) {
+			$fileTrim = str_replace('.inc.php', '', $file);
+			$filesystem->unlink($cachedir.$file);
+		}
+    }
+	closedir($dh);
+}
+
 if (count($error) == 0) {
 	$lf = './locked.txt';
 	$filesystem->file_put_contents($lf, '');
