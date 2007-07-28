@@ -721,8 +721,10 @@ class BBCode {
 			$text = str_replace("\n", "<br>\n", $text);
 		}
 		else {
-			$text = nl2br($text);
+			$text = str_replace("\n", "<br />\n", $text);
 		}
+		// Conver \r from custom bb-codes back to \n
+		$text = str_replace("\r", "\n", $text);
 		return $text;
 	}
 	function parseDoc ($text) {
