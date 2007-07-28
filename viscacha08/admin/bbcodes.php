@@ -811,7 +811,6 @@ elseif ($job == 'custombb_import2') {
 
 	if (!empty($_FILES['upload']['name'])) {
 		$filesize = ini_maxupload();
-		$filetypes = array('bbc');
 		$dir = 'temp/';
 
 		$insertuploads = array();
@@ -819,7 +818,7 @@ elseif ($job == 'custombb_import2') {
 
 		$my_uploader = new uploader();
 		$my_uploader->max_filesize(1024*250);
-		$my_uploader->file_types($filetypes);
+		$my_uploader->file_types(array('bbc'));
 		$my_uploader->set_path($dir);
 		if ($my_uploader->upload('upload')) {
 			if ($my_uploader->save_file()) {
@@ -839,7 +838,7 @@ elseif ($job == 'custombb_import2') {
 			$file = $server;
 		}
 		else {
-			$inserterrors[] = 'The selected file is no BBC-file.';
+			$inserterrors[] = 'The selected file is not a .bbc file.';
 		}
 	}
 	else {
@@ -851,31 +850,33 @@ elseif ($job == 'custombb_import2') {
 	}
 
 	$content = file_get_contents($file);
-	extract(unserialize($content));
+	$bb = unserialize($content);
 
-	if (empty($bbcodetag) || empty($bbcodereplacement) || empty($bbcodeexample)) {
-		error('admin.php?action=bbcodes&job=custombb_import', 'File not valid!');
+	if (empty($bb['bbcodetag']) || empty($bb['bbcodereplacement']) || empty($bb['bbcodeexample'])) {
+		error('admin.php?action=bbcodes&job=custombb_import', 'The specified .bbc file is corrupt!');
 	}
 
-	$result = $db->query("SELECT * FROM {$db->pre}bbcode WHERE bbcodetag = '{$bbcodetag}' AND twoparams = '{$twoparams}'", __LINE__, __FILE__);
+	$bb = array_map(array($db, 'escape_string'), $bb);
+
+	$result = $db->query("SELECT * FROM {$db->pre}bbcode WHERE bbcodetag = '{$bb['bbcodetag']}' AND twoparams = '{$bb['twoparams']}'", __LINE__, __FILE__);
 	if ($db->num_rows($result) > 0) {
-		error('admin.php?action=bbcodes&job=custombb_import', 'There is already a BB-Code named &quot;'.$bbcodetag.'&quot;. You may not create duplicate names.');
+		error('admin.php?action=bbcodes&job=custombb_import', 'There is already a BB-Code named &quot;'.$bb['bbcodetag'].'&quot;. You may not create duplicate names.');
 	}
 
-	if (empty($button)) {
-		$buttonimage = '';
+	if (empty($bb['button'])) {
+		$bb['buttonimage'] = '';
 	}
 	else {
-		$name = basename($buttonimage);
-		$buttonimage = "images/{$name}";
-		if (!file_exists($buttonimage)) {
-			$filesystem->file_put_contents($buttonimage, base64_decode($button));
+		$name = basename($bb['buttonimage']);
+		$bb['buttonimage'] = "images/{$name}";
+		if (!file_exists($bb['buttonimage'])) {
+			$filesystem->file_put_contents($bb['buttonimage'], base64_decode($bb['button']));
 		}
 	}
 
 	$db->query("
 	INSERT INTO {$db->pre}bbcode (bbcodetag, bbcodereplacement, bbcodeexample, bbcodeexplanation, twoparams, title, buttonimage)
-	VALUES ('{$bbcodetag}','{$bbcodereplacement}','{$bbcodeexample}','{$bbcodeexplanation}','{$twoparams}','{$title}','{$buttonimage}')
+	VALUES ('{$bb['bbcodetag']}','{$bb['bbcodereplacement']}','{$bb['bbcodeexample']}','{$bb['bbcodeexplanation']}','{$bb['twoparams']}','{$bb['title']}','{$bb['buttonimage']}')
 	", __LINE__, __FILE__);
 
 	if ($del > 0) {
@@ -885,7 +886,7 @@ elseif ($job == 'custombb_import2') {
 	$delobj = $scache->load('custombb');
 	$delobj->delete();
 
-	ok('admin.php?action=bbcodes&job=custombb', 'BB-Code ('.$title.') successfully imported!');
+	ok('admin.php?action=bbcodes&job=custombb', 'BB-Code ('.$bb['title'].') successfully imported!');
 }
 elseif ($job == 'custombb_add') {
 	echo head();
