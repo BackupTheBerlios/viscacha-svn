@@ -112,18 +112,16 @@ elseif ($_GET['action'] == "attachment") {
 
 		$file = NULL;
 		if ($db->num_rows($result) != 1) {
-			echo $tpl->parse("header");
 			error($lang->phrase('no_upload_found'));
 		}
 		if ($my->p['forum'] == 0 || $my->p['downloadfiles'] == 0) {
-			echo $tpl->parse("header");
 			errorLogin();
 		}
 
 		$uppath = 'uploads/topics/'.$row['source'];
 
 		if (!file_exists($uppath)) {
-			error(array($lang->phrase('no_upload_found')));
+			error($lang->phrase('no_upload_found'));
 		}
 
 		$db->query('UPDATE '.$db->pre.'uploads SET hits = hits+1 WHERE id = '.$_GET['id'],__LINE__,__FILE__);

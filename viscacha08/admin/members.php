@@ -2194,6 +2194,7 @@ elseif ($job == 'ips') {
 	$ipaddress = $gpc->get('ipaddress', str);
 	$userid = $gpc->get('id', int);
 
+	echo head();
 	if (!empty($username)) {
 		$result = $db->query("SELECT id, name FROM {$db->pre}user WHERE name = '{$username}' LIMIT 1", __LINE__, __FILE__);
 		$userinfo = $db->fetch_assoc($result);
@@ -2203,7 +2204,6 @@ elseif ($job == 'ips') {
 		}
 	}
 
-	echo head();
 	if (!empty($ipaddress) || $userid > 0) {
 		if (!empty($ipaddress)) {
 			if (check_ip($ipaddress)) {

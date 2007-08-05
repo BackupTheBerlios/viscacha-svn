@@ -2943,7 +2943,7 @@ elseif ($job == 'com_add2') {
 			}
 			$path = "components/{$id}/{$file}";
 			if (!file_exists($path)) {
-				error('admin.php?action=cms&job=cms_add', 'Installation file not found.');
+				error('admin.php?action=cms&job=com_add', 'Installation file not found.');
 			}
 			else {
 				include($path);
@@ -3073,7 +3073,7 @@ elseif ($job == 'com_delete2') {
 		}
 		$path = "components/{$id}/{$file}";
 		if (!file_exists($path)) {
-			error('admin.php?action=cms&job=cms_add', 'Installation file not found.');
+			error('admin.php?action=cms&job=com_add', 'Installation file not found.');
 		}
 		else {
 			$confirm = false;

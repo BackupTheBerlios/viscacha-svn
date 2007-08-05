@@ -113,7 +113,9 @@ class filesystem {
 
 	function mkdir($file, $chmod = 0755) {
 		if (file_exists($file)) {
-			$this->ftp->chmod($file, $chmod);
+			if ($this->init()) {
+				$this->ftp->chmod($file, $chmod);
+			}
 		}
 		if (!@mkdir($file, $chmod)) {
 			if ($this->init()) {
