@@ -1562,7 +1562,7 @@ elseif ($job == 'phrase_add_mailfile') {
   </tr>
   <tr>
    <td class="mbox" width="30%">Text:</td>
-   <td class="mbox" width="70%"><textarea name="tpl" rows="8" cols="80">Hallo,
+   <td class="mbox" width="70%"><textarea name="tpl" rows="8" cols="80">Hello,
 
 You can compose your text here...
 

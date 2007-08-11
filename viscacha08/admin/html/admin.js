@@ -39,14 +39,14 @@ function disable (txt) {
 	else {
 		input = FetchElement("dis1");
 	}
-	
+
 	if (txt.value != '') {
 		input.disabled="disabled";
 	}
 	else {
 		input.disabled="";
 	}
-    
+
 	return;
 
 }
@@ -54,6 +54,10 @@ function locate(url) {
 	if (url != '') {
 		location.href=url;
 	}
+}
+
+function showpost(Link) {
+	window.open(Link.href, "showpost", "width=640,height=480,resizable=yes,scrollbars=yes,location=yes");
 }
 
 function deleteit(rid){
@@ -70,10 +74,10 @@ function useit(rq){
 }
 
 function docs() {
-    window.open("admin.php?action=cms&job=nav_docslist","","width=480,height=480,resizable=yes,scrollbars=yes");   
+    window.open("admin.php?action=cms&job=nav_docslist","","width=480,height=480,resizable=yes,scrollbars=yes");
 }
 function coms() {
-    window.open("admin.php?action=cms&job=nav_comslist","","width=480,height=480,resizable=yes,scrollbars=yes");   
+    window.open("admin.php?action=cms&job=nav_comslist","","width=480,height=480,resizable=yes,scrollbars=yes");
 }
 
 function insert_doc(url,title) {
@@ -163,7 +167,7 @@ function HandCursor(element) {
 	}
 }
 
-/* 
+/*
 XHConn - Simple XMLHTTP interface - bfults@gmail.com - 2005-04-08
 Code licensed under Creative Commons Attribution-ShareAlike License
 http://creativecommons.org/licenses/by-sa/2.0/
@@ -247,7 +251,7 @@ function ajax_noki(img, params) {
 	    	img.src = noki(oXML.responseText);
 	    }
 	    else {
-	    	alert(oXML.responseText);	
+	    	alert(oXML.responseText);
 	    }
 	};
 	myConn.connect("admin.php", "GET", params+ieRand(), fnWhenDone);
@@ -274,13 +278,13 @@ function octalchange() {
 	while (groupbin.length<3) { groupbin="0"+groupbin; };
 	var otherbin = parseInt(val.charAt(2)).toString(2);
 	while (otherbin.length<3) { otherbin="0"+otherbin; };
-	FetchElement('owner4').checked = parseInt(ownerbin.charAt(0)); 
+	FetchElement('owner4').checked = parseInt(ownerbin.charAt(0));
 	FetchElement('owner2').checked = parseInt(ownerbin.charAt(1));
 	FetchElement('owner1').checked = parseInt(ownerbin.charAt(2));
-	FetchElement('group4').checked = parseInt(groupbin.charAt(0)); 
+	FetchElement('group4').checked = parseInt(groupbin.charAt(0));
 	FetchElement('group2').checked = parseInt(groupbin.charAt(1));
 	FetchElement('group1').checked = parseInt(groupbin.charAt(2));
-	FetchElement('other4').checked = parseInt(otherbin.charAt(0)); 
+	FetchElement('other4').checked = parseInt(otherbin.charAt(0));
 	FetchElement('other2').checked = parseInt(otherbin.charAt(1));
 	FetchElement('other1').checked = parseInt(otherbin.charAt(2));
 	calc_chmod(1);
@@ -296,13 +300,13 @@ function calc_chmod(nototals) {
 		var field2 = user + "2";
 		var field1 = user + "1";
 		var number = 0;
-	
+
 		if (FetchElement(field4).checked == true) { number += 4; }
 		if (FetchElement(field2).checked == true) { number += 2; }
 		if (FetchElement(field1).checked == true) { number += 1; }
 
 		totals[i] = totals[i]+number;
-	
+
   };
 	if (!nototals) {
 	    FetchElement('chmod').value = totals[0] + totals[1] + totals[2];
@@ -328,7 +332,7 @@ function InsertTags(field, aTag, eTag, parentWindow, param2) {
 	}
 	else {
 		var docsel = document;
-	}	 
+	}
 	if(typeof docsel.selection != 'undefined') {
         var range = docsel.selection.createRange();
         var insText = range.text;
@@ -340,7 +344,7 @@ function InsertTags(field, aTag, eTag, parentWindow, param2) {
         if (insText.length == 0) {
           range.move('character', -eTag.length);
         } else {
-          range.moveStart('character', aTag.length + insText.length + eTag.length);      
+          range.moveStart('character', aTag.length + insText.length + eTag.length);
         }
         range.select();
     }

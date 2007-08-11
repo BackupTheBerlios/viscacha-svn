@@ -10,7 +10,7 @@
 	<?php } if ($my->p['members'] == 1) { ?>
 		<li><a href="members.php<?php echo SID2URL_1; ?>"><img src="<?php echo $tpl->img('members'); ?>" alt="" /> <?php echo $lang->phrase('members_short'); ?></a></li>
 	<?php } if ($my->p['members'] == 0 && $my->p['team'] == 1) { ?>
-		<li><a href="team.php<?php echo SID2URL_1; ?>"><img src="<?php echo $tpl->img('members'); ?>" alt="" /> <?php echo $lang->phrase('team_short'); ?></a></li>
+		<li><a href="members.php?action=team<?php echo SID2URL_x; ?>"><img src="<?php echo $tpl->img('members'); ?>" alt="" /> <?php echo $lang->phrase('team_short'); ?></a></li>
 	<?php } if ($my->p['pm'] == 1) { ?>
 		<li><a href="pm.php<?php echo SID2URL_1; ?>"><img src="<?php echo $tpl->img('pm'); ?>" alt="" /> <?php echo $lang->phrase('pm_short'); ?></a></li>
 	<?php } if ($my->vlogin) { ?>

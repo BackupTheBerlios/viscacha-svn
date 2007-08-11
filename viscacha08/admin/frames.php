@@ -65,6 +65,7 @@ if ($job == 'menu') {
 	 <div class="border">
 	   <h3><img id="img_admin_menu5" src="admin/html/images/plus.gif" alt="collapse" /> Topics &amp; Posts</h3>
 	  <ul id="part_admin_menu5">
+	   <li>&raquo; <a href="admin.php?action=posts&amp;job=reports" target="Main">Reported Posts</a></li>
 	   <li>&raquo; <a href="admin.php?action=posts&amp;job=postrating" target="Main">Postratings</a></li>
 	  </ul>
 	 </div>
@@ -174,6 +175,7 @@ if ($job == 'menu') {
 	  <ul id="part_admin_menu3_simple">
 	   <li>&raquo; <a href="admin.php?action=forums&amp;job=manage" target="Main">Forum &amp; Category Manager</a></li>
 	   <li>&raquo; <a href="admin.php?action=forums&amp;job=mods" target="Main">Moderator Manager</a></li>
+	   <li>&raquo; <a href="admin.php?action=posts&amp;job=reports" target="Main">Reported Posts</a></li>
 	   <li>&raquo; <a href="admin.php?action=posts&amp;job=postrating" target="Main">Postratings</a></li>
 	  </ul>
 	 </div>

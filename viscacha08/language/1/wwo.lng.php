@@ -22,6 +22,7 @@ $lang['wwo_misc'] = 'Ist kein gläserner Mensch... ;)';
 $lang['wwo_misc_bbhelp'] = 'Liest die BB-Code-Hilfe';
 $lang['wwo_misc_board_rules'] = 'liest die <a href="misc.php?action=board_rules&id={$id}">Forenregln</a> des Forums <a href="showforum.php?id={$id}">{$title}</a>';
 $lang['wwo_misc_error'] = 'Hat eine ungültige Seite aufgerufen';
+$lang['wwo_misc_report_post'] = 'melden einen Beitrag';
 $lang['wwo_misc_rules'] = 'Liest die die <a href="misc.php?action=rules">Verhaltensbedingungen</a>';
 $lang['wwo_misc_wwo'] = 'Betrachtet diese Wer-ist-Online-Liste';
 $lang['wwo_newtopic'] = 'Schreibt einen neuen Beitrag';
@@ -45,5 +46,5 @@ $lang['wwo_search_active'] = 'Betrachtet die aktuell aktiven Themen';
 $lang['wwo_showforum'] = 'Betrachtet ein Forum: <a href="showforum.php?id={$id}">{$title}</a>';
 $lang['wwo_showtopic'] = 'Liest einen Beitrag: <a href="showtopic.php?id={$id}">{$title}</a>';
 $lang['wwo_spellcheck'] = 'Versucht mit der Rechtschreibkontrolle seine Fehler zu korrigieren';
-$lang['wwo_team'] = 'Betrachtet die <a href="team.php">Teamübersicht</a>';
+$lang['wwo_team'] = 'Betrachtet die <a href="members.php?action=team">Teamübersicht</a>';
 ?>

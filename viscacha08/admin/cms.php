@@ -3375,10 +3375,10 @@ elseif ($job == 'doc_delete') {
 		$delobj = $scache->load('wraps');
 		$delobj->delete();
 
-		ok('admin.php?action=cms&job=doc', $anz.' Dokumente gelöscht');
+		ok('admin.php?action=cms&job=doc', $anz.' documents deleted');
 	}
 	else {
-		error('admin.php?action=cms&job=doc', 'Keine Eingabe gemacht');
+		error('admin.php?action=cms&job=doc', 'You haven\'t checked any box.');
 	}
 }
 elseif ($job == 'doc_edit') {

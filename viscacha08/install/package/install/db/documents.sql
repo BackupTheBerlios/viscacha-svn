@@ -8,7 +8,7 @@ CREATE TABLE `{:=DBPREFIX=:}documents` (
   `type` tinyint(2) NOT NULL default '0',
   `groups` varchar(150) NOT NULL default '',
   `active` enum('0','1') NOT NULL default '0',
-  `file` tinytext NOT NULL,
+  `file` varchar(255) NOT NULL,
   PRIMARY KEY  (`id`)
 ) TYPE=MyISAM AUTO_INCREMENT=3 ;
 

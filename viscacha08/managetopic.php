@@ -177,7 +177,29 @@ if ($my->vlogin && $my->mp[0] == 1) {
 		UpdateBoardStats($board);
 		ok($lang->phrase('x_entries_moved'),'showtopic.php?id='.$info['id']);
 	}
+	elseif ($action == "reports") {
+		echo $tpl->parse("menu");
 
+		$result = $db->query("SELECT id, report, topic_id, tstart, topic FROM {$db->pre}replies WHERE id = '{$_GET['topic_id']}' LIMIT 1",__LINE__,__FILE__);
+		$data = $gpc->prepare($db->fetch_assoc($result));
+		if ($db->num_rows($result) == 0) {
+			error($lang->phrase('query_string_error'), 'showtopic.php?id='.$info['id'].SID2URL_x);
+		}
+		if (empty($data['report'])) {
+			error($lang->phrase('admin_report_not_found'), "showtopic.php?action=jumpto&id={$data['topic_id']}&topic_id={$data['id']}".SID2URL_x);
+		}
+
+		echo $tpl->parse("admin/topic/reports");
+	}
+	elseif ($action == "reports2") {
+		if ($_POST['temp'] == 1) {
+			$db->query("UPDATE {$db->pre}replies SET report = '' WHERE id = '{$_GET['topic_id']}' LIMIT 1",__LINE__,__FILE__);
+			ok($lang->phrase('admin_report_reset_success'), "showtopic.php?action=jumpto&id={$info['id']}&topic_id={$_GET['topic_id']}".SID2URL_x);
+		}
+		else {
+			error($lang->phrase('admin_failed'), 'managetopic.php?action=reports&id='.$info['id'].'&topic_id='.$_GET['topic_id'].SID2URL_x);
+		}
+	}
 	elseif ($action == "status") {
 		if ($my->mp[0] == 1 && $my->mp[1] == 0 && $my->mp[2] == 0 && $my->mp[3] == 0) {
 			errorLogin($lang->phrase('not_allowed'),'showtopic.php?id='.$info['id'].SID2URL_x);
