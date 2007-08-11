@@ -138,6 +138,19 @@ function ResizeImg(img,maxwidth) {
 	}
 }
 
+function openImageWindow(img, imgwidth, imgheight) {
+    var width = screen.width-30;
+    if (width > imgwidth) {
+        width = imgwidth+30;
+    }
+    var height = screen.height-50;
+    if (height > imgheight) {
+        height = imgheight+30;
+    }
+    window.open(img.href,"","scrollbars=yes,status=no,toolbar=no,location=yes,directories=no,resizable=no,menubar=no,width="+width+",height="+height);
+    return false;
+}
+
 /*
 XHConn - Simple XMLHTTP interface - bfults@gmail.com - 2005-04-08
 Code licensed under Creative Commons Attribution-ShareAlike License

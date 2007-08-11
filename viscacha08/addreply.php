@@ -313,6 +313,9 @@ else {
 			$bbcode->setReplace($data['dowords']);
 			$data['formatted_comment'] = $bbcode->parse($data['comment']);
 		}
+		if (isset($data['human']) == false) {
+			$data['human'] = null;
+		}
 	}
 	else {
 		$data = array(
@@ -366,7 +369,7 @@ else {
 		}
 	}
 
-	if ($config['botgfxtest_posts'] == 1 && ((isset($data['human']) && $data['human'] == null) || !isset($data['human']))) {
+	if ($config['botgfxtest_posts'] == 1 && is_null($data['human']) == true) {
 		include("classes/graphic/class.veriword.php");
 		$vword = new VeriWord();
 		$veriid = $vword->set_veriword($config['botgfxtest_text_verification']);
