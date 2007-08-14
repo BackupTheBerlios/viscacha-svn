@@ -3185,10 +3185,10 @@ elseif ($job == 'doc_add') {
 	echo head();
 	$type = doctypes();
 	$parser = array(
-	'0' => 'Kein Parser',
-	'1' => 'HTML',
-	'2' => 'PHP (HTML)',
-	'3' => 'BB-Codes'
+		'0' => 'No Parser',
+		'1' => 'HTML',
+		'2' => 'PHP (HTML)',
+		'3' => 'BB-Codes'
 	);
 	?>
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
@@ -3204,7 +3204,7 @@ elseif ($job == 'doc_add') {
 <?php
 foreach ($type as $id => $row) {
 	$row['parser'] = isset($parser[$row['parser']]) ? $parser[$row['parser']] : 'Unknown';
-	$row['inline'] = ($row['inline'] == 1) ? 'Statisch' : 'Dynamisch';
+	$row['inline'] = ($row['inline'] == 1) ? 'Static' : 'Dynamic';
 ?>
   <tr>
    <td class="mbox"><a href="admin.php?action=cms&job=doc_add2&type=<?php echo $id; ?>"><?php echo $row['title']; ?></a></td>
@@ -3317,19 +3317,28 @@ elseif ($job == 'doc_add3') {
   	$groups = $gpc->get('groups', arr_int);
   	$file = $gpc->get('file', none);
   	$file = trim($file);
-  	if (empty($file)) {
-  		$content = $gpc->get('template', str);
-  	}
-  	else {
-  		$content = $gpc->get('template', none);
-  		if ($filesystem->file_put_contents($file, $content) > 0) {
-  			$content = '';
-  		}
-  		else {
-  			$content = $gpc->save_str($content);
-  			$file = '';
-  		}
-  	}
+
+	$types = doctypes();
+	$format = $types[$type];
+
+	if ($format['remote'] != 1) {
+	  	if (empty($file)) {
+	  		$content = $gpc->get('template', str);
+	  	}
+	  	else {
+	  		$content = $gpc->get('template', none);
+	  		if ($filesystem->file_put_contents($file, $content) > 0) {
+	  			$content = '';
+	  		}
+	  		else {
+	  			$content = $gpc->save_str($content);
+	  			$file = '';
+	  		}
+		}
+	}
+	else {
+		$content = '';
+	}
 
 	if (empty($title)) {
 		error('admin.php?action=cms&job=doc_add', 'Title is empty!');
@@ -3392,8 +3401,7 @@ elseif ($job == 'doc_edit') {
 	}
 	$format = $types[$row['type']];
 	if (!empty($row['file'])) {
-		$rest = substr($row['file'], 0, 7);
-		if ($rest != 'http://') {
+		if ($format['remote'] != 1 && check_hp($row['file'])) {
 			$row['content'] = file_get_contents($row['file']);
 		}
 	}
@@ -3497,22 +3505,32 @@ elseif ($job == 'doc_edit2') {
   	$groups = $gpc->get('groups', arr_int);
   	$file = $gpc->get('file', none);
   	$file = trim($file);
-  	if (empty($file)) {
-  		$content = $gpc->get('template', str);
-  	}
-  	else {
-  		$content = $gpc->get('template', none);
-  		if ($filesystem->file_put_contents($file, $content) > 0) {
-  			$content = '';
-  		}
-  		else {
-  			$content = $gpc->save_str($content);
-  			$file = '';
-  		}
-  	}
 
-	if (empty($title)) {
-		error('admin.php?action=cms&job=doc_edit&id='.$id, 'Title is empty!');
+	$result = $db->query("SELECT type FROM {$db->pre}documents WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
+	if ($db->num_rows($result) == 0) {
+		error('admin.php?action=cms&job=doc', 'Document does not exist.');
+	}
+	$doc = $db->fetch_assoc($result);
+	$types = doctypes();
+	$format = $types[$doc['type']];
+
+	if ($format['remote'] != 1) {
+	  	if (empty($file)) {
+	  		$content = $gpc->get('template', str);
+	  	}
+	  	else {
+	  		$content = $gpc->get('template', none);
+	  		if ($filesystem->file_put_contents($file, $content) > 0) {
+	  			$content = '';
+	  		}
+	  		else {
+	  			$content = $gpc->save_str($content);
+	  			$file = '';
+	  		}
+		}
+	}
+	else {
+		$content = '';
 	}
 
 	$result = $db->query('SELECT COUNT(*) FROM '.$db->pre.'groups');

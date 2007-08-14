@@ -1,6 +1,7 @@
 <form method="post" action="log.php?action=login2<?php echo SID2URL_x; ?>">
 <div class="navigation_cat">
 <h3><?php echo $lang->phrase('login'); ?></h3>
+<div class="navigation_inner">
 <p>
 	<label for="nav_name" class="plainlabel"><strong><?php echo $lang->phrase('login_name'); ?></strong></label><br />
 	<input type="text" name="name" id="nav_name" size="20" /><br />
@@ -16,5 +17,6 @@
 	<li><a href="register.php<?php echo SID2URL_1; ?>"><?php echo $lang->phrase('register_title'); ?></a></li>
 	<?php } ?>
 	</ul>
+</div>
 </div>
 </form>

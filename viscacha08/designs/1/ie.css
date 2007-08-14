@@ -1,7 +1,7 @@
 * html body {
 	text-align: center;
 }
-* html #container, #window, #blank {
+* html #container, * html #window, * html #blank {
 	text-align: left;
 }
 * html #content {

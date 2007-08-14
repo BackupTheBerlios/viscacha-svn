@@ -200,7 +200,7 @@ elseif ($job == 'design_edit2') {
 	$result = $db->query("SELECT publicuse FROM {$db->pre}designs WHERE id = '{$id}' LIMIT 1");
 	$puse = $db->fetch_assoc($result);
 	if ($puse['publicuse'] == 1 && $use == 0) {
-		if ($id == $config['langdir']) {
+		if ($id == $config['templatedir']) {
 			$error .= ', but you can not unpublish this design until you have defined another default design';
 			$use = 1;
 		}
@@ -227,7 +227,8 @@ elseif ($job == 'design_delete') {
 	$result = $db->query("SELECT publicuse FROM {$db->pre}designs WHERE id = '{$id}' LIMIT 1");
 	$info = $db->fetch_assoc($result);
 
-	if ($info['publicuse'] == 1) {
+	if ($id == $config['templatedir']) {
+		echo head();
 		error('admin.php?action=designs&job=design', 'You can not unpublish this design until you have defined another default design!');
 	}
 
@@ -287,24 +288,27 @@ elseif ($job == 'design_add') {
   <tr>
    <td class="mbox" width="40%">Directory to use for templates:</td>
    <td class="mbox" width="60%">
+   <input type="radio" name="template" value="0" /> Create new directory for templates and use the standard templates as base
    <?php foreach ($templates as $dir) { ?>
-   <input type="radio" name="template" value="<?php echo $dir; ?>" /> <a href="admin.php?action=designs&job=templates_browse&id=<?php echo $dir; ?>" target="_blank"><?php echo $dir; ?></a><br />
+   <br /><input type="radio" name="template" value="<?php echo $dir; ?>" /> <a href="admin.php?action=designs&job=templates_browse&id=<?php echo $dir; ?>" target="_blank"><?php echo $dir; ?></a>
    <?php } ?>
    </td>
   </tr>
   <tr>
    <td class="mbox" width="40%">Directory to use for stylesheets:</td>
    <td class="mbox" width="60%">
+   <input type="radio" name="stylesheet" value="0" /> Copy standard stylesheet into new directory
    <?php foreach ($stylesheet as $dir) { ?>
-   <input type="radio" name="stylesheet" value="<?php echo $dir; ?>" /> <a href="admin.php?action=explorer&path=<?php echo urlencode('./designs/'.$dir.'/'); ?>" target="_blank"><?php echo $dir; ?></a><br />
+   <br /><input type="radio" name="stylesheet" value="<?php echo $dir; ?>" /> <a href="admin.php?action=explorer&path=<?php echo urlencode('./designs/'.$dir.'/'); ?>" target="_blank"><?php echo $dir; ?></a>
    <?php } ?>
    </td>
   </tr>
   <tr>
    <td class="mbox" width="40%">Directory to use for images:</td>
    <td class="mbox" width="60%">
+   <input type="radio" name="images" value="0" /> Create new directory for images and use the standard images as base
    <?php foreach ($images as $dir) { ?>
-   <input type="radio" name="images" value="<?php echo $dir; ?>" /> <a href="admin.php?action=explorer&path=<?php echo urlencode('./images/'.$dir.'/'); ?>" target="_blank"><?php echo $dir; ?></a><br />
+   <br /><input type="radio" name="images" value="<?php echo $dir; ?>" /> <a href="admin.php?action=explorer&path=<?php echo urlencode('./images/'.$dir.'/'); ?>" target="_blank"><?php echo $dir; ?></a>
    <?php } ?>
    </td>
   </tr>
@@ -331,6 +335,40 @@ elseif ($job == 'design_add2') {
 
 	if (empty($name)) {
 		$name = 'Design '.$id;
+	}
+
+	if ($template == 0) {
+		$template = 1;
+		while(is_dir('templates/'.$template)) {
+			$template++;
+			if ($template > 10000) {
+				error('admin.php?action=designs&job=design_add', 'Execution stopped: Buffer overflow (Templates)');
+			}
+		}
+		$filesystem->mkdir("templates/{$template}/", 0777);
+	}
+	if ($stylesheet == 0) {
+		$stylesheet = 1;
+		while(is_dir('designs/'.$stylesheet)) {
+			$stylesheet++;
+			if ($stylesheet > 10000) {
+				error('admin.php?action=designs&job=design_add', 'Execution stopped: Buffer overflow (Stylesheets)');
+			}
+		}
+		$result = $db->query("SELECT stylesheet FROM {$db->pre}designs WHERE id = '{$config['templatedir']}' LIMIT 1");
+		$info = $db->fetch_assoc($result);
+		$filesystem->mkdir("designs/{$stylesheet}/", 0777);
+		copyr("designs/{$info['stylesheet']}/", "designs/{$stylesheet}/");
+	}
+	if ($images == 0) {
+		$images = 1;
+		while(is_dir('images/'.$images)) {
+			$images++;
+			if ($images > 10000) {
+				error('admin.php?action=designs&job=design_add', 'Execution stopped: Buffer overflow (Images)');
+			}
+		}
+		$filesystem->mkdir("images/{$images}/", 0777);
 	}
 
 	$delobj = $scache->load('loaddesign');
