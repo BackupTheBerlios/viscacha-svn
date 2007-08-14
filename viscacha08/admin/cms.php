@@ -3400,10 +3400,8 @@ elseif ($job == 'doc_edit') {
 		error('admin.php?action=cms&job=doc', 'Keine gültige ID übergeben');
 	}
 	$format = $types[$row['type']];
-	if (!empty($row['file'])) {
-		if ($format['remote'] != 1 && check_hp($row['file'])) {
-			$row['content'] = file_get_contents($row['file']);
-		}
+	if (!empty($row['file']) && $format['remote'] != 1 && !check_hp($row['file'])) {
+		$row['content'] = file_get_contents($row['file']);
 	}
 	$groups = $db->query("SELECT id, name FROM {$db->pre}groups", __LINE__, __FILE__);
 	$garr = explode(',', $row['groups']);
