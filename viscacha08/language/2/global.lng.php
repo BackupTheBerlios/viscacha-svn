@@ -739,7 +739,6 @@ $lang['showtopic_options_favs'] = 'Add to favorites';
 $lang['showtopic_options_manage'] = 'Manage topics';
 $lang['showtopic_options_pdf'] = 'Show PDF file';
 $lang['showtopic_options_print'] = 'Printer friendly version';
-$lang['showtopic_options_word'] = 'Show Word file';
 $lang['showtopic_prefix_title'] = '[{$prefix}] ';
 $lang['showtopic_subject'] = 'Subject: ';
 $lang['show_first_unread_post'] = 'Show first unread post';

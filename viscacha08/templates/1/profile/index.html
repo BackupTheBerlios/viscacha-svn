@@ -76,18 +76,15 @@
 	  <th><?php echo $lang->phrase('profile_instantmessenger'); ?></th>
 	</tr>
 	<tr class="tbody profiledata">
-	  <td valign="top" class="hiddenl">
-	  <ul>
-		<li><strong><?php echo $lang->phrase('profile_mail'); ?>:</strong>
+	  <td valign="top">
+		<strong><?php echo $lang->phrase('profile_mail'); ?>:</strong>
 		<?php if($row->opt_hidemail != 1) { ?>
 		<a href="profile.php?action=mail&amp;id=<?php echo $row->id.SID2URL_x; ?>"><?php echo $lang->phrase('profile_mail_2'); ?></a>
 		<?php } else { echo $lang->phrase('profile_mail_1'); } ?>
-		</li>
-		<li><strong><?php echo $lang->phrase('profile_pm'); ?>:</strong> <a href="pm.php?action=new&amp;name=<?php echo $row->id.SID2URL_x; ?>"><?php echo $lang->phrase('profile_pm_send'); ?></a></li>
+		<br />
+		<strong><?php echo $lang->phrase('profile_pm'); ?>:</strong> <a href="pm.php?action=new&amp;name=<?php echo $row->id.SID2URL_x; ?>"><?php echo $lang->phrase('profile_pm_send'); ?></a>
 	  <?php foreach ($customfields['3'] as $field) { ?>
-	  <li><strong><?php echo $field['name']; ?>:</strong> <?php echo $field['value']; ?></li>
-	  <?php } ?>
-      </ul>
+	  <br /><strong><?php echo $field['name']; ?>:</strong> <?php echo $field['value']; } ?>
       </td>
 	  <td valign="top">
     <?php

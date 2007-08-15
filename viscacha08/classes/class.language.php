@@ -147,7 +147,7 @@ class lang {
 			$keys = explode('->',$key);
 			if (isset($this->assign[$keys[0]]->$keys[1])) {
 				$var = $this->assign[$keys[0]]->$keys[1];
-				unset($this->assign[$keys[0]]->$keys[1]);
+				//unset($this->assign[$keys[0]]->$keys[1]);
 				return $var;
 			}
 			elseif(isset($GLOBALS[$keys[0]]->$keys[1])) {
@@ -159,7 +159,7 @@ class lang {
 			if (isset($keys[2])) {
 				if (isset($this->assign[$keys[0]][$keys[1]][$keys[2]])) {
 					$var = $this->assign[$keys[0]][$keys[1]][$keys[2]];
-					unset($this->assign[$keys[0]][$keys[1]][$keys[2]]);
+					//unset($this->assign[$keys[0]][$keys[1]][$keys[2]]);
 					return $var;
 				}
 				elseif(isset($GLOBALS[$keys[0]][$keys[1][$keys[2]]])) {
@@ -169,7 +169,7 @@ class lang {
 			else {
 				if (isset($this->assign[$keys[0]][$keys[1]])) {
 					$var = $this->assign[$keys[0]][$keys[1]];
-					unset($this->assign[$keys[0]][$keys[1]]);
+					//unset($this->assign[$keys[0]][$keys[1]]);
 					return $var;
 				}
 				elseif(isset($GLOBALS[$keys[0]][$keys[1]])) {
@@ -180,7 +180,7 @@ class lang {
 		else {
 			if (isset($this->assign[$key])) {
 				$var = $this->assign[$key];
-				unset($this->assign[$key]);
+				//unset($this->assign[$key]);
 				return $var;
 			}
 			elseif(isset($GLOBALS[$key])) {

@@ -1,7 +1,6 @@
 <?php
 if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
 $lang = array();
-$lang['birthdaybox_module'] = 'Happy birthday to...';
 $lang['last_posts_info_reply'] = 'This topic contains more than {$num} replies. Click <a href="showtopic.php?id={$tid}" target="_blank">here</a>, to view the topic in whole.';
 $lang['last_posts_reply'] = 'The last {$num} posts in this topic:';
 $lang['last_x_forumposts'] = 'Last {$topicnum} active topics';

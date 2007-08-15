@@ -487,8 +487,8 @@ elseif ($job == 'plugins_edit') {
 	  <td>
 	  Code:<br /><br />
 	  <ul>
-		<li><a href="admin.php?action=cms&amp;job=package_template&amp;id=<?php echo $package['module']; ?>" target="_blank">Add Template</a></li>
-		<li><a href="admin.php?action=cms&amp;job=package_language&amp;id=<?php echo $package['module']; ?>" target="_blank">Add Phrase</a></li>
+		<li><a href="admin.php?action=cms&amp;job=package_template&amp;id=<?php echo $package['module']; ?>" target="_blank">Add/Edit Template</a></li>
+		<li><a href="admin.php?action=cms&amp;job=package_language&amp;id=<?php echo $package['module']; ?>" target="_blank">Add/Edit Phrase</a></li>
 	  </ul>
 	  <?php if (count($cp) > 0) { ?>
 	  <br /><br /><span class="stext"><strong>Caution</strong>: Changes to the code also affect the following hooks:</span>
@@ -676,8 +676,8 @@ elseif ($job == 'plugins_add2') {
 	  <span class="stext">At this place you can insert PHP-Code which will be executed in the indicated hook. You don't need to use &lt;?php bzw. ?&gt;-Tags at the beginning and the end of your code. You also can use templates and phrases for this plugin (more information down of this page). More information can be found in the documentation.</span>
 	  <br /><br />
 	  <ul>
-		<li><a href="admin.php?action=cms&amp;job=package_template&amp;id=<?php echo $package['id']; ?>" target="_blank">Add Template</a></li>
-		<li><a href="admin.php?action=cms&amp;job=package_language&amp;id=<?php echo $package['id']; ?>" target="_blank">Add Phrase</a></li>
+		<li><a href="admin.php?action=cms&amp;job=package_template&amp;id=<?php echo $package['id']; ?>" target="_blank">Add/Edit Template</a></li>
+		<li><a href="admin.php?action=cms&amp;job=package_language&amp;id=<?php echo $package['id']; ?>" target="_blank">Add/Edit Phrase</a></li>
 	  </ul>
 	  </td>
 	  <td><textarea name="code" rows="10" cols="80" class="texteditor"></textarea></td>
@@ -830,13 +830,13 @@ elseif ($job == 'package_template') {
 	<form method="post" action="admin.php?action=cms&job=package_template_add&id=<?php echo $data['id']; ?>">
 	<table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
 	 <tr>
-	  <td class="obox" colspan="2">Add Template to Package</td>
+	  <td class="obox" colspan="2">Add/Edit Template</td>
 	 </tr>
 	 <tr class="mbox" valign="top">
 	  <td>
 	  Code:<br /><br />
 	  <ul>
-		<li><a href="admin.php?action=cms&amp;job=package_language&amp;id=<?php echo $data['id']; ?>" target="_blank">Add Phrase</a></li>
+		<li><a href="admin.php?action=cms&amp;job=package_language&amp;id=<?php echo $data['id']; ?>" target="_blank">Add/Edit Phrase</a></li>
 	  </ul>
 	  </td>
 	  <td><textarea name="code" rows="8" cols="80" class="texteditor"></textarea></td>
@@ -948,12 +948,12 @@ elseif ($job == 'package_template_edit') {
 		<form method="post" action="admin.php?action=cms&job=package_template_edit2&id=<?php echo $data['id']; ?>&edit=<?php echo $editId; ?>">
 		<table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
 		 <tr>
-		  <td class="obox" colspan="2">Add Template to Package</td>
+		  <td class="obox" colspan="2">Add/Edit Template</td>
 		 </tr>
 		 <tr class="mbox" valign="top">
 		  <td rowspan="<?php echo count($tpldirs); ?>">
 			Code:<br /><br />
-			<ul><li><a href="admin.php?action=cms&amp;job=package_language&amp;id=<?php echo $data['id']; ?>" target="_blank">Add Phrase</a></li></ul>
+			<ul><li><a href="admin.php?action=cms&amp;job=package_language&amp;id=<?php echo $data['id']; ?>" target="_blank">Add/Edit Phrase</a></li></ul>
 		  </td>
 		  <?php
 		  $first = true;
@@ -1060,7 +1060,7 @@ elseif ($job == 'package_language') {
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr>
    <td class="obox" colspan="<?php echo count($cache)+1; ?>">
-   <span style="float: right;"><a class="button" href="admin.php?action=cms&job=package_language_add&id=<?php echo $id; ?>">Add new Phrase</a></span>
+   <span style="float: right;"><a class="button" href="admin.php?action=cms&job=package_language_add&id=<?php echo $id; ?>">Add/Edit Phrases</a></span>
    Phrase Manager</td>
   </tr>
   <?php if (count($ini['language']) == 0) { ?>
