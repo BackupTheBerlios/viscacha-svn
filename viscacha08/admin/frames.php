@@ -128,7 +128,7 @@ if ($job == 'menu') {
 	   <li>&raquo; <a href="admin.php?action=misc&amp;job=cache" target="Main"><?php echo $lang->phrase("admin_cache_manager");?></a></li>
 	   <li>&raquo; <a href="admin.php?action=misc&amp;job=captcha" target="Main"><?php echo $lang->phrase("admin_captcha_manager");?></a></li>
 	   <li>&raquo; <a href="admin.php?action=filetypes&amp;job=manage" target="Main"><?php echo $lang->phrase("admin_filetype_manager");?></a></li>
-	   <li>&raquo; <a href="admin.php?action=misc&amp;job=onlinestatus" target="Main"><?php echo $lang->phrase("admin_onlinestatus_ind");?></a></li>
+	   <li>&raquo; <a href="admin.php?action=misc&amp;job=onlinestatus" target="Main"><?php echo $lang->phrase("admin_onlinestatus_indication");?></a></li>
 	   <li>&raquo; <a href="admin.php?action=cron&amp;job=manage" target="Main"><?php echo $lang->phrase("admin_scheduler");?></a></li>
 	   <li>&raquo; <a href="admin.php?action=misc&amp;job=spellcheck" target="Main"><?php echo $lang->phrase("admin_spellcheck_manager");?></a></li>
 	   <li>&raquo; <a href="admin.php?action=misc&amp;job=sessionmails" target="Main"><?php echo $lang->phrase("admin_trashmail");?></a></li>
@@ -202,7 +202,7 @@ if ($job == 'menu') {
 	  </ul>
 	 </div>
 	 <div class="border">
-	  <h3><img id="img_admin_menu6_simple" src="admin/html/images/plus.gif" alt="collapse" /> <?php echo $lang->phrase("admin_managering_tools");?></h3>
+	  <h3><img id="img_admin_menu6_simple" src="admin/html/images/plus.gif" alt="collapse" /> <?php echo $lang->phrase("admin_managing_tools");?></h3>
 	  <ul id="part_admin_menu6_simple">
 	   <li>&raquo; <a href="admin.php?action=db&amp;job=backup" target="Main"><?php echo $lang->phrase("admin_backup_restore");?></a></li>
 	   <li>&raquo; <a href="admin.php?action=spider&amp;job=manage" target="Main"><?php echo $lang->phrase("admin_crawler_manager");?></a></li>
@@ -212,7 +212,7 @@ if ($job == 'menu') {
      </div>
 	 <?php ($code = $plugins->load('admin_navigation_simple')) ? eval($code) : null; ?>
 	 <div class="border">
-	   <h3><img id="img_admin_menu7_simple" src="admin/html/images/plus.gif" alt="collapse" /> <?php echo $lang->phrase("admin_useful_links");?>></h3>
+	   <h3><img id="img_admin_menu7_simple" src="admin/html/images/plus.gif" alt="collapse" /> <?php echo $lang->phrase("admin_useful_links");?></h3>
 	  <ul id="part_admin_menu7_simple">
 	   <li>&raquo; <a href="index.php<?php echo SID2URL_1; ?>" target="_blank"><?php echo $lang->phrase("admin_goto_forum");?></a></li>
 	   <li>&raquo; <a href="admin.php?action=misc&amp;job=phpinfo" target="Main"><?php echo $lang->phrase("admin_php_info");?></a></li>
