@@ -1,6 +1,9 @@
 <?php
 if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
 
+// PK: MultiLangAdmin
+$lang->group("admin/start");
+
 ($code = $plugins->load('admin_start_jobs')) ? eval($code) : null;
 
 if ($job == 'save_notes') {
@@ -15,19 +18,20 @@ elseif (empty($job) || $job == 'start') {
 
 	// Install-folder
 	if (is_dir('./install/')) {
-		$tasks[] = '<span style="color: red;">Please completely remove the installation directory ('.realpath('install/').') including all files and sub-folders. Leaving it on your server <strong>can compromise</strong> the security of your system. <strong><a href="admin.php?action=explorer&amp;path='.rawurlencode('./install/').'&amp;job=delete&amp;type=dir">Click here to remove the installation directory.</a></strong></span>';
+		$path = realpath('install/');
+		$tasks[] = '<span style="color: red;">'.$lang->phrase('admin_task_remove_installdir1').' <strong><a href="admin.php?action=explorer&amp;path='.rawurlencode('./install/').'&amp;job=delete&amp;type=dir">'.$lang->phrase('admin_task_remove_installdir2').'</a></strong></span>';
 	}
 
 	// Offline-check
 	if ($config['foffline'] == 1) {
-		$tasks[] = '<span style="color: red;">The website is currently in offline mode (and only administrators can see the website). <a href="admin.php?action=settings&amp;job=sitestatus">To change this setting click here!</a><strong</span>';
+		$tasks[] = '<span style="color: red;">'.$lang->phrase('admin_task_currently_offline1').' <a href="admin.php?action=settings&amp;job=sitestatus">'.$lang->phrase('admin_task_currently_offline2').'</a><strong</span>';
 	}
 
 	// Count the inactive members
 	$result = $db->query('SELECT COUNT(*) as activate FROM '.$db->pre.'user WHERE confirm = "00" OR confirm = "01"');
 	$user = $db->fetch_assoc($result);
 	if ($user['activate'] > 0) {
-		$tasks[] = '<a href="admin.php?action=members&job=activate">'.$user['activate'].' Users to Moderate/Unlock</a>';
+		$tasks[] = '<a href="admin.php?action=members&job=activate">'.$lang->phrase('admin_task_moderate_members').'</a>';
 	}
 	// Check for recent beackups
 	$dir = "./admin/backup/";
@@ -57,12 +61,13 @@ elseif (empty($job) || $job == 'start') {
 	if ($highest < $besttime) {
 		$last = (time()-$highest)/(24*60*60);
 		if ($highest == 0) {
-			$x1 = 'No backup found.';
+			$x1 = $lang->phrase('admin_task_no_backup_found');
 		}
 		else {
-			$x1 = 'Your last backup is '.ceil($last).' days old.';
+			$last = ceil($last);
+			$x1 = $lang->phrase('admin_task_backup_too_old');
 		}
-		$tasks[] = $x1.' <a href="admin.php?action=db&job=backup">It is recommended to create a new backup of your database!</a>';
+		$tasks[] = $x1.' <a href="admin.php?action=db&job=backup">'.$lang->phrase('admin_task_backup_recommended').'</a>';
 	}
 	// Version Check
 	$cache = $scache->load('version_check');
@@ -71,7 +76,8 @@ elseif (empty($job) || $job == 'start') {
 		$age = $cache->age();
 	}
 	if ($age > 14*24*60*60) {
-		$tasks[] = 'Your last <a href="admin.php?action=settings&amp;job=version">Viscacha version check</a> is more than 14 days ago. Please check for a new version.';
+		$vcurl = 'admin.php?action=settings&amp;job=version';
+		$tasks[] = $lang->phrase('admin_task_version_check');
 	}
 
 	$frontpage_content = '';
@@ -82,15 +88,15 @@ elseif (empty($job) || $job == 'start') {
 	 <table class="border">
 	  <tr>
 	   <td class="obox">
-		<span class="right"><a class="button" href="admin.php?action=logout<?php echo SID2URL_x; ?>" target="_top">Sign off</a></span>
-		Welcome to the Viscacha Admin Control Panel, <?php echo $my->name; ?>!
+		<span class="right"><a class="button" href="admin.php?action=logout<?php echo SID2URL_x; ?>" target="_top"><?php echo $lang->phrase('admin_sign_off'); ?></a></span>
+		<?php echo $lang->phrase('admin_welcome_admin'); ?>
 	   </td>
 	  </tr>
 	  <tr>
-		<td class="mbox"><strong>Upcoming Tasks:</strong>
+		<td class="mbox"><strong><?php echo $lang->phrase('admin_upcoming_tasks'); ?></strong>
 		<ul>
 		<?php if (count($tasks) == 0) { ?>
-			<li>No upcoming tasks available!</li>
+			<li><?php echo $lang->phrase('admin_no_tasks'); ?></li>
 		<?php } else { foreach ($tasks as $task) { echo "<li>{$task}</li>"; } } ?>
 		</ul>
 		</td>

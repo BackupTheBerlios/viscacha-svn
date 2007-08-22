@@ -2,7 +2,7 @@
 /*
 	Viscacha - A bulletin board solution for easily managing your content
 	Copyright (C) 2004-2007  Matthias Mohr, MaMo Net
-	
+
 	Author: Matthias Mohr
 	Publisher: http://www.viscacha.org
 	Start Date: May 22, 2004
@@ -45,9 +45,9 @@ function ImageHexColorAllocate(&$image, $string) {
 
 if ($_GET['action'] == 'vote') {
 	$result = $db->query('
-	SELECT id, topic, posts, sticky, status, last, board, vquestion, prefix 
-	FROM '.$db->pre.'topics 
-	WHERE id = '.$_GET['id'].' 
+	SELECT id, topic, posts, sticky, status, last, board, vquestion, prefix
+	FROM '.$db->pre.'topics
+	WHERE id = '.$_GET['id'].'
 	LIMIT 1
 	',__LINE__,__FILE__);
 	$info = $db->fetch_assoc($result);
@@ -70,15 +70,15 @@ if ($_GET['action'] == 'vote') {
 	$result = $db->query("SELECT COUNT(r.id) as votes, v.id, v.answer FROM {$db->pre}vote AS v LEFT JOIN {$db->pre}votes AS r ON r.aid=v.id WHERE v.tid = '{$info['id']}' GROUP BY v.id ORDER BY v.id",__LINE__,__FILE__);
 	while ($row = $db->fetch_assoc($result)) {
 		$votes += $row['votes'];
-		
-		$PG->x[$i] = $row['answer'];
+
+		$PG->x[$i] = html_entity_decode($row['answer'], ENT_QUOTES);
 		$PG->y[$i] = $row['votes'];
-		
+
 		$i++;
 	}
-	
+
 	$PG->credits   = $lang->phrase('vote_counter').$votes;
-	
+
 	$PG->start();
 }
 elseif ($_GET['action'] == 'captcha') {
@@ -134,7 +134,7 @@ elseif ($_GET['action'] == 'postrating' || $_GET['action'] == 'memberrating' || 
 		}
 	}
 	($code = $plugins->load('images_rating_start')) ? eval($code) : null;
-	
+
 	$ratings = array();
 	while ($row = $db->fetch_assoc($result)) {
 		$ratings[] = $row['rating'];
@@ -149,9 +149,9 @@ elseif ($_GET['action'] == 'postrating' || $_GET['action'] == 'memberrating' || 
 		$avg = 0;
 	}
 	$five = ceil(($avg+1)*2.5);
-	
+
 	header ("Content-type: image/png");
-	
+
 	$image = imagecreate($width+2, $height+2);
 	$back = ImageHexColorAllocate($image, 'ffffff');
 	$fill = ImageHexColorAllocate($image, $colors[$five]);
