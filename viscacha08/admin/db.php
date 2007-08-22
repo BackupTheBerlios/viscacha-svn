@@ -192,12 +192,15 @@ elseif ($job == 'backup') {
 elseif ($job == 'backup2') {
 	@ignore_user_abort(false);
 	@set_time_limit(300);
+	echo head();
 	$tables = $gpc->get('backup', arr_str);
+	if (count($tables) == 0) {
+		error('admin.php?action=db&job=backup', 'You have not specified any table!');
+	}
 	$structure = $gpc->get('structure', int);
 	$data = $gpc->get('data', int);
 	$drop = $gpc->get('drop', int);
 	$zip = $gpc->get('zip', int);
-	echo head();
 	$db->backup_settings();
 	$sqldata = $db->backup($tables, $structure, $data, $drop);
 	$ok = "Backup successfully created!";
@@ -315,7 +318,7 @@ elseif ($job == 'restore') {
   <tr>
    <td class="obox" colspan="4">
 	<span style="float: right;">
-	<a class="button" href="admin.php?action=db&amp;job=restore">Backup</a>
+	<a class="button" href="admin.php?action=db&amp;job=backup">Backup</a>
 	</span>
 	Restore Database
    </td>

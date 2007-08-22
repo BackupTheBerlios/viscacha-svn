@@ -150,9 +150,9 @@ elseif ($job == 'mods') {
 ?>
   <tr>
    <td class="mbox" width="5%" align="center"><input type="checkbox" value="<?php echo $row['mid'].'_'.$row['bid']; ?>" name="delete[]"></td>
-   <td class="mbox" width="30%"><?php echo $row['user']; ?></td>
+   <td class="mbox" width="30%"><a href="admin.php?action=members&amp;job=edit&amp;id=<?php echo $row['mid']; ?>"><?php echo $row['user']; ?></a></td>
    <?php if ($bid == 0) { ?>
-   <td class="mbox" width="30%"><a href="admin.php?action=forums&job=mods&id=<?php echo $row['cat_id']; ?>"><?php echo $row['cat']; ?></a></td>
+   <td class="mbox" width="30%"><a href="admin.php?action=forums&amp;job=mods&id=<?php echo $row['cat_id']; ?>"><?php echo $row['cat']; ?></a></td>
    <?php } ?>
    <td class="mbox" width="20%"><?php echo $row['time']; ?></td>
    <td class="mbox" width="7%" align="center"><?php echo noki($row['s_rating'], $p1.'s_rating'.$p2); ?></td>
@@ -232,8 +232,8 @@ elseif ($job == 'mods_add') {
    <td class="mbox" width="50%">Status: Is allowed to...</td>
    <td class="mbox" width="50%">
    <input type="checkbox" name="ratings" value="1" checked="checked" /> set Ratings (Good, Bad)<br />
-   <input type="checkbox" name="news" value="1" /> specify a topic as news<br />
-   <input type="checkbox" name="article" value="1" /> specify a topic as article
+   <input type="checkbox" name="news" value="1" checked="checked" /> specify a topic as news<br />
+   <input type="checkbox" name="article" value="1" checked="checked" /> specify a topic as article
    </td>
   </tr>
   <tr>
@@ -277,7 +277,7 @@ elseif ($job == 'mods_add2') {
 
 	$news = $gpc->get('news', int);
 	$article = $gpc->get('article', int);
-	$rating = $gpc->get('rating', int);
+	$rating = $gpc->get('ratings', int);
 	$move = $gpc->get('move', int);
 	$delete = $gpc->get('delete', int);
 
