@@ -1120,16 +1120,16 @@ elseif ($job == 'edit2') {
 		$error[] = 'Residence has too many characters (max. 50 characters)';
 	}
 	if ($query['gender'] != 'm' && $query['gender'] != 'w' && $query['gender'] != '') {
-		$error[] = "Gender transfer failed";
+		$error[] = "Gender is not valid";
 	}
 	if ($query['birthday'] > 31) {
-		$error[] = "Birthday-day transfer failed";
+		$error[] = "Day of birth is not valid";
 	}
 	if ($query['birthmonth'] > 12) {
-		$error[] = "Birthday-month transfer failed";
+		$error[] = "Month of birth is not valid";
 	}
 	if (($query['birthyear'] < gmdate('Y')-120 || $query['birthyear'] > gmdate('Y')) && $query['birthyear'] != 0 ) {
-		$error[] = "Birthday-year transfer failed";
+		$error[] = "Year of birth is not valid";
 	}
 	if (strxlen($query['fullname']) > 128) {
 		$error[] = "Civil name has too many characters";
@@ -1138,7 +1138,7 @@ elseif ($job == 'edit2') {
 		$error[] = 'You have not select a valid time zone';
 	}
 	if (!isset($cache[$query['opt_4']])) {
-		$error[] = 'Invalid design seleced';
+		$error[] = 'Invalid design selected';
 	}
 	if (!isset($cache2[$query['opt_5']])) {
 		$error[] = 'Invalid language selected';
@@ -1185,15 +1185,19 @@ elseif ($job == 'edit2') {
 	}
 	else {
 		// Now we create the birthday...
-		if (!$query['birthmonth'] && !$query['birthday'] && !$query['birthyear']) {
-			$bday = '0000-00-00';
+		if (empty($query['birthmonth']) || empty($query['birthday'])) {
+			$query['birthmonth'] = 0;
+			$query['birthday'] = 0;
+			$query['birthyear'] = 0;
 		}
-		else {
-			$query['birthmonth'] = leading_zero($query['birthmonth']);
-			$query['birthday'] = leading_zero($query['birthday']);
-			$query['birthyear'] = leading_zero($query['birthyear'],4);
-			$bday = $query['birthyear'].'-'.$query['birthmonth'].'-'.$query['birthday'];
+		if (empty($_POST['birthyear'])) {
+			$query['birthyear'] = 1000;
 		}
+		$query['birthmonth'] = leading_zero($query['birthmonth']);
+		$query['birthday'] = leading_zero($query['birthday']);
+		$query['birthyear'] = leading_zero($query['birthyear'], 4);
+		$bday = $query['birthyear'].'-'.$query['birthmonth'].'-'.$query['birthday'];
+
 		$query['icq'] = str_replace('-', '', $query['icq']);
 		if (!is_id($query['icq'])) {
 			$query['icq'] = 0;
@@ -1947,7 +1951,12 @@ elseif ($job == 'search2') {
 				$value[2] = '%';
 			}
 			if (strlen($value[3]) == 2) {
-				$value[3] += 2000;
+				if ($value[3] > 40) {
+					$value[3] += 1900;
+				}
+				else {
+					$value[3] += 2000;
+				}
 			}
 			else {
 				$value[3] = intval(trim($value[3]));
@@ -2054,7 +2063,13 @@ elseif ($job == 'search2') {
 				else {
 					$bd = explode('-', $row['birthday']);
 					$bd = array_reverse($bd);
-					$row['birthday'] = implode('.', $bd);
+					if ($bd[2] <= 1000) {
+						$bd[2] = 0;
+						$row['birthday'] = "{$bd[0]}.{$bd[1]}.";
+					}
+					else {
+						$row['birthday'] = implode('.', $bd);
+					}
 				}
 				if (isset($row['template']) && isset($design[$row['template']])) {
 					$row['template'] = $design[$row['template']]['name'];

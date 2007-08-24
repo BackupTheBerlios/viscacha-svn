@@ -274,16 +274,20 @@ if ($my->vlogin && $my->p['admin'] == 1) {
 			error($error);
 		}
 		else {
-		    // Now we create the birthday...
-		    if (!$_POST['birthmonth'] && !$_POST['birthday'] && !$_POST['birthyear']) {
-		    	$bday = '0000-00-00';
-		    }
-		    else {
-		        $_POST['birthmonth'] = leading_zero($_POST['birthmonth']);
-		        $_POST['birthday'] = leading_zero($_POST['birthday']);
-		        $_POST['birthyear'] = leading_zero($_POST['birthyear'],4);
-		        $bday = $_POST['birthyear'].'-'.$_POST['birthmonth'].'-'.$_POST['birthday'];
-		    }
+			// Now we create the birthday...
+			if (empty($_POST['birthmonth']) || empty($_POST['birthday'])) {
+				$_POST['birthmonth'] = 0;
+				$_POST['birthday'] = 0;
+				$_POST['birthyear'] = 0;
+			}
+			if (empty($_POST['birthyear'])) {
+				$_POST['birthyear'] = 1000;
+			}
+			$_POST['birthmonth'] = leading_zero($_POST['birthmonth']);
+			$_POST['birthday'] = leading_zero($_POST['birthday']);
+			$_POST['birthyear'] = leading_zero($_POST['birthyear'], 4);
+			$bday = $_POST['birthyear'].'-'.$_POST['birthmonth'].'-'.$_POST['birthday'];
+
 		    $_POST['icq'] = str_replace('-', '', $_POST['icq']);
     		if (!is_id($_POST['icq'])) {
     			$_POST['icq'] = 0;

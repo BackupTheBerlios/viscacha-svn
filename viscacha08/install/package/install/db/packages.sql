@@ -11,12 +11,10 @@ INSERT INTO `{:=DBPREFIX=:}packages` (`id`, `title`) VALUES (1, 'Related Topics'
 (5, 'Personal Box'),
 (6, 'New PM Box'),
 (7, 'Message Box'),
-(8, 'Export to MS Word'),
 (9, 'Last topic Box'),
 (10, 'Last reply Box'),
 (11, 'Legend (Topics)'),
 (12, 'Legend (PM)'),
 (13, 'Legend (Forums)'),
-(14, 'Birthday-Reminder'),
 (16, 'Login Box'),
 (17, 'Quick Reply');

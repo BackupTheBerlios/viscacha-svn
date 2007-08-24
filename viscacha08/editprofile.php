@@ -526,7 +526,7 @@ elseif ($_GET['action'] == "profile") {
 	($code = $plugins->load('editprofile_profile_start')) ? eval($code) : null;
 
 	$bday = explode('-',$my->birthday);
-	if (empty($bday[0])) {
+	if (empty($bday[0]) || $bday[0] <= 1000) {
 		$bday[0] = '0000';
 	}
 	if (empty($bday[1])) {
@@ -604,15 +604,19 @@ elseif ($_GET['action'] == "profile2") {
 	}
 	else {
 		// Now we create the birthday...
-		if (!$_POST['birthmonth'] && !$_POST['birthday'] && !$_POST['birthyear']) {
-			$bday = '0000-00-00';
+		if (empty($_POST['birthmonth']) || empty($_POST['birthday'])) {
+			$_POST['birthmonth'] = 0;
+			$_POST['birthday'] = 0;
+			$_POST['birthyear'] = 0;
 		}
-		else {
-			$_POST['birthmonth'] = leading_zero($_POST['birthmonth']);
-			$_POST['birthday'] = leading_zero($_POST['birthday']);
-			$_POST['birthyear'] = leading_zero($_POST['birthyear'],4);
-			$bday = $_POST['birthyear'].'-'.$_POST['birthmonth'].'-'.$_POST['birthday'];
+		if (empty($_POST['birthyear'])) {
+			$_POST['birthyear'] = 1000;
 		}
+		$_POST['birthmonth'] = leading_zero($_POST['birthmonth']);
+		$_POST['birthday'] = leading_zero($_POST['birthday']);
+		$_POST['birthyear'] = leading_zero($_POST['birthyear'], 4);
+		$bday = $_POST['birthyear'].'-'.$_POST['birthmonth'].'-'.$_POST['birthday'];
+
 		$_POST['icq'] = str_replace('-', '', $_POST['icq']);
 		if (!is_id($_POST['icq'])) {
 			$_POST['icq'] = 0;
@@ -624,10 +628,6 @@ elseif ($_GET['action'] == "profile2") {
 		else {
 			$changename = '';
 		}
-
-//		if (strcasecmp(trim($_POST['email']), trim($my->mail)) != 0) {
-			// Hier kann beliebiger Code eingesetzt werden, der nach dem Ändern der E-Mail-Adresse ausgeführt wird
-//		}
 
 		($code = $plugins->load('editprofile_profile2_query')) ? eval($code) : null;
 
