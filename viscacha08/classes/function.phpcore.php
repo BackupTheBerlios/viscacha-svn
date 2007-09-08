@@ -330,6 +330,25 @@ function viscacha_dirname($path) {
 	return((gettype($end)=="integer" && $end>1) ? substr($path,0,$end) : "");
 }
 
+function isWindows() {
+	if (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN') {
+		return true;
+	}
+	elseif (isset($_SERVER['OS']) && stripos($_SERVER['OS'], 'Windows') !== false) {
+		return true;
+	}
+	elseif (function_exists('php_uname') && stristr(@php_uname(), 'windows')) {
+
+	}
+	else {
+		return false;
+	}
+}
+function isMac() {
+	$mac = strtoupper(substr(PHP_OS, 0, 3));
+	return ($mac == 'MAC' || $mac == 'DAR');
+}
+
 /**
  * getDocRoot fixes a problem with Windows where PHP does not have $_SERVER['DOCUMENT_ROOT']
  * built in. getDocRoot returns what $_SERVER['DOCUMENT_ROOT'] should have. It should work on
@@ -357,7 +376,7 @@ function getDocumentRoot(){
 	}
 
 	//checks if Windows is being used to replace the \ to /
-	if(isset($_SERVER['OS']) && (strpos($_SERVER['OS'],'Windows') > -1)){
+	if(isWindows() == true){
 		$absolutepath = str_replace("\\","/",$absolutepath);
 	}
 
@@ -424,7 +443,7 @@ if (!defined('E_STRICT')) {
  */
 if (!defined('PATH_SEPARATOR')) {
     define('PATH_SEPARATOR',
-        strtoupper(substr(PHP_OS, 0, 3) == 'WIN') ? ';' : ':'
+        isWindows() ? ';' : ':'
      );
 }
 
@@ -439,21 +458,15 @@ if (!defined('PATH_SEPARATOR')) {
  * @since       PHP 5.0.2
  */
 if (!defined('PHP_EOL')) {
-    switch (strtoupper(substr(PHP_OS, 0, 3))) {
-        // Windows
-        case 'WIN':
-            define('PHP_EOL', "\r\n");
-            break;
-
-        // Mac
-        case 'DAR':
-            define('PHP_EOL', "\r");
-            break;
-
-        // Unix
-        default:
-            define('PHP_EOL', "\n");
-    }
+	if (isWindows() == true) {
+		define('PHP_EOL', "\r\n");
+	}
+	elseif (isMac() == true) {
+		define('PHP_EOL', "\r");
+	}
+	else {
+		define('PHP_EOL', "\n");
+	}
 }
 
 /**
@@ -1535,8 +1548,7 @@ if (!function_exists('array_intersect_key')) {
  *
  * @category    PHP
  * @link        http://php.net/function.array_fill
- * @author      Matthias Mohr <webmaster@viscacha.org>
- * @version     $Revision: 1.0 $
+ * @author      Matthias Mohr <webmaster@mamo-net.de>
  * @since       PHP 4.2.0
  * @require     PHP 3
  */

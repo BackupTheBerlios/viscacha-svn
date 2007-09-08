@@ -18,7 +18,7 @@ if ($job == 'manage') {
 	?>
 <form name="form" method="post" action="admin.php?action=groups&job=delete">
  <table class="border">
-  <tr> 
+  <tr>
    <td class="obox" colspan="<?php echo $colspan+4; ?>">
 	<span style="float: right;"><a class="button" href="admin.php?action=groups&job=add">Add new Usergroup</a></span>
 	Usergroup Manager
@@ -51,13 +51,13 @@ if ($job == 'manage') {
   	<td><input type="radio" name="edit" value="<?php echo $row['id']; ?>"></td>
     <td nowrap="nowrap"><?php echo $row['name']; ?><br /><?php echo $row['title']; ?></td>
 	<td><?php echo $row['id']; ?></td>
-	<?php 
+	<?php
 	foreach ($glk as $txt) {
 	   	$clickable = !($guest && in_array($txt, $guest_limitation));
 	   	if ($txt == 'guest') {
 	   		$clickable = false;
 	   	}
-	   	$js = iif ($clickable, 
+	   	$js = iif ($clickable,
 	   			' onmouseover="HandCursor(this)" onclick="ajax_noki(this, \'action=groups&job=ajax_changeperm&id='.$row['id'].'&key='.$txt.'\')"',
 	   			' style="-moz-opacity: 0.4; opacity: 0.4; filter:Alpha(opacity=40, finishopacity=0);"'
 	   		  );
@@ -69,14 +69,14 @@ if ($job == 'manage') {
    	<td><?php echo $row['flood']; ?></td>
   </tr>
   <?php } ?>
-  <tr> 
+  <tr>
    <td class="ubox" colspan="<?php echo $colspan+4; ?>" align="center">
    <?php if ($delete == 1) { ?><input type="submit" name="submit_delete" value="Delete"><?php } ?>
    <input type="submit" name="submit_edit" value="Edit">
-   </td> 
+   </td>
   </tr>
  </table>
-</form> 
+</form>
 	<?php
 	echo foot();
 }
@@ -107,10 +107,10 @@ elseif ($job == 'add') {
 	?>
 <form name="form" method="post" action="admin.php?action=groups&job=add2">
  <table class="border">
-  <tr> 
+  <tr>
    <td class="obox" colspan="2">Add a new Usergroup - Settings and Permissions</td>
   </tr>
-  <tr> 
+  <tr>
    <td class="ubox" colspan="2">Copy the permissions of another group:</td>
   </tr>
   <tr>
@@ -128,7 +128,7 @@ elseif ($job == 'add') {
    <td class="mbox" width="50%">Also copy Forum rights<br /><span class="stext">Use the permissions set for the group indicated above also for this group.</span></td>
    <td class="mbox" width="50%"><input type="checkbox" name="copyf" value="1" /></td>
   </tr>
-  <tr> 
+  <tr>
    <td class="ubox" colspan="2">Set settings of this group manually:</td>
   </tr>
   <tr>
@@ -181,7 +181,7 @@ function setGroupBoxes(sel) {
  </table>
  <br />
  <table class="border">
-  <tr> 
+  <tr>
    <td class="obox" colspan="2">Add a new Usergroup - Settings</td>
   </tr>
   <tr>
@@ -191,8 +191,8 @@ function setGroupBoxes(sel) {
       <td class="mbox" width="50%">Public Title:<br /><span class="stext">Public title for users in the forum.</span></td>
       <td class="mbox" width="50%"><input type="text" name="title" size="35"></td>
   </tr>
-  <tr> 
-   <td class="ubox" colspan="2" align="center"><input type="hidden" name="guest" value="0"><input type="submit" name="Submit" value="Add"></td> 
+  <tr>
+   <td class="ubox" colspan="2" align="center"><input type="hidden" name="guest" value="0"><input type="submit" name="Submit" value="Add"></td>
   </tr>
  </table>
 </form>
@@ -202,7 +202,7 @@ function setGroupBoxes(sel) {
 elseif ($job == 'add2') {
 	echo head();
 	$copy = $gpc->get('copy', int);
-	
+
 	$sql_values = '';
 	if ($copy == 0) {
 		foreach ($glk as $key) {
@@ -216,7 +216,7 @@ elseif ($job == 'add2') {
 			$sql_values .= '"'.$row[$key].'",';
 		}
 	}
-	
+
 	$db->query('INSERT INTO '.$db->pre.'groups ('.implode(',', $glk).',flood,title,name) VALUES ('.$sql_values.'"'.$gpc->get('flood', int).'","'.$gpc->get('title', str).'","'.$gpc->get('name', str).'")', __LINE__, __FILE__);
 	$gid = $db->insert_id();
 
@@ -224,21 +224,29 @@ elseif ($job == 'add2') {
 	if ($copy > 0 && $copyf == 1) {
 		$fields = array('f_downloadfiles', 'f_forum', 'f_posttopics', 'f_postreplies', 'f_addvotes', 'f_attachments', 'f_edit', 'f_voting');
 		$result = $db->query("SELECT * FROM {$db->pre}fgroups WHERE gid = '{$gid}'");
+		$fgnum = $db->num_rows($result);
+		$fgnum2 = 0;
 		while ($row = $db->fetch_assoc($result)) {
 			$sql_fvalues = '';
 			foreach ($glk as $key) {
 				$sql_fvalues .= '"'.$gpc->get($key, int).'",';
 			}
 			$db->query("INSERT INTO {$db->pre}fgroups (gid,".implode(',', $fields).",bid) VALUES ('{$gid}',{$sql_fvalues},'{$row['bid']}')");
+			$fgnum2 += $db->affected_rows();
 		}
 	}
-	
+
 	$delobj = $scache->load('groups');
 	$delobj->delete();
 	$delobj = $scache->load('fgroups');
 	$delobj->delete();
-	if ($db->affected_rows()) {
-		ok('admin.php?action=groups&job=manage');
+	if ($gid > 0) {
+		if (isset($fgnum) && isset($fgnum2) && $fgnum != $fgnum2) {
+			ok('admin.php?action=groups&job=manage', 'Group successfully added, but an error occured while copying the forum rights.');
+		}
+		else {
+			ok('admin.php?action=groups&job=manage', 'Group successfully added.');
+		}
 	}
 	else {
 		error('admin.php?action=groups&job=add', 'The group couldn\'t be added!');
@@ -276,7 +284,7 @@ elseif ($job == 'edit') {
 	?>
 <form name="form" method="post" action="admin.php?action=groups&amp;job=edit2&amp;id=<?php echo $id; ?>">
  <table class="border">
-  <tr> 
+  <tr>
    <td class="obox" colspan="2">Edit an Usergroup - Settings and Permissions</td>
   </tr>
   <?php
@@ -296,7 +304,7 @@ elseif ($job == 'edit') {
  </table>
  <br />
  <table class="border">
-  <tr> 
+  <tr>
    <td class="obox" colspan="2">Edit a Usergroup - Settings</td>
   </tr>
   <tr>
@@ -306,8 +314,8 @@ elseif ($job == 'edit') {
       <td class="mbox" width="50%">Public Title:<br /><span class="stext">Public usertitle for users in the forum.</span></td>
       <td class="mbox" width="50%"><input type="text" name="title" size="35" value="<?php echo $data['title']; ?>"></td>
   </tr>
-  <tr> 
-   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="Edit"></td> 
+  <tr>
+   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="Edit"></td>
   </tr>
  </table>
 </form>
@@ -331,12 +339,12 @@ elseif ($job == 'edit2') {
 			$sql_values .= $key.' = "'.$gpc->get($key, int).'", ';
 		}
 	}
-	
+
 	$db->query('UPDATE '.$db->pre.'groups SET '.$sql_values.'flood = "'.$gpc->get('flood', int).'", title = "'.$gpc->get('title', str).'", name = "'.$gpc->get('name', str).'" WHERE id = "'.$id.'" LIMIT 1', __LINE__, __FILE__);
-	
+
 	$delobj = $scache->load('groups');
 	$delobj->delete();
-	
+
 	if ($db->affected_rows()) {
 		ok('admin.php?action=groups&job=manage');
 	}

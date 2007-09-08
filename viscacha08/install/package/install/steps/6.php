@@ -81,7 +81,7 @@ if (!empty($config['dbsystem'])) {
 	  <td class="mbox" width="50%"><input type="text" name="database" value="<?php echo $config['database']; ?>" size="50" /></td>
 	 </tr>
 	 <tr>
-	  <td class="mbox" width="50%">Database Tables Prefix:<br /><span class="stext">Don't use the same prefix for two installs!</span></td>
+	  <td class="mbox" width="50%">Database Tables Prefix:<br /><span class="stext">Don't use the same prefix for two installs! Use only alphanumerical chars and _.</span></td>
 	  <td class="mbox" width="50%"><input type="text" name="dbprefix" value="<?php echo $config['dbprefix']; ?>" size="10" /></td>
 	 </tr>
 	 <tr>

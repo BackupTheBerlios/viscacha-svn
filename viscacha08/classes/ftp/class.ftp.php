@@ -16,7 +16,7 @@ class ftp_base {
 	var $Verbose;
 	var $OS_local;
 	var $OS_remote;
-	
+
 	/* Private variables */
 	var $_lastaction;
 	var $_errors;
@@ -83,8 +83,8 @@ class ftp_base {
 	    $this->OS_local=FTP_OS_Unix;
 		$this->OS_remote=FTP_OS_Unix;
 		$this->features=array();
-		if(strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') $this->OS_local=FTP_OS_Windows;
-		elseif(strtoupper(substr(PHP_OS, 0, 3)) === 'MAC') $this->OS_local=FTP_OS_Mac;
+		if(isWindows() == true) $this->OS_local=FTP_OS_Windows;
+		elseif(isMac() == true) $this->OS_local=FTP_OS_Mac;
 	}
 
 // <!-- --------------------------------------------------------------------------------------- -->
@@ -118,7 +118,7 @@ class ftp_base {
 			$v["perms"]+=04000*(int)in_array($ret[2]{2}, array("S","s"));
 			$v["perms"]+=02000*(int)in_array($ret[2]{5}, array("S","s"));
 			$v["perms"]+=01000*(int)in_array($ret[2]{8}, array("T","t"));
-		} 
+		}
 		return $v;
 	}
 
@@ -580,13 +580,13 @@ class ftp_base {
 			$this->PushError("mdel","can't read remote folder list", "Can't read remote folder \"".$remote."\" contents");
 			return false;
 		}
-	
+
 		foreach($list as $k=>$v) {
 			$list[$k]=$this->parselisting($v);
 			if($list[$k]["name"]=="." or $list[$k]["name"]=="..") unset($list[$k]);
 		}
 		$ret=true;
-	
+
 		foreach($list as $el) {
 			if($el["type"]=="d") {
 				if(!$this->mdel($remote."/".$el["name"], $continious)) {
@@ -601,7 +601,7 @@ class ftp_base {
 				}
 			}
 		}
-	
+
 		if(!$this->rmdir($remote)) {
 			$this->PushError("mdel", "can't delete folder", "Can't delete remote folder \"".$remote."/".$el["name"]."\"");
 			$ret=false;
@@ -611,7 +611,7 @@ class ftp_base {
 
 	function glob($pattern, $handle=NULL) {
 		$path=$output=null;
-		if(PHP_OS=='WIN32') $slash='\\';
+		if(isWindows() == true) $slash='\\';
 		else $slash='/';
 		$lastpos=strrpos($pattern,$slash);
 		if(!($lastpos===false)) {
@@ -660,8 +660,7 @@ class ftp_base {
 	}
 
 	function glob_regexp($pattern,$probe) {
-		$sensitive=(PHP_OS!='WIN32');
-		return ($sensitive?
+		return (isWindows() == true?
 			ereg($pattern,$probe):
 			eregi($pattern,$probe)
 		);

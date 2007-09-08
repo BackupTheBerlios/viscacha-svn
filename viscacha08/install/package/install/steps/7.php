@@ -59,6 +59,14 @@ if (isset($_REQUEST['save']) && $_REQUEST['save'] == 1) {
 <?php
 }
 require('../data/config.inc.php');
+$prefix = preg_replace("/\W+/i", '', $config['dbprefix']);
+if ($prefix != $config['dbprefix']) {
+	?>
+<div class="bbody">The prefix is not valid!</div>
+<div class="bfoot center"><a class="submit" href="index.php?package=install&amp;step=<?php echo $step-1; ?>">Go back</a> <a class="submit" href="index.php?package=install&amp;step=<?php echo $step; ?>">Refresh</a></div>
+	<?php
+}
+else {
 require_once('../classes/database/'.$config['dbsystem'].'.inc.php');
 $db = new DB($config['host'], $config['dbuser'], $config['dbpw'], $config['database'], $config['pconnect'], false, $config['dbprefix']);
 $db->pre = $db->prefix();
@@ -147,6 +155,7 @@ else {
 <div class="bfoot center"><input type="submit" value="Continue" /></div>
 	<?php
 	}
+}
 }
 $db->close();
 ?>

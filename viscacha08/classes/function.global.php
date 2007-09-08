@@ -393,7 +393,7 @@ function serverload($int = false) {
 	else {
 		$unknown = -1;
 	}
-	if(strtolower(substr(PHP_OS, 0, 3)) === 'win') {
+	if(isWindows() == true) {
 		return $unknown;
 	}
 	elseif(@file_exists("/proc/loadavg")) {
