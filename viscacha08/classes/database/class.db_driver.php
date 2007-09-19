@@ -239,7 +239,7 @@ class DB_Driver {
 		if ($db == null) {
 			$db = $this->database;
 		}
-		$result = $this->query('SHOW TABLES FROM '.$db,__LINE__,__FILE__);
+		$result = $this->query('SHOW TABLES FROM `'.$db.'`',__LINE__,__FILE__);
 		$tables = array();
 		while ($row = $this->fetch_num($result)) {
 			$tables[] = $row[0];

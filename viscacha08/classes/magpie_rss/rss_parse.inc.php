@@ -459,7 +459,10 @@ class MagpieRSS {
             list($parser, $source) = $this->php4_create_parser($source, $in_enc, $detect);
         }
         if ($out_enc) {
-            $this->encoding = $out_enc;
+            $this->encoding = strtoupper($out_enc);
+            if ($this->encoding != 'UTF-8' && $this->encoding != 'US-ASCII' && $this->encoding != 'ISO-8859-1') {
+            	$this->encoding = 'ISO-8859-1';
+            }
             xml_parser_set_option($parser, XML_OPTION_TARGET_ENCODING, $out_enc);
         }
 
