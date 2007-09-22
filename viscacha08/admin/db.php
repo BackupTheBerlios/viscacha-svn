@@ -299,7 +299,7 @@ elseif ($job == 'restore') {
 			        }
 		        }
 		        else {
-		        	$header = 'File is too big for opening.';
+		        	$header = 'File is too large. Can not extract information.';
 		        }
 
 				$result[] = array(
@@ -439,6 +439,7 @@ elseif ($job == 'download') {
 		else {
 		    viscacha_header('Content-Type: application/zip');
 		}
+		viscacha_header('Content-Length: '.filesize($dir.$file));
 		viscacha_header('Content-Disposition: attachment; filename="'.$file.'"');
 		readfile($dir.$file);
 	}

@@ -3,23 +3,424 @@ if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
 
 ($code = $plugins->load('admin_members_jobs')) ? eval($code) : null;
 
-if ($job == 'newsletter') {
+if ($job == 'emailsearch') {
+	echo head();
+
+	$loadlanguage_obj = $scache->load('loadlanguage');
+	$language = $loadlanguage_obj->get();
+
+	$result = $db->query("SELECT id, title, name FROM {$db->pre}groups WHERE guest = '0' ORDER BY admin DESC, guest ASC, core ASC");
+	?>
+<form name="form" method="post" action="admin.php?action=members&job=emailsearch2">
+ <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
+  <tr>
+   <td class="obox" colspan="3">
+   	<span style="float: right;"><a class="button" href="admin.php?action=members&job=newsletter_archive">Newsletter Archive</a></span>
+   	Newsletter and E-mail Manager
+   </td>
+  </tr>
+  <tr>
+	<td class="mbox" width="50%" colspan="3">
+	<b>Help:</b>
+	<ul>
+	<li>You can type "%" and "_" as wildcards into the keyword. An "_" replaces one single character, a "%" replaces any characters. The wildcards can only be used with the relational operators <b>!=</b> and <b>=</b>.</li>
+	<li>
+	<b>=</b> means <i>equal</i>,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	<b>&lt;</b> means <i>less than</i>,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	<b>&gt;</b> means <i>greater than</i>,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	<b>!=</b> means <i>not equal</i>.</li>
+	</ul>
+	</td>
+  </tr>
+  <tr>
+   <td class="mbox" colspan="2" width="50%">Exactness:</td>
+   <td class="mbox" colspan="1" width="50%">
+   <input type="radio" name="type" value="0"> <b>or</b> (at least one of the input have to lead to a match)<br>
+   <input type="radio" name="type" value="1" checked="checked">  <b>and</b> (the whole input have to lead to a match)
+   </td>
+  </tr>
+  <tr>
+   <td class="ubox" width="45%">&nbsp;</td>
+   <td class="ubox" width="5%">Relational operator</td>
+   <td class="ubox" width="50%">&nbsp;</td>
+  </tr>
+  <tr>
+   <td class="mbox">ID:</td>
+   <td class="mbox" align="center"><select size="1" name="compare[id]">
+	  <option value="-1">&lt;</option>
+	  <option value="0" selected="selected">=</option>
+	  <option value="1">&gt;</option>
+	</select></td>
+   <td class="mbox"><input type="text" name="id" size="12"></td>
+  </tr>
+  <tr>
+   <td class="mbox">E-mail address:</td>
+   <td class="mbox" align="center">=</td>
+   <td class="mbox"><input type="text" name="mail" size="50"></td>
+  </tr>
+  <tr>
+   <td class="mbox">Date of registry:</td>
+   <td class="mbox" align="center"><select size="1" name="compare[regdate]">
+	  <option value="-1">&lt;</option>
+	  <option value="0" selected="selected">=</option>
+	  <option value="1">&gt;</option>
+	</select></td>
+   <td class="mbox"><input type="text" name="regdate[1]" size="3">. <input type="text" name="regdate[2]" size="3">. <input type="text" name="regdate[3]" size="5"> (DD. MM. YYYY)</td>
+  </tr>
+  <tr>
+   <td class="mbox">Posts:</td>
+   <td class="mbox" align="center"><select size="1" name="compare[posts]">
+	  <option value="-1">&lt;</option>
+	  <option value="0" selected="selected">=</option>
+	  <option value="1">&gt;</option>
+	</select></td>
+   <td class="mbox"><input type="text" name="posts" size="10"></td>
+  </tr>
+  <tr>
+   <td class="mbox">Gender:</td>
+   <td class="mbox" align="center"><select size="1" name="compare[gender]">
+	  <option value="0" selected="selected">=</option>
+	  <option value="2">!=</option>
+	</select></td>
+   <td class="mbox"><select name="gender" size="1">
+   <option selected="selected" value="">Whatever</option>
+   <option value="x">Not specified</option>
+   <option value="m">Male</option>
+   <option value="w">Female</option>
+   </select></td>
+  </tr>
+  <tr>
+   <td class="mbox">Birthday:</td>
+   <td class="mbox" align="center"><select size="1" name="compare[birthday]">
+	  <option value="-1">&lt;</option>
+	  <option value="0" selected="selected">=</option>
+	  <option value="1">&gt;</option>
+	</select></td>
+   <td class="mbox"><input type="text" name="birthday[1]" size="3">. <input type="text" name="birthday[2]" size="3">. <input type="text" name="birthday[3]" size="5"> (DD. MM. YYYY)</td>
+  </tr>
+  <tr>
+   <td class="mbox">Last visit:</td>
+   <td class="mbox" align="center"><select size="1" name="compare[lastvisit]">
+	  <option value="-1">&lt;</option>
+	  <option value="0" selected="selected">=</option>
+	  <option value="1">&gt;</option>
+	</select></td>
+   <td class="mbox"><input type="text" name="lastvisit[1]" size="3">. <input type="text" name="lastvisit[2]" size="3">. <input type="text" name="lastvisit[3]" size="5"> (DD. MM. YYYY)</td>
+  </tr>
+  <tr>
+   <td class="mbox">Groups:</td>
+   <td class="mbox" align="center">=</td>
+   <td class="mbox"><select size="3" name="groups" multiple="multiple">
+	  <option selected="selected" value="">whatever</option>
+	  <?php while ($row = $gpc->prepare($db->fetch_assoc($result))) { ?>
+		<option value="<?php echo $row['id']; ?>"><?php echo $row['name']; ?></option>
+	  <?php } ?>
+	</select></td>
+  </tr>
+  <tr>
+   <td class="mbox">Language:</td>
+   <td class="mbox" align="center"><select size="1" name="compare[language]">
+	  <option value="0" selected="selected">=</option>
+	  <option value="2">!=</option>
+	</select></td>
+   <td class="mbox"><select name="language">
+	<option selected="selected" value="">whatever</option>
+	<?php foreach ($language as $row) { ?>
+	<option value="<?php echo $row['id']; ?>"><?php echo $row['language']; ?></option>
+	<?php } ?>
+</select></td>
+  </tr>
+  <tr>
+   <td class="mbox">Status:</td>
+   <td class="mbox" align="center"><select size="1" name="compare[confirm]">
+	  <option value="0" selected="selected">=</option>
+	  <option value="2">!=</option>
+	</select></td>
+   <td class="mbox"><select size="1" name="confirm">
+	  <option selected="selected" value="">whatever</option>
+	  <option value="11">Activated</option>
+	  <option value="10">User has to activate the account per e-mail</option>
+	  <option value="01">User account has to be activated by the admin</option>
+	  <option value="00">User has neither from the admin nor per e-mail been activated</option>
+	</select></td>
+  </tr>
+  <tr>
+   <td class="ubox" align="center" colspan="4"><input type="submit" value="Search"></td>
+  </tr>
+ </table>
+</form>
+	<?php
+	echo foot();
+}
+elseif ($job == 'emailsearch2') {
+	echo head();
+
+	define('DONT_CARE', md5(microtime()));
+	$fields = 	array(
+		'id' => int,
+		'mail' => str,
+		'regdate' => arr_int,
+		'posts' => int,
+		'gender' => str,
+		'birthday' => arr_none,
+		'lastvisit' => arr_int,
+		'groups' => arr_int,
+		'language' => int,
+		'confirm' => none
+	);
+
+	$loadlanguage_obj = $scache->load('loadlanguage');
+	$language = $loadlanguage_obj->get();
+
+	$type = $gpc->get('type', int);
+	if ($type == 0) {
+		$sep = ' OR ';
+	}
+	else {
+		$sep = ' AND ';
+	}
+
+	$compare = $gpc->get('compare', arr_int);
+	foreach ($compare as $key => $cmp) {
+		if ($cmp == -1) {
+			$compare[$key] = '<';
+		}
+		elseif ($cmp == 1) {
+			$compare[$key] = '>';
+		}
+		elseif ($cmp == 2) {
+			$compare[$key] = '!=';
+		}
+		else {
+			$compare[$key] = '=';
+		}
+	}
+	$sqlwhere = array();
+	$input = array();
+	foreach ($fields as $key => $data) {
+		$value = $gpc->get($key, none);
+		if (is_array($value)) {
+			$value = implode('', $value);
+		}
+		if (strpos($value, '%') !== false || strpos($value, '_') !== false) {
+			$value = $gpc->get($key, none, DONT_CARE);
+			$value = $gpc->save_str($value);
+		}
+		else {
+			$value = $gpc->get($key, $data, DONT_CARE);
+		}
+		if ($key == 'regdate' || $key == 'lastvisit') {
+			if (is_array($value) && array_sum($value) != 0) { // for php version >= 5.1.0
+				$input[$key] =  @mktime(0, 0, 0, intval($value[2]), intval($value[1]), intval($value[3]));
+				if ($input[$key] == -1 || $input[$key] == false) { // -1 for php version < 5.1.0, false for php version >= 5.1.0
+					$input[$key] = DONT_CARE;
+				}
+			}
+			else {
+				$input[$key] = DONT_CARE;
+			}
+		}
+		elseif ($key == 'birthday') {
+			$value[1] = intval(trim($value[1]));
+			if ($value[1] < 1 || $value[1] > 31) {
+				$value[1] = '%';
+			}
+			$value[2] = intval(trim($value[2]));
+			if ($value[2] < 1 || $value[2] > 12) {
+				$value[2] = '%';
+			}
+			if (strlen($value[3]) == 2) {
+				if ($value[3] > 40) {
+					$value[3] += 1900;
+				}
+				else {
+					$value[3] += 2000;
+				}
+			}
+			else {
+				$value[3] = intval(trim($value[3]));
+			}
+			if ($value[3] < 1900 || $value[3] > 2100) {
+				$value[3] = '%';
+			}
+			if ($value[1] == '%' && $value[2] == '%' && $value[3] == '%') {
+				$input[$key] = DONT_CARE;
+			}
+			else {
+				$input[$key] = $value[3].'-'.$value[2].'-'.$value[1];
+			}
+		}
+		elseif ($key == 'gender') {
+			if (empty($value)) {
+				$input[$key] = DONT_CARE;
+			}
+			elseif ($value == 'x') {
+				$input[$key] = '';
+			}
+			else {
+				$input[$key] = $value;
+			}
+		}
+		else {
+			if (!isset($_REQUEST[$key])) {
+				$_REQUEST[$key] = null;
+			}
+			if (empty($_REQUEST[$key]) && $_REQUEST[$key] != '0') {
+				$input[$key] = DONT_CARE;
+			}
+			else {
+				$input[$key] = $value;
+			}
+		}
+
+		if (!isset($compare[$key])) {
+			$compare[$key] = '=';
+		}
+
+		if ($input[$key] != DONT_CARE) {
+			if (strpos($input[$key], '%') !== false || strpos($input[$key], '_') !== false) {
+				if ($compare[$key] == '=') {
+					$compare[$key] = 'LIKE';
+				}
+				elseif ($compare[$key] == '!=') {
+					$compare[$key] = 'NOT LIKE';
+				}
+			}
+			$sqlwhere[] = " `{$key}` {$compare[$key]} '{$input[$key]}' ";
+		}
+	}
+
+	if (count($sqlwhere) > 0) {
+		$query = 'SELECT id FROM '.$db->pre.'user WHERE '.implode($sep, $sqlwhere);
+		$result = $db->query($query, __LINE__, __FILE__);
+		$users = array();
+		while ($row = $db->fetch_assoc($result)) {
+			$users[] = $row['id'];
+		}
+		$count = $db->num_rows($result);
+	}
+	else {
+		$count = 0;
+	}
+	?>
+	<form name="form" action="admin.php?action=members" method="post">
+	<table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
+		<tr>
+		  <td class="obox" colspan="2">Newsletter and E-mail Manager</td>
+		</tr>
+		<?php if ($count == 0) { ?>
+		<tr>
+		  <td class="mbox" colspan="2">No search results!</td>
+		</tr>
+		<?php } else { ?>
+		<tr>
+		  <td class="mbox" width="50%">Filter Recipients:</td>
+		  <td class="mbox" width="50%">
+		    <select name="filter">
+		      <option value="0">Include users that have subscribed to important admin emails</option>
+		      <option value="1">Include users that have subscribed to all admin emails</option>
+		      <option value="2">Include all users</option>
+		    </select>
+		  </td>
+		</tr>
+		<tr>
+		  <td class="ubox" colspan="2" align="center">
+		    <input type="hidden" name="users" value="<?php echo implode(',', $users); ?>" />
+		  	<select name="job">
+		  		<option value="emaillist">Export E-mail Addresses</option>
+		  		<option value="newsletter">Send Newsletter</option>
+		  	</select> <input type="submit" name="submit" value="Go">
+		  </td>
+		</tr>
+		<?php } ?>
+	</table>
+	</form>
+	<?php
+	echo foot();
+}
+elseif ($job == 'emaillist') {
+	echo head();
+	$delete = $gpc->get('delete', arr_int);
+	$users = $gpc->get('users', none);
+	$filter = $gpc->get('filter', int);
+
+	$filter = '';
+	if ($filter == 1) {
+		$filter = " opt_newsletter = '1' AND ";
+	}
+	else if ($filter == 0) {
+		$filter = " (opt_newsletter = '2' OR opt_newsletter = '1') AND ";
+	}
+
+	if (empty($users) == false) {
+		$delete = array_merge($delete, explode(',', $users));
+	}
+	$ids = array();
+	foreach ($delete as $id) {
+		if (is_id($id)) {
+			$ids[] = $id;
+		}
+	}
+
+	$result = $db->query("SELECT DISTINCT mail FROM {$db->pre}user WHERE {$filter} id IN (".implode(',', $ids).")", __LINE__, __FILE__);
+	$emails = array();
+	while ($row = $db->fetch_assoc($result)) {
+		$emails[] = $row['mail'];
+	}
+
+	$template = $gpc->get('template', none);
+	if (empty($template)) {
+		$template = ',';
+	}
+	?>
+ <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
+  <tr>
+   <td class="obox">Export E-mail Addresses</td>
+  </tr>
+  <tr>
+   <td class="mbox"><textarea class="fullwidth" cols="125" rows="25"><?php echo implode($template, $emails); ?></textarea></td>
+  </tr>
+ </table>
+<br />
+<form name="form" method="post" action="admin.php?action=members&amp;job=emaillist">
+ <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
+  <tr>
+   <td class="obox" colspan="2">Change Settings</td>
+  </tr>
+  <tr>
+   <td class="mbox" width="50%">Separator:<br><span class="stext">Seperator between e-mail-addresses. Default: Comma</span></td>
+   <td class="mbox" width="50%"><textarea name="template" cols="10" rows="2"></textarea></td>
+  </tr>
+  <tr>
+   <td class="ubox" width="100%" colspan="2" align="center">
+    <input type="hidden" name="users" value="<?php echo implode(',', $ids); ?>">
+   	<input type="submit" name="Submit" value="Submit">
+   </td>
+  </tr>
+ </table>
+</form>
+	<?php
+	echo foot();
+}
+elseif ($job == 'newsletter') {
 	echo head();
 ?>
 <form name="form" method="post" action="admin.php?action=members&job=newsletter2">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr>
    <td class="obox" colspan="2">
-	<span style="float: right;">
-	<a class="button" href="admin.php?action=members&amp;job=emaillist">Export E-mail Addresses</a>
-	<a class="button" href="admin.php?action=members&job=newsletter_archive">Newsletter Archive</a>
-	</span>
 	Send newsletter
 	</td>
   </tr>
   <tr>
-	<td class="mbox" width="50%">Addressee:</td>
-	<td class="mbox" width="50%"><select size="1" name="int1"><option value="1">All</option><option value="2" selected>Members only</option><option value="3">Guests only</option></select></td>
+	<td class="mbox" width="50%">Recipients:</td>
+	<td class="mbox" width="50%">
+		<select size="1" name="int1">
+			<option value="1">All</option>
+			<option value="2" selected>Members only</option>
+			<option value="3">Guests only</option>
+		</select>
+	</td>
   </tr>
   <tr>
    <td class="mbox" width="50%">Title:</td>
@@ -244,10 +645,10 @@ elseif ($job == 'newsletter_delete') {
 		}
 		$db->query('DELETE FROM '.$db->pre.'newsletter WHERE '.implode(' OR ',$deleteids));
 		$anz = $db->affected_rows();
-		ok('admin.php?action=members&job=newsletter_archive', $anz.' Newsletters have been deleted!');
+		ok('admin.php?action=members&job=newsletter_archive', $anz.' newsletters have been deleted!');
 	}
 	else {
-		error('admin.php?action=members&job=newsletter_archive', 'No entry done!');
+		error('admin.php?action=members&job=newsletter_archive', 'No newsletter deleted.');
 	}
 
 }
@@ -829,7 +1230,7 @@ elseif ($job == 'edit') {
 	$year = gmdate('Y');
 	$maxy = $year-6;
 	$miny = $year-100;
-	$result = $db->query("SELECT id, title, name, core FROM {$db->pre}groups ORDER BY admin DESC , guest ASC , core ASC");
+	$result = $db->query("SELECT id, title, name, core FROM {$db->pre}groups WHERE guest = '0' ORDER BY admin DESC , guest ASC , core ASC");
 	$random = md5(microtime());
 
 	$customfields = admin_customfields($user['id']);
@@ -1270,75 +1671,6 @@ elseif ($job == 'delete') {
 	}
 
 }
-elseif ($job == 'emaillist') {
-	echo head();
-	?>
-<form name="form" method="post" action="admin.php?action=members&job=emaillist2">
- <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
-  <tr>
-   <td class="obox" colspan="2"><b>Create e-mail list</b></td>
-  </tr>
-  <tr>
-   <td class="mbox" width="50%">Seperator:<br><span class="stext">Seperator between e-mail-addresses. No specification = comma</span></td>
-   <td class="mbox" width="50%"><textarea name="template" cols="10" rows="2"></textarea></td>
-  </tr>
-  <tr>
-	<td class="mbox" width="50%">Addressee:</td>
-	<td class="mbox" width="50%"><select size="1" name="int1"><option value="1">All</option><option value="2" selected>Members only</option><option value="3">Guests only</option></select></td>
-  </tr>
-  <tr>
-   <td class="ubox" width="100%" colspan=2 align="center"><input type="submit" name="Submit" value="Submit"></td>
-  </tr>
- </table>
-</form>
-	<?php
-	echo foot();
-}
-elseif ($job == 'emaillist2') {
-	echo head();
-	$int1 = $gpc->get('int1', int);
-	if ($int1 == 1) {
-		$emails = array();
-		$result = $db->query('SELECT mail FROM '.$db->pre.'user');
-		while ($row = $db->fetch_num($result)) {
-			$emails[] = $row[0];
-		}
-		$result = $db->query('SELECT email FROM '.$db->pre.'replies WHERE email != ""');
-		while ($row = $db->fetch_num($result)) {
-			$emails[] = $row[0];
-		}
-	}
-	elseif ($int1 == 2) {
-		$emails = array();
-		$result = $db->query('SELECT mail FROM '.$db->pre.'user');
-		while ($row = $db->fetch_num($result)) {
-			$emails[] = $row[0];
-		}
-	}
-	elseif ($int1 == 3) {
-		$emails = array();
-		$result = $db->query('SELECT email FROM '.$db->pre.'replies WHERE email != ""');
-		while ($row = $db->fetch_num($result)) {
-			$emails[] = $row[0];
-		}
-	}
-	$emails = array_unique($emails);
-	$template = $gpc->get('template', none);
-	if (empty($template)) {
-		$template = ',';
-	}
-	?>
- <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
-  <tr>
-   <td class="obox"><b>Create e-mail list</b></td>
-  </tr>
-  <tr>
-   <td class="mbox"><textarea class="fullwidth" cols="125" rows="25"><?php echo implode($template, $emails); ?></textarea></td>
-  </tr>
- </table>
-	<?php
-	echo foot();
-}
 elseif ($job == 'banned') {
 	echo head();
 	$content = file_get_contents('data/banned.php');
@@ -1361,7 +1693,7 @@ elseif ($job == 'banned') {
 <form name="form" method="post" action="admin.php?action=members&job=banned3">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr>
-   <td class="obox" colspan="2"><b>Administrate IP-addresses</b></td>
+   <td class="obox" colspan="2"><b>Manage IP-addresses</b></td>
   </tr>
   <tr>
    <td class="mbox" width="30%">
@@ -1505,7 +1837,7 @@ elseif ($job == 'inactive2') {
 		$count = 0;
 	}
 	?>
-	<form name="form" action="admin.php?action=members&job=delete" method="post">
+	<form name="form" action="admin.php?action=members" method="post">
 	<table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
 		<tr>
 		  <td class="obox" colspan="9">
@@ -1524,7 +1856,7 @@ elseif ($job == 'inactive2') {
 			  <td class="ubox" colspan="9"><?php echo $count; ?> inactive members found.</td>
 			</tr>
 			<tr>
-			  <td class="obox center">Delete<br /><span class="stext"><input type="checkbox" onclick="check_all('delete[]');" name="all" value="1" /> All</span></td>
+			  <td class="obox center">Select<br /><span class="stext"><input type="checkbox" onclick="check_all('delete[]');" name="all" value="1" /> All</span></td>
 			  <td class="obox center">Edit</td>
 			  <?php foreach ($keys as $key) { ?>
 			  <td class="obox"><?php echo $fields[$key][0]; ?></td>
@@ -1557,7 +1889,13 @@ elseif ($job == 'inactive2') {
 			</tr>
 			<?php } ?>
 			<tr>
-			  <td class="ubox" colspan="9"><input type="submit" name="submit" value="Delete"></td>
+			  <td class="ubox" colspan="9">
+			  	<select name="job">
+			  		<option value="delete">Delete</option>
+			  		<option value="emaillist">Export E-mail Addresses</option>
+			  		<option value="newsletter">Send Newsletter</option>
+			  	</select> <input type="submit" name="submit" value="Go">
+			  </td>
 			</tr>
 		<?php } ?>
 	</table>
@@ -1574,7 +1912,7 @@ elseif ($job == 'search') {
 	$loadlanguage_obj = $scache->load('loadlanguage');
 	$language = $loadlanguage_obj->get();
 
-	$result = $db->query("SELECT id, title, name FROM {$db->pre}groups ORDER BY admin DESC , guest ASC , core ASC");
+	$result = $db->query("SELECT id, title, name FROM {$db->pre}groups WHERE guest = '0' ORDER BY admin DESC , guest ASC , core ASC");
 	?>
 <form name="form" method="post" action="admin.php?action=members&job=search2">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
@@ -1681,7 +2019,7 @@ elseif ($job == 'search') {
 	  <option value="2">!=</option>
 	</select></td>
    <td class="mbox"><select name="gender" size="1">
-   <option selected="selected" value="">Egal</option>
+   <option selected="selected" value="">Whatever</option>
    <option value="x">Not specified</option>
    <option value="m">Male</option>
    <option value="w">Female</option>
@@ -1792,7 +2130,7 @@ elseif ($job == 'search') {
    <td class="mbox"><input type="checkbox" name="show[timezone]" value="1"></td>
   </tr>
   <tr>
-   <td class="mbox">Group-ID:</td>
+   <td class="mbox">Groups:</td>
    <td class="mbox" align="center">=</td>
    <td class="mbox"><select size="3" name="groups" multiple="multiple">
 	  <option selected="selected" value="">whatever</option>
@@ -2021,7 +2359,7 @@ elseif ($job == 'search2') {
 		$count = 0;
 	}
 	?>
-	<form name="form" action="admin.php?action=members&job=delete" method="post">
+	<form name="form" action="admin.php?action=members" method="post">
 	<table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
 		<tr>
 		  <td class="obox" colspan="<?php echo $colspan; ?>"><b>Search for members</b></td>
@@ -2035,7 +2373,7 @@ elseif ($job == 'search2') {
 			  <td class="ubox" colspan="<?php echo $colspan; ?>"><?php echo $count; ?> members found.</td>
 			</tr>
 			<tr>
-			  <td class="obox">Delete<br /><span class="stext"><input type="checkbox" onclick="check_all('delete[]');" name="all" value="1" /> All</span></td>
+			  <td class="obox">Select<br /><span class="stext"><input type="checkbox" onclick="check_all('delete[]');" name="all" value="1" /> All</span></td>
 			  <?php foreach ($show as $key) { ?>
 			  <td class="obox"><?php echo $fields[$key][0]; ?></td>
 			  <?php } ?>
@@ -2092,7 +2430,13 @@ elseif ($job == 'search2') {
 			</tr>
 			<?php } ?>
 			<tr>
-			  <td class="ubox" colspan="<?php echo $colspan; ?>"><input type="submit" name="submit" value="Delete"></td>
+			  <td class="ubox" colspan="<?php echo $colspan; ?>">
+			  	<select name="job">
+			  		<option value="delete">Delete</option>
+			  		<option value="emaillist">Export E-mail Addresses</option>
+			  		<option value="newsletter">Send Newsletter</option>
+			  	</select> <input type="submit" name="submit" value="Go">
+			  </td>
 			</tr>
 		<?php } ?>
 	</table>

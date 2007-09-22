@@ -59,7 +59,7 @@ if ($job == 'menu') {
 	   <li>&raquo; <a href="admin.php?action=members&amp;job=activate" target="Main"><?php echo $lang->phrase("admin_moderate_members");?></a></li>
 	   <li>&raquo; <a href="admin.php?action=groups&amp;job=manage" target="Main"><?php echo $lang->phrase("admin_group_manager");?></a></li>
 	   <li>&raquo; <a href="admin.php?action=profilefield&amp;job=manage" target="Main"><?php echo $lang->phrase("admin_profile_fields");?></a></li>
-	   <li>&raquo; <a href="admin.php?action=members&amp;job=newsletter" target="Main"><?php echo $lang->phrase("admin_newsletter_manager");?></a></li>
+	   <li>&raquo; <a href="admin.php?action=members&amp;job=emailsearch" target="Main"><?php echo $lang->phrase("admin_newsletter_manager");?></a></li>
 	   <li>&raquo; <a href="admin.php?action=members&amp;job=banned" target="Main"><?php echo $lang->phrase("admin_blocked_ip");?></a></li>
 	   <li>&raquo; <a href="admin.php?action=members&amp;job=ips" target="Main"><?php echo $lang->phrase("admin_search_ip");?></a></li>
 	  </ul>
@@ -188,7 +188,7 @@ if ($job == 'menu') {
 	   <li>&raquo; <a href="admin.php?action=members&amp;job=activate" target="Main"><?php echo $lang->phrase("admin_moderate_members");?></a></li>
 	   <li>&raquo; <a href="admin.php?action=groups&amp;job=manage" target="Main"><?php echo $lang->phrase("admin_group_manager");?></a></li>
 	   <li>&raquo; <a href="admin.php?action=profilefield&amp;job=manage" target="Main"><?php echo $lang->phrase("admin_profile_fields");?></a></li>
-	   <li>&raquo; <a href="admin.php?action=members&amp;job=newsletter" target="Main"><?php echo $lang->phrase("admin_newsletter_manager");?></a></li>
+	   <li>&raquo; <a href="admin.php?action=members&amp;job=emailsearch" target="Main"><?php echo $lang->phrase("admin_newsletter_manager");?></a></li>
 	   <li>&raquo; <a href="admin.php?action=members&amp;job=banned" target="Main"><?php echo $lang->phrase("admin_blocked_ip");?></a></li>
 	   <li>&raquo; <a href="admin.php?action=members&amp;job=ips" target="Main"><?php echo $lang->phrase("admin_search_ip");?></a></li>
 	  </ul>
