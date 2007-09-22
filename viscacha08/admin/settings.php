@@ -498,7 +498,7 @@ elseif ($job == 'server') {
 	$config = $gpc->prepare($config);
 
 	$gdv = 'GD not found!';
-	if (function_exists('gd_info')) {
+	if (viscacha_function_exists('gd_info')) {
 	    $gd = @gd_info();
 	}
 	if (!empty($gd['GD Version'])) {
@@ -1700,7 +1700,7 @@ elseif ($job == 'datetime2') {
 elseif ($job == 'http') {
 	$config = $gpc->prepare($config);
 
-	if (!extension_loaded("zlib") || !function_exists('gzcompress')) {
+	if (!extension_loaded("zlib") || !viscacha_function_exists('gzcompress')) {
 		$gzip = '<span style="color: #aa0000;">not enabled</span>';
 	}
 	else {

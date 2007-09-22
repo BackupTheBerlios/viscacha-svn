@@ -98,7 +98,7 @@ class MagpieRSS {
     {
         # if PHP xml isn't compiled in, die
         #
-        if (!function_exists('xml_parser_create')) {
+        if (!viscacha_function_exists('xml_parser_create')) {
             $this->error( "Failed to load PHP's XML Extension. " .
                           "http://www.php.net/manual/en/ref.xml.php",
                            E_USER_ERROR );
@@ -528,7 +528,7 @@ class MagpieRSS {
         // cast the XML to a known encoding
         // @see http://php.net/iconv
 
-        if (function_exists('iconv'))  {
+        if (viscacha_function_exists('iconv'))  {
             $encoded_source = iconv($in_enc,'UTF-8', $source);
             if ($encoded_source) {
                 return array(xml_parser_create('UTF-8'), $encoded_source);
@@ -537,7 +537,7 @@ class MagpieRSS {
 
         // iconv didn't work, try mb_convert_encoding
         // @see http://php.net/mbstring
-        if(function_exists('mb_convert_encoding')) {
+        if(viscacha_function_exists('mb_convert_encoding')) {
             $encoded_source = mb_convert_encoding($source, 'UTF-8', $in_enc );
             if ($encoded_source) {
                 return array(xml_parser_create('UTF-8'), $encoded_source);

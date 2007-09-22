@@ -83,7 +83,7 @@ $http_svars = array(
 	'HTTP_ACCEPT_ENCODING',
 	'DOCUMENT_ROOT'
 );
-if (function_exists('getallheaders')) {
+if (viscacha_function_exists('getallheaders')) {
 	$ref = @getallheaders();
 }
 else {

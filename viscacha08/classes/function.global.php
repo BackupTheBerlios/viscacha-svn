@@ -396,19 +396,12 @@ function serverload($int = false) {
 	if(isWindows() == true) {
 		return $unknown;
 	}
-	elseif(@file_exists("/proc/loadavg")) {
+	if(@file_exists("/proc/loadavg")) {
 		$load = @file_get_contents("/proc/loadavg");
 		$serverload = explode(" ", $load);
 		$serverload[0] = round($serverload[0], 4);
-		if(!$serverload) {
-			$load = @exec("uptime");
-			$load = split("load averages?: ", $load);
-			if (isset($load[1])) {
-				$serverload = @explode(",", $load[1]);
-			}
-		}
 	}
-	else {
+	if (empty($serverload[0]) && viscacha_function_exists('exec') == true) {
 		$load = @exec("uptime");
 		$load = split("load averages?: ", $load);
 		if (isset($load[1])) {

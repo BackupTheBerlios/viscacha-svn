@@ -207,7 +207,7 @@ function array2sqlsetlist($array, $seperator = ', ') {
 }
 
 function gzAbortNotLoaded() {
-	if (!extension_loaded("zlib") || !function_exists('readgzfile')) {
+	if (!extension_loaded("zlib") || !viscacha_function_exists('readgzfile')) {
 		error('javascript:history.back(-1);', 'GZIP Extension not loaded.');
 	}
 }

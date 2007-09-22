@@ -2890,7 +2890,7 @@ class GeSHi {
 } // End Class GeSHi
 
 
-if (!function_exists('geshi_highlight')) {
+if (!viscacha_function_exists('geshi_highlight')) {
     /**
      * Easy way to highlight stuff. Behaves just like highlight_string
      *

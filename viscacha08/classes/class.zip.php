@@ -200,7 +200,7 @@ if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
   {
 
     // ----- Tests the zlib
-    if (!function_exists('gzopen'))
+    if (!viscacha_function_exists('gzopen'))
     {
       die('Abort '.basename(__FILE__).' : Missing zlib extensions');
     }
@@ -1671,7 +1671,7 @@ if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
           $v_function_name = $p_options_list[$i+1];
 
           // ----- Check that the value is a valid existing function
-          if (!function_exists($v_function_name)) {
+          if (!viscacha_function_exists($v_function_name)) {
             // ----- Error log
             PclZip::privErrorLog(PCLZIP_ERR_INVALID_OPTION_VALUE, "Function '".$v_function_name."()' is not an existing function for option '".PclZipUtilOptionText($p_options_list[$i])."'");
 
@@ -4916,8 +4916,8 @@ if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
     $v_result=1;
 
     // ----- Look if function exists
-    if (   (!function_exists("get_magic_quotes_runtime"))
-	    || (!function_exists("set_magic_quotes_runtime"))) {
+    if (   (!viscacha_function_exists("get_magic_quotes_runtime"))
+	    || (!viscacha_function_exists("set_magic_quotes_runtime"))) {
       //--(MAGIC-PclTrace)--//PclTraceFctEnd(__FILE__, __LINE__, $v_result);
       return $v_result;
 	}
@@ -4952,8 +4952,8 @@ if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
     $v_result=1;
 
     // ----- Look if function exists
-    if (   (!function_exists("get_magic_quotes_runtime"))
-	    || (!function_exists("set_magic_quotes_runtime"))) {
+    if (   (!viscacha_function_exists("get_magic_quotes_runtime"))
+	    || (!viscacha_function_exists("set_magic_quotes_runtime"))) {
       //--(MAGIC-PclTrace)--//PclTraceFctEnd(__FILE__, __LINE__, $v_result);
       return $v_result;
 	}
