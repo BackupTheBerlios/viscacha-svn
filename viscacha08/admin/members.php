@@ -403,39 +403,85 @@ elseif ($job == 'emaillist') {
 	echo foot();
 }
 elseif ($job == 'newsletter') {
+	$delete = $gpc->get('delete', arr_int);
+	$users = $gpc->get('users', none);
+	$filter = $gpc->get('filter', int);
+
+	$filter = '';
+	if ($filter == 1) {
+		$filter = " opt_newsletter = '1' AND ";
+	}
+	else if ($filter == 0) {
+		$filter = " (opt_newsletter = '2' OR opt_newsletter = '1') AND ";
+	}
+
+	if (empty($users) == false) {
+		$delete = array_merge($delete, explode(',', $users));
+	}
+	$ids = array();
+	foreach ($delete as $id) {
+		if (is_id($id)) {
+			$ids[] = $id;
+		}
+	}
+
+	$result = $db->query("SELECT id FROM {$db->pre}user WHERE {$filter} id IN (".implode(',', $ids).") GROUP BY mail", __LINE__, __FILE__);
+	$ids = array();
+	while ($row = $db->fetch_assoc($result)) {
+		$ids[] = $row['id'];
+	}
+
 	echo head();
 ?>
-<form name="form" method="post" action="admin.php?action=members&job=newsletter2">
+<form name="form" method="post" action="admin.php?action=members&amp;job=newsletter2">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr>
-   <td class="obox" colspan="2">
-	Send newsletter
-	</td>
+   <td class="obox" colspan="2">Compose Newsletter</td>
   </tr>
   <tr>
-	<td class="mbox" width="50%">Recipients:</td>
-	<td class="mbox" width="50%">
-		<select size="1" name="int1">
-			<option value="1">All</option>
-			<option value="2" selected>Members only</option>
-			<option value="3">Guests only</option>
-		</select>
-	</td>
+   <td class="mbox" width="40%">Recipients:</td>
+   <td class="mbox" width="60%"><?php echo count($ids); ?></td>
   </tr>
   <tr>
-   <td class="mbox" width="50%">Title:</td>
-   <td class="mbox" width="50%"><input type="text" name="temp1" size="60"></td>
+   <td class="mbox" width="40%">From:</td>
+   <td class="mbox" width="60%">
+   	E-Mail: <input type="text" name="from_mail" size="60" value="<?php echo $config['forenmail']; ?>"><br />
+   	Name: <input type="text" name="from_name" size="60" value="<?php echo $config['fname']; ?>">
+   </td>
   </tr>
   <tr>
-   <td class="mbox" width="50%">Text:</td>
-   <td class="mbox" width="50%"><textarea name="temp2" rows="8" cols="60"></textarea></td>
+   <td class="mbox" width="40%">Subject:</td>
+   <td class="mbox" width="60%"><input type="text" name="title" size="70"></td>
   </tr>
   <tr>
-   <td class="mbox" width="50%">Number of e-mails which will be sent in each echelon:</td>
-   <td class="mbox" width="50%"><input type="text" name="int2" size="10" value="100"></td>
+   <td class="mbox" width="40%">Format:</td>
+   <td class="mbox" width="60%">
+   	<input type="radio" name="type" value="h"> (x)HTML
+   	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+   	<input type="radio" name="type" value="p" checked="checked"> Plain text
+   </td>
   </tr>
   <tr>
-   <td class="ubox" width="100%" colspan="2" align="center"><input type="submit" name="Submit" value="Submit"></td>
+   <td class="mbox" width="40%">
+   	Message:<br />
+   	<span class="stext">
+   	In the message, you may use <code>{$user.id}</code>, <code>{$user.name}</code> or {$user.mail}.
+   	</span>
+   </td>
+   <td class="mbox" width="60%"><textarea name="message" rows="10" cols="70"></textarea></td>
+  </tr>
+  <tr>
+   <td class="mbox" width="40%">
+   	Email to send at once:<br />
+   	<span class="stext">This is the number of messages to be sent in a batch. You should keep this relatively low.</span>
+   </td>
+   <td class="mbox" width="60%"><input type="text" name="batch" size="10" value="20"></td>
+  </tr>
+  <tr>
+   <td class="ubox" colspan="2" align="center">
+    <input type="hidden" name="users" value="<?php echo implode(',', $ids); ?>">
+   	<input type="submit" name="Submit" value="Submit">
+   </td>
   </tr>
  </table>
 </form>
@@ -444,150 +490,154 @@ elseif ($job == 'newsletter') {
 }
 elseif ($job == 'newsletter2') {
 
-	$int1 = $gpc->get('int1', int);
+	$data = array(
+		'users' => $gpc->get('users', none),
+		'from_mail' => $gpc->get('from_mail', none, $config['forenmail']),
+		'from_name' => $gpc->get('from_name', none, $config['fname']),
+		'title' => $gpc->get('title', none),
+		'message' => $gpc->get('message', none),
+		'batch' => $gpc->get('batch', int, 20),
+		'type' => $gpc->get('type', none, 'p')
+	);
 
-	if ($int1 == 1) {
-		$emails = array();
-		$result = $db->query('SELECT mail FROM '.$db->pre.'user');
-		while ($row = $db->fetch_num($result)) {
-			$emails[] = $row[0];
-		}
-		$result = $db->query('SELECT email FROM '.$db->pre.'replies WHERE email != "" AND guest = "1"');
-		while ($row = $db->fetch_num($result)) {
-			$emails[] = $row[0];
-		}
+	if (!check_mail($data['from_mail'])) {
+		$data['from_mail'] = $config['forenmail'];
 	}
-	elseif ($int1 == 2) {
-		$emails = array();
-		$result = $db->query('SELECT mail FROM '.$db->pre.'user');
-		while ($row = $db->fetch_num($result)) {
-			$emails[] = $row[0];
-		}
-	}
-	elseif ($int1 == 3) {
-		$emails = array();
-		$result = $db->query('SELECT email FROM '.$db->pre.'replies WHERE email != "" AND guest = "1"');
-		while ($row = $db->fetch_num($result)) {
-			$emails[] = $row[0];
-		}
-	}
-	$emails = array_unique($emails);
-	$anz = count($emails);
-	if ($anz == 0) {
-		echo head();
-		error('admin.php?action=members&job=newsletter', 'No e-mail address found!');
-	}
-	$int2 = $gpc->get('int2', int, 100);
-	$steps = ceil($anz/$int2);
 
-	$db->query('INSERT INTO '.$db->pre.'newsletter (receiver, title, content, time) VALUES ("'.$int1.'","'.$gpc->get('temp1', str).'","'.$gpc->get('temp2', str).'","'.time().'")');
-	$lid = $db->affected_rows();
+	$dbd = array_map(array($db, 'escape_string'), $data);
 
-	$cache = new CacheItem('newsletter_session');
-	$cache->set($emails);
+	$db->query("INSERT INTO {$db->pre}newsletter (receiver, sender, title, content, time, type) VALUES ('{$dbd['users']}','{$dbd['from_name']} <{$dbd['from_mail']}>','{$dbd['title']}','{$dbd['message']}','".time()."', '{$dbd['type']}')", __LINE__, __FILE__);
+	$nid = $db->insert_id();
+
+	$data['chunks'] = array_chunk(explode(',', $data['users']), $data['batch']);
+
+	$cache = new CacheItem('newsletter_'.$nid);
+	$cache->set($data);
 	$cache->export();
 
-	$htmlhead .= '<meta http-equiv="refresh" content="2; url=admin.php?action=members&job=newsletter3&id='.$lid.'&int2='.$int2.'&page=1">';
 	echo head();
-	?>
- <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
-  <tr>
-   <td class="obox"><b>Step 1 of <?php echo $steps+1; ?></b></td>
-  </tr>
-  <tr>
-   <td class="mbox">The datas have been saved<br>Now the mails will be sent step by step.</td>
-  </tr>
- </table>
-<?php
-	echo foot();
+	ok('admin.php?action=members&job=newsletter3&id='.$nid, 'The data has been saved successfully. The e-mails will be sent step by step, now.');
 }
 elseif ($job == 'newsletter3') {
-	$cache = new CacheItem('newsletter_session');
-	$cache->import();
-	$emails = $cache->get();
-
-	$int2 = $gpc->get('int2', int, 100);
 	$page = $gpc->get('page', int, 1);
+	$id = $gpc->get('id', int);
 
-	$anz = count($emails);
-	$steps = ceil($anz/$int2);
+	$cache = new CacheItem('newsletter_'.$id);
+	$cache->import();
+	$data = $cache->get();
 
-	$result = $db->query('SELECT * FROM '.$db->pre.'newsletter WHERE id = '.$gpc->get('id', int));
-	$row = $db->fetch_assoc($result);
-
-	$split = array_chunk($emails, $int2);
-	$minus = $page-1;
-	$plus = $page+1;
-
-	$i = 0;
-	if (!isset($split[$minus]) || !is_array($split[$minus])) {
-		echo head();
-		error('admin.php?action=members&job=newsletter', 'No e-mail address found for this echelon!');
+	require_once("classes/mail/class.phpmailer.php");
+	require_once('classes/mail/extended.phpmailer.php');
+	$mail = new PHPMailer();
+	$mail->From = $data['from_mail'];
+	$mail->FromName = $data['from_name'];
+	$mail->Subject = $data['title'];
+	if ($config['smtp'] == 1) {
+		$mail->Mailer = "smtp";
+		$mail->IsSMTP();
+		$mail->Host = $config['smtp_host'];
+		if ($config['smtp_auth'] == 1) {
+			$mail->SMTPAuth = true;
+			$mail->Username = $config['smtp_username'];
+			$mail->Password = $config['smtp_password'];
+		}
 	}
-	foreach ($split[$minus] as $mail) {
-		$i++;
-		$comment = $row['content'];
-		$to = array('0' => array('mail' => $mail));
-		$topic = $row['title'];
-		$from = array();
-		xmail($to, $from, $topic, $comment);
-	}
-
-	$ready = $minus*$int2+$i;
-
-	if ($page == $steps) {
-		$htmlhead .= '<meta http-equiv="refresh" content="2; url=admin.php?action=members&job=newsletter">';
-		$cache->delete();
-		echo head();
-?>
- <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
-  <tr>
-   <td class="obox"><b>Step <?php echo $page+1; ?> of <?php echo $steps+1; ?>...</b></td>
-  </tr>
-  <tr>
-   <td class="mbox">Part <?php echo $page; ?> sent.<br>Alltogether <?php echo $ready; ?> e-mails sent!<br><br>All e-mails have been send successful! <a href="admin.php?action=members&job=newsletter">Redirect to the administration.</a></td>
-  </tr>
- </table>
-<?php
+	elseif ($config['sendmail'] == 1) {
+		$mail->IsSendmail();
+		$mail->Mailer   = "sendmail";
+		$mail->Sendmail = $config['sendmail_host'];
 	}
 	else {
-		$htmlhead .= '<meta http-equiv="refresh" content="5; url=admin.php?action=members&job=newsletter3&id='.$gpc->get('id', int).'&int2='.$gpc->get('int2', int).'&page='.$plus.'">';
-		echo head();
-?>
- <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
-  <tr>
-   <td class="obox"><b>Step <?php echo $page+1; ?> of <?php echo $steps+1; ?>...</b></td>
-  </tr>
-  <tr>
-   <td class="mbox">Part <?php echo $page; ?> sent.<br>Alltogether <?php echo $ready; ?> e-mails-sent!</td>
-  </tr>
- </table>
-<?php
+		$mail->IsMail();
 	}
+	$ids = implode(',', $data['chunks'][$page-1]);
+	$result = $db->query("SELECT id, name, mail FROM {$db->pre}user WHERE id IN ($ids)", __LINE__, __FILE__);
+	while ($row = $db->fetch_assoc($result)) {
+		$message = str_replace('{$user.id}', $row['id'], $data['message']);
+		$message = str_replace('{$user.name}', $row['name'], $message);
+		$message = str_replace('{$user.mail}', $row['mail'], $message);
+		if ($data['type'] == 'h') {
+			$mail->IsHTML(true);
+	    	$mail->Body = $message;
+	    	$plain = preg_replace('~<br(\s*/)?>(\r\n|\r|\n){0,1}~i', "\r\n", $message);
+	    	$mail->AltBody = strip_tags($plain);
+	    }
+	    else {
+	    	$mail->Body = $message;
+	    }
+	    $mail->AddAddress($row['mail']);
+		$mail->Send();
+	    $mail->ClearAddresses();
+	}
+
+	$steps = count($data['chunks']);
+	$page2 = $page+1;
+	$all = count(explode(',', $data['users']));
+	$percent = (100/$all)*(($page-1)*$data['batch']+count(end($data['chunks'])));
+	$sec = 3;
+	$left = (($steps-$page)*$sec)/60;
+	if ($left == 0) {
+		$left = 'Task Finished!';
+	}
+	else if ($left < 60) {
+		 $left = ceil($left).' Seconds';
+	}
+	else if ($left > 60) {
+		 $left = round($left/60, 1).' Hours';
+	}
+	else {
+		$left = ceil($left).' Minutes';
+	}
+
+	if ($steps > $page) {
+		$url = 'admin.php?action=members&amp;job=newsletter3&amp;id='.$id.'&amp;page='.$page2;
+	}
+	else {
+		$url = 'admin.php?action=members&amp;job=newsletter_view&amp;id='.$id;
+	}
+
+	$htmlhead .= '<meta http-equiv="refresh" content="'.$sec.'; url='.$url.'">';
+	echo head();
+	?>
+	 <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
+	  <tr>
+	   <td class="obox">Sending Newsletter: Step <?php echo $page; ?> of <?php echo $steps; ?></td>
+	  </tr>
+	  <tr>
+	   <td class="mbox">
+	   	<div style="width: 600px; border: 1px solid black; background-color: white;"><div style="width: <?php echo ceil($percent)*6; ?>px; background-color: steelblue;">&nbsp;</div></div>
+	   	Progress: <?php echo round($percent, 1); ?>%<br />
+	   	Estimated time left: <?php echo $left; ?>
+	   </td>
+	  </tr>
+	  <tr>
+	  	<td class="ubox" align="center"><a href="<?php echo $url; ?>">Click here if you are not redirected automatically in 5 seconds.</a></td>
+	  </tr>
+	 </table>
+	<?php
 	echo foot();
 }
 elseif ($job == 'newsletter_archive') {
-	$result = $db->query('SELECT id, title, receiver, time FROM '.$db->pre.'newsletter ORDER BY time');
+	$result = $db->query('SELECT * FROM '.$db->pre.'newsletter ORDER BY time', __LINE__, __FILE__);
 	echo head();
-	$receiver = array('1' => 'All','2' => 'Members only','3' => 'Guests only');
 ?>
-<form name="form" method="post" action="admin.php?action=members&job=newsletter_delete">
+<form name="form" method="post" action="admin.php?action=members&amp;job=newsletter_delete">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr>
-   <td class="obox" colspan="4"><b>Newsletter Archive</b></td>
+   <td class="obox" colspan="4">Newsletter Archive</td>
   </tr>
   <tr>
    <td class="ubox">Delete<br /><span class="stext"><input type="checkbox" onclick="check_all('delete[]');" name="all" value="1" /> All</span></td>
    <td class="ubox">Subject</td>
-   <td class="ubox">Sent</td>
-   <td class="ubox">To</td>
+   <td class="ubox">Date, Time</td>
+   <td class="ubox">Recipients</td>
   </tr>
 <?php while ($row = $db->fetch_assoc($result)) { ?>
   <tr>
    <td class="mbox"><input type="checkbox" name="delete[]" value="<?php echo $row['id']; ?>"></td>
-   <td class="mbox"><a href="admin.php?action=members&job=newsletter_view&id=<?php echo $row['id']; ?>"><?php echo $row['title']; ?></a></td>
+   <td class="mbox"><a href="admin.php?action=members&amp;job=newsletter_view&id=<?php echo $row['id']; ?>"><?php echo $row['title']; ?></a></td>
    <td class="mbox"><?php echo gmdate('d.m.Y, H:i', times($row['time'])); ?></td>
-   <td class="mbox"><?php echo $receiver[$row['receiver']]; ?></td>
+   <td class="mbox"><?php echo count(explode(',', $row['receiver'])); ?></td>
   </tr>
 <?php } ?>
   <tr>
@@ -599,33 +649,47 @@ elseif ($job == 'newsletter_archive') {
 	echo foot();
 }
 elseif ($job == 'newsletter_view') {
-	$result = $db->query('SELECT * FROM '.$db->pre.'newsletter WHERE id = '.$gpc->get('id', int));
-	$row = $db->fetch_assoc($result);
+	$id = $gpc->get('id', int);
+	$result = $db->query("SELECT * FROM {$db->pre}newsletter WHERE id = '{$id}' LIMIT 1");
+	$row = $gpc->prepare($db->fetch_assoc($result));
 	echo head();
-	$receiver = array('1' => 'All','2' => 'Members only','3' => 'Guests only');
 ?>
 <form name="form" method="post" action="admin.php?action=members&job=newsletter_delete">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr>
-   <td class="obox" colspan="2"><b>Newsletter-Archive: detail-view</b></td>
+   <td class="obox" colspan="2">Newsletter <?php echo $row['id']; ?></td>
   </tr>
   <tr>
    <td class="mbox">Title:</td>
    <td class="mbox"><?php echo $row['title']; ?></td>
   </tr>
   <tr>
-   <td class="mbox">Sent:</td>
+   <td class="mbox">From:</td>
+   <td class="mbox"><?php echo $row['sender']; ?></td>
+  </tr>
+  <tr>
+   <td class="mbox">Recipients:</td>
+   <td class="mbox"><?php echo count(explode(',', $row['receiver'])); ?></td>
+  </tr>
+  <tr>
+   <td class="mbox">Time sent:</td>
    <td class="mbox"><?php echo gmdate('d.m.Y, H:i', times($row['time'])); ?></td>
   </tr>
   <tr>
-   <td class="mbox">Addressee:</td>
-   <td class="mbox"><?php echo $receiver[$row['receiver']]; ?></td>
+   <td class="mbox">Format:</td>
+   <td class="mbox"><?php echo iif($row['type'] == 'h', '(x)HTML', 'Plain text'); ?></td>
   </tr>
   <tr>
-   <td class="ubox" colspan="2">Newsletter Text:</td>
+   <td class="ubox" colspan="2">Text:</td>
   </tr>
   <tr>
-   <td class="mbox" colspan="2"><pre><?php echo $row['content']; ?></pre></td>
+   <td class="mbox" colspan="2">
+   <?php if ($row['type'] == 'h') { ?>
+   <iframe src="admin.php?action=members&amp;job=newsletter_html&amp;id=<?php echo $row['id']; ?>" width="700" height="500"></iframe>
+   <?php } else { ?>
+   <pre><?php echo $row['content']; ?></pre>
+   <?php } ?>
+   </td>
   </tr>
   <tr>
    <td class="ubox" colspan="2" align="center"><input type="hidden" name="delete[]" value="<?php echo $row['id']; ?>"><input type="submit" name="Submit" value="Delete"></td>
@@ -635,15 +699,18 @@ elseif ($job == 'newsletter_view') {
 <?php
 	echo foot();
 }
+elseif ($job == 'newsletter_html') {
+	$id = $gpc->get('id', int);
+	$result = $db->query("SELECT * FROM {$db->pre}newsletter WHERE id = '{$id}' LIMIT 1");
+	$row = $db->fetch_assoc($result);
+	echo $row['content'];
+}
 elseif ($job == 'newsletter_delete') {
 	echo head();
 	$del = $gpc->get('delete', arr_int);
 	if (count($del) > 0) {
-		$deleteids = array();
-		foreach ($del as $did) {
-			$deleteids[] = 'id = '.$did;
-		}
-		$db->query('DELETE FROM '.$db->pre.'newsletter WHERE '.implode(' OR ',$deleteids));
+		$ids = implode(',', $del);
+		$db->query("DELETE FROM {$db->pre}newsletter WHERE id IN ($ids)", __LINE__, __FILE__);
 		$anz = $db->affected_rows();
 		ok('admin.php?action=members&job=newsletter_archive', $anz.' newsletters have been deleted!');
 	}
