@@ -425,13 +425,16 @@ elseif ($job == 'newsletter') {
 		}
 	}
 
+	echo head();
+	if (count($ids) == 0) {
+		error('admin.php?action=members&job=emailsearch', 'No Members found.');
+	}
+
 	$result = $db->query("SELECT id FROM {$db->pre}user WHERE {$filter} id IN (".implode(',', $ids).") GROUP BY mail", __LINE__, __FILE__);
 	$ids = array();
 	while ($row = $db->fetch_assoc($result)) {
 		$ids[] = $row['id'];
 	}
-
-	echo head();
 ?>
 <form name="form" method="post" action="admin.php?action=members&amp;job=newsletter2">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
@@ -559,8 +562,9 @@ elseif ($job == 'newsletter3') {
 		if ($data['type'] == 'h') {
 			$mail->IsHTML(true);
 	    	$mail->Body = $message;
-	    	$plain = preg_replace('~<br(\s*/)?>(\r\n|\r|\n){0,1}~i', "\r\n", $message);
-	    	$mail->AltBody = strip_tags($plain);
+	    	// No alternative Body atm
+	    	// $plain = preg_replace('~<br(\s*/)?\>(\r\n|\r|\n){0,1}~i', "\r\n", $message);
+	    	// $mail->AltBody = strip_tags($plain);
 	    }
 	    else {
 	    	$mail->Body = $message;
@@ -573,14 +577,13 @@ elseif ($job == 'newsletter3') {
 	$steps = count($data['chunks']);
 	$page2 = $page+1;
 	$all = count(explode(',', $data['users']));
-	$percent = (100/$all)*(($page-1)*$data['batch']+count(end($data['chunks'])));
 	$sec = 3;
 	$left = (($steps-$page)*$sec)/60;
 	if ($left == 0) {
 		$left = 'Task Finished!';
 	}
 	else if ($left < 60) {
-		 $left = ceil($left).' Seconds';
+		 $left = ceil($left*60).' Seconds';
 	}
 	else if ($left > 60) {
 		 $left = round($left/60, 1).' Hours';
@@ -590,9 +593,11 @@ elseif ($job == 'newsletter3') {
 	}
 
 	if ($steps > $page) {
+		$percent = (100/$all)*(($page)*$data['batch']);
 		$url = 'admin.php?action=members&amp;job=newsletter3&amp;id='.$id.'&amp;page='.$page2;
 	}
 	else {
+		$percent = 100;
 		$url = 'admin.php?action=members&amp;job=newsletter_view&amp;id='.$id;
 	}
 
