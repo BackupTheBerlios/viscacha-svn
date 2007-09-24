@@ -2601,6 +2601,7 @@ elseif ($job == 'confirm') {
 	$db->query('UPDATE '.$db->pre.'user SET confirm = "'.$confirm.'" WHERE id = "'.$row['id'].'" LIMIT 1', __LINE__, __FILE__);
 
 	// Send Mail
+	$row = $gpc->plain_str($row);
 	$content = $lang->get_mail('admin_confirmed');
 	xmail(array('0' => array('mail' => $row['mail'])), array(), $content['title'], $content['comment']);
 
@@ -2615,6 +2616,7 @@ elseif ($job == 'confirm2') {
 
 	$db->query("UPDATE {$db->pre}user SET confirm = '11' WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 
+	$row = $gpc->plain_str($row);
 	$content = $lang->get_mail('admin_confirmed');
 	xmail(array('0' => array('mail' => $row['mail'])), array(), $content['title'], $content['comment']);
 

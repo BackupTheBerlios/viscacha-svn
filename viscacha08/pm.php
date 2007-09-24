@@ -273,6 +273,7 @@ elseif ($_GET['action'] == "save") {
 		$row = $gpc->prepare($db->fetch_assoc($result));
 		if ($row['opt_pmnotify'] == 1) {
 			$lang->setdir($row['language']);
+			$row = $gpc->plain_str($row);
 			$maildata = $lang->get_mail('newpm');
 			$to = array('0' => array('name' => $row['name'], 'mail' => $row['mail']));
 			$from = array();

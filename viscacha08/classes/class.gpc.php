@@ -223,6 +223,25 @@ class GPC {
 		}
 	}
 
+	function plain_str($var) {
+    	global $db, $config;
+    	if ($config['asia'] == 1) {
+	    	if (is_array($var)) {
+	    		$cnt = count($var);
+	    		$keys = array_keys($var);
+
+	    		for ($i = 0; $i < $cnt; $i++){
+	    			$key = $keys[$i];
+	    			$var[$key] = $this->save_str($var[$key]);
+	    		}
+	    	}
+	    	elseif (is_string($var)){
+	    		$var = html_entity_decode($var, ENT_QUOTES, $config['asia_charset']);
+	    	}
+    	}
+    	return $var;
+	}
+
 }
 
 

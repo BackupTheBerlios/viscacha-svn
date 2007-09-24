@@ -236,7 +236,7 @@ elseif ($_GET['action'] == 'resend2') {
 	else {
 		set_flood();
 		$row = $db->fetch_assoc($result);
-		$row['name'] = $_POST['name'] = $gpc->prepare($row['name']);
+		$row = $gpc->plain_str($row);
 		$confirmcode = md5($config['cryptkey'].$row['regdate']);
 
 		($code = $plugins->load('register_resend2_check')) ? eval($code) : null;

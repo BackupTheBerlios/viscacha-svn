@@ -152,6 +152,7 @@ elseif ($_GET['action'] == "report_post" || $_GET['action'] == "report_post2") {
 			$lang_dir = $lang->getdir(true);
 			foreach ($cache as $row) {
 				$lang->setdir($row['language']);
+				$row = $gpc->plain_str($row);
 				$data = $lang->get_mail('report_post');
 				$to = array(array('name' => $row['name'], 'mail' => $row['mail']));
 				xmail($to, array(), $data['title'], $data['comment']);
