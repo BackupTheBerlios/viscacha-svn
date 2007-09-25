@@ -180,12 +180,12 @@ if ($job == 'plugins') {
 	  <tr>
 	   <td class="mbox">
 	   <ul>
-		   <li><a href="admin.php?action=cms&job=package_add">Add Package</a></li>
-		   <li><a href="admin.php?action=cms&job=package_import">Import Package</a></li>
-		   <li><a href="admin.php?action=cms&job=plugins_add">Add Plugin</a></li>
+		   <li><a href="admin.php?action=cms&amp;job=package_add">Add Package</a></li>
+		   <li><a href="admin.php?action=cms&amp;job=package_import">Import Package</a></li>
+		   <li><a href="admin.php?action=cms&amp;job=plugins_add">Add Plugin</a></li>
 		   <li>
 			   <form method="get" name="admin.php" style="display: inline;">
-			   Display of:
+			   Group by:
 			   	<select name="sort">
 			   		<option value="0"<?php echo iif($sort == 0, ' selected="selected"'); ?>>Hooks</option>
 			   		<option value="1"<?php echo iif($sort == 1, ' selected="selected"'); ?>>Packages</option>
@@ -458,7 +458,7 @@ elseif ($job == 'plugins_edit') {
 	}
 	sort($cp);
 	?>
-	<form method="post" action="admin.php?action=cms&job=plugins_edit2&id=<?php echo $pluginid; ?>">
+	<form method="post" action="admin.php?action=cms&amp;job=plugins_edit2&amp;id=<?php echo $pluginid; ?>">
 	<table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
 	 <tr>
 	  <td class="obox" colspan="2">Edit Plugin</td>
@@ -541,7 +541,9 @@ elseif ($job == 'plugins_edit2') {
 	$ini = $myini->read($dir."config.ini");
 	$file = $ini['php'][$data['position']];
 
-	$filesystem->chmod($dir.$file, 0666);
+	if (!is_dir($dir.$file)) {
+		$filesystem->chmod($dir.$file, 0666);
+	}
 	$filesystem->file_put_contents($dir.$file, $code);
 
 	if ($data['position'] != $hook) {

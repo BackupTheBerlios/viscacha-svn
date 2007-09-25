@@ -567,10 +567,11 @@ function GoBoardPW ($bpw, $bid) {
 	extract($GLOBALS, EXTR_SKIP);
 	if(!isset($my->pwfaccess[$bid]) || $my->pwfaccess[$bid] != $bpw) {
 		($code = $plugins->load('frontend_goboardpw')) ? eval($code) : null;
+		$tpl->globalvars(compact("bid"));
         echo $tpl->parse("main/boardpw");
 		$slog->updatelogged();
 		$zeitmessung = t2();
-		$tpl->globalvars(compact("zeitmessung", "bid"));
+		$tpl->globalvars(compact("zeitmessung"));
 		echo $tpl->parse("footer");
 		$phpdoc->Out();
 		$db->close();

@@ -1165,6 +1165,9 @@ function Permissions ($board = 0, $groups = null, $member = null) {
 		}
 
 	}
+
+	$this->pwboards();
+
 	return $permissions;
 }
 
@@ -1267,6 +1270,8 @@ function GlobalPermissions() {
 
 	}
 
+	$this->pwboards();
+
 	return $permissions;
 }
 
@@ -1306,9 +1311,22 @@ function ModPermissions ($bid) {
 	}
 }
 
-/*
-* - Konstruiert den günstigsten SQL-String -
-*/
+function pwboards() {
+	global $scache, $my;
+	$catbid = $scache->load('cat_bid');
+	$forums = $catbid->get();
+	foreach ($forums as $bid => $data) {
+		if ($data['opt'] == 'pw') {
+			if (isset($my->pwfaccess[$bid]) && $my->pwfaccess[$bid] == $data['optvalue']) {
+				$this->positive[$bid] = $bid;
+			}
+			else {
+				$this->negative[$bid] = $bid;
+			}
+		}
+	}
+}
+
 /**
  * Constructs the best sql query.
  *
@@ -1317,28 +1335,42 @@ function ModPermissions ($bid) {
  *
  * @param string field name
  * @param integer
+ * @param array board ids or null for all boards
  * @return string part of sql query
  */
-function sqlinboards($spalte, $r_and = 0) {
+function sqlinboards($spalte, $r_and = 0, $boards = null) {
+	$negative = $this->negative;
+	$positive = $this->positive;
+	if ($boards != null) {
+		// Positive
+		$positive = array_intersect($positive, $boards);
+		// Negative
+		$all = $this->getBoards();
+		$temp = array_diff($all, $boards);
+		$negative = array_merge($temp, $negative);
 
-	if ($this->permissions['forum'] == 1 && count($this->negative) > 1) {
-		$ids = implode(',',$this->negative);
-		$sql = ' '.$spalte.' NOT IN ('.$ids.') ';
 	}
-	elseif ($this->permissions['forum'] == 1 && count($this->negative) == 1) {
-		$sql = ' '.$spalte.' != '.current($this->negative).' ';
+
+	if ($this->permissions['forum'] == 1 && count($negative) > 1) {
+		$ids = implode(',', $negative);
+		$sql = " {$spalte} NOT IN ({$ids}) ";
 	}
-	elseif ($this->permissions['forum'] == 1 && count($this->negative) == 0) {
+	elseif ($this->permissions['forum'] == 1 && count($negative) == 1) {
+		$nid = current($negative);
+		$sql = " {$spalte} != {$nid} ";
+	}
+	elseif ($this->permissions['forum'] == 1 && count($negative) == 0) {
 		$sql = ' 1=1 ';
 	}
-	elseif ($this->permissions['forum'] == 0 && count($this->positive) > 1) {
-		$ids = implode(',',$this->positive);
-		$sql = ' '.$spalte.' IN ('.$ids.') ';
+	elseif ($this->permissions['forum'] == 0 && count($positive) > 1) {
+		$ids = implode(',', $positive);
+		$sql = " {$spalte} IN ({$ids}) ";
 	}
-	elseif ($this->permissions['forum'] == 0 && count($this->positive) == 1) {
-		$sql = ' '.$spalte.' = '.current($this->positive).' ';
+	elseif ($this->permissions['forum'] == 0 && count($positive) == 1) {
+		$pid = current($positive);
+		$sql = " {$spalte} = {$pid} ";
 	}
-	elseif ($this->permissions['forum'] == 0 && count($this->positive) == 0) {
+	elseif ($this->permissions['forum'] == 0 && count($positive) == 0) {
 		$sql = ' 1=0 ';
 	}
 	else {

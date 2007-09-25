@@ -148,19 +148,26 @@ elseif ($job == 'cache_delete' || $job == 'cache_refresh') {
 	else {
 		if (file_exists('cache/'.$file)) {
 			$filesystem->unlink('cache/'.$file);
-			$not = null;
+			if ($job == 'cache_refresh') {
+				$not = false;
+			}
+			else {
+				$not = true;
+			}
 		}
 		else {
-			$not = false;
+			$not = null;
 		}
 	}
 	if ($not == null) {
 		error('admin.php?action=misc&job=cache', 'No valid cache-file specified.');
 	}
-	if ($not == false) {
-		error('admin.php?action=misc&job=cache', iif($job == 'cache_refresh', 'The cache file is only deleted. It will be created the next time it is needed.'));
+	else if ($not == false) {
+		error('admin.php?action=misc&job=cache', 'The cache file has been deleted only. It will be created the next time it is needed.');
 	}
-	ok('admin.php?action=misc&job=cache', iif($job == 'cache_refresh', 'The cache-file was rebuilt.', 'The cache-file was deleted. It will be rebuild the next time it is needed.'));
+	else {
+		ok('admin.php?action=misc&job=cache', iif($job == 'cache_refresh', 'The cache-file has been rebuilt.', 'The cache-file has been deleted. It will be rebuild the next time it is needed.'));
+	}
 }
 elseif ($job == 'cache_delete_all' || $job == 'cache_refresh_all') {
 	echo head();
@@ -185,7 +192,7 @@ elseif ($job == 'cache_delete_all' || $job == 'cache_refresh_all') {
 	    }
 		closedir($dh);
 	}
-	ok('admin.php?action=misc&job=cache', iif($job == 'cache_refresh_all', 'The cache-files were rebuilt. Some files are only deleted and will be rebuild the next time they are needed.', 'The cache-files were deleted. They will be rebuild the next time they are needed.'));
+	ok('admin.php?action=misc&job=cache', iif($job == 'cache_refresh_all', 'The cache-files have been rebuilt. Some files have been deleted only and will be rebuild the next time they are needed.', 'The cache-files have been deleted. They will be rebuild the next time they are needed.'));
 }
 elseif ($job == 'cache_delete_plugins') {
 	echo head();
@@ -198,7 +205,7 @@ elseif ($job == 'cache_delete_plugins') {
 	    }
 		closedir($dh);
 	}
-	ok('admin.php?action=misc&job=cache', 'The cache-files were deleted. They will be rebuild the next time they are needed.');
+	ok('admin.php?action=misc&job=cache', 'The cache-files has been deleted. They will be rebuild the next time they are needed.');
 }
 elseif ($job == 'onlinestatus') {
 	echo head();

@@ -265,10 +265,11 @@ elseif ($job == 'manage') {
 		$row = explode("\t", $job, 7);
 		for($i = 0; $i <= 4; $i++) {
 			if ($row[$i] == '*') {
-				$row[$i] = 'Every';
+				$row[$i] = $lang->phrase('admin_every');
 			}
 			elseif (substr($row[$i], 0, 2) == '*/') {
-				$row[$i] = 'Every '.substr($row[$i], 2);
+				$what = substr($row[$i], 2);
+				$row[$i] = $lang->phrase('admin_every_x');
 			}
 			else {
 				$row[$i] = intval($row[$i]);

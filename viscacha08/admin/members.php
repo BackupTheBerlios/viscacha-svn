@@ -599,6 +599,7 @@ elseif ($job == 'newsletter3') {
 	else {
 		$percent = 100;
 		$url = 'admin.php?action=members&amp;job=newsletter_view&amp;id='.$id;
+		$cache->delete();
 	}
 
 	$htmlhead .= '<meta http-equiv="refresh" content="'.$sec.'; url='.$url.'">';

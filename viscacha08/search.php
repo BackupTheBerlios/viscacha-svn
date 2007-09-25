@@ -56,8 +56,9 @@ if ($_GET['action'] == "search") {
 	}
 	$boards = array();
 	if (isset($_POST['boards']) && is_array($_POST['boards'])) {
+		$_POST['boards'] = array_map('trim', $_POST['boards']);
 		foreach ($_POST['boards'] as $b) {
-			if (is_id(trim($b))) {
+			if (is_id($b) == true) {
 				$boards[] = $b;
 			}
 		}
@@ -78,10 +79,7 @@ if ($_GET['action'] == "search") {
 		else {
 			$sw2 = $sw;
 		}
-		if (!is_array($sw2)) {
-
-		}
-		$sw2 = str_replace('*','',$sw2);
+		$sw2 = str_replace('*', '', $sw2);
 		if (in_array(strtolower($sw2), $ignorewords) || strxlen($sw2) < $config['searchminlength']) {
 			$ignored[] = $sw2;
 		}
@@ -141,7 +139,7 @@ if ($_GET['action'] == "search") {
 		}
 	}
 
-	$sql_where = $slog->sqlinboards('r.board', 1)." ";
+	$sql_where = $slog->sqlinboards('r.board', 1, $boards)." ";
 
 	if (count($used) > 0) {
 		$sql_where .= "({$sql_where_like}) ";
