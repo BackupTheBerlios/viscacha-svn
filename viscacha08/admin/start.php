@@ -105,24 +105,24 @@ elseif (empty($job) || $job == 'start') {
 	<br />
 	 <table class="border">
 	  <tr>
-	   <td class="obox" align="center" colspan="4">Program Statistics</td>
+	   <td class="obox" align="center" colspan="4"><?php echo $lang->phrase('admin_program_stats'); ?></td>
 	  </tr>
 	  <tr>
-		<td class="mmbox" width="25%">Viscacha Version:</td>
+		<td class="mmbox" width="25%"><?php echo $lang->phrase('admin_viscacha_version'); ?></td>
 		<td class="mbox"  width="25%"><a href="admin.php?action=settings&job=version"><?php echo $config['version']; ?></a></td>
-		<td class="mmbox" width="25%">Website Offline:</td>
+		<td class="mmbox" width="25%"><?php echo $lang->phrase('admin_website_offline');?></td>
 		<td class="mbox"  width="25%"><?php echo noki($config['foffline'], ' onmouseover="HandCursor(this)" onclick="ajax_noki(this, \'action=settings&job=ajax_sitestatus\')"'); ?></td>
 	  </tr>
 	  <tr>
-		<td class="mmbox" width="25%">PHP Version:</td>
+		<td class="mmbox" width="25%"><?php echo $lang->phrase('admin_php_version'); ?></td>
 		<td class="mbox"  width="25%"><?php echo PHP_VERSION; ?></td>
-		<td class="mmbox" width="25%">Database Version:</td>
+		<td class="mmbox" width="25%"><?php echo $lang->phrase('admin_database_version'); ?></td>
 		<td class="mbox"  width="25%"><?php echo $db->version(); ?></td>
 	  </tr>
 	  <tr>
-		<td class="mmbox" width="25%">Web Server:</td>
+		<td class="mmbox" width="25%"><?php echo $lang->phrase('admin_webserver'); ?></td>
 		<td class="mbox"  width="25%"><?php echo $webserver; ?></td>
-		<td class="mmbox" width="25%">Server Load:</td>
+		<td class="mmbox" width="25%"><?php echo $lang->phrase('admin_server_load'); ?></td>
 		<td class="mbox"  width="25%"><?php echo serverload(); ?></td>
 	  </tr>
 	 </table>
@@ -131,62 +131,62 @@ elseif (empty($job) || $job == 'start') {
 	<form action="admin.php?action=index&job=save_notes" method="post">
 	 <table class="border">
 	  <tr>
-	   <td class="obox" align="center">Administrator Notes</td>
+	   <td class="obox" align="center"><?php echo $lang->phrase('admin_notes'); ?></td>
 	  </tr>
 	  <tr>
 		<td class="mbox" align="center"><textarea name="notes" rows="6" cols="120"><?php echo $notes; ?></textarea></td>
 	  </tr>
 	  <tr>
-	   <td class="ubox" align="center"><input type="submit" value="Save"></td>
+	   <td class="ubox" align="center"><input type="submit" value="<?php echo $lang->phrase('admin_button_save'); ?>"></td>
 	  </tr>
 	 </table>
 	</form>
 	<br />
 	 <table class="border">
 	  <tr>
-	   <td class="obox" align="center" colspan="2">Useful Links</td>
+	   <td class="obox" align="center" colspan="2"><?php echo $lang->phrase('admin_useful_links'); ?></td>
 	  </tr>
 	  <tr>
-	  	<td class="mbox">PHP Function Lookup</td>
+	  	<td class="mbox"><?php echo $lang->phrase('admin_php_lookup'); ?></td>
 		<td class="mbox">
 		<form action="http://www.php.net/manual-lookup.php" method="get">
 		<input type="text" name="function" size="30" />&nbsp;
-		<input type="submit" value="Find" />
+		<input type="submit" value="<?php echo $lang->phrase('admin_button_find'); ?>" />
 		</form>
 		</td>
 	  </tr>
 	  <tr>
-	  	<td class="mbox">MySQL Language Lookup</td>
+	  	<td class="mbox"><?php echo $lang->phrase('admin_mysql_lookup'); ?></td>
 		<td class="mbox">
 		<form action="http://www.mysql.com/search/" method="get">
 		<input type="text" name="q" size="30" />&nbsp;
-		<input type="submit" value="Find" />
+		<input type="submit" value="<?php echo $lang->phrase('admin_button_find'); ?>" />
 		<input type="hidden" name="doc" value="1" />
 		<input type="hidden" name="m" value="o" />
 		</form>
 		</td>
 	  </tr>
 	  <tr>
-	  	<td class="mbox">Useful Links</td>
+	  	<td class="mbox"><?php echo $lang->phrase('admin_useful_links'); ?></td>
 		<td class="mbox">
 	<form>
 	<select onchange="if (this.options[this.selectedIndex].value != '') { window.open(this.options[this.selectedIndex].value); } return false;">
-		<option value="">-- Useful Links --</option>
+		<option value=""><?php echo $lang->phrase('admin_useful_links'); ?></option>
 		<optgroup label="PHP">
-		<option value="http://www.php.net/">Home Page (PHP.net)</option>
-		<option value="http://www.php.net/manual/">Reference Manual</option>
-		<option value="http://www.php.net/downloads.php">Download Latest Version</option>
+		<option value="http://www.php.net/"><?php echo $lang->phrase('admin_documentation_homepage'); ?> (PHP.net)</option>
+		<option value="http://www.php.net/manual/"><?php echo $lang->phrase('admin_reference_manual'); ?></option>
+		<option value="http://www.php.net/downloads.php"><?php echo $lang->phrase('admin_download_latest_version'); ?></option>
 		</optgroup>
 		<optgroup label="MySQL">
-		<option value="http://www.mysql.com/">Home Page (MySQL.com)</option>
-		<option value="http://www.mysql.com/documentation/">Reference Manual</option>
-		<option value="http://www.mysql.com/downloads/">Download Latest Version</option>
+		<option value="http://www.mysql.com/"><?php echo $lang->phrase('admin_documentation_homepage'); ?> (MySQL.com)</option>
+		<option value="http://www.mysql.com/documentation/"><?php echo $lang->phrase('admin_reference_manual'); ?></option>
+		<option value="http://www.mysql.com/downloads/"><?php echo $lang->phrase('admin_download_latest_version'); ?></option>
 		</optgroup>
 		<optgroup label="Viscacha">
-		<option value="http://www.viscacha.org/">Home Page (viscacha.org)</option>
-		<option value="http://docs.viscacha.org/">Reference Manual</option>
-		<option value="http://files.viscacha.org/">Download Latest Version</option>
-		<option value="http://bugs.viscacha.org/">Bugtracker &amp; ToDo</option>
+		<option value="http://www.viscacha.org/"><?php echo $lang->phrase('admin_documentation_homepage'); ?> (viscacha.org)</option>
+		<option value="http://docs.viscacha.org/"><?php echo $lang->phrase('admin_reference_manual'); ?></option>
+		<option value="http://files.viscacha.org/"><?php echo $lang->phrase('admin_download_latest_version'); ?></option>
+		<option value="http://bugs.viscacha.org/"><?php echo $lang->phrase('admin_bugtracker_todo'); ?></option>
 		</optgroup>
 	</select>
 	</form>

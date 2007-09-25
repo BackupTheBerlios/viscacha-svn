@@ -1,6 +1,6 @@
 <?php
 if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
-
+$lang->group("admin/posts");
 ($code = $plugins->load('admin_posts_jobs')) ? eval($code) : null;
 
 if ($_GET['job'] == 'postrating') {
@@ -9,16 +9,16 @@ if ($_GET['job'] == 'postrating') {
 <form name="form" method="post" action="admin.php?action=posts&job=postrating2">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr>
-   <td class="obox" colspan="2"><b>Postrating &raquo; Choose Forum</b></td>
+   <td class="obox" colspan="2"><b><?php echo $lang->phrase('admin_title_rating'); ?></b></td>
   </tr>
   <tr>
-   <td class="mbox">Forum to show:</td>
+   <td class="mbox"><?php echo $lang->phrase('admin_forum_to_show'); ?></td>
    <td class="mbox">
 	 <?php echo SelectBoardStructure('board', ADMIN_SELECT_FORUMS); ?>
    </td>
   </tr>
   <tr>
-   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="Submit"></td>
+   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="<?php echo $lang->phrase('admin_button_submit'); ?>"></td>
   </tr>
  </table>
 </form>
@@ -33,7 +33,7 @@ elseif ($_GET['job'] == 'postrating2') {
 	$count = $db->fetch_num($db->query("SELECT COUNT(*) FROM {$db->pre}postratings AS p LEFT JOIN {$db->pre}topics AS t ON p.tid = t.id WHERE t.board = '{$board}' AND t.status != '2' GROUP BY p.tid"));
 
 	if ($count[0] < 1) {
-		error('admin.php?action=posts&job=postrating', 'The forum does not contain any rated posts.');
+		error('admin.php?action=posts&job=postrating', $lang->phrase('admin_forum_doesnt_contain_rated_posts'));
 	}
 
 	$catbid = $scache->load('cat_bid');
@@ -60,17 +60,17 @@ elseif ($_GET['job'] == 'postrating2') {
 	?>
 <table class="border">
   <tr>
-	<td class="obox" colspan="5">Postratings</td>
+	<td class="obox" colspan="5"><?php echo $lang->phrase('admin_postratings'); ?></td>
   </tr>
   <tr>
 	<td class="ubox" colspan="5"><?php echo $pages; ?></td>
   </tr>
   <tr class="obox">
-    <th width="18%">Rating (Votes)</th>
-	<th width="38%">Topic</th>
-	<th width="18%">Creation</th>
-	<th width="8%">Replies</th>
-	<th width="18%">Last Post</th>
+    <th width="18%"><?php echo $lang->phrase('admin_rating_votes'); ?></th>
+	<th width="38%"><?php echo $lang->phrase('admin_topic'); ?></th>
+	<th width="18%"><?php echo $lang->phrase('admin_creation'); ?></th>
+	<th width="8%"><?php echo $lang->phrase('admin_replies'); ?></th>
+	<th width="18%"><?php echo $lang->phrase('admin_last_post'); ?></th>
   </tr>
 	<?php
 
@@ -114,22 +114,22 @@ elseif ($_GET['job'] == 'postrating2') {
 				$row->mark = $info['auto_status'];
 			}
 			if ($row->mark == 'n') {
-				$pref .= 'News: ';
+				$pref .= $lang->phrase('admin_mark_news');
 			}
 			elseif ($row->mark == 'a') {
-				$pref .= 'Artcle: ';
+				$pref .= $lang->phrase('admin_mark_article');
 			}
 			elseif ($row->mark == 'b') {
-				$pref .= 'Bad: ';
+				$pref .= $lang->phrase('admin_mark_bad');
 			}
 			elseif ($row->mark == 'g') {
-				$pref .= 'Good: ';
+				$pref .= $lang->phrase('admin_mark_good');
 			}
 			if ($row->sticky == '1') {
-				$pref .= 'Announcement: ';
+				$pref .= $lang->phrase('admin_mark_sticky');
 			}
 			if ($row->status == '1') {
-				$pref .= 'Closed: ';
+				$pref .= $lang->phrase('admin_mark_closed');
 			}
 		}
 
@@ -177,11 +177,11 @@ elseif ($_GET['job'] == 'reports') {
 <form method="post" action="admin.php?action=posts&amp;job=reports2">
 <table class="border">
   <tr>
-	<td class="obox" colspan="5">Reported Posts</td>
+	<td class="obox" colspan="5"><?php echo $lang->phrase('admin_reported_posts');?></td>
   </tr>
 <?php if ($num == 0) { ?>
   <tr>
-	<td class="mbox" colspan="5">There are no reported posts.</td>
+	<td class="mbox" colspan="5"><?php echo $lang->phrase('admin_no_reported_posts'); ?></td>
   </tr>
 <?php } else { ?>
   <tr>
@@ -189,9 +189,9 @@ elseif ($_GET['job'] == 'reports') {
   </tr>
   <tr class="obox">
   	<th width="2%"><input type="checkbox" onclick="check_all('delete[]');" name="all" value="1" /></th>
-	<th width="40%">Post / Topic / Forum</th>
-	<th width="20%">Date / Author</th>
-	<th width="38%">Message</th>
+	<th width="40%"><?php echo $lang->phrase('admin_post_topic_forum'); ?></th>
+	<th width="20%"><?php echo $lang->phrase('admin_date_author'); ?></th>
+	<th width="38%"><?php echo $lang->phrase('admin_message'); ?></th>
   </tr>
 	<?php
 
@@ -254,10 +254,10 @@ elseif ($_GET['job'] == 'reports2') {
 	if (count($delete) > 0) {
 		$din = implode(',', $delete);
 		$db->query("UPDATE {$db->pre}replies SET report = '' WHERE id IN ({$din})",__LINE__,__FILE__);
-		ok('admin.php?action=posts&job=reports', 'Alle reports have been set as done.');
+		ok('admin.php?action=posts&job=reports', $lang->phrase('admin_reports_set_as_done'));
 	}
 	else {
-		error('admin.php?action=posts&job=reports', 'You haven\'t checked any box.');
+		error('admin.php?action=posts&job=reports', $lang->phrase('admin_havent_checked_box'));
 	}
 }
 ?>
