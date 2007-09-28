@@ -2,7 +2,7 @@
 /*
 	Viscacha - A bulletin board solution for easily managing your content
 	Copyright (C) 2004-2007  Matthias Mohr, MaMo Net
-	
+
 	Author: Matthias Mohr
 	Publisher: http://www.viscacha.org
 	Start Date: May 22, 2004
@@ -48,6 +48,7 @@ $cache = $com->get();
 if (isset($cache[$cid])) {
 	DEFINE('COM_ID', $cache[$_GET['cid']]['id']);
 	DEFINE('COM_DIR', 'components/'.COM_ID.'/');
+	$myini = new INI();
 	$ini = $myini->read(COM_DIR.'components.ini');
 	$mod = $gpc->get('file', str, 'frontpage');
 	if (!isset($ini['module'][$mod])) {
@@ -82,5 +83,5 @@ else {
 
 $slog->updatelogged();
 $phpdoc->Out();
-$db->close();		
+$db->close();
 ?>

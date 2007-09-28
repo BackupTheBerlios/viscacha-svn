@@ -3,6 +3,7 @@ if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
 
 require('classes/class.phpconfig.php');
 require('admin/lib/language.inc.php');
+$myini = new INI();
 
 function SelectPackageLinks ($head) {
 	?>

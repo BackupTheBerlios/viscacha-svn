@@ -38,13 +38,7 @@ require_once("classes/class.docoutput.php");
 include_once ("classes/class.bbcode.php");
 
 $scache = new CacheServer();
-$myini = new INI();
-if (SCRIPTNAME == 'admin') {
-	$lang = new lang(false, E_USER_WARNING);
-}
-else {
-	$lang = new lang();
-}
+$lang = new lang();
 $plugins = new PluginSystem();
 
 // Database functions

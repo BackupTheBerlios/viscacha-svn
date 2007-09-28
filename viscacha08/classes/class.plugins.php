@@ -96,10 +96,9 @@ class PluginSystem {
 	}
 
 	function _setup($hook, $id) {
-		global $myini;
-
 		$source = '';
 		$inifile = 'modules/'.$id.'/config.ini';
+		$myini = new INI();
 		$ini = $myini->read($inifile);
 	    if (isset($ini['php'][$hook])) {
 	    	$file = $ini['php'][$hook];
@@ -154,7 +153,7 @@ class PluginSystem {
 	}
 
 	function _build_code($pos) {
-		global $myini, $db;
+		global $db;
 		$group = $this->_group($pos);
 		$file = 'cache/modules/'.$group.'.php';
 
@@ -171,6 +170,7 @@ class PluginSystem {
 	    	$this->sqlcache[$group] = array();
 	    }
 
+	    $myini = new INI();
 	    $cfgdata = array();
 	    $code = array();
 	    foreach ($this->sqlcache[$group] as $position => $mods) {

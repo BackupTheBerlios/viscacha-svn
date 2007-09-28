@@ -2,7 +2,7 @@
 /*
 	Viscacha - A bulletin board solution for easily managing your content
 	Copyright (C) 2004-2007  Matthias Mohr, MaMo Net
-	
+
 	Author: Matthias Mohr
 	Publisher: http://www.viscacha.org
 	Start Date: May 22, 2004
@@ -202,17 +202,17 @@ $htaccess = '';
 	    ErrorDocument 500	{$config['furl']}/misc.php?action=error&id=500
 	    ";
 	}
-	
+
 	if ($config['correctsubdomains'] == 1) {
 	    $url = parse_url($config['furl']);
 	    $host = str_ireplace('www.', '', $url['host']);
 	    $htaccess .= "
 	    RewriteEngine On
 	    RewriteCond %{HTTP_HOST} ^www\.".preg_quote($host)."$ [NC]
-	    RewriteRule ^(.*)$ http://".$host."/$1 [R=301,L] 
+	    RewriteRule ^(.*)$ http://".$host."/$1 [R=301,L]
 	    ";
 	}
-	
+
 	@file_put_contents('.htaccess', $htaccess);
 }
 
@@ -230,31 +230,6 @@ else {
 
 ($code = $plugins->load('frontend_init')) ? eval($code) : null;
 
-// ToDo: Auslagern
-$bannedip = file('data/bannedip.php');
-$bannedip = array_map('trim', $bannedip);
-if (count($bannedip) > 0) {
-	foreach ($bannedip as $row) {
-		if (strpos(' '.getip(), ' '.trim($row)) !== false) {
-			$slog = new slog();
-			$my = $slog->logged();
-			$lang->init($my->language);
-			$tpl = new tpl();
-			
-			ob_start();
-			include('data/banned.php');
-			$banned = ob_get_contents();
-			ob_end_clean();
-			($code = $plugins->load('frontend_init_banned')) ? eval($code) : null;
-            echo $tpl->parse("banned");
-            
-            $phpdoc->Out();
-			$db->close();
-		    exit();
-		}
-	}
-}
-
 if ($config['foffline'] && defined('TEMPSHOWLOG') == false && SCRIPTNAME != 'external') {
 	$slog = new slog();
 	$my = $slog->logged();
@@ -263,16 +238,16 @@ if ($config['foffline'] && defined('TEMPSHOWLOG') == false && SCRIPTNAME != 'ext
 	if ($my->p['admin'] != 1) {
 		$lang->init($my->language);
 		$tpl = new tpl();
-        
+
 		$offline = file_get_contents('data/offline.php');
         ($code = $plugins->load('frontent_init_offline')) ? eval($code) : null;
 		echo $tpl->parse("offline");
-        
+
         $phpdoc->Out();
 		$db->close();
 	    exit();
 	}
-	
+
 	unset($slog, $my);
 }
 ?>

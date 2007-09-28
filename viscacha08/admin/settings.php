@@ -2474,7 +2474,7 @@ else {
 		  	  <option value="admin.php?action=groups&amp;job=manage">Usergroup Manager</option>
 		  	  <option value="admin.php?action=profilefield&amp;job=manage">Profile Field Manager</option>
 		  	  <option value="admin.php?action=members&amp;job=ips">Search IP Addresses</option>
-		  	  <option value="admin.php?action=members&amp;job=banned">Blocked IP Addresses</option>
+		  	  <option value="admin.php?action=members&amp;job=banned">Banned Members and IP Addresses</option>
 		  	  <option value="admin.php?action=forums&amp;job=mods">Moderator Manager</option>
 		  	  <option value="admin.php?action=members&amp;job=newsletter">Newsletter Manager</option>
 		  	  <option value="admin.php?action=members&amp;job=emaillist">Export E-mail Addresses</option>

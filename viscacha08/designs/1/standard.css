@@ -111,8 +111,8 @@ h1 a, h1 a:hover {
 
 /* Offline und Banned-Seite */
 #blank {
-	width: 765px;
-	margin: auto;
+	width: 100%;
+	margin-top: 1em;
 }
 
 /* Inhalt */
@@ -150,7 +150,7 @@ h1 a, h1 a:hover {
 	border: 1px solid #839FBC;
 	background-color: #ffffff;
 }
-#content h3 img, #window h3 img, .tables th img, .h3 img {
+#blank h3 img, #content h3 img, #window h3 img, .tables th img, .h3 img {
 	vertical-align: middle;
 }
 .inlineheader {
@@ -241,10 +241,10 @@ h1 a, h1 a:hover {
 	height:5em;
 }
 
-#content h3, .outline {
+#blank h3, #content h3, .outline {
 	border: 1px solid #839FBC;
 }
-#content .border h3 {
+#blank .border h3, #content .border h3 {
 	border-width: 0px;
 }
 .h3 {

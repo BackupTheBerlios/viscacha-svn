@@ -2,7 +2,7 @@
 /*
 	Viscacha - A bulletin board solution for easily managing your content
 	Copyright (C) 2004-2007  Matthias Mohr, MaMo Net
-	
+
 	Author: Matthias Mohr
 	Publisher: http://www.viscacha.org
 	Start Date: May 22, 2004
@@ -45,6 +45,7 @@ $job = $gpc->get('job', str);
 
 $slog = new slog();
 $my = $slog->logged();
+$lang->init($my->language);
 $my->p = $slog->Permissions();
 
 if (!isset($my->settings['admin_interface'])) {
@@ -155,7 +156,7 @@ else {
 		echo head();
 		error('index.php'.SID2URL_1, 'You are not allowed to view this page!');
 	}
-	
+
 	$addr = rawurldecode($gpc->get('addr', none));
 	if ($action == "login2") {
 		$log_status = $slog->sid_login(true);
@@ -177,5 +178,5 @@ else {
 ($code = $plugins->load('admin_end')) ? eval($code) : null;
 
 $slog->updatelogged();
-$db->close();	
+$db->close();
 ?>

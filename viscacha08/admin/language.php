@@ -1001,6 +1001,7 @@ elseif ($job == 'lang_default') {
 elseif ($job == 'lang_edit') {
 	echo head();
 	$id = $gpc->get('id', int);
+	$myini = new INI();
 	?>
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr>
@@ -1493,6 +1494,7 @@ elseif ($job == 'phrase_file_delete') {
 }
 elseif ($job == 'phrase_add_lngfile') {
 	echo head();
+	$myini = new INI();
 	?>
 <form name="form" method="post" action="admin.php?action=language&job=phrase_add_lngfile2">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">

@@ -456,7 +456,6 @@ classes/class.permissions.php
 
 classes/function.frontend_init.php
 -frontend_init
--frontend_init_banned
 -frontent_init_offline
 
 classes/function.viscacha_frontend.php

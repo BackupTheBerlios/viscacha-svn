@@ -605,11 +605,6 @@ function logged () {
 
 	($code = $plugins->load('permissions_logged_end')) ? eval($code) : null;
 
-	if (!empty($this->bots[$my->is_bot]['type']) && $this->bots[$my->is_bot]['type'] == 'e') {
-		// E-Mail-Collector - Ban this user...
-		$this->banish();
-	}
-
 	$this->sid2url($my);
 
 	return $my;
@@ -620,25 +615,83 @@ function logged () {
  *
  * After calling the function exit() is called and script ends.
  * Connection to database is closed. Template 'banned' will be shown.
- * Error Message is loaded from 'data/banned.php'-file.
+ * This is not shown in the AdminCP!
  */
-function banish() {
-	global $config, $db, $phpdoc, $gpc, $lang, $plugins;
-	$slog = new slog();
-	$my = $slog->logged();
-	$lang->init($my->language);
-	$tpl = new tpl();
+function banish($reason = null, $until = null) {
+	if (SCRIPTNAME != 'admin') {
+		global $config, $db, $phpdoc, $lang, $plugins, $tpl, $my, $breadcrumb;
 
-	ob_start();
-	include('data/banned.php');
-	$banned = ob_get_contents();
-	ob_end_clean();
+		if (substr($reason, 0, 6) == 'lang->') {
+			$key = substr($reason, 6);
+			$reason = $lang->phrase($key);
+		}
+		if ($reason == null) {
+			$reason = $lang->phrase('banned_no_reason');
+		}
+		else {
+			$reason = htmlspecialchars($reason);
+		}
+		if ($until > 0) {
+			$until = gmdate($lang->phrase('dformat1'), times($until));
+		}
+		else {
+			$until = $lang->phrase('banned_left_never');
+		}
 
-	($code = $plugins->load('permissions_banish')) ? eval($code) : null;
-	echo $tpl->parse("banned");
-    $phpdoc->Out();
-	$db->close();
-	exit();
+		($code = $plugins->load('permissions_banish')) ? eval($code) : null;
+
+		$tpl->globalvars(compact('reason', 'until'));
+		echo $tpl->parse("banned");
+
+	    $phpdoc->Out();
+		$db->close();
+		exit();
+	}
+}
+
+/**
+ * Checks whether a user has to be banned, and if so, calls $this->banisch().
+ */
+function checkBan() {
+	global $my;
+	$bannedip = file('data/bannedip.php');
+	$bannedip = array_map('trim', $bannedip);
+	$ban = false;
+	foreach ($bannedip as $row) {
+		$row = explode("\t", $row, 6);
+		if ($row[0] == 'ip') {
+			$row[2] = intval($row[2]);
+			if (strpos(' '.$this->ip, ' '.trim($row[1])) !== false && ($row[2] > time() || $row[2] == 0)) {
+				$ban = true;
+				break;
+			}
+		}
+		elseif ($row[0] == 'user') {
+			$row[2] = intval($row[2]);
+			if ($my->id == $row[1] && ($row[2] > time() || $row[2] == 0)) {
+				$ban = true;
+				break;
+			}
+		}
+		else {
+			continue;
+		}
+	}
+	if ($ban == true) {
+		if (empty($row[5]) == true) {
+			$reson = null;
+		}
+		else {
+			$reason = $row[5];
+		}
+		if ($row[2] == 0) {
+			$until = null;
+		}
+		else {
+			$until = $row[2];
+		}
+		$this->banish($reason, $until);
+	}
 }
 
 /**
@@ -1014,6 +1067,13 @@ function getBoards() {
  */
 function Permissions ($board = 0, $groups = null, $member = null) {
 	global $db, $my, $scache;
+
+	if (!empty($this->bots[$my->is_bot]['type']) && $this->bots[$my->is_bot]['type'] == 'e') {
+		$this->banish('lang->bot_banned'); // Ban sucking spam bots
+	}
+	else {
+		$this->checkBan($my); // Try to ban other banned people or do nothing
+	}
 
 	if ($groups == null && isset($my->groups)) {
 		$groups = $my->groups;

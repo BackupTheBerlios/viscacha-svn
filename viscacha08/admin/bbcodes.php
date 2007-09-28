@@ -216,6 +216,7 @@ elseif ($job == 'smileys_import2') {
 			if (!file_exists($tempdir.'/smileys.ini')) {
 				error('admin.php?action=bbcodes&job=smileys_import', 'smileys.ini is missing');
 			}
+			$myini = new INI();
 			$package = $myini->read($tempdir.'/smileys.ini');
 		break;
 	}
@@ -308,6 +309,7 @@ elseif ($job == 'smileys_export') {
 		}
 	}
 
+	$myini = new INI();
 	$myini->write($smilieconfig, $filedata);
 	$files[] = $smilieconfig;
 	$files = array_unique($files);
@@ -1121,8 +1123,6 @@ elseif ($job == 'custombb_test') {
 	$parsed_test = null;
 	if (!empty($test)) {
 		file_put_contents($file, $test);
-		$lang = new lang(false, E_USER_WARNING);
-		$lang->init();
 		BBProfile($bbcode);
 		$bbcode->setSmileys(1);
 		$bbcode->setReplace(0);

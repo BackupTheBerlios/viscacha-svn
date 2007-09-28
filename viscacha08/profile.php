@@ -320,6 +320,10 @@ elseif ($is_member) {
 	LIMIT 1
 	",__LINE__,__FILE__);
 
+	$breadcrumb->resetUrl();
+	echo $tpl->parse("header");
+	echo $tpl->parse("menu");
+
 	if ($db->num_rows($result) == 1) {
 		$row = $gpc->prepare($db->fetch_object($result));
 
@@ -333,10 +337,6 @@ elseif ($is_member) {
 		}
 
 		$row->posts = numbers($row->posts);
-
-		$breadcrumb->resetUrl();
-		echo $tpl->parse("header");
-		echo $tpl->parse("menu");
 
 		$row->p = $slog->Permissions(0,$row->groups, true);
 		$row->level = $slog->getStatus($row->groups);

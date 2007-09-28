@@ -459,6 +459,7 @@ elseif ($job == 'design_import2') {
 		if (!file_exists($tempdir.'design.ini')) {
 			error('admin.php?action=designs&job=design_import', 'ZIP-archive does not contain design.ini.');
 		}
+		$myini = new INI();
 		$ini = $myini->read($tempdir.'design.ini');
 
 		$result = $db->query("SELECT * FROM `{$db->pre}designs` WHERE id = '{$config['templatedir']}' LIMIT 1");
@@ -590,6 +591,7 @@ elseif ($job == 'design_export2') {
 	$tempdir = "temp/";
 	$error = false;
 	$settings = $tempdir.'design.ini';
+	$myini = new INI();
 	$myini->write($settings, $info);
 
 	require_once('classes/class.zip.php');

@@ -1746,55 +1746,253 @@ elseif ($job == 'delete') {
 }
 elseif ($job == 'banned') {
 	echo head();
-	$content = file_get_contents('data/banned.php');
-	$b = file_get_contents('data/bannedip.php');
+	$bannedip = file('data/bannedip.php');
+	$memberdata_obj = $scache->load('memberdata');
+	$memberdata = $memberdata_obj->get();
 	?>
-<form name="form" method="post" action="admin.php?action=members&job=banned2">
+<form name="form" method="post" action="admin.php?action=members&amp;job=ban_delete">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr>
-   <td class="obox" colspan=2><b>Site for banned IP-addresses</b></td>
-  </tr>
-  <tr>
-   <td class="mbox" width="30%">Content of the Site:<br><span class="stext">HTML and PHP are possible!</span></td>
-   <td class="mbox" width="70%"><textarea name="template" rows="10" cols="90"><?php echo $content; ?></textarea></td>
-  </tr>
-  <tr>
-   <td class="ubox" width="100%" colspan=2 align="center"><input type="submit" name="Submit" value="Submit"></td>
-  </tr>
- </table>
-</form><br>
-<form name="form" method="post" action="admin.php?action=members&job=banned3">
- <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
-  <tr>
-   <td class="obox" colspan="2"><b>Manage IP-addresses</b></td>
-  </tr>
-  <tr>
-   <td class="mbox" width="30%">
-   IP-address:<br />
-   <span class="stext">Per line one e-mail-address.<br />To specify an IP-range please mention only the front characters (Ex.: "127.0." will find e.g. "127.0.0.1")</span>
+   <td class="obox" colspan="7">
+    <span class="right"><a class="button" href="admin.php?action=members&amp;job=ban_add">Ban User/IP</a></span>
+   	Banned Members and IP-Adresses
    </td>
-   <td class="mbox" width="70%"><textarea name="ips" rows="10" cols="90"><?php echo $b; ?></textarea></td>
   </tr>
   <tr>
-   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="Submit"></td>
+   <td class="ubox" width="2%">DEL</td>
+   <td class="ubox" width="17%">User/IP</td>
+   <td class="ubox" width="17%">Banned by</td>
+   <td class="ubox" width="12%">Banned on</td>
+   <td class="ubox" width="12%">Ban will be lifted on</td>
+   <td class="ubox" width="12%">Time remaining</td>
+   <td class="ubox" width="28%">Reason</td>
+  </tr>
+  <?php
+  foreach ($bannedip as $row) {
+  	$row = explode("\t", rtrim($row, "\r\n"), 6);
+  	if ($row[0] == 'ip') {
+  		$data = '<span class="right stext">IP</span><a href="admin.php?action=members&amp;job=ips&amp;ipaddress='.$row[1].'">'.$row[1].'</a>';
+  	}
+  	elseif ($row[0] == 'user') {
+  		if (isset($memberdata[$row[1]]) == true) {
+  			$data = '<a href="admin.php?action=members&amp;job=edit&amp;id='.$row[1].'">'.$memberdata[$row[1]].'</a>';
+  		}
+  		else {
+  			$data = '<em>N/A</em>';
+  		}
+
+  	}
+  	else {
+  		continue;
+  	}
+
+	if (isset($memberdata[$row[3]]) == true) {
+		$row[3] = '<a href="admin.php?action=members&amp;job=edit&amp;id='.$row[3].'">'.$memberdata[$row[3]].'</a>';
+	}
+	else {
+		$row[3] = '<em>N/A</em>';
+	}
+
+  	$sec = $row[2] - time();
+  	if ($row[2] == 0) {
+  		$diff = '-';
+  	}
+  	elseif ($sec >= 60) {
+	  	$days = floor($sec/(60*60*24));
+	  	$sec = $sec - $days*60*60*24;
+	  	$hours = floor($sec/(60*60));
+	  	$sec = $sec - $hours*60*60;
+	  	$mins = floor($sec/60);
+	  	$sec = $sec - $mins*60;
+	  	$diff = "{$days}d {$hours}h {$sec}m";
+  	}
+  	else {
+  		$diff = "<em>Expired</em>";
+  	}
+
+  	$row[2] = intval($row[2]);
+  	if ($row[2] > 0) {
+  		$row[2] = gmdate('d.m.Y H:i', times($row[2]));
+  	}
+  	else {
+  		$row[2] = 'Never';
+  	}
+
+  	$row[4] = gmdate('d.m.Y H:i', times($row[4]));
+  	?>
+  <tr>
+   <td class="mbox"><input type="checkbox" name="delete[]" value="<?php echo $row[0]; ?>#<?php echo $row[1]; ?>" /></td>
+   <td class="mbox"><?php echo $data; ?></td>
+   <td class="mbox"><?php echo $row[3]; ?></td>
+   <td class="mbox"><?php echo $row[4]; ?></td>
+   <td class="mbox"><?php echo $row[2]; ?></td>
+   <td class="mbox"><?php echo $diff; ?></td>
+   <td class="mbox"><?php echo htmlspecialchars($row[5]); ?></td>
+  </tr>
+  <?php } ?>
+  <tr>
+   <td class="ubox" colspan="7" align="center"><input type="submit" name="Submit" value="Lift bans"></td>
   </tr>
  </table>
 </form>
 	<?php
 	echo foot();
 }
-elseif ($job == 'banned2') {
+elseif ($job == 'ban_add') {
 	echo head();
-	$filesystem->file_put_contents('data/banned.php', $gpc->get('template', none));
-	ok('admin.php?action=members&job=banned', 'Site has been saved successful');
+	$b = file_get_contents('data/bannedip.php');
+	?>
+<form name="form" method="post" action="admin.php?action=members&amp;job=ban_add2">
+ <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
+  <tr>
+   <td class="obox" colspan="2">Ban an User or an IP-Address</td>
+  </tr>
+  <tr>
+   <td class="mbox" width="40%">User Name or IP-Address:</td>
+   <td class="mbox" width="60%">
+   	<input type="text" name="data" size="60" /><br />
+   	Data above is: <input type="radio" name="type" value="user" checked="checked" />User Name&nbsp;&nbsp;&nbsp;&nbsp;
+   	<input type="radio" name="type" value="ip" />IP-Adress
+   	</td>
+  </tr>
+  <tr>
+   <td class="mbox" width="40%">
+   	Lift Ban after:<br />
+   	<span class="stext">Select the length of the ban here. The ban will be lifted at the time specified.</span>
+   </td>
+   <td class="mbox" width="60%">
+   	<select name="until">
+	<option value="0" selected="selected">Permanent - Never Lift Ban</option>
+	<option value="D_1">1 Day</option>
+	<option value="D_2">2 Days</option>
+	<option value="D_3">3 Days</option>
+	<option value="D_4">4 Days</option>
+	<option value="D_5">5 Days</option>
+	<option value="D_6">6 Days</option>
+	<option value="D_7">1 Week</option>
+	<option value="D_14">2 Weeks</option>
+	<option value="D_21">3 Weeks</option>
+	<option value="M_1">1 Month</option>
+	<option value="M_2">2 Months</option>
+	<option value="M_3">3 Months</option>
+	<option value="M_4">4 Months</option>
+	<option value="M_5">5 Months</option>
+	<option value="M_6">6 Months</option>
+	<option value="M_12">1 Year</option>
+	<option value="M_24">2 Years</option>
+   	</select>
+   	</td>
+  </tr>
+  <tr>
+   <td class="mbox" width="40%">Reason to show the user:</td>
+   <td class="mbox" width="60%"><input type="text" name="reason" size="60" /></td>
+  </tr>
+  <tr>
+   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="Add"></td>
+  </tr>
+ </table>
+</form>
+	<?php
+	echo foot();
 }
-elseif ($job == 'banned3') {
+elseif ($job == 'ban_add2') {
 	echo head();
-	$bannedip = file('data/bannedip.php');
-	$bannedip = array_map('trim', $bannedip);
-	$file = $gpc->get('ips', none);
-	$file = trim($file);
-	$filesystem->file_put_contents('data/bannedip.php',$file);
+
+	$data = $gpc->get('data', none);
+	$type = strtolower($gpc->get('type', none));
+	$until = $gpc->get('until', none);
+	$reason = $gpc->get('reason', none);
+
+	$error = array();
+	if ($type == 'ip') {
+		if (!preg_match("/[0-9]{1,3}\.[0-9]{1,3}(\.[0-9]{0,3})?(\.[0-9]{0,3})?/", $data)) {
+			$error[] = 'The specified IP-Address is not correct';
+		}
+	}
+	elseif ($type == 'user') {
+		$result = $db->query("SELECT id FROM {$db->pre}user WHERE name = '{$data}' LIMIT 1", __LINE__, __FILE__);
+		if ($db->num_rows($result) == 0) {
+			$error[] = 'No user with the name "'.$data.'" found.';
+		}
+		else {
+			$user = $db->fetch_assoc($result);
+			if ($user['id'] == $my->id) {
+			//	$error[] = 'You can not ban yourself.';
+			}
+			else {
+				$data = $user['id'];
+			}$data = $user['id'];
+		}
+	}
+	else {
+		$error[] = 'The specified data and/or type is nor correct.';
+	}
+	if (!(is_numeric($until) && intval($until) === 0)) { // WTF? $until != 0 won't work?!
+		$until = explode('_', $until);
+		$until[0] = strtoupper($until[0]);
+		if (($until[0] != 'D' && $until[0] != 'M') || !isset($until[1])) {
+			$error[] = 'The time is not valid.';
+		}
+	}
+
+	$banned = file('data/bannedip.php');
+	$file = array();
+	foreach ($banned as $line) {
+		$row = rtrim($line, "\r\n");
+		$file[] = $row;
+		$row = explode("\t", $row, 6);
+		if ($row[0] == $type && strcasecmp($row[1], $data) == 0) {
+			$error[] = 'The User Name or IP-Adress is already banned.';
+		}
+	}
+
+	if (count($error) > 0) {
+		error('admin.php?action=members&job=ban_add', $error);
+	}
+
+	if ($until[0] == 'D') {
+		$until = strtotime('+'.$until[1].' day'.iif($until[1] > 0, 's'));
+	}
+	elseif ($until[0] == 'M') {
+		$until = strtotime('+'.$until[1].' month'.iif($until[1] > 0, 's'));
+	}
+
+	$new = array(
+		$type,
+		$data,
+		$until,
+		$my->id,
+		time(),
+		str_replace(array("\r", "\n", "\t"), ' ', $reason)
+	);
+	$file[] = implode("\t", $new);
+
+	$filesystem->file_put_contents('data/bannedip.php', implode("\n", $file) );
+
+	ok('admin.php?action=members&job=banned', iif($type == 'ip', 'IP-Address', 'User').' has been banned successfully.');
+}
+elseif ($job == 'ban_delete') {
+	echo head();
+	$delete = $gpc->get('delete', arr_none);
+	if (array_empty($delete) == true) {
+		error('admin.php?action=members&job=banned', 'You have not selected anything to delete.');
+	}
+	$banned = file('data/bannedip.php');
+	$file = array();
+	foreach ($banned as $line) {
+		$add = true;
+		$row = explode("\t", rtrim($line, "\r\n"), 6);
+		foreach ($delete as $del) {
+			$del = explode("#", $del, 2);
+			if ($del[0] == $row[0] && $del[1] == $row[1]) {
+				$add = false;
+			}
+		}
+		if ($add == true && empty($line) == false) {
+			$file[] = $line;
+		}
+	}
+	$filesystem->file_put_contents('data/bannedip.php', implode("\n", $file) );
 	ok('admin.php?action=members&job=banned', 'IP-addresses have been saved successful.');
 }
 elseif ($job == 'inactive') {
@@ -1806,7 +2004,7 @@ elseif ($job == 'inactive') {
  <table class="border">
   <tr>
    <td class="obox" colspan="3">
-	<span style="float: right;">
+	<span class="right">
 	  <a class="button" href="admin.php?action=members&amp;job=search">Search Members</a>
 	</span>
    Inactive Members</td>
