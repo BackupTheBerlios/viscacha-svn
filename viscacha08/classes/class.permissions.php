@@ -420,6 +420,16 @@ function deleteOldSessions () {
 	}
 }
 
+function httpAuth($name = null) {
+	if ($name == null) {
+		global $config;
+		$name = $config['fname'];
+	}
+	header('WWW-Authenticate: Basic Realm="'.addslashes($name).'"');
+	header('HTTP/1.0 401 Unauthorized');
+	die("Authorization Required.");
+}
+
 /**
  * This script gets and prepares userdata, checks login data, sets cookies and manages sessions.
  *
@@ -439,8 +449,23 @@ function logged () {
     $vdata = $gpc->save_str(getcookie('vdata'));
     $vlastvisit = $gpc->save_int(getcookie('vlastvisit'));
     $vhash = $gpc->save_str(getcookie('vhash'));
-	// Read additional data
-	if (!empty($vdata)) {
+    if ($config['allow_http_auth'] == 1) {
+		if (!empty($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_PW'])) {
+			$http_user = $gpc->save_str($_SERVER['PHP_AUTH_USER']);
+			$http_pw = $gpc->save_str($_SERVER['PHP_AUTH_PW']);
+			$result = $db->query("SELECT id, pw FROM {$db->pre}user WHERE name = '{$http_user}' AND MD5('{$http_pw}') = pw LIMIT 1");
+			if ($db->num_rows($result) == 1) {
+				$this->cookiedata = $db->fetch_num($result);
+			}
+			else {
+				$this->httpAuth();
+			}
+		}
+		else {
+			$this->httpAuth();
+		}
+    }
+	elseif (!empty($vdata)) {
 		$this->cookies = true;
 		$this->cookiedata = explode("|", $vdata);
 	}

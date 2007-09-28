@@ -4,6 +4,7 @@ $config = array();
 $config['abozahl'] = 20;
 $config['acceptrules'] = 1;
 $config['activezahl'] = 20;
+$config['allow_http_auth'] = 0;
 $config['asia'] = 0;
 $config['asia_charset'] = 'ISO-8859-15';
 $config['avfilesize'] = 10240;
