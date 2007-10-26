@@ -46,10 +46,11 @@ $cache = $com->get();
 ($code = $plugins->load('components_start')) ? eval($code) : null;
 
 if (isset($cache[$cid])) {
-	DEFINE('COM_ID', $cache[$_GET['cid']]['id']);
-	DEFINE('COM_DIR', 'components/'.COM_ID.'/');
+	DEFINE('COM_CID', $cid);
+	DEFINE('COM_ID', $cache[$cid]['package']);
+	DEFINE('COM_DIR', 'modules/'.COM_ID.'/');
 	$myini = new INI();
-	$ini = $myini->read(COM_DIR.'components.ini');
+	$ini = $myini->read(COM_DIR.'component.ini');
 	$mod = $gpc->get('file', str, 'frontpage');
 	if (!isset($ini['module'][$mod])) {
 		DEFINE('COM_MODULE', 'frontpage');

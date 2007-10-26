@@ -87,6 +87,7 @@ elseif ($job == 'smileys_edit2') {
 }
 elseif ($job == 'smileys_import') {
 	echo head();
+	$file = $gpc->get('file', str);
 	?>
 <form name="form2" method="post" enctype="multipart/form-data" action="admin.php?action=bbcodes&job=smileys_import2">
  <table class="border" cellpadding="4" cellspacing="0" border="0">
@@ -94,7 +95,7 @@ elseif ($job == 'smileys_import') {
   <tr><td class="mbox"><em>Either</em> upload a file:<br /><span class="stext">Allowed file types: .zip - Maximum file size: 2 MB</span></td>
   <td class="mbox"><input type="file" name="upload" size="40" /></td></tr>
   <tr><td class="mbox"><em>or</em> select a file from the server:<br /><span class="stext">Path starting from the Viscacha-root-directory: <?php echo $config['fpath']; ?></span></td>
-  <td class="mbox"><input type="text" name="server" size="50" /></td></tr>
+  <td class="mbox"><input type="text" name="server" value="<?php echo $file; ?>" size="50" /></td></tr>
   <tr><td class="mbox">Format of imported Smileypack:</td>
   <td class="mbox"><select name="format">
   <option value="viscacha_ini" selected="selected">Viscacha (Standard)</option>
@@ -341,7 +342,13 @@ elseif ($job == 'smileys') {
 <form name="form" method="post" action="admin.php?action=bbcodes">
  <table class="border">
   <tr>
-   <td class="obox" colspan="6"><span style="float: right;"><a class="button" href="admin.php?action=bbcodes&amp;job=smileys_import">Import Smileypack</a></span>Manage Smileys (<?php echo $db->num_rows($result); ?> Smileys)</td>
+   <td class="obox" colspan="6">
+   	<span class="right">
+   		<a class="button" href="admin.php?action=packages&amp;job=browser&amp;type=<?php echo IMPTYPE_SMILEYPACK; ?>">Browse Smileypacks</a>
+   		<a class="button" href="admin.php?action=bbcodes&amp;job=smileys_import">Import Smileypack</a>
+   	</span>
+   	Manage Smileys (<?php echo $db->num_rows($result); ?> Smileys)
+   </td>
   </tr>
   <tr class="ubox">
    <td width="5%">Choose<br /><span class="stext"><input type="checkbox" onclick="check_all('id[]');" name="all" value="1" /> All</span></td>
@@ -788,6 +795,7 @@ elseif ($job == 'custombb_export') {
 }
 elseif ($job == 'custombb_import') {
 	echo head();
+	$file = $gpc->get('file', str);
 	?>
 <form name="form2" method="post" enctype="multipart/form-data" action="admin.php?action=bbcodes&job=custombb_import2">
  <table class="border" cellpadding="4" cellspacing="0" border="0">
@@ -795,7 +803,7 @@ elseif ($job == 'custombb_import') {
   <tr><td class="mbox"><em>Either</em> upload a file:<br /><span class="stext">Allowed file types: .bbc - Maximum file size: <?php echo formatFilesize(1024*250); ?></span></td>
   <td class="mbox"><input type="file" name="upload" size="40" /></td></tr>
   <tr><td class="mbox"><em>or</em> select a file from the server:<br /><span class="stext">Path starting from the Viscacha-root-directory: <?php echo $config['fpath']; ?></span></td>
-  <td class="mbox"><input type="text" name="server" size="50" /></td></tr>
+  <td class="mbox"><input type="text" name="server" value="<?php echo $file; ?>" size="50" /></td></tr>
   <tr><td class="mbox">Delete file after import:</td>
   <td class="mbox"><input type="checkbox" name="delete" value="1" checked="checked" /></td></tr>
   <tr><td class="ubox" colspan="2" align="center"><input accesskey="s" type="submit" value="Import" /></td></tr>
@@ -1162,8 +1170,9 @@ elseif ($job == 'custombb') {
 	?>
 	<table align="center" class="border">
 	<tr>
-		<td class="obox" colspan="4"><span style="float: right;">
+		<td class="obox" colspan="4"><span class="right">
 		<a class="button" href="admin.php?action=bbcodes&job=custombb_add">Add new BB Code</a>
+		<a class="button" href="admin.php?action=packages&amp;job=browser&amp;type=<?php echo IMPTYPE_BBCODE; ?>">Browse BB Codes</a>
 		<a class="button" href="admin.php?action=bbcodes&job=custombb_import">Import BB Code</a>
 		<a class="button" href="admin.php?action=bbcodes&job=custombb_test">Test BB Codes</a>
 		</span>Custom BB Code Manager</td>

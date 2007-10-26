@@ -41,7 +41,7 @@ if ($job == 'design') {
 	?>
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr>
-   <td class="obox" colspan="6"><span style="float: right;"><a class="button" href="admin.php?action=designs&amp;job=design_import">Import Design</a> <a class="button" href="admin.php?action=designs&amp;job=design_add">Add new Design</a></span>Designs</td>
+   <td class="obox" colspan="6"><span class="right"><a class="button" href="admin.php?action=packages&amp;job=browser&amp;type=<?php echo IMPTYPE_DESIGN; ?>">Browse Designs</a> <a class="button" href="admin.php?action=designs&amp;job=design_import">Import Design</a> <a class="button" href="admin.php?action=designs&amp;job=design_add">Add new Design</a></span>Designs</td>
   </tr>
   <tr>
    <td class="ubox" width="40%">Name</td>
@@ -378,6 +378,7 @@ elseif ($job == 'design_add2') {
 	ok('admin.php?action=designs&job=design', 'Design was successfully added');
 }
 elseif ($job == 'design_import') {
+	$file = $gpc->get('file', str);
 	echo head();
 	?>
 <form name="form2" method="post" enctype="multipart/form-data" action="admin.php?action=designs&job=design_import2">
@@ -386,7 +387,7 @@ elseif ($job == 'design_import') {
   <tr><td class="mbox"><em>Either</em> upload a file:<br /><span class="stext">Allowed file types: .zip - Maximum file size: <?php echo formatFilesize(ini_maxupload()); ?></span></td>
   <td class="mbox"><input type="file" name="upload" size="40" /></td></tr>
   <tr><td class="mbox"><em>or</em> select a file from the server:<br /><span class="stext">Path starting from the Viscacha-root-directory: <?php echo $config['fpath']; ?></span></td>
-  <td class="mbox"><input type="text" name="server" size="50" /></td></tr>
+  <td class="mbox"><input type="text" name="server" size="50" value="<?php echo $file; ?>" /></td></tr>
   <tr><td class="mbox">Delete file after import:</td>
   <td class="mbox"><input type="checkbox" name="delete" value="1" checked="checked" /></td></tr>
   <tr><td class="ubox" colspan="2" align="center"><input accesskey="s" type="submit" value="Send" /></td></tr>
@@ -1367,9 +1368,9 @@ elseif ($job == 'confirm_delete') {
 	<tr><td class="mbox">
 	<p align="center">Would you really like to delete this data?</p>
 	<p align="center">
-	<a href="admin.php?action=designs&job=<?php echo $type; ?>_delete&id=<?php echo $id; ?>"><img border="0" align="middle" alt="Yes" src="admin/html/images/yes.gif"> Yes</a>
+	<a href="admin.php?action=designs&job=<?php echo $type; ?>_delete&id=<?php echo $id; ?>"><img border="0" alt="Yes" src="admin/html/images/yes.gif"> Yes</a>
 	&nbsp&nbsp;&nbsp;&nbsp&nbsp;&nbsp;
-	<a href="javascript: history.back(-1);"><img border="0" align="middle" alt="No" src="admin/html/images/no.gif"> No</a>
+	<a href="javascript: history.back(-1);"><img border="0" alt="No" src="admin/html/images/no.gif"> No</a>
 	</p>
 	</td></tr>
 	</table>

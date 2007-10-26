@@ -43,7 +43,7 @@ class PluginSystem {
 	function load($pos) {
 		$group = $this->_group($pos);
 		$this->_load_group($pos);
-		if (isset($this->cache[$group][$pos])) {
+		if (isset($this->cache[$group][$pos]) && is_array($this->cache[$group][$pos])) {
 			return implode("\r\n", $this->cache[$group][$pos]);
 		}
 		else {
@@ -90,27 +90,33 @@ class PluginSystem {
 
 	function countPlugins($pos){
 		global $db;
-		$result = $db->query("SELECT COUNT(*) as num FROM {$db->pre}plugins WHERE position = '{$pos}' AND active = '1'");
+		$result = $db->query("
+	    SELECT COUNT(*) AS num
+    	FROM {$db->pre}plugins AS m
+    		LEFT JOIN {$db->pre}packages AS p ON m.module = p.id
+    	WHERE m.position = '{$pos}' AND p.active = '1' AND m.active = '1'
+    	", __LINE__, __FILE__);
 		$info = $db->fetch_assoc($result);
 		return $info['num'];
 	}
 
 	function _setup($hook, $id) {
 		$source = '';
-		$inifile = 'modules/'.$id.'/config.ini';
-		$myini = new INI();
-		$ini = $myini->read($inifile);
-	    if (isset($ini['php'][$hook])) {
-	    	$file = $ini['php'][$hook];
-		  	$sourcefile = 'modules/'.$id.'/'.$file;
-		  	if (file_exists($sourcefile)) {
-			   	$source = file_get_contents($sourcefile);
-    		}
-			else {
-				trigger_error('Setup for Plugin not found! File '.$sourcefile.' could not be loaded while executing '.$hook.'.', E_USER_WARNING);
-			}
-    	}
-
+		$inifile = 'modules/'.$id.'/plugin.ini';
+		if (file_exists($inifile) == true) {
+			$myini = new INI();
+			$ini = $myini->read($inifile);
+		    if (isset($ini['php'][$hook])) {
+		    	$file = $ini['php'][$hook];
+			  	$sourcefile = 'modules/'.$id.'/'.$file;
+			  	if (file_exists($sourcefile)) {
+				   	$source = file_get_contents($sourcefile);
+	    		}
+				else {
+					trigger_error('Setup for package not found! File '.$sourcefile.' could not be loaded while executing '.$hook.'.', E_USER_WARNING);
+				}
+	    	}
+		}
 		return $source;
 	}
 
@@ -160,7 +166,13 @@ class PluginSystem {
 		if ($this->sqlcache == null) {
 			$this->sqlcache = array();
 			$this->sqlcache[$group] = array();
-	        $result = $db->query("SELECT id, module, position FROM {$db->pre}plugins WHERE active = '1' ORDER BY ordering",__LINE__,__FILE__);
+	        $result = $db->query("
+	        	SELECT m.id, m.module, m.position
+	        	FROM {$db->pre}plugins AS m
+	        		LEFT JOIN {$db->pre}packages AS p ON m.module = p.id
+	        	WHERE p.active = '1' AND m.active = '1'
+	        	ORDER BY m.ordering
+	        ",__LINE__,__FILE__);
 	        while ($row = $db->fetch_assoc($result)) {
 	        	$row['group'] = $this->_group($row['position']);
 	            $this->sqlcache[$row['group']][$row['position']][$row['id']] = $row['module'];
@@ -177,7 +189,7 @@ class PluginSystem {
 	    	$code[$position] = '';
 	    	foreach ($mods as $id => $plugin) {
 	    		if (!isset($cfgdata[$plugin])) {
-		    		$inifile = 'modules/'.$plugin.'/config.ini';
+		    		$inifile = 'modules/'.$plugin.'/plugin.ini';
 		    		$cfgdata[$plugin] = $myini->read($inifile);
 	    		}
 	    		if (isset($cfgdata[$plugin]['php'])) {

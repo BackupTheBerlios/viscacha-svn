@@ -13,7 +13,7 @@ $langbase = array(
 	'custom' => 'Custom Phrases'
 );
 
-require('admin/lib/language.inc.php');
+require('admin/lib/function.language.php');
 
 ($code = $plugins->load('admin_language_jobs')) ? eval($code) : null;
 
@@ -25,6 +25,7 @@ if ($job == 'manage') {
   <tr>
    <td class="obox" colspan="6">
     <span style="float: right;">
+    <a class="button" href="admin.php?action=packages&amp;job=browser&amp;type=<?php echo IMPTYPE_LANGUAGE; ?>">Browse Language Packs</a>
 	<a class="button" href="admin.php?action=language&amp;job=import" target="Main">Import Language</a>
 	<a class="button" href="admin.php?action=language&amp;job=phrase" target="Main">Phrase Manager</a>
 	</span>
@@ -84,6 +85,7 @@ elseif ($job == 'ajax_publicuse') {
 }
 elseif ($job == 'import') {
 	echo head();
+	$file = $gpc->get('file', str);
 	$result = $db->query('SELECT id, language FROM '.$db->pre.'language ORDER BY language');
 	?>
 <form name="form2" method="post" enctype="multipart/form-data" action="admin.php?action=language&job=import2">
@@ -92,7 +94,7 @@ elseif ($job == 'import') {
   <tr><td class="mbox"><em>Either</em> upload a file:<br /><span class="stext">Allowed file types: .zip - Maximum file size: 1 MB</span></td>
   <td class="mbox"><input type="file" name="upload" size="40" /></td></tr>
   <tr><td class="mbox"><em>or</em> select a file from the server:<br /><span class="stext">Path starting from the Viscacha-root-directory: <?php echo $config['fpath']; ?></span></td>
-  <td class="mbox"><input type="text" name="server" size="50" /></td></tr>
+  <td class="mbox"><input type="text" name="server" value="<?php echo $file; ?>" size="50" /></td></tr>
   <tr><td class="mbox">Overwrite Language:<br /><span class="stext">Selecting a language here will cause the imported language to overwrite an existing language. Leave blank to create a new language.</span></td>
   <td class="mbox"><select name="overwrite">
     <option value="0">- Create a new language -</option>
@@ -280,9 +282,9 @@ elseif ($job == 'lang_delete') {
 	<tr><td class="mbox">
 	<p align="center">Would you really like to delete this language pack?</p>
 	<p align="center">
-	<a href="admin.php?action=language&job=lang_delete2&id=<?php echo $id; ?>"><img border="0" align="middle" alt="" src="admin/html/images/yes.gif"> Yes</a>
+	<a href="admin.php?action=language&job=lang_delete2&id=<?php echo $id; ?>"><img border="0" alt="" src="admin/html/images/yes.gif"> Yes</a>
 	&nbsp&nbsp;&nbsp;&nbsp&nbsp;&nbsp;
-	<a href="javascript: history.back(-1);"><img border="0" align="middle" alt="" src="admin/html/images/no.gif"> No</a>
+	<a href="javascript: history.back(-1);"><img border="0" alt="" src="admin/html/images/no.gif"> No</a>
 	</p>
 	</td></tr>
 	</table>
@@ -886,7 +888,7 @@ elseif ($job == 'lang_com') {
 	$file = $gpc->get('file', str);
 	$files = array();
 
-	$dir = "language/{$id}/components/{$cid}/";
+	$dir = "language/{$id}/modules/{$cid}/";
 	if (is_dir($dir)) {
 	   if ($dh = opendir($dir)) {
 	       while (($fileh = readdir($dh)) !== false) {
@@ -905,7 +907,7 @@ elseif ($job == 'lang_com') {
 		$file = current($files);
 	}
 
-	$lng = return_array('components/'.$cid.'/'.$file, $id);
+	$lng = return_array('modules/'.$cid.'/'.$file, $id);
 	$lng = array_map('htmlspecialchars', $lng);
 	$lng = array_map('nl2whitespace', $lng);
 	ksort($lng);
@@ -976,7 +978,7 @@ elseif ($job == 'lang_com2') {
 	}
 
 	$c = new manageconfig();
-	$c->getdata("language/{$id}/components/{$cid}/{$file}.lng.php", 'lang');
+	$c->getdata("language/{$id}/modules/{$cid}/{$file}.lng.php", 'lang');
 	foreach ($sent as $post => $key) {
 		$c->updateconfig($key, str, $gpc->prepare($_REQUEST[$post]));
 	}
@@ -1037,10 +1039,10 @@ elseif ($job == 'lang_edit') {
 	   <?php
 		$result = $db->query("SELECT * FROM {$db->pre}component ORDER BY active DESC");
 		while ($row = $db->fetch_assoc($result)) {
-			$cfg = $myini->read('components/'.$row['id'].'/components.ini');
+			$cfg = $myini->read('modules/'.$row['id'].'/component.ini');
 			$c = array_merge($row, $cfg);
 		?>
-	   	<li><a href="admin.php?action=language&job=lang_com&id=<?php echo $id; ?>&cid=<?php echo $c['id']; ?>"><?php echo $c['config']['name']; ?></a> (<?php echo $c['id']; ?>)</li>
+	   	<li><a href="admin.php?action=language&job=lang_com&id=<?php echo $id; ?>&cid=<?php echo $c['id']; ?>"><?php echo $c['info']['title']; ?></a> (<?php echo $c['id']; ?>)</li>
 	   <?php } ?>
 	   </ul>
    </li>

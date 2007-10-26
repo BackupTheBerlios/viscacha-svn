@@ -101,10 +101,24 @@ if ($_GET['action'] == 'show') {
 	if ($config['pm_user_status'] == 1) {
 		$row['lang_online'] = $lang->phrase('profile_'.iif($row['online'] == 1, 'online', 'offline'));
 	}
-
+	if ($row['dir'] == 2) {
+		$row['fullname'] = $my->fullname;
+	}
 	if ($my->opt_showsig == 1) {
 		BBProfile($bbcode, 'signature');
-		$row['signature'] = $bbcode->parse($row['signature']);
+		if ($row['dir'] == 2) {
+			$row['signature'] = $bbcode->parse($my->signature);
+		}
+		else {
+			$row['signature'] = $bbcode->parse($row['signature']);
+		}
+	}
+
+	if ((!empty($row['fullname']) && $config['fullname_posts'] == 1) || (!empty($row['signature']) && $my->opt_showsig == 1)) {
+		$bottom = true;
+	}
+	else {
+		$bottom = false;
 	}
 
 	($code = $plugins->load('pm_show_prepared')) ? eval($code) : null;

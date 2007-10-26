@@ -421,10 +421,12 @@ while ($row = $gpc->prepare($db->fetch_object($result))) {
 	$inner['index_bit'] .= $tpl->parse("showtopic/index_bit");
 }
 
-$abox['id'] = null;
-if ($my->vlogin) {
-	$result = $db->query('SELECT id FROM '.$db->pre.'abos WHERE mid = '.$my->id.' AND tid = '.$info['id'],__LINE__,__FILE__);
+if ($my->vlogin && is_id($info['id'])) {
+	$result = $db->query("SELECT id FROM {$db->pre}abos WHERE mid = '{$my->id}' AND tid = '{$info['id']}'",__LINE__,__FILE__);
 	$abox = $db->fetch_assoc($result);
+}
+else {
+	$abox = array('id' => null);
 }
 
 ($code = $plugins->load('showtopic_prepared')) ? eval($code) : null;

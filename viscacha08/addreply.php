@@ -151,7 +151,9 @@ if ($_GET['action'] == "save") {
 	if (strxlen($_POST['comment']) < $config['minpostlength']) {
 		$error[] = $lang->phrase('comment_too_short');
 	}
-	if (strxlen($_POST['topic']) > $config['maxtitlelength']) {
+	// Add some chars for reply title prefix
+	$maxlength = $config['maxtitlelength'] + strlen(html_entity_decode($lang->phrase('reply_prefix')));
+	if (strxlen($_POST['topic']) > $maxlength) {
 		$error[] = $lang->phrase('title_too_long');
 	}
 	if (strxlen($_POST['topic']) < $config['mintitlelength']) {
@@ -379,9 +381,12 @@ else {
 		}
 	}
 
-	if ($my->vlogin) {
+	if ($my->vlogin && is_id($_GET['id'])) {
 		$result = $db->query("SELECT id FROM {$db->pre}abos WHERE mid = '{$my->id}' AND tid = '{$_GET['id']}'",__LINE__,__FILE__);
-		$abox = $db->fetch_object($result);
+		$abox = $db->fetch_assoc($result);
+	}
+	else {
+		$abox = array('id' => null);
 	}
 
 	$inner['smileys'] = $bbcode->getsmileyhtml($config['smileysperrow']);

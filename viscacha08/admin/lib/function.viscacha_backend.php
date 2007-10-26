@@ -104,6 +104,12 @@ $glk_forums = array(
 );
 $guest_limitation = array('admin', 'gmod', 'pm', 'usepic', 'useabout', 'usesignature', 'voting', 'edit');
 
+define('IMPTYPE_PACKAGE', 1);
+define('IMPTYPE_DESIGN', 2);
+define('IMPTYPE_SMILEYPACK', 3);
+define('IMPTYPE_LANGUAGE', 4);
+define('IMPTYPE_BBCODE', 5);
+
 // Variables
 require_once ("classes/function.gpc.php");
 $action = $gpc->get('action', none);
@@ -196,6 +202,29 @@ function getHookArray() {
 		}
 	}
 	return $hooks;
+}
+
+function addHookToArray($hook, $file) {
+	global $filesystem;
+	$data = file('admin/data/hooks.txt');
+	$data = array_map('trim', $data);
+	$exists = array_search("-{$hook}", $data);
+	if ($exists === false || $exists === null) {
+		$result = array_search($file, $data);
+		if ($result !== false && $result !== null) {
+			$data[$result] = $data[$result]."\r\n-{$hook}";
+		}
+		else {
+			$data[] = '';
+			$data[] = $file;
+			$data[] = "-{$hook}";
+		}
+		$filesystem->file_put_contents('admin/data/hooks.txt', implode("\r\n", $data));
+		return true;
+	}
+	else {
+		return false;
+	}
 }
 
 function array2sqlsetlist($array, $seperator = ', ') {
@@ -422,15 +451,16 @@ function foot() {
 	<?php
 }
 
-function error ($errorurl, $errormsg='An unexpected error occurred') {
+function error ($errorurl, $errormsg = 'An unexpected error occurred') {
 	global $config, $my, $db;
 	if (!is_array($errormsg)) {
 	    $errormsg = array($errormsg);
 	}
+	$time = 7500 + count($errormsg)*2500;
 	?>
 <script language="Javascript" type="text/javascript">
 <!--
-window.setTimeout('<?php echo JS_URL($errorurl); ?>', 10000);
+window.setTimeout('<?php echo JS_URL($errorurl); ?>', <?php echo $time; ?>);
 -->
 </script>
 <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
@@ -455,12 +485,12 @@ window.setTimeout('<?php echo JS_URL($errorurl); ?>', 10000);
 	exit;
 }
 
-function ok ($url, $msg = "Settings were saved successfully!") {
+function ok ($url, $msg = "Settings were saved successfully!", $time = 1500) {
 	global $config, $my, $db;
 	?>
 <script language="Javascript" type="text/javascript">
 <!--
-window.setTimeout('<?php echo JS_URL($url); ?>', 1000);
+window.setTimeout('<?php echo JS_URL($url); ?>', <?php echo $time; ?>);
 -->
 </script>
 <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">

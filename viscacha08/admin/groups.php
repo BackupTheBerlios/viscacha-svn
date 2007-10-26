@@ -289,7 +289,8 @@ elseif ($job == 'edit') {
   </tr>
   <?php
   foreach ($glk as $key) {
-  	$editable = !(($data['guest'] == 1 && $data['core'] == 1) && array_search($key, $guest_limitation) !== false);
+  	$result = array_search($key, $guest_limitation);
+  	$editable = !(($data['guest'] == 1 && $data['core'] == 1) && $result !== false && $result !== null);
   	if ($key != 'guest' && $editable) {
   ?>
   <tr>
@@ -334,7 +335,8 @@ elseif ($job == 'edit2') {
 
 	$sql_values = '';
 	foreach ($glk as $key) {
-		$editable = !(($data['guest'] == 1 && $data['core'] == 1) && array_search($key, $guest_limitation) !== false);
+	  	$result = array_search($key, $guest_limitation);
+	  	$editable = !(($data['guest'] == 1 && $data['core'] == 1) && $result !== false && $result !== null);
 		if ($key != 'guest' && $editable) {
 			$sql_values .= $key.' = "'.$gpc->get($key, int).'", ';
 		}

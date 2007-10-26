@@ -12,6 +12,9 @@
 	margin-left: -170px;
 	margin-right: 1px;
 }
+#popup_bbsmileys {
+	overflow: scroll;
+}
 * html .border {
 	width: 100%;
 }

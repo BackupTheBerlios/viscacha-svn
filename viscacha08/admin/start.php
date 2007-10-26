@@ -1,7 +1,7 @@
 <?php
 if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
 
-// PK: MultiLangAdmin
+// MM/PK: MultiLangAdmin
 $lang->group("admin/start");
 
 ($code = $plugins->load('admin_start_jobs')) ? eval($code) : null;

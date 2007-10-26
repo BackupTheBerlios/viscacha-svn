@@ -655,13 +655,13 @@ elseif ($_GET['action'] == "bbhelp") {
 		),
 		array(
 			'tag' => 'table',
-			'params' => 1,
+			'params' => 2,
 			'example' => array(
-				'[table]'."\n".
-				'[b]#[tab]Name[tab]Number[/b]'."\n".
-				'1.[tab]Otto[tab]4'."\n".
-				'2.[tab]Sara Kristina[tab]13'."\n".
-				'3.[tab]Matthias[tab]8'."\n".
+				'[table=head;50%]'."\n".
+				'#[tab]Name[tab]Age'."\n".
+				'1.[tab]Otto[tab]13'."\n".
+				'2.[tab]Katharina[tab]16'."\n".
+				'3.[tab]Matthias[tab]19'."\n".
 				'[/table]'
 			)
 		)

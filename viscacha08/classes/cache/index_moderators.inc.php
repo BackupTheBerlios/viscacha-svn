@@ -1,5 +1,10 @@
 <?php
 class cache_index_moderators extends CacheItem {
+
+	function cache_index_moderators() {
+		$this->max_age = 60*60; // Maximal 1 h alt
+	}
+
 	function load() {
 		global $db, $scache;
 		$memberdata_obj = $scache->load('memberdata');
@@ -19,5 +24,6 @@ class cache_index_moderators extends CacheItem {
 			$this->export();
 		}
 	}
+
 }
 ?>

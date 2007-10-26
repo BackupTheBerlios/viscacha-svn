@@ -427,6 +427,9 @@ admin/members.php
 admin/misc.php
 -admin_misc_jobs
 
+admin/packages.php
+-admin_packages_jobs
+
 admin/posts.php
 -admin_posts_jobs
 
@@ -456,7 +459,7 @@ classes/class.permissions.php
 
 classes/function.frontend_init.php
 -frontend_init
--frontent_init_offline
+-frontend_init_offline
 
 classes/function.viscacha_frontend.php
 -forums_query
@@ -467,3 +470,6 @@ classes/function.viscacha_frontend.php
 -frontend_errorlogin
 -frontend_error
 -frontend_ok
+
+templates/*/menu.html
+-template_forum_menu

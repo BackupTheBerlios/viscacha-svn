@@ -60,6 +60,15 @@ function showpost(Link) {
 	window.open(Link.href, "showpost", "width=640,height=480,resizable=yes,scrollbars=yes,location=yes");
 }
 
+function openHookPosition(hook) {
+	var url = 'admin.php?action=packages&job=plugins_hook_pos&hook=';
+	if (hook == null) {
+		var hook = FetchElement('hook').value;
+	}
+	window.open(url+hook+'#key', "sourcecode", "width=640,height=480,resizable=yes,scrollbars=yes,location=yes");
+	return false;
+}
+
 function deleteit(rid){
 	var res = confirm("Do you really want to delete the data?");
 	if(res) locate('admin.php?action=query&job=delete&id='+rid);
@@ -88,21 +97,38 @@ function insert_doc(url,title) {
     top.close();
 }
 
+function ResizeImg(img,maxwidth) {
+	if(img.width >= maxwidth && maxwidth != 0) {
+		var owidth = img.width;
+		var oheight = img.height;
+		img.width = maxwidth;
+		img.height = Math.round(oheight/(owidth/maxwidth));
+		img.title = 'This is a thumbnail. Click to enlarge the image!';
+
+		try {
+			img.style.cursor = "pointer";
+		}
+		catch(e) {
+			img.style.cursor = "hand";
+		}
+
+		img.onclick = function() {
+			var width = screen.width-30;
+			if (width > owidth) {
+				width = owidth+30;
+			}
+			var height = screen.height-50;
+			if (height > oheight) {
+				height = oheight+30;
+			}
+			window.open(img.src,"","scrollbars=yes,status=no,toolbar=no,location=yes,directories=no,resizable=no,menubar=no,width="+width+",height="+height)
+		}
+	}
+}
+
 //
 // Klappmenüs
 //
-
-function FetchElement(id) {
-	if (document.getElementById) {
-		return document.getElementById(id);
-	}
-	else if (document.all) {
-		return document.all[id];
-	}
-	else if (document.layers) {
-		return document.layers[id];
-	}
-}
 
 var box_img_plus = 'admin/html/images/plus.gif';
 var box_img_minus = 'admin/html/images/minus.gif';

@@ -38,9 +38,16 @@ if ($job == 'menu') {
 	  <ul id="part_admin_menu2">
 	   <li>&raquo; <a href="admin.php?action=cms&amp;job=doc" target="Main"><?php echo $lang->phrase("admin_documents_pages");?></a></li>
 	   <li>&raquo; <a href="admin.php?action=cms&amp;job=nav" target="Main"><?php echo $lang->phrase("admin_navigation_manager");?></a></li>
-	   <li>&raquo; <a href="admin.php?action=cms&amp;job=com" target="Main"><?php echo $lang->phrase("admin_component_manager");?></a></li>
-	   <li>&raquo; <a href="admin.php?action=cms&amp;job=plugins" target="Main"><?php echo $lang->phrase("admin_plugin_manager");?></a></li>
 	   <li>&raquo; <a href="admin.php?action=explorer" target="Main"><?php echo $lang->phrase("admin_file_manager");?></a></li>
+	  </ul>
+	 </div>
+	 <div class="border">
+	  <h3><img id="img_admin_menu15" src="admin/html/images/plus.gif" alt="collapse" /> <?php echo $lang->phrase("admin_packages");?></h3>
+	  <ul id="part_admin_menu15">
+	   <li>&raquo; <a href="admin.php?action=packages&amp;job=package" target="Main"><?php echo $lang->phrase("admin_package_manager");?></a></li>
+	   <li>&raquo; <a href="admin.php?action=packages&amp;job=com" target="Main"><?php echo $lang->phrase("admin_component_manager");?></a></li>
+	   <li>&raquo; <a href="admin.php?action=packages&amp;job=plugins" target="Main"><?php echo $lang->phrase("admin_plugin_manager");?></a></li>
+	   <li>&raquo; <a href="admin.php?action=packages&amp;job=browser" target="Main"><?php echo $lang->phrase("admin_package_browser");?></a></li>
 	  </ul>
 	 </div>
 	 <div class="border">
@@ -167,8 +174,7 @@ if ($job == 'menu') {
 	  <ul id="part_admin_menu2_simple">
 	   <li>&raquo; <a href="admin.php?action=cms&amp;job=doc" target="Main"><?php echo $lang->phrase("admin_documents_pages");?></a></li>
 	   <li>&raquo; <a href="admin.php?action=cms&amp;job=nav" target="Main"><?php echo $lang->phrase("admin_navigation_manager");?></a></li>
-	   <li>&raquo; <a href="admin.php?action=cms&amp;job=com" target="Main"><?php echo $lang->phrase("admin_component_manager");?></a></li>
-	   <li>&raquo; <a href="admin.php?action=cms&amp;job=plugins" target="Main"><?php echo $lang->phrase("admin_plugin_manager");?></a></li>
+	   <li>&raquo; <a href="admin.php?action=packages&amp;job=package" target="Main"><?php echo $lang->phrase("admin_package_manager");?></a></li>
 	   <li>&raquo; <a href="admin.php?action=explorer" target="Main"><?php echo $lang->phrase("admin_file_manager");?></a></li>
 	  </ul>
 	 </div>

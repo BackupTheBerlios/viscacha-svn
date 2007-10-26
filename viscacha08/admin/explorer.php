@@ -310,9 +310,9 @@ elseif ($job == "delete") {
 	<tr><td class="mbox">
 	<p align="center">Do you really want to delete this <?php echo $name; ?>?</p>
 	<p align="center">
-	<a href="admin.php?action=explorer&job=delete2&type=<?php echo $type; ?>&path=<?php echo urlencode($path); ?>"><img border="0" align="middle" alt="" src="admin/html/images/yes.gif"> Yes</a>
+	<a href="admin.php?action=explorer&job=delete2&type=<?php echo $type; ?>&path=<?php echo urlencode($path); ?>"><img border="0" alt="" src="admin/html/images/yes.gif"> Yes</a>
 	&nbsp&nbsp;&nbsp;&nbsp&nbsp;&nbsp;
-	<a href="javascript: history.back(-1);"><img border="0" align="middle" alt="" src="admin/html/images/no.gif"> No</a>
+	<a href="javascript: history.back(-1);"><img border="0" alt="" src="admin/html/images/no.gif"> No</a>
 	</p>
 	</td></tr>
 </table>

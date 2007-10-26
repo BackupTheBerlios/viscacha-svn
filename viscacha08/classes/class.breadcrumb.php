@@ -10,11 +10,12 @@ class breadcrumb {
     }
 
     function Add($title, $url = NULL) {
-			$title = html_entity_decode($title, ENT_QUOTES);
-			$title = str_replace ("'", '&#039;', $title );
-			$title = str_replace ('"', '&quot;', $title );
-			$title = str_replace ('<', '&lt;', $title );
-			$title = str_replace ( '>', '&gt;', $title );  
+		global $config;
+		$title = html_entity_decode($title, ENT_QUOTES, $config['asia_charset']);
+		$title = str_replace ("'", '&#039;', $title );
+		$title = str_replace ('"', '&quot;', $title );
+		$title = str_replace ('<', '&lt;', $title );
+		$title = str_replace ( '>', '&gt;', $title );
     	$this->content[] = array(
     	    'title' => $title,
     	    'url' => $url
@@ -22,7 +23,7 @@ class breadcrumb {
     }
 
     function AddUrl($url) {
-			$last = array_pop($this->content);
+		$last = array_pop($this->content);
     	$this->content[] = array(
     	    'title' => $last['title'],
     	    'url' => $url
@@ -30,7 +31,7 @@ class breadcrumb {
     }
 
     function ResetUrl() {
-			$last = array_pop($this->content);
+		$last = array_pop($this->content);
     	$this->content[] = array(
     	    'title' => $last['title'],
     	    'url' => NULL

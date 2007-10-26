@@ -240,7 +240,7 @@ if ($config['foffline'] && defined('TEMPSHOWLOG') == false && SCRIPTNAME != 'ext
 		$tpl = new tpl();
 
 		$offline = file_get_contents('data/offline.php');
-        ($code = $plugins->load('frontent_init_offline')) ? eval($code) : null;
+        ($code = $plugins->load('frontend_init_offline')) ? eval($code) : null;
 		echo $tpl->parse("offline");
 
         $phpdoc->Out();

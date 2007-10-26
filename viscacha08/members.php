@@ -244,7 +244,7 @@ else {
 
 	$sqljoin = '';
 	$online_key = array_search('online', $fields);
-	if ($online_key !== false) {
+	if ($online_key !== false && $online_key !== null) {
 		$sqljoin = "LEFT JOIN {$db->pre}session AS s ON s.mid = u.id";
 		unset($fields[$online_key]);
 		$online = true;
@@ -256,7 +256,7 @@ else {
 	$fields[] = 'name';
 	$fields[] = 'id';
 	$key = array_search('pm', $fields);
-	if ($key !== false) {
+	if ($key !== false && $key !== null) {
 		unset($fields[$key]);
 		$pm = true;
 	}
@@ -265,11 +265,11 @@ else {
 	}
 	$sqlselect = $fields;
 	$key = array_search('lastvisit', $sqlselect);
-	if ($key !== false) {
+	if ($key !== false && $key !== null) {
 		$sqlselect[$key] = 'u.lastvisit';
 	}
 	$sqlselect = implode(',', $sqlselect);
-	if ($online_key !== false) {
+	if ($online_key !== false && $online_key !== null) {
 		$sqlselect .= ", IF (s.mid > 0, 1, 0) AS online";
 	}
 

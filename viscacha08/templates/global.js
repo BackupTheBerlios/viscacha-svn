@@ -198,8 +198,7 @@ function ajax() {
 }
 
 function ieRand() {
-	var IE = document.all? 1:0;
-	if (IE) {
+	if (document.all && !window.opera) {
 		return '&rndcache='+Math.floor(Math.random()*1000000);
 	}
 	else {
@@ -280,7 +279,7 @@ function ajax_searchmember(name) {
 			if (suggest.length > 3) {
 				names = oXML.responseText.split(",");
 				for (var i=0;i<names.length;i++) {
-					names[i] = '<a href="javascript:ajax_smIns(\''+names[i]+'\');">'+names[i]+'</a>';
+					names[i] = '<a tabindex="1'+i+'" href="javascript:ajax_smIns(\''+names[i]+'\');">'+names[i]+'</a>';
 				}
 				inline.innerHTML = lng['ajax7']+names.join(', ');
 			}

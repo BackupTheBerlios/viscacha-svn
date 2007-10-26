@@ -450,12 +450,11 @@ label, .labeldiv {
 }
 
 .popup {
-	z-index: 10;
-	left: 0px;
+	left: -1000px;
+	top: -1000px;
 	visibility: hidden;
 	width: 200px;
 	position: absolute;
-	top: 0px;
 	border: 1px solid #336699;
 	border-top: 0px solid;
 	text-align: left;
@@ -528,7 +527,6 @@ label, .labeldiv {
 #popup_bbsmileys {
 	max-height: 200px;
 	width: 255px;
-	overflow: auto;
 }
 .tables_bbsmileys {
 	width: 100%;
@@ -594,13 +592,22 @@ label, .labeldiv {
 	border-bottom: 1px solid #336699;
 }
 .bb_table {
-	border: 1px dotted #BCCADA;
-	overflow: auto;
 	display: block;
-	padding: 1px;
-	margin-top: 5px;
-	margin-bottom: 5px;
+	border-collapse: collapse;
+	margin: 2px;
 }
+.bb_table td, .bb_table th {
+	border: 1px solid #839FBC;
+	padding: 3px;
+	background-image: none;
+}
+.bb_table th {
+	background-color: #E1E8EF;
+	color: #24486C;
+	text-align: center;
+	font-size: 9pt;
+}
+
 .bb_inlinecode {
 	color: #880000;
 	white-space: normal;

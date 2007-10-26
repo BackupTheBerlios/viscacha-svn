@@ -766,7 +766,7 @@ elseif ($_GET['action'] == "mylast") {
 
 	($code = $plugins->load('editprofile_mylast_query')) ? eval($code) : null;
 	$result = $db->query("
-	SELECT t.last, t.posts, t.id, t.board, r.topic, r.date, r.name, t.prefix, r.id AS pid
+	SELECT t.last, t.posts, t.id, t.board, r.topic, r.date, r.name, t.prefix, t.status, r.id AS pid
 	FROM {$db->pre}replies AS r
 		LEFT JOIN {$db->pre}topics AS t ON t.id = r.topic_id
 		LEFT JOIN {$db->pre}forums AS f ON f.id = t.board
@@ -790,16 +790,30 @@ elseif ($_GET['action'] == "mylast") {
 
 		$row['topic'] = $gpc->prepare($row['topic']);
 		$row['name'] = $gpc->prepare($row['name']);
+
 		if ((isset($my->mark['t'][$row['id']]) && $my->mark['t'][$row['id']] > $row['last']) || $row['last'] < $my->clv) {
-			$row['firstnew'] = 0;
-			$row['alt'] = $lang->phrase('forum_icon_old');
-			$row['src'] = $tpl->img('dir_open');
+	 		$row['firstnew'] = 0;
+			if ($row['status'] == 1 || $row['status'] == 2) {
+			   	$row['alt'] = $lang->phrase('forum_icon_closed');
+				$row['src'] = $tpl->img('dir_closed');
+			}
+			else {
+			   	$row['alt'] = $lang->phrase('forum_icon_old');
+			   	$row['src'] = $tpl->img('dir_open');
+	 		}
 	 	}
 	  	else {
-			$row['firstnew'] = 1;
-			$row['alt'] = $lang->phrase('forum_icon_new');
-			$row['src'] = $tpl->img('dir_open2');
+	  		$row['firstnew'] = 1;
+			if ($row['status'] == 1 || $row['status'] == 2) {
+				$row['alt'] = $lang->phrase('forum_icon_closed');
+				$row['src'] = $tpl->img('dir_closed2');
+			}
+			else {
+				$row['alt'] = $lang->phrase('forum_icon_new');
+				$row['src'] = $tpl->img('dir_open2');
+			}
 		}
+
 		if (isset($prefix_arr[$row['board']][$row['prefix']]) && $row['prefix'] > 0) {
 			$prefix = $prefix_arr[$row['board']][$row['prefix']]['value'];
 			$row['pre'] = $lang->phrase('showtopic_prefix_title');

@@ -3,7 +3,9 @@ if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
 
 // Loading Config-Data
 include('classes/class.phpconfig.php');
+include('admin/lib/function.settings.php');
 $c = new manageconfig();
+$myini = new INI();
 
 ($code = $plugins->load('admin_settings_jobs')) ? eval($code) : null;
 
@@ -21,6 +23,10 @@ if ($job == 'admin') {
 	  <td class="mbox" width="50%">Use extended Navigation Interface:<br /><span class="stext">Checking this option will enable an advanced navigation interface on the left side.</span></td>
 	  <td class="mbox" width="50%"><input type="checkbox" name="nav_interface" value="1"<?php echo iif($admconfig['nav_interface'] == 1, ' checked="checked"'); ?> /></td>
 	 </tr>
+	 <tr>
+	  <td class="mbox" width="50%">Servers for the Package Browser:<br /><span class="stext">One line per URL (without trailing slash).</span></td>
+	  <td class="mbox" width="50%"><textarea rows="5" cols="60" name="package_server"><?php echo str_replace(";", "\n", $admconfig['package_server']); ?></textarea></td>
+	 </tr>
 	 </tr>
 	  <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="Submit" /></td>
 	 </tr>
@@ -32,8 +38,12 @@ if ($job == 'admin') {
 elseif ($job == 'admin2') {
 	echo head();
 
+	$server = trim($gpc->get('package_server', none));
+	$server = preg_replace("~(\r\n|\r|\n)~", ";", $server);
+
 	$c->getdata('admin/data/config.inc.php', 'admconfig');
 	$c->updateconfig('nav_interface', int);
+	$c->updateconfig('package_server', str, $server);
 	$c->savedata();
 
 	ok('admin.php?action=settings&job=settings');
@@ -2046,36 +2056,48 @@ elseif ($job == 'version') {
 elseif ($job == 'custom') {
 	echo head();
 	$id = $gpc->get('id', int);
+	$package = $gpc->get('package', int);
 	$result = $db->query("
-	SELECT s.*, g.name AS groupname
+	SELECT s.*, g.name AS groupname, p.id as package
 	FROM {$db->pre}settings AS s
 		LEFT JOIN {$db->pre}settings_groups AS g ON s.sgroup = g.id
+		LEFT JOIN {$db->pre}packages AS p ON p.internal = g.name
 	WHERE s.sgroup = '{$id}'
 	ORDER BY s.name
 	", __LINE__, __FILE__);
 	?>
-	<form name="form" method="post" action="admin.php?action=settings&job=custom2&id=<?php echo $id; ?>">
+	<form name="form" method="post" action="admin.php?action=settings&job=custom2&id=<?php echo $id; ?>&package=<?php echo $package; ?>">
 	 <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
 	  <tr>
 	   <td class="obox" colspan="4"><b>Custom Settings</b></td>
 	  </tr>
 	<?php
 	if ($db->num_rows() > 0) {
+		?>
+		  <tr>
+		   <td class="ubox">Setting</td>
+		   <td class="ubox">Value</td>
+		   <td class="ubox">Delete</td>
+		   <td class="ubox">Variable</td>
+		  </tr>
+		<?php
 		while ($row = $db->fetch_assoc($result)) {
 			call_user_func('custom_'.$row['type'], $row);
 		}
+		?>
+	  <tr>
+	   <td class="ubox" colspan="4" align="center"><input type="submit" name="Submit" value="Submit"></td>
+	  </tr>
+		<?php
 	}
 	else {
 	?>
 	  <tr>
-	   <td class="mbox" colspan="4" align="center">No custom settings added for this category. You can add a new setting <a href="admin.php?action=settings&job=new">here</a>.</td>
+	   <td class="mbox" colspan="4" align="center">No custom settings added for this category. <a href="admin.php?action=settings&job=new&package=<?php echo $package; ?>">You can add a new setting here</a>.</td>
 	  </tr>
 	<?php
 	}
 	?>
-	  <tr>
-	   <td class="ubox" colspan="4" align="center"><input type="submit" name="Submit" value="Submit"></td>
-	  </tr>
 	 </table>
 	</form>
 	<?php
@@ -2084,6 +2106,7 @@ elseif ($job == 'custom') {
 elseif ($job == 'custom2') {
 	echo head();
 	$id = $gpc->get('id', int);
+	$package = $gpc->get('package', int);
 	$c->getdata();
 
 	$result = $db->query("
@@ -2098,13 +2121,13 @@ elseif ($job == 'custom2') {
 	}
 
 	$c->savedata();
-
-	ok('admin.php?action=settings&job=custom&id='.$id);
+	ok('admin.php?action=settings&job=custom&id='.$id.'&package='.$package);
 }
 elseif ($job == 'delete') {
 	echo head();
 	$name = $gpc->get('name', str);
 	$id = $gpc->get('id', int);
+	$package = $gpc->get('package', int);
 	$db->query("DELETE FROM {$db->pre}settings WHERE name = '{$name}' AND sgroup = '{$id}' LIMIT 1");
 	$upd = $db->affected_rows();
 	if ($upd == 1) {
@@ -2113,34 +2136,63 @@ elseif ($job == 'delete') {
 		$c->getdata();
 		$c->delete(array($row['name'], $name));
 		$c->savedata();
-		ok('admin.php?action=settings&job=custom&id='.$id,'Custom Setting deleted!');
+		if ($package > 0) {
+			$ini = $myini->read("modules/{$package}/package.ini");
+			unset($ini['setting_'.$name]);
+			$myini->write("modules/{$package}/package.ini", $ini);
+		}
+		ok('admin.php?action=settings&job=custom&id='.$id.'&package='.$package,'Custom Setting deleted!');
 	}
 	else {
-		error('admin.php?action=settings&job=custom&id='.$id,'Custom setting not available.');
+		error('admin.php?action=settings&job=custom&id='.$id.'&package='.$package,'Custom setting not available.');
 	}
 }
 elseif ($job == 'delete_group') {
 	echo head();
 	$id = $gpc->get('id', int);
+	$package = $gpc->get('package', int);
 	$result = $db->query("
 	SELECT s.name, g.name AS groupname
 	FROM {$db->pre}settings AS s
 		LEFT JOIN {$db->pre}settings_groups AS g ON s.sgroup = g.id
 	WHERE s.sgroup = '{$id}'");
+	if ($package > 0) {
+		$ini = $myini->read("modules/{$package}/package.ini");
+	}
 	while ($row = $db->fetch_assoc($result)) {
 		$c->getdata();
 		$c->delete(array($row['groupname'], $row['name']));
+		if ($package > 0) {
+			unset($ini['setting_'.$row['name']]);
+		}
 		$c->savedata();
+	}
+	if ($package > 0) {
+		unset($ini['config']);
+		$myini->write("modules/{$package}/package.ini", $ini);
 	}
 	$db->query("DELETE FROM {$db->pre}settings WHERE sgroup = '{$id}'");
 	$db->query("DELETE FROM {$db->pre}settings_groups WHERE id = '{$id}' LIMIT 1");
 
-	ok('admin.php?action=settings','Custom Setting Group deleted!');
+	if ($package > 0) {
+		ok('admin.php?action=packages&job=package_edit&id='.$package,'All settings for this package have been deleted.');
+	}
+	else {
+		ok('admin.php?action=settings','Custom Setting Group deleted!');
+	}
 }
 elseif ($job == 'new_group') {
-	echo head()
+	$package = $gpc->get('package', int);
+	echo head();
+	if ($package > 0) {
+		$ini = $myini->read("modules/{$package}/package.ini");
+		$result = $db->query("SELECT id FROM {$db->pre}settings_groups WHERE name = '{$ini['info']['internal']}' LIMIT 1");
+		if ($db->num_rows($result) > 0) {
+			error('admin.php?action=packages&job=package_edit&id='.$package, 'This package has already a group with settings.');
+		}
+	}
 	?>
-<form action="admin.php?action=settings&job=new_group2" method="post">
+<form action="admin.php?action=settings&amp;job=new_group2&amp;package=<?php echo $package; ?>" method="post">
 <table border="0" align="center" class="border">
 <tr>
 <td class="obox" colspan="2">Add Setting group</td>
@@ -2150,8 +2202,15 @@ elseif ($job == 'new_group') {
 <td class="mbox" width="60%"><input type="text" name="title" value="" size="40"></td>
 </tr>
 <tr>
-<td class="mbox" width="40%">Group Name<br /><span class="stext">This will be the name of the setting group as used in scripts and templates. If the name is "<code>value</code>", the variable is <code>$config['value']['entries']</code>.  You can use only alphanumerical characters and the underscore.</span></td>
-<td class="mbox" width="60%"><input type="text" name="name" value="" size="40"></td>
+<td class="mbox" width="40%">Group Name<br /><span class="stext">This will be the name of the setting group as used in scripts and templates. If the name is "<code>value</code>", the variable is <code>$config['value']['entries']</code>. <?php if ($package == 0) { ?> You can use only alphanumerical characters and the underscore.<?php } ?></span></td>
+<td class="mbox" width="60%">
+<?php if ($package > 0) { ?>
+<code><?php echo $ini['info']['internal']; ?></code>
+<input type="hidden" name="name" value="<?php echo $ini['info']['internal']; ?>">
+<?php } else { ?>
+<input type="text" name="name" value="" size="40">
+<?php } ?>
+</td>
 </tr>
 <tr>
 <td class="mbox" width="40%">Description</td>
@@ -2168,6 +2227,7 @@ elseif ($job == 'new_group2') {
 	$title = $gpc->get('title', str);
 	$name = $gpc->get('name', str);
 	$desc = $gpc->get('description', str);
+	$package = $gpc->get('package', int);
 
 	if (strlen($title) < 3 || strlen($title) > 120) {
 		error('admin.php?action=settings&job=custom','Title is too short or too long.');
@@ -2176,15 +2236,35 @@ elseif ($job == 'new_group2') {
 		error('admin.php?action=settings&job=custom','Group Name is too short or too long.');
 	}
 
+	if ($package > 0) {
+		$ini = $myini->read("modules/{$package}/package.ini");
+		$ini['config'] = array(
+			'title' => $title,
+			'description' => $desc
+		);
+		$myini->write("modules/{$package}/package.ini", $ini);
+	}
+
 	$db->query("INSERT INTO {$db->pre}settings_groups (title, name, description) VALUES ('{$title}', '{$name}', '{$desc}')");
 
-	ok('admin.php?action=settings&job=custom', 'Group inserted!');
+	ok('admin.php?action=settings&job=custom&package='.$package, 'Group inserted!');
 }
 elseif ($job == 'new') {
 	echo head();
-	$result = $db->query("SELECT id, title FROM {$db->pre}settings_groups ORDER BY title");
+	$package = $gpc->get('package', int);
+	if ($package > 0) {
+		$result = $db->query("
+			SELECT g.id, g.title
+			FROM {$db->pre}settings_groups AS g
+				LEFT JOIN {$db->pre}packages AS p ON p.internal = g.name
+			WHERE p.id = '{$package}'
+		", __LINE__, __FILE__);
+	}
+	else {
+		$result = $db->query("SELECT id, title FROM {$db->pre}settings_groups ORDER BY title", __LINE__, __FILE__);
+	}
 	?>
-<form action="admin.php?action=settings&job=new2" method="post">
+<form action="admin.php?action=settings&amp;job=new2&amp;package=<?php echo $package; ?>" method="post">
 <table border="0" align="center" class="border">
 <tr>
 <td class="obox" colspan="2">Add Setting</td>
@@ -2250,6 +2330,7 @@ elseif ($job == 'new2') {
 	$typevalue = $gpc->get('typevalue', none);
 	$value = $gpc->get('value', none);
 	$group = $gpc->get('group', int);
+	$package = $gpc->get('package', int);
 
 	$result = $db->query("SELECT name FROM {$db->pre}settings_groups WHERE id = '{$group}'");
 	$row = $db->fetch_assoc($result);
@@ -2264,7 +2345,6 @@ elseif ($job == 'new2') {
 		$typevalue = str_replace("\r\n", "\n", trim($typevalue));
 		$typevalue = str_replace("\r", "\n", $typevalue);
 		$arr_value = prepare_custom($typevalue);
-		$typevalue = $gpc->save_str($typevalue);
 		if (empty($arr_value[$value])) {
 			error('admin.php?action=settings&job=new','Value is not given in Setting Type Values.');
 		}
@@ -2274,19 +2354,31 @@ elseif ($job == 'new2') {
 	}
 
 	$db->query("
-INSERT INTO {$db->pre}settings (name, title, description, type, optionscode, value, sgroup)
-VALUES ('{$name}', '{$title}', '{$desc}', '{$type}', '{$typevalue}', '".$gpc->save_str($value)."', '{$group}')
-");
+	INSERT INTO {$db->pre}settings (name, title, description, type, optionscode, value, sgroup)
+	VALUES ('{$name}', '{$title}', '{$desc}', '{$type}', '".$gpc->save_str($typevalue)."', '".$gpc->save_str($value)."', '{$group}')
+	");
 
 	$c->getdata();
 	$c->updateconfig(array($row['name'], $name), none, $value);
 	$c->savedata();
 
+	if ($package > 0) {
+		$ini = $myini->read("modules/{$package}/package.ini");
+		$ini['setting_'.$name] = array(
+			'title' => $title,
+			'description' => $desc,
+			'type' => $type,
+			'optionscode' => $typevalue,
+			'value' => $value
+		);
+		$myini->write("modules/{$package}/package.ini", $ini);
+	}
+
 	ok('admin.php?action=settings&job=custom&id='.$group, 'Setting inserted!');
 }
 else {
 	echo head();
-	$result = $db->query("SELECT id, title, description FROM {$db->pre}settings_groups ORDER BY title");
+	$result = $db->query("SELECT id, title, description, name FROM {$db->pre}settings_groups ORDER BY title");
 	?>
 	<table class="border">
 	  <tr>
@@ -2654,12 +2746,19 @@ else {
 		</td>
 	  </tr>
 	</table>
-<?php if ($db->num_rows($result) > 0) { ?>
+<?php
+if ($db->num_rows($result) > 0) {
+	$result2 = $db->query("SELECT id, title, internal FROM {$db->pre}packages");
+	$cache = array();
+	while ($row = $db->fetch_assoc($result2)) {
+		$cache[$row['internal']] = $row;
+	}
+	?>
 	<br class="minibr" />
 	<table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
 	 <tr>
 	  <td class="obox" colspan="3">
-	  <span style="float: right;">
+	  <span class="right">
 		<a class="button" href="admin.php?action=settings&amp;job=new">Add new Setting</a>
 		<a class="button" href="admin.php?action=settings&amp;job=new_group">Add Setting Group</a>
 	  </span>
@@ -2673,86 +2772,20 @@ else {
 	 </tr>
 	 <?php while ($row = $db->fetch_assoc($result)) { ?>
 	 <tr class="mbox">
-	  <td nowrap="nowrap"><a href="admin.php?action=settings&job=custom&id=<?php echo $row['id']; ?>"><?php echo $row['title']; ?></a></td>
-	  <td class="stext"><?php echo $row['description']; ?></td>
-	  <td nowrap="nowrap"><a class="button" href="admin.php?action=settings&job=delete_group&id=<?php echo $row['id']; ?>">Delete Group</a></td>
+	  <td nowrap="nowrap"><a href="admin.php?action=settings&amp;job=custom&amp;id=<?php echo $row['id']; ?>"><?php echo $row['title']; ?></a></td>
+	  <td class="stext"><?php echo $row['description']; ?><?php echo isset($cache[$row['name']]) ? '<br />Package: '.$cache[$row['name']]['title'] : ''; ?></td>
+	  <td nowrap="nowrap">
+	  	<?php if(isset($cache[$row['name']]) == false) { ?>
+	  	<a class="button" href="admin.php?action=settings&amp;job=delete_group&amp;id=<?php echo $row['id']; ?>">Delete Group</a>
+	  	<?php } else { ?>
+	  	<a class="button" href="admin.php?action=packages&amp;job=package_info&amp;id=<?php echo $cache[$row['name']]['id']; ?>">Package Details</a>
+	  	<?php } ?>
+	  </td>
 	 </tr>
 	 <?php } ?>
 	</table>
 	<?php
 	}
 	echo foot();
-}
-
-function custom_select($arr) {
-	global $config;
-	$val = prepare_custom($arr['optionscode']);
-?>
-<tr>
- <td class="mbox" width="35%"><?php echo $arr['title']; ?><br /><span class="stext"><?php echo $arr['description']; ?></span></td>
- <td class="mbox" width="45%">
- <select name="<?php echo $arr['name']; ?>">
- <?php foreach ($val as $key => $value) { ?>
-  <option value="<?php echo $key; ?>"<?php echo iif($config[$arr['groupname']][$arr['name']] == $key, ' selected="selected"'); ?>><?php echo $value; ?></option>
- <?php } ?>
- </select>
- </td>
- <td class="mbox" width="10%"><a href="admin.php?action=settings&job=delete&name=<?php echo $arr['name']; ?>&id=<?php echo $arr['sgroup']; ?>">Delete Setting</a></td>
- <td class="mbox" width="10%"><code>$config['<?php echo $arr['groupname']; ?>']['<?php echo $arr['name']; ?>']</code></td>
-</tr>
-<?php
-}
-function custom_checkbox($arr) {
-	global $config;
-?>
-<tr>
- <td class="mbox" width="35%"><?php echo $arr['title']; ?><br /><span class="stext"><?php echo $arr['description']; ?></span></td>
- <td class="mbox" width="45%"><input type="checkbox" name="<?php echo $arr['name']; ?>" value="<?php echo $config[$arr['groupname']][$arr['name']]; ?>"<?php echo iif($config[$arr['name']],' checked="checked"'); ?> /></td>
- <td class="mbox" width="10%"><a href="admin.php?action=settings&job=delete&name=<?php echo $arr['name']; ?>&id=<?php echo $arr['sgroup']; ?>">Delete Setting</a></td>
- <td class="mbox" width="10%"><code>$config['<?php echo $arr['groupname']; ?>']['<?php echo $arr['name']; ?>']</code></td>
-</tr>
-<?php
-}
-function custom_text($arr) {
-	global $config;
-?>
-<tr>
- <td class="mbox" width="35%"><?php echo $arr['title']; ?><br /><span class="stext"><?php echo $arr['description']; ?></span></td>
- <td class="mbox" width="45%"><input type="text" name="<?php echo $arr['name']; ?>" value="<?php echo $config[$arr['groupname']][$arr['name']]; ?>" /></td>
- <td class="mbox" width="10%"><a href="admin.php?action=settings&job=delete&name=<?php echo $arr['name']; ?>&id=<?php echo $arr['sgroup']; ?>">Delete Setting</a></td>
- <td class="mbox" width="10%"><code>$config['<?php echo $arr['groupname']; ?>']['<?php echo $arr['name']; ?>']</code></td>
-</tr>
-<?php
-}
-function custom_textarea($arr) {
-	global $config;
-?>
-<tr>
- <td class="mbox" width="35%"><?php echo $arr['title']; ?><br /><span class="stext"><?php echo $arr['description']; ?></span></td>
- <td class="mbox" width="45%"><textarea cols="50" rows="4" name="<?php echo $arr['name']; ?>"><?php echo $config[$arr['groupname']][$arr['name']]; ?></textarea></td>
- <td class="mbox" width="10%"><a href="admin.php?action=settings&job=delete&name=<?php echo $arr['name']; ?>&id=<?php echo $arr['sgroup']; ?>">Delete Setting</a></td>
- <td class="mbox" width="10%"><code>$config['<?php echo $arr['groupname']; ?>']['<?php echo $arr['name']; ?>']</code></td>
-</tr>
-<?php
-}
-function prepare_custom($str) {
-	$str = trim($str);
-	$explode = explode("\n", $str);
-	$arr = array();
-	foreach ($explode as $val) {
-		$dat = explode('=', $val);
-		if (count($dat) > 2) {
-			$k = array_shift($dat);
-			$dat = implode('=', $dat);
-			$arr[$k] = $dat;
-		}
-		elseif (count($dat) == 2) {
-			$arr[$dat[0]] = $dat[1];
-		}
-		else {
-			error();
-		}
-	}
-	return $arr;
 }
 ?>

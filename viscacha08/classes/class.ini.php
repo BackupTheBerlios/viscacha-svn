@@ -45,6 +45,32 @@ class INI {
 			trigger_error("Could not read ini-file {$filename}", E_USER_WARNING);
 			return array();
 		}
+		return $this->_convert($array1);
+	}
+
+	/**
+	* This function reads and parses an ini-string.
+	*
+	* This function is case-insensitive when reading sections and keys,
+	* returning an array with lower-case keys.
+	*
+	* @param	string	String
+	*/
+	function parse ($str) {
+		$array1 = preg_split("(\r\n|\r|\n)", $str);
+		return $this->_convert($array1);
+	}
+
+	/**
+	* This function reads and parses an ini-array.
+	*
+	* This function is case-insensitive when reading sections and keys,
+	* returning an array with lower-case keys.
+	*
+	* @param	string	Array
+	*/
+	function _convert($array1) {
+		global $gpc;
 		$array2 = array();
 		$section = '';
 		foreach ($array1 as $filedata) {
@@ -65,6 +91,8 @@ class INI {
 						$value = trim(substr($dataline, $delimiter + 1));
 						if (substr($value, 0, 1) == '"' && substr($value, -1, 1) == '"') {
 							$value = substr($value, 1, -1);
+							$value = str_replace('\\r', "\r", $value);
+							$value = str_replace('\\n', "\n", $value);
 						}
 						if (empty($section)) {
 							$array2[$key] = stripcslashes($value);
@@ -142,6 +170,8 @@ class INI {
 		  			if (substr($key, 0, 1)==$this->commentchar) {
 		  				$key = '-'.substr($key, 1);
 		  			}
+			  		$values = str_replace("\r", '\r', $values);
+			  		$values = str_replace("\n", '\n', $values);
 		  			$value = addcslashes($values,'');
 		  			$data .= ' '.$key.' = "'.$value."\"\r\n";
 				}
@@ -151,6 +181,8 @@ class INI {
 		  		if (substr($key, 0, 1) == $this->commentchar) {
 		  			$key = '-'.substr($key, 1);
 		  		}
+		  		$items = str_replace("\r", '\r', $items);
+		  		$items = str_replace("\n", '\n', $items);
 		  		$value = addcslashes($items,'');
 		  		$data .= $key.' = "'.$value."\"\r\n";
 			}

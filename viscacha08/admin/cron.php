@@ -1,5 +1,7 @@
 <?php
 if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
+
+// PK: MultiLangAdmin
 $lang->group("admin/cron");
 
 ($code = $plugins->load('admin_cron_jobs')) ? eval($code) : null;

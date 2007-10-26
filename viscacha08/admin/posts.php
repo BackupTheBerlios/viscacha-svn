@@ -1,6 +1,9 @@
 <?php
 if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
+
+// PK: MultiLangAdmin
 $lang->group("admin/posts");
+
 ($code = $plugins->load('admin_posts_jobs')) ? eval($code) : null;
 
 if ($_GET['job'] == 'postrating') {
