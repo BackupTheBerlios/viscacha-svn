@@ -66,12 +66,15 @@ class CacheItem {
 	}
 
 	function expired($max_age) {
-		if ($this->age() > $max_age) {
+		if ($max_age == null) {
+			$max_age = $this->max_age;
+		}
+		if ($this->age() >= $max_age) {
 			$this->delete();
-			return false;
+			return true;
 		}
 		else {
-			return true;
+			return false;
 		}
 	}
 
@@ -86,9 +89,12 @@ class CacheItem {
 	}
 
 	function exists($max_age = null) {
+		if ($max_age == null) {
+			$max_age = $this->max_age;
+		}
 	    if (file_exists($this->file) && filesize($this->file) > 0) {
 			if ($max_age != null) {
-				return !($this->expired($max_age));
+				return !$this->expired($max_age);
 			}
 	        return true;
 	    }

@@ -6,6 +6,18 @@ require('classes/class.phpconfig.php');
 include('admin/lib/function.settings.php');
 $myini = new INI();
 
+function browser_sort_date($a, $b) {
+	if ($a['last_updated'] > $b['last_updated']) {
+		return -1;
+	}
+	elseif ($a['last_updated'] < $b['last_updated']) {
+		return 1;
+	}
+	else {
+		return 0;
+	}
+}
+
 ($code = $plugins->load('admin_packages_jobs')) ? eval($code) : null;
 
 if ($job == 'package') {
@@ -2771,20 +2783,15 @@ elseif ($job == 'package_updates') {
 		error('admin.php?action=packages&job=package', 'No information about the current version found.');
 	}
 	$pb = $scache->load('package_browser');
-	$packages = $pb->get(IMPTYPE_PACKAGE);
-	foreach ($packages as $key => $row) {
-		if ($row['internal'] == $data['internal']) {
-			if (empty($row['version'])) {
-				continue;
-			}
-			if (version_compare($row['version'], $data['version'], '>')) {
-				ok('admin.php?action=packages&job=browser_detail&id='.$key.'&package='.IMPTYPE_PACKAGE, 'There is a new version ('.$row['version'].') on the server.', 3000);
-			}
-			else {
-				ok('admin.php?action=packages&job=package_info&id='.$id, 'This package seems to be up to date.', 3000);
-			}
-			break;
+	$row = $pb->getOne(IMPTYPE_PACKAGE, $data['internal']);
+	if ($row !== false && !empty($row['version'])) {
+		if (version_compare($row['version'], $data['version'], '>')) {
+			ok('admin.php?action=packages&job=browser_detail&id='.$row['internal'].'&package='.IMPTYPE_PACKAGE, 'There is a new version ('.$row['version'].') on the server.', 3000);
 		}
+		else {
+			ok('admin.php?action=packages&job=package_info&id='.$id, 'This package seems to be up to date.', 3000);
+		}
+		break;
 	}
 	ok('admin.php?action=packages&job=package_info&id='.$id, 'The package was not found on one of the known servers.', 3000);
 }
@@ -2792,18 +2799,29 @@ elseif ($job == 'browser') {
 	$pb = $scache->load('package_browser');
 	$types = $pb->types();
 	$type = $gpc->get('type', int, IMPTYPE_PACKAGE);
+	$cats = $pb->categories($type);
 	echo head();
 	?>
  <table class="border" border="0" cellspacing="0" cellpediting="4" align="center">
   <tr>
-   <td class="obox">Browse <?php echo $types[$type]['name']; ?></td>
+   <td class="obox" colspan="2">Browse <?php echo $types[$type]['name']; ?></td>
   </tr>
   <tr>
-   <td class="mbox">
-	This will be a nice site that gives you a quick overview!
+   <td class="ubox" width="50%"><strong>Categories:</strong></td>
+   <td class="ubox" width="50%"><strong>Useful Links:</strong></td>
+  <tr>
+   <td class="mbox" valign="top">
 	<ul>
-		<li><a href="admin.php?action=packages&amp;job=browser_list&amp;type=<?php echo IMPTYPE_PACKAGE; ?>">List of <?php echo $types[$type]['name']; ?></a></li>
-		<li><a href="admin.php?action=settings&amp;job=admin">Change Servers that offer <?php echo $types[$type]['name']; ?></a></li>
+		<?php foreach ($cats as $id => $row) { ?>
+		<li><a href="admin.php?action=packages&amp;job=browser_list&amp;type=<?php echo $type; ?>&amp;id=<?php echo $id; ?>"><?php echo $row['name']; ?></a> (<?php echo $row['entries']; ?>)</li>
+		<?php } ?>
+	</ul>
+   </td>
+   <td class="mbox" valign="top">
+	This is the Browser Overview Page :-)
+	<ul>
+		<li><a href="admin.php?action=packages&amp;job=browser_list&amp;type=<?php echo $type; ?>&amp;id=last">Recently updated <?php echo $types[$type]['name']; ?></a></li>
+		<li><a href="admin.php?action=settings&amp;job=admin">Change servers that offer <?php echo $types[$type]['name']; ?></a></li>
 	</ul>
    </td>
   </tr>
@@ -2812,33 +2830,76 @@ elseif ($job == 'browser') {
 	echo foot();
 }
 elseif ($job == 'browser_list') {
+	$id = $gpc->get('id', none);
 	$type = $gpc->get('type', int, IMPTYPE_PACKAGE);
 	$pb = $scache->load('package_browser');
-	$data = $pb->get($type);
 	$types = $pb->types();
-	echo head();
+	if (is_numeric($id)) {
+		$data = $pb->get($type, $id);
+		$cat = $pb->categories($type, $id);
+		$title = $cat['name'];
+		$show_cat = false;
+	}
+	else {
+		$data2 = $pb->get($type);
+		$data = array();
+		foreach ($data2 as $key => $rows) {
+			if (is_numeric($key)) {
+				$data = array_merge($data, $rows);
+			}
+		}
+		unset($data2);
+		uasort($data, "browser_sort_date");
+		$data = array_slice($data, 0, 10);
+		$show_cat = true;
+		$title = 'Recently updated '.$types[$type]['name'];
+	}
 
+	$result = $db->query("SELECT id, internal, version FROM {$db->pre}packages");
+	$installed = array();
+	while($row = $db->fetch_assoc($result)) {
+		$installed[$row['internal']] = $row;
+	}
+
+	echo head();
 	?>
  <table class="border" border="0" cellspacing="0" cellpediting="4" align="center">
   <tr>
-   <td class="obox" colspan="2">Browse <?php echo $types[$type]['name']; ?> &raquo; List</td>
+   <td class="obox" colspan="4">Browse <?php echo $types[$type]['name']; ?> &raquo; <?php echo $title; ?></td>
+  </tr>
+  <tr>
+   <td class="ubox" width="60%">Name<br />Description</td>
+   <td class="ubox" width="10%">Installed</td>
+   <td class="ubox" width="10%">Compatible</td>
+   <td class="ubox" width="30%">Last Update<br />License</td>
   </tr>
   <?php
   foreach ($data as $key => $row) {
  	$min_compatible = ((!empty($row['min_version']) && version_compare($config['version'], $row['min_version'], '>=')) || empty($row['min_version']));
 	$max_compatible = ((!empty($row['max_version']) && version_compare($config['version'], $row['max_version'], '<=')) || empty($row['max_version']));
 	$compatible = ($min_compatible && $max_compatible);
+	$install = isset($installed[$row['internal']]);
+	$update = $install && version_compare($installed[$row['internal']]['version'], $row['version'], '<');
   	?>
-  <tr>
-   <td class="mbox" width="80%" valign="top">
-    <span class="right"><a class="button" href="admin.php?action=packages&amp;job=browser_import&amp;id=<?php echo $key; ?>&amp;type=<?php echo $type; ?>">Import</a></span>
+  <tr class="mbox">
+   <td valign="top">
+    <span class="right">
+    	<?php if (!$install || $row['multiple'] == 1) { ?>
+    	<a class="button" href="admin.php?action=packages&amp;job=browser_import&amp;id=<?php echo $key; ?>&amp;type=<?php echo $type; ?>">Import</a>
+    	<?php } if ($install) { ?>
+    	<a class="button" href="admin.php?action=packages&amp;job=package_info&amp;id=<?php echo $installed[$row['internal']]['id']; ?>">Go to installed Package</a>
+    	<?php } ?>
+    </span>
    	<a href="admin.php?action=packages&amp;job=browser_detail&amp;id=<?php echo $key; ?>&amp;type=<?php echo $type; ?>"><strong><?php echo $row['title']; ?></strong> <?php echo $row['version']; ?></a><br />
    	<span class="stext"><?php echo $row['summary']; ?></span>
    </td>
-   <td class="mbox" width="20%" valign="top">
-   	License: <?php echo empty($row['license']) ? 'Unknown' : $row['license']; ?><br />
-   	Compatible: <?php echo noki($compatible); ?>
-   </td>
+   <td align="center"><?php echo iif($install, 'Yes'.iif($update, '<br /><span class="stext" style="font-color: darkred;">Update available!</span>'), 'No'); ?></td>
+   <td align="center"><?php echo noki($compatible); ?></td>
+   <td valign="top">
+   	Last update: <?php echo gmdate('d.m.Y', times($row['last_updated'])); ?><br />
+   	License: <?php echo empty($row['license']) ? 'Unknown' : $row['license']; ?>
+   	<?php if($show_cat == true) { $cat = $pb->categories($type, $row['category']); ?><br />Category: <?php echo $cat['name']; } ?>
+   	</td>
   </tr>
   <?php } ?>
  </table>
@@ -2849,8 +2910,7 @@ elseif ($job == 'browser_import') {
 	$type = $gpc->get('type', int, IMPTYPE_PACKAGE);
 	$id = $gpc->get('id', str);
 	$pb = $scache->load('package_browser');
-	$data = $pb->get($type);
-	$row = $data[$id];
+	$row = $pb->getOne($type, $id);
 	$types = $pb->types();
 	$file = 'temp/'.basename($row['file']);
 	$filesystem->file_put_contents($file, get_remote($row['file']));
@@ -2860,9 +2920,9 @@ elseif ($job == 'browser_detail') {
 	$type = $gpc->get('type', int, IMPTYPE_PACKAGE);
 	$id = $gpc->get('id', str);
 	$pb = $scache->load('package_browser');
-	$data = $pb->get($type);
-	$row = $data[$id];
+	$row = $pb->getOne($type, $id);
 	$types = $pb->types();
+	$cat = $pb->categories($type, $row['category']);
 	$result = $db->query("SELECT id, version FROM {$db->pre}packages WHERE internal = '{$row['internal']}' LIMIT 1");
 	if ($db->num_rows($result) == 1) {
 		$pack = $db->fetch_assoc($result);
@@ -2879,7 +2939,7 @@ elseif ($job == 'browser_detail') {
 	  	<?php if ($installed === false) { ?>
 	  	<span class="right"><a class="button" href="admin.php?action=packages&amp;job=browser_import&amp;id=<?php echo $id; ?>&amp;type=<?php echo $type; ?>">Import this <?php echo $types[$type]['name2']; ?></a></span>
 	  	<?php } ?>
-	    Browse <?php echo $types[$type]['name']; ?> &raquo; Details
+	    Browse <?php echo $types[$type]['name']; ?> &raquo; <?php echo $cat['name']; ?> &raquo; <?php echo $row['title']; ?>
 	   </td>
 	  </tr>
 	  <tr>
@@ -2898,6 +2958,9 @@ elseif ($job == 'browser_detail') {
 	   You have not installed this package!&nbsp;&nbsp;&nbsp;&nbsp;<a class="button" href="admin.php?action=packages&amp;job=browser_import&amp;id=<?php echo $id; ?>&amp;type=<?php echo $type; ?>">Import this <?php echo $types[$type]['name2']; ?>!</a>
 	   <?php }
 	   else {
+	   		?>
+	   		<span class="right"><a class="button" href="admin.php?action=packages&amp;job=package_info&amp;id=<?php echo $installed; ?>">Go to installed Package</a></span>
+	   		<?php
 	   		$vc = version_compare($pack['version'], $row['version']);
 	   		if ($vc == 1) { ?>
 	   		<strong style="color: gold;">You have installed a newer version of this <?php echo $types[$type]['name2']; ?>.</strong>
@@ -2908,10 +2971,15 @@ elseif ($job == 'browser_detail') {
 	    <?php } } ?>
 	   </td>
 	  </tr>
+	  <?php } if (!empty($row['last_updated'])) { ?>
+	  <tr>
+	   <td class="mbox" width="30%">Last update:</td>
+	   <td class="mbox" width="70%"><?php echo gmdate('d.m.Y H:i', times($row['last_updated'])); ?></td>
+	  </tr>
 	  <?php } if (!empty($row['copyright'])) { ?>
 	  <tr>
 	   <td class="mbox" width="30%">Copyright:</td>
-	   <td class="mbox" width="70%"><?php echo $row['copyright']; ?></td>
+	   <td class="mbox" width="70%"><?php echo str_ireplace('(C)', '&copy;', $row['copyright']); ?></td>
 	  </tr>
 	  <?php } if (!empty($row['license'])) { ?>
 	  <tr>
@@ -2935,7 +3003,16 @@ elseif ($job == 'browser_detail') {
 	   	<?php } ?>
 	   </td>
 	  </tr>
+	  <?php } if (isset($row['license'])) { ?>
+	  <tr>
+	   <td class="mbox" width="30%">Multiple installations allowed:</td>
+	   <td class="mbox" width="70%"><?php echo noki($row['multiple']); ?></td>
+	  </tr>
 	  <?php } ?>
+	  <tr>
+	   <td class="mbox" width="30%">Server:</td>
+	   <td class="mbox" width="70%"><?php echo $row['server']; ?></td>
+	  </tr>
 	  <tr>
 	   <td class="mbox" width="30%">File:</td>
 	   <td class="mbox" width="70%"><a href="<?php echo $row['file']; ?>"><?php echo $row['file']; ?></a></td>

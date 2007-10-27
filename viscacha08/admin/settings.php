@@ -2436,8 +2436,7 @@ else {
 		    <select style="width: 80%" size="1" name="url" onchange="locate(this.value)">
 		      <option value="" style="font-weight: bold;">-- Tools --</option>
 		  	  <option value="admin.php?action=cms&job=nav">Navigation Manager</option>
-		  	  <option value="admin.php?action=cms&job=com">Component Manager</option>
-		  	  <option value="admin.php?action=cms&job=plugins">PlugIn Manager</option>
+		  	  <option value="admin.php?action=packages&job=packages">Package Manager</option>
 		  	  <option value="admin.php?action=cms&job=doc">Documents & Pages</option>
 		  	  <option value="admin.php?action=explorer">File Manager</option>
 		     </select> <input style="width: 18%" type="submit" value="Go">

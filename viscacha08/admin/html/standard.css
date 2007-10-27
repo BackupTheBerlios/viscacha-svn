@@ -62,6 +62,7 @@ a:hover {
 .border td, .border th {
 	border: 1px solid #3465A4;
 	padding: 4px;
+	line-height: 120%;
 }
 .invisibletable {
 	border-width: 0px;

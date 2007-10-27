@@ -18,7 +18,7 @@ if ($config['check_filesystem'] == 1) {
 	check_executable_r('docs');
 	check_executable_r('images');
 	check_executable_r('templates');
-	check_executable_r('components');
+	check_executable_r('modules');
 	check_executable_r('language');
 	check_executable('classes/cron/jobs');
 	check_executable('classes/feedcreator');
@@ -164,23 +164,6 @@ function isInvisibleHook($hook) {
 		default:
 			return false;
 	}
-}
-
-function pluginSettingGroupUninstall($pluginid) {
-	global $db;
-	$result = $db->query("SELECT id, name FROM {$db->pre}settings_groups WHERE name = 'module_{$pluginid}' LIMIT 1");
-	$row = $db->fetch_assoc($result);
-
-	$c = new manageconfig();
-	$c->getdata();
-	$result = $db->query("SELECT name FROM {$db->pre}settings WHERE sgroup = '{$row['id']}'");
-	while ($row2 = $db->fetch_assoc($result)) {
-		$c->delete(array($row['name'], $row2['name']));
-	}
-	$c->savedata();
-
-	$db->query("DELETE FROM {$db->pre}settings WHERE sgroup = '{$row['id']}'", __LINE__, __FILE__);
-	$db->query("DELETE FROM {$db->pre}settings_groups WHERE id = '{$row['id']}'", __LINE__, __FILE__);
 }
 
 function getHookArray() {
