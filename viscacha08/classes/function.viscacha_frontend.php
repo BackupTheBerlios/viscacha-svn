@@ -60,6 +60,39 @@ function getRedirectURL($standard = true) {
 	return $loc;
 }
 
+function getRequestURI() {
+	global $config;
+	$method = (isset($_SERVER['REQUEST_METHOD']) && strtoupper($_SERVER['REQUEST_METHOD']) == 'GET');
+	var_dump($_SERVER['REQUEST_METHOD']);
+	if (empty($_SERVER['REQUEST_URI']) == false && $method == true) {
+		$request_uri = '';
+		$var = parse_url($config['furl']);
+		$request_uri = sprintf('http%s://%s%s',
+			(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == TRUE ? 's': ''),
+			(isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : $var['host']),
+			$_SERVER['REQUEST_URI']
+		);
+		if (check_hp($request_uri)) {
+			$request_uri = preg_replace('~(\?|&)s=[A-Za-z0-9]*~i', '', $request_uri);
+			$url = parse_url($request_uri);
+			if (empty($url['path'])) {
+				$url['path'] = '';
+			}
+			$file = basename($url['path']);
+			if (!empty($loc) && file_exists($file) && $file != 'log.php' && $file != 'register.php') {
+				if (strpos($loc, '?') === false) {
+					$request_uri .= SID2URL_1;
+				}
+				else {
+					$request_uri .= SID2URL_x;
+				}
+			}
+			return $request_uri;
+		}
+	}
+	return '';
+}
+
 function getRefererURL() {
 	global $config;
 	$request_uri = '';

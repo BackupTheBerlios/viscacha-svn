@@ -43,7 +43,7 @@ class cache_package_browser extends CacheItem {
 				$content = get_remote($server.'/external.ini');
 				if ($content != REMOTE_CLIENT_ERROR) {
 					$inis = $myini->parse($content);
-					foreach ($inis as $type => $remotefile) {
+					foreach ($inis['files'] as $type => $remotefile) {
 						if (!isset($this->data[$type])) {
 							$this->data[$type] = array();
 						}
@@ -51,7 +51,28 @@ class cache_package_browser extends CacheItem {
 						$path = $server.'/'.$remotefile;
 						$content = get_remote($path);
 						if ($content != REMOTE_CLIENT_ERROR) {
-							$data = $myini->parse($content);
+							$new_data = $myini->parse($content);
+							foreach ($row['categories'] as $cid => $cname) {
+								if (!isset($data[$type][$cid])) {
+									$data[$type][$cid] = array();
+								}
+								$data['categories'][$cid] = array(
+									'name' => $cname,
+									'entries' => 0
+								);
+							}
+							foreach ($new_data as $key => $row) {
+								if ($key == 'categories') {
+									continue;
+								}
+								else {
+									if (!isset($row['category']) || !isset($data['categories'][$row['category']])) {
+										continue;
+									}
+									$data['categories'][$row['category']]['entries']++;
+									$data[$row['category']][] = $row;
+								}
+							}
 						}
 						$this->data[$type] = array_merge($data, $this->data[$type]);
 					}
@@ -65,12 +86,27 @@ class cache_package_browser extends CacheItem {
 		return $this->types;
 	}
 
-	function get ($type = IMPTYPE_PACKAGE) {
+	function categories($type = IMPTYPE_PACKAGE, $id = null) {
+		if ($id == null) {
+			return isset($this->data[$type]['categories']) ? $this->data[$type]['categories'] : array() ;
+		}
+		else {
+			return isset($this->data[$type]['categories'][$id]) ? $this->data[$type]['categories'][$id] : array();
+		}
+	}
+
+	function get ($type = IMPTYPE_PACKAGE, $category = null) {
 		$max_age = 60*60*6; // Update every six hours
 		if ($this->data == null || ($max_age != null && $this->expired($max_age))) {
 			$this->load();
 		}
-		return isset($this->data[$type]) ? $this->data[$type] : array();
+		if ($category == null) {
+			$ret = isset($this->data[$type]) ? $this->data[$type] : array();
+		}
+		else {
+			$ret = isset($this->data[$type][$category]) ? $this->data[$type][$category] : array();
+		}
+		return $ret;
 	}
 }
 ?>

@@ -2788,7 +2788,6 @@ elseif ($job == 'package_updates') {
 	}
 	ok('admin.php?action=packages&job=package_info&id='.$id, 'The package was not found on one of the known servers.', 3000);
 }
-/*
 elseif ($job == 'browser') {
 	$pb = $scache->load('package_browser');
 	$types = $pb->types();
@@ -2812,8 +2811,7 @@ elseif ($job == 'browser') {
 	<?php
 	echo foot();
 }
-*/
-elseif ($job == 'browser') { // elseif ($job == 'browser_list') {
+elseif ($job == 'browser_list') {
 	$type = $gpc->get('type', int, IMPTYPE_PACKAGE);
 	$pb = $scache->load('package_browser');
 	$data = $pb->get($type);

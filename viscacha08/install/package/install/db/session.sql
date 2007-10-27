@@ -7,11 +7,11 @@ CREATE TABLE `{:=DBPREFIX=:}session` (
   `ip` varchar(16) NOT NULL default '',
   `user_agent` text NOT NULL,
   `lastvisit` int(10) unsigned NOT NULL default '0',
-  `mark` mediumtext NOT NULL,
+  `mark` longtext NOT NULL,
   `sid` varchar(128) NOT NULL default '',
   `is_bot` mediumint(6) unsigned NOT NULL default '0',
-  `pwfaccess` text NOT NULL,
-  `settings` text NOT NULL,
+  `pwfaccess` tinytext NOT NULL,
+  `settings` tinytext NOT NULL,
   KEY `mid` (`mid`),
   KEY `sid` (`sid`)
 ) TYPE=MyISAM;

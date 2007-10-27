@@ -1,4 +1,6 @@
 <?php
+if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
+
 function getLangVarsHelp() {
 	$var = 'The language system supports the variable insertion of wildcard-characters in phrases and texts. All wildcards will be bracket by { and }. You can use the variables from PHP as follows:<br />';
 	$var .= 'Normal variables of the type <code>$var</code> will become <code>{$var}</code>,<br />';

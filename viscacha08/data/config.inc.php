@@ -179,6 +179,13 @@ $config['updatepostcounter'] = 1;
 $config['vcard_dl'] = 1;
 $config['vcard_dl_guests'] = 0;
 $config['version'] = '0.8 RC3';
+$config['viscacha_addreply_last_replies']['repliesnum'] = '5';
+$config['viscacha_news_boxes']['cutat'] = 'teaser';
+$config['viscacha_news_boxes']['items'] = '5';
+$config['viscacha_news_boxes']['teaserlength'] = '300';
+$config['viscacha_recent_topics']['topicnum'] = '10';
+$config['viscacha_related_topics']['hide_empty'] = '1';
+$config['viscacha_related_topics']['relatednum'] = '5';
 $config['wordstatus'] = 1;
 $config['wordwrap'] = 1;
 ?>
