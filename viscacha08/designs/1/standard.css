@@ -45,13 +45,6 @@ hr {
 	border-bottom: 1px #839FBC solid;
 }
 
-.hiddenl ul {
-	margin: 0px;
-	padding: 0px;
-	list-style-type: none;
-	list-style-image: none;
-}
-
 .stext {
 	font-size: 8pt;
 	font-weight: normal;
@@ -127,17 +120,11 @@ h1 a, h1 a:hover {
 	border-top: 1px solid #839FBC;
 }
 .bbody ul, .bbody ol, .tbody ul, .tbody ol {
-	margin: 0px;
-	padding: 0px;
-	margin-bottom: 2px;
-	margin-top: 2px;
-	padding-left: 26px;
+	margin: 20px 0px 2px 0px;
+	padding: 0px 0px 0px 26px;
 }
 .bbody ul, .tbody ul {
 	list-style-image: url(standard/list.gif);
-}
-.bbody ol, .tbody ol {
-	list-style-image: none;
 }
 .bfoot {
 	background-color: #E1E8EF;
@@ -230,15 +217,6 @@ h1 a, h1 a:hover {
 
 .navigation_cat h3 {
 	border-bottom: 1px solid #839FBC;
-}
-
-.newsfeed_box {
-	font-size: 8pt;
-}
-.newsfeed_box_multi {
-	overflow:hidden;
-	width:145px;
-	height:5em;
 }
 
 #blank h3, #content h3, .outline {
