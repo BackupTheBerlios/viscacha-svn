@@ -30,9 +30,9 @@ if ($job == 'manage') {
     <td valign="bottom"><b>Name<br />Public Title</b></td>
 	<td valign="bottom"><b>ID</b></td>
 	<?php foreach ($gls as $txt) { ?>
-   	<td valign="bottom"><?php txt2img($txt); ?></td>
+   	<td valign="bottom"><img src="images.php?action=textimage&amp;text=<?php echo rawurlencode($txt); ?>&amp;angle=90&amp;bg=<?php echo $txt2img_bg; ?>&amp;fg=<?php echo $txt2img_fg; ?>" border="0"></td>
 	<?php } ?>
-   	<td valign="bottom"><?php txt2img('Floodcheck (sec.)'); ?></td>
+   	<td valign="bottom"><img src="images.php?action=textimage&amp;text=<?php echo rawurlencode('Floodcheck (sec.)'); ?>&amp;angle=90&amp;bg=<?php echo $txt2img_bg; ?>&amp;fg=<?php echo $txt2img_fg; ?>" border="0"></td>
   </tr>
   <?php
   foreach ($cache as $row) {

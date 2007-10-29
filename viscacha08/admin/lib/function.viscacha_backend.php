@@ -380,18 +380,6 @@ function pages ($anzposts, $uri, $teiler=50) {
 	return $p;
 }
 
-
-function txt2img ($text, $op=null) {
-	global $txt2img_fg, $txt2img_bg;
-	$imgtag = '<img src="classes/graphic/text2image.php?text='.rawurlencode($text).'&amp;angle=90&amp;bg='.$txt2img_bg.'&amp;fg='.$txt2img_fg.'" border="0">';
-	if ($op == null) {
-		echo $imgtag;
-	}
-	else {
-		return $imgtag;
-	}
-}
-
 function head($onload = '') {
 	global $htmlhead, $config;
 	?>

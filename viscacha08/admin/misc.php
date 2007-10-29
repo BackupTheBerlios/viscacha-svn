@@ -568,7 +568,7 @@ elseif ($job == "captcha_fonts") {
   <?php foreach ($fonts as $path) { ?>
   <tr>
    <td class="mbox"><input type="checkbox" name="delete[]" value="<?php echo basename($path, ".ttf"); ?>" /></td>
-   <td class="mbox"><img border="1" src="classes/graphic/text2image.php?file=<?php echo basename($path, ".ttf"); ?>&amp;text=1234567890&amp;size=30" /></td>
+   <td class="mbox"><img border="1" src="images.php?action=textimage&amp;file=<?php echo basename($path, ".ttf"); ?>&amp;text=1234567890&amp;size=30" /></td>
   </tr>
   <?php } ?>
   <tr>

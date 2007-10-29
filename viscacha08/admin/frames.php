@@ -223,6 +223,7 @@ if ($job == 'menu') {
 	   <li>&raquo; <a href="index.php<?php echo SID2URL_1; ?>" target="_blank"><?php echo $lang->phrase("admin_goto_forum");?></a></li>
 	   <li>&raquo; <a href="admin.php?action=misc&amp;job=phpinfo" target="Main"><?php echo $lang->phrase("admin_php_info");?></a></li>
 	   <li>&raquo; <a href="admin.php?action=logout<?php echo SID2URL_x; ?>" target="_top"><?php echo $lang->phrase("admin_signoff");?></a></li>
+	   <li>&raquo; <a href="http://www.viscacha.org" target="_blank"><?php echo $lang->phrase("admin_supportlink");?></a></li>
 	  </ul>
 	 </div>
 	 <?php } ($code = $plugins->load('admin_navigation')) ? eval($code) : null; ?>

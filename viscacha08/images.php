@@ -103,6 +103,35 @@ elseif ($_GET['action'] == 'captcha') {
 	send_nocache_header();
 	$vword->output_image($_GET['captcha']);
 }
+elseif ($_GET['action'] == 'textimage') {
+	require('classes/graphic/class.text2image.php');
+
+	$img = new text2image();
+	if (empty($_GET['angle'])) {
+		$_GET['angle'] = 0;
+	}
+	if (empty($_GET['size']) || $_GET['size'] < 6) {
+		$_GET['size'] = 10;
+	}
+	if (!empty($_GET['bg']) && strlen($_GET['bg']) > 2) {
+		$bg = $_GET['bg'];
+	}
+	else {
+		$bg = 'ffffff';
+	}
+	if (!empty($_GET['fg']) && strlen($_GET['fg']) > 2) {
+		$fg = $_GET['fg'];
+	}
+	else {
+		$fg = '000000';
+	}
+	$img->prepare($_GET['text'], $_GET['angle'], $_GET['size'], 'classes/fonts/trebuchet.ttf');
+	if (!empty($_REQUEST['enc'])) {
+		$img->base64();
+	}
+	$img->build(4, $bg, $fg);
+	$img->output();
+}
 elseif ($_GET['action'] == 'postrating' || $_GET['action'] == 'memberrating' || $_GET['action'] == 'threadrating') {
 	$colors = array('FF0000', 'E44C00', 'E89A00', 'EBE700', '9EE800', '4DE400');
 

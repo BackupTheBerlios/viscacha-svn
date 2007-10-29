@@ -1048,7 +1048,9 @@ elseif ($job == 'rights') {
   	<td class="ubox" valign="bottom"><b>Delete</b><br /><span class="stext"><input type="checkbox" onclick="check_all('delete[]');" name="all" value="1" /> All</span></td>
     <td class="ubox" valign="bottom"><b>Name / Public Title</b></td>
     <?php foreach ($glk_forums as $key) { ?>
-   	<td class="ubox" valign="bottom" align="center"><?php txt2img($gls[$key]); ?></td>
+   	<td class="ubox" valign="bottom" align="center">
+   		<img src="images.php?action=textimage&amp;text=<?php echo rawurlencode($gls[$key]); ?>&amp;angle=90&amp;bg=<?php echo $txt2img_bg; ?>&amp;fg=<?php echo $txt2img_fg; ?>" border="0">
+   	</td>
 	<?php } ?>
   </tr>
   <?php

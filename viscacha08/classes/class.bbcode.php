@@ -196,7 +196,7 @@ class BBCode {
 	function cb_mail ($email) {
 		global $lang;
 		list(,$email) = $email;
-		$html = '<img alt="'.$lang->phrase('bbcodes_email').'" src="classes/graphic/text2image.php?text='.base64_encode($email).'&amp;enc=1" border="0" />';
+		$html = '<img alt="'.$lang->phrase('bbcodes_email').'" src="images.php?action=textimage&amp;text='.base64_encode($email).'&amp;enc=1" border="0" />';
 	   	return $html;
 	}
 	function cb_header ($matches) {
