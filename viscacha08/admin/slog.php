@@ -1,6 +1,9 @@
 <?php
 if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
 
+// MB: MultiLangAdmin
+$lang->group("admin/slog");
+
 function getmonth($number) {
 	global $months;
 	$index = intval($number)-1;
@@ -29,23 +32,23 @@ if ($job == 'empty') {
 	}
 	if (isset($filename) && file_exists($filename)) {
 	    $filesystem->file_put_contents($filename, '');
-	    ok('admin.php?action=slog&job='.$file, 'Logfile was successfully deleted');
+	    ok('admin.php?action=slog&job='.$file, $lang->phrase('admin_slog_logfile_deleted'));
 	}
 	else {
-        error('admin.php?action=slog&job='.$file, 'Logfile not found');
+        error('admin.php?action=slog&job='.$file, $lang->phrase('admin_slog_logfile_not_found'));
 	}
 }
 elseif ($job == 'l_mysqlerror') {
     echo head();
 	$log = @file('data/errlog_'.$db->system.'.inc.php');
 	if (!is_array($log) || count($log) < 1) {
-		$log = 'Logfile is empty!';
+		$log = $lang->phrase('admin_slog_logfile_empty');
 	}
 	?>
 <form name="form" method="post" action="admin.php?action=slog&file=l_mysqlerror&job=empty">
  <table class="border">
   <tr>
-   <td class="obox" colspan="8">SQL-Error-Logfile</td>
+   <td class="obox" colspan="8"><?php echo $lang->phrase('admin_slog_sql_error_logfile'); ?></td>
   </tr>
    <?php
 	if (!is_array($log)) {
@@ -54,10 +57,10 @@ elseif ($job == 'l_mysqlerror') {
 	else {
    ?>
    <tr class="ubox">
-    <td>Error report</td>
-    <td>Query</td>
-    <td>Information</td>
-    <td>Date</td>
+    <td><?php echo $lang->phrase('admin_slog_error_report'); ?></td>
+    <td><?php echo $lang->phrase('admin_slog_query'); ?></td>
+    <td><?php echo $lang->phrase('admin_slog_information'); ?></td>
+    <td><?php echo $lang->phrase('admin_slog_date'); ?></td>
    </tr>
    <?php
    foreach ($log as $row) {
@@ -67,11 +70,11 @@ elseif ($job == 'l_mysqlerror') {
     <td><textarea cols="35" rows="3" class="stext"><?php echo $data[0]; ?>: <?php echo $data[1]; ?></textarea></td>
     <td><textarea cols="37" rows="3" class="stext"><?php echo $data[4]; ?></textarea></td>
     <td>
-<textarea cols="39" rows="3" class="stext">File: <?php echo $data[2]; ?>
+<textarea cols="39" rows="3" class="stext"><?php echo $lang->phrase('admin_slog_file').$data[2]; ?>
 
-Line: <?php echo $data[3]; ?>
+<?php echo $lang->phrase('admin_slog_line').$data[3]; ?>
 
-URL: <?php echo $data[5]; ?></textarea>
+<?php echo $lang->phrase('admin_slog_url').$data[5]; ?></textarea>
     </td>
     <td class="stext"><?php echo date("D, j M Y", $data[6]); ?><br /><?php echo date("G:i:s O", $data[6]); ?></td>
    </tr>
@@ -79,7 +82,7 @@ URL: <?php echo $data[5]; ?></textarea>
    </td>
   </tr>
   <tr>
-   <td class="ubox" align="center" colspan="8"><input type="submit" name="Submit" value="Delete the log file now!"></td>
+   <td class="ubox" align="center" colspan="8"><input type="submit" name="Submit" value="<?php echo $lang->phrase('admin_slog_delete_log_now'); ?>"></td>
   </tr>
  </table>
 </form>
@@ -90,7 +93,7 @@ elseif ($job == 'l_cron') {
 	echo head();
 	$log = @file('data/cron/cron.log');
 	if (!is_array($log) || count($log) < 1) {
-		$log = 'Logfile is empty!';
+		$log = $lang->phrase('admin_slog_logfile_empty');
 	}
 	else {
 		$log = "<pre>".implode("", $log)."</pre>";
@@ -99,13 +102,13 @@ elseif ($job == 'l_cron') {
 <form name="form" method="post" action="admin.php?action=slog&file=l_cron&job=empty">
  <table class="border">
   <tr>
-   <td class="obox">Scheduled Tasks: Log file</td>
+   <td class="obox"><?php echo $lang->phrase('admin_slog_scheduled_tasks'); ?></td>
   </tr>
   <tr>
    <td class="mbox"><?php echo $log; ?></td>
   </tr>
   <tr>
-   <td class="ubox" align="center"><input type="submit" name="Submit" value="Delete the log file now!"></td>
+   <td class="ubox" align="center"><input type="submit" name="Submit" value="<?php echo $lang->phrase('admin_slog_delete_log_now'); ?>"></td>
   </tr>
  </table>
 </form>
@@ -126,23 +129,23 @@ elseif ($job == 's_general_image') {
 		case 1:
 			$table = $db->pre."user";
 			$datefield = "regdate";
-			$stats_name = 'Registration';
+			$stats_name = $lang->phrase('admin_slog_registration');
 		break;
 		case 2:
 			$table = $db->pre."topics";
 			$datefield = "date";
-			$stats_name = 'Topics';
+			$stats_name = $lang->phrase('admin_slog_topics');
 		break;
 		case 3:
 			$table = $db->pre."replies";
 			$datefield = "date";
-			$stats_name = 'Posts';
+			$stats_name = $lang->phrase('admin_slog_posts');
 		break;
 		default:
 			$table = $db->pre."pm";
 			$datefield = "date";
 			$sql = ' AND dir != "2" ';
-			$stats_name = 'Private Messages';
+			$stats_name = $lang->phrase('admin_slog_private_messages');
 		break;
 	}
 
@@ -235,19 +238,19 @@ elseif ($job == 's_general') {
 <form method="post" action="admin.php?action=slog&job=s_general&show=1">
  <table border="0" class="border">
   <tr class="obox">
-   <td colspan="2">Generate Statistics</td>
+   <td colspan="2"><?php echo $lang->phrase('admin_slog_generate_statistics'); ?></td>
   </tr>
   <tr class="mbox">
-   <td>Contents of the statistics:</td>
+   <td><?php echo $lang->phrase('admin_slog_statistics_contents'); ?></td>
    <td><select name="dtype">
-    <option value="1"<?php echo iif($type == 1,' selected="selected"'); ?>>Registration</option>
-    <option value="2"<?php echo iif($type == 2,' selected="selected"'); ?>>Topics</option>
-    <option value="3"<?php echo iif($type == 3,' selected="selected"'); ?>>Posts</option>
-    <option value="4"<?php echo iif($type == 4,' selected="selected"'); ?>>Private Messages</option>
+    <option value="1"<?php echo iif($type == 1,' selected="selected"'); ?>><?php echo $lang->phrase('admin_slog_registration'); ?></option>
+    <option value="2"<?php echo iif($type == 2,' selected="selected"'); ?>><?php echo $lang->phrase('admin_slog_topics'); ?></option>
+    <option value="3"<?php echo iif($type == 3,' selected="selected"'); ?>><?php echo $lang->phrase('admin_slog_posts'); ?></option>
+    <option value="4"<?php echo iif($type == 4,' selected="selected"'); ?>><?php echo $lang->phrase('admin_slog_private_messages'); ?></option>
    </select></td>
   </tr>
   <tr class="mbox">
-   <td>Statistics starting at the...</td>
+   <td><?php echo $lang->phrase('admin_slog_statistics_start'); ?></td>
    <td>
    <select name="from_day">
 	<?php
@@ -282,7 +285,7 @@ elseif ($job == 's_general') {
    </td>
   </tr>
   <tr class="mbox">
-   <td>Statistics ending at the...</td>
+   <td><?php echo $lang->phrase('admin_slog_statistics_end'); ?></td>
    <td>
    <select name="to_day">
 	<?php
@@ -317,22 +320,22 @@ elseif ($job == 's_general') {
    </td>
   </tr>
   <tr class="mbox">
-   <td>Time interval:</td>
+   <td><?php echo $lang->phrase('admin_slog_time_interval'); ?></td>
    <td><select name="timeorder">
-    <option value="1"<?php echo iif($timeorder == 1,' selected="selected"'); ?>>Daily</option>
-    <option value="2"<?php echo iif($timeorder == 2,' selected="selected"'); ?>>Weekly</option>
-    <option value="3"<?php echo iif($timeorder == 3,' selected="selected"'); ?>>Monthly</option>
+    <option value="1"<?php echo iif($timeorder == 1,' selected="selected"'); ?>><?php echo $lang->phrase('admin_slog_daily'); ?></option>
+    <option value="2"<?php echo iif($timeorder == 2,' selected="selected"'); ?>><?php echo $lang->phrase('admin_slog_weekly'); ?></option>
+    <option value="3"<?php echo iif($timeorder == 3,' selected="selected"'); ?>><?php echo $lang->phrase('admin_slog_monthly'); ?></option>
    </select></td>
   </tr>
   <tr class="mbox">
-   <td>Sorting</td>
+   <td><?php echo $lang->phrase('admin_slog_sorting'); ?></td>
    <td><select name="sortorder">
-    <option value="asc"<?php echo iif($sortorder == 'asc',' selected="selected"'); ?>>Ascending</option>
-    <option value="desc"<?php echo iif($sortorder == 'desc',' selected="selected"'); ?>>Descending</option>
+    <option value="asc"<?php echo iif($sortorder == 'asc',' selected="selected"'); ?>><?php echo $lang->phrase('admin_slog_ascending'); ?></option>
+    <option value="desc"<?php echo iif($sortorder == 'desc',' selected="selected"'); ?>><?php echo $lang->phrase('admin_slog_descending'); ?></option>
    </select></td>
   </tr>
   <tr class="mbox">
-   <td>Type</td>
+   <td><?php echo $lang->phrase('admin_slog_type'); ?></td>
    <td><select name="modus">
 <?php foreach ($PG->available_types as $code => $type) { ?>
     <option value="<?php echo $code; ?>"<?php echo iif($code == $modus, ' selected="selected"'); ?>><?php echo $type; ?></option>
@@ -340,7 +343,7 @@ elseif ($job == 's_general') {
 </select></td>
   </tr>
   <tr class="mbox">
-   <td>Skin</td>
+   <td><?php echo $lang->phrase('admin_slog_skin'); ?></td>
    <td><select name="skin">
 <?php foreach ($PG->available_skins as $code => $color) { ?>
     <option value="<?php echo $code; ?>"<?php echo iif($code == $skin, ' selected="selected"'); ?>><?php echo $color; ?></option>
@@ -348,7 +351,7 @@ elseif ($job == 's_general') {
 </select></td>
   </tr>
   <tr class="ubox">
-   <td colspan="2" align="center"><input type="submit" value="Generate" /></td>
+   <td colspan="2" align="center"><input type="submit" value="<?php echo $lang->phrase('admin_slog_generate'); ?>" /></td>
   </tr>
  </table>
 </form>
@@ -362,10 +365,10 @@ if ($show == 1) {
 ?>
 <table border="0" class="border">
   <tr class="obox">
-   <td>Generated Statistics</td>
+   <td><?php echo $lang->phrase('admin_slog_generated_statistics'); ?></td>
   </tr>
   <tr class="mbox">
-   <td><a href="<?php echo $url; ?>"><img src="<?php echo $url; ?>" style="border: 1px solid #000000;" alt="Statistics"></a></td>
+   <td><a href="<?php echo $url; ?>"><img src="<?php echo $url; ?>" style="border: 1px solid #000000;" alt="<?php echo $lang->phrase('admin_slog_statistics'); ?>"></a></td>
   </tr>
 </table>
 <?php
@@ -397,30 +400,30 @@ if ($show == 1) {
 ?>
  <table class="border">
   <tr>
-   <td class="obox">General Statistics</td>
+   <td class="obox"><?php echo $lang->phrase('admin_slog_general_statistics'); ?></td>
   </tr>
   <tr>
    <td class="mbox">
 	<table class="inlinetable">
 	<tr>
-	  <td>Members:</td><td><code><?php echo $members[0];?></code></td>
+	  <td><?php echo $lang->phrase('admin_slog_members'); ?></td><td><code><?php echo $members[0];?></code></td>
 	  <td colspan="2">&nbsp;</td>
 	</tr>
 	<tr>
-	  <td>Posts:</td><td><code><?php echo $posts[0];?></code></td>
-	  <td>Attachments:</td><td><code><?php echo $uploads[0];?></code></td>
+	  <td><?php echo $lang->phrase('admin_slog_posts2'); ?></td><td><code><?php echo $posts[0];?></code></td>
+	  <td><?php echo $lang->phrase('admin_slog_attachments'); ?></td><td><code><?php echo $uploads[0];?></code></td>
 	</tr>
 	<tr>
-	  <td>Threads:</td><td><code><?php echo $topics[0];?></code></td>
-	  <td>Replies:</td><td><code><?php echo $replies;?></code></td>
+	  <td><?php echo $lang->phrase('admin_slog_threads'); ?></td><td><code><?php echo $topics[0];?></code></td>
+	  <td><?php echo $lang->phrase('admin_slog_replies'); ?></td><td><code><?php echo $replies;?></code></td>
 	</tr>
 	<tr>
-	  <td>Subscriptions:</td><td><code><?php echo $abos[0];?></code></td>
-	  <td>Favourite threads:</td><td><code><?php echo $favs[0];?></code></td>
+	  <td><?php echo $lang->phrase('admin_slog_subscriptions'); ?></td><td><code><?php echo $abos[0];?></code></td>
+	  <td><?php echo $lang->phrase('admin_slog_favourite_threads'); ?></td><td><code><?php echo $favs[0];?></code></td>
 	</tr>
 	<tr>
-	  <td width="25%">Votes:</td><td width="25%"><code><?php echo $vote[0];?></code></td>
-	  <td width="25%">Participants in the votes:</td><td width="25%"><code><?php echo $votes[0];?></code></td>
+	  <td width="25%"><?php echo $lang->phrase('admin_slog_votes'); ?></td><td width="25%"><code><?php echo $vote[0];?></code></td>
+	  <td width="25%"><?php echo $lang->phrase('admin_slog_participants'); ?></td><td width="25%"><code><?php echo $votes[0];?></code></td>
 	</tr>
 	</table>
    </td>
