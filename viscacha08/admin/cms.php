@@ -138,6 +138,16 @@ function BBCodeToolBox() {
 </table>
 	<?php
 }
+function parseNavPosSetting() {
+	global $admconfig;
+	$explode = preg_split("~(\r\n|\r|\n)+~", trim($admconfig['nav_positions']));
+	$arr = array();
+	foreach ($explode as $val) {
+		$dat = explode('=', $val, 2);
+		$arr[$dat[0]] = $dat[1];
+	}
+	return $arr;
+}
 
 ($code = $plugins->load('admin_cms_jobs')) ? eval($code) : null;
 
@@ -147,22 +157,19 @@ if ($job == 'nav') {
 ?>
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr>
-   <td class="obox" colspan="4">
-   	<span style="float: right;">
-   	<a class="button" href="admin.php?action=cms&job=nav_add">Add Link</a>
-   	<a class="button" href="admin.php?action=cms&job=nav_addbox">Add Box</a>
-   	<a class="button" href="admin.php?action=cms&job=nav_addplugin">Add Plugin</a>
-   	</span>Manage Navigation
-   </td>
+   <td class="obox">Manage Navigation</td>
   </tr>
   <tr>
-   <td class="ubox">Link</td>
-   <td class="ubox">Status</td>
-   <td class="ubox">Order</td>
-   <td class="ubox">Action</td>
+   <td class="mbox center">
+   	<a class="button" href="admin.php?action=cms&amp;job=nav_add">Add Link</a>
+   	<a class="button" href="admin.php?action=cms&amp;job=nav_addbox">Add Box</a>
+   	<a class="button" href="admin.php?action=cms&amp;job=nav_addplugin">Add Plugin</a>
+   </td>
   </tr>
+ </table>
+ <br />
 <?php
-	$result = $db->query("SELECT * FROM {$db->pre}menu ORDER BY ordering, id", __LINE__, __FILE__);
+	$result = $db->query("SELECT * FROM {$db->pre}menu ORDER BY position, ordering, id", __LINE__, __FILE__);
 	$sqlcache = array();
 	$cat = array();
 	$sub = array();
@@ -178,8 +185,27 @@ if ($job == 'nav') {
 			$cat[] = $row;
 		}
 	}
-
+	$pos = parseNavPosSetting();
+	$last = null;
 	foreach ($cat as $head) {
+		if ($head['position'] != $last) {
+			if ($last != null) {
+				echo '</table><br class="minibr" />';
+			}
+			?>
+		 <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
+		  <tr>
+		   <td class="obox" colspan="4">Position: <?php echo $pos[$head['position']]; ?></td>
+		  </tr>
+		  <tr>
+		   <td class="ubox">Link</td>
+		   <td class="ubox">Status</td>
+		   <td class="ubox">Order</td>
+		   <td class="ubox">Action</td>
+		  </tr>
+			<?php
+			$last = $head['position'];
+		}
 		$type = array();
 		if ($head['module'] > 0) {
 			$type[] = '<em>Plugin</em>';
@@ -190,7 +216,7 @@ if ($job == 'nav') {
 	?>
 	<tr class="mmbox">
 	<td width="50%">
-	<?php echo $head['name']; ?><?php echo iif(count($type) > 0, ' ('.implode('; ', $type).')' ); ?>
+	<?php echo navLang($head['name']); ?><?php echo iif(count($type) > 0, ' ('.implode('; ', $type).')' ); ?>
 	</td>
 	<td width="10%">
 	<?php
@@ -219,11 +245,11 @@ if ($job == 'nav') {
 			<td width="50%">&nbsp;&middot;&nbsp;
 			<?php
 			if (empty($link['link'])) {
-				echo $link['name'];
+				echo navLang($link['name']);
 			}
 			else {
 				?>
-				<a href="<?php echo $link['link']; ?>" target="<?php echo $link['param']; ?>"><?php echo $link['name']; ?></a>
+				<a href="<?php echo $link['link']; ?>" target="<?php echo $link['param']; ?>"><?php echo navLang($link['name']); ?></a>
 				<?php } echo iif ($link['active'] == '0', ' (<em>Inactive</em>)'); ?><br />
 				</td>
 				<td class="mbox" width="10%">
@@ -253,11 +279,11 @@ if ($job == 'nav') {
 						<td width="50%">&nbsp;&nbsp;&nbsp;<img src='admin/html/images/list.gif' border="0" alt="">&nbsp;
 						<?php
 						if (empty($sublink['link'])) {
-							echo $sublink['name'];
+							echo navLang($sublink['name']);
 						}
 						else {
 							?>
-							<a href='<?php echo $sublink['link']; ?>' target='<?php echo $sublink['param']; ?>'><?php echo $sublink['name']; ?></a>
+							<a href='<?php echo $sublink['link']; ?>' target='<?php echo $sublink['param']; ?>'><?php echo navLang($sublink['name']); ?></a>
 							<?php } echo iif ($sublink['active'] == '0', ' (<i>Inactive</i>)'); ?></font><br>
 							</td>
 							<td class="mbox" width="10%">
@@ -285,7 +311,7 @@ if ($job == 'nav') {
 			}
 		}
 	}
-	?></table><?php
+	echo '</table>';
 	echo foot();
 }
 elseif ($job == 'nav_edit') {
@@ -294,11 +320,12 @@ elseif ($job == 'nav_edit') {
 	$result = $db->query("SELECT * FROM {$db->pre}menu WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	$data = $db->fetch_assoc($result);
 	$data['group_array'] = explode(',', $data['groups']);
+	$pos = parseNavPosSetting();
 
 	$groups = $db->query("SELECT id, name FROM {$db->pre}groups", __LINE__, __FILE__);
 
 	if ($data['sub'] > 0) {
-		$result = $db->query("SELECT id, name, sub FROM {$db->pre}menu WHERE module = '0' ORDER BY ordering, id", __LINE__, __FILE__);
+		$result = $db->query("SELECT id, name, sub, position FROM {$db->pre}menu WHERE module = '0' ORDER BY position, ordering, id", __LINE__, __FILE__);
 		$cache = array(0 => array());
 		while ($row = $db->fetch_assoc($result)) {
 			if (!isset($cache[$row['sub']]) || !is_array($cache[$row['sub']])) {
@@ -311,6 +338,8 @@ elseif ($job == 'nav_edit') {
 	if ($data['module'] > 0) {
 		$plugs = $db->query("SELECT * FROM {$db->pre}plugins WHERE position = 'navigation' ORDER BY ordering", __LINE__, __FILE__);
 	}
+
+	$last = null;
 	?>
 <form name="form" method="post" action="admin.php?action=cms&job=nav_edit2&id=<?php echo $id; ?>">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
@@ -318,7 +347,7 @@ elseif ($job == 'nav_edit') {
    <td class="obox" colspan="2">Edit <?php echo iif ($data['sub'] > 0, 'link', 'box'); ?></td>
   </tr>
   <tr>
-   <td class="mbox" width="50%">Title:</td>
+   <td class="mbox" width="50%">Title:<br /><span class="stext">To use phrases from the custom language file for this entry simply use the follwoing code: <code>lang->key</code>. <code>key</code> is the key of the phrase you want to use. To manage the phrases just <a href="admin.php?action=language&amp;job=phrase_file&amp;file=Y3VzdG9tLmxuZy5waHA%3D" target="_blank">edit the custom language file</a>.</span></td>
    <td class="mbox" width="50%"><input type="text" name="title" size="40" value="<?php echo $data['name']; ?>" /></td>
   </tr>
 <?php if ($data['sub'] > 0) { ?>
@@ -338,14 +367,26 @@ elseif ($job == 'nav_edit') {
    <td class="mbox" width="50%">Parent Box/Link:</td>
    <td class="mbox" width="50%">
    <select name="sub">
-   <?php foreach ($cache[0] as $row) { ?>
-   <option style="font-weight: bold;" value="<?php echo $row['id']; ?>"<?php echo iif($row['id'] == $data['sub'], ' selected="selected"'); ?>><?php echo $row['name']; ?></option>
-   <?php
-   if (isset($cache[$row['id']])) {
-   foreach ($cache[$row['id']] as $row) {
-   ?>
-   <option value="<?php echo $row['id']; ?>"<?php echo iif($row['id'] == $data['sub'], ' selected="selected"'); ?>>+&nbsp;<?php echo $row['name']; ?></option>
-   <?php }}} ?>
+   	<?php
+	foreach ($cache[0] as $row) {
+	   	if ($last != $row['position']) {
+	   		if ($last != null) {
+				echo '</optgroup>';
+	   		}
+	   		$last = $row['position'];
+	   		echo '<optgroup label="'.htmlspecialchars($pos[$last], ENT_QUOTES).'">';
+	   	}
+   		$select = iif($row['id'] == $data['sub'], ' selected="selected"');
+   		echo '<option style="font-weight: bold;" value="'.$row['id'].'"'.$select.'>'.navLang($row['name']).'</option>';
+   		if (isset($cache[$row['id']])) {
+   			foreach ($cache[$row['id']] as $row) {
+   				$select = iif($row['id'] == $data['sub'], ' selected="selected"');
+   				echo '<option value="'.$row['id'].'"'.$select.'>+&nbsp;'.navLang($row['name']).'</option>';
+   			}
+   		}
+	}
+	?>
+	</optgroup>
    </select>
    </td>
   </tr>
@@ -407,7 +448,9 @@ elseif ($job == 'nav_edit2') {
 		$target = $gpc->get('target', str);
 		$url = $gpc->get('url', str);
 		$sub = $gpc->get('sub', int);
-		$db->query("UPDATE {$db->pre}menu SET name = '{$title}', link = '{$url}', param = '{$target}', groups = '{$groups}', sub = '{$sub}', active = '{$active}' WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
+		$result = $db->query("SELECT position FROM {$db->pre}menu WHERE id = '{$sub}'");
+		$pos = $gpc->save_str($db->fetch_assoc($result));
+		$db->query("UPDATE {$db->pre}menu SET name = '{$title}', link = '{$url}', param = '{$target}', groups = '{$groups}', sub = '{$sub}', active = '{$active}', position = '{$pos['position']}' WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	}
 	else {
 		if ($data['module'] > 0) {
@@ -520,21 +563,22 @@ elseif ($job == 'nav_active') {
 elseif ($job == 'nav_addplugin') {
 	echo head();
 	$id = $gpc->get('id', int);
-	$sort = $db->query("SELECT ordering, name FROM {$db->pre}menu WHERE sub = '0' ORDER BY ordering, id", __LINE__, __FILE__);
+	$sort = $db->query("SELECT id, name, position FROM {$db->pre}menu WHERE sub = '0' ORDER BY ordering, id", __LINE__, __FILE__);
 	$plugs = $db->query("SELECT id, name FROM {$db->pre}plugins WHERE position = 'navigation' ORDER BY ordering", __LINE__, __FILE__);
 	$groups = $db->query("SELECT id, name FROM {$db->pre}groups", __LINE__, __FILE__);
+	$pos = parseNavPosSetting();
 	?>
 <form name="form" method="post" action="admin.php?action=cms&job=nav_addplugin2">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr>
-   <td class="obox" colspan="2">Add Plugin to navigation</td>
+   <td class="obox" colspan="2">Add Plugin to Navigation</td>
   </tr>
   <tr>
    <td class="mbox" width="50%">Title:<br /><span class="stext">Leave empty to use default.</span></td>
    <td class="mbox" width="50%"><input type="text" name="title" size="40" /></td>
   </tr>
   <tr>
-   <td class="mbox" width="50%">PlugIn:</td>
+   <td class="mbox" width="50%">Plugin:</td>
    <td class="mbox" width="50%">
    <select name="plugin">
    <?php while ($row = $db->fetch_assoc($plugs)) { ?>
@@ -547,9 +591,29 @@ elseif ($job == 'nav_addplugin') {
    <td class="mbox" width="50%">Sort in after:</td>
    <td class="mbox" width="50%">
    <select name="sort">
-   <?php while ($row = $db->fetch_assoc($sort)) { ?>
-	<option value="<?php echo $row['ordering']; ?>"><?php echo $row['name']; ?></option>
-   <?php } ?>
+   	<?php
+   	$last = null;
+   	while ($row = $db->fetch_assoc($sort)) {
+	   	if ($last != $row['position']) {
+	   		if ($last != null) {
+				echo '</optgroup>';
+	   		}
+	   		$last = $row['position'];
+	   		echo '<optgroup label="'.htmlspecialchars($pos[$last], ENT_QUOTES).'">';
+	   		unset($pos[$last]);
+	   	}
+   		echo '<option value="'.$row['id'].'">'.navLang($row['name']).'</option>';
+	}
+	foreach ($pos as $key => $name) {
+		?>
+		</optgroup>
+		<optgroup label="<?php echo htmlspecialchars($name, ENT_QUOTES); ?>">
+		<option value="pos_<?php echo $key; ?>">&lt; Sort in here &gt;</option>
+		<?php
+	}
+	?>
+	</optgroup>
+   </select>
    </select>
    </td>
   </tr>
@@ -579,7 +643,17 @@ elseif ($job == 'nav_addplugin2') {
 	if (empty($title)) {
 		$title = $data['name'];
 	}
-	$sort = $gpc->get('sort', int);
+	$sort = $gpc->get('sort', str);
+	if (substr($sort, 0, 4) == 'pos_') {
+		$sort = array(
+			'ordering' => 0,
+			'position' => substr($sort, 4)
+		);
+	}
+	else {
+		$result = $db->query("SELECT ordering, position FROM {$db->pre}menu WHERE id = '{$sort}'");
+		$sort = $db->fetch_assoc($result);
+	}
 	$groups = $gpc->get('groups', arr_int);
 	$result = $db->query('SELECT COUNT(*) FROM '.$db->pre.'groups', __LINE__, __FILE__);
 	$count = $db->fetch_num($result);
@@ -589,15 +663,15 @@ elseif ($job == 'nav_addplugin2') {
 	else {
 		$groups = implode(',', $groups);
 	}
-	$db->query("INSERT INTO {$db->pre}menu (name, groups, ordering, active, module) VALUES ('{$title}','{$groups}','{$sort}','{$data['active']}','{$data['id']}')", __LINE__, __FILE__);
+	$db->query("INSERT INTO {$db->pre}menu (name, groups, ordering, active, module, position) VALUES ('{$title}','{$groups}','{$sort['ordering']}','{$data['active']}','{$data['id']}','{$sort['position']}')", __LINE__, __FILE__);
 	$delobj = $scache->load('modules_navigation');
 	$delobj->delete();
-	ok('admin.php?action=cms&job=nav', 'PlugIn successful added');
+	ok('admin.php?action=cms&job=nav', 'Plugin successful added');
 }
 elseif ($job == 'nav_add') {
 	echo head();
 	$groups = $db->query("SELECT id, name FROM {$db->pre}groups", __LINE__, __FILE__);
-	$result = $db->query("SELECT id, name, sub FROM {$db->pre}menu WHERE module = '0' ORDER BY ordering, id", __LINE__, __FILE__);
+	$result = $db->query("SELECT id, name, sub, position FROM {$db->pre}menu WHERE module = '0' ORDER BY position, ordering, id", __LINE__, __FILE__);
 	$cache = array(0 => array());
 	while ($row = $db->fetch_assoc($result)) {
 		if (!isset($cache[$row['sub']]) || !is_array($cache[$row['sub']])) {
@@ -605,6 +679,7 @@ elseif ($job == 'nav_add') {
 		}
 		$cache[$row['sub']][] = $row;
 	}
+	$pos = parseNavPosSetting();
 	?>
 <form name="form" method="post" action="admin.php?action=cms&job=nav_add2">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
@@ -612,7 +687,7 @@ elseif ($job == 'nav_add') {
    <td class="obox" colspan="2">Add a new link</td>
   </tr>
   <tr>
-   <td class="mbox" width="50%">Title:</td>
+   <td class="mbox" width="50%">Title:<br /><span class="stext">To use phrases from the custom language file for this entry simply use the follwoing code: <code>lang->key</code>. <code>key</code> is the key of the phrase you want to use. To manage the phrases just <a href="admin.php?action=language&amp;job=phrase_file&amp;file=Y3VzdG9tLmxuZy5waHA%3D" target="_blank">edit the custom language file</a>.</span></td>
    <td class="mbox" width="50%"><input type="text" name="title" size="40" /></td>
   </tr>
   <tr>
@@ -631,14 +706,25 @@ elseif ($job == 'nav_add') {
    <td class="mbox" width="50%">Parent Box/Link:</td>
    <td class="mbox" width="50%">
    <select name="sub">
-   <?php foreach ($cache[0] as $row) { ?>
-   <option style="font-weight: bold;" value="<?php echo $row['id']; ?>"><?php echo $row['name']; ?></option>
-   <?php
-   if (isset($cache[$row['id']])) {
-   foreach ($cache[$row['id']] as $row) {
-   ?>
-   <option value="<?php echo $row['id']; ?>">+&nbsp;<?php echo $row['name']; ?></option>
-   <?php }}} ?>
+   	<?php
+   	$last = null;
+   	foreach ($cache[0] as $row) {
+	   	if ($last != $row['position']) {
+	   		if ($last != null) {
+				echo '</optgroup>';
+	   		}
+	   		$last = $row['position'];
+	   		echo '<optgroup label="'.htmlspecialchars($pos[$last], ENT_QUOTES).'">';
+	   	}
+   		echo '<option style="font-weight: bold;" value="'.$row['id'].'">'.navLang($row['name']).'</option>';
+   		if (isset($cache[$row['id']])) {
+   			foreach ($cache[$row['id']] as $row) {
+   				echo '<option value="'.$row['id'].'">+&nbsp;'.navLang($row['name']).'</option>';
+   			}
+   		}
+	}
+	?>
+	</optgroup>
    </select>
    </td>
   </tr>
@@ -680,15 +766,16 @@ elseif ($job == 'nav_add2') {
 		error('admin.php?action=cms&job=nav_addbox', 'Sie haben keinen Titel angegeben.');
 	}
 	if ($sort == 1) {
-		$sortx = $db->fetch_num($db->query("SELECT MAX(ordering) FROM {$db->pre}menu WHERE sub = '{$sub}' LIMIT 1", __LINE__, __FILE__));
+		$sortx = $db->fetch_num($db->query("SELECT MAX(ordering), position FROM {$db->pre}menu WHERE sub = '{$sub}' GROUP BY ordering LIMIT 1", __LINE__, __FILE__));
 		$sort = $sortx[0]+1;
 	}
 	elseif ($sort == 0) {
-		$sortx = $db->fetch_num($db->query("SELECT MIN(ordering) FROM {$db->pre}menu WHERE sub = '{$sub}' LIMIT 1", __LINE__, __FILE__));
+		$sortx = $db->fetch_num($db->query("SELECT MIN(ordering), position FROM {$db->pre}menu WHERE sub = '{$sub}' GROUP BY ordering LIMIT 1", __LINE__, __FILE__));
 		$sort = $sortx[0]-1;
 	}
 	else {
 		$sort = 0;
+		$sortx = array(0, 'left');
 	}
 	$result = $db->query('SELECT COUNT(*) FROM '.$db->pre.'groups', __LINE__, __FILE__);
 	$count = $db->fetch_num($result);
@@ -698,15 +785,16 @@ elseif ($job == 'nav_add2') {
 	else {
 		$groups = implode(',', $groups);
 	}
-	$db->query("INSERT INTO {$db->pre}menu (name, groups, ordering, link, param, sub) VALUES ('{$title}','{$groups}','{$sort}','{$url}','{$target}','{$sub}')", __LINE__, __FILE__);
+	$db->query("INSERT INTO {$db->pre}menu (name, groups, ordering, link, param, sub, position) VALUES ('{$title}','{$groups}','{$sort}','{$url}','{$target}','{$sub}','{$sortx[1]}')", __LINE__, __FILE__);
 	$delobj = $scache->load('modules_navigation');
 	$delobj->delete();
 	ok('admin.php?action=cms&job=nav', 'Link successfully added.');
 }
 elseif ($job == 'nav_addbox') {
 	echo head();
-	$sort = $db->query("SELECT ordering, name FROM {$db->pre}menu WHERE sub = '0' ORDER BY ordering, id", __LINE__, __FILE__);
+	$sort = $db->query("SELECT id, name, position FROM {$db->pre}menu WHERE sub = '0' ORDER BY position, ordering, id", __LINE__, __FILE__);
 	$groups = $db->query("SELECT id, name FROM {$db->pre}groups", __LINE__, __FILE__);
+	$pos = parseNavPosSetting();
 	?>
 <form name="form" method="post" action="admin.php?action=cms&job=nav_addbox2">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
@@ -714,16 +802,35 @@ elseif ($job == 'nav_addbox') {
    <td class="obox" colspan="2">Create a new box</td>
   </tr>
   <tr>
-   <td class="mbox" width="50%">Title:</td>
+   <td class="mbox" width="50%">Title:<br /><span class="stext">To use phrases from the custom language file for this entry simply use the follwoing code: <code>lang->key</code>. <code>key</code> is the key of the phrase you want to use. To manage the phrases just <a href="admin.php?action=language&amp;job=phrase_file&amp;file=Y3VzdG9tLmxuZy5waHA%3D" target="_blank">edit the custom language file</a>.</span></td>
    <td class="mbox" width="50%"><input type="text" name="title" size="40" /></td>
   </tr>
   <tr>
    <td class="mbox" width="50%">Sort in after:</td>
    <td class="mbox" width="50%">
    <select name="sort">
-   <?php while ($row = $db->fetch_assoc($sort)) { ?>
-	<option value="<?php echo $row['ordering']; ?>"><?php echo $row['name']; ?></option>
-   <?php } ?>
+   	<?php
+   	$last = null;
+	while ($row = $db->fetch_assoc($sort)) {
+	   	if ($last != $row['position']) {
+	   		if ($last != null) {
+				echo '</optgroup>';
+	   		}
+	   		$last = $row['position'];
+	   		echo '<optgroup label="'.htmlspecialchars($pos[$last], ENT_QUOTES).'">';
+	   		unset($pos[$last]);
+	   	}
+   		echo '<option value="'.$row['id'].'">'.navLang($row['name']).'</option>';
+	}
+	foreach ($pos as $key => $name) {
+		?>
+		</optgroup>
+		<optgroup label="<?php echo htmlspecialchars($name, ENT_QUOTES); ?>">
+		<option value="pos_<?php echo $key; ?>">&lt; Sort in here &gt;</option>
+		<?php
+	}
+	?>
+	</optgroup>
    </select>
    </td>
   </tr>
@@ -749,7 +856,17 @@ elseif ($job == 'nav_addbox2') {
 	if (empty($title)) {
 		error('admin.php?action=cms&job=nav_addbox', 'Sie haben keinen Titel angegeben.');
 	}
-	$sort = $gpc->get('sort', int);
+	$sort = $gpc->get('sort', str);
+	if (substr($sort, 0, 4) == 'pos_') {
+		$sort = array(
+			'ordering' => 0,
+			'position' => substr($sort, 4)
+		);
+	}
+	else {
+		$result = $db->query("SELECT ordering, position FROM {$db->pre}menu WHERE id = '{$sort}'");
+		$sort = $db->fetch_assoc($result);
+	}
 	$groups = $gpc->get('groups', arr_int);
 	$result = $db->query('SELECT COUNT(*) FROM '.$db->pre.'groups', __LINE__, __FILE__);
 	$count = $db->fetch_num($result);
@@ -759,7 +876,7 @@ elseif ($job == 'nav_addbox2') {
 	else {
 		$groups = implode(',', $groups);
 	}
-	$db->query("INSERT INTO {$db->pre}menu (name, groups, ordering) VALUES ('{$title}','{$groups}','{$sort}')", __LINE__, __FILE__);
+	$db->query("INSERT INTO {$db->pre}menu (name, groups, ordering, position) VALUES ('{$title}','{$groups}','{$sort['ordering']}','{$sort['position']}')", __LINE__, __FILE__);
 	$delobj = $scache->load('modules_navigation');
 	$delobj->delete();
 	ok('admin.php?action=cms&job=nav', 'Box successfully added');

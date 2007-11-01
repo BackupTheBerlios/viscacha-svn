@@ -39,19 +39,6 @@ if (empty($config['dbpw']) || empty($config['dbuser'])) {
 
 include ("admin/lib/function.viscacha_backend.php");
 
-$benchmark = benchmarktime();
-
-$job = $gpc->get('job', str);
-
-$slog = new slog();
-$my = $slog->logged();
-$lang->init($my->language);
-$my->p = $slog->Permissions();
-
-if (!isset($my->settings['admin_interface'])) {
-	$my->settings['admin_interface'] = $admconfig['nav_interface'];
-}
-
 ($code = $plugins->load('admin_start')) ? eval($code) : null;
 
 if ($my->p['admin'] == 1) {

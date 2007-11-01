@@ -54,7 +54,7 @@ function custom_textarea($arr) {
 }
 function prepare_custom($str) {
 	$str = trim($str);
-	$explode = explode("\n", $str);
+	$explode = preg_split("~(\r\n|\r|\n)+~", $str);
 	$arr = array();
 	foreach ($explode as $val) {
 		$dat = explode('=', $val);

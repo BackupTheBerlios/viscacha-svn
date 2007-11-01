@@ -59,7 +59,7 @@ class PluginSystem {
 		return $this->_setup('install', $id);
 	}
 
-	function navigation() {
+	function navigation($position = 'left') {
 		global $tpl;
 
 		$group = 'navigation';
@@ -68,8 +68,8 @@ class PluginSystem {
 
 		$code = '';
 
-		if (isset($this->menu[0])) {
-			foreach ($this->menu[0] as $row) {
+		if (isset($this->menu[$position][0])) {
+			foreach ($this->menu[$position][0] as $row) {
 				if ($row['module'] > 0) {
 					if (isset($this->cache[$group]['navigation'][$row['module']]) && $this->_check_permissions($row['groups'])) {
 						$code .= $this->cache[$group]['navigation'][$row['module']];
@@ -77,9 +77,15 @@ class PluginSystem {
 				}
 				else {
 					if ($this->_check_permissions($row['groups'])) {
-						$navigation = $this->_prepare_navigation($row['id']);
+						$navigation = $this->_prepare_navigation($position, $row['id']);
+						$row['name'] = navLang($row['name']);
 						$tpl->globalvars(compact("row","navigation"));
-						$html = $tpl->parse("modules/navigation");
+						if ($tpl->exists("modules/navigation_".$position)) {
+							$html = $tpl->parse("modules/navigation_".$position);
+						}
+						else {
+							$html = $tpl->parse("modules/navigation");
+						}
 						$code .= " ?".">{$html}<"."?php \r\n";
 					}
 				}
@@ -128,15 +134,16 @@ class PluginSystem {
 		}
 	}
 
-	function _prepare_navigation($id) {
-		if (!isset($this->menu[$id])) {
+	function _prepare_navigation($position, $id) {
+		if (!isset($this->menu[$position][$id])) {
 			return array();
 		}
 		else {
 			$navigation = array();
-			foreach ($this->menu[$id] as $row) {
+			foreach ($this->menu[$position][$id] as $row) {
 				if ($this->_check_permissions($row['groups'])) {
-					$row['navigation'] = $this->_prepare_navigation($row['id']);
+					$row['navigation'] = $this->_prepare_navigation($position, $row['id']);
+					$row['name'] = navLang($row['name']);
 					$navigation[] = $row;
 				}
 			}

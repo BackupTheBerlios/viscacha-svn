@@ -26,6 +26,18 @@ if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
 
 require_once("classes/function.frontend_init.php");
 
+function navLang($key) {
+	global $lang;
+	$prefix = substr(strtolower($key), 0, 6);
+	if ($prefix == 'lang->') {
+		$suffix = substr($key, 6);
+		return $lang->phrase($suffix);
+	}
+	else {
+		return $key;
+	}
+}
+
 function getRedirectURL($standard = true) {
 	global $gpc;
 	$loc = strip_tags($gpc->get('redirect', none));
@@ -63,7 +75,6 @@ function getRedirectURL($standard = true) {
 function getRequestURI() {
 	global $config;
 	$method = (isset($_SERVER['REQUEST_METHOD']) && strtoupper($_SERVER['REQUEST_METHOD']) == 'GET');
-	var_dump($_SERVER['REQUEST_METHOD']);
 	if (empty($_SERVER['REQUEST_URI']) == false && $method == true) {
 		$request_uri = '';
 		$var = parse_url($config['furl']);

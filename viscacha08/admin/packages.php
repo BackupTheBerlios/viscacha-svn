@@ -2800,6 +2800,17 @@ elseif ($job == 'browser') {
 	$types = $pb->types();
 	$type = $gpc->get('type', int, IMPTYPE_PACKAGE);
 	$cats = $pb->categories($type);
+	// Calculate random entry
+	unset($cat);
+	while (empty($cat['entries'])) {
+		$keys = array_keys($cats);
+		shuffle($keys);
+		$rid = current($keys);
+		$cat = $pb->categories($type, $rid);
+	}
+	$e = $pb->get($type, $rid);
+	shuffle($e);
+	$random = current($e);
 	echo head();
 	?>
  <table class="border" border="0" cellspacing="0" cellpediting="4" align="center">
@@ -2810,7 +2821,7 @@ elseif ($job == 'browser') {
    <td class="ubox" width="50%"><strong>Categories:</strong></td>
    <td class="ubox" width="50%"><strong>Useful Links:</strong></td>
   <tr>
-   <td class="mbox" valign="top">
+   <td class="mbox" valign="top" rowspan="3">
 	<ul>
 		<?php foreach ($cats as $id => $row) { ?>
 		<li><a href="admin.php?action=packages&amp;job=browser_list&amp;type=<?php echo $type; ?>&amp;id=<?php echo $id; ?>"><?php echo $row['name']; ?></a> (<?php echo $row['entries']; ?>)</li>
@@ -2818,11 +2829,19 @@ elseif ($job == 'browser') {
 	</ul>
    </td>
    <td class="mbox" valign="top">
-	This is the Browser Overview Page :-)
 	<ul>
 		<li><a href="admin.php?action=packages&amp;job=browser_list&amp;type=<?php echo $type; ?>&amp;id=last">Recently updated <?php echo $types[$type]['name']; ?></a></li>
 		<li><a href="admin.php?action=settings&amp;job=admin">Change servers that offer <?php echo $types[$type]['name']; ?></a></li>
 	</ul>
+   </td>
+  </tr>
+  <tr>
+   <td class="ubox" valign="top"><?php echo ucfirst($types[$type]['name2']); ?> of the moment:</td>
+  </tr>
+  <tr>
+   <td class="mbox" valign="top">
+	<a href="admin.php?action=packages&amp;job=browser_detail&amp;id=<?php echo $random['internal']; ?>&amp;type=<?php echo $type; ?>"><strong><?php echo $random['title']; ?></strong> <?php echo $random['version']; ?></a><br />
+	<?php echo $random['summary']; ?>
    </td>
   </tr>
  </table>
@@ -2855,10 +2874,18 @@ elseif ($job == 'browser_list') {
 		$title = 'Recently updated '.$types[$type]['name'];
 	}
 
-	$result = $db->query("SELECT id, internal, version FROM {$db->pre}packages");
-	$installed = array();
-	while($row = $db->fetch_assoc($result)) {
-		$installed[$row['internal']] = $row;
+	if ($type == IMPTYPE_PACKAGE) {
+		$result = $db->query("SELECT id, internal, version FROM {$db->pre}packages");
+		$installed = array();
+		while($row = $db->fetch_assoc($result)) {
+			$installed[$row['internal']] = $row;
+		}
+	}
+	elseif ($type == IMPTYPE_BBCODE) {
+
+	}
+	else {
+		$installed = null;
 	}
 
 	echo head();
@@ -2869,7 +2896,9 @@ elseif ($job == 'browser_list') {
   </tr>
   <tr>
    <td class="ubox" width="60%">Name<br />Description</td>
+   <?php if (is_array($installed)) { ?>
    <td class="ubox" width="10%">Installed</td>
+   <?php } ?>
    <td class="ubox" width="10%">Compatible</td>
    <td class="ubox" width="30%">Last Update<br />License</td>
   </tr>
@@ -2893,7 +2922,9 @@ elseif ($job == 'browser_list') {
    	<a href="admin.php?action=packages&amp;job=browser_detail&amp;id=<?php echo $key; ?>&amp;type=<?php echo $type; ?>"><strong><?php echo $row['title']; ?></strong> <?php echo $row['version']; ?></a><br />
    	<span class="stext"><?php echo $row['summary']; ?></span>
    </td>
+   <?php if (is_array($installed)) { ?>
    <td align="center"><?php echo iif($install, 'Yes'.iif($update, '<br /><span class="stext" style="font-color: darkred;">Update available!</span>'), 'No'); ?></td>
+   <?php } ?>
    <td align="center"><?php echo noki($compatible); ?></td>
    <td valign="top">
    	Last update: <?php echo gmdate('d.m.Y', times($row['last_updated'])); ?><br />

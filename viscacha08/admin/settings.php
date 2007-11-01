@@ -27,6 +27,14 @@ if ($job == 'admin') {
 	  <td class="mbox" width="50%">Servers for the Package Browser:<br /><span class="stext">One line per URL (without trailing slash).</span></td>
 	  <td class="mbox" width="50%"><textarea rows="5" cols="60" name="package_server"><?php echo str_replace(";", "\n", $admconfig['package_server']); ?></textarea></td>
 	 </tr>
+	 <tr>
+	  <td class="mbox" width="50%">Positions for Navigation:<br /><span class="stext"><strong>Format:</strong><br />
+		Each entry in a new line: <code>value=title</code><br />
+		<code>value</code> is a value which can only contain letters, numbers and underscores with a maximum of 10 chars.<br />
+		<code>title</code> is a one line value shown in the select box.</span>
+	  </td>
+	  <td class="mbox" width="50%"><textarea rows="5" cols="60" name="nav_positions"><?php echo $admconfig['nav_positions']; ?></textarea></td>
+	 </tr>
 	 </tr>
 	  <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="Submit" /></td>
 	 </tr>
@@ -44,6 +52,7 @@ elseif ($job == 'admin2') {
 	$c->getdata('admin/data/config.inc.php', 'admconfig');
 	$c->updateconfig('nav_interface', int);
 	$c->updateconfig('package_server', str, $server);
+	$c->updateconfig('nav_positions', str);
 	$c->savedata();
 
 	ok('admin.php?action=settings&job=settings');

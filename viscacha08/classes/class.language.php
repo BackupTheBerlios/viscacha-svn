@@ -65,6 +65,21 @@ class lang {
 		}
 	}
 
+	function initAdmin($dir = null) {
+		if ($dir != null) {
+			$this->setdir($dir);
+		}
+		$this->group('settings');
+		$this->group('admin/global');
+		$this->group('modules');
+		$this->group('custom');
+
+		@ini_set('default_charset', '');
+		if (!headers_sent()) {
+			viscacha_header('Content-type: text/html; charset='.$this->phrase('charset'));
+		}
+	}
+
 	function javascript() {
 		$file = $this->dir.DIRECTORY_SEPARATOR.'javascript.lng.php';
 		require($file);

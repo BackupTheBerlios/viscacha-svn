@@ -70,7 +70,17 @@ class tpl {
         $this->vars = $vars;
     }
 
-	function parse($thisfile,$thisext='html') {
+    function exists($thisfile, $thisext='html') {
+		$thisext = '.'.$thisext;
+		if (file_exists($this->dir.$thisfile.$thisext) || file_exists($this->altdir.$thisfile.$thisext)) {
+			return true;
+		}
+		else {
+			return false;
+		}
+    }
+
+	function parse($thisfile, $thisext='html') {
 
     	$thiszm1=benchmarktime();
 		$this->benchmark['all']++;
