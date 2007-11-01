@@ -398,6 +398,7 @@ function pages ($anzposts, $uri, $teiler=50) {
    	$pgs = $anzposts/$teiler;
     $anz = ceil($pgs);
 
+    $lang->assign('anz', $anz);
 	$p = $lang->phrase('admin_pages');
 	for ($i = 1; $i <= $anz; $i++) {
 		if ($page == $i) {
@@ -440,6 +441,8 @@ function foot() {
 	global $config, $benchmark, $db, $lang;
 	$benchmark = round(benchmarktime()-$benchmark, 5);
 	$queries = $db->benchmark('queries');
+	$lang->assign('queries', $queries);
+	$lang->assign('benchmark', $benchmark);
 	?>
 	<br style="line-height: 8px;" />
 	<div class="stext center">[<?php echo $lang->phrase('admin_benchmark_generation_time'); ?>] [<?php echo $lang->phrase('admin_benchmark_queries'); ?>]</div>
@@ -493,7 +496,7 @@ window.setTimeout('<?php echo JS_URL($errorurl); ?>', <?php echo $time; ?>);
 function ok ($url, $msg = null, $time = 1500) {
 	global $config, $my, $db, $lang;
 	if ($msg == null) {
-		$msg = $lang->phrase('settings_successfully_saved');
+		$msg = $lang->phrase('admin_settings_successfully_saved');
 	}
 	?>
 <script language="Javascript" type="text/javascript">

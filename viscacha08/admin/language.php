@@ -3,6 +3,8 @@ if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
 
 include('classes/class.phpconfig.php');
 
+// ToDo: Anpassen an neues Paketsystem und MultiLangAdmin
+
 $langbase = array(
 	'global' => 'Global',
 	'modules' => 'Plugins',
@@ -460,7 +462,7 @@ elseif ($job == 'lang_settings2') {
 	$id = $gpc->get('id', int);
 	$use = $gpc->get('use', int);
 	$detail = $gpc->get('desc', str);
-	$lang = $gpc->get('language', str);
+	$language = $gpc->get('language', str);
 	$error = '';
 
 	$result = $db->query("SELECT publicuse FROM {$db->pre}language WHERE id = '{$id}' LIMIT 1");
@@ -486,7 +488,7 @@ elseif ($job == 'lang_settings2') {
 		$scd = $lc;
 	}
 
-	$db->query("UPDATE {$db->pre}language SET publicuse = '{$use}', language = '{$lang}', detail = '{$detail}' WHERE id = '{$id}' LIMIT 1");
+	$db->query("UPDATE {$db->pre}language SET publicuse = '{$use}', language = '{$language}', detail = '{$detail}' WHERE id = '{$id}' LIMIT 1");
 
 	$c = new manageconfig();
 	$c->getdata("language/{$id}/settings.lng.php", 'lang');
@@ -497,7 +499,7 @@ elseif ($job == 'lang_settings2') {
 	$c->updateconfig('country_code', str);
 	$c->updateconfig('thousandssep', str);
 	$c->updateconfig('decpoint', str);
-	$c->updateconfig('lang_name', str, $lang);
+	$c->updateconfig('lang_name', str, $language);
 	$c->updateconfig('lang_description', str, $detail);
 	$c->updateconfig('compatible_version', str);
 	$c->updateconfig('dformat1',str);
@@ -666,7 +668,7 @@ elseif ($job == 'lang_txttpl') {
    <td class="obox">Edit language file &raquo; Text templates</td>
   </tr>
   <tr>
-   <td class="ubox"><?php echo getLangVarsHelp(); ?></td>
+   <td class="ubox"><?php echo $lang->phrase('admin_lang_vars_help'); ?></td>
   </tr>
   <tr>
    <td class="mbox" align="center">
@@ -716,7 +718,7 @@ elseif ($job == 'lang_emailtpl') {
   </tr>
   <tr>
    <td class="ubox" width="20%">Help:</td>
-   <td class="ubox" width="80%"><?php echo getLangVarsHelp(); ?></td>
+   <td class="ubox" width="80%"><?php echo $lang->phrase('admin_lang_vars_help'); ?></td>
   </tr>
   <tr>
    <td class="mbox" width="20%">Subject:</td>
@@ -810,6 +812,9 @@ elseif ($job == 'lang_array') {
 	$lng = array_map('nl2whitespace', $lng);
 	ksort($lng);
 	$lng = array_chunk($lng, 50, true);
+	if (isset($lng[$page-1]) == false) {
+		error('admin.php?action=language&job=lang_edit&id='.$id, 'Page not found');
+	}
 	$pages = count($lng);
 	$pages_html = "Seiten ({$pages}):";
 	// Ersetzen durch Buchstaben (?) -> [A] [B] ...
@@ -824,7 +829,7 @@ elseif ($job == 'lang_array') {
    <td class="obox" colspan="2">Edit language file &raquo; <?php echo isset($langbase[$file]) ? $langbase[$file] : ucfirst($file); ?></td>
   </tr>
   <tr>
-   <td class="mbox stext" colspan="2"><?php echo getLangVarsHelp(); ?></td>
+   <td class="mbox stext" colspan="2"><?php echo $lang->phrase('admin_lang_vars_help'); ?></td>
   </tr>
   <tr>
    <td class="ubox" colspan="2"><?php echo $pages_html; ?></td>
@@ -924,7 +929,7 @@ elseif ($job == 'lang_com') {
 	   <td class="obox" colspan="2">Edit language file &raquo; component: <?php echo $cid; ?> &raquo; <?php echo ucfirst($file); ?></td>
 	  </tr>
 	  <tr>
-	   <td class="mbox stext" colspan="2"><?php echo getLangVarsHelp(); ?></td>
+	   <td class="mbox stext" colspan="2"><?php echo $lang->phrase('admin_lang_vars_help'); ?></td>
 	  </tr>
 	  <?php if (count($files) > 1) { ?>
 	  <tr>
@@ -1267,13 +1272,13 @@ elseif ($job == 'phrase_file') {
 	echo foot();
 }
 elseif ($job == 'phrase_copy') {
-	$lang = $gpc->get('id', int);
+	$language = $gpc->get('id', int);
 	$file = $gpc->get('file', none);
 	$encfile = base64_decode($file);
 	$result = $db->query('SELECT * FROM '.$db->pre.'language ORDER BY language',__LINE__,__FILE__);
 	echo head();
 	?>
-<form name="form" method="post" action="admin.php?action=language&amp;job=phrase_copy2&amp;file=<?php echo $file; ?>&amp;id=<?php echo $lang; ?>">
+<form name="form" method="post" action="admin.php?action=language&amp;job=phrase_copy2&amp;file=<?php echo $file; ?>&amp;id=<?php echo $language; ?>">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr>
    <td class="obox" colspan="2">Phrase Manager &raquo; <?php echo $encfile; ?> &raquo; Copy file</td>
@@ -1387,10 +1392,10 @@ elseif ($job == 'phrase_file_edit2') {
 	$encfile = base64_decode($file);
 	$varname = $gpc->get('varname', none);
 	$text = $gpc->get('text', none);
-	$lang = $gpc->get('langt', none);
+	$language = $gpc->get('langt', none);
 
 	$c = new manageconfig();
-	foreach ($lang as $id => $t) {
+	foreach ($language as $id => $t) {
 		if (empty($t)) {
 			$t = $text;
 		}
@@ -1402,14 +1407,14 @@ elseif ($job == 'phrase_file_edit2') {
 	ok('admin.php?action=language&job=phrase_file&file='.$file);
 }
 elseif ($job == 'phrase_file_copy') {
-	$lang = $gpc->get('id', int);
+	$language = $gpc->get('id', int);
 	$file = $gpc->get('file', none);
 	$encfile = base64_decode($file);
 	$phrase = $gpc->get('phrase', str);
-	$result = $db->query("SELECT * FROM {$db->pre}language WHERE id != '{$lang}' ORDER BY language",__LINE__,__FILE__);
+	$result = $db->query("SELECT * FROM {$db->pre}language WHERE id != '{$language}' ORDER BY language",__LINE__,__FILE__);
 	echo head();
 	?>
-<form name="form" method="post" action="admin.php?action=language&job=phrase_file_copy2&phrase=<?php echo $phrase; ?>&file=<?php echo $file; ?>&id=<?php echo $lang; ?>">
+<form name="form" method="post" action="admin.php?action=language&job=phrase_file_copy2&phrase=<?php echo $phrase; ?>&file=<?php echo $file; ?>&id=<?php echo $language; ?>">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr>
    <td class="obox" colspan="2">Phrase Manager &raquo; <?php echo $encfile; ?> &raquo; Copy phrase</td>
@@ -1458,7 +1463,7 @@ elseif ($job == 'phrase_file_copy2') {
 	$c->getdata($destpath, 'lang');
 	$c->updateconfig($phrase, str, $langarr[$phrase]);
 	$c->savedata();
-	ok('admin.php?action=language&job=phrase_file&file='.$file);
+	ok('admin.php?action=language&job=phrase_file&file='.$file, 'Phrase successfully copied.');
 }
 elseif ($job == 'phrase_delete') {
 	echo head();
@@ -1558,7 +1563,7 @@ elseif ($job == 'phrase_add_mailfile') {
   </tr>
   <tr>
    <td class="mmbox" width="30%">Help:</td>
-   <td class="mmbox stext" width="70%"><?php echo getLangVarsHelp(); ?></td>
+   <td class="mmbox stext" width="70%"><?php echo $lang->phrase('admin_lang_vars_help'); ?></td>
   </tr>
   <tr>
    <td class="mbox" width="30%">Title:</td>
@@ -1679,10 +1684,10 @@ elseif ($job == 'phrase_add2') {
 	$varname = $gpc->get('varname', none);
 	$text = $gpc->get('text', none);
 	$file = base64_decode($gpc->get('file', none));
-	$lang = $gpc->get('langt', none);
+	$language = $gpc->get('langt', none);
 
 	$c = new manageconfig();
-	foreach ($lang as $id => $t) {
+	foreach ($language as $id => $t) {
 		if (empty($t)) {
 			$t = $text;
 		}

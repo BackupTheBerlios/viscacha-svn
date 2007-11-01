@@ -14,7 +14,7 @@ function custom_select($arr) {
  <?php } ?>
  </select>
  </td>
- <td class="mbox" width="10%"><?php if ($arr['package'] > 0) { ?><s>Delete Setting</s><?php } else { ?><a class="button" href="admin.php?action=settings&job=delete&name=<?php echo $arr['name']; ?>&id=<?php echo $arr['sgroup']; ?>">Delete Setting</a><?php } ?></td>
+ <td class="mbox" width="10%"><?php if ($arr['package'] > 0) { ?><s><?php echo $lang->phrase('admin_delete_settings'); ?></s><?php } else { ?><a class="button" href="admin.php?action=settings&job=delete&name=<?php echo $arr['name']; ?>&id=<?php echo $arr['sgroup']; ?>"><?php echo $lang->phrase('admin_delete_settings'); ?><?php } ?></td>
  <td class="mbox" width="20%"><code>$config['<?php echo $arr['groupname']; ?>']['<?php echo $arr['name']; ?>']</code></td>
 </tr>
 <?php
@@ -25,7 +25,7 @@ function custom_checkbox($arr) {
 <tr>
  <td class="mbox" width="35%"><?php echo $arr['title']; ?><br /><span class="stext"><?php echo $arr['description']; ?></span></td>
  <td class="mbox" width="35%"><input type="checkbox" name="<?php echo $arr['name']; ?>" value="<?php echo $config[$arr['groupname']][$arr['name']]; ?>"<?php echo iif($config[$arr['groupname']][$arr['name']],' checked="checked"'); ?> /></td>
- <td class="mbox" width="10%"><?php if ($arr['package'] > 0) { ?><s>Delete Setting</s><?php } else { ?><a class="button" href="admin.php?action=settings&job=delete&name=<?php echo $arr['name']; ?>&id=<?php echo $arr['sgroup']; ?>">Delete Setting</a><?php } ?></td>
+ <td class="mbox" width="10%"><?php if ($arr['package'] > 0) { ?><s><?php echo $lang->phrase('admin_delete_settings'); ?><?php } ?></td>
  <td class="mbox" width="20%"><code>$config['<?php echo $arr['groupname']; ?>']['<?php echo $arr['name']; ?>']</code></td>
 </tr>
 <?php
@@ -36,7 +36,7 @@ function custom_text($arr) {
 <tr>
  <td class="mbox" width="35%"><?php echo $arr['title']; ?><br /><span class="stext"><?php echo $arr['description']; ?></span></td>
  <td class="mbox" width="35%"><input type="text" name="<?php echo $arr['name']; ?>" value="<?php echo $config[$arr['groupname']][$arr['name']]; ?>" /></td>
- <td class="mbox" width="10%"><?php if ($arr['package'] > 0) { ?><s>Delete Setting</s><?php } else { ?><a class="button" href="admin.php?action=settings&job=delete&name=<?php echo $arr['name']; ?>&id=<?php echo $arr['sgroup']; ?>">Delete Setting</a><?php } ?></td>
+ <td class="mbox" width="10%"><?php if ($arr['package'] > 0) { ?><s><?php echo $lang->phrase('admin_delete_settings'); ?></s><?php } else { ?><a class="button" href="admin.php?action=settings&job=delete&name=<?php echo $arr['name']; ?>&id=<?php echo $arr['sgroup']; ?>"><?php echo $lang->phrase('admin_delete_settings'); ?></a><?php } ?></td>
  <td class="mbox" width="20%"><code>$config['<?php echo $arr['groupname']; ?>']['<?php echo $arr['name']; ?>']</code></td>
 </tr>
 <?php
@@ -47,7 +47,7 @@ function custom_textarea($arr) {
 <tr>
  <td class="mbox" width="35%"><?php echo $arr['title']; ?><br /><span class="stext"><?php echo $arr['description']; ?></span></td>
  <td class="mbox" width="35%"><textarea cols="50" rows="4" name="<?php echo $arr['name']; ?>"><?php echo $config[$arr['groupname']][$arr['name']]; ?></textarea></td>
- <td class="mbox" width="10%"><?php if ($arr['package'] > 0) { ?><s>Delete Setting</s><?php } else { ?><a class="button" href="admin.php?action=settings&job=delete&name=<?php echo $arr['name']; ?>&id=<?php echo $arr['sgroup']; ?>">Delete Setting</a><?php } ?></td>
+ <td class="mbox" width="10%"><?php if ($arr['package'] > 0) { ?><s><?php echo $lang->phrase('admin_delete_settings'); ?></s><?php } else { ?><a class="button" href="admin.php?action=settings&job=delete&name=<?php echo $arr['name']; ?>&id=<?php echo $arr['sgroup']; ?>"><?php echo $lang->phrase('admin_delete_settings'); ?></a><?php } ?></td>
  <td class="mbox" width="20%"><code>$config['<?php echo $arr['groupname']; ?>']['<?php echo $arr['name']; ?>']</code></td>
 </tr>
 <?php
@@ -67,7 +67,7 @@ function prepare_custom($str) {
 			$arr[$dat[0]] = $dat[1];
 		}
 		else {
-			error('admin.php?action=settings', 'Could not prepare custom settings.');
+			error('admin.php?action=settings', $lang->phrase('admin_could_not_prepare_custom settings'));
 		}
 	}
 	return $arr;
