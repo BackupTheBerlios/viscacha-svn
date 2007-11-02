@@ -1,7 +1,7 @@
 <?php
 if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
 $lang = array();
-$lang['admin_backup'] = 'Backup';
+$lang['admin_backup'] = 'Datenbank-Sicherung';
 $lang['admin_backup_restore'] = 'Datenbank sichern & wiederherstellen';
 $lang['admin_bbcodes'] = 'Benutzerdefinierte BB-Codes';
 $lang['admin_blocked_ip'] = 'Gesperrte Mitglieder & IPs';
@@ -66,7 +66,7 @@ $lang['admin_spellcheck_manager'] = 'Rechtschreibprüfung';
 $lang['admin_sqlerror_log'] = 'Protokoll der Datenbankfehler';
 $lang['admin_statistics'] = 'Statistiken';
 $lang['admin_stats_logs'] = 'Protokolle & Statistik';
-$lang['admin_status_database'] = 'Status & Datenbank';
+$lang['admin_status_database'] = 'Status & Datenbank-Infos';
 $lang['admin_supportlink'] = 'Support';
 $lang['admin_switch_extended'] = 'Wechsle zum Profi-Modus';
 $lang['admin_switch_simple'] = 'Wechsle zum Einsteiger-Modus';
