@@ -756,11 +756,12 @@ elseif ($job == "credits") {
 	<p>
 		<strong>Crew</strong>:<br />
 		Software engineer: <a href="http://www.mamo-net.de" target="_blank">Matthias Mohr</a><br />
-		<em>Thanks to all testers and users who reported bugs to me.</em>
+		Translations: et al. <a href="http://www.diaznet.de" target="_blank">DiazNet</a><br />
+		<em>Thanks to all testers and users who reported bugs and helped while development.</em>
 	</p>
 	<br class="minibr" />
 	<p>
-		<strong>Used Scripts</strong> (most are modified):
+		<strong>Used Scripts</strong>:
 		<ul>
 		<li><a href="http://www.fpdf.org" target="_blank">FPDF 1.53 by Olivier Plathey</a> (PDF Creation, Freeware)</li>
 		<li><a href="http://www.phpclasses.org/browse/author/152329.html" target="_blank">Roman Numeral Conversion by Huda M Elmatsani</a> (Roman Numeral Conversion; Freeware)</li>
@@ -811,7 +812,7 @@ elseif ($job == "credits") {
 		<strong>License</strong>:<br />
 		Viscacha is Free Software released under the GNU/GPL License.<br />
 		Some parts of this Software are released under other Licenses.<br />
-		You can read the Licence Texts here:
+		You can read the licence texts here:
 		<ul>
 		<li><a href="admin.php?action=misc&amp;job=license&v=gpl">GNU/GPL License</li>
 		<li><a href="admin.php?action=misc&amp;job=license&v=lgpl">GNU/LGPL License</li>

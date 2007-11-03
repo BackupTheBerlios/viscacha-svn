@@ -87,7 +87,10 @@ class GPC {
 
     function prepare($var) {
     	global $config;
-    	if (is_array($var)) {
+    	if (is_numeric($var) || empty($var)) {
+    		// Do nothing to save time
+    	}
+    	elseif (is_array($var)) {
     		$cnt = count($var);
     		$keys = array_keys($var);
 
@@ -122,7 +125,10 @@ class GPC {
 
 	function save_str($var){
     	global $db, $config;
-    	if (is_array($var)) {
+    	if (is_numeric($var) || empty($var)) {
+    		// Do nothing to save time
+    	}
+    	elseif (is_array($var)) {
     		$cnt = count($var);
     		$keys = array_keys($var);
 
@@ -163,12 +169,14 @@ class GPC {
     	else {
     		$var = intval(trim($var));
     	}
-
     	return $var;
     }
 
     function unescape($var) {
-    	if (is_array($var)) {
+    	if (is_numeric($var) || empty($var)) {
+    		// Do nothing to save time
+    	}
+    	elseif (is_array($var)) {
     		$cnt = count($var);
     		$keys = array_keys($var);
 
@@ -214,7 +222,10 @@ class GPC {
 	}
 
 	function stripslashes($array) {
-		if(is_array($array)) {
+		if (is_numeric($var) || empty($var)) {
+    		// Do nothing to save time
+    	}
+    	elseif(is_array($array)) {
 			return array_map(array(&$this, 'stripslashes'), $array);
 		}
 		else {
@@ -225,7 +236,10 @@ class GPC {
 	function plain_str($var) {
     	global $db, $config;
     	if ($config['asia'] == 1) {
-	    	if (is_array($var)) {
+	    	if (is_numeric($var) || empty($var)) {
+    			// Do nothing to save time
+    		}
+    		elseif (is_array($var)) {
 	    		$cnt = count($var);
 	    		$keys = array_keys($var);
 

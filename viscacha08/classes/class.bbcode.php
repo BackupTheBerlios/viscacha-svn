@@ -47,17 +47,14 @@ class BBCode {
 	    	'bbcode' => 0
 	    );
 		$this->smileys = null;
-		$this->bbcodes = array();
-		$this->custombb = array();
+		$this->bbcodes = null;
+		$this->custombb = null;
 		$this->profile = '';
 		$this->cfg = array();
 		$this->reader = '';
 		$this->noparse = array();
 		$this->pid = 0;
 		$this->author = -1;
-
-		$this->cache_bbcode();
-		$this->cache_custombb();
 
 		if (!class_exists('ConvertRoman')) {
 			include('classes/class.convertroman.php');
@@ -467,6 +464,7 @@ class BBCode {
 	    return '<!PID:'.$pid.'>';
 	}
 	function strip_bbcodes ($text) {
+		$this->cache_bbcode();
 		$text = preg_replace('/(\r\n|\r|\n)/', "\n", $text);
 		$text = preg_replace('/\[hide\](.+?)\[\/hide\]/is', '', $text);
 		$text = preg_replace("~\[url=((telnet://|callto://|irc://|teamspeak://|http://|https://|ftp://|www.|mailto:|ed2k://|\w+?.\w{2,7})[a-z0-9;\/\?:@=\&\$\-_\.\+!\*'\(\),\~%#]+?)\](.+?)\[\/url\]~is", "\\3", $text);
@@ -524,6 +522,7 @@ class BBCode {
 	function parse ($text, $type = 'html') {
 		global $lang, $my;
 		$thiszm1=benchmarktime();
+		$this->cache_bbcode();
 		$this->noparse = array();
 		$text = preg_replace('/(\r\n|\r|\n)/', "\n", $text);
 		if ($type != 'pdf') {
@@ -936,6 +935,7 @@ class BBCode {
 		return $this->smileys;
 	}
 	function getCustomBB () {
+		$this->cache_bbcode();
 		return $this->custombb;
 	}
 	function existsProfile($name) {
@@ -1053,6 +1053,7 @@ class BBCode {
 	}
 	function dict($text, $type = 'html') {
 		if ($this->profile['useDict'] == 1) {
+			$this->cache_bbcode();
 			foreach ($this->bbcodes['word'] as $word) {
 				$ws = $word['search'];
 			    $wr = $word['replace'];
@@ -1102,6 +1103,7 @@ class BBCode {
 		return $text;
 	}
 	function censor ($text) {
+		$this->cache_bbcode();
 	    if ($this->profile['useCensor'] == 2) {
 	    	foreach ($this->bbcodes['censor'] as $word) {
 	            $letters = str_split($word['search']);
@@ -1121,6 +1123,7 @@ class BBCode {
 		return $text;
 	}
 	function replace ($text) {
+		$this->cache_bbcode();
 		if (isset($this->profile['useReplace']) && $this->profile['useReplace'] == 1) {
 			foreach ($this->bbcodes['replace'] as $word) {
             	$text = str_ireplace($word['search'], $word['replace'], $text);
@@ -1160,13 +1163,16 @@ class BBCode {
 	}
 	function cache_bbcode () {
 		global $scache;
-		$cache = $scache->load('bbcode');
-		$this->bbcodes = $cache->get();
-	}
-	function cache_custombb () {
-		global $scache;
-		$cache = $scache->load('custombb');
-		$this->custombb = $cache->get();
+		if ($this->bbcodes == null) {
+			$cache = $scache->load('bbcode');
+			$this->bbcodes = $cache->get();
+			$scache->unload('bbcode');
+		}
+		if ($this->custombb == null) {
+			$cache = $scache->load('custombb');
+			$this->custombb = $cache->get();
+			$scache->unload('custombb');
+		}
 	}
 	function cache_smileys () {
 		if ($this->smileys == null) {

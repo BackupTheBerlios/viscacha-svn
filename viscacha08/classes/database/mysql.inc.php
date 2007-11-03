@@ -35,7 +35,7 @@ class DB extends DB_Driver { // MySQL
 	function DB($host="localhost",$user="root",$pwd="",$dbname="",$persist=0,$open=false, $dbprefix='') {
 	    $this->persist = $persist;
 	    $this->system = 'mysql';
-		if (version_compare(PHP_VERSION, "4.3.0", ">=")) {
+		if (version_compare(PHP_VERSION, "4.3.0", ">=") && viscacha_function_exists('mysql_real_escape_string') == true) {
 			$this->escaper = 'mysql_real_escape_string';
 		}
 		else {

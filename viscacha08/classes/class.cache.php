@@ -105,11 +105,9 @@ class CacheItem {
 
 	function delete() {
 		global $filesystem;
-	    if (file_exists($this->file)) {
-	    	if ($filesystem->unlink($this->file)) {
-	        	return true;
-	       	}
-	    }
+    	if ($filesystem->unlink($this->file)) {
+        	return true;
+       	}
 	    return false;
 	}
 
