@@ -319,7 +319,7 @@ elseif ($_GET['action'] == "signature") {
 		}
 		($code = $plugins->load('editprofile_signature2_save')) ? eval($code) : null;
 		if (count($error) > 0) {
-			error($error, "editprofile.php?action=profile".SID2URL_x);
+			error($error, "editprofile.php?action=signature".SID2URL_x);
 		}
 		else {
 			$db->query("UPDATE {$db->pre}user SET signature = '{$_POST['signature']}' WHERE id = '{$my->id}' LIMIT 1",__LINE__,__FILE__);

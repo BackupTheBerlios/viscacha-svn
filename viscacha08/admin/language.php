@@ -2,20 +2,37 @@
 if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
 
 include('classes/class.phpconfig.php');
-
-// ToDo: Anpassen an neues Paketsystem und MultiLangAdmin
+require('admin/lib/function.language.php');
 
 $langbase = array(
-	'global' => 'Global',
-	'modules' => 'Plugins',
-	'javascript' => 'JavaScript',
-	'wwo' => 'Who is where online',
-	'thumbnail.class' => 'Graphics',
-	'phpmailer.class' => 'Email Class',
-	'custom' => 'Custom Phrases'
+	'global' => 'Global phrases used in Viscacha',
+	'bbcodes' => 'Phrases for the BB-Code FAQ and for the BB-Code Interface.',
+	'modules' => 'Phrases for the plugins',
+	'javascript' => 'All phrases that are used in JavaScript applications and functions',
+	'wwo' => 'Locations and general phrases for the "Who is where online" feature',
+	'thumbnail.class' => 'Phrases used by the thumbnail class',
+	'phpmailer.class' => 'Phrases used by the email class',
+	'custom' => 'All custom phrases (e.g. for the navigation)'
 );
 
-require('admin/lib/function.language.php');
+$mailbase = array(
+	'admin_confirmed' => 'Notification about activation of a member by an admin',
+	'digest_d' => 'Daily notification about new posts',
+	'digest_s' => 'Immediate notification about new posts',
+	'digest_w' => 'Weekly notification about new posts',
+	'mass_topic_moved' => '"Topic was moved"-notification (used for moving multiple topics)',
+	'newpm' => 'Notification about a new PM',
+	'new_member' => 'Notification about new members for the administrators',
+	'new_topic' => 'Notification about new topics for the board team',
+	'new_reply' => 'Notification about new replies for the board team',
+	'pwremind' => 'Confirmation of wanting a new password (Step 1)',
+	'pwremind2' => 'E-mail containing new password (Step 2)',
+	'register_00' => 'Confirmation of registration (for activation via E-mail and by the administrator)',
+	'register_01' => 'Confirmation of registration (for activation by the administrator)',
+	'register_10' => 'Confirmation of registration (for activation via E-mail)',
+	'report_post' => 'Notification about a reported post',
+	'topic_moved' => '"Topic was moved"-notification'
+);
 
 ($code = $plugins->load('admin_language_jobs')) ? eval($code) : null;
 
@@ -706,7 +723,7 @@ elseif ($job == 'lang_emailtpl') {
 	$file = $gpc->get('file', str);
 	$path = "language/{$id}/mails/{$file}.php";
 	if (!file_exists($path)) {
-		error('admin.php?action=language&job=lang_emails&id='.$id, "The specified file does not exist: {$path}");
+		error('admin.php?action=language&job=lang_edit&id='.$id, "The specified file does not exist: {$path}");
 	}
 	$xml = file_get_contents($path);
     preg_match("|<title>(.+?)</title>.*?<comment>(.+?)</comment>|is", $xml, $tpl);
@@ -746,7 +763,7 @@ elseif ($job == 'lang_emailtpl2') {
 	}
 	$path = "language/{$id}/mails/{$file}.php";
 	if (!file_exists($path)) {
-		error('admin.php?action=language&job=lang_emails&id='.$id, "The specified file does not exist: {$path}");
+		error('admin.php?action=language&job=lang_edit&id='.$id, "The specified file does not exist: {$path}");
 	}
 	$tpl = $gpc->get('tpl', none);
 	$title = $gpc->get('title', none);
@@ -755,52 +772,7 @@ elseif ($job == 'lang_emailtpl2') {
 
 	$filesystem->file_put_contents($path, $xml);
 
-	ok('admin.php?action=language&job=lang_emails&id='.$id);
-}
-elseif ($job == 'lang_emails') {
-	echo head();
-	$id = $gpc->get('id', int);
-	$path = "language/{$id}/mails/";
-	if (!is_dir($path)) {
-		$filesystem->mkdir($path, 0777);
-	}
-	$help = file2array('admin/data/lang_email.php', "\t");
-	?>
- <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
-  <tr>
-   <td class="obox">Edit language file &raquo; e-mail-texts</td>
-  </tr>
-  <tr>
-   <td class="mbox">
-   <ul>
-    <?php
-    $i = 0;
-	$result = opendir($path);
-	while (($file = readdir($result)) !== false) {
-		$info = pathinfo($path.$file);
-		if ($info['extension'] == 'php') {
-			$n = substr($info['basename'], 0, -(strlen($info['extension']) + ($info['extension'] == '' ? 0 : 1)));
-			$i++;
-		?>
-	   	<li><a href="admin.php?action=language&job=lang_emailtpl&id=<?php echo $id; ?>&file=<?php echo $n; ?>">
-	   	<?php echo $n; ?></a><?php echo isset($help[$n]) ? "<br /><span class=\"stext\">{$help[$n]}</span>" : ''; ?>
-	   	</li>
-	    <?php
-	    }
-    }
-    closedir($result);
-    if ($i == 0) {
-    	?>
-    	<li><em>Nothing found...</em> :(</li>
-    	<?php
-    }
-    ?>
-   </ul>
-   </td>
-  </tr>
- </table>
-	<?php
-	echo foot();
+	ok('admin.php?action=language&job=lang_edit&id='.$id);
 }
 elseif ($job == 'lang_array') {
 	echo head(' onload="init()"');
@@ -926,7 +898,7 @@ elseif ($job == 'lang_com') {
 	<form name="form" method="post" action="admin.php?action=language&job=lang_com2&id=<?php echo $id; ?>&file=<?php echo $file; ?>&cid=<?php echo $cid; ?>">
 	 <table class="border" border="0" cellspacing="0" cellpadding="4">
 	  <tr>
-	   <td class="obox" colspan="2">Edit language file &raquo; component: <?php echo $cid; ?> &raquo; <?php echo ucfirst($file); ?></td>
+	   <td class="obox" colspan="2">Edit language file &raquo; Package-ID: <?php echo $cid; ?> &raquo; <?php echo ucfirst($file); ?></td>
 	  </tr>
 	  <tr>
 	   <td class="mbox stext" colspan="2"><?php echo $lang->phrase('admin_lang_vars_help'); ?></td>
@@ -1012,54 +984,98 @@ elseif ($job == 'lang_edit') {
 	?>
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr>
-   <td class="obox">Edit language file</td>
+   <td class="obox" colspan="4">Edit language file</td>
   </tr>
   <tr>
-   <td class="mbox">
+   <td class="ubox" width="20%">General</td>
+   <td class="ubox" width="30%">Core Phrases</td>
+   <td class="ubox" width="20%">Packages Phrases</td>
+   <td class="ubox" width="30%">E-mails</td>
+  </tr>
+  <tr class="mbox inlinelist">
+   <td valign="top">
    <ul>
    <li><a href="admin.php?action=language&job=lang_settings&id=<?php echo $id; ?>">Settings</a></li>
-   <li>Normal language file and phrases:
-	   <ul>
-	   <?php
-		$dir = 'language/'.$id.'/';
-		$files = array();
-		$d = dir($dir);
-		while (FALSE !== ($entry = $d->read())) {
-			if (substr($entry, -8, 8) == '.lng.php') {
-				$basename = substr($entry, 0, strlen($entry)-8);
-				if ($basename != 'settings') {
-					$files[$basename] = isset($langbase[$basename]) ? $langbase[$basename] : ucfirst($basename);
-				}
-		   	}
-	   	}
-		$d->close();
-		foreach ($files as $file => $name) {
-		?>
-	    <li><a href="admin.php?action=language&job=lang_array&id=<?php echo $id; ?>&file=<?php echo $file; ?>"><?php echo $name; ?></a></li>
-		<?php } ?>
-	   </ul>
+   <li><a href="admin.php?action=language&job=lang_rules&id=<?php echo $id; ?>">Terms of behaviour</a></li>
+   <li>Text Templates:
+	  <ul>
+	   	<li><a href="admin.php?action=language&job=lang_txttpl&id=<?php echo $id; ?>&file=moved">Topic has been moved</a></li>
+	   	<li><a href="admin.php?action=language&job=lang_txttpl&id=<?php echo $id; ?>&file=notice">Copied posts</a></li>
+	  </ul>
    </li>
-   <li>Language file of the components:
+   <li><a href="admin.php?action=language&job=lang_ignore&id=<?php echo $id; ?>">Ignored search keys</a></li>
+   </ul>
+   </td>
+   <td valign="top">
+   <ul>
+   <?php
+	$dir = 'language/'.$id.'/';
+	$files = array();
+	$d = dir($dir);
+	while (FALSE !== ($entry = $d->read())) {
+		if (substr($entry, -8, 8) == '.lng.php') {
+			$basename = substr($entry, 0, strlen($entry)-8);
+			if ($basename != 'settings' && $basename != 'modules') {
+				$name = preg_replace("/[^\w\d]/i", " ", $basename);
+				$name = ucfirst($name);
+			?>
+			<li>
+				<a href="admin.php?action=language&job=lang_array&id=<?php echo $id; ?>&file=<?php echo $basename; ?>"><?php echo $name; ?></a>
+				<?php echo isset($langbase[$basename]) ? "<br /><span class=\"stext\">{$langbase[$basename]}</span>" : ''; ?>
+			</li>
+			<?php
+			}
+	   	}
+   	}
+	$d->close();
+	?>
+   </ul>
+   </td>
+   <td valign="top">
+   <ul>
+   <li><a href="admin.php?action=language&job=lang_array&id=<?php echo $id; ?>&file=modules">Plugins</a></li>
+   <li>Components:
 	   <ul>
 	   <?php
-		$result = $db->query("SELECT * FROM {$db->pre}component ORDER BY active DESC");
+		$result = $db->query("
+			SELECT c.id, c.package, p.title
+			FROM {$db->pre}component AS c
+				LEFT JOIN {$db->pre}packages AS p ON c.package = p.id
+			ORDER BY p.title
+		", __LINE__, __FILE__);
 		while ($row = $db->fetch_assoc($result)) {
-			$cfg = $myini->read('modules/'.$row['id'].'/component.ini');
-			$c = array_merge($row, $cfg);
+			$c = $myini->read('modules/'.$row['package'].'/component.ini');
 		?>
-	   	<li><a href="admin.php?action=language&job=lang_com&id=<?php echo $id; ?>&cid=<?php echo $c['id']; ?>"><?php echo $c['info']['title']; ?></a> (<?php echo $c['id']; ?>)</li>
+	   	<li>
+	   		<a href="admin.php?action=language&job=lang_com&id=<?php echo $id; ?>&cid=<?php echo $row['package']; ?>"><?php echo $c['info']['title']; ?></a><br />
+	   		<span class="stext">Package: <?php echo $row['title']; ?></span>
+	   	</li>
 	   <?php } ?>
 	   </ul>
    </li>
-   <li><a href="admin.php?action=language&job=lang_rules&id=<?php echo $id; ?>">Terms of behaviour</a></li>
-   <li><a href="admin.php?action=language&job=lang_emails&id=<?php echo $id; ?>">E-mail-texts</a></li>
-   <li>Textvorlagen:
-	   <ul>
-	   <li><a href="admin.php?action=language&job=lang_txttpl&id=<?php echo $id; ?>&file=moved">Topic was moved</a></li>
-	   <li><a href="admin.php?action=language&job=lang_txttpl&id=<?php echo $id; ?>&file=notice">Copied contributions</a></li>
-	   </ul>
-   </li>
-   <li><a href="admin.php?action=language&job=lang_ignore&id=<?php echo $id; ?>">Ignored search keys</a></li>
+   </ul>
+   </td>
+   <td valign="top">
+   <ul>
+    <?php
+	$path = "language/{$id}/mails/";
+    $i = 0;
+	$result = opendir($path);
+	while (($file = readdir($result)) !== false) {
+		$info = pathinfo($path.$file);
+		if ($info['extension'] == 'php') {
+			$n = substr($info['basename'], 0, -(strlen($info['extension']) + ($info['extension'] == '' ? 0 : 1)));
+			$i++;
+		?>
+	   	<li>
+	   	<a href="admin.php?action=language&job=lang_emailtpl&id=<?php echo $id; ?>&file=<?php echo $n; ?>"><?php echo $n; ?></a>
+	   	<?php echo isset($mailbase[$n]) ? "<br /><span class=\"stext\">{$mailbase[$n]}</span>" : ''; ?>
+	   	</li>
+	    <?php
+	    }
+    }
+    closedir($result);
+    ?>
    </ul>
    </td>
   </tr>

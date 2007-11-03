@@ -337,10 +337,13 @@ elseif ($job == 'package_import2') {
 						}
 						$src = iif(!empty($src), '/'.$src);
 						foreach ($com['language'] as $file) {
-							if (file_exists("{$tdir}{$src}/{$file}") == false) {
+							if (file_exists("{$tdir}/language/{$src}/{$file}") == false) {
 								$src = '';
 							}
-							$filesystem->copy("{$tdir}{$src}/{$file}", "./language/{$lid}/modules/{$packageid}/{$file}");
+							if (!empty($src)) {
+								$src = '/'.$src;
+							}
+							$filesystem->copy("{$tdir}/language{$src}/{$file}", "./language/{$lid}/modules/{$packageid}/{$file}");
 						}
 					}
 				}

@@ -78,6 +78,10 @@ a:hover {
 	text-align: left;
 	border: 0px;
 }
+.inlinelist ul {
+	margin-left: 10px;
+	padding-left: 10px;
+}
 .inlinetable {
 	border: 1px solid #bbbbbb;
 	width: 100%;

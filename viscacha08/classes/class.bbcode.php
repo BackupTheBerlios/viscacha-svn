@@ -1200,7 +1200,8 @@ class BBCode {
 		return $tpl->parse("main/smileys");
 	}
 	function getbbhtml ($file = "main/bbhtml") {
-	    global $tpl;
+	    global $tpl, $lang;
+	    $lang->group("bbcodes");
 	    $cbb = $this->custombb;
 	    foreach ($cbb as $key => $bb) {
 	    	if (empty($bb['buttonimage'])) {
