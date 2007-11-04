@@ -421,7 +421,7 @@ function BoardSelect($board = 0) {
 	global $config, $my, $tpl, $db, $gpc, $lang, $scache, $plugins;
 
 	$found = false;
-	$sub_cache = $forum_cache = $last_cache = array();
+	$sub_cache = $forum_cache = $last_cache = $forums = $cat = array();
 
 	$categories_obj = $scache->load('categories');
 	$cat_cache = $categories_obj->get();
@@ -445,14 +445,6 @@ function BoardSelect($board = 0) {
 	",__LINE__,__FILE__);
 
 	$keys = array('l_topic' => null, 'l_tid' => null, 'l_date' => null, 'l_uname' => null, 'l_name' => null, 'l_bid' => null);
-
-	if ($db->num_rows($result) == 0) {
-		$errormsg = array('There are currently no boards to show. Pleas visit the <a href="admin.php'.SID2URL_1.'">Admin Control Panel</a> and create some forums.');
-		$errorurl = $js_errorurl = '';
-		$tpl->globalvars(compact("js_errorurl", "errorurl","errormsg"));
-		echo $tpl->parse('main/error');
-		return $found;
-	}
 
 	while($row = $db->fetch_assoc($result)) {
 		$row['name'] = $gpc->prepare($row['name']);
@@ -597,12 +589,12 @@ function BoardSelect($board = 0) {
             	$forums[] = $forum;
             }
         }
-        if (count($forums) > 0) {
-	        $tpl->globalvars(compact("cat","forums"));
-	        ($code = $plugins->load('forums_prepared')) ? eval($code) : null;
-	        echo $tpl->parse("categories");
-	    }
     }
+
+    $tpl->globalvars(compact("cat","forums"));
+    ($code = $plugins->load('forums_prepared')) ? eval($code) : null;
+    echo $tpl->parse("categories");
+
     return $found;
 }
 

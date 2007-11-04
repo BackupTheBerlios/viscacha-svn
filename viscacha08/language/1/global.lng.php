@@ -256,6 +256,7 @@ $lang['email_too_long'] = 'E-Mail-Adresse ist zu lang (max. 200 Zeichen)';
 $lang['error'] = 'Fehlermeldung:';
 $lang['error_customfieldtoolong'] = 'Ihre Eingabe bei einem ben&ouml;tigten zus&auml;tzlichen Feld ist zu lang.';
 $lang['error_missingrequiredfield'] = 'Sie haben ein ben&ouml;tigtes zus&auml;tzliches Feld nicht ausgef&uuml;llt.';
+$lang['error_no_forums_found'] = 'Es wurde keine anzuzeigenden Foren gefunden. Sie können in der <a href="admin.php">Administration</a> neue Foren erstellen.';
 $lang['existing_notices'] = 'Vorhandene Notizen ({$used_chars} Zeichen):';
 $lang['extended_bbcodes'] = 'Erweiterte BB-Codes';
 $lang['fallback_no_username'] = 'Gast';
