@@ -997,7 +997,7 @@ elseif ($job == 'lang_edit') {
    <ul>
    <li><a href="admin.php?action=language&job=lang_settings&id=<?php echo $id; ?>">Settings</a></li>
    <li><a href="admin.php?action=language&job=lang_rules&id=<?php echo $id; ?>">Terms of behaviour</a></li>
-   <li>Text Templates:
+   <li><strong>Text Templates:</strong>
 	  <ul>
 	   	<li><a href="admin.php?action=language&job=lang_txttpl&id=<?php echo $id; ?>&file=moved">Topic has been moved</a></li>
 	   	<li><a href="admin.php?action=language&job=lang_txttpl&id=<?php echo $id; ?>&file=notice">Copied posts</a></li>
@@ -1029,12 +1029,34 @@ elseif ($job == 'lang_edit') {
    	}
 	$d->close();
 	?>
+	<li><strong>Admin Control Panel:</strong>
+   <ul>
+   <?php
+	$dir = 'language/'.$id.'/admin/';
+	$files = array();
+	$d = dir($dir);
+	while (FALSE !== ($entry = $d->read())) {
+		if (substr($entry, -8, 8) == '.lng.php') {
+			$basename = substr($entry, 0, strlen($entry)-8);
+			$name = preg_replace("/[^\w\d]/i", " ", $basename);
+			$name = ucfirst($name);
+			?>
+			<li>
+				<a href="admin.php?action=language&job=lang_array&id=<?php echo $id; ?>&file=admin%2F<?php echo $basename; ?>"><?php echo $name; ?></a>
+			</li>
+			<?php
+	   	}
+   	}
+	$d->close();
+	?>
+   </ul>
+	</li>
    </ul>
    </td>
    <td valign="top">
    <ul>
    <li><a href="admin.php?action=language&job=lang_array&id=<?php echo $id; ?>&file=modules">Plugins</a></li>
-   <li>Components:
+   <li><strong>Components:</strong>
 	   <ul>
 	   <?php
 		$result = $db->query("

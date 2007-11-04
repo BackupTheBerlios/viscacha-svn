@@ -1,6 +1,9 @@
 <?php
 if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
 
+// FS: MultiLangAdmin
+$lang->group("admin/groups");
+
 ($code = $plugins->load('admin_groups_jobs')) ? eval($code) : null;
 
 if ($job == 'manage') {
@@ -20,19 +23,19 @@ if ($job == 'manage') {
  <table class="border">
   <tr>
    <td class="obox" colspan="<?php echo $colspan+4; ?>">
-	<span style="float: right;"><a class="button" href="admin.php?action=groups&job=add">Add new Usergroup</a></span>
-	Usergroup Manager
+	<span style="float: right;"><a class="button" href="admin.php?action=groups&job=add"><?php echo $lang->phrase('admin_groups_add_new_usergroup'); ?></a></span>
+	<?php echo $lang->phrase('admin_groups_usergroup_manager'); ?>
   </td>
   </tr>
   <tr class="ubox">
-  	<?php if ($delete == 1) { ?><td valign="bottom"><b>Delete</b></td><?php } ?>
-  	<td valign="bottom"><b>Edit</b></td>
-    <td valign="bottom"><b>Name<br />Public Title</b></td>
-	<td valign="bottom"><b>ID</b></td>
+  	<?php if ($delete == 1) { ?><td valign="bottom"><b><?php echo $lang->phrase('admin_groups_delete'); ?></b></td><?php } ?>
+  	<td valign="bottom"><b><?php echo $lang->phrase('admin_groups_edit'); ?></b></td>
+    <td valign="bottom"><b><?php echo $lang->phrase('admin_groups_name'); ?><br /><?php echo $lang->phrase('admin_groups_public_title_head'); ?></b></td>
+	<td valign="bottom"><b><?php echo $lang->phrase('admin_groups_id'); ?></b></td>
 	<?php foreach ($gls as $txt) { ?>
    	<td valign="bottom"><img src="images.php?action=textimage&amp;text=<?php echo rawurlencode($txt); ?>&amp;angle=90&amp;bg=<?php echo $txt2img_bg; ?>&amp;fg=<?php echo $txt2img_fg; ?>" border="0"></td>
 	<?php } ?>
-   	<td valign="bottom"><img src="images.php?action=textimage&amp;text=<?php echo rawurlencode('Floodcheck (sec.)'); ?>&amp;angle=90&amp;bg=<?php echo $txt2img_bg; ?>&amp;fg=<?php echo $txt2img_fg; ?>" border="0"></td>
+   	<td valign="bottom"><img src="images.php?action=textimage&amp;text=<?php echo rawurlencode($lang->phrase('admin_groups_floodcheck_img')); ?>&amp;angle=90&amp;bg=<?php echo $txt2img_bg; ?>&amp;fg=<?php echo $txt2img_fg; ?>" border="0"></td>
   </tr>
   <?php
   foreach ($cache as $row) {
@@ -44,7 +47,7 @@ if ($job == 'manage') {
   	<?php if ($row['core'] == 0) { ?>
   		<input type="checkbox" name="delete[]" value="<?php echo $row['id']; ?>">
   	<?php } else { ?>
-  		<font class="stext">Core</font>
+  		<font class="stext"><?php echo $lang->phrase('admin_groups_core'); ?></font>
   	<?php } ?>
   	</td>
   <?php } ?>
@@ -71,8 +74,8 @@ if ($job == 'manage') {
   <?php } ?>
   <tr>
    <td class="ubox" colspan="<?php echo $colspan+4; ?>" align="center">
-   <?php if ($delete == 1) { ?><input type="submit" name="submit_delete" value="Delete"><?php } ?>
-   <input type="submit" name="submit_edit" value="Edit">
+   <?php if ($delete == 1) { ?><input type="submit" name="submit_delete" value="<?php echo $lang->phrase('admin_groups_form_delete'); ?>"><?php } ?>
+   <input type="submit" name="submit_edit" value="<?php echo $lang->phrase('admin_groups_form_edit'); ?>">
    </td>
   </tr>
  </table>
@@ -84,7 +87,7 @@ elseif ($job == 'ajax_changeperm') {
 	$id = $gpc->get('id', int);
 	$key = $gpc->get('key', str);
 	if(!is_id($id) || !isset($gls[$key])) {
-		die('The id or the key is not valid!');
+		die($lang->phrase('admin_groups_id_or_key_invalid'));
 	}
 	$result = $db->query("SELECT g.{$key}, g.core FROM {$db->pre}groups AS g WHERE id = '{$id}' LIMIT 1");
 	$perm = $db->fetch_assoc($result);
@@ -108,16 +111,16 @@ elseif ($job == 'add') {
 <form name="form" method="post" action="admin.php?action=groups&job=add2">
  <table class="border">
   <tr>
-   <td class="obox" colspan="2">Add a new Usergroup - Settings and Permissions</td>
+   <td class="obox" colspan="2"><?php echo $lang->phrase('admin_groups_add_a_new_usergroup_settings_and_permissions'); ?></td>
   </tr>
   <tr>
-   <td class="ubox" colspan="2">Copy the permissions of another group:</td>
+   <td class="ubox" colspan="2"><?php echo $lang->phrase('admin_groups_copy_permissions_of_another_group'); ?></td>
   </tr>
   <tr>
-   <td class="mbox" width="50%">Group:<br /><span class="stext">If you indicate a group here, the data below will be ignored!</span></td>
+   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_groups_group'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_groups_group_permissions_warning'); ?></span></td>
    <td class="mbox" width="50%">
    <select name="copy">
-   <option value="0">-Set data "by hand" (manually)-</option>
+   <option value="0"><?php echo $lang->phrase('admin_groups_set_data_by_hand'); ?></option>
    <?php foreach ($cache as $row) { ?>
    <option value="<?php echo $row['id']; ?>"><?php echo $row['name']; ?></option>
    <?php } ?>
@@ -125,15 +128,15 @@ elseif ($job == 'add') {
    </td>
   </tr>
   <tr>
-   <td class="mbox" width="50%">Also copy Forum rights<br /><span class="stext">Use the permissions set for the group indicated above also for this group.</span></td>
+   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_groups_also_copy_forum_rights'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_groups_copy_forum_rights_description'); ?></span></td>
    <td class="mbox" width="50%"><input type="checkbox" name="copyf" value="1" /></td>
   </tr>
   <tr>
-   <td class="ubox" colspan="2">Set settings of this group manually:</td>
+   <td class="ubox" colspan="2"><?php echo $lang->phrase('admin_groups_set_settings_of_this_group_manually'); ?></td>
   </tr>
   <tr>
-   <td class="mbox" width="50%">Insert Values from another group:<br />
-   <span class="stext">You can fill the checkboxes at the bottom with values of other groups to use this as base for adding a new group.</span></td>
+   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_groups_insert_values_from_another_group'); ?><br />
+   <span class="stext"><?php echo $lang->phrase('admin_groups_insert_values_from_another_group_description'); ?></span></td>
    <td class="mbox" width="50%">
 <script language="JavaScript" type="text/javascript">
 <!--
@@ -158,7 +161,7 @@ function setGroupBoxes(sel) {
 -->
 </script>
    <select name="template" onchange="setGroupBoxes(this);">
-   <option value="0">- Set no checkbox -</option>
+   <option value="0"><?php echo $lang->phrase('admin_groups_set_no_checkbox'); ?></option>
    <?php foreach ($cache as $row) { ?>
    <option value="<?php echo $row['id']; ?>"><?php echo $row['name']; ?></option>
    <?php } ?>
@@ -175,24 +178,24 @@ function setGroupBoxes(sel) {
   </tr>
   <?php } } ?>
   <tr>
-	<td class="mbox" width="50%">Floodcheck (in sec.)<br /><span class="stext">Time until a second form can be send. This is helpful to prevent spam.</span></td>
+	<td class="mbox" width="50%"><?php echo $lang->phrase('admin_groups_floodcheck_in_sec'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_groups_floodcheck_description'); ?></span></td>
    	<td class="mbox" width="50%"><input type="text" name="flood" id="flood" size="3" value="20"></td>
   </tr>
  </table>
  <br />
  <table class="border">
   <tr>
-   <td class="obox" colspan="2">Add a new Usergroup - Settings</td>
+   <td class="obox" colspan="2"><?php echo $lang->phrase('admin_groups_add_a_new_usergroup_settings'); ?></td>
   </tr>
   <tr>
-      <td class="mbox" width="50%">Internal name for the group:<br /><span class="stext">This internal title is not visible in the forum!</span></td>
+      <td class="mbox" width="50%"><?php echo $lang->phrase('admin_groups_internal_name_for_the_group'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_groups_internal_name_for_the_group_description'); ?></span></td>
       <td class="mbox" width="50%"><input type="text" name="name" size="35"></td>
   </tr><tr>
-      <td class="mbox" width="50%">Public Title:<br /><span class="stext">Public title for users in the forum.</span></td>
+      <td class="mbox" width="50%"><?php echo $lang->phrase('admin_groups_public_title'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_groups_public_title_for_users_in_the_forum'); ?></span></td>
       <td class="mbox" width="50%"><input type="text" name="title" size="35"></td>
   </tr>
   <tr>
-   <td class="ubox" colspan="2" align="center"><input type="hidden" name="guest" value="0"><input type="submit" name="Submit" value="Add"></td>
+   <td class="ubox" colspan="2" align="center"><input type="hidden" name="guest" value="0"><input type="submit" name="Submit" value="<?php echo $lang->phrase('admin_groups_add'); ?>"></td>
   </tr>
  </table>
 </form>
@@ -242,14 +245,14 @@ elseif ($job == 'add2') {
 	$delobj->delete();
 	if ($gid > 0) {
 		if (isset($fgnum) && isset($fgnum2) && $fgnum != $fgnum2) {
-			ok('admin.php?action=groups&job=manage', 'Group successfully added, but an error occured while copying the forum rights.');
+			ok('admin.php?action=groups&job=manage', $lang->phrase('admin_groups_group_add_successful_with_permission_copy_error'));
 		}
 		else {
-			ok('admin.php?action=groups&job=manage', 'Group successfully added.');
+			ok('admin.php?action=groups&job=manage', $lang->phrase('admin_groups_group_add_successful'));
 		}
 	}
 	else {
-		error('admin.php?action=groups&job=add', 'The group couldn\'t be added!');
+		error('admin.php?action=groups&job=add', $lang->phrase('admin_groups_the_group_couldnt_be_added'));
 	}
 }
 elseif ($job == 'delete') {
@@ -264,7 +267,7 @@ elseif ($job == 'delete') {
 		$delobj = $scache->load('fgroups');
 		$delobj->delete();
 		echo head();
-		ok('admin.php?action=groups&job=manage', $anz.' groups deleted');
+		ok('admin.php?action=groups&job=manage', $lang->phrase('admin_groups_x_groups_deleted'));
 	}
 	elseif (isset($_POST['submit_edit']) && $edit > 0) {
 		viscacha_header('Location: admin.php?action=groups&job=edit&id='.$edit);
@@ -278,14 +281,14 @@ elseif ($job == 'edit') {
 	echo head();
 	$result = $db->query("SELECT * FROM {$db->pre}groups WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	if ($db->num_rows($result) != 1) {
-		error('admin.php?action=groups&job=manage', 'No valid ID given');
+		error('admin.php?action=groups&job=manage', $lang->phrase('admin_groups_no_valid_id_given'));
 	}
 	$data = $db->fetch_assoc($result);
 	?>
 <form name="form" method="post" action="admin.php?action=groups&amp;job=edit2&amp;id=<?php echo $id; ?>">
  <table class="border">
   <tr>
-   <td class="obox" colspan="2">Edit an Usergroup - Settings and Permissions</td>
+   <td class="obox" colspan="2"><?php echo $lang->phrase('admin_groups_edit_an_usergroup_settings_and_permissions'); ?></td>
   </tr>
   <?php
   foreach ($glk as $key) {
@@ -299,24 +302,24 @@ elseif ($job == 'edit') {
   </tr>
   <?php } } ?>
   <tr>
-	<td class="mbox" width="50%">Floodcheck (in sec.)<br /><span class="stext">Time until a second form can be send. This is helpful to prevent spam.</span></td>
+	<td class="mbox" width="50%"><?php echo $lang->phrase('admin_groups_floodcheck_in_sec'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_groups_floodcheck_description'); ?></span></td>
    	<td class="mbox" width="50%"><input type="text" name="flood" size="3" value="<?php echo $data['flood']; ?>"></td>
   </tr>
  </table>
  <br />
  <table class="border">
   <tr>
-   <td class="obox" colspan="2">Edit a Usergroup - Settings</td>
+   <td class="obox" colspan="2"><?php echo $lang->phrase('admin_groups_edit_an_usergroup_settings'); ?></td>
   </tr>
   <tr>
-      <td class="mbox" width="50%">Internal name for the group:<br /><span class="stext">This internal title is not visible in the forum!</span></td>
+      <td class="mbox" width="50%"><?php echo $lang->phrase('admin_groups_internal_name_for_the_group'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_groups_internal_name_for_the_group_description'); ?></span></td>
       <td class="mbox" width="50%"><input type="text" name="name" size="35" value="<?php echo $data['name']; ?>"></td>
   </tr><tr>
-      <td class="mbox" width="50%">Public Title:<br /><span class="stext">Public usertitle for users in the forum.</span></td>
+      <td class="mbox" width="50%"><?php echo $lang->phrase('admin_groups_public_title'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_groups_public_title_description'); ?></span></td>
       <td class="mbox" width="50%"><input type="text" name="title" size="35" value="<?php echo $data['title']; ?>"></td>
   </tr>
   <tr>
-   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="Edit"></td>
+   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="<?php echo $lang->phrase('admin_groups_edit'); ?>"></td>
   </tr>
  </table>
 </form>
@@ -329,9 +332,9 @@ elseif ($job == 'edit2') {
 	$id = $gpc->get('id', int);
 	$result = $db->query("SELECT * FROM {$db->pre}groups WHERE id = {$id} LIMIT 1");
 	if ($db->num_rows($result) != 1) {
-		error('admin.php?action=groups&job=manage', 'No valid ID given');
+		error('admin.php?action=groups&job=manage', $lang->phrase('admin_groups_no_valid_id_given'));
 	}
-	$data = $db->fetch_assoc($result); // FIX
+	$data = $db->fetch_assoc($result); // FIXME
 
 	$sql_values = '';
 	foreach ($glk as $key) {
@@ -351,7 +354,7 @@ elseif ($job == 'edit2') {
 		ok('admin.php?action=groups&job=manage');
 	}
 	else {
-		error('admin.php?action=groups&job=add', 'The group couldn\'t be updated!');
+		error('admin.php?action=groups&job=add', $lang->phrase('admin_groups_the_group_couldnt_be_updated'));
 	}
 }
 ?>
