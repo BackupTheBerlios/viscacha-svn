@@ -237,9 +237,9 @@ elseif ($job == 'onlinestatus') {
    <td class="mbox">
    <p><strong>What is the meaning of online-status?</strong><br />
    In the user-profiles you can mention the addresses of instant messengers. In the profile these addresses will be linked to a website which shows the current status of the given address.</p>
-   <p><strong>Where come the datas for the online-status from?</strong><br />
-   The datas of the messengers ICQ, Yahoo, AOL and Skype are taken directly from the servers of the respective messenger-provider. Jabber and MSN does not provide such a service. Therefore an inofficel source, the service of <a href="http://www.onlinestatus.org" target="_blank">Onlinestatus.org</a>, is used.
-   This service provides a programm which can read and return the datas of the messengers. Due to the fact that this program is distributed to several servers which can change freqently, there must be mentioned a list of servers in the field above where the status could read from.<br />
+   <p><strong>Where comes the data for the online-status from?</strong><br />
+   The data for the messengers ICQ, Yahoo, AOL and Skype are taken directly from the servers of the respective messenger-provider. Jabber and MSN does not provide such a service. Therefore an inofficel source, the service of <a href="http://www.onlinestatus.org" target="_blank">Onlinestatus.org</a>, is used.
+   This service provides a programm which can read and return the datas of the messengers. Due to the fact that this program is distributed to several servers which can change freqently, there must be mentioned a list of servers in the field above where the status could be read from.<br />
    An overview of available servers and further information you can find here: <a href="http://osi.viscacha.org/" target="_blank">Online-Status-Server-overview</a>.
    </p>
    </td>
@@ -251,7 +251,7 @@ elseif ($job == 'onlinestatus') {
 elseif ($job == 'onlinestatus2') {
 	echo head();
 	$filesystem->file_put_contents('data/imservers.php', $gpc->get('servers', none));
-	ok('admin.php?action=misc&job=onlinestatus', 'Datas are saved');
+	ok('admin.php?action=misc&job=onlinestatus');
 }
 elseif ($job == 'sessionmails') {
 	echo head();
@@ -393,7 +393,7 @@ elseif ($job == 'feedcreator_add') {
 		}
 		$data[] = "{$class}|{$file}|{$name}|{$active}|{$dl}";
 		$filesystem->file_put_contents('data/feedcreator.inc.php', implode("\n", $data));
-		ok('admin.php?action=misc&job=feedcreator', 'Added');
+		ok('admin.php?action=misc&job=feedcreator');
 	}
 }
 elseif ($job == 'feedcreator_delete') {

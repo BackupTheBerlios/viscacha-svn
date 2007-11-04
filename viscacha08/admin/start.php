@@ -24,7 +24,7 @@ elseif (empty($job) || $job == 'start') {
 
 	// Offline-check
 	if ($config['foffline'] == 1) {
-		$tasks[] = '<span style="color: red;">'.$lang->phrase('admin_task_currently_offline1').' <a href="admin.php?action=settings&amp;job=sitestatus">'.$lang->phrase('admin_task_currently_offline2').'</a><strong</span>';
+		$tasks[] = '<span style="color: red;">'.$lang->phrase('admin_task_currently_offline1').' <a href="admin.php?action=settings&amp;job=sitestatus">'.$lang->phrase('admin_task_currently_offline2').'</a></span>';
 	}
 
 	// Count the inactive members

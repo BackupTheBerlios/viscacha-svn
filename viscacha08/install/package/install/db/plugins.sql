@@ -10,7 +10,7 @@ CREATE TABLE `{:=DBPREFIX=:}plugins` (
   KEY `position` (`position`)
 ) TYPE=MyISAM  PACK_KEYS=0 AUTO_INCREMENT=22 ;
 
-INSERT INTO `v_plugins` (`id`, `name`, `module`, `ordering`, `active`, `position`, `required`) VALUES 
+INSERT INTO `{:=DBPREFIX=:}plugins` (`id`, `name`, `module`, `ordering`, `active`, `position`, `required`) VALUES
 (1, 'Related Topics', 1, 1, '1', 'showtopic_end', '0'),
 (2, 'Who is online Box', 2, 1, '1', 'forum_end', '0'),
 (3, 'Who is online Data Preparation', 2, 1, '1', 'frontend_init', '1'),

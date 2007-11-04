@@ -91,8 +91,24 @@ class filesystem {
 			$data = implode("\n", $data);
 		}
 		$this->chmod($file, 0666);
-		if (file_put_contents($file, $data) == false) {
-		   return false;
+
+		if (@file_put_contents($file, $data) == false) {
+			$ret = false;
+			$fp = @tmpfile();
+			if (is_resource($fp) == true) {
+				if ($this->init()) {
+					fwrite($fp, $data);
+					fseek($fp, 0);
+					$ret = $this->ftp->put($fp, $file);
+				}
+				else {
+					fclose($fp);
+				}
+			}
+			if ($ret == false) {
+				trigger_error("filesystem::file_put_contents({$file}): failed to open stream: Permission denied", E_USER_WARNING);
+			}
+			return $ret;
 		}
 		else {
 			return true;
