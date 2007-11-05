@@ -99,7 +99,7 @@ if ($_GET['action'] == 'team') {
 	',__LINE__,__FILE__);
 
 	$inner['moderator_bit'] = '';
-	if ($db->num_rows() > 0) {
+	if ($db->num_rows($result) > 0) {
 		$mod_cache = array();
 		$mid_cache = array();
 		while($row = $gpc->prepare($db->fetch_object($result))) {

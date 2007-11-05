@@ -92,7 +92,7 @@ elseif ($job == 'ajax_publicuse') {
 			die('You can not unpublish this language until you have defined another default language.');
 		}
 		$db->query("SELECT * FROM {$db->pre}language WHERE publicuse = '1'");
-		if ($db->num_rows() == 1) {
+		if ($db->num_rows($result) == 1) {
 			die('You can not unpublish this language, because no other language is published.');
 		}
 	}
@@ -490,7 +490,7 @@ elseif ($job == 'lang_settings2') {
 			$use = 1;
 		}
 		$db->query("SELECT * FROM {$db->pre}language WHERE publicuse = '1'");
-		if ($db->num_rows() == 1) {
+		if ($db->num_rows($result) == 1) {
 			$error .= ', but you can not unpublish this language, because no other language is published';
 			$use = 1;
 		}

@@ -222,8 +222,8 @@ class GPC {
 	}
 
 	function stripslashes($array) {
-		if (is_numeric($var) || empty($var)) {
-    		// Do nothing to save time
+		if (is_numeric($array) || empty($array)) {
+    		return $array;
     	}
     	elseif(is_array($array)) {
 			return array_map(array(&$this, 'stripslashes'), $array);

@@ -1177,8 +1177,8 @@ elseif ($job == 'rights_add2') {
 	$id = $gpc->get('id', int);
 	$group = $gpc->get('group', int);
 
-	$db->query("SELECT * FROM {$db->pre}fgroups WHERE bid = '{$id}' AND gid = '{$group}'", __LINE__, __FILE__);
-	if ($db->num_rows() > 0) {
+	$result = $db->query("SELECT * FROM {$db->pre}fgroups WHERE bid = '{$id}' AND gid = '{$group}'", __LINE__, __FILE__);
+	if ($db->num_rows($result) > 0) {
 		error('admin.php?action=forums&job=rights&id='.$id, 'Für die angegebene Gruppe besteht schon ein Eintrag!');
 	}
 
@@ -1436,7 +1436,7 @@ elseif ($job == 'cat_delete') {
 	$id = $gpc->get('id', int);
 
 	$result = $db->query("SELECT id FROM {$db->pre}forums WHERE parent = '{$id}' LIMIT 1", __LINE__, __FILE__);
-	if ($db->num_rows() > 0) {
+	if ($db->num_rows($result) > 0) {
 		error('admin.php?action=forums&job=manage', 'Until you can delete this category, you have to delete all forums this category contains.');
 	}
 
@@ -1545,7 +1545,7 @@ elseif ($job == 'prefix_edit2') {
 	$row = $db->fetch_assoc($result);
 
 	$result = $db->query('SELECT id FROM '.$db->pre.'prefix WHERE bid = "'.$row['bid'].'" AND value = "'.$val.'" AND id != "'.$id.'" LIMIT 1', __LINE__, __FILE__);
-	if ($db->num_rows() > 0) {
+	if ($db->num_rows($result) > 0) {
 		error('admin.php?action=forums&job=prefix&id='.$id, 'This value already exists!');
 	}
 	else {
@@ -1575,7 +1575,7 @@ elseif ($job == 'prefix_add') {
 	$val = $gpc->get('name', str);
 	$standard = $gpc->get('standard', int);
 	$result = $db->query('SELECT id FROM '.$db->pre.'prefix WHERE bid = "'.$id.'" AND value = "'.$val.'" LIMIT 1', __LINE__, __FILE__);
-	if ($db->num_rows() > 0) {
+	if ($db->num_rows($result) > 0) {
 		error('admin.php?action=forums&job=prefix&id='.$id, 'This value already exists!');
 	}
 	else {

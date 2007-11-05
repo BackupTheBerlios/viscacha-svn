@@ -497,7 +497,7 @@ function logged () {
 
 	if (empty($this->sid) && array_empty($this->cookiedata)) {
 		$result = $db->query('SELECT sid FROM '.$db->pre.'session WHERE ip = "'.$this->ip.'" AND mid = "0" LIMIT 1',__LINE__,__FILE__);
-		if ($db->num_rows() == 1) {
+		if ($db->num_rows($result) == 1) {
 			$sidrow = $db->fetch_assoc($result);
 			$this->sid = $sidrow['sid'];
 			$this->querysid = true;
@@ -1382,7 +1382,7 @@ function ModPermissions ($bid) {
 	    }
 	    else {
 		    $result = $db->query("SELECT s_rating, s_news, s_article, p_delete, p_mc FROM {$db->pre}moderators WHERE mid = '{$my->id}' AND bid = '{$bid}' AND (time > ".time()." OR time IS NULL)",__LINE__,__FILE__);
-	        if ($db->num_rows() > 0) {
+	        if ($db->num_rows($result) > 0) {
 	        	$row = $db->fetch_assoc($result);
 	            return array(1, $row['s_rating'], $row['s_news'], $row['s_article'], $row['p_delete'], $row['p_mc']);
 	        }

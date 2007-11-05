@@ -148,7 +148,7 @@ class lang {
 			return $pphrase;
 		}
 		else {
-			return '';
+			return $phrase;
 		}
 	}
 

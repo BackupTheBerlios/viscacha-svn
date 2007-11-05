@@ -1206,12 +1206,13 @@ elseif ($job == 'doc_delete') {
 	}
 }
 elseif ($job == 'doc_edit') {
+	echo head();
 	$tpl = new tpl();
 	$id = $gpc->get('id', int);
 	$types = doctypes();
-	$result = $db->query('SELECT * FROM '.$db->pre.'documents WHERE id = '.$id, __LINE__, __FILE__);
+	$result = $db->query("SELECT * FROM {$db->pre}documents WHERE id = '{$id}'", __LINE__, __FILE__);
 	$row = $db->fetch_assoc($result);
-	if ($db->num_rows() == 0) {
+	if ($db->num_rows($result) == 0) {
 		error('admin.php?action=cms&job=doc', 'Keine gültige ID übergeben');
 	}
 	$format = $types[$row['type']];
@@ -1224,7 +1225,6 @@ elseif ($job == 'doc_edit') {
 	$memberdata_obj = $scache->load('memberdata');
 	$memberdata = $memberdata_obj->get();
 
-	echo head();
 ?>
 <form id="form" method="post" action="admin.php?action=cms&job=doc_edit2&id=<?php echo $id; ?>">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
@@ -1392,7 +1392,7 @@ elseif ($job == 'feed') {
 <form name="form" method="post" action="admin.php?action=cms&job=feed_delete">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr>
-   <td class="obox" colspan="5"><span style="float: right;"><a class="button" href="admin.php?action=cms&job=feed_add">Add a new Newsfeed</a></span>Import of Newsfeeds (<?php echo $db->num_rows(); ?>)</td>
+   <td class="obox" colspan="5"><span style="float: right;"><a class="button" href="admin.php?action=cms&job=feed_add">Add a new Newsfeed</a></span>Import of Newsfeeds (<?php echo $db->num_rows($result); ?>)</td>
   </tr>
   <tr>
    <td class="ubox" width="5%">Delete<br /><span class="stext"><input type="checkbox" onclick="check_all('delete[]');" name="all" value="1" /> All</span></td>

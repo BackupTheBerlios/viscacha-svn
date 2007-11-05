@@ -2081,7 +2081,7 @@ elseif ($job == 'custom') {
 	   <td class="obox" colspan="4"><b>Custom Settings</b></td>
 	  </tr>
 	<?php
-	if ($db->num_rows() > 0) {
+	if ($db->num_rows($result) > 0) {
 		?>
 		  <tr>
 		   <td class="ubox">Setting</td>

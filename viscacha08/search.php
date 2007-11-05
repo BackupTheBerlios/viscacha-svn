@@ -90,7 +90,7 @@ if ($_GET['action'] == "search") {
 
 	if (strxlen($_POST['name']) >= $config['searchminlength']) {
 		$result = $db->query('SELECT id FROM '.$db->pre.'user WHERE name="'.$_POST['name'].'"');
-		if ($db->num_rows() == 1) {
+		if ($db->num_rows($result) == 1) {
 			$name = $db->fetch_assoc($result);
 			$rname = $name['id'];
 		}

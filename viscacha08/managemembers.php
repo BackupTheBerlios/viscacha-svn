@@ -49,7 +49,7 @@ echo $tpl->parse("header");
 if ($my->vlogin && $my->p['admin'] == 1) {
 
 	$result = $db->query('SELECT * FROM '.$db->pre.'user WHERE id = '.$_GET['id']);
-	if ($db->num_rows() != 1) {
+	if ($db->num_rows($result) != 1) {
 		error($lang->phrase('no_id_given'), 'members.php'.SID2URL_1);
 	}
 	$user = $gpc->prepare($db->fetch_assoc($result));

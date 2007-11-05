@@ -204,8 +204,8 @@ elseif ($job == 'design_edit2') {
 			$error .= $lang->phrase('admin_design_design_unpublish_default_design_error');
 			$use = 1;
 		}
-		$db->query("SELECT * FROM {$db->pre}designs WHERE publicuse = '1'");
-		if ($db->num_rows() == 1) {
+		$result = $db->query("SELECT * FROM {$db->pre}designs WHERE publicuse = '1'");
+		if ($db->num_rows($result) == 1) {
 			$error .= $lang->phrase('admin_design_design_unpublish_no_other_design_published_error');
 			$use = 1;
 		}
@@ -642,8 +642,8 @@ elseif ($job == 'ajax_publicuse') {
 		if ($id == $config['templatedir']) {
 			die($lang->phrase('admin_design_you_cant_unpublish_design_until_other_default'));
 		}
-		$db->query("SELECT * FROM {$db->pre}designs WHERE publicuse = '1'");
-		if ($db->num_rows() == 1) {
+		$result = $db->query("SELECT * FROM {$db->pre}designs WHERE publicuse = '1'");
+		if ($db->num_rows($result) == 1) {
 			die($lang->phrase('admin_design_you_cant_unpublish_design_until_another_published'));
 		}
 	}

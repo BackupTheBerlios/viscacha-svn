@@ -454,7 +454,7 @@ elseif ($_GET['action'] == "vote") {
 	LIMIT 1
 	",__LINE__,__FILE__);
 
-	if ($db->num_rows() > 0) {
+	if ($db->num_rows($result) > 0) {
 		$allow = FALSE;
 	}
 	$result = $db->query("SELECT board FROM {$db->pre}topics WHERE id = '{$_GET['id']}' LIMIT 1",__LINE__,__FILE__);

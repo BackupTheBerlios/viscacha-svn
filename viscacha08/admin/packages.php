@@ -463,7 +463,7 @@ elseif ($job == 'package_import2') {
 elseif ($job == 'package_export') {
 	$id = $gpc->get('id', int);
 	$result = $db->query("SELECT id, internal FROM {$db->pre}packages WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
-	if ($db->num_rows() != 1) {
+	if ($db->num_rows($result) != 1) {
 		echo head();
 		error('admin.pgp?action=packages&job=package', 'Specified package does not exist.');
 	}
@@ -2059,7 +2059,7 @@ elseif ($job == 'plugins_add2') {
 	$packageid = $gpc->get('package', int);
 	$title = $gpc->get('title', str);
 	$result = $db->query("SELECT id, title FROM {$db->pre}packages WHERE id = '{$packageid}' LIMIT 1", __LINE__, __FILE__);
-	if ($db->num_rows() != 1) {
+	if ($db->num_rows($result) != 1) {
 		echo head();
 		error('admin.php?action=packages&job=plugins_add', 'Specified package ('.$packageid.') does not exist.');
 	}
@@ -2233,7 +2233,7 @@ elseif ($job == 'plugins_template') {
 	$id = $gpc->get('id', int);
 
 	$result = $db->query("SELECT id, title FROM {$db->pre}packages WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
-	if ($db->num_rows() != 1) {
+	if ($db->num_rows($result) != 1) {
 		echo head();
 		error('javascript: self.close();', 'Specified package ('.$id.') does not exist.');
 	}
@@ -2325,7 +2325,7 @@ elseif ($job == 'plugins_template_add') {
 	$file = $gpc->get('file', none);
 
 	$result = $db->query("SELECT id, title FROM {$db->pre}packages WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
-	if ($db->num_rows() != 1) {
+	if ($db->num_rows($result) != 1) {
 		echo head();
 		error('javascript: self.close();', 'Specified package ('.$id.') does not exist.');
 	}
@@ -2363,7 +2363,7 @@ elseif ($job == 'plugins_template_edit') {
 	$output = -1;
 
 	$result = $db->query("SELECT id, title FROM {$db->pre}packages WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
-	if ($db->num_rows() != 1) {
+	if ($db->num_rows($result) != 1) {
 		echo head();
 		error('javascript: self.close();', 'Specified package ('.$id.') does not exist.');
 	}
@@ -2475,7 +2475,7 @@ elseif ($job == 'plugins_template_edit2') {
 
 	echo head();
 	$result = $db->query("SELECT id FROM {$db->pre}packages WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
-	if ($db->num_rows() != 1) {
+	if ($db->num_rows($result) != 1) {
 		error('javascript: self.close();', 'Specified package ('.$id.') does not exist.');
 	}
 	$data = $db->fetch_assoc($result);
@@ -2498,7 +2498,7 @@ elseif ($job == 'plugins_language') {
 
 	$id = $gpc->get('id', int);
 	$result = $db->query("SELECT id, title FROM {$db->pre}packages WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
-	if ($db->num_rows() != 1) {
+	if ($db->num_rows($result) != 1) {
 		echo head();
 		error('javascript: self.close();', 'Specified package ('.$id.') does not exist.');
 	}
@@ -2572,7 +2572,7 @@ elseif ($job == 'plugins_language_add') {
 
 	$id = $gpc->get('id', int);
 	$result = $db->query("SELECT id, title FROM {$db->pre}packages WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
-	if ($db->num_rows() != 1) {
+	if ($db->num_rows($result) != 1) {
 		echo head();
 		error('javascript: self.close();', 'Specified package ('.$id.') does not exist.');
 	}
@@ -2631,7 +2631,7 @@ elseif ($job == 'plugins_language_save2') {
 	}
 
 	$result = $db->query("SELECT id, title FROM {$db->pre}packages WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
-	if ($db->num_rows() != 1) {
+	if ($db->num_rows($result) != 1) {
 		error('javascript: self.close();', 'Specified package ('.$id.') does not exist.');
 	}
 	$data = $db->fetch_assoc($result);
@@ -2679,7 +2679,7 @@ elseif ($job == 'plugins_language_delete') {
 	$delete = $gpc->get('delete', arr_str);
 
 	$result = $db->query("SELECT id, title FROM {$db->pre}packages WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
-	if ($db->num_rows() != 1) {
+	if ($db->num_rows($result) != 1) {
 		echo head();
 		error('javascript: self.close();', 'Specified package ('.$id.') does not exist.');
 	}
@@ -2719,7 +2719,7 @@ elseif ($job == 'plugins_language_edit') {
 	$phrase = $gpc->get('phrase', none);
 	$id = $gpc->get('id', int);
 	$result = $db->query("SELECT id, title FROM {$db->pre}packages WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
-	if ($db->num_rows() != 1) {
+	if ($db->num_rows($result) != 1) {
 		echo head();
 		error('javascript: self.close();', 'Specified package ('.$id.') does not exist.');
 	}

@@ -1273,11 +1273,12 @@ elseif ($job == 'register2') {
 elseif ($job == 'edit') {
 	include_once ("classes/function.profilefields.php");
 
-	// About
+	echo head();
+
 	$id = $gpc->get('id', int);
 
-	$result = $db->query('SELECT * FROM '.$db->pre.'user WHERE id = '.$id);
-	if ($db->num_rows() != 1) {
+	$result = $db->query("SELECT * FROM {$db->pre}user WHERE id = '{$id}'", __LINE__, __FILE__);
+	if ($db->num_rows($result) != 1) {
 		error('admin.php?action=members&job=manage', 'No valid ID given.');
 	}
 	$user = $gpc->prepare($db->fetch_assoc($result));
@@ -1307,8 +1308,6 @@ elseif ($job == 'edit') {
 	$random = md5(microtime());
 
 	$customfields = admin_customfields($user['id']);
-
-	echo head();
 ?>
 <form name="form_<?php echo $random; ?>" method="post" action="admin.php?action=members&job=edit2&amp;id=<?php echo $id; ?>&amp;random=<?php echo $random; ?>">
 <table class="border">
@@ -1542,7 +1541,7 @@ elseif ($job == 'edit2') {
 	}
 
 	$result = $db->query('SELECT * FROM '.$db->pre.'user WHERE id = '.$query['id']);
-	if ($db->num_rows() != 1) {
+	if ($db->num_rows($result) != 1) {
 		error('admin.php?action=members&job=manage', 'No valid ID given.');
 	}
 	$user = $gpc->prepare($db->fetch_assoc($result));
@@ -2866,7 +2865,7 @@ elseif ($job == 'ips') {
 					</li>
 					<?php
 				}
-				if ($db->num_rows() == 0) {
+				if ($db->num_rows($users) == 0) {
 					?>
 					<li>No matches found!</li>
 					<?php
@@ -2895,7 +2894,7 @@ elseif ($job == 'ips') {
 					</li>
 					<?php
 				}
-				if ($db->num_rows() == 0) {
+				if ($db->num_rows($ips) == 0) {
 					?>
 					<li>No matches found!</li>
 					<?php

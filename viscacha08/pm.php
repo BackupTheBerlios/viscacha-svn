@@ -63,7 +63,7 @@ if ($_GET['action'] == 'show') {
 	WHERE p.pm_to = '{$my->id}' AND p.id = '{$_GET['id']}'
 	ORDER BY p.date ASC
 	",__LINE__,__FILE__);
-	if ($db->num_rows() != 1) {
+	if ($db->num_rows($result) != 1) {
 		error($lang->phrase('query_string_error'), 'pm.php'.SID2URL_1);
 	}
 

@@ -434,7 +434,7 @@ if ($my->vlogin && $my->mp[0] == 1) {
 		$db->query ("DELETE FROM {$db->pre}uploads WHERE tid IN ({$iid})",__LINE__,__FILE__);
 
 		$result = $db->query("SELECT id FROM {$db->pre}replies WHERE topic_id = '{$info['id']}'");
-		if ($db->num_rows() == 0) {
+		if ($db->num_rows($result) == 0) {
 			$db->query ("DELETE FROM {$db->pre}abos WHERE tid = '{$info['id']}'",__LINE__,__FILE__);
 			$db->query ("DELETE FROM {$db->pre}topics WHERE id = '{$info['id']}'",__LINE__,__FILE__);
 			$votes = $db->query("SELECT id FROM {$db->pre}vote WHERE tid = '{$info['id']}'",__LINE__,__FILE__);

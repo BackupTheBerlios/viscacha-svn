@@ -107,7 +107,11 @@ $http_vars = array(
 'delete' => arr_int
 );
 
-$http_all = array_merge(array_keys($http_vars), array_keys($_POST), array_keys($_GET));
+$http_all = array_merge(
+	array_keys($http_vars),
+	is_array($_POST) ? array_keys($_POST) : array(),
+	is_array($_GET) ? array_keys($_GET) : array()
+);
 $http_all = array_unique($http_all);
 
 $http_std = array(
