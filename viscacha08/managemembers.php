@@ -109,7 +109,8 @@ if ($my->vlogin && $my->p['admin'] == 1) {
 		ok($lang->phrase('member_deleted'),'members.php'.SID2URL_1);
 	}
 	elseif ($_GET['action'] == 'edit') {
-		// About
+		$lang->group("timezones");
+
 		$chars = numbers($config['maxaboutlength']);
 		BBProfile($bbcode);
 		$inner['bbhtml'] = $bbcode->getbbhtml();

@@ -637,6 +637,8 @@ elseif ($_GET['action'] == "profile2") {
 
 }
 elseif ($_GET['action'] == "settings") {
+	$lang->group("timezones");
+
 	$breadcrumb->Add($lang->phrase('editprofile_settings'));
 	echo $tpl->parse("header");
 	echo $tpl->parse("menu");

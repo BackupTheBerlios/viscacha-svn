@@ -1,6 +1,12 @@
 <?php
 if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
 $lang = array();
+$lang['admin_choose_valid_location_option'] = 'Please choose a valid option!';
+$lang['admin_incorrect_username_or_password_entered'] = 'You have entered an incorrect user name or password!';
+$lang['admin_not_allowed_to_view_this_page'] = 'You are not allowed to view this page!';
+$lang['admin_requested_page_doesnot_exist'] = 'The page you have requested does not exist.';
+$lang['admin_successfully_logged_in'] = 'You have successfully logged in!';
+$lang['admin_successfully_logged_off'] = 'You have successfully logged off!';
 $lang['admin_an_error_occured'] = 'An error occured:';
 $lang['admin_an_unexpected_error_occured'] = 'An unexpected error occurred';
 $lang['admin_back'] = 'back';

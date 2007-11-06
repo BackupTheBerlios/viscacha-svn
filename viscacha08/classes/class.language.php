@@ -144,7 +144,9 @@ class lang {
 	function phrase($phrase) {
 		if (isset($this->lngarray[$phrase])) {
 			$pphrase = $this->lngarray[$phrase];
-        	$pphrase = $this->parse_pvar($pphrase);
+			if (strpos($pphrase, '{') !== false) {
+        		$pphrase = $this->parse_pvar($pphrase);
+			}
 			return $pphrase;
 		}
 		else {
@@ -156,13 +158,11 @@ class lang {
 		$this->assign[$key] = $val;
 	}
 
-	function parse_variable($key,$type) {
-
+	function parse_variable($key, $type) {
 		if ($type == '%') {
 			$keys = explode('->',$key);
 			if (isset($this->assign[$keys[0]]->$keys[1])) {
 				$var = $this->assign[$keys[0]]->$keys[1];
-				//unset($this->assign[$keys[0]]->$keys[1]);
 				return $var;
 			}
 			elseif(isset($GLOBALS[$keys[0]]->$keys[1])) {
@@ -174,7 +174,6 @@ class lang {
 			if (isset($keys[2])) {
 				if (isset($this->assign[$keys[0]][$keys[1]][$keys[2]])) {
 					$var = $this->assign[$keys[0]][$keys[1]][$keys[2]];
-					//unset($this->assign[$keys[0]][$keys[1]][$keys[2]]);
 					return $var;
 				}
 				elseif(isset($GLOBALS[$keys[0]][$keys[1][$keys[2]]])) {
@@ -184,7 +183,6 @@ class lang {
 			else {
 				if (isset($this->assign[$keys[0]][$keys[1]])) {
 					$var = $this->assign[$keys[0]][$keys[1]];
-					//unset($this->assign[$keys[0]][$keys[1]]);
 					return $var;
 				}
 				elseif(isset($GLOBALS[$keys[0]][$keys[1]])) {
@@ -195,7 +193,6 @@ class lang {
 		else {
 			if (isset($this->assign[$key])) {
 				$var = $this->assign[$key];
-				//unset($this->assign[$key]);
 				return $var;
 			}
 			elseif(isset($GLOBALS[$key])) {

@@ -106,7 +106,7 @@ if ($my->p['admin'] == 1) {
 	elseif ($action == 'logout') {
 		$slog->sid_logout();
 		echo head();
-		ok('admin.php', 'You have successfully logged off!');
+		ok('admin.php', $lang->phrase('admin_successfully_logged_off'));
 	}
 	elseif ($action == 'locate') {
 		$url = $gpc->get('url', none);
@@ -123,7 +123,7 @@ if ($my->p['admin'] == 1) {
 			else {
 				$url = 'javascript:history.back(-1);';
 			}
-			error($url, 'Please choose a valid option!');
+			error($url, $lang->phrase('admin_choose_valid_location_option'));
 		}
 	}
 	else {
@@ -135,7 +135,7 @@ if ($my->p['admin'] == 1) {
 			($code = $plugins->load('admin_include')) ? eval($code) : null;
 			if ($error == true) {
 				echo head();
-				error('admin.php?action=index'.SID2URL_x, 'The page you have requested does not exist.');
+				error('admin.php?action=index'.SID2URL_x, $lang->phrase('admin_requested_page_doesnot_exist'));
 			}
 		}
 	}
@@ -144,7 +144,7 @@ else {
 	($code = $plugins->load('admin_notallowed')) ? eval($code) : null;
 	if ($my->p['admin'] == 0 && $my->vlogin) {
 		echo head();
-		error('index.php'.SID2URL_1, 'You are not allowed to view this page!');
+		error('index.php'.SID2URL_1, $lang->phrase('admin_not_allowed_to_view_this_page'));
 	}
 
 	$addr = rawurldecode($gpc->get('addr', none));
@@ -152,10 +152,10 @@ else {
 		$log_status = $slog->sid_login(true);
 		echo head();
 		if ($log_status == false) {
-			error('admin.php'.iif(!empty($addr), '?addr='.rawurlencode($addr)), 'You have entered an incorrect user name or password!');
+			error('admin.php'.iif(!empty($addr), '?addr='.rawurlencode($addr)), $lang->phrase('admin_incorrect_username_or_password_entered'));
 		}
 		else {
-			ok('admin.php'.iif(!empty($addr), '?addr='.rawurlencode($addr)), 'You have successfully logged in!');
+			ok('admin.php'.iif(!empty($addr), '?addr='.rawurlencode($addr)), $lang->phrase('admin_successfully_logged_in'));
 		}
 	}
 	else {

@@ -1,6 +1,9 @@
 <?php
 if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
 
+// PK: MultiLangAdmin
+$lang->group("admin/cms");
+
 require('classes/class.phpconfig.php');
 $myini = new INI();
 
@@ -53,7 +56,7 @@ function BBCodeToolBox() {
 	<a id="menu_bbsmileys" style="display: block;text-align: center;width: 140px;" href="javascript:Link()"><img border="0" src="admin/html/images/desc.gif" alt="" /> more Smileys...</a>
 	<script type="text/javascript">RegisterMenu('bbsmileys');</script>
 	<div class="popup" id="popup_bbsmileys" style="height: 200px;width: 255px;overflow: auto;">
-	<strong>Smileys</strong>
+	<strong><?php echo $lang->phrase('admin_cms_head_smileys'); ?></strong>
 	<table style="width: 250px;border-collapse: collapse;margin-bottom: 5px;">
 	<?php foreach ($smileys[0] as $bb) { ?>
 	  <tr class="mbox">
@@ -67,68 +70,68 @@ function BBCodeToolBox() {
   </td>
   <td width="70%">
 	<div class="label" id="codebuttons">
-	<a id="menu_bbcolor" href="javascript:Link()"><img src="admin/html/images/desc.gif" alt="" /> Color</a>
+	<a id="menu_bbcolor" href="javascript:Link()"><img src="admin/html/images/desc.gif" alt="" /> <?php echo $lang->phrase('admin_cms_head_color'); ?></a>
 		<script type="text/javascript">RegisterMenu('bbcolor');</script>
 		<DIV class="popup" id="popup_bbcolor">
-		<strong>Choose Color</strong>
+		<strong><?php echo $lang->phrase('admin_cms_head_choose_color'); ?></strong>
 		<div class="bbody">
 		<script type="text/javascript">document.write(writeRow());</script>
 		</div>
 		</DIV>
-	<a id="menu_bbsize" href="javascript:Link()"><img src="admin/html/images/desc.gif" alt="" /> Size</a>
+	<a id="menu_bbsize" href="javascript:Link()"><img src="admin/html/images/desc.gif" alt="" /> <?php echo $lang->phrase('admin_cms_head_size'); ?></a>
 		<script type="text/javascript">RegisterMenu('bbsize');</script>
 		<div class="popup" id="popup_bbsize">
-		<strong>Choose Size</strong>
+		<strong><?php echo $lang->phrase('admin_cms_head_choose_size'); ?></strong>
 	   	<ul>
-			<li><span class="popup_line" onclick="InsertTagsMenu('[size=large]','[/size]','bbsize')" style="font-size: 1.3em;">Big Font</span></li>
-			<li><span class="popup_line" onclick="InsertTagsMenu('[size=small]','[/size]','bbsize')" style="font-size: 0.8em;">Small Font</span></li>
-			<li><span class="popup_line" onclick="InsertTagsMenu('[size=extended]','[/size]','bbsize')" style="letter-spacing: 3px;">Extended Font</span></li>
+			<li><span class="popup_line" onclick="InsertTagsMenu('[size=large]','[/size]','bbsize')" style="font-size: 1.3em;"><?php echo $lang->phrase('admin_cms_big_font'); ?></span></li>
+			<li><span class="popup_line" onclick="InsertTagsMenu('[size=small]','[/size]','bbsize')" style="font-size: 0.8em;"><?php echo $lang->phrase('admin_cms_small_font'); ?></span></li>
+			<li><span class="popup_line" onclick="InsertTagsMenu('[size=extended]','[/size]','bbsize')" style="letter-spacing: 3px;"><?php echo $lang->phrase('admin_cms_extended_font'); ?></span></li>
 		</ul>
 		</div>
-	<a id="menu_bbalign" href="javascript:Link()"><img src="admin/html/images/desc.gif" alt="" /> Alignment</a>
+	<a id="menu_bbalign" href="javascript:Link()"><img src="admin/html/images/desc.gif" alt="" /> <?php echo $lang->phrase('admin_cms_head_alignment'); ?></a>
 		<script type="text/javascript">RegisterMenu('bbalign');</script>
 		<DIV class="popup" id="popup_bbalign">
-	   <strong>Choose Alignment</strong>
+	   <strong><?php echo $lang->phrase('admin_cms_head_choose_alignment'); ?></strong>
 		<ul>
-			<li><span class="popup_line" onclick="InsertTagsMenu('[align=left]','[/align]','bbalign')" style="text-align: left;">Left</span></li>
-			<li><span class="popup_line" onclick="InsertTagsMenu('[align=center]','[/align]','bbalign')" style="text-align: center;">Center</span></li>
-			<li><span class="popup_line" onclick="InsertTagsMenu('[align=right]','[/align]','bbalign')" style="text-align: right;">Right</span></li>
-			<li><span class="popup_line" onclick="InsertTagsMenu('[align=justify]','[/align]','bbalign')" style="text-align: justify;">Justify</span></li>
+			<li><span class="popup_line" onclick="InsertTagsMenu('[align=left]','[/align]','bbalign')" style="text-align: left;"><?php echo $lang->phrase('admin_cms_left'); ?></span></li>
+			<li><span class="popup_line" onclick="InsertTagsMenu('[align=center]','[/align]','bbalign')" style="text-align: center;"><?php echo $lang->phrase('admin_cms_center'); ?></span></li>
+			<li><span class="popup_line" onclick="InsertTagsMenu('[align=right]','[/align]','bbalign')" style="text-align: right;"><?php echo $lang->phrase('admin_cms_right'); ?></span></li>
+			<li><span class="popup_line" onclick="InsertTagsMenu('[align=justify]','[/align]','bbalign')" style="text-align: justify;"><?php echo $lang->phrase('admin_cms_justify'); ?></span></li>
 		</ul>
 		</DIV>
-	<a id="menu_bbhx" href="javascript:Link()"><img src="admin/html/images/desc.gif" alt="" /> Heading</a>
+	<a id="menu_bbhx" href="javascript:Link()"><img src="admin/html/images/desc.gif" alt="" /> <?php echo $lang->phrase('admin_cms_head_heading'); ?></a>
 		<script type="text/javascript">RegisterMenu('bbhx');</script>
 		<div class="popup" id="popup_bbhx">
-		<strong>Choose Heading</strong>
+		<strong><?php echo $lang->phrase('admin_cms_head_choose_heading'); ?></strong>
 		<ul>
-			<li><h4 class="popup_line" onclick="InsertTagsMenu('[h=large]','[/h]','bbhx')" style="margin: 0px; font-size: 14pt;">Heading 1</h4></li>
-			<li><h5 class="popup_line" onclick="InsertTagsMenu('[h=middle]','[/h]','bbhx')" style=" margin: 0px; font-size: 13pt;">Heading 2</h5></li>
-			<li><h6 class="popup_line" onclick="InsertTagsMenu('[h=small]','[/h]','bbhx')" style="margin: 0px; font-size: 12pt;">Heading 3</h6></li>
+			<li><h4 class="popup_line" onclick="InsertTagsMenu('[h=large]','[/h]','bbhx')" style="margin: 0px; font-size: 14pt;"><?php echo $lang->phrase('admin_cms_heading_1'); ?></h4></li>
+			<li><h5 class="popup_line" onclick="InsertTagsMenu('[h=middle]','[/h]','bbhx')" style=" margin: 0px; font-size: 13pt;"><?php echo $lang->phrase('admin_cms_heading_2'); ?></h5></li>
+			<li><h6 class="popup_line" onclick="InsertTagsMenu('[h=small]','[/h]','bbhx')" style="margin: 0px; font-size: 12pt;"><?php echo $lang->phrase('admin_cms_heading_3'); ?></h6></li>
 		</ul>
 		</div>
-	<a id="menu_help" href="misc.php?action=bbhelp<?php echo SID2URL_x; ?>" style="cursor: help;" target="_blank"><img src="./images/1/bbcodes/help.gif" alt="" /> <strong>Help</strong></a>
+	<a id="menu_help" href="misc.php?action=bbhelp<?php echo SID2URL_x; ?>" style="cursor: help;" target="_blank"><img src="./images/1/bbcodes/help.gif" alt="" /> <strong><?php echo $lang->phrase('admin_cms_head_help'); ?></strong></a>
 	<?php if ($config['spellcheck'] == 1) { ?>
 	<script type="text/javascript" src="templates/spellChecker.js"></script>
 	<a href="javascript:openSpellChecker(textfield);"><img src="./images/1/bbcodes/spellcheck.gif" alt="Spell Check" /></a>
 	<?php } ?>
 	<br />
-	<a href="javascript:InsertTags('[b]','[/b]');" title="Boldface"><img src="./images/1/bbcodes/b.gif" alt="Boldface" /></a>
-	<a href="javascript:InsertTags('[i]','[/i]');" title="Italic"><img src="./images/1/bbcodes/i.gif" alt="Italic" /></a>
-	<a href="javascript:InsertTags('[u]','[/u]');" title="Underline"><img src="./images/1/bbcodes/u.gif" alt="Underline" /></a>
-	<a href="javascript:InsertTags('[hr]','');" title="Horizontal Ruler"><img src="./images/1/bbcodes/hr.gif" alt="Horizontal Ruler" /></a>
-	<a href="javascript:InsertTags('[img]','[/img]');" title="Image"><img src="./images/1/bbcodes/img.gif" alt="Image" /></a>
-	<a href="javascript:InsertTagsParams('[url={param1}]{param2}','[/url]','Please provide URL (with http://)','Please provide text for the link');" title="Internet address (URL)"><img src="./images/1/bbcodes/url.gif" alt="Internet address (URL)" /></a>
-	<a href="javascript:InsertTags('[email]','[/email]');" title="E-mail address"><img src="./images/1/bbcodes/email.gif" alt="E-mail address" /></a>
-	<a href="javascript:InsertTags('[quote]','[/quote]');" title="Quote"><img src="./images/1/bbcodes/quote.gif" alt="Quote" /></a>
-	<a href="javascript:InsertTags('[ot]','[/ot]');" title="Off Topic"><img src="./images/1/bbcodes/ot.gif" alt="Off Topic" /></a>
-	<a href="javascript:popup_code();" title="Source Code (Syntax Highlighting)"><img src="./images/1/bbcodes/code.gif" alt="Source Code (Syntax Highlighting)" /></a>
-	<a href="javascript:InsertTags('[edit]','[/edit]');" title="Later additions / Marking of edited passages"><img src="./images/1/bbcodes/edit.gif" alt="Later additions / Marking of edited passages" /></a>
-	<a href="javascript:list();" title="Unordered list"><img src="./images/1/bbcodes/ul.gif" alt="Unordered list" /></a>
-	<a href="javascript:list('ol');" title="Ordered list"><img src="./images/1/bbcodes/ol.gif" alt="Ordered list" /></a>
-	<a title="Definition / Explanation" href="javascript:InsertTagsParams('[note={param1}]{param2}','[/note]','Please enter the definition of the word','Please enter the word to be defined');"><img src="./images/1/bbcodes/note.gif" alt="Definition / Explanation" /></a>
-	<a href="javascript:InsertTags('[tt]','[/tt]');" title="Typewriter text"><img src="./images/1/bbcodes/tt.gif" alt="Typewriter text" /></a>
-	<a href="javascript:InsertTags('[sub]','[/sub]');" title="Subscript"><img src="./images/1/bbcodes/sub.gif" alt="Subscript" /></a>
-	<a href="javascript:InsertTags('[sup]','[/sup]');" title="Superscript"><img src="./images/1/bbcodes/sup.gif" alt="Superscript" /></a>
+	<a href="javascript:InsertTags('[b]','[/b]');" title="<?php echo $lang->phrase('admin_cms_tag_boldface'); ?>"><img src="./images/1/bbcodes/b.gif" alt="<?php echo $lang->phrase('admin_cms_tag_boldface'); ?>" /></a>
+	<a href="javascript:InsertTags('[i]','[/i]');" title="<?php echo $lang->phrase('admin_cms_tag_italic'); ?>"><img src="./images/1/bbcodes/i.gif" alt="<?php echo $lang->phrase('admin_cms_tag_italic'); ?>" /></a>
+	<a href="javascript:InsertTags('[u]','[/u]');" title="<?php echo $lang->phrase('admin_cms_tag_underline'); ?>"><img src="./images/1/bbcodes/u.gif" alt="<?php echo $lang->phrase('admin_cms_tag_unterline'); ?>" /></a>
+	<a href="javascript:InsertTags('[hr]','');" title="<?php echo $lang->phrase('admin_cms_tag_horizontal_ruler'); ?>"><img src="./images/1/bbcodes/hr.gif" alt="<?php echo $lang->phrase('admin_cms_tag_horizontal_ruler'); ?>" /></a>
+	<a href="javascript:InsertTags('[img]','[/img]');" title="<?php echo $lang->phrase('admin_cms_tag_image'); ?>"><img src="./images/1/bbcodes/img.gif" alt="<?php echo $lang->phrase('admin_cms_tag_image'); ?>" /></a>
+	<a href="javascript:InsertTagsParams('[url={param1}]{param2}','[/url]',$lang->phrase('admin_cms_tag_url_please_provide_url'),$lang->phrase('admin_cms_tag_url_please_provide_text'));" title="<?php echo $lang->phrase('admin_cms_tag_url'); ?>"><img src="./images/1/bbcodes/url.gif" alt="<?php echo $lang->phrase('admin_cms_tag_url'); ?>" /></a>
+	<a href="javascript:InsertTags('[email]','[/email]');" title="<?php echo $lang->phrase('admin_cms_tag_email'); ?>"><img src="./images/1/bbcodes/email.gif" alt="<?php echo $lang->phrase('admin_cms_tag_email'); ?>" /></a>
+	<a href="javascript:InsertTags('[quote]','[/quote]');" title="<?php echo $lang->phrase('admin_cms_tag_quote'); ?>"><img src="./images/1/bbcodes/quote.gif" alt="<mla_tag_quote>Quote" /></a>
+	<a href="javascript:InsertTags('[ot]','[/ot]');" title="<?php echo $lang->phrase('admin_cms_tag_off_topic'); ?>"><img src="./images/1/bbcodes/ot.gif" alt="<?php echo $lang->phrase('admin_cms_tag_off_topic'); ?>" /></a>
+	<a href="javascript:popup_code();" title="<?php echo $lang->phrase('admin_cms_tag_source_code'); ?>"><img src="./images/1/bbcodes/code.gif" alt="<?php echo $lang->phrase('admin_cms_tag_source_code'); ?>" /></a>
+	<a href="javascript:InsertTags('[edit]','[/edit]');" title="<?php echo $lang->phrase('admin_cms_tag_edited_passage'); ?>"><img src="./images/1/bbcodes/edit.gif" alt="<?php echo $lang->phrase('admin_cms_tag_edited_passage'); ?>" /></a>
+	<a href="javascript:list();" title="<?php echo $lang->phrase('admin_cms_tag_unordered_list'); ?>"><img src="./images/1/bbcodes/ul.gif" alt="<?php echo $lang->phrase('admin_cms_tag_unordered_list'); ?>" /></a>
+	<a href="javascript:list('ol');" title="<?php echo $lang->phrase('admin_cms_tag_ordered_list'); ?>"><img src="./images/1/bbcodes/ol.gif" alt="<?php echo $lang->phrase('admin_cms_tag_ordered_list'); ?>" /></a>
+	<a href="javascript:InsertTagsParams('[note={param1}]{param2}','[/note]',$lang->phrase('admin_cms_tag_definition_please_enter_definition'),$lang->phrase('admin_cms_tag_definition_please_enter_word'));" title="<?php echo $lang->phrase('admin_cms_tag_definition'); ?>"><img src="./images/1/bbcodes/note.gif" alt="<?php echo $lang->phrase('admin_cms_tag_defition'); ?>" /></a>
+	<a href="javascript:InsertTags('[tt]','[/tt]');" title="<?php echo $lang->phrase('admin_cms_tag_typewriter'); ?>"><img src="./images/1/bbcodes/tt.gif" alt="<?php echo $lang->phrase('admin_cms_tag_typewriter'); ?>" /></a>
+	<a href="javascript:InsertTags('[sub]','[/sub]');" title="<?php echo $lang->phrase('admin_cms_tag_subscript'); ?>"><img src="./images/1/bbcodes/sub.gif" alt="<?php echo $lang->phrase('admin_cms_tag_subscript'); ?>" /></a>
+	<a href="javascript:InsertTags('[sup]','[/sup]');" title="<?php echo $lang->phrase('admin_cms_tag_superscript'); ?>"><img src="./images/1/bbcodes/sup.gif" alt="<?php echo $lang->phrase('admin_cms_tag_superscript'); ?>" /></a>
 	<?php foreach ($cbb as $bb) { ?>
 	<a href="javascript:<?php echo $bb['href']; ?>" title="<?php echo $bb['title']; ?>"><img src="<?php echo $bb['buttonimage']; ?>" alt="<?php echo $bb['title']; ?>" /></a>
 	<?php } ?>
@@ -157,13 +160,13 @@ if ($job == 'nav') {
 ?>
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr>
-   <td class="obox">Manage Navigation</td>
+   <td class="obox"><?php echo $lang->phrase('admin_cms_head_manage_navigation'); ?></td>
   </tr>
   <tr>
    <td class="mbox center">
-   	<a class="button" href="admin.php?action=cms&amp;job=nav_add">Add Link</a>
-   	<a class="button" href="admin.php?action=cms&amp;job=nav_addbox">Add Box</a>
-   	<a class="button" href="admin.php?action=cms&amp;job=nav_addplugin">Add Plugin</a>
+   	<a class="button" href="admin.php?action=cms&amp;job=nav_add"><?php echo $lang->phrase('admin_cms_manage_navigation_add_link'); ?></a>
+   	<a class="button" href="admin.php?action=cms&amp;job=nav_addbox"><?php echo $lang->phrase('admin_cms_manage_navigation_add_box'); ?></a>
+   	<a class="button" href="admin.php?action=cms&amp;job=nav_addplugin"><?php echo $lang->phrase('admin_cms_manage_navifation_add_plugin'); ?></a>
    </td>
   </tr>
  </table>
@@ -195,23 +198,23 @@ if ($job == 'nav') {
 			?>
 		 <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
 		  <tr>
-		   <td class="obox" colspan="4">Position: <?php echo $pos[$head['position']]; ?></td>
+		   <td class="obox" colspan="4"><?php echo $lang->phrase('admin_cms_position'); ?> <?php echo $pos[$head['position']]; ?></td>
 		  </tr>
 		  <tr>
-		   <td class="ubox">Link</td>
-		   <td class="ubox">Status</td>
-		   <td class="ubox">Order</td>
-		   <td class="ubox">Action</td>
+		   <td class="ubox"><?php echo $lang->phrase('admin_cms_link'); ?></td>
+		   <td class="ubox"><?php echo $lang->phrase('admin_cms_status'); ?></td>
+		   <td class="ubox"><?php echo $lang->phrase('admin_cms_order'); ?></td>
+		   <td class="ubox"><?php echo $lang->phrase('admin_cms_action'); ?></td>
 		  </tr>
 			<?php
 			$last = $head['position'];
 		}
 		$type = array();
 		if ($head['module'] > 0) {
-			$type[] = '<em>Plugin</em>';
+			$type[] = '<em>'.$lang->phrase('admin_cms_plugin').'</em>';
 		}
 		if ($head['active'] == 0) {
-			$type[] = '<em>Inactive</em>';
+			$type[] = '<em>'.$lang->phrase('admin_cms_inactive').'</em>';
 		}
 	?>
 	<tr class="mmbox">
@@ -221,10 +224,10 @@ if ($job == 'nav') {
 	<td width="10%">
 	<?php
 	if ($head['active'] == 1) {
-		echo '<a href="admin.php?action=cms&job=nav_active&id='.$head['id'].iif($head['module'] > 0, '&plug='.$head['module']).'&act=0">Deactivate</a>';
+		echo '<a href="admin.php?action=cms&job=nav_active&id='.$head['id'].iif($head['module'] > 0, '&plug='.$head['module']).'&act=0">'.$lang->phrase('admin_cms_deactivate').'</a>';
 	}
 	else {
-		echo '<a href="admin.php?action=cms&job=nav_active&id='.$head['id'].iif($head['module'] > 0, '&plug='.$head['module']).'&act=1">Activate</a>';
+		echo '<a href="admin.php?action=cms&job=nav_active&id='.$head['id'].iif($head['module'] > 0, '&plug='.$head['module']).'&act=1">'.$lang->phrase('admin_cms_activate').'</a>';
 	}
 	?>
 	</td>
@@ -233,8 +236,8 @@ if ($job == 'nav') {
 	<a href="admin.php?action=cms&job=nav_move&id=<?php echo $head['id']; ?>&value=1"><img src="admin/html/images/desc.gif" border="0" alt="Down"></a>
 	</td>
 	<td width="35%">
-	 <a class="button" href="admin.php?action=cms&job=nav_edit&id=<?php echo $head['id']; ?>">Edit</a>
-	 <a class="button" href="admin.php?action=cms&job=nav_delete&id=<?php echo $head['id']; ?>">Delete</a>
+	 <a class="button" href="admin.php?action=cms&job=nav_edit&id=<?php echo $head['id']; ?>"><?php echo $lang->phrase('admin_cms_edit'); ?></a>
+	 <a class="button" href="admin.php?action=cms&job=nav_delete&id=<?php echo $head['id']; ?>"><?php echo $lang->phrase('admin_cms_delete'); ?></a>
 	</td>
 	</tr>
 	<?php
@@ -250,15 +253,15 @@ if ($job == 'nav') {
 			else {
 				?>
 				<a href="<?php echo $link['link']; ?>" target="<?php echo $link['param']; ?>"><?php echo navLang($link['name']); ?></a>
-				<?php } echo iif ($link['active'] == '0', ' (<em>Inactive</em>)'); ?><br />
+				<?php } echo iif ($link['active'] == '0', ' (<em>'.$lang->phrase('admin_cms_inactive').'</em>)'); ?><br />
 				</td>
 				<td class="mbox" width="10%">
 				<?php
 				if ($link['active'] == 1) {
-					echo '<a href="admin.php?action=cms&job=nav_active&id='.$link['id'].'&act=0">Deactivate</a>';
+					echo '<a href="admin.php?action=cms&job=nav_active&id='.$link['id'].'&act=0">'.$lang->phrase('admin_cms_deactivate').'</a>';
 				}
 				else {
-					echo '<a href="admin.php?action=cms&job=nav_active&id='.$link['id'].'&act=1">Activate</a>';
+					echo '<a href="admin.php?action=cms&job=nav_active&id='.$link['id'].'&act=1">'.$lang->phrase('admin_cms_activate').'/a>';
 				}
 				?>
 				</td>
@@ -267,8 +270,8 @@ if ($job == 'nav') {
 				<a href="admin.php?action=cms&job=nav_move&id=<?php echo $link['id']; ?>&value=1"><img src="admin/html/images/desc.gif" border="0" alt="Down"></a>
 				</font></td>
 				<td class="mbox" width="25%">
-				 <a class="button" href="admin.php?action=cms&job=nav_edit&id=<?php echo $link['id'] ?>">Edit</a>
-				 <a class="button" href="admin.php?action=cms&job=nav_delete&id=<?php echo $link['id']; ?>">Delete</a>
+				 <a class="button" href="admin.php?action=cms&job=nav_edit&id=<?php echo $link['id'] ?>"><?php echo $lang->phrase('admin_cms_edit'); ?></a>
+				 <a class="button" href="admin.php?action=cms&job=nav_delete&id=<?php echo $link['id']; ?>"><?php echo $lang->phrase('admin_cms_delete'); ?></a>
 				</td>
 				</tr>
 				<?php
@@ -284,15 +287,15 @@ if ($job == 'nav') {
 						else {
 							?>
 							<a href='<?php echo $sublink['link']; ?>' target='<?php echo $sublink['param']; ?>'><?php echo navLang($sublink['name']); ?></a>
-							<?php } echo iif ($sublink['active'] == '0', ' (<i>Inactive</i>)'); ?></font><br>
+							<?php } echo iif ($sublink['active'] == '0', ' (<i>'.$lang->phrase('admin_cms_inactive').'</i>)'); ?></font><br>
 							</td>
 							<td class="mbox" width="10%">
 							<?php
 							if ($sublink['active'] == 1) {
-								echo '<a href="admin.php?action=cms&job=nav_active&id='.$sublink['id'].'&act=0">Deactivate</a>';
+								echo '<a href="admin.php?action=cms&job=nav_active&id='.$sublink['id'].'&act=0">'.$lang->phrase('admin_cms_deactivate').'</a>';
 							}
 							else {
-								echo '<a href="admin.php?action=cms&job=nav_active&id='.$sublink['id'].'&act=1">Activate</a>';
+								echo '<a href="admin.php?action=cms&job=nav_active&id='.$sublink['id'].'&act=1">'.$lang->phrase('admin_cms_activate').'</a>';
 							}
 							?>
 							</td>
@@ -344,27 +347,27 @@ elseif ($job == 'nav_edit') {
 <form name="form" method="post" action="admin.php?action=cms&job=nav_edit2&id=<?php echo $id; ?>">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr>
-   <td class="obox" colspan="2">Edit <?php echo iif ($data['sub'] > 0, 'link', 'box'); ?></td>
+   <td class="obox" colspan="2"><?php echo $lang->phrase('admin_cms_nav_edit'); ?> <?php echo iif ($data['sub'] > 0, 'link', 'box'); ?></td>
   </tr>
   <tr>
-   <td class="mbox" width="50%">Title:<br /><span class="stext">To use phrases from the custom language file for this entry simply use the follwoing code: <code>lang->key</code>. <code>key</code> is the key of the phrase you want to use. To manage the phrases just <a href="admin.php?action=language&amp;job=phrase_file&amp;file=Y3VzdG9tLmxuZy5waHA%3D" target="_blank">edit the custom language file</a>.</span></td>
+   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_cms_nav_title'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_cms_nav_title_text'); ?></span></td>
    <td class="mbox" width="50%"><input type="text" name="title" size="40" value="<?php echo $data['name']; ?>" /></td>
   </tr>
 <?php if ($data['sub'] > 0) { ?>
   <tr>
-   <td class="mbox" width="50%">File/URL:<br />
+   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_cms_nav_file_url'); ?><br />
    <span class="stext">
-   - <a href="javascript:docs();">Existing Documents</a><br />
-   - <a href="javascript:coms();">Existing Components</a>
+   - <a href="javascript:docs();"><?php echo $lang->phrase('admin_cms_nav_existing_documents'); ?></a><br />
+   - <a href="javascript:coms();"><?php echo $lang->phrase('admin_cms_nav_existing_components'); ?></a>
    </span></td>
    <td class="mbox" width="50%"><input type="text" name="url" size="40" value="<?php echo $data['link']; ?>" /></td>
   </tr>
   <tr>
-   <td class="mbox" width="50%">Target:<br /><span class="stext">All links will be opened in the same window by default. This option defines the target window for the link. For example: "_blank" will open links in a new window.</span></td>
+   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_cms_nav_target'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_cms_nav_target_text'); ?></span></td>
    <td class="mbox" width="50%"><input type="text" name="target" size="40" value="<?php echo $data['param']; ?>" /></td>
   </tr>
   <tr>
-   <td class="mbox" width="50%">Parent Box/Link:</td>
+   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_cms_nav_parent_box'); ?></td>
    <td class="mbox" width="50%">
    <select name="sub">
    	<?php
@@ -392,7 +395,7 @@ elseif ($job == 'nav_edit') {
   </tr>
 <?php } if ($data['module'] > 0) { ?>
   <tr>
-   <td class="mbox" width="50%">Plugin:</td>
+   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_cms_nav_plugin'); ?></td>
    <td class="mbox" width="50%">
    <select name="plugin">
    <?php while ($row = $db->fetch_assoc($plugs)) { ?>
@@ -403,7 +406,7 @@ elseif ($job == 'nav_edit') {
   </tr>
 <?php } ?>
   <tr>
-   <td class="mbox" width="50%">Groups:<br /><span class="stext">Groups which have the ability to view the box.</span></td>
+   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_cms_nav_groups'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_cms_nav_groups_text'); ?></span></td>
    <td class="mbox" width="50%">
    <?php while ($row = $db->fetch_assoc($groups)) { ?>
 	<input type="checkbox" name="groups[]"<?php echo iif($data['groups'] == 0 || in_array($row['id'], $data['group_array']), ' checked="checked"'); ?> value="<?php echo $row['id']; ?>"> <?php echo $row['name']; ?><br />
@@ -411,11 +414,11 @@ elseif ($job == 'nav_edit') {
    </td>
   </tr>
   <tr>
-   <td class="mbox" width="50%">Active:</td>
+   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_cms_nav_active'); ?></td>
    <td class="mbox" width="50%"><input type="checkbox" name="active" value="1"<?php echo iif($data['active'] == 1, ' checked="checked"'); ?> /></td>
   </tr>
   <tr>
-   <td class="ubox" colspan="2" align="center"><input type="submit" value="Save" /></td>
+   <td class="ubox" colspan="2" align="center"><input type="submit" value="<?php echo $lang->phrase('admin_cms_form_edit'); ?>" /></td>
   </tr>
  </table>
 </form>
@@ -432,7 +435,7 @@ elseif ($job == 'nav_edit2') {
 	$title = $gpc->get('title', str);
 	$title = trim($title);
 	if (empty($title)) {
-		error('admin.php?action=cms&job=nav_addbox', 'Sie haben keinen Titel angegeben.');
+		error('admin.php?action=cms&job=nav_addbox', $lang->phrase('admin_cms_err_no_title'));
 	}
 	$active = $gpc->get('active', int);
 	$groups = $gpc->get('groups', arr_int);
@@ -471,20 +474,20 @@ elseif ($job == 'nav_edit2') {
 	}
 	$delobj = $scache->load('modules_navigation');
 	$delobj->delete();
-	ok('admin.php?action=cms&job=nav', 'Data successfully changed!');
+	ok('admin.php?action=cms&job=nav', $lang->phrase('admin_cms_data_successfully_changed'));
 }
 elseif ($job == 'nav_delete') {
 	echo head();
 	$id = $gpc->get('id', int);
 ?>
 	<table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
-	<tr><td class="obox">Delete Box or Link</td></tr>
+	<tr><td class="obox"><?php echo $lang->phrase('admin_cms_nav_delete_box_or_link'); ?></td></tr>
 	<tr><td class="mbox">
-	<p align="center">Do you really want to delete this box or link (to a plugin) including all child-links?</p>
+	<p align="center"><?php echo $lang->phrase('admin_cms_nav_really_want_to_delete'); ?></p>
 	<p align="center">
-	<a href="admin.php?action=cms&job=nav_delete2&id=<?php echo $id; ?>"><img border="0" alt="" src="admin/html/images/yes.gif"> Yes</a>
+	<a href="admin.php?action=cms&job=nav_delete2&id=<?php echo $id; ?>"><img border="0" alt="" src="admin/html/images/yes.gif"> <?php echo $lang->phrase('admin_cms_yes'); ?></a>
 	&nbsp&nbsp;&nbsp;&nbsp&nbsp;&nbsp;
-	<a href="javascript: history.back(-1);"><img border="0" alt="" src="admin/html/images/no.gif"> No</a>
+	<a href="javascript: history.back(-1);"><img border="0" alt="" src="admin/html/images/no.gif"> <?php echo $lang->phrase('admin_cms_no'); ?></a>
 	</p>
 	</td></tr>
 	</table>
@@ -513,13 +516,13 @@ elseif ($job == 'nav_delete2') {
 	$delobj = $scache->load('modules_navigation');
 	$delobj->delete();
 
-	ok('admin.php?action=cms&job=nav', $anz.' entries deleted.');
+	ok('admin.php?action=cms&job=nav', $lang->phrase('admin_cms_entries_deleted'));
 }
 elseif ($job == 'nav_move') {
 	$id = $gpc->get('id', int);
 	$pos = $gpc->get('value', int);
 	if ($id < 1) {
-		error('admin.php?action=cms&job=nav', 'Invalid ID given');
+		error('admin.php?action=cms&job=nav', $lang->phrase('admin_cms_invalid_id_given'));
 	}
 	if ($pos < 0) {
 		$db->query('UPDATE '.$db->pre.'menu SET ordering = ordering-1 WHERE id = '.$id, __LINE__, __FILE__);
@@ -537,10 +540,10 @@ elseif ($job == 'nav_active') {
 	$id = $gpc->get('id', int);
 	$pos = $gpc->get('act', int);
 	if ($id < 1) {
-		error('admin.php?action=cms&job=nav', 'Invalid ID given');
+		error('admin.php?action=cms&job=nav', $lang->phrase('admin_cms_invalid_id_given'));
 	}
 	if ($pos != 0 && $pos != 1) {
-		error('admin.php?action=cms&job=nav', 'Invalid status specified');
+		error('admin.php?action=cms&job=nav', $lang->phrase('admin_cms_invalid_status_specified'));
 	}
 	$db->query('UPDATE '.$db->pre.'menu SET active = "'.$pos.'" WHERE id = '.$id, __LINE__, __FILE__);
 
@@ -571,14 +574,14 @@ elseif ($job == 'nav_addplugin') {
 <form name="form" method="post" action="admin.php?action=cms&job=nav_addplugin2">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr>
-   <td class="obox" colspan="2">Add Plugin to Navigation</td>
+   <td class="obox" colspan="2"><?php echo $lang->phrase('admin_cms_nav_add_plugin'); ?></td>
   </tr>
   <tr>
-   <td class="mbox" width="50%">Title:<br /><span class="stext">Leave empty to use default.</span></td>
+   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_cms_nav_title'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_cms_nav_plug_title_text'); ?></span></td>
    <td class="mbox" width="50%"><input type="text" name="title" size="40" /></td>
   </tr>
   <tr>
-   <td class="mbox" width="50%">Plugin:</td>
+   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_cms_nav_plugin'); ?></td>
    <td class="mbox" width="50%">
    <select name="plugin">
    <?php while ($row = $db->fetch_assoc($plugs)) { ?>
@@ -588,7 +591,7 @@ elseif ($job == 'nav_addplugin') {
    </td>
   </tr>
   <tr>
-   <td class="mbox" width="50%">Sort in after:</td>
+   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_cms_nav_sort_in_after'); ?></td>
    <td class="mbox" width="50%">
    <select name="sort">
    	<?php
@@ -608,7 +611,7 @@ elseif ($job == 'nav_addplugin') {
 		?>
 		</optgroup>
 		<optgroup label="<?php echo htmlspecialchars($name, ENT_QUOTES); ?>">
-		<option value="pos_<?php echo $key; ?>">&lt; Sort in here &gt;</option>
+		<option value="pos_<?php echo $key; ?>">&lt;<?php echo $lang->phrase('admin_cms_sort_in_here'); ?>&gt;</option>
 		<?php
 	}
 	?>
@@ -618,7 +621,7 @@ elseif ($job == 'nav_addplugin') {
    </td>
   </tr>
   <tr>
-   <td class="mbox" width="50%">Groups:<br /><span class="stext">Groups which have the ability to view the PlugIn.</span></td>
+   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_cms_nav_groups'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_cms_nav_plug_groups_text'); ?></span></td>
    <td class="mbox" width="50%">
    <?php while ($row = $db->fetch_assoc($groups)) { ?>
 	<input type="checkbox" name="groups[]" checked="checked" value="<?php echo $row['id']; ?>"> <?php echo $row['name']; ?><br />
@@ -626,7 +629,7 @@ elseif ($job == 'nav_addplugin') {
    </td>
   </tr>
   <tr>
-   <td class="ubox" colspan="2" align="center"><input type="submit" value="Add" /></td>
+   <td class="ubox" colspan="2" align="center"><input type="submit" value="<?php echo $lang->phrase('admin_cms_form_add'); ?>" /></td>
   </tr>
  </table>
 </form>
@@ -666,7 +669,7 @@ elseif ($job == 'nav_addplugin2') {
 	$db->query("INSERT INTO {$db->pre}menu (name, groups, ordering, active, module, position) VALUES ('{$title}','{$groups}','{$sort['ordering']}','{$data['active']}','{$data['id']}','{$sort['position']}')", __LINE__, __FILE__);
 	$delobj = $scache->load('modules_navigation');
 	$delobj->delete();
-	ok('admin.php?action=cms&job=nav', 'Plugin successful added');
+	ok('admin.php?action=cms&job=nav', $lang->phrase('admin_cms_plugins_successfully_added'));
 }
 elseif ($job == 'nav_add') {
 	echo head();
@@ -684,26 +687,26 @@ elseif ($job == 'nav_add') {
 <form name="form" method="post" action="admin.php?action=cms&job=nav_add2">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr>
-   <td class="obox" colspan="2">Add a new link</td>
+   <td class="obox" colspan="2"><?php echo $lang->phrase('admin_cms_add_new_link'); ?></td>
   </tr>
   <tr>
-   <td class="mbox" width="50%">Title:<br /><span class="stext">To use phrases from the custom language file for this entry simply use the follwoing code: <code>lang->key</code>. <code>key</code> is the key of the phrase you want to use. To manage the phrases just <a href="admin.php?action=language&amp;job=phrase_file&amp;file=Y3VzdG9tLmxuZy5waHA%3D" target="_blank">edit the custom language file</a>.</span></td>
+   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_cms_nav_title'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_cms_nav_link_title_text'); ?></span></td>
    <td class="mbox" width="50%"><input type="text" name="title" size="40" /></td>
   </tr>
   <tr>
-   <td class="mbox" width="50%">File/URL:<br />
+   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_cms_nav_file_url'); ?><br />
    <span class="stext">
-   - <a href="javascript:docs();">Existing Documents</a><br />
-   - <a href="javascript:coms();">Existing Components</a>
+   - <a href="javascript:docs();"><?php echo $lang->phrase('admin_cms_nav_existing_documents'); ?></a><br />
+   - <a href="javascript:coms();"><?php echo $lang->phrase('admin_cms_nav_existing_components'); ?></a>
    </span></td>
    <td class="mbox" width="50%"><input type="text" name="url" size="40" /></td>
   </tr>
   <tr>
-   <td class="mbox" width="50%">Target:<br /><span class="stext">All links will be opened in the same window by default. This option defines the target window for the link. For example: "_blank" will open links in a new window.</span></td>
+   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_cms_nav_target'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_cms_nav_target_text'); ?></span></td>
    <td class="mbox" width="50%"><input type="text" name="target" size="40" /></td>
   </tr>
   <tr>
-   <td class="mbox" width="50%">Parent Box/Link:</td>
+   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_cms_nav_parent_box'); ?></td>
    <td class="mbox" width="50%">
    <select name="sub">
    	<?php
@@ -730,16 +733,16 @@ elseif ($job == 'nav_add') {
   </tr>
   </tr>
   <tr>
-   <td class="mbox" width="50%">Sort in:</td>
+   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_cms_nav_sort_in'); ?></td>
    <td class="mbox" width="50%">
    <select name="sort">
-	<option value="0">at the Beginning</option>
-	<option value="1">at the End</option>
+	<option value="0"><?php echo $lang->phrase('admin_cms_nav_at_the_beginning'); ?></option>
+	<option value="1"><?php echo $lang->phrase('admin_cms_nav_at_the_end'); ?></option>
    </select>
    </td>
   </tr>
   <tr>
-   <td class="mbox" width="50%">Groups:<br /><span class="stext">Groups which have the ability to view the box.</span></td>
+   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_cms_nav_groups'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_cms_nav_groups_text'); ?></span></td>
    <td class="mbox" width="50%">
    <?php while ($row = $db->fetch_assoc($groups)) { ?>
 	<input type="checkbox" name="groups[]" checked="checked" value="<?php echo $row['id']; ?>"> <?php echo $row['name']; ?><br />
@@ -747,7 +750,7 @@ elseif ($job == 'nav_add') {
    </td>
   </tr>
   <tr>
-   <td class="ubox" colspan="2" align="center"><input type="submit" value="Add" /></td>
+   <td class="ubox" colspan="2" align="center"><input type="submit" value="<?php echo $lang->phrase('admin_cms_form_add'); ?>" /></td>
   </tr>
  </table>
 </form>
@@ -763,7 +766,7 @@ elseif ($job == 'nav_add2') {
 	$sort = $gpc->get('sort', int);
 	$groups = $gpc->get('groups', arr_int);
 	if (empty($title)) {
-		error('admin.php?action=cms&job=nav_addbox', 'Sie haben keinen Titel angegeben.');
+		error('admin.php?action=cms&job=nav_addbox', $lang->phrase('admin_cms_err_entered_no_title'));
 	}
 	if ($sort == 1) {
 		$sortx = $db->fetch_num($db->query("SELECT MAX(ordering), position FROM {$db->pre}menu WHERE sub = '{$sub}' GROUP BY ordering LIMIT 1", __LINE__, __FILE__));
@@ -788,7 +791,7 @@ elseif ($job == 'nav_add2') {
 	$db->query("INSERT INTO {$db->pre}menu (name, groups, ordering, link, param, sub, position) VALUES ('{$title}','{$groups}','{$sort}','{$url}','{$target}','{$sub}','{$sortx[1]}')", __LINE__, __FILE__);
 	$delobj = $scache->load('modules_navigation');
 	$delobj->delete();
-	ok('admin.php?action=cms&job=nav', 'Link successfully added.');
+	ok('admin.php?action=cms&job=nav', $lang->phrase('admin_cms_link_successfully_added'));
 }
 elseif ($job == 'nav_addbox') {
 	echo head();
@@ -799,14 +802,14 @@ elseif ($job == 'nav_addbox') {
 <form name="form" method="post" action="admin.php?action=cms&job=nav_addbox2">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr>
-   <td class="obox" colspan="2">Create a new box</td>
+   <td class="obox" colspan="2"><?php echo $lang->phrase('admin_cms_create_a_new_box'); ?></td>
   </tr>
   <tr>
-   <td class="mbox" width="50%">Title:<br /><span class="stext">To use phrases from the custom language file for this entry simply use the follwoing code: <code>lang->key</code>. <code>key</code> is the key of the phrase you want to use. To manage the phrases just <a href="admin.php?action=language&amp;job=phrase_file&amp;file=Y3VzdG9tLmxuZy5waHA%3D" target="_blank">edit the custom language file</a>.</span></td>
+   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_cms_nav_title'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_cms_nav_title_text'); ?></span></td>
    <td class="mbox" width="50%"><input type="text" name="title" size="40" /></td>
   </tr>
   <tr>
-   <td class="mbox" width="50%">Sort in after:</td>
+   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_cms_nav_sort_in_after'); ?></td>
    <td class="mbox" width="50%">
    <select name="sort">
    	<?php
@@ -826,7 +829,7 @@ elseif ($job == 'nav_addbox') {
 		?>
 		</optgroup>
 		<optgroup label="<?php echo htmlspecialchars($name, ENT_QUOTES); ?>">
-		<option value="pos_<?php echo $key; ?>">&lt; Sort in here &gt;</option>
+		<option value="pos_<?php echo $key; ?>">&lt;$lang->phrase('admin_cms_nav_sort_in_here')&gt;</option>
 		<?php
 	}
 	?>
@@ -835,7 +838,7 @@ elseif ($job == 'nav_addbox') {
    </td>
   </tr>
   <tr>
-   <td class="mbox" width="50%">Groups:<br /><span class="stext">Groups which have the ability to view the box.</span></td>
+   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_cms_nav_groups'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_cms_nav_groups_text'); ?></span></td>
    <td class="mbox" width="50%">
    <?php while ($row = $db->fetch_assoc($groups)) { ?>
 	<input type="checkbox" name="groups[]" checked="checked" value="<?php echo $row['id']; ?>"> <?php echo $row['name']; ?><br />
@@ -843,7 +846,7 @@ elseif ($job == 'nav_addbox') {
    </td>
   </tr>
   <tr>
-   <td class="ubox" colspan="2" align="center"><input type="submit" value="Add" /></td>
+   <td class="ubox" colspan="2" align="center"><input type="submit" value="<?php echo $lang->phrase('admin_cms_form_add'); ?>" /></td>
   </tr>
  </table>
 </form>
@@ -854,7 +857,7 @@ elseif ($job == 'nav_addbox2') {
 	echo head();
 	$title = $gpc->get('title', str);
 	if (empty($title)) {
-		error('admin.php?action=cms&job=nav_addbox', 'Sie haben keinen Titel angegeben.');
+		error('admin.php?action=cms&job=nav_addbox', $lang->phrase('admin_cms_err_no_title'));
 	}
 	$sort = $gpc->get('sort', str);
 	if (substr($sort, 0, 4) == 'pos_') {
@@ -879,7 +882,7 @@ elseif ($job == 'nav_addbox2') {
 	$db->query("INSERT INTO {$db->pre}menu (name, groups, ordering, position) VALUES ('{$title}','{$groups}','{$sort['ordering']}','{$sort['position']}')", __LINE__, __FILE__);
 	$delobj = $scache->load('modules_navigation');
 	$delobj->delete();
-	ok('admin.php?action=cms&job=nav', 'Box successfully added');
+	ok('admin.php?action=cms&job=nav', $lang->phrase('admin_cms_box_successfully_added'));
 }
 elseif ($job == 'nav_docslist') {
 	echo head();
@@ -887,7 +890,7 @@ elseif ($job == 'nav_docslist') {
 	?>
 	 <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
 	  <tr>
-	   <td class="obox">Existing Documents and Pages</td>
+	   <td class="obox"><?php echo $lang->phrase('admin_cms_existing_documents_and_pages'); ?></td>
 	  </tr>
 	  <tr>
 	   <td class="mbox">
@@ -910,7 +913,7 @@ elseif ($job == 'nav_comslist') {
 	?>
 	 <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
 	  <tr>
-	   <td class="obox">Existing Components</td>
+	   <td class="obox"><?php echo $lang->phrase('admin_cms_existing_documents'); ?></td>
 	  </tr>
 	  <tr>
 	   <td class="mbox">
@@ -934,18 +937,18 @@ elseif ($job == 'doc') {
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr>
    <td class="obox" colspan="7">
-   <span style="float: right;"><a class="button" href="admin.php?action=cms&job=doc_add">Create new document</a></span>
-   Manage Documents &amp; Pages
+   <span style="float: right;"><a class="button" href="admin.php?action=cms&job=doc_add"><?php echo $lang->phrase('admin_cms_create_new_document'); ?></a></span>
+	<?php echo $lang->phrase('admin_cms_manage_documents_and_pages'); ?>
    </td>
   </tr>
   <tr>
-   <td class="ubox" width="5%">Delete<br /><span class="stext"><input type="checkbox" onclick="check_all('delete[]');" name="all" value="1" /> All</span></td>
-   <td class="ubox" width="40%">Title</td>
-   <td class="ubox" width="5%">ID</td>
-   <td class="ubox" width="20%">Author</td>
-   <td class="ubox" width="15%">Last change</td>
-   <td class="ubox" width="5%">Published</td>
-   <td class="ubox" width="10%">Action</td>
+   <td class="ubox" width="5%"><?php echo $lang->phrase('admin_cms_doc_delete'); ?><br /><span class="stext"><input type="checkbox" onclick="check_all('delete[]');" name="all" value="1" /> <?php echo $lang->phrase('admin_cms_doc_delete_all'); ?></span></td>
+   <td class="ubox" width="40%"><?php echo $lang->phrase('admin_cms_doc_title'); ?></td>
+   <td class="ubox" width="5%"><?php echo $lang->phrase('admin_cms_doc_id'); ?></td>
+   <td class="ubox" width="20%"><?php echo $lang->phrase('admin_cms_doc_author'); ?></td>
+   <td class="ubox" width="15%"><?php echo $lang->phrase('admin_cms_doc_last_change'); ?></td>
+   <td class="ubox" width="5%"><?php echo $lang->phrase('admin_cms_doc_published'); ?></td>
+   <td class="ubox" width="10%"><?php echo $lang->phrase('admin_cms_doc_action'); ?></td>
   </tr>
 <?php
 	$memberdata_obj = $scache->load('memberdata');
@@ -956,13 +959,13 @@ elseif ($job == 'doc') {
 			$row['author'] = $memberdata[$row['author']];
 		}
 		else {
-			$row['author'] = 'Unknown';
+			$row['author'] = $lang->phrase('admin_cms_unknown');
 		}
 		if ($row['update'] > 0) {
 			$row['update'] = gmdate('d.m.Y H:i', times($row['update']));
 		}
 		else {
-			$row['update'] = 'Unknown';
+			$row['update'] = $lang->phrase('admin_cms_unkown');
 		}
 ?>
   <tr>
@@ -973,13 +976,13 @@ elseif ($job == 'doc') {
    <td class="mbox" width="15%"><?php echo $row['update']; ?></td>
    <td class="mbox center" width="5%"><?php echo noki($row['active'], ' onmouseover="HandCursor(this)" onclick="ajax_noki(this, \'action=cms&job=doc_ajax_active&id='.$row['id'].'\')"'); ?></td>
    <td class="mbox" width="10%">
-   <a class="button" href="docs.php?id=<?php echo $row['id'].SID2URL_x; ?>" target="_blank">View</a>
-   <a class="button" href="admin.php?action=cms&job=doc_edit&id=<?php echo $row['id']; ?>">Edit</a>
+   <a class="button" href="docs.php?id=<?php echo $row['id'].SID2URL_x; ?>" target="_blank"><?php echo $lang->phrase('admin_cms_view'); ?></a>
+   <a class="button" href="admin.php?action=cms&job=doc_edit&id=<?php echo $row['id']; ?>"><?php echo $lang->phrase('admin_cms_edit'); ?></a>
    </td>
   </tr>
 <?php } ?>
   <tr>
-   <td class="ubox" width="100%" colspan="7" align="center"><input type="submit" name="Submit" value="Delete"></td>
+   <td class="ubox" width="100%" colspan="7" align="center"><input type="submit" name="Submit" value="<?php echo $lang->phrase('admin_cms_form_delete'); ?>"></td>
   </tr>
  </table>
 </form>
@@ -1000,26 +1003,26 @@ elseif ($job == 'doc_add') {
 	echo head();
 	$type = doctypes();
 	$parser = array(
-		'0' => 'No Parser',
-		'1' => 'HTML',
-		'2' => 'PHP (HTML)',
-		'3' => 'BB-Codes'
+		'0' => $lang->phrase('admin_cms_doc_no_parser'),
+		'1' => $lang->phrase('admin_cms_doc_html'),
+		'2' => $lang->phrase('admin_cms_doc_php_html'),
+		'3' => $lang->phrase('admin_cms_doc_bbcodes')
 	);
 	?>
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr>
-   <td class="obox" colspan="4">Create a new document - Step 1</td>
+   <td class="obox" colspan="4"><?php echo $lang->phrase('admin_cms_create_doc_step_1'); ?></td>
   </tr>
   <tr>
-   <td class="ubox">Title</td>
-   <td class="ubox">Template</td>
-   <td class="ubox">Parser</td>
-   <td class="ubox">Integration of Templates</td>
+   <td class="ubox"><?php echo $lang->phrase('admin_cms_doc_title'); ?></td>
+   <td class="ubox"><?php echo $lang->phrase('admin_cms_doc_template'); ?></td>
+   <td class="ubox"><?php echo $lang->phrase('admin_cms_doc_parser'); ?></td>
+   <td class="ubox"><?php echo $lang->phrase('admin_cms_doc_integration_of_templates'); ?></td>
   </tr>
 <?php
 foreach ($type as $id => $row) {
-	$row['parser'] = isset($parser[$row['parser']]) ? $parser[$row['parser']] : 'Unknown';
-	$row['inline'] = ($row['inline'] == 1) ? 'Static' : 'Dynamic';
+	$row['parser'] = isset($parser[$row['parser']]) ? $parser[$row['parser']] : $lang->phrase('admin_cms_doc_parser_unknown');
+	$row['inline'] = ($row['inline'] == 1) ? $lang->phrase('admin_cms_doc_static') : $lang->phrase('admin_cms_doc_dynamic');
 ?>
   <tr>
    <td class="mbox"><a href="admin.php?action=cms&job=doc_add2&type=<?php echo $id; ?>"><?php echo $row['title']; ?></a></td>
@@ -1043,19 +1046,19 @@ elseif ($job == 'doc_add2') {
 <form id="form" method="post" action="admin.php?action=cms&job=doc_add3&type=<?php echo $type; ?>">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr>
-   <td class="obox" colspan="4">Create a new document - Step 2</td>
+   <td class="obox" colspan="4"><?php echo $lang->phrase('admin_cms_create_doc_step_2'); ?></td>
   </tr>
   <tr>
    <td class="mbox">
-	<?php if ($format['inline'] == 1 && empty($format['template'])) { ?><span class="stext right">If no &lt;title&gt; can be parsed.</span><?php } ?>
-	Title:<br />
+	<?php if ($format['inline'] == 1 && empty($format['template'])) { ?><span class="stext right"><?php echo $lang->phrase('admin_cms_if_no_title_can_be_parsed'); ?></span><?php } ?>
+	<?php echo $lang->phrase('admin_cms_news_title'); ?><br />
 	<input type="text" name="title" size="60" />
    </td>
   </tr>
   <?php if($format['remote'] != 1) { ?>
   <tr>
    <td class="mbox">
-	Sourcecode:<br />
+	<?php echo $lang->phrase('admin_cms_doc_sourcecode'); ?><br />
 	<?php
 	$editorpath = 'templates/editor/';
 	$path = $tpl->altdir.'docs/'.$format['template'].'.html';
@@ -1099,13 +1102,13 @@ elseif ($job == 'doc_add2') {
   <?php } ?>
   <tr>
    <td class="mbox">
-   <?php if($format['remote'] != 1) { ?><span class="stext right">If a path is given, the file will be saved on the filesystem instead of saving it to the database.</span><?php } ?>
-   File:<br />
+   <?php if($format['remote'] != 1) { ?><span class="stext right"><?php echo $lang->phrase('admin_cms_if_path_is_given'); ?></span><?php } ?>
+   <?php echo $lang->phrase('admin_cms_doc_file'); ?><br />
 	<input type="text" name="file" size="60" />
    </td>
   </tr>
   <tr>
-   <td class="mbox"><span class="stext right">Groups which have the ability to view the box.</span>Groups:<br />
+   <td class="mbox"><span class="stext right"><?php echo $lang->phrase('admin_cms_doc_groups_text'); ?></span><?php echo $lang->phrase('admin_cms_doc_groups'); ?><br />
    <?php while ($row = $db->fetch_assoc($groups)) { ?>
 	<input type="checkbox" name="groups[]" checked="checked" value="<?php echo $row['id']; ?>"> <?php echo $row['name']; ?><br />
    <?php } ?>
@@ -1113,11 +1116,11 @@ elseif ($job == 'doc_add2') {
   </tr>
   <tr>
    <td class="mbox">
-	Active:<br />
+	<?php echo $lang->phrase('admin_cms_doc_active'); ?><br />
 	<input type="checkbox" value="1" name="active" />
    </td>
   </tr>
-  <tr><td class="ubox" align="center"><input type="submit" name="Submit" value="Add" /></td></tr>
+  <tr><td class="ubox" align="center"><input type="submit" name="Submit" value="<?php echo $lang->phrase('admin_cms_form_add'); ?>" /></td></tr>
  </table>
 </form>
 <?php
@@ -1175,7 +1178,7 @@ elseif ($job == 'doc_add3') {
 	$delobj = $scache->load('wraps');
 	$delobj->delete();
 
-	ok('admin.php?action=cms&job=doc', 'Document successfully added!');
+	ok('admin.php?action=cms&job=doc', $lang->phrase('admin_cms_document_successfully_added'));
 }
 elseif ($job == 'doc_delete') {
 	echo head();
@@ -1199,10 +1202,10 @@ elseif ($job == 'doc_delete') {
 		$delobj = $scache->load('wraps');
 		$delobj->delete();
 
-		ok('admin.php?action=cms&job=doc', $anz.' documents deleted');
+		ok('admin.php?action=cms&job=doc', $lang->phrase('admin_cms_documents_deleted'));
 	}
 	else {
-		error('admin.php?action=cms&job=doc', 'You haven\'t checked any box.');
+		error('admin.php?action=cms&job=doc', $lang->phrase('admin_cms_havent_checked_box'));
 	}
 }
 elseif ($job == 'doc_edit') {
@@ -1229,19 +1232,19 @@ elseif ($job == 'doc_edit') {
 <form id="form" method="post" action="admin.php?action=cms&job=doc_edit2&id=<?php echo $id; ?>">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr>
-   <td class="obox" colspan="4">Create a new document - Step 2</td>
+   <td class="obox" colspan="4"><?php echo $lang->phrase('admin_cms_create_doc_step_2'); ?></td>
   </tr>
   <tr>
    <td class="mbox">
-	<?php if ($format['inline'] == 1 && empty($format['template'])) { ?><span class="stext right">If no &lt;title&gt; can be parsed.</span><?php } ?>
-	Title:<br />
+	<?php if ($format['inline'] == 1 && empty($format['template'])) { ?><span class="stext right"><?php echo $lang->phrase('admin_cms_if_not_title_can_be_parsed'); ?></span><?php } ?>
+	<?php echo $lang->phrase('admin_cms_news_title'); ?><br />
 	<input type="text" name="title" size="60" value="<?php echo $gpc->prepare($row['title']); ?>" />
    </td>
   </tr>
   <?php if($format['remote'] != 1) { ?>
   <tr>
    <td class="mbox">
-	Sourcecode:<br />
+	<?php echo $lang->phrase('admin_cms_doc_sourcecode'); ?><br />
 	<?php
 	if($format['parser'] == 3) {
 		BBCodeToolBox();
@@ -1277,13 +1280,13 @@ elseif ($job == 'doc_edit') {
   <?php } ?>
   <tr>
    <td class="mbox">
-   <?php if($format['remote'] != 1) { ?><span class="stext right">If a path is given, the file will be saved on the filesystem instead of saving it to the database.</span><?php } ?>
-   File:<br />
+   <?php if($format['remote'] != 1) { ?><span class="stext right"><?php echo $lang->phrase('admin_cms_if_path_is_given'); ?></span><?php } ?>
+   <?php echo $lang->phrase('admin_cms_doc_file'); ?><br />
 	<input type="text" name="file" value="<?php echo $row['file']; ?>" size="60" />
    </td>
   </tr>
   <tr>
-   <td class="mbox"><span class="stext right">Groups which have the ability to view the box.</span>Groups:<br />
+   <td class="mbox"><span class="stext right"><?php echo $lang->phrase('admin_cms_doc_groups_text'); ?></span><?php echo $lang->phrase('admin_cms_doc_groups'); ?><br />
    <?php while ($g = $db->fetch_assoc($groups)) { ?>
 	<input type="checkbox" name="groups[]"<?php echo iif($row['groups'] == 0 || in_array($g['id'], $garr),'checked="checked"'); ?> value="<?php echo $g['id']; ?>"> <?php echo $g['name']; ?><br />
    <?php } ?>
@@ -1291,18 +1294,18 @@ elseif ($job == 'doc_edit') {
   </tr>
   <tr>
    <td class="mbox">
-	Author:<br />
-	<input type="radio" value="<?php echo $row['author']; ?>" name="author" checked="checked" /> Keep current Author: <strong><?php echo isset($memberdata[$row['author']]) ? $memberdata[$row['author']] : 'Unknown'; ?></strong><br />
-	<input type="radio" value="<?php echo $my->id; ?>" name="author" /> Change author to: <strong><?php echo $my->name; ?></strong>
+	<?php echo $lang->phrase('admin_cms_doc_author_change'); ?><br />
+	<input type="radio" value="<?php echo $row['author']; ?>" name="author" checked="checked" /><?php echo $lang->phrase('admin_cms_keep_current_author'); ?><strong><?php echo isset($memberdata[$row['author']]) ? $memberdata[$row['author']] : 'Unknown'; ?></strong><br />
+	<input type="radio" value="<?php echo $my->id; ?>" name="author" /><?php echo $lang->phrase('admin_cms_change_author_to'); ?><strong><?php echo $my->name; ?></strong>
    </td>
   </tr>
   <tr>
    <td class="mbox">
-	Active:<br />
+	<?php echo $lang->phrase('admin_cms_doc_active'); ?><br />
 	<input type="checkbox" value="1" name="active"<?php echo iif($row['active'] == 1, ' checked="checked"'); ?> />
    </td>
   </tr>
-  <tr><td class="ubox" align="center"><input type="submit" name="Submit" value="Edit" /></td></tr>
+  <tr><td class="ubox" align="center"><input type="submit" name="Submit" value="<?php echo $lang->phrase('admin_cms_form_edit'); ?>" /></td></tr>
  </table>
 </form>
 <?php
@@ -1321,7 +1324,7 @@ elseif ($job == 'doc_edit2') {
 
 	$result = $db->query("SELECT type FROM {$db->pre}documents WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	if ($db->num_rows($result) == 0) {
-		error('admin.php?action=cms&job=doc', 'Document does not exist.');
+		error('admin.php?action=cms&job=doc', $lang->phrase('admin_cms_document_doesnt_exist'));
 	}
 	$doc = $db->fetch_assoc($result);
 	$types = doctypes();
@@ -1362,7 +1365,7 @@ elseif ($job == 'doc_edit2') {
 	$delobj = $scache->load('wraps');
 	$delobj->delete();
 
-	ok('admin.php?action=cms&job=doc', 'Document successfully changed!');
+	ok('admin.php?action=cms&job=doc', $lang->phrase('admin_cms_document_successfully_changed'));
 }
 elseif ($job == 'doc_code') {
 	echo head();
@@ -1371,11 +1374,11 @@ elseif ($job == 'doc_code') {
 	?>
 	<script src="admin/html/editor.js" type="text/javascript"></script>
 	<table class="border">
-	<tr><td class="obox">BB-Code Tag: Code</td></tr>
+	<tr><td class="obox"><?php echo $lang->phrase('admin_cms_bb_tag_code'); ?></td></tr>
 	<tr><td class="mbox">
-	<strong>Choose the programming language for the highlighting:</strong><br /><br />
+	<strong><?php echo $lang->phrase('admin_cms_choose_programming_language'); ?></strong><br /><br />
 	<ul>
-	   <li><input type="radio" name="data" onclick="InsertTagsCode('[code]','[/code]')" /> No Syntax Highlighting</li>
+	   <li><input type="radio" name="data" onclick="InsertTagsCode('[code]','[/code]')" /> <?php echo $lang->phrase('admin_cms_no_syntax_highlighting'); ?></li>
 	   <?php foreach ($clang as $row) { ?>
 	   <li><input type="radio" name="data" onclick="InsertTagsCode('[code=<?php echo $row['short']; ?>]','[/code]')" /> <?php echo $row['name']; ?></li>
 	   <?php } ?>
@@ -1386,20 +1389,21 @@ elseif ($job == 'doc_code') {
 	echo foot();
 }
 elseif ($job == 'feed') {
-	$result = $db->query('SELECT * FROM '.$db->pre.'grab', __LINE__, __FILE__);
+	$result = $db->query("SELECT * FROM {$db->pre}grab ORDER BY title", __LINE__, __FILE__);
+	$num = $db->num_rows($result);
 	echo head();
 ?>
 <form name="form" method="post" action="admin.php?action=cms&job=feed_delete">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr>
-   <td class="obox" colspan="5"><span style="float: right;"><a class="button" href="admin.php?action=cms&job=feed_add">Add a new Newsfeed</a></span>Import of Newsfeeds (<?php echo $db->num_rows($result); ?>)</td>
+   <td class="obox" colspan="5"><span style="float: right;"><a class="button" href="admin.php?action=cms&job=feed_add"><?php echo $lang->phrase('admin_cms_add_newsfeed'); ?></a></span><?php echo $lang->phrase('admin_cms_impor_of_newsfeeds'); ?> (<?php echo $num; ?>)</td>
   </tr>
   <tr>
-   <td class="ubox" width="5%">Delete<br /><span class="stext"><input type="checkbox" onclick="check_all('delete[]');" name="all" value="1" /> All</span></td>
-   <td class="ubox" width="5%">ID</td>
-   <td class="ubox" width="35%">Title</td>
-   <td class="ubox" width="45%">File</td>
-   <td class="ubox" width="10%">Entries</td>
+   <td class="ubox" width="5%"><?php echo $lang->phrase('admin_cms_news_delete'); ?><br /><span class="stext"><input type="checkbox" onclick="check_all('delete[]');" name="all" value="1" /> <?php echo $lang->phrase('admin_cms_news_delete_all'); ?></span></td>
+   <td class="ubox" width="5%"><?php echo $lang->phrase('admin_cms_news_id'); ?></td>
+   <td class="ubox" width="35%"><?php echo $lang->phrase('admin_cms_news_title_head'); ?></td>
+   <td class="ubox" width="45%"><?php echo $lang->phrase('admin_cms_news_file'); ?></td>
+   <td class="ubox" width="10%"><?php echo $lang->phrase('admin_cms_news_entries'); ?></td>
   </tr>
 <?php
 	while ($row = $db->fetch_assoc($result)) {
@@ -1416,7 +1420,7 @@ elseif ($job == 'feed') {
   </tr>
 <?php } ?>
   <tr>
-   <td class="ubox" width="100%" colspan="5" align="center"><input type="submit" name="Submit" value="Delete"></td>
+   <td class="ubox" width="100%" colspan="5" align="center"><input type="submit" name="Submit" value="<?php echo $lang->phrase('admin_cms_form_delete'); ?>"></td>
   </tr>
  </table>
 </form>
@@ -1429,22 +1433,22 @@ echo head();
 <form name="form" method="post" action="admin.php?action=cms&job=feed_add2">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr>
-   <td class="obox" colspan="2">Add a new Newsfeed</td>
+   <td class="obox" colspan="2"><?php echo $lang->phrase('admin_cms_add_newsfeed'); ?></td>
   </tr>
   <tr>
-   <td class="mbox">Titel:<br><span class="stext">If no title can be read from the newsfeed.</td>
+   <td class="mbox"><?php echo $lang->phrase('admin_cms_news_title'); ?><br><span class="stext"><?php echo $lang->phrase('admin_cms_news_title_text'); ?></td>
    <td class="mbox"><input type="text" name="temp1" size="60"></td>
   </tr>
   <tr>
-   <td class="mbox">URL of the Newsfeed:<br><span class="stext">RSS 0.91, RSS 1.0, RSS 2.0 or ATOM-Newsfeed</td>
+   <td class="mbox"><?php echo $lang->phrase('admin_cms_news_url'); ?><br><span class="stext"><?php echo $lang->phrase('admin_cms_news_url_text'); ?></td>
    <td class="mbox"><input type="text" name="temp2" size="60"></td>
   </tr>
   <tr>
-   <td class="mbox">Number of Entries:<br><span class="stext">Maximum number of entries to show, 0 = all. Newsfeed are (normally) limited to 15 entries!</td>
+   <td class="mbox"><?php echo $lang->phrase('admin_cms_news_number_of_entries'); ?><br><span class="stext"><?php echo $lang->phrase('admin_cms_news_number_of_entries_text'); ?></td>
    <td class="mbox"><input type="text" name="value" size="3"></td>
   </tr>
   <tr>
-   <td class="ubox" width="100%" colspan="2" align="center"><input type="submit" name="Submit" value="Send"></td>
+   <td class="ubox" width="100%" colspan="2" align="center"><input type="submit" name="Submit" value="<?php echo $lang->phrase('admin_cms_form_add'); ?>"></td>
   </tr>
  </table>
 </form>
@@ -1459,10 +1463,10 @@ elseif ($job == 'feed_add2') {
 	$entries = $gpc->get('value', int);
 
 	if (empty($title)) {
-		error('admin.php?action=cms&job=feed_add', 'No title specified');
+		error('admin.php?action=cms&job=feed_add', $lang->phrase('admin_cms_no_title_specified'));
 	}
 	if (empty($file)) {
-		error('admin.php?action=cms&job=feed_add', 'No URL specified');
+		error('admin.php?action=cms&job=feed_add', $lang->phrase('admin_cms_no_url_specified'));
 	}
 	if (empty($entries)) {
 		$entries = 0;
@@ -1473,7 +1477,7 @@ elseif ($job == 'feed_add2') {
 	$delobj = $scache->load('grabrss');
 	$delobj->delete();
 
-	ok('admin.php?action=cms&job=feed', 'Newsfeed successfully added');
+	ok('admin.php?action=cms&job=feed', $lang->phrase('admin_cms_newsfeed_successfully_added'));
 }
 elseif ($job == 'feed_delete') {
 	echo head();
@@ -1490,10 +1494,10 @@ elseif ($job == 'feed_delete') {
 		$delobj = $scache->load('grabrss');
 		$delobj->delete();
 
-		ok('admin.php?action=cms&job=feed', $anz.' Newsfeed(s) successfully deleted');
+		ok('admin.php?action=cms&job=feed', $lang->phrase('admin_cms_newsfeeds_successfully_deleted'));
 	}
 	else {
-		error('admin.php?action=cms&job=feed', 'No newsfeed selected');
+		error('admin.php?action=cms&job=feed', $lang->phrase('admin_cms_no_newsfeed_selected'));
 	}
 }
 elseif ($job == 'feed_edit') {
@@ -1509,22 +1513,22 @@ $row = $db->fetch_assoc($result);
 <form name="form" method="post" action="admin.php?action=cms&job=feed_edit2&id=<?php echo $id; ?>">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr>
-   <td class="obox" colspan="2">Edit Document</td>
+   <td class="obox" colspan="2"><?php echo $lang->phrase('admin_cms_news_edit_document'); ?></td>
   </tr>
   <tr>
-   <td class="mbox">Title:<br><span class="stext">If no title can be read from the newsfeed.</span></td>
+   <td class="mbox"><?php echo $lang->phrase('admin_cms_news_title'); ?><br><span class="stext"><?php echo $lang->phrase('admin_cms_news_title_text'); ?></span></td>
    <td class="mbox"><input type="text" name="temp1" size="60" value="<?php echo $gpc->prepare($row['title']); ?>"></td>
   </tr>
   <tr>
-   <td class="mbox">URL of the Newsfeed:<br><span class="stext">RSS 0.91, RSS 1.0, RSS 2.0 or ATOM-Newsfeed</span></td>
+   <td class="mbox"><?php echo $lang->phrase('admin_cms_news_url'); ?><br><span class="stext"><?php echo $lang->phrase('admin_cms_news_url_text'); ?></span></td>
    <td class="mbox"><input type="text" name="temp2" size="60" value="<?php echo $row['file']; ?>"></td>
   </tr>
   <tr>
-   <td class="mbox">Number of Entries:<br><span class="stext">Maximum number of entries for output, 0 = all. Newsfeed are (normally) limited to 15 entries!</span></td>
+   <td class="mbox"><?php echo $lang->phrase('admin_cms_news_number_of_entries'); ?><br><span class="stext"><?php echo $lang->phrase('admin_cms_news_number_of_entries_text'); ?></span></td>
    <td class="mbox"><input type="text" name="value" size="3" value="<?php echo $row['entries']; ?>"></td>
   </tr>
   <tr>
-   <td class="ubox" width="100%" colspan=2 align="center"><input type="submit" name="Submit" value="Send"></td>
+   <td class="ubox" width="100%" colspan=2 align="center"><input type="submit" name="Submit" value="<?php echo $lang->phrase('admin_cms_form_edit'); ?>"></td>
   </tr>
  </table>
 </form>
@@ -1556,6 +1560,6 @@ elseif ($job == 'feed_edit2') {
 	$delobj = $scache->load('grabrss');
 	$delobj->delete();
 
-	ok('admin.php?action=cms&job=feed', 'Newsfeed successfully updated');
+	ok('admin.php?action=cms&job=feed', $lang->phrase('admin_cms_newsfeed_successfully_updated'));
 }
 ?>
