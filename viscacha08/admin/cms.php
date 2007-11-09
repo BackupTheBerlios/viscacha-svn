@@ -117,7 +117,7 @@ function BBCodeToolBox() {
 	<br />
 	<a href="javascript:InsertTags('[b]','[/b]');" title="<?php echo $lang->phrase('admin_cms_tag_boldface'); ?>"><img src="./images/1/bbcodes/b.gif" alt="<?php echo $lang->phrase('admin_cms_tag_boldface'); ?>" /></a>
 	<a href="javascript:InsertTags('[i]','[/i]');" title="<?php echo $lang->phrase('admin_cms_tag_italic'); ?>"><img src="./images/1/bbcodes/i.gif" alt="<?php echo $lang->phrase('admin_cms_tag_italic'); ?>" /></a>
-	<a href="javascript:InsertTags('[u]','[/u]');" title="<?php echo $lang->phrase('admin_cms_tag_underline'); ?>"><img src="./images/1/bbcodes/u.gif" alt="<?php echo $lang->phrase('admin_cms_tag_unterline'); ?>" /></a>
+	<a href="javascript:InsertTags('[u]','[/u]');" title="<?php echo $lang->phrase('admin_cms_tag_underline'); ?>"><img src="./images/1/bbcodes/u.gif" alt="<?php echo $lang->phrase('admin_cms_tag_underline'); ?>" /></a>
 	<a href="javascript:InsertTags('[hr]','');" title="<?php echo $lang->phrase('admin_cms_tag_horizontal_ruler'); ?>"><img src="./images/1/bbcodes/hr.gif" alt="<?php echo $lang->phrase('admin_cms_tag_horizontal_ruler'); ?>" /></a>
 	<a href="javascript:InsertTags('[img]','[/img]');" title="<?php echo $lang->phrase('admin_cms_tag_image'); ?>"><img src="./images/1/bbcodes/img.gif" alt="<?php echo $lang->phrase('admin_cms_tag_image'); ?>" /></a>
 	<a href="javascript:InsertTagsParams('[url={param1}]{param2}','[/url]',$lang->phrase('admin_cms_tag_url_please_provide_url'),$lang->phrase('admin_cms_tag_url_please_provide_text'));" title="<?php echo $lang->phrase('admin_cms_tag_url'); ?>"><img src="./images/1/bbcodes/url.gif" alt="<?php echo $lang->phrase('admin_cms_tag_url'); ?>" /></a>
@@ -128,7 +128,7 @@ function BBCodeToolBox() {
 	<a href="javascript:InsertTags('[edit]','[/edit]');" title="<?php echo $lang->phrase('admin_cms_tag_edited_passage'); ?>"><img src="./images/1/bbcodes/edit.gif" alt="<?php echo $lang->phrase('admin_cms_tag_edited_passage'); ?>" /></a>
 	<a href="javascript:list();" title="<?php echo $lang->phrase('admin_cms_tag_unordered_list'); ?>"><img src="./images/1/bbcodes/ul.gif" alt="<?php echo $lang->phrase('admin_cms_tag_unordered_list'); ?>" /></a>
 	<a href="javascript:list('ol');" title="<?php echo $lang->phrase('admin_cms_tag_ordered_list'); ?>"><img src="./images/1/bbcodes/ol.gif" alt="<?php echo $lang->phrase('admin_cms_tag_ordered_list'); ?>" /></a>
-	<a href="javascript:InsertTagsParams('[note={param1}]{param2}','[/note]',$lang->phrase('admin_cms_tag_definition_please_enter_definition'),$lang->phrase('admin_cms_tag_definition_please_enter_word'));" title="<?php echo $lang->phrase('admin_cms_tag_definition'); ?>"><img src="./images/1/bbcodes/note.gif" alt="<?php echo $lang->phrase('admin_cms_tag_defition'); ?>" /></a>
+	<a href="javascript:InsertTagsParams('[note={param1}]{param2}','[/note]',$lang->phrase('admin_cms_tag_definition_please_enter_definition'),$lang->phrase('admin_cms_tag_definition_please_enter_word'));" title="<?php echo $lang->phrase('admin_cms_tag_definition'); ?>"><img src="./images/1/bbcodes/note.gif" alt="<?php echo $lang->phrase('admin_cms_tag_definition'); ?>" /></a>
 	<a href="javascript:InsertTags('[tt]','[/tt]');" title="<?php echo $lang->phrase('admin_cms_tag_typewriter'); ?>"><img src="./images/1/bbcodes/tt.gif" alt="<?php echo $lang->phrase('admin_cms_tag_typewriter'); ?>" /></a>
 	<a href="javascript:InsertTags('[sub]','[/sub]');" title="<?php echo $lang->phrase('admin_cms_tag_subscript'); ?>"><img src="./images/1/bbcodes/sub.gif" alt="<?php echo $lang->phrase('admin_cms_tag_subscript'); ?>" /></a>
 	<a href="javascript:InsertTags('[sup]','[/sup]');" title="<?php echo $lang->phrase('admin_cms_tag_superscript'); ?>"><img src="./images/1/bbcodes/sup.gif" alt="<?php echo $lang->phrase('admin_cms_tag_superscript'); ?>" /></a>
@@ -766,7 +766,7 @@ elseif ($job == 'nav_add2') {
 	$sort = $gpc->get('sort', int);
 	$groups = $gpc->get('groups', arr_int);
 	if (empty($title)) {
-		error('admin.php?action=cms&job=nav_addbox', $lang->phrase('admin_cms_err_entered_no_title'));
+		error('admin.php?action=cms&job=nav_addbox', $lang->phrase('admin_cms_err_no_title'));
 	}
 	if ($sort == 1) {
 		$sortx = $db->fetch_num($db->query("SELECT MAX(ordering), position FROM {$db->pre}menu WHERE sub = '{$sub}' GROUP BY ordering LIMIT 1", __LINE__, __FILE__));
@@ -965,7 +965,7 @@ elseif ($job == 'doc') {
 			$row['update'] = gmdate('d.m.Y H:i', times($row['update']));
 		}
 		else {
-			$row['update'] = $lang->phrase('admin_cms_unkown');
+			$row['update'] = $lang->phrase('admin_cms_unknown');
 		}
 ?>
   <tr>
@@ -1236,7 +1236,7 @@ elseif ($job == 'doc_edit') {
   </tr>
   <tr>
    <td class="mbox">
-	<?php if ($format['inline'] == 1 && empty($format['template'])) { ?><span class="stext right"><?php echo $lang->phrase('admin_cms_if_not_title_can_be_parsed'); ?></span><?php } ?>
+	<?php if ($format['inline'] == 1 && empty($format['template'])) { ?><span class="stext right"><?php echo $lang->phrase('admin_cms_if_no_title_can_be_parsed'); ?></span><?php } ?>
 	<?php echo $lang->phrase('admin_cms_news_title'); ?><br />
 	<input type="text" name="title" size="60" value="<?php echo $gpc->prepare($row['title']); ?>" />
    </td>

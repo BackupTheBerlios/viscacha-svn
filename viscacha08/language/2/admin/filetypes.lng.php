@@ -3,7 +3,7 @@ if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
 $lang = array();
 $lang['admin_add_filetype_head'] = 'Add filetype';
 $lang['admin_attachment'] = 'Attachment (offer for download)';
-$lang['admin_attpic_no'] = 'No</span>';
+$lang['admin_attpic_no'] = 'No';
 $lang['admin_attpic_partially'] = 'Partially';
 $lang['admin_attpic_yes'] = 'Yes';
 $lang['admin_button_add_new_filetype'] = 'Add new File Type';

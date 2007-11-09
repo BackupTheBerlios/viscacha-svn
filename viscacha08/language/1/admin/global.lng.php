@@ -1,17 +1,12 @@
 <?php
 if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
 $lang = array();
-$lang['admin_choose_valid_location_option'] = 'Please choose a valid option!';
-$lang['admin_incorrect_username_or_password_entered'] = 'You have entered an incorrect user name or password!';
-$lang['admin_not_allowed_to_view_this_page'] = 'You are not allowed to view this page!';
-$lang['admin_requested_page_doesnot_exist'] = 'The page you have requested does not exist.';
-$lang['admin_successfully_logged_in'] = 'You have successfully logged in!';
-$lang['admin_successfully_logged_off'] = 'You have successfully logged off!';
 $lang['admin_an_error_occured'] = 'Es ist ein Fehler aufgetreten:';
 $lang['admin_an_unexpected_error_occured'] = 'Ein unerwarteter Fehler ist aufgetreten';
 $lang['admin_back'] = 'zurück';
 $lang['admin_benchmark_generation_time'] = 'Generiert in {$benchmark} Sekunden';
 $lang['admin_benchmark_queries'] = 'Datenbankabfragen: {$queries}';
+$lang['admin_choose_valid_location_option'] = 'Bitte wählen Sie eine gültige Option.';
 $lang['admin_click_here_to_change_setting'] = 'Klicken Sie hier um die Einstellung zu ändern!';
 $lang['admin_confirmation'] = 'Bestätigung:';
 $lang['admin_continue'] = 'weiter';
@@ -74,6 +69,7 @@ $lang['admin_gls_voting'] = 'Kann abstimmen';
 $lang['admin_gls_wwo'] = 'Kann Wer-ist-online ansehen';
 $lang['admin_gzip_not_loaded'] = 'GZIP-Erweiterung nicht geladen';
 $lang['admin_hours_name'] = 'Stunden';
+$lang['admin_incorrect_username_or_password_entered'] = 'You have entered an incorrect user name or password!';
 $lang['admin_lang_vars_help'] = 'Das Sprachsystem unterstützt die Benutzung von Variablen in Phrasen und Texten. Alle Variablen müssen mit { und } umgeben sein. Die aus dem PHP-Programm vorhandenen Variablen können wie folgt genutzt werden:<br />Normale Variablen vom Typ <code>$var</code> werden demnach <code>{&#36;var}</code>,<br />der Zugriff auf ein Array <code>$var[\'key\']</code> wird zu <code>{&#64;var->key}</code> und<br />der Zugriff auf ein Objekt-Attribut <code>$var->key</code> wird zu <code>{&#37;var->key}</code>.';
 $lang['admin_login_password'] = 'Passwort:';
 $lang['admin_login_title'] = 'Anmelden';
@@ -93,9 +89,13 @@ $lang['admin_months_november'] = 'November';
 $lang['admin_months_october'] = 'Oktober';
 $lang['admin_months_september'] = 'September';
 $lang['admin_no'] = 'Nein';
+$lang['admin_not_allowed_to_view_this_page'] = 'Sie haben nicht die Erlaubnis diese Seite anzusehen.';
 $lang['admin_pages'] = 'Seiten ({$anz}):';
+$lang['admin_requested_page_doesnot_exist'] = 'Die von Ihnen angeforderte Seite existiert leider nicht.';
 $lang['admin_seconds_name'] = 'Sekunde';
 $lang['admin_server_unknown'] = 'Unbekannt';
 $lang['admin_settings_successfully_saved'] = 'Einstellungen wurden erfolgreich gespeichert.';
+$lang['admin_successfully_logged_in'] = 'Sie wurden erfolgreich angemeldet.';
+$lang['admin_successfully_logged_off'] = 'Sie wurden erfolgreich abgemeldet.';
 $lang['admin_yes'] = 'Ja';
 ?>

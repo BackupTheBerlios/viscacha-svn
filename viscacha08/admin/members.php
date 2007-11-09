@@ -2916,7 +2916,7 @@ elseif ($job == 'ips') {
 		<td class="obox" colspan="2"><?php echo $lang->phrase('admin_member_search_ips'); ?></td>
 	</tr>
 	<tr>
-		<td class="mbox"><?php echo $lang->phrase('admin_member_find_by_ip'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_member_enter_partial_ip_address'); ?></td>
+		<td class="mbox"><?php echo $lang->phrase('admin_member_find_by_ip'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_member_enter_partial_ip_address'); ?></span></td>
 		<td class="mbox"><input type="text" name="ipaddress" value="<?php echo $ipaddress; ?>" size="35" /></td>
 	</tr>
 	<tr>
