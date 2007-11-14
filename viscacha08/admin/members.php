@@ -1,7 +1,7 @@
 <?php
 if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
 
-// T?: MultiLangAdmin
+// TR: MultiLangAdmin
 $lang->group("admin/members");
 $lang->group("timezones");
 

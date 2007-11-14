@@ -3,9 +3,9 @@ if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
 $lang = array();
 $lang['admin_about_max_length'] = 'Maximum length for &quot;personal sites&quot;:';
 $lang['admin_activate_character_set'] = 'Activate Character sets:';
-$lang['admin_activate_character_set_info'] = '>Activate support for asian languages. Should only be activated if problems occur.';
+$lang['admin_activate_character_set_info'] = 'Activate support for asian languages. Should only be activated if problems occur.';
 $lang['admin_activate_flodblocking'] = 'Activate Floodblocking for Search:';
-$lang['admin_activate_flodblocking_info'] = '>Flooding is a command which when very fast repeated in extreme case can inhibit normal work or bring the server down.';
+$lang['admin_activate_flodblocking_info'] = 'Flooding is a command which when very fast repeated in extreme case can inhibit normal work or bring the server down.';
 $lang['admin_activate_gzip_compression'] = 'Activate GZip-compression:';
 $lang['admin_activate_gzip_compression_info'] = '{$gzip}Selecting yes will enable GZIP to reduce bandwidth requirements, but there will be a small performance overhead instead. This feature requires the Zlib library, which is ';
 $lang['admin_activate_logging_missing_ip'] = 'Activate logging of missing IPs or User Agents:';

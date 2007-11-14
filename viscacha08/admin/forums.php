@@ -5,6 +5,7 @@ if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
 $lang->group("admin/forums");
 
 function ForumSubs ($tree, $cat, $board, $char = '+', $level = 0) {
+	global $lang;
 	foreach ($tree as $cid => $boards) {
 		$cdata = $cat[$cid];
 		?>
@@ -48,7 +49,7 @@ function ForumSubs ($tree, $cat, $board, $char = '+', $level = 0) {
 					 <?php if ($bdata['opt'] != 're') { ?>
 					 <optgroup label="Permissions">
 					  <option value="admin.php?action=forums&job=rights&id=<?php echo $bdata['id']; ?>"><?php echo $lang->phrase('admin_forum_manage_usergroups'); ?></option>
-					  <option value="admin.php?action=forums&job=rights_add&id=<?php echo $bdata['id']; ?>"><?php echo $lang->phrase('admin_forum_add_usergroups'); ?></option>
+					  <option value="admin.php?action=forums&job=rights_add&id=<?php echo $bdata['id']; ?>"><?php echo $lang->phrase('admin_forum_add_usergroup'); ?></option>
 					 </optgroup>
 					 <optgroup label="Prefixes">
 					  <option value="admin.php?action=forums&job=prefix&id=<?php echo $bdata['id']; ?>"><?php echo $lang->phrase('admin_forum_manage'); ?></option>
@@ -118,9 +119,7 @@ elseif ($job == 'mods') {
           <?php echo $lang->phrase('admin_forum_all'); ?></span></td>
       <td width="30%" rowspan="2"><?php if ($bid == 0) { ?>
           <a<?php echo iif($orderby == 'member', ' style="font-weight: bold;"'); ?> href="admin.php?action=forums&job=mods&order=member"><?php echo $lang->phrase('admin_forum_order_by_name'); ?></a>
-          <?php } else { ?>
-         $lang->phrase('admin_forum_order_by_name')
-          <?php } ?>
+          <?php } else { echo $lang->phrase('admin_forum_order_by_name'); } ?>
       </td>
       <?php if ($bid == 0) { ?>
       <td width="30%" rowspan="2"><a<?php echo iif($orderby != 'member', ' style="font-weight: bold;"'); ?> href="admin.php?action=forums&job=mods&order=board"><?php echo $lang->phrase('admin_forum_order_by_forum'); ?></a> </td>
@@ -142,7 +141,7 @@ elseif ($job == 'mods') {
 		$row['time'] = 'until '.gmdate('M d, Y',times($row['time']));
 	}
 	else {
-	    $row['time'] = '<em><?php echo $lang->phrase('admin_forum_no_restriction'); ?></em>';
+	    $row['time'] = '<em>'.$lang->phrase('admin_forum_no_restriction').'</em>';
 	}
     $p1 = ' onmouseover="HandCursor(this)" onclick="ajax_noki(this, \'action=forums&job=mods_ajax_changeperm&mid='.$row['mid'].'&bid='.$row['bid'].'&key=';
     $p2 = '\')"';
@@ -224,7 +223,7 @@ elseif ($job == 'mods_add') {
    </td>
   </tr>
   <tr>
-   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_forum_valid_period'); ?><br />
+   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_forum_period'); ?><br />
    <span class="stext"><?php echo $lang->phrase('admin_forum_valid_until'); ?></span></td>
    <td class="mbox" width="50%"><?php echo $lang->phrase('admin_forum_day'); ?> <input type="text" name="day" size="4" />&nbsp;&nbsp;&nbsp;&nbsp;$lang->phrase('admin_forum_month')<input type="text" name="month" size="4" />&nbsp;&nbsp;&nbsp;&nbsp;$lang->phrase('admin_forum_year')<input type="text" name="weekday" size="6" /></td>
   </tr>
@@ -240,7 +239,7 @@ elseif ($job == 'mods_add') {
    <td class="mbox" width="50%"><?php echo $lang->phrase('admin_forum_manage_posts'); ?></td>
    <td class="mbox" width="50%">
    <input type="checkbox" name="delete" value="1" checked="checked" /> <?php echo $lang->phrase('admin_forum_delete_topics'); ?><br />
-   <input type="checkbox" name="move" value="1" checked="checked" />$lang->phrase('admin_forum_move_topics')
+   <input type="checkbox" name="move" value="1" checked="checked" /> <?php echo $lang->phrase('admin_forum_move_topics'); ?>
    </td>
   </tr>
   </tr>
@@ -303,7 +302,7 @@ elseif ($job == 'manage') {
   <tr>
     <td class="obox" colspan="3">
   <span style="float: right;"><a class="button" href="admin.php?action=forums&job=cat_add"><?php echo $lang->phrase('admin_forum_new_categroy'); ?></a> <a class="button" href="admin.php?action=forums&job=forum_add"><?php echo $lang->phrase('admin_forum_new_forum'); ?></a></span>
- $lang->phrase('admin_forum_infomanage')
+  <?php echo $lang->phrase('admin_forum_infomanage'); ?>
   </td>
   </tr>
   <tr>
@@ -407,11 +406,11 @@ elseif ($job == 'forum_edit') {
   <tr>
    <td class="obox" colspan="2">
    <span style="float: right;">
-   <a class="button" href="admin.php?action=forums&amp;job=prefix&amp;id=<?php echo $id; ?>"><?php echo $lang->phrase('admin_forum_manage-prefixes'); ?></a>
+   <a class="button" href="admin.php?action=forums&amp;job=prefix&amp;id=<?php echo $id; ?>"><?php echo $lang->phrase('admin_forum_manage_prefixes'); ?></a>
    <a class="button" href="admin.php?action=forums&amp;job=mods&amp;id=<?php echo $id; ?>"><?php echo $lang->phrase('admin_forum_manage_moderators'); ?></a>
    <a class="button" href="admin.php?action=forums&amp;job=rights&amp;id=<?php echo $id; ?>"><?php echo $lang->phrase('admin_forum_manage_permissions'); ?></a>
    </span>
-  $lang->phrase('admin_forum_forum_settings')
+   <?php echo $lang->phrase('admin_forum_forum_settings'); ?>
    </td>
   </tr>
   <tr>
@@ -419,10 +418,8 @@ elseif ($job == 'forum_edit') {
    <td class="mbox" width="55"><input type="text" name="name" size="70" value="<?php echo $row['name']; ?>" /></td>
   </tr>
   <tr>
-   <td class="mbox"><?php echo $lang->phrase('admin_forum_descripion'); ?><br />
-   <span class="stext">
-   <mla=description_help>You can optionally type in a short description for this category.<br />
-   HTML is allowed; BB-Code is not allowed!</mla></span></td>
+   <td class="mbox"><?php echo $lang->phrase('admin_forum_description'); ?><br />
+   <span class="stext"><?php echo $lang->phrase('admin_forum_info_short_description'); ?><br /><?php echo $lang->phrase('admin_forum_html_bbcode'); ?></span></td>
    <td class="mbox"><textarea name="description" rows="3" cols="70"><?php echo $row['description']; ?></textarea></td>
   </tr>
   <tr>
@@ -438,18 +435,18 @@ elseif ($job == 'forum_edit') {
    <td class="mbox"><?php echo $lang->phrase('admin_forum_forum_link'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_forum_forum_link_help'); ?></span></td>
    <td class="mbox"><input type="text" name="link" size="70" value="<?php echo iif($row['opt'] == 're', $row['optvalue']); ?>" /></td>
   </tr>
-  <tr><td class="ubox" colspan="2"><?php echo $lang->phrase('admin_forum_global_settins'); ?></td></tr>
+  <tr><td class="ubox" colspan="2"><?php echo $lang->phrase('admin_forum_override_settings'); ?></td></tr>
   <tr>
-   <td class="mbox"><?php echo $lang->phrase('admin_forum_number_posts'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_forum_default_info'); ?> (<?php echo $config['topiczahl']; ?>)</span></td>
+   <td class="mbox"><?php echo $lang->phrase('admin_forum_number_posts'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_forum_default_value'); ?> (<?php echo $config['topiczahl']; ?>)</span></td>
    <td class="mbox"><input type="text" name="topiczahl" size="5" value="<?php echo $row['topiczahl']; ?>" /></td>
   </tr>
   <tr>
-   <td class="mbox"><?php echo $lang->phrase('admin_forum_number_topics'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_forum_default_info'); ?> (<?php echo $config['forumzahl']; ?>)</span></td>
+   <td class="mbox"><?php echo $lang->phrase('admin_forum_number_topics'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_forum_default_value'); ?> (<?php echo $config['forumzahl']; ?>)</span></td>
    <td class="mbox"><input type="text" name="forumzahl" size="5" value="<?php echo $row['forumzahl']; ?>" /></td>
   </tr>
   <tr><td class="ubox" colspan="2"><?php echo $lang->phrase('admin_forum_moderation_options'); ?></td></tr>
   <tr>
-   <td class="mbox"><?php echo $lang->phrase('admin_forum_automatic_status'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_forum_status_help'); ?></span></td>
+   <td class="mbox"><?php echo $lang->phrase('admin_forum_automatic_status'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_forum_info_topic_status'); ?></span></td>
    <td class="mbox">
     <select name="auto_status" size="1">
      <option value=""<?php echo iif($row['auto_status'] == '', ' selected="selected"'); ?>><?php echo $lang->phrase('admin_forum_no_status'); ?></option>
@@ -459,31 +456,31 @@ elseif ($job == 'forum_edit') {
    </td>
   </tr>
   <tr>
-   <td class="mbox"><?php echo $lang->phrase('admin_forum_email_new_topic'); ?><br />
-   <span class="stext"><?php echo $lang->phrase('admin_forum_separate_address'); ?></span></td>
+   <td class="mbox"><?php echo $lang->phrase('admin_forum_email_topic'); ?><br />
+   <span class="stext"><?php echo $lang->phrase('admin_forum_info_separate_address'); ?></span></td>
    <td class="mbox"><textarea name="topic_notification" rows="2" cols="70"><?php echo $row['topic_notification']; ?></textarea></td>
   </tr>
   <tr>
    <td class="mbox"><?php echo $lang->phrase('admin_forum_email_reply'); ?><br />
-   <span class="stext"><?php echo $lang->phrase('admin_forum_separate_address'); ?></span></td>
+   <span class="stext"><?php echo $lang->phrase('admin_forum_info_separate_address'); ?></span></td>
    <td class="mbox"><textarea name="reply_notification" rows="2" cols="70"><?php echo $row['reply_notification']; ?></textarea></td>
   </tr>
   <tr><td class="ubox" colspan="2"><?php echo $lang->phrase('admin_forum_access_options'); ?></td></tr>
   <tr>
-   <td class="mbox"><?php echo $lang->phrase('admin_forum_forum_password'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_forum_subforums_protected_help'); ?></span></td>
+   <td class="mbox"><?php echo $lang->phrase('admin_forum_forum_password'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_forum_info_subforums_protected'); ?></span></td>
    <td class="mbox"><input type="text" name="pw" size="40" value="<?php echo iif($row['opt'] == 'pw', $row['optvalue']); ?>" /></td>
   </tr>
   <tr>
    <td class="mbox" rowspan="3"><?php echo $lang->phrase('admin_forum_visibility'); ?></td>
    <td class="mbox">
-    <input type="radio" name="invisible" value="0"<?php echo iif($row['invisible'] == '0', ' checked="checked"'); ?> checked="checked" /> <?php echo $lang->phrase('admin_forum_forum_everyone'); ?><br />
+    <input type="radio" name="invisible" value="0"<?php echo iif($row['invisible'] == '0', ' checked="checked"'); ?> checked="checked" /> <?php echo $lang->phrase('admin_forum_show_forum_everyone'); ?><br />
     <span class="stext"><?php echo $lang->phrase('admin_forum_forum_shown_locked'); ?></span>
    </td></tr><tr><td class="mbox">
     <input type="radio" name="invisible" value="1"<?php echo iif($row['invisible'] == '1', ' checked="checked"'); ?> /> <?php echo $lang->phrase('admin_forum_select_hide_forum_from_users_without_authorization'); ?><br />
     <span class="stext"><?php echo $lang->phrase('admin_forum_forum_not_shown_locked'); ?></span>
    </td></tr><tr><td class="mbox">
-    <input type="radio" name="invisible" value="2"<?php echo iif($row['invisible'] == '2', ' checked="checked"'); ?> /> <?php echo $lang->phrase('admin_forum_select_forum_completely'); ?><br />
-    <span class="stext"><?php echo $lang->phrase('admin_forum_forum_locked_hidden'); ?></span>
+    <input type="radio" name="invisible" value="2"<?php echo iif($row['invisible'] == '2', ' checked="checked"'); ?> /> <?php echo $lang->phrase('admin_forum_select_hide_forum_completely'); ?><br />
+    <span class="stext"><?php echo $lang->phrase('admin_forum_info_forum_access'); ?></span>
    </td>
   </tr>
   <tr>
@@ -495,7 +492,7 @@ elseif ($job == 'forum_edit') {
    <td class="mbox"><input type="checkbox" name="active_topic" value="1"<?php echo iif($row['active_topic'] == '1', ' checked="checked""'); ?> /></td>
   </tr>
   <tr>
-   <td class="mbox"><?php echo $lang->phrase('admin_forum_posts_count_user'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_forum_posts_count_user_info'); ?> <a href="admin.php?page=<?php echo rawurldecode('admin.php?action=members&amp;job=recount'); ?>" target="_blank"><?php echo $lang->phrase('admin_forum_recount_post_manually'); ?></a>.</span></td>
+   <td class="mbox"><?php echo $lang->phrase('admin_forum_posts_count_user'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_forum_count_posts_user_post'); ?> <a href="admin.php?action=members&amp;job=recount>" target="_blank"><?php echo $lang->phrase('admin_forum_recount_post_manually'); ?></a>.</span></td>
    <td class="mbox"><input type="checkbox" name="count_posts" value="1"<?php echo iif($row['count_posts'] == '1', ' checked="checked""'); ?> /></td>
   </tr>
   <tr><td class="ubox" colspan="2"><?php echo $lang->phrase('admin_forum_forum_rules'); ?></td></tr>
@@ -667,7 +664,7 @@ elseif ($job == 'forum_edit2') {
 		$delobj = $scache->load('parent_forums');
 		$delobj->delete();
 
-		ok('admin.php?action=forums&job=manage', 'Forum successfully added!');
+		ok('admin.php?action=forums&job=manage', $lang->phrase('admin_forum_successfully_added'));
 	}
 }
 elseif ($job == 'forum_add') {
@@ -685,8 +682,8 @@ elseif ($job == 'forum_add') {
   <tr>
    <td class="mbox"><?php echo $lang->phrase('admin_forum_description'); ?><br />
    <span class="stext">
-   <?php echo $lang->phrase('admin_forum_optionally_description_category'); ?><br />
-   <?php echo $lang->phrase('admin_forum_html_allowed'); ?></span></td>
+   <?php echo $lang->phrase('admin_forum_info_short_description'); ?><br />
+   <?php echo $lang->phrase('dmin_forum_html_bbcode'); ?></span></td>
    <td class="mbox"><textarea name="description" rows="3" cols="70"></textarea></td>
   </tr>
   <tr>
@@ -707,21 +704,21 @@ elseif ($job == 'forum_add') {
    </td>
   </tr>
   <tr>
-   <td class="mbox"><?php echo $lang->phrase('admin_forum_forum_link'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_forum_url_forum_link'); ?></span></td>
+   <td class="mbox"><?php echo $lang->phrase('admin_forum_forum_link'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_forum_forum_link_help'); ?></span></td>
    <td class="mbox"><input type="text" name="link" size="70" id="dis1" onchange="disable(this)" /></td>
   </tr>
   <tr><td class="ubox" colspan="2"><?php echo $lang->phrase('admin_forum_override_settings'); ?></td></tr>
   <tr>
-   <td class="mbox"><?php echo $lang->phrase('admin_forum_posts_page'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_forum_default_value'); ?> (<?php echo $config['topiczahl']; ?>)</span></td>
+   <td class="mbox"><?php echo $lang->phrase('admin_forum_number_posts'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_forum_default_value'); ?> (<?php echo $config['topiczahl']; ?>)</span></td>
    <td class="mbox"><input type="text" name="topiczahl" size="5" value="0" /></td>
   </tr>
   <tr>
-   <td class="mbox"><?php echo $lang->phrase('admin_forum_topics_page'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_forum_default_value'); ?> (<?php echo $config['forumzahl']; ?>)</span></td>
+   <td class="mbox"><?php echo $lang->phrase('admin_forum_number_topics'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_forum_default_value'); ?> (<?php echo $config['forumzahl']; ?>)</span></td>
    <td class="mbox"><input type="text" name="forumzahl" size="5" value="0" /></td>
   </tr>
-  <tr><td class="ubox" colspan="2"><?php echo $lang->phrase('admin_forum_moderator_options'); ?></td></tr>
+  <tr><td class="ubox" colspan="2"><?php echo $lang->phrase('admin_forum_moderation_options'); ?></td></tr>
   <tr>
-   <td class="mbox"><?php echo $lang->phrase('admin_forum_topic_status'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_forum_info_topic_status'); ?></span></td>
+   <td class="mbox"><?php echo $lang->phrase('admin_forum_automatic_status'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_forum_info_topic_status'); ?></span></td>
    <td class="mbox">
     <select name="auto_status" size="1">
      <option value="" selected="selected"><?php echo $lang->phrase('admin_forum_no_status'); ?></option>
@@ -752,22 +749,22 @@ elseif ($job == 'forum_add') {
     <span class="stext"><?php echo $lang->phrase('admin_forum_info_forum_permission'); ?></span>
    </td></tr><tr><td class="mbox">
     <input type="radio" name="invisible" value="1" /> <?php echo $lang->phrase('admin_forum_hide_forum_authorization'); ?><br />
-    <span class="stext"><?php echo $lang->phrase('admin_forum_info_forum_password'); ?></span>
+    <span class="stext"><?php echo $lang->phrase('admin_forum_forum_not_shown_locked'); ?></span>
    </td></tr><tr><td class="mbox">
     <input type="radio" name="invisible" value="2" /> <?php echo $lang->phrase('admin_forum_select_hide_forum_completly'); ?><br />
     <span class="stext"><?php echo $lang->phrase('admin_forum_info_forum_access'); ?></span>
    </td>
   </tr>
   <tr>
-   <td class="mbox"><?php echo $lang->phrase('admin_forum_forum_read_only'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_forum_info_check_posts'); ?></span></td>
+   <td class="mbox"><?php echo $lang->phrase('admin_forum_read_only'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_forum_prevent_new_posts'); ?></span></td>
    <td class="mbox"><input type="checkbox" name="readonly" value="1" /></td>
   </tr>
   <tr>
-   <td class="mbox"><?php echo $lang->phrase('admin_forum_show_active_list'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_forum_info_checked_active_topic'); ?></span></td>
+   <td class="mbox"><?php echo $lang->phrase('admin_forum_active_topics'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_forum_info_checked_active_topic'); ?></span></td>
    <td class="mbox"><input type="checkbox" name="active_topic" value="1" checked="checked" /></td>
   </tr>
   <tr>
-   <td class="mbox"><?php echo $lang->phrase('admin_forum_count_posts_user_post'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_forum_info_not_post_counts.'); ?></span></td>
+   <td class="mbox"><?php echo $lang->phrase('admin_forum_count_posts_user_post'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_forum_count_posts_user_post'); ?></span></td>
    <td class="mbox"><input type="checkbox" name="count_posts" value="1" checked="checked" /></td>
   </tr>
   <tr>
@@ -785,7 +782,7 @@ elseif ($job == 'forum_add') {
    <td class="mbox">
     <select name="message_active" size="1">
      <option value="0" selected="selected"><?php echo $lang->phrase('admin_forum_dont_display_rules'); ?></option>
-     <option value="1"><?php echo $lang->phrase('admin_forum_rules_inline'); ?></option>
+     <option value="1"><?php echo $lang->phrase('admin_forum_inline_rules'); ?></option>
      <option value="2"><?php echo $lang->phrase('admin_forum_link_rules'); ?></option>
     </select>
    </td>
@@ -795,7 +792,7 @@ elseif ($job == 'forum_add') {
    <td class="mbox"><input type="text" name="message_title" size="70" /></td>
   </tr>
   <tr>
-   <td class="mbox"><?php echo $lang->phrase('admin_forum_rules'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_forum_info_html_bb-code'); ?></span></td>
+   <td class="mbox"><?php echo $lang->phrase('admin_forum_rules'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_forum_html_bbcode'); ?></span></td>
    <td class="mbox"><textarea name="message_text" rows="4" cols="70"></textarea></td>
   </tr>
   <tr><td class="ubox" colspan="2"><?php echo $lang->phrase('admin_forum_head_prefixes'); ?></td></tr>
@@ -1249,8 +1246,8 @@ elseif ($job == 'cat_add') {
   <tr>
    <td class="mbox" width="50%"><?php echo $lang->phrase('admin_forum_description'); ?><br />
    <span class="stext">
-   <?php echo $lang->phrase('admin_forum_short_description_category'); ?><br />
-   <?php echo $lang->phrase('admin_forum_info_html_bb-code'); ?></span></td>
+   <?php echo $lang->phrase('admin_forum_info_short_description'); ?><br />
+   <?php echo $lang->phrase('admin_forum_html_bbcode'); ?></span></td>
    <td class="mbox" width="50%"><textarea name="description" rows="2" cols="50"></textarea></td>
   </tr>
   <tr>
@@ -1365,7 +1362,7 @@ elseif ($job == 'cat_edit') {
    <td class="mbox" width="50%"><?php echo $lang->phrase('admin_forum_description'); ?><br />
    <span class="stext">
    <?php echo $lang->phrase('admin_forum_info_short_description'); ?><br />
-   <?php echo $lang->phrase('admin_forum_info_html_bb-code'); ?></span></td>
+   <?php echo $lang->phrase('admin_forum_html_bbcode'); ?></span></td>
    <td class="mbox" width="50%"><textarea name="description" rows="2" cols="50"><?php echo $row['description']; ?></textarea></td>
   </tr>
   <tr>

@@ -1,6 +1,9 @@
 <?php
 if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
 
+// FS: MultiLangAdmin
+$lang->group("admin/designs");
+
 require_once("admin/lib/class.servernavigator.php");
 $snav = new ServerNavigator();
 
@@ -53,7 +56,7 @@ if ($job == 'design') {
   </tr>
   <?php while ($row = $db->fetch_assoc($result)) { ?>
   <tr>
-   <td class="mbox"><?php echo $row['name']; ?><?php echo iif($row['id'] == $config['templatedir'], ' (<em>Default</em>)'); ?></td>
+   <td class="mbox"><?php echo $row['name']; ?><?php echo iif($row['id'] == $config['templatedir'], ' (<em>'.$lang->phrase('admin_design_default').'</em>)'); ?></td>
    <td class="mbox" align="right"><?php echo $row['template']; ?></td>
    <td class="mbox" align="right"><?php echo $row['stylesheet']; ?></td>
    <td class="mbox" align="right"><?php echo $row['images']; ?></td>
@@ -229,7 +232,7 @@ elseif ($job == 'design_delete') {
 
 	if ($id == $config['templatedir']) {
 		echo head();
-		error('admin.php?action=designs&job=design', $lang->phrase('admin_design_you_cant_unpublish_design_until_other_default_defined'));
+		error('admin.php?action=designs&job=design', $lang->phrase('admin_design_you_cant_unpublish_design_until_other_default'));
 	}
 
 	$db->query("DELETE FROM {$db->pre}designs WHERE id = '{$id}' LIMIT 1");
@@ -386,7 +389,7 @@ elseif ($job == 'design_import') {
   <tr><td class="obox" colspan="2"><?php echo $lang->phrase('admin_design_import_new_design'); ?></td></tr>
   <tr><td class="mbox"><?php echo $lang->phrase('admin_design_either_upload_a_file'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_design_allowed_file_types_and_max_file_size'); ?><?php echo formatFilesize(ini_maxupload()); ?></span></td>
   <td class="mbox"><input type="file" name="upload" size="40" /></td></tr>
-  <tr><td class="mbox"><?php echo $lang->phrase('admin_design_or_select_file_from_server'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_design_path_from_root'); ?></span></td>
+  <tr><td class="mbox"><?php echo $lang->phrase('admin_design_or_select_file_from_server'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_design_path_starting_from_root'); ?></span></td>
   <td class="mbox"><input type="text" name="server" size="50" value="<?php echo $file; ?>" /></td></tr>
   <tr><td class="mbox"><?php echo $lang->phrase('admin_design_delete_file_after_import'); ?></td>
   <td class="mbox"><input type="checkbox" name="delete" value="1" checked="checked" /></td></tr>
@@ -433,7 +436,7 @@ elseif ($job == 'design_import2') {
 			$file = $server;
 		}
 		else {
-			$inserterrors[] = $lang->phrase('admin_design_file_no_zipfile');
+			$inserterrors[] = $lang->phrase('admin_design_file_isnt_a_zipfile');
 		}
 	}
 	else {
@@ -454,7 +457,7 @@ elseif ($job == 'design_import2') {
 		if ($del > 0) {
 			$filesystem->unlink($file);
 		}
-		error('admin.php?action=designs&job=design_import', $lang->phrase('admin_design_zip_archive_errors'));
+		error('admin.php?action=designs&job=design_import', $lang->phrase('admin_design_zip_archive_error'));
 	}
 	else {
 		if (!file_exists($tempdir.'design.ini')) {
@@ -843,7 +846,7 @@ elseif ($job == 'templates_file_edit') {
 <form name="form2" method="post" enctype="multipart/form-data" action="admin.php?action=designs&job=templates_file_edit2&id=<?php echo $id; ?>&dir=<?php echo rawurlencode( iif(!empty($sub), $sub.'/', '')); ?>&file=<?php echo $file; ?>">
 <?php } ?>
  <table class="border" cellpadding="4" cellspacing="0" border="0">
-  <tr><td class="obox"><?php echo iif($readonly, $lang->phrase('admin_design_view'), $lang->phrase('admin_design_edit')).$lang->phrase('admin_design_a_template').$file; ?></td></tr>
+  <tr><td class="obox"><?php echo iif($readonly, $lang->phrase('admin_design_view_a_template'), $lang->phrase('admin_design_edit_a_template')).' &raquo; '.$file; ?></td></tr>
   <tr>
    <td class="mbox">
    <strong><?php echo $lang->phrase('admin_design_form_template'); ?></strong><br />
@@ -1246,7 +1249,7 @@ elseif ($job == 'css_add') {
   <tr><td class="obox" colspan="2"><?php echo $lang->phrase('admin_design_import_new_stylesheets'); ?></td></tr>
   <tr><td class="mbox"><?php echo $lang->phrase('admin_design_either_upload_a_file'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_design_allowed_file_types_and_max_file_size'); ?><?php echo formatFilesize(ini_maxupload()); ?></span></td>
   <td class="mbox"><input type="file" name="upload" size="40" /></td></tr>
-  <tr><td class="mbox"><?php echo $lang->phrase('admin_design_or_select_file_from_server'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_design_path_from_root'); ?></span></td>
+  <tr><td class="mbox"><?php echo $lang->phrase('admin_design_or_select_file_from_server'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_design_path_starting_from_root'); ?></span></td>
   <td class="mbox"><input type="text" name="server" size="50" /></td></tr>
   <tr><td class="mbox"><?php echo $lang->phrase('admin_design_delete_file_after_import'); ?></td>
   <td class="mbox"><input type="checkbox" name="delete" value="1" checked="checked" /></td></tr>
@@ -1293,7 +1296,7 @@ elseif ($job == 'css_add2') {
 			$file = $server;
 		}
 		else {
-			$inserterrors[] = $lang->phrase('admin_design_the_selected_file_isnt_a_zipfile');
+			$inserterrors[] = $lang->phrase('admin_design_file_isnt_a_zipfile');
 		}
 	}
 	else {
@@ -1323,7 +1326,7 @@ elseif ($job == 'css_add2') {
 			$filesystem->unlink($file);
 		}
 		rmdirr($tempdir);
-		error('admin.php?action=designs&job=css_add', $lang->phrase('admin_design_zip_archive_corrupt'));
+		error('admin.php?action=designs&job=css_add', $lang->phrase('admin_design_zip_archive_error'));
 	}
 
 	unset($archive);
@@ -1421,7 +1424,7 @@ elseif ($job == 'images_delete') {
 		error('admin.php?action=designs&job=images', $lang->phrase('admin_design_directory_couldnt_be_deleted'));
 	}
 	else {
-		ok('admin.php?action=designs&job=images', $lang->phrase('admin_design_directory_successfully_delete'));
+		ok('admin.php?action=designs&job=images', $lang->phrase('admin_design_directory_successfully_deleted'));
 	}
 }
 elseif ($job == 'images_add') {
@@ -1432,7 +1435,7 @@ elseif ($job == 'images_add') {
   <tr><td class="obox" colspan="2"><?php echo $lang->phrase('admin_design_import_new_images'); ?></td></tr>
   <tr><td class="mbox"><?php echo $lang->phrase('admin_design_either_upload_a_file'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_design_allowed_file_types_and_max_file_size'); ?><?php echo formatFilesize(ini_maxupload()); ?></span></td>
   <td class="mbox"><input type="file" name="upload" size="40" /></td></tr>
-  <tr><td class="mbox"><?php echo $lang->phrase('admin_design_or_select_file_from_server'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_design_path_from_root'); ?></span></td>
+  <tr><td class="mbox"><?php echo $lang->phrase('admin_design_or_select_file_from_server'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_design_path_starting_from_root'); ?></span></td>
   <td class="mbox"><input type="text" name="server" size="50" /></td></tr>
   <tr><td class="mbox"><?php echo $lang->phrase('admin_design_delete_file_after_import'); ?></td>
   <td class="mbox"><input type="checkbox" name="delete" value="1" checked="checked" /></td></tr>
@@ -1509,7 +1512,7 @@ elseif ($job == 'images_add2') {
 			$filesystem->unlink($file);
 		}
 		rmdirr($tempdir);
-		error('admin.php?action=designs&job=images_add', $lang->phrase('admin_design_zip_archive_errors'));
+		error('admin.php?action=designs&job=images_add', $lang->phrase('admin_design_zip_archive_error'));
 	}
 
 	unset($archive);
