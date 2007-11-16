@@ -1,7 +1,7 @@
 <?php
 if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
 
-// MM/AM: MultiLangAdmin (ToDo!)
+// MM/AM: MultiLangAdmin
 $lang->group("admin/settings");
 $lang->group("timezones");
 
@@ -33,10 +33,9 @@ if ($job == 'admin') {
 	  <td class="mbox" width="50%"><textarea rows="5" cols="60" name="package_server"><?php echo str_replace(";", "\n", $admconfig['package_server']); ?></textarea></td>
 	 </tr>
 	 <tr>
-	  <td class="mbox" width="50%"><?php echo $lang->phrase('admin_positions_for_navigation'); ?><br /><span class="stext"><mla=positions_for_navigation><strong>Format:</strong><br />
-		Each entry in a new line: <code>value=title</code><br />
-		<code>value</code> is a value which can only contain letters, numbers and underscores with a maximum of 10 chars.<br />
-		<code>title</code> is a one line value shown in the select box.</mla></span>
+	  <td class="mbox" width="50%"><?php echo $lang->phrase('admin_positions_for_navigation'); ?><br /><span class="stext">
+	  	<strong><?php echo $lang->phrase('admin_positions_for_navigation1'); ?></strong><br />
+		<?php echo $lang->phrase('admin_positions_for_navigation2'); ?></span>
 	  </td>
 	  <td class="mbox" width="50%"><textarea rows="5" cols="60" name="nav_positions"><?php echo $admconfig['nav_positions']; ?></textarea></td>
 	 </tr>
@@ -764,11 +763,7 @@ elseif ($job == 'user') {
 	  <tr>
 	   <td class="mbox" width="50%">
 	    <?php echo $lang->phrase('admin_allow_users_to_filter_members'); ?><br />
-	    <span class="stext">
-	     <mla=allow_users_to_filter_members_info>>"A" will disable this feature.<br />
-	     "B" will show a select-box. You can select one ore more usergroups and show only members in the selected groups.<br />
-	     "C" will not show a select-box, but you can filter groups by specifying the group ids in the url.</mla>
-	    </span></td>
+	    <span class="stext"><?php echo $lang->phrase('admin_allow_users_to_filter_members_info'); ?></span></td>
 	   <td class="mbox" width="50%">
 	    <select name="mlist_filtergroups">
 	     <option <?php echo iif($config['mlist_filtergroups'] == 0,' selected="selected"'); ?> value="0" /><?php echo $lang->phrase('admin_filter_a'); ?></option>
@@ -1740,7 +1735,7 @@ elseif ($job == 'http') {
 	   <td class="obox" colspan="2"><?php echo $lang->phrase('admin_headers_cookies_gzip'); ?></td>
 	  </tr>
 	  <tr>
-	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_activate_gzip_compression'); ?><br><span class="stext"><?php echo $lang->phrase('admin_activate_gzip_compression_info'); ?><mla=activate_gzip_compression_info_ws>! If you are already using mod_gzip on your server, do not enable this option.</mla></font></td>
+	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_activate_gzip_compression'); ?><br><span class="stext"><?php echo $lang->phrase('admin_activate_gzip_compression_info'); ?></span></td>
 	   <td class="mbox" width="50%"><input type="checkbox" name="gzip" value="1"<?php echo iif($config['gzip'],' checked'); ?>></td>
 	  </tr>
 	  <tr>
@@ -2317,13 +2312,7 @@ elseif ($job == 'new') {
 </tr>
 <tr>
 <td class="mbox" width="40%"><?php echo $lang->phrase('admin_setting_type_values'); ?><br />
-<span class="stext">
-<mla=setting_type_values_info>Only for Select-Fields.<br />
-<strong>Format:</strong> (each entry in a new line)<br />
-<code>value=title</code><br />
-<code>value</code> is a value which can only contain letters, numbers and underscores.<br />
-<code>title</code> is a one line value shown in the select box.<br /></mla>
-</span></td>
+<span class="stext"><?php echo $lang->phrase('admin_setting_type_values_info'); ?></span></td>
 <td class="mbox" width="60%"><textarea name="typevalue" rows="6" cols="50"></textarea></td>
 </tr>
 <tr>

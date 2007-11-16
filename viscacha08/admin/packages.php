@@ -32,29 +32,29 @@ if ($job == 'package') {
 	?>
 	 <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
 	  <tr>
-	   <td class="obox">Package Manager</td>
+	   <td class="obox"><?php echo $lang->phrase('admin_packages_head_package_manager'); ?></td>
 	  </tr>
 	  <tr>
 	  	<td class="mbox center">
 	  		<?php if ($my->settings['admin_interface'] != 1) { ?>
-			<a class="button" href="admin.php?action=packages&amp;job=com" target="Main">Component Manager</a>
-			<a class="button" href="admin.php?action=packages&amp;job=plugins" target="Main">Plugin Manager</a>
+			<a class="button" href="admin.php?action=packages&amp;job=com" target="Main"><?php echo $lang->phrase('admin_packages_component_manager'); ?></a>
+			<a class="button" href="admin.php?action=packages&amp;job=plugins" target="Main"><?php echo $lang->phrase('admin_packages_plugin_manager'); ?></a>
 	  		<?php } ?>
-	  		<a class="button" href="admin.php?action=packages&amp;job=browser">Browse Packages</a>
-	  		<a class="button" href="admin.php?action=packages&amp;job=package_import">Import Package</a>
-	  		<a class="button" href="admin.php?action=packages&amp;job=package_add">Create Package</a>
+	  		<a class="button" href="admin.php?action=packages&amp;job=browser"><?php echo $lang->phrase('admin_packages_browse_packages'); ?></a>
+	  		<a class="button" href="admin.php?action=packages&amp;job=package_import"><?php echo $lang->phrase('admin_packages_import_package'); ?></a>
+	  		<a class="button" href="admin.php?action=packages&amp;job=package_add"><?php echo $lang->phrase('admin_packages_create_package'); ?></a>
 	  	</td>
 	  </tr>
 	 </table><br class="minibr" />
 	 <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
 	  <tr>
-	   <td class="obox" colspan="4">Installed Packages</td>
+	   <td class="obox" colspan="4"><?php echo $lang->phrase('admin_packages_head_installed_packages'); ?></td>
 	  </tr>
 	  <tr>
-	  	<td class="ubox" width="30%">Name</td>
-	  	<td class="ubox center" width="10%">Active</td>
-	  	<td class="ubox center" width="10%">Core</td>
-	  	<td class="ubox" width="50%">Actions</td>
+	  	<td class="ubox" width="30%"><?php echo $lang->phrase('admin_packages_th_name'); ?></td>
+	  	<td class="ubox center" width="10%"><?php echo $lang->phrase('admin_packages_th_active'); ?></td>
+	  	<td class="ubox center" width="10%"><?php echo $lang->phrase('admin_packages_th_core'); ?></td>
+	  	<td class="ubox" width="50%"><?php echo $lang->phrase('admin_packages_th_actions'); ?></td>
 	  </tr>
 	  <?php while($row = $db->fetch_assoc($result)) { ?>
 	  <tr>
@@ -62,24 +62,24 @@ if ($job == 'package') {
 	  	<td class="mbox center"><?php echo noki($row['active']); ?></td>
 	  	<td class="mbox center"><?php echo noki($row['core']); ?></td>
 	  	<td class="mbox">
-	  		<a class="button" href="admin.php?action=packages&amp;job=package_info&amp;id=<?php echo $row['id']; ?>">Package Details</a>
+	  		<a class="button" href="admin.php?action=packages&amp;job=package_info&amp;id=<?php echo $row['id']; ?>"><?php echo $lang->phrase('admin_packages_package_details'); ?></a>
 	  		<?php
 	  		if (file_exists("modules/{$row['id']}/component.ini")) {
 				$com = $myini->read("modules/{$row['id']}/component.ini");
 	  			if (!empty($com['admin']['frontpage']) == true) {
 	  		?>
-	  		<a class="button" href="admin.php?action=packages&amp;job=package_admin&amp;cid=<?php echo $row['id']; ?>">Administration</a>
+	  		<a class="button" href="admin.php?action=packages&amp;job=package_admin&amp;cid=<?php echo $row['id']; ?>"><?php echo $lang->phrase('admin_packages_administration'); ?></a>
 	  		<?php } } if ($row['config'] > 0) { ?>
-	  		<a class="button" href="admin.php?action=settings&amp;job=custom&amp;id=<?php echo $row['config']; ?>&amp;package=<?php echo $row['id']; ?>">Configuration</a>
+	  		<a class="button" href="admin.php?action=settings&amp;job=custom&amp;id=<?php echo $row['config']; ?>&amp;package=<?php echo $row['id']; ?>"><?php echo $lang->phrase('admin_packages_configuration'); ?></a>
 	  		<?php } ?>
-	  		<a class="button" href="admin.php?action=packages&amp;job=package_edit&amp;id=<?php echo $row['id']; ?>">Edit</a>
+	  		<a class="button" href="admin.php?action=packages&amp;job=package_edit&amp;id=<?php echo $row['id']; ?>"><?php echo $lang->phrase('admin_packages_edit'); ?></a>
 	  		<?php if ($row['core'] != '1') { ?>
 	  		<a class="button" href="admin.php?action=packages&amp;job=package_active&amp;id=<?php echo $row['id']; ?>"><?php echo iif($row['active'] == 1, 'Deactivate', 'Activate'); ?></a>
 	  		<?php } ?>
-	  		<a class="button" href="admin.php?action=packages&amp;job=package_updates&amp;id=<?php echo $row['id']; ?>">Check for Updates</a>
-	  		<a class="button" href="admin.php?action=packages&amp;job=package_export&amp;id=<?php echo $row['id']; ?>">Export</a>
+	  		<a class="button" href="admin.php?action=packages&amp;job=package_updates&amp;id=<?php echo $row['id']; ?>"><?php echo $lang->phrase('admin_packages_check_for_updates'); ?></a>
+	  		<a class="button" href="admin.php?action=packages&amp;job=package_export&amp;id=<?php echo $row['id']; ?>"><?php echo $lang->phrase('admin_packages_export'); ?></a>
 	  		<?php if ($row['core'] != '1') { ?>
-	  		<a class="button" href="admin.php?action=packages&amp;job=package_delete&amp;id=<?php echo $row['id']; ?>">Delete</a>
+	  		<a class="button" href="admin.php?action=packages&amp;job=package_delete&amp;id=<?php echo $row['id']; ?>"><?php echo $lang->phrase('admin_packages_delete'); ?></a>
 	  		<?php } ?>
 	  	</td>
 	  </tr>
@@ -94,13 +94,13 @@ elseif ($job == 'package_admin') {
 	$result = $db->query("SELECT * FROM {$db->pre}packages WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	if ($db->num_rows($result) == 0) {
 		echo head();
-		error('admin.php?action=cms&job=package','There is no package with the specified ID.');
+		error('admin.php?action=cms&job=package',$lang->phrase('admin_packages_err_no_package_with_this_id'));
 	}
 	$row = $db->fetch_assoc($result);
 	$com = $myini->read('modules/'.$row['id'].'/component.ini');
 	if (!isset($com['admin'][$mod])) {
 		echo head();
-		error('admin.php?action=cms&job=package','Section not found!');
+		error('admin.php?action=cms&job=package',$lang->phrase('admin_packages_err_section_not_found'));
 	}
 
 	DEFINE('COM_ID', $row['id']);
@@ -131,26 +131,39 @@ elseif ($job == 'package_import') {
 <form name="form" method="post" action="admin.php?action=packages&amp;job=package_import2" enctype="multipart/form-data">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr>
-   <td class="obox" colspan="2">Import a new Component</td>
+   <td class="obox" colspan="2"><?php echo $lang->phrase('admin_packages_head_import_a_new_component'); ?></td>
   </tr>
   <tr>
-   <td class="mbox" width="50%"><em>Either</em> upload a file:<br /><span class="stext">Compressed file (.zip) containing the component. Maximum file size: <?php echo formatFilesize(ini_maxupload()); ?>. You should install only components from confidential sources!</td>
+   <td class="mbox" width="50%">
+   	<?php
+   		$max_filesize = formatFilesize(ini_maxupload());
+   		echo $lang->phrase('admin_packages_import_upload_file');
+   		echo '<br />';
+   		echo '<span class="stext">'.$lang->phrase('admin_packages_import_text_upload_file_desc').'</span>';
+   	?>
+   	</td>
    <td class="mbox" width="50%"><input type="file" name="upload" size="40" /></td>
   </tr>
   <tr>
-   <td class="mbox"><em>or</em> select a file from the server:<br /><span class="stext">Path starting from the Viscacha-root-directory: <?php echo $config['fpath']; ?></span></td>
+   <td class="mbox">
+   		<?php
+   			echo $lang->phrase('admin_packages_import_select_file');
+   			echo '<br />';
+   			echo '<span class="stext">'.$lang->phrase('admin_packages_import_select_file_desc').'</span>';
+   		?>
+   </td>
    <td class="mbox"><input type="text" name="server" size="50" value="<?php echo $file; ?>" /></td>
   </tr>
   <tr>
-   <td class="mbox">Skip version check:</td>
+   <td class="mbox"><?php echo $lang->phrase('admin_packages_skip_version_check'); ?></td>
    <td class="mbox"><input type="checkbox" name="version" value="1" /></td>
   </tr>
   <tr>
-   <td class="mbox">Delete file after import:</td>
+   <td class="mbox"><?php echo $lang->phrase('admin_packages_delete_file_after_import'); ?></td>
    <td class="mbox"><input type="checkbox" name="delete" value="1" checked="checked" /></td>
   </tr>
   <tr>
-   <td class="ubox" width="100%" colspan="2" align="center"><input type="submit" name="Submit" value="Upload"></td>
+   <td class="ubox" width="100%" colspan="2" align="center"><input type="submit" name="Submit" value="<?php echo $lang->phrase('admin_packages_button_upload'); ?>"></td>
   </tr>
  </table>
 </form>
@@ -188,11 +201,11 @@ elseif ($job == 'package_import2') {
 			$sourcefile = $server;
 		}
 		else {
-			$inserterrors[] = 'The selected file is not a ZIP-file.';
+			$inserterrors[] = $lang->phrase('admin_packages_err_selected_file_is_not_a_zipfile');
 		}
 	}
 	if (!file_exists($sourcefile)) {
-		$inserterrors[] = 'Selected file does not exist.';
+		$inserterrors[] = $lang->phrase('admin_packages_err_selected_file_does_not_exist');
 	}
 	if (count($inserterrors) > 0) {
 		error('admin.php?action=designs&job=package_import', $inserterrors);
@@ -203,7 +216,7 @@ elseif ($job == 'package_import2') {
 		$tdir = "temp/".md5(microtime()).'/';
 		$filesystem->mkdir($tdir, 0777);
 		if (!is_dir($tdir)) {
-			error('admin.php?action=packages&job=package_import', 'Temporary directory could not be created for extraction.');
+			error('admin.php?action=packages&job=package_import', $lang->phrase('admin_packages_err_temporary_directory_could_not_be_created'));
 		}
 		include('classes/class.zip.php');
 		$archive = new PclZip($sourcefile);
@@ -215,10 +228,10 @@ elseif ($job == 'package_import2') {
 			$package = $myini->read($tdir.'modules/package.ini');
 			if ($versioncheck != 1) {
 				if (!empty($package['info']['min_version']) && version_compare($config['version'], $package['info']['min_version'], '<')) {
-					error('admin.php?action=packages&job=package_import', 'This package requires at least Viscacha '.$package['info']['min_version']);
+					error('admin.php?action=packages&job=package_import', $lang->phrase('admin_packages_err_required_min_version'));
 				}
 				if (!empty($package['info']['max_version']) && version_compare($config['version'], $package['info']['max_version'], '>')) {
-					error('admin.php?action=packages&job=package_import', 'This package is only compatible with Viscacha '.$package['info']['max_version'].' and lower.');
+					error('admin.php?action=packages&job=package_import', $lang->phrase('admin_packages_err_required_max_version'));
 				}
 			}
 			$package = $gpc->save_str($package);
@@ -227,12 +240,12 @@ elseif ($job == 'package_import2') {
 			}
 		}
 		else {
-			error('admin.php?action=packages&job=package_import', 'package.ini does not exist!');
+			error('admin.php?action=packages&job=package_import', $lang->phrase('admin_packages_err_package_ini_does_not_exist'));
 		}
 
 		$result = $db->query("SELECT id FROM {$db->pre}packages WHERE internal = '{$package['info']['internal']}'", __LINE__, __FILE__);
 		if ($db->num_rows($result) > 0 && $package['multiple'] == 0) {
-			error('admin.php?action=packages&job=package_import', 'A package with the internal name '.$package['info']['internal'].' is already installed.');
+			error('admin.php?action=packages&job=package_import', $lang->phrase('admin_packages_a_package_with_this_name_does_allready_exist'));
 		}
 		$db->query("INSERT INTO {$db->pre}packages (title, version, internal, core) VALUES ('{$package['info']['title']}', '{$package['info']['version']}', '{$package['info']['internal']}', '{$package['info']['core']}')", __LINE__, __FILE__);
 		$packageid = $db->insert_id();
@@ -455,7 +468,7 @@ elseif ($job == 'package_import2') {
 		}
 		if ($confirm) {
 			echo head();
-			ok('admin.php?action=packages&job=package_info&id='.$packageid, 'Package successfully imported!');
+			ok('admin.php?action=packages&job=package_info&id='.$packageid, $lang->phrase('admin_packages_ok_package_successfully_imported'));
 		}
 
 	}
@@ -465,7 +478,7 @@ elseif ($job == 'package_export') {
 	$result = $db->query("SELECT id, internal FROM {$db->pre}packages WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	if ($db->num_rows($result) != 1) {
 		echo head();
-		error('admin.pgp?action=packages&job=package', 'Specified package does not exist.');
+		error('admin.pgp?action=packages&job=package', $lang->phrase('admin_packages_err_package_does_not_exist'));
 	}
 	$data = $db->fetch_assoc($result);
 
@@ -644,21 +657,21 @@ elseif ($job == 'package_delete') {
 	$result = $db->query("SELECT id, core FROM {$db->pre}packages WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	$row = $db->fetch_assoc($result);
 	if ($db->num_rows($result) == 0) {
-		error('admin.php?action=packages&job=package', 'Specified package not found.');
+		error('admin.php?action=packages&job=package', $lang->phrase('admin_packages_err_package_does_not_exist'));
 	}
 	elseif ($row['core'] == '1') {
-		error('admin.php?action=packages&job=package', 'This is a core package and can not be deleted.');
+		error('admin.php?action=packages&job=package', $lang->phrase('admin_packages_err_this_is_a_core_package_and_cannot_be_deleted'));
 	}
 	else {
 		?>
 		<table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
-		<tr><td class="obox">Delete Package</td></tr>
+		<tr><td class="obox"><?php echo $lang->phrase('admin_packages_head_delete_package'); ?></td></tr>
 		<tr><td class="mbox">
-		<p align="center">Do you really want to delete this package with all included plugins and components?</p>
+		<p align="center"><?php echo $lang->phrase('admin_packages_do_you_really_want_to_delete_this_package'); ?></p>
 		<p align="center">
-		<a href="admin.php?action=packages&job=package_delete2&id=<?php echo $id; ?>"><img border="0" alt="Yes" src="admin/html/images/yes.gif"> Yes</a>
+		<a href="admin.php?action=packages&job=package_delete2&id=<?php echo $id; ?>"><img border="0" alt="Yes" src="admin/html/images/yes.gif"> <?php echo $lang->phrase('admin_packages_yes'); ?></a>
 		&nbsp&nbsp;&nbsp;&nbsp&nbsp;&nbsp;
-		<a href="javascript: history.back(-1);"><img border="0" alt="No" src="admin/html/images/no.gif"> No</a>
+		<a href="javascript: history.back(-1);"><img border="0" alt="No" src="admin/html/images/no.gif"> <?php echo $lang->phrase('admin_packages_no'); ?></a>
 		</p>
 		</td></tr>
 		</table>
@@ -672,11 +685,11 @@ elseif ($job == 'package_delete2') {
 	$package = $db->fetch_assoc($result);
 	if ($db->num_rows($result) == 0) {
 		echo head();
-		error('admin.php?action=packages&job=package', 'Specified package not found.');
+		error('admin.php?action=packages&job=package', $lang->phrase('admin_packages_err_package_not_found'));
 	}
 	elseif ($package['core'] == '1') {
 		echo head();
-		error('admin.php?action=packages&job=package', 'This is a core package and can not be deleted.');
+		error('admin.php?action=packages&job=package', $lang->phrase('admin_packages_err_this_is_a_core_package_and_cannot_be_deleted'));
 	}
 	else {
 		$c = new manageconfig();
@@ -780,7 +793,7 @@ elseif ($job == 'package_delete2') {
 
 		if ($confirm == true) {
 			echo head();
-			ok('admin.php?action=packages&job=package', 'Package successfully deleted!');
+			ok('admin.php?action=packages&job=package', $lang->phrase('admin_packages_ok_package_successfully_deleted'));
 		}
 	}
 }
@@ -795,48 +808,52 @@ elseif ($job == 'package_edit') {
 	<form method="post" action="admin.php?action=packages&amp;job=package_edit2&amp;id=<?php echo $row['id']; ?>">
 	<table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
 	 <tr>
-	  <td class="obox" colspan="2">Edit the Package &quot;<?php echo $row['title']; ?>&quot;</td>
+	  <td class="obox" colspan="2">
+	  	<?php
+	  		echo $lang->phrase('admin_packages_head_edit_the_package_foo');
+	  	?>
+	  </td>
 	 </tr>
 	 <tr class="mbox">
-	  <td>Title:<br /><span class="stext">Maximum number of characters: 200; Minimum number of characters: 4</span></td>
+	  <td><?php echo $lang->phrase('admin_packages_edit_title'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_packages_edit_title_text'); ?></span></td>
 	  <td><input type="text" name="title" size="60" value="<?php echo $row['title']; ?>" /></td>
 	 </tr>
 	 <?php if ($row['core'] != '1') { ?>
 	 <tr class="mbox">
-	  <td>Active:</td>
+	  <td><?php echo $lang->phrase('admin_packages_edit_active'); ?></td>
 	  <td><input type="checkbox" name="active" value="1"<?php echo iif($row['active'] == 1, ' checked="checked"'); ?> /></td>
 	 </tr>
 	 <?php } ?>
 	 <tr class="mbox">
-	  <td>Description:<br /><span class="stext">Optional</span></td>
+	  <td><?php echo $lang->phrase('admin_packages_edit_description'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_packages_edit_optional'); ?></span></td>
 	  <td><textarea cols="60" rows="4" name="summary"><?php echo $ini['info']['summary']; ?></textarea></td>
 	 </tr>
 	 <tr class="mbox">
-	  <td>Version:<br /><span class="stext">Optional</span></td>
+	  <td><?php echo $lang->phrase('admin_packages_edit_version'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_packages_edit_optional'); ?></span></td>
 	  <td><input type="text" name="version" size="60" value="<?php echo $row['version']; ?>" /></td>
 	 </tr>
 	 <tr class="mbox">
-	  <td>Minimum Viscacha Version:<br /><span class="stext">Optional</span></td>
+	  <td><?php echo $lang->phrase('admin_packages_edit_minimum_viscacha_version'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_packages_edit_optional'); ?></span></td>
 	  <td><input type="text" name="min_version" size="60" value="<?php echo $ini['info']['min_version']; ?>" /></td>
 	 </tr>
 	 <tr class="mbox">
-	  <td>Maximum Viscacha Version:<br /><span class="stext">Optional</span></td>
+	  <td><?php echo $lang->phrase('admin_packages_edit_maximum_viscacha_version'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_packages_edit_optional'); ?></span></td>
 	  <td><input type="text" name="max_version" size="60" value="<?php echo $ini['info']['max_version']; ?>" /></td>
 	 </tr>
 	 <tr class="mbox">
-	  <td>Copyright:<br /><span class="stext">Optional</span></td>
+	  <td><?php echo $lang->phrase('admin_packages_edit_copyright'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_packages_edit_optional'); ?></span></td>
 	  <td><input type="text" name="copyright" size="60" value="<?php echo $ini['info']['copyright']; ?>" /></td>
 	 </tr>
 	 <tr class="mbox">
-	  <td>License:<br /><span class="stext">Optional</span></td>
+	  <td><?php echo $lang->phrase('admin_packages_edit_license'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_packages_edit_optional'); ?></span></td>
 	  <td><input type="text" name="license" size="60" value="<?php echo $ini['info']['license']; ?>" /></td>
 	 </tr>
 	 <tr class="mbox">
-	  <td>URL/Homepage:<br /><span class="stext">Optional.</span></td>
+	  <td><?php echo $lang->phrase('admin_packages_edit_url_homepage'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_packages_edit_optional'); ?></span></td>
 	  <td><input type="text" name="url" size="60" value="<?php echo $ini['info']['url']; ?>" /></td>
 	 </tr>
 	 <tr>
-	  <td class="ubox" colspan="2" align="center"><input type="submit" value="Save your changes" /> before working on the settings below!</td>
+	  <td class="ubox" colspan="2" align="center"><input type="submit" value="<?php echo $lang->phrase('admin_packages_button_edit_save_your_changes'); ?>" /> <?php echo $lang->phrase('admin_packages_edit_before_working_on_the_settings_below'); ?></td>
 	 </tr>
 	</table>
 	</form>
@@ -857,34 +874,34 @@ elseif ($job == 'package_edit') {
 	   <td class="obox" colspan="4">
 	   <span class="right">
 	   <?php if (count($sg) > 0) { ?>
-	   <a class="button" href="admin.php?action=settings&amp;job=custom&amp;id=<?php echo $sg['id']; ?>&amp;package=<?php echo $row['id']; ?>">Change Settings</a>
-	   <a class="button" href="admin.php?action=settings&amp;job=new&amp;package=<?php echo $row['id']; ?>">Add a new Setting</a>
-	   <a class="button" href="admin.php?action=settings&amp;job=delete_group&amp;id=<?php echo $sg['id']; ?>&amp;package=<?php echo $row['id']; ?>">Delete all Settings</a>
+	   <a class="button" href="admin.php?action=settings&amp;job=custom&amp;id=<?php echo $sg['id']; ?>&amp;package=<?php echo $row['id']; ?>"><?php echo $lang->phrase('admin_packages_edit_change_settings'); ?></a>
+	   <a class="button" href="admin.php?action=settings&amp;job=new&amp;package=<?php echo $row['id']; ?>"><?php echo $lang->phrase('admin_packages_edit_add_a_new_setting'); ?></a>
+	   <a class="button" href="admin.php?action=settings&amp;job=delete_group&amp;id=<?php echo $sg['id']; ?>&amp;package=<?php echo $row['id']; ?>"><?php echo $lang->phrase('admin_packages_edit_delete_all_settings'); ?></a>
 	   <?php } ?>
 	   </span>
-	   Configuration
+	  $lang->phrase('admin_packages_edit_configuration')
 	   </td>
 	  </tr>
 	  <?php if (is_array($settings) && count($settings) > 0) { ?>
 	  <tr class="ubox">
-	   <td width="50%">Title</td>
-	   <td width="30%">Internal name</td>
-	   <td width="20%">Delete</td>
+	   <td width="50%"><?php echo $lang->phrase('admin_packages_th_title'); ?></td>
+	   <td width="30%"><?php echo $lang->phrase('admin_packages_th_internal_name'); ?></td>
+	   <td width="20%"><?php echo $lang->phrase('admin_packages_th_delete'); ?></td>
 	  </tr>
 	  <?php foreach ($settings as $setting) { ?>
 	  <tr class="mbox">
 		<td><?php echo $setting['title']; ?></td>
 		<td class="monospace"><?php echo $setting['name']; ?></td>
-	  	<td><a class="button" href="admin.php?action=settings&job=delete&name=<?php echo $setting['name']; ?>&id=<?php echo $setting['sgroup']; ?>&amp;package=<?php echo $row['id']; ?>">Delete Setting</a></td>
+	  	<td><a class="button" href="admin.php?action=settings&job=delete&name=<?php echo $setting['name']; ?>&id=<?php echo $setting['sgroup']; ?>&amp;package=<?php echo $row['id']; ?>"><?php echo $lang->phrase('admin_packages_conf_delete_setting'); ?></a></td>
 	  </tr>
 	  <?php } } else { ?>
 		<tr class="mbox">
 			<td colspan="4">
-				For this package are no settings specified.&nbsp;&nbsp;&nbsp;&nbsp;
+			$lang->phrase('admin_packages_conf_no_settings_a_specified_for_this_package')&nbsp;&nbsp;&nbsp;&nbsp;
 				<?php if (count($sg) == 0) { ?>
-				<a class="button" href="admin.php?action=settings&amp;job=new_group&amp;package=<?php echo $row['id']; ?>">Add a new Group for Settings</a>
+				<a class="button" href="admin.php?action=settings&amp;job=new_group&amp;package=<?php echo $row['id']; ?>"><?php echo $lang->phrase('admin_packages_conf_add_a_new_group_for_settings'); ?></a>
 				<?php } else { ?>
-				<a class="button" href="admin.php?action=settings&amp;job=new&amp;package=<?php echo $row['id']; ?>">Add a new Setting</a>
+				<a class="button" href="admin.php?action=settings&amp;job=new&amp;package=<?php echo $row['id']; ?>"><?php echo $lang->phrase('admin_packages_conf_add_a_new_setting'); ?></a>
 				<?php } ?>
 			</td>
 		</tr>
@@ -898,7 +915,7 @@ elseif ($job == 'package_edit2') {
 	$id = $gpc->get('id', int);
 	$result = $db->query("SELECT id, core FROM {$db->pre}packages WHERE id = '{$id}'", __LINE__, __FILE__);
 	if ($db->num_rows($result) == 0) {
-		error('admin.php?action=packages&job=package', 'Could not find a package with the specified ID.');
+		error('admin.php?action=packages&job=package', $lang->phrase('admin_packages_err_could_not_find_a_package_with_this_id'));
 	}
 	$row = $db->fetch_assoc($result);
 	if ($row['core'] != '1') {
@@ -917,10 +934,10 @@ elseif ($job == 'package_edit2') {
 	$url = $gpc->get('url', none);
 
 	if (strlen($title) < 4) {
-		error('admin.php?action=packages&job=package_edit&id='.$id, 'Minimum number of characters for title: 4');
+		error('admin.php?action=packages&job=package_edit&id='.$id, $lang->phrase('admin_packages_err_minimum_number_of_characters_for_title'));
 	}
 	elseif (strlen($title) > 200) {
-		error('admin.php?action=packages&job=package_edit&id='.$id, 'Maximum number of characters for title: 200');
+		error('admin.php?action=packages&job=package_edit&id='.$id, $lang->phrase('admin_packages_err_maximum_numbers_of_characters_for_title'));
 	}
 
 	$dbtitle = $gpc->save_str($title);
@@ -940,7 +957,7 @@ elseif ($job == 'package_edit2') {
 	$myini->write("modules/{$id}/package.ini", $ini);
 
 
-	ok('admin.php?action=packages&job=package_info&id='.$id, 'Package successfully edited.');
+	ok('admin.php?action=packages&job=package_info&id='.$id, $lang->phrase('admin_packages_ok_package_successfully_edited'));
 }
 elseif ($job == 'package_info') {
 	echo head();
@@ -994,7 +1011,7 @@ elseif ($job == 'package_info') {
 			$row['current'] = $config[$sg['name']][$row['name']];
 			if ($row['type'] == 'select') {
 				$val = prepare_custom($row['optionscode']);
-				$row['current'] = isset($val[$row['current']]) ? $gpc->prepare($val[$row['current']]) : '<em>Unknown</em>';
+				$row['current'] = isset($val[$row['current']]) ? $gpc->prepare($val[$row['current']]) : '<em>'.$lang->phrase('admin_packages_info_unknown').'</em>';
 			}
 			$settings[] = $row;
 		}
@@ -1005,35 +1022,37 @@ elseif ($job == 'package_info') {
 	  <tr>
 	   <td class="obox" colspan="2">
 	   <span class="right">
-	   <a class="button" href="admin.php?action=packages&amp;job=package_edit&amp;id=<?php echo $package['id']; ?>">Edit</a>
+	   <a class="button" href="admin.php?action=packages&amp;job=package_edit&amp;id=<?php echo $package['id']; ?>"><?php echo $lang->phrase('admin_packages_info_edit'); ?></a>
 	    <?php if (!empty($component_ini['admin']['frontpage']) == true) { ?>
-	  	 <a class="button" href="admin.php?action=packages&amp;job=package_admin&amp;cid=<?php echo $package['id']; ?>">Administration</a>
+	  	 <a class="button" href="admin.php?action=packages&amp;job=package_admin&amp;cid=<?php echo $package['id']; ?>"><?php echo $lang->phrase('admin_packages_info_administration'); ?></a>
 	  	<?php } ?>
 	   </span>
-	   Package Details for &quot;<?php echo $package['title']; ?>&quot;
+	   	<?php
+	   		echo $lang->phrase('admin_packages_info_package_details_for_foo');
+	   	?>
 	   </td>
 	  </tr>
 	  <tr>
-	   <td class="ubox" colspan="2">General information</td>
+	   <td class="ubox" colspan="2"><?php echo $lang->phrase('admin_packages_info_general_information'); ?></td>
 	  </tr>
 	  <tr>
-	   <td class="mbox" width="30%">Description:</td>
+	   <td class="mbox" width="30%"><?php echo $lang->phrase('admin_packages_info_description'); ?></td>
 	   <td class="mbox" width="70%"><?php echo nl2br($package_ini['info']['summary']); ?></td>
 	  </tr>
 	  <tr>
-	   <td class="mbox" width="30%">Copyright:</td>
+	   <td class="mbox" width="30%"><?php echo $lang->phrase('admin_packages_info_copyright'); ?></td>
 	   <td class="mbox" width="70%"><?php echo $package_ini['info']['copyright']; ?></td>
 	  </tr>
 	  <tr>
-	   <td class="mbox" width="30%">License:</td>
+	   <td class="mbox" width="30%"><?php echo $lang->phrase('admin_packages_info_license'); ?></td>
 	   <td class="mbox" width="70%"><?php echo $package_ini['info']['license']; ?></td>
 	  </tr>
 	  <tr>
-	   <td class="mbox" width="30%">Version:</td>
-	   <td class="mbox" width="70%"><?php echo $package_ini['info']['version']; ?>&nbsp;&nbsp;&nbsp;&nbsp;<a class="button" href="admin.php?action=packages&amp;job=package_updates&amp;id=<?php echo $package['id']; ?>">Check for Updates</a></td>
+	   <td class="mbox" width="30%"><?php echo $lang->phrase('admin_packages_info_version'); ?></td>
+	   <td class="mbox" width="70%"><?php echo $package_ini['info']['version']; ?>&nbsp;&nbsp;&nbsp;&nbsp;<a class="button" href="admin.php?action=packages&amp;job=package_updates&amp;id=<?php echo $package['id']; ?>"><?php echo $lang->phrase('admin_packages_info_check_for_updates'); ?></a></td>
 	  </tr>
 	  <tr>
-	   <td class="mbox" width="30%">Compatibility:</td>
+	   <td class="mbox" width="30%"><?php echo $lang->phrase('admin_packages_info_compatibility'); ?></td>
 	   <td class="mbox" width="70%">
 	   	<?php if (!empty($package_ini['info']['min_version'])) { ?>
 	   	<div>Minimum: <?php echo $package_ini['info']['min_version']; ?></div>
@@ -1044,7 +1063,7 @@ elseif ($job == 'package_info') {
 	   </td>
 	  </tr>
 	  <tr>
-	   <td class="mbox" width="30%">Internal name:</td>
+	   <td class="mbox" width="30%"><?php echo $lang->phrase('admin_packages_info_internal_name2'); ?></td>
 	   <td class="mbox" width="70%"><tt><?php echo $package_ini['info']['internal']; ?></tt></td>
 	  </tr>
 	 </table>
@@ -1054,17 +1073,17 @@ elseif ($job == 'package_info') {
 	   <td class="obox" colspan="4">
 	   <span class="right">
 	   <?php if (count($sg) > 0) { ?>
-	   <a class="button" href="admin.php?action=settings&amp;job=custom&amp;id=<?php echo $sg['id']; ?>&amp;package=<?php echo $package['id']; ?>">Change Settings</a>
+	   <a class="button" href="admin.php?action=settings&amp;job=custom&amp;id=<?php echo $sg['id']; ?>&amp;package=<?php echo $package['id']; ?>"><?php echo $lang->phrase('admin_packages_info_change_settings'); ?></a>
 	   <?php } ?>
 	   </span>
-	   Configuration
+	  $lang->phrase('admin_packages_info_configuration')
 	   </td>
 	  </tr>
 	  <?php if (is_array($settings) && count($settings) > 0) { ?>
 	  <tr class="ubox">
-	   <td width="40%">Title</td>
-	   <td width="40%">Current value</td>
-	   <td width="20%">Internal name</td>
+	   <td width="40%"><?php echo $lang->phrase('admin_packages_info_title'); ?></td>
+	   <td width="40%"><?php echo $lang->phrase('admin_packages_info_current_value'); ?></td>
+	   <td width="20%"><?php echo $lang->phrase('admin_packages_info_internal_name'); ?></td>
 	  </tr>
 	  <?php foreach ($settings as $setting) { ?>
 	  <tr class="mbox">
@@ -1074,37 +1093,37 @@ elseif ($job == 'package_info') {
 	  </tr>
 	  <?php } } else { ?>
 		<tr class="mbox">
-			<td colspan="4">For this package are no settings specified.</td>
+			<td colspan="4"><?php echo $lang->phrase('admin_packages_info_no_settings_specified_for_this_package'); ?></td>
 		</tr>
 	  <?php } ?>
 	 </table>
 	 <br class="minibr" />
 	 <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
 	  <tr>
-	   <td class="obox" colspan="4">Component</td>
+	   <td class="obox" colspan="4"><?php echo $lang->phrase('admin_packages_info_component'); ?></td>
 	  </tr>
 	  <?php if (is_array($component_ini) && count($component_ini) > 0) { ?>
 	  <tr class="ubox">
-	   <td width="80%">Name</td>
-	   <td width="10%">Active</td>
-	   <td width="10%">Required</td>
+	   <td width="80%"><?php echo $lang->phrase('admin_packages_info_name'); ?></td>
+	   <td width="10%"><?php echo $lang->phrase('admin_packages_info_active'); ?></td>
+	   <td width="10%"><?php echo $lang->phrase('admin_packages_info_required'); ?></td>
 	  </tr>
 	  <tr class="mbox">
 		<td><?php echo $component_ini['info']['title']; ?></td>
 		<td class="center">
 		<?php if ($component['active'] == 1 && $package['active'] == 1) { ?>
-		<img class="valign" src="admin/html/images/yes.gif" border="0" alt="Active" title="Component is active." />
+		<img class="valign" src="admin/html/images/yes.gif" border="0" alt="Active" title="<?php echo $lang->phrase('admin_packages_info_component_is_active'); ?>" />
 		<?php } elseif ($component['active'] == 1 && $package['active'] == 0) { ?>
-		<img class="valign" src="admin/html/images/avg.gif" border="0" alt="Partially" title="Component is active, but package is not active!" />
+		<img class="valign" src="admin/html/images/avg.gif" border="0" alt="Partially" title="<?php echo $lang->phrase('admin_packages_info_component_is_active_but_package_is_not_active'); ?>" />
 		<?php } else { ?>
-		<img class="valign" src="admin/html/images/no.gif" border="0" alt="Inactive" title="Component is not active." />
+		<img class="valign" src="admin/html/images/no.gif" border="0" alt="Inactive" title="<?php echo $lang->phrase('admin_packages_info_component_is_not_active'); ?>" />
 		<?php } ?>
 		</td>
 	  	<td class="center"><?php echo noki($component['required']); ?></td>
 	  </tr>
 	  <?php } else { ?>
 		<tr class="mbox">
-			<td colspan="4">For this package is no component specified.</td>
+			<td colspan="4"><?php echo $lang->phrase('admin_packages_info_for_this_package_is_no_component_specified'); ?></td>
 		</tr>
 	  <?php } ?>
 	 </table>
@@ -1112,16 +1131,16 @@ elseif ($job == 'package_info') {
 	 <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
 	  <tr>
 	   <td class="obox" colspan="4">
-	   	<span class="right"><a class="button" href="admin.php?action=packages&amp;job=plugins_add&amp;id=<?php echo $package['id']; ?>">Add Plugin</a></span>
+	   	<span class="right"><a class="button" href="admin.php?action=packages&amp;job=plugins_add&amp;id=<?php echo $package['id']; ?>"><?php echo $lang->phrase('admin_packages_info_add_plugin'); ?></a></span>
 	   	Plugins (<?php echo count($modules); ?>)
 	   </td>
 	  </tr>
 	  <?php if (count($modules) > 0) { ?>
 		  <tr class="ubox">
-		   <td width="40%">Plugin</td>
-		   <td width="40%">Hook</td>
-		   <td width="10%">Active</td>
-		   <td width="10%">Required</td>
+		   <td width="40%"><?php echo $lang->phrase('admin_packages_info_th_plugin'); ?></td>
+		   <td width="40%"><?php echo $lang->phrase('admin_packages_info_th_hook'); ?></td>
+		   <td width="10%"><?php echo $lang->phrase('admin_packages_info_th_active'); ?></td>
+		   <td width="10%"><?php echo $lang->phrase('admin_packages_info_th_required'); ?></td>
 		  </tr>
 		 <?php
 		 foreach ($modules as $plugin) {
@@ -1139,11 +1158,11 @@ elseif ($job == 'package_info') {
 				<td><?php echo $plugin['position']; ?></td>
 				<td class="center">
 				<?php if ($plugin['active'] == 1 && $package['active'] == 1) { ?>
-				<img class="valign" src="admin/html/images/yes.gif" border="0" alt="Active" title="Plugin is active." />
+				<img class="valign" src="admin/html/images/yes.gif" border="0" alt="Active" title="<?php echo $lang->phrase('admin_packages_info_plugin_is_active'); ?>" />
 				<?php } elseif ($plugin['active'] == 1 && $package['active'] == 0) { ?>
-				<img class="valign" src="admin/html/images/avg.gif" border="0" alt="Partially" title="Plugin is active, but package is not active!" />
+				<img class="valign" src="admin/html/images/avg.gif" border="0" alt="Partially" title="<?php echo $lang->phrase('admin_packages_info_plugin_is_active_but_package_is_not_active'); ?>" />
 				<?php } else { ?>
-				<img class="valign" src="admin/html/images/no.gif" border="0" alt="Inactive" title="Plugin is not active." />
+				<img class="valign" src="admin/html/images/no.gif" border="0" alt="Inactive" title="<?php echo $lang->phrase('admin_packages_plugin_is_not_active'); ?>" />
 				<?php } ?>
 				</td>
 				<td class="center"><?php echo noki($plugin['required']); ?></td>
@@ -1154,7 +1173,7 @@ elseif ($job == 'package_info') {
 	  else {
 	  	?>
 		<tr class="mbox">
-			<td colspan="4">For this package is no plugin specified.</td>
+			<td colspan="4"><?php echo $lang->phrase('admin_packages_info_for_this_package_is_no_plugin_specified'); ?></td>
 		</tr>
 	  	<?php
 	  }
@@ -1167,22 +1186,22 @@ elseif ($job == 'package_add') {
 	<form method="post" action="admin.php?action=packages&job=package_add2">
 	<table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
 	 <tr>
-	  <td class="obox" colspan="2">Create a new Package</td>
+	  <td class="obox" colspan="2"><?php echo $lang->phrase('admin_packages_add_create_a_new_package'); ?></td>
 	 </tr>
 	 <tr class="mbox">
-	  <td>Title:<br /><span class="stext">Maximum number of characters: 200; Minimum number of characters: 4</span></td>
+	  <td><?php echo $lang->phrase('admin_packages_add_title'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_packages_add_title_text'); ?></span></td>
 	  <td><input type="text" name="title" size="60" /></td>
 	 </tr>
 	 <tr class="mbox">
-	  <td>Description:<br /><span class="stext">Optional</span></td>
+	  <td><?php echo $lang->phrase('admin_packages_add_description'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_packages_add_optional'); ?></span></td>
 	  <td><textarea cols="60" rows="4" name="summary" /></textarea></td>
 	 </tr>
 	 <tr class="mbox">
-	  <td>Internal name:<br /><span class="stext">Specify a unique(!) name for your package conatining only alphanumerical characters or underscores. Minimum number of characters: 10</span></td>
+	  <td><?php echo $lang->phrase('admin_packages_add_internal_name'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_packages_add_internal_name_text'); ?></span></td>
 	  <td><input type="text" name="internal" size="60" /></td>
 	 </tr>
 	 <tr class="mbox">
-	  <td>Version:<br /><span class="stext">Optional</span></td>
+	  <td><?php echo $lang->phrase('admin_packages_add_version'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_packages_add_optional'); ?></span></td>
 	  <td><input type="text" name="version" size="60" value="1.0" /></td>
 	 </tr>
 	 <tr class="mbox">
@@ -1190,19 +1209,19 @@ elseif ($job == 'package_add') {
 	  <td><input type="text" name="min_version" size="60" /></td>
 	 </tr>
 	 <tr class="mbox">
-	  <td>Maximum Viscacha Version:<br /><span class="stext">Optional</span></td>
+	  <td><?php echo $lang->phrase('admin_packages_add_maximum_viscacha_version'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_packages_add_optional'); ?></span></td>
 	  <td><input type="text" name="max_version" size="60" /></td>
 	 </tr>
 	 <tr class="mbox">
-	  <td>Copyright:<br /><span class="stext">Optional</span></td>
+	  <td><?php echo $lang->phrase('admin_packages_add_copyright'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_packages_add_optional'); ?></span></td>
 	  <td><input type="text" name="copyright" size="60" /></td>
 	 </tr>
 	 <tr class="mbox">
-	  <td>License:<br /><span class="stext">Optional</span></td>
+	  <td><?php echo $lang->phrase('admin_packages_add_license'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_packages_add_optional'); ?></span></td>
 	  <td><input type="text" name="license" size="60" value="GNU General Public License" /></td>
 	 </tr>
 	 <tr class="mbox">
-	  <td>URL/Homepage:<br /><span class="stext">Optional.</span></td>
+	  <td><?php echo $lang->phrase('admin_packages_add_url_homepage'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_packages_add_optional'); ?></span></td>
 	  <td><input type="text" name="url" size="60" value="" /></td>
 	 </tr>
 	 <tr>
@@ -1226,13 +1245,13 @@ elseif ($job == 'package_add2') {
 	$url = $gpc->get('url', str);
 
 	if (strlen($title) < 4) {
-		error('admin.php?action=packages&job=package_add', 'Minimum number of characters for title: 4');
+		error('admin.php?action=packages&job=package_add', $lang->phrase('admin_packages_err_minimum_number_of_characters_for_title'));
 	}
 	elseif (strlen($title) > 200) {
-		error('admin.php?action=packages&job=package_add', 'Maximum number of characters for title: 200');
+		error('admin.php?action=packages&job=package_add', $lang->phrase('admin_packages_err_maximum_number_of_characters_for_title'));
 	}
 	if (strlen($internal) < 10) {
-		error('admin.php?action=packages&job=package_add', 'Internal name is too short.');
+		error('admin.php?action=packages&job=package_add', $lang->phrase('admin_packages_err_internal_name_is_too_short'));
 	}
 
 	$db->query("INSERT INTO {$db->pre}packages (`title`,`version`,`internal`) VALUES ('{$title}','{$version}','{$internal}')");
@@ -1259,7 +1278,7 @@ elseif ($job == 'package_add2') {
 	$myini->write("modules/{$packageid}/package.ini", $ini);
 	$filesystem->chmod("modules/{$packageid}/package.ini", 0666);
 
-	ok('admin.php?action=packages&job=package_info&id='.$packageid, 'Package successfully added.');
+	ok('admin.php?action=packages&job=package_info&id='.$packageid, $lang->phrase('admin_packages_ok_package_successfully_added'));
 }
 elseif ($job == 'package_active') {
 	$id = $gpc->get('id', int);
@@ -1267,11 +1286,11 @@ elseif ($job == 'package_active') {
 	$row = $db->fetch_assoc($result);
 	if ($db->num_rows($result) == 0) {
 		echo head();
-		error('admin.php?action=packages&job=package', 'Specified ID is not correct.');
+		error('admin.php?action=packages&job=package', $lang->phrase('admin_packages_err_specified_id_is_not_correct'));
 	}
 	elseif ($row['core'] == '1') {
 		echo head();
-		error('admin.php?action=packages&job=package', 'This package is required. You can not change the status.');
+		error('admin.php?action=packages&job=package', $lang->phrase('admin_packages_err_this_package_is_required'));
 	}
 	else {
 		$active = $row['active'] == 1 ? 0 : 1;
@@ -1289,13 +1308,13 @@ elseif ($job == 'com') {
 ?>
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr>
-   <td class="obox" colspan="5">Component Manager</td>
+   <td class="obox" colspan="5"><?php echo $lang->phrase('admin_packages_com_head_component_manager'); ?></td>
   </tr>
   <tr class="ubox">
-   <td width="30%">Component</td>
-   <td width="30%">Package</td>
-   <td width="10%">Active</td>
-   <td width="30%">Action</td>
+   <td width="30%"><?php echo $lang->phrase('admin_packages_com_th_component'); ?></td>
+   <td width="30%"><?php echo $lang->phrase('admin_packages_com_th_package'); ?></td>
+   <td width="10%"><?php echo $lang->phrase('admin_packages_com_th_active'); ?></td>
+   <td width="30%"><?php echo $lang->phrase('admin_packages_com_th_action'); ?></td>
   </tr>
 <?php
 	$result = $db->query("
@@ -1315,18 +1334,18 @@ elseif ($job == 'com') {
 	<td><?php echo $row['title']; ?></td>
 	<td class="center">
 	<?php if ($row['active'] == 1 && $row['pactive'] == 1) { ?>
-	<img class="valign" src="admin/html/images/yes.gif" border="0" alt="Active" title="Component is active." />
+	<img class="valign" src="admin/html/images/yes.gif" border="0" alt="Active" title="<?php echo $lang->phrase('admin_packages_com_component_is_active'); ?>" />
 	<?php } elseif ($row['active'] == 1 && $row['pactive'] == 0) { ?>
-	<img class="valign" src="admin/html/images/avg.gif" border="0" alt="Partially" title="Component is active, but package is not active!" />
+	<img class="valign" src="admin/html/images/avg.gif" border="0" alt="Partially" title="<?php echo $lang->phrase('admin_packages_com_component_is_active_but_package_is_not_active'); ?>" />
 	<?php } else { ?>
-	<img class="valign" src="admin/html/images/no.gif" border="0" alt="Inactive" title="Component is not active." />
+	<img class="valign" src="admin/html/images/no.gif" border="0" alt="Inactive" title="<?php echo $lang->phrase('admin_packages_com_component_is_not_active'); ?>" />
 	<?php } ?>
 	</td>
 	<td>
 	 <?php if ($row['required'] == 0) { ?>
-	 <a class="button" href="admin.php?action=packages&amp;job=com_active&amp;id=<?php echo $row['id']; ?>"><?php echo iif($row['active'] == 1, 'Deactivate', 'Activate'); ?></a>
-	 <a class="button" href="admin.php?action=packages&amp;job=com_delete&amp;id=<?php echo $row['id']; ?>">Delete</a>
-	 <?php } else { echo "<em>Component is required</em>"; } ?>
+	 <a class="button" href="admin.php?action=packages&amp;job=com_active&amp;id=<?php echo $row['id']; ?>"><?php echo iif($row['active'] == 1, $lang->phrase('admin_packages_com_deactivate'), $lang->phrase('admin_packages_com_activate')); ?></a>
+	 <a class="button" href="admin.php?action=packages&amp;job=com_delete&amp;id=<?php echo $row['id']; ?>"><?php echo $lang->phrase('admin_packages_com_delete'); ?></a>
+	 <?php } else { echo "<em><?php echo $lang->phrase('admin_packages_com_component_is_required'); ?></em>"; } ?>
 	</td>
 	</tr>
 	<?php
@@ -1342,21 +1361,21 @@ elseif ($job == 'com_delete') {
 	$result = $db->query("SELECT id, required FROM {$db->pre}component WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	$row = $db->fetch_assoc($result);
 	if ($db->num_rows($result) == 0) {
-		error('admin.php?action=packages&job=com', 'Specified component not found.');
+		error('admin.php?action=packages&job=com', $lang->phrase('admin_packages_err_specified_component_not_found'));
 	}
 	elseif ($row['required'] == 1) {
-		error('admin.php?action=packages&job=com', 'Specified component is required by a package and can not be deleted.');
+		error('admin.php?action=packages&job=com', $lang->phrase('admin_packages_err_specified_component_is_required'));
 	}
 	else {
 		?>
 		<table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
-		<tr><td class="obox">Delete Component</td></tr>
+		<tr><td class="obox"><?php echo $lang->phrase('admin_packages_com_delete_head_delete_component'); ?></td></tr>
 		<tr><td class="mbox">
-		<p align="center">Do you really want to delete this component?</p>
+		<p align="center"><?php echo $lang->phrase('admin_packages_com_delete_do_you_really_want_to_delete_this_component'); ?></p>
 		<p align="center">
-		<a href="admin.php?action=packages&amp;job=com_delete2&amp;id=<?php echo $id; ?>"><img border="0" alt="Yes" src="admin/html/images/yes.gif"> Yes</a>
+		<a href="admin.php?action=packages&amp;job=com_delete2&amp;id=<?php echo $id; ?>"><img border="0" alt="Yes" src="admin/html/images/yes.gif"> <?php echo $lang->phrase('admin_packages_yes'); ?></a>
 		&nbsp&nbsp;&nbsp;&nbsp&nbsp;&nbsp;
-		<a href="javascript: history.back(-1);"><img border="0" alt="No" src="admin/html/images/no.gif"> No</a>
+		<a href="javascript: history.back(-1);"><img border="0" alt="No" src="admin/html/images/no.gif"> <?php echo $lang->phrase('admin_packages_no'); ?></a>
 		</p>
 		</td></tr>
 		</table>
@@ -1370,10 +1389,10 @@ elseif ($job == 'com_delete2') {
 	$result = $db->query("SELECT id, required, package FROM {$db->pre}component WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	$row = $db->fetch_assoc($result);
 	if ($db->num_rows($result) == 0) {
-		error('admin.php?action=packages&job=com', 'Specified component not found.');
+		error('admin.php?action=packages&job=com', $lang->phrase('admin_packages_err_specified_component_not_found'));
 	}
 	elseif ($row['required'] == 1) {
-		error('admin.php?action=packages&job=com', 'Specified component is required by a package and can not be deleted.');
+		error('admin.php?action=packages&job=com', $lang->phrase('admin_packages_err_specified_component_is_required'));
 	}
 	else {
 		$cfg = $myini->read("modules/{$row['package']}/component.ini");
@@ -1422,7 +1441,7 @@ elseif ($job == 'com_delete2') {
 		$delobj = $scache->load('components');
 		$delobj->delete();
 
-		ok('admin.php?action=packages&job=com', 'Component successfully removed!');
+		ok('admin.php?action=packages&job=com', $lang->phrase('admin_packages_ok_component_successfully_removed'));
 	}
 }
 elseif ($job == 'com_active') {
@@ -1431,11 +1450,11 @@ elseif ($job == 'com_active') {
 	$row = $db->fetch_assoc($result);
 	if ($db->num_rows($result) == 0) {
 		echo head();
-		error('admin.php?action=packages&job=com', 'Specified ID is not correct.');
+		error('admin.php?action=packages&job=com', $lang->phrase('admin_packages_err_specified_id_is_not_correct'));
 	}
 	elseif ($row['required'] == 1) {
 		echo head();
-		error('admin.php?action=packages&job=com', 'This package is required. You can not change the status.');
+		error('admin.php?action=packages&job=com', $lang->phrase('admin_packages_err_this_package_is_required_you_cannot_change_the_status'));
 	}
 	else {
 		$active = $row['active'] == 1 ? 0 : 1;
@@ -1455,17 +1474,17 @@ elseif ($job == 'plugins') {
 	?>
 	 <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
 	  <tr>
-	   <td class="obox">Plugin Manager (<?php echo iif($sort == 1, 'Packages', 'Hooks'); ?>)</td>
+	   <td class="obox"><?php echo $lang->phrase('admin_packages_plugins_head_plugin_manager'); ?> (<?php echo iif($sort == 1, $lang->phrase('admin_packages_plugins_packages'), $lang->phrase('admin_packages_plugins_hooks')); ?>)</td>
 	  </tr>
 	  <tr>
 	   <td class="mbox">
 		<span class="right">
-			<a class="button" href="admin.php?action=packages&amp;job=plugins_add">Add Plugin</a>
-			<a class="button" href="admin.php?action=packages&amp;job=plugins_hook_add">Add Hook</a>
+			<a class="button" href="admin.php?action=packages&amp;job=plugins_add"><?php echo $lang->phrase('admin_packages_plugins_add_plugin'); ?></a>
+			<a class="button" href="admin.php?action=packages&amp;job=plugins_hook_add"><?php echo $lang->phrase('admin_packages_plugins_add_new_hook'); ?></a>
 		</span>
-	   Group plugins by:
-	   <a<?php echo iif($sort == 0, ' style="font-weight: bold;"'); ?> class="button" href="admin.php?action=packages&amp;job=plugins&amp;sort=0">Hooks</a>
-	   <a<?php echo iif($sort == 1, ' style="font-weight: bold;"'); ?> class="button" href="admin.php?action=packages&amp;job=plugins&amp;sort=1">Packages</a>
+	  $lang->phrase('admin_packages_plugins_group_plugins_by')
+	   <a<?php echo iif($sort == 0, ' style="font-weight: bold;"'); ?> class="button" href="admin.php?action=packages&amp;job=plugins&amp;sort=0"><?php echo $lang->phrase('admin_packages_plugins_hooks'); ?></a>
+	   <a<?php echo iif($sort == 1, ' style="font-weight: bold;"'); ?> class="button" href="admin.php?action=packages&amp;job=plugins&amp;sort=1"><?php echo $lang->phrase('admin_packages_plugins_packages'); ?></a>
 	   </td>
 	  </tr>
 	 </table>
@@ -1484,10 +1503,10 @@ elseif ($job == 'plugins') {
 		?>
 		 <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
 		  <tr class="ubox">
-		   <td width="30%">Plugin</td>
-		   <td width="20%">Hook</td>
-		   <td width="10%">Active</td>
-		   <td width="40%">Action</td>
+		   <td width="30%"><?php echo $lang->phrase('admin_packages_plugins_th_plugin'); ?></td>
+		   <td width="20%"><?php echo $lang->phrase('admin_packages_plugins_th_hook'); ?></td>
+		   <td width="10%"><?php echo $lang->phrase('admin_packages_plugins_th_active'); ?></td>
+		   <td width="40%"><?php echo $lang->phrase('admin_packages_plugins_th_action'); ?></td>
 		  </tr>
 		<?php
 		while ($head = $db->fetch_assoc($result)) {
@@ -1496,8 +1515,8 @@ elseif ($job == 'plugins') {
 				<tr class="obox">
 				  <td colspan="3"><?php echo $head['title']; ?></td>
 				  <td>
-				  	<a class="button" href="admin.php?action=packages&amp;job=package_info&amp;id=<?php echo $head['module']; ?>">Go to Package</a>
-				  	<a class="button" href="admin.php?action=packages&amp;job=plugins_add&id=<?php echo $head['module']; ?>">Add Plugin</a>
+				  	<a class="button" href="admin.php?action=packages&amp;job=package_info&amp;id=<?php echo $head['module']; ?>"><?php echo $lang->phrase('admin_packages_plugins_go_to_package'); ?></a>
+				  	<a class="button" href="admin.php?action=packages&amp;job=plugins_add&id=<?php echo $head['module']; ?>"><?php echo $lang->phrase('admin_packages_plugins_add_plugins'); ?></a>
 				  </td>
 				</tr>
 				<?php
@@ -1510,18 +1529,18 @@ elseif ($job == 'plugins') {
 					<td><?php echo $head['position']; ?></td>
 					<td class="center">
 					<?php if ($head['active'] == 1 && $head['mactive'] == 1) { ?>
-					<img class="valign" src="admin/html/images/yes.gif" border="0" alt="Active" title="Plugin is active." />
+					<img class="valign" src="admin/html/images/yes.gif" border="0" alt="Active" title="<?php echo $lang->phrase('admin_packages_plugins_plugin_is_active'); ?>" />
 					<?php } elseif ($head['active'] == 1 && $head['mactive'] == 0) { ?>
-					<img class="valign" src="admin/html/images/avg.gif" border="0" alt="Partially" title="Plugin is active, but package is not active!" />
+					<img class="valign" src="admin/html/images/avg.gif" border="0" alt="Partially" title="<?php echo $lang->phrase('admin_packages_plugins_plugin_is_active_but_package_is_not_active'); ?>" />
 					<?php } else { ?>
-					<img class="valign" src="admin/html/images/no.gif" border="0" alt="Inactive" title="Plugin is not active." />
+					<img class="valign" src="admin/html/images/no.gif" border="0" alt="Inactive" title="<?php echo $lang->phrase('admin_packages_plugins_plugin_is_not_active'); ?>" />
 					<?php } ?>
 					</td>
 					<td>
-					 <a class="button" href="admin.php?action=packages&amp;job=plugins_edit&amp;id=<?php echo $head['id']; ?>">Edit</a>
+					 <a class="button" href="admin.php?action=packages&amp;job=plugins_edit&amp;id=<?php echo $head['id']; ?>"><?php echo $lang->phrase('admin_packages_plugins_edit'); ?></a>
 					 <?php if ($head['required'] == 0) { ?>
-					 <a class="button" href="admin.php?action=packages&amp;job=plugins_active&amp;id=<?php echo $head['id']; ?>"><?php echo iif($head['active'] == 1, 'Deactivate', 'Activate'); ?></a>
-					 <a class="button" href="admin.php?action=packages&amp;job=plugins_delete&amp;id=<?php echo $head['id']; ?>">Delete</a>
+					 <a class="button" href="admin.php?action=packages&amp;job=plugins_active&amp;id=<?php echo $head['id']; ?>"><?php echo iif($head['active'] == 1, $lang->phrase('admin_packages_plugins_deactivate'), $lang->phrase('admin_packages_plugins_activate')); ?></a>
+					 <a class="button" href="admin.php?action=packages&amp;job=plugins_delete&amp;id=<?php echo $head['id']; ?>"><?php echo $lang->phrase('admin_packages_plugins_delete'); ?></a>
 					 <?php } ?>
 					</td>
 				</tr>
@@ -1530,7 +1549,7 @@ elseif ($job == 'plugins') {
 			else {
 				?>
 				<tr class="mbox">
-					<td colspan="4">For this package is no plugin specified. <a href="admin.php?action=packages&amp;job=plugins_add&id=<?php echo $head['module']; ?>">Add a new Plugin.</a></td>
+					<td colspan="4"><?php echo $lang->phrase('admin_packages_plugins_for_this_package_is_no_plugin_specified'); ?> <a href="admin.php?action=packages&amp;job=plugins_add&id=<?php echo $head['module']; ?>"><?php echo $lang->phrase('admin_packages_plugins_add_a_new_plugin'); ?></a></td>
 				</tr>
 				<?php
 			}
@@ -1550,11 +1569,11 @@ elseif ($job == 'plugins') {
 		?>
 		 <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
 		  <tr class="ubox">
-		   <td width="30%">Plugin</td>
-		   <td width="28%">Package</td>
-		   <td width="11%">Active</td>
-		   <td width="9%">Priority</td>
-		   <td width="22%">Action</td>
+		   <td width="30%"><?php echo $lang->phrase('admin_packages_plugins_plugin'); ?></td>
+		   <td width="28%"><?php echo $lang->phrase('admin_packages_plugins_package'); ?></td>
+		   <td width="11%"><?php echo $lang->phrase('admin_packages_plugins_active'); ?></td>
+		   <td width="9%"><?php echo $lang->phrase('admin_packages_plugins_priority'); ?></td>
+		   <td width="22%"><?php echo $lang->phrase('admin_packages_plugins_action'); ?></td>
 		  </tr>
 		<?php
 		while ($head = $db->fetch_assoc($result)) {
@@ -1572,11 +1591,11 @@ elseif ($job == 'plugins') {
 				<td><?php echo $head['title']; ?></td>
 				<td class="center">
 					<?php if ($head['active'] == 1 && $head['mactive'] == 1) { ?>
-					<img class="valign" src="admin/html/images/yes.gif" border="0" alt="Active" title="Plugin is active." />
+					<img class="valign" src="admin/html/images/yes.gif" border="0" alt="Active" title="<?php echo $lang->phrase('admin_packages_plugins_plugin_is_active'); ?>" />
 					<?php } elseif ($head['active'] == 1 && $head['mactive'] == 0) { ?>
-					<img class="valign" src="admin/html/images/avg.gif" border="0" alt="Partially" title="Plugin is active, but package is not active!" />
+					<img class="valign" src="admin/html/images/avg.gif" border="0" alt="Partially" title="<?php echo $lang->phrase('admin_packages_plugins_plugin_is_active_but_package_is_not_active'); ?>" />
 					<?php } else { ?>
-					<img class="valign" src="admin/html/images/no.gif" border="0" alt="Inactive" title="Plugin is not active." />
+					<img class="valign" src="admin/html/images/no.gif" border="0" alt="Inactive" title="<?php echo $lang->phrase('admin_packages_plugins_plugin_is_not_active'); ?>" />
 					<?php } ?>
 				</td>
 				<td nowrap="nowrap" align="right">
@@ -1585,10 +1604,10 @@ elseif ($job == 'plugins') {
 		 			<a href="admin.php?action=packages&amp;job=plugins_move&amp;id=<?php echo $head['id']; ?>&amp;value=1"><img src="admin/html/images/desc.gif" border="0" alt="Down"></a>
 				</td>
 				<td>
-				 <a class="button" href="admin.php?action=packages&amp;job=plugins_edit&amp;id=<?php echo $head['id']; ?>">Edit</a>
+				 <a class="button" href="admin.php?action=packages&amp;job=plugins_edit&amp;id=<?php echo $head['id']; ?>"><?php echo $lang->phrase('admin_packages_plugins_edit'); ?></a>
 				 <?php if ($head['required'] == 0) { ?>
-				 <a class="button" href="admin.php?action=packages&amp;job=plugins_active&amp;id=<?php echo $head['id']; ?>"><?php echo iif($head['active'] == 1, 'Deactivate', 'Activate'); ?></a>
-				 <a class="button" href="admin.php?action=packages&amp;job=plugins_delete&amp;id=<?php echo $head['id']; ?>">Delete</a>
+				 <a class="button" href="admin.php?action=packages&amp;job=plugins_active&amp;id=<?php echo $head['id']; ?>"><?php echo iif($head['active'] == 1, $lang->phrase('admin_packages_plugins_deactivate'), $lang->phrase('admin_packages_plugins_activate')); ?></a>
+				 <a class="button" href="admin.php?action=packages&amp;job=plugins_delete&amp;id=<?php echo $head['id']; ?>"><?php echo $lang->phrase('admin_packages_plugins_delete'); ?></a>
 				 <?php } ?>
 				</td>
 			</tr>
@@ -1604,28 +1623,28 @@ elseif ($job == 'plugins_hook_add') {
 	<form method="post" action="admin.php?action=packages&amp;job=plugins_hook_add2">
 	<table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
 	 <tr>
-	  <td class="obox" colspan="2">Add a Hook</td>
+	  <td class="obox" colspan="2"><?php echo $lang->phrase('admin_packages_plugins_head_add_a_hook'); ?></td>
 	 </tr>
 	 <tr>
-	  <td class="ubox" colspan="2">If you need a special hook implemented in Viscacha, please report it to us. We need your support on this!</td>
+	  <td class="ubox" colspan="2"><?php echo $lang->phrase('admin_packages_plugins_if_you_need_a_special_hook_report_it_to_us'); ?></td>
 	 </tr>
 	 <tr class="mbox">
-	  <td width="40%">Name for Hook:<br /><span class="stext">You should use only alphanumerical chars in the text fields. In the second text field you can use also underscores (_).</span></td>
+	  <td width="40%"><?php echo $lang->phrase('admin_packages_plugins_name_for_the_hook'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_packages_plugins_name_for_the_hook_text'); ?></span></td>
 	  <td width="60%"><input type="text" name="group" size="15" />_<input type="text" name="name" size="35" /></td>
 	 </tr>
 	 <tr class="mbox">
-	  <td>File:<br /><span class="stext">You have to add the generated code in this file.</span></td>
+	  <td><?php echo $lang->phrase('admin_packages_plugins_file'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_packages_plugins_file_text'); ?></span></td>
 	  <td><input type="text" name="file" size="60" value="" /></td>
 	 </tr>
 	 <tr class="mbox">
-	  <td>Where is the Hook used:</td>
+	  <td><?php echo $lang->phrase('admin_packages_plugins_where_is_the_hook_used'); ?></td>
 	  <td>
-	   <input type="radio" name="place" value="0" />Directly in PHP-Code<br />
-	   <input type="radio" name="place" value="1" />Somewhere else (Example: Template)
+	   <input type="radio" name="place" value="0" /><?php echo $lang->phrase('admin_packages_plugins_directly_in_php_code'); ?><br />
+	   <input type="radio" name="place" value="1" /><?php echo $lang->phrase('admin_packages_plugins_somewhere_else'); ?>
 	  </td>
 	 </tr>
 	 <tr>
-	  <td class="ubox center" colspan="2"><input type="submit" value="Generate Code and Add Hook"></td>
+	  <td class="ubox center" colspan="2"><input type="submit" value="<?php echo $lang->phrase('admin_packages_buttons_generate_code_and_add_hook'); ?>"></td>
 	 </tr>
 	</table>
 	</form>
@@ -1640,19 +1659,19 @@ elseif ($job == 'plugins_hook_add2') {
 	$unphp = $gpc->get('place', int);
 	$hook = $group.'_'.$name;
 	if (addHookToArray($hook, $file) == false) {
-		error('admin.php?action=packages&amp;job=plugins_hook_add', 'There is already a hook with this name.');
+		error('admin.php?action=packages&amp;job=plugins_hook_add', $lang->phrase('admin_packages_err_there_is_already_a_hook_with_this_name'));
 	}
 	?>
 	<table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
 	 <tr>
-	  <td class="obox" colspan="2">Hook successfully added!</td>
+	  <td class="obox" colspan="2"><?php echo $lang->phrase('admin_packages_ok_hook_successfully_added'); ?></td>
 	 </tr>
 	 <tr class="mbox">
-	  <td width="40%">Name of the new Hook:</td>
+	  <td width="40%"><?php echo $lang->phrase('admin_packages_plugins_name_of_the_new_hook'); ?></td>
 	  <td width="60%"><code><?php echo $hook; ?></code></td>
 	 </tr>
 	 <tr class="mbox">
-	  <td>Generated Code:<br /><span class="stext">You have to add this code in this file where you want the hook to work.</span></td>
+	  <td><?php echo $lang->phrase('admin_packages_plugins_generated_code'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_packages_plugins_generated_code_text'); ?></span></td>
 	  <td>
 	  	<textarea cols="60" rows="2"><?php echo iif($unphp == 1, '&lt;?php '); ?>($code = $plugins-&gt;load('<?php echo $hook; ?>')) ? eval($code) : null;<?php echo iif($unphp == 1, ' ?&gt;'); ?></textarea>
 	  </td>
@@ -1666,7 +1685,7 @@ elseif ($job == 'plugins_move') {
 	$pos = $gpc->get('value', int);
 	$result = $db->query('SELECT id, position FROM '.$db->pre.'plugins WHERE id = "'.$id.'"', __LINE__, __FILE__);
 	if ($db->num_rows($result) == 0) {
-		error('admin.php?action=packages&job=plugins', 'Specified ID is not correct.');
+		error('admin.php?action=packages&job=plugins', $lang->phrase('admin_packages_err_specified_id_is_not_correct'));
 	}
 	else {
 		$row = $db->fetch_assoc($result);
@@ -1686,11 +1705,11 @@ elseif ($job == 'plugins_active') {
 	$row = $db->fetch_assoc($result);
 	if ($db->num_rows($result) == 0) {
 		echo head();
-		error('admin.php?action=packages&job=plugins', 'Specified ID is not correct.');
+		error('admin.php?action=packages&job=plugins', $lang->phrase('admin_packages_err_specified_id_is_not_correct'));
 	}
 	elseif ($row['required'] == 1) {
 		echo head();
-		error('admin.php?action=packages&job=plugins', 'This plugin is required. You can not change the status.');
+		error('admin.php?action=packages&job=plugins', $lang->phrase('admin_packages_err_this_plugin_is_required_you_cannot_change_the_status'));
 	}
 	else {
 		$active = $row['active'] == 1 ? 0 : 1;
@@ -1705,21 +1724,21 @@ elseif ($job == 'plugins_delete') {
 	$result = $db->query("SELECT id, required FROM {$db->pre}plugins WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	$row = $db->fetch_assoc($result);
 	if ($db->num_rows($result) == 0) {
-		error('admin.php?action=packages&job=plugins', 'Specified plugin not found.');
+		error('admin.php?action=packages&job=plugins', $lang->phrase('admin_packages_err_specified_plugin_not_found'));
 	}
 	elseif ($row['required'] == 1) {
-		error('admin.php?action=packages&job=plugins', 'Specified plugin is required by a package and can not be deleted.');
+		error('admin.php?action=packages&job=plugins', $lang->phrase('admin_packages_err_specified_plugin_is_required_by_a_package_and_cannot_be_deleted'));
 	}
 	else {
 		?>
 		<table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
-		<tr><td class="obox">Delete Package</td></tr>
+		<tr><td class="obox"><?php echo $lang->phrase('admin_packages_plugins_delete_head_delete_package'); ?></td></tr>
 		<tr><td class="mbox">
-		<p align="center">Do you really want to delete this plugin?</p>
+		<p align="center"><?php echo $lang->phrase('admin_packages_plugins_delete_do_you_really_want_to_delete_this_plugin'); ?></p>
 		<p align="center">
-		<a href="admin.php?action=packages&job=plugins_delete2&id=<?php echo $id; ?>"><img border="0" alt="" src="admin/html/images/yes.gif"> Yes</a>
+		<a href="admin.php?action=packages&job=plugins_delete2&id=<?php echo $id; ?>"><img border="0" alt="" src="admin/html/images/yes.gif"> <?php echo $lang->phrase('admin_packages_yes'); ?></a>
 		&nbsp&nbsp;&nbsp;&nbsp&nbsp;&nbsp;
-		<a href="javascript: history.back(-1);"><img border="0" alt="" src="admin/html/images/no.gif"> No</a>
+		<a href="javascript: history.back(-1);"><img border="0" alt="" src="admin/html/images/no.gif"> <?php echo $lang->phrase('admin_packages_no'); ?></a>
 		</p>
 		</td></tr>
 		</table>
@@ -1733,10 +1752,10 @@ elseif ($job == 'plugins_delete2') {
 	$result = $db->query("SELECT * FROM {$db->pre}plugins WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	$data = $db->fetch_assoc($result);
 	if ($db->num_rows($result) == 0) {
-		error('admin.php?action=packages&job=plugins', 'Specified plugin not found.');
+		error('admin.php?action=packages&job=plugins', $lang->phrase('admin_packages_err_specified_plugin_not_found'));
 	}
 	elseif ($data['required'] == 1) {
-		error('admin.php?action=packages&job=plugins', 'Specified plugin is required by another plugin and can not be deleted.');
+		error('admin.php?action=packages&job=plugins', $lang->phrase('admin_packages_err_specified_plugin_is_required_by_another_plugin_and_cannot_be_deleted'));
 	}
 	else {
 		$dir = "modules/{$data['module']}/";
@@ -1762,7 +1781,7 @@ elseif ($job == 'plugins_delete2') {
 
 		$filesystem->unlink('cache/modules/'.$plugins->_group($data['position']).'.php');
 
-		ok('admin.php?action=packages&job=plugins', 'Plugin successfully deleted!');
+		ok('admin.php?action=packages&job=plugins', $lang->phrase('admin_packages_ok_plugin_successfully_deleted'));
 	}
 }
 elseif ($job == 'plugins_hook_pos') {
@@ -1780,8 +1799,12 @@ elseif ($job == 'plugins_hook_pos') {
 	<table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
 	 <tr>
 	  <td class="obox">
-	   <span class="right"><a class="button" href="javascript: self.close();">Close Window</a></span>
-	   Source Code around the Hook <em><?php echo $hook; ?></em> in file <em><?php echo $file; ?></em>
+	   <span class="right"><a class="button" href="javascript: self.close();"><?php echo $lang->phrase('admin_packages_hook_pos_close_window'); ?></a></span>
+	   <?php
+	   	$hook_temp = "<em>$hook</em>";
+	   	$file_temp = "<em>$file</em>";
+	   	echo $lang->phrase('admin_packages_hook_pos_source_code_around_the_hook_foo_in_the_file_bar');
+	   ?>
 	  </td>
 	 </tr>
 	 <tr>
@@ -1801,7 +1824,7 @@ elseif ($job == 'plugins_hook_pos') {
 		echo "</ol>";
 	  }
 	  else {
-		echo "There is no file for this hook.";
+		echo $lang->phrase('admin_packages_hook_pos_there_is_no_file_for_this_hook');
 	  }
 	  ?>
 	  </td>
@@ -1818,7 +1841,7 @@ elseif ($job == 'plugins_edit') {
 	if (is_id($packageid)) {
 		$dir = "modules/{$packageid}/";
 		if (file_exists("{$dir}plugin.ini") == false) {
-			error("admin.php?action=packages&job=plugins", "Plugin not found in plugin.ini.");
+			error("admin.php?action=packages&job=plugins", $lang->phrase('admin_packages_err_plugin_not_found_in_plugin_ini'));
 		}
 		$ini = $myini->read("{$dir}plugin.ini");
 		$package = array(
@@ -1841,7 +1864,7 @@ elseif ($job == 'plugins_edit') {
 		", __LINE__, __FILE__);
 		$package = $db->fetch_assoc($result);
 		if ($db->num_rows($result) != 1) {
-			error("admin.php?action=packages&job=plugins", "Plugin not found in database.");
+			error("admin.php?action=packages&job=plugins", $lang->phrase('admin_packages_err_plugin_not_found_in_database'));
 		}
 		$dir = "modules/{$package['module']}/";
 		$ini = $myini->read($dir.'plugin.ini');
@@ -1868,14 +1891,14 @@ elseif ($job == 'plugins_edit') {
 	<form method="post" action="admin.php?action=packages&amp;job=plugins_edit2&amp;id=<?php echo $pos; ?>&amp;package=<?php echo $packageid; ?>">
 	<table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
 	 <tr>
-	  <td class="obox" colspan="2">Edit Plugin</td>
+	  <td class="obox" colspan="2"><?php echo $lang->phrase('admin_packages_plugins_edit_head_edit_plugin'); ?></td>
 	 </tr>
 	 <tr class="mbox">
-	  <td width="25%">Title for Plugin:<br /><span class="stext">Maximum number of characters: 200; Minimum number of characters: 4</span></td>
+	  <td width="25%"><?php echo $lang->phrase('admin_packages_plugins_edit_title_for_plugin'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_packages_plugins_edit_title_for_plugin_text'); ?></span></td>
 	  <td width="75%"><input type="text" name="title" size="40" value="<?php echo $package['title']; ?>" /></td>
 	 </tr>
 	 <tr class="mbox">
-	  <td>Package:</td>
+	  <td><?php echo $lang->phrase('admin_packages_plugins_edit_package'); ?></td>
 	  <td><strong><?php echo $package['title']; ?></strong></td>
 	 </tr>
 	 <tr class="mbox">
@@ -1890,7 +1913,7 @@ elseif ($job == 'plugins_edit') {
 		  <?php } ?>
 	  </optgroup>
 	  <?php } ?>
-	  </select> <a class="button" href="#" onclick="return openHookPosition();" target="_blank">Show Source Code around this Hook</a>
+	  </select> <a class="button" href="#" onclick="return openHookPosition();" target="_blank"><?php echo $lang->phrase('admin_packages_plugins_edit_show_source_code_around_this_hook'); ?></a>
 	  <?php } else { echo $package['position']; ?>
 		<input type="hidden" name="hook" value="<?php echo $package['position']; ?>" />
 	  <?php } ?>
@@ -1898,13 +1921,13 @@ elseif ($job == 'plugins_edit') {
 	 </tr>
 	 <tr class="mbox" valign="top">
 	  <td>
-	  Code:<br /><br />
+	  <?php echo $lang->phrase('admin_packages_plugins_edit_code'); ?><br /><br />
 	  <ul>
-		<li><a href="admin.php?action=packages&amp;job=plugins_template&amp;id=<?php echo $package['module']; ?>" target="_blank">Add/Edit Templates</a></li>
-		<li><a href="admin.php?action=packages&amp;job=plugins_language&amp;id=<?php echo $package['module']; ?>" target="_blank">Add/Edit Phrases</a></li>
+		<li><a href="admin.php?action=packages&amp;job=plugins_template&amp;id=<?php echo $package['module']; ?>" target="_blank"><?php echo $lang->phrase('admin_packages_plugins_edit_add_edit_templates'); ?></a></li>
+		<li><a href="admin.php?action=packages&amp;job=plugins_language&amp;id=<?php echo $package['module']; ?>" target="_blank"><?php echo $lang->phrase('admin_packages_plugins_edit_add_edit_phrases'); ?></a></li>
 	  </ul>
 	  <?php if (count($cp) > 0) { ?>
-	  <br /><br /><span class="stext"><strong>Caution</strong>: Changes to the code also affect the following hooks:</span>
+	  <br /><br /><span class="stext"><?php echo $lang->phrase('admin_packages_plugins_edit_caution'); ?></span>
 	  <ul>
 	  <?php foreach ($cp as $ihook) { ?>
 	  	<li class="stext"><?php echo $ihook; ?></li>
@@ -1915,7 +1938,14 @@ elseif ($job == 'plugins_edit') {
 	  <td><textarea name="code" rows="10" cols="80" class="texteditor"><?php echo htmlspecialchars($code); ?></textarea></td>
 	 </tr>
 	 <tr class="mbox">
-	  <td width="25%">File for Code:<br /><span class="stext">This file is located in the folder <code><?php echo $config['fpath']; ?>/modules/<?php echo $package['module']; ?>/</code>.</span></td>
+	  <td width="25%">
+	  	<?php
+	  		$path_temp = '<code>'.$config['fpath'].'/modules/'.$package['module'].'</code>';
+	  		echo $lang->phrase('admin_packages_plugins_edit_file_for_code');
+	  		echo '<br />';
+	  		echo '<span class="stext">'.$lang->phrase('admin_packages_plugins_edit_file_for_code_text').'</span>';
+	  	?>
+	  </td>
 	  <td width="75%"><?php echo $codefile; ?></td>
 	 </tr>
 	 <?php if ($package['required'] == 0 && is_id($pluginid)) { ?>
@@ -1927,7 +1957,7 @@ elseif ($job == 'plugins_edit') {
 	 	<input type="hidden" name="active" value="1" />
 	 <?php } ?>
 	 <tr>
-	  <td class="ubox" colspan="2" align="center"><input type="submit" value="Save" /></td>
+	  <td class="ubox" colspan="2" align="center"><input type="submit" value="<?php echo $lang->phrase('admin_packages_button_save'); ?>" /></td>
 	 </tr>
 	</table>
 	</form>
@@ -1957,17 +1987,17 @@ elseif ($job == 'plugins_edit2') {
 		$result = $db->query("SELECT module, position, required FROM {$db->pre}plugins WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 		$data = $db->fetch_assoc($result);
 		if ($db->num_rows($result) != 1) {
-			error("admin.php?action=packages&job=plugins", "Plugin not found");
+			error("admin.php?action=packages&job=plugins", $lang->phrase('admin_packages_err_plugin_not_found'));
 		}
 		$dir = "modules/{$data['module']}/";
 		$ini = $myini->read($dir."plugin.ini");
 	}
 
 	if (strlen($title) < 4) {
-		error('admin.php?action=packages&job=plugins_edit&id='.$id, 'Minimum number of characters for title: 4');
+		error('admin.php?action=packages&job=plugins_edit&id='.$id, $lang->phrase('admin_packages_err_minimum_number_of_characters_for_title'));
 	}
 	elseif (strlen($title) > 200) {
-		error('admin.php?action=packages&job=plugins_edit&id='.$id, 'Maximum number of characters for title: 200');
+		error('admin.php?action=packages&job=plugins_edit&id='.$id, $lang->phrase('admin_packages_err_maximum_number_of_characters_for_title'));
 	}
 
 	if (is_id($package) == false) {
@@ -1994,7 +2024,7 @@ elseif ($job == 'plugins_edit2') {
 	$myini->write($dir."plugin.ini", $ini);
 	$filesystem->unlink('cache/modules/'.$plugins->_group($data['position']).'.php');
 
-	ok('admin.php?action=packages&job=plugins', 'Plugin successfully edited!');
+	ok('admin.php?action=packages&job=plugins', $lang->phrase('admin_packages_ok_plugin_successfully_edited'));
 }
 elseif ($job == 'plugins_add') {
 	echo head();
@@ -2011,14 +2041,14 @@ elseif ($job == 'plugins_add') {
 	<form method="post" action="admin.php?action=packages&job=plugins_add2">
 	<table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
 	 <tr>
-	  <td class="obox" colspan="2">Add Plugin - Step 1 of 3</td>
+	  <td class="obox" colspan="2"><?php echo $lang->phrase('admin_packages_plugins_add_head_add_plugin_1'); ?></td>
 	 </tr>
 	 <tr class="mbox">
-	  <td width="25%">Title for Plugin:<br /><span class="stext">Maximum number of characters: 200; Minimum number of characters: 4</span></td>
+	  <td width="25%"><?php echo $lang->phrase('admin_packages_plugins_add_title_for_plugin'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_packages_plugins_add_title_for_plugin_text'); ?></span></td>
 	  <td width="75%"><input type="text" name="title" size="40" /></td>
 	 </tr>
 	 <tr class="mbox">
-	  <td>Package:</td>
+	  <td><?php echo $lang->phrase('admin_packages_plugins_add_package'); ?></td>
 	  <td>
 	  <?php if ($packageid > 0) { ?>
 		<strong><?php echo $package['title']; ?></strong>
@@ -2033,7 +2063,7 @@ elseif ($job == 'plugins_add') {
 	  </td>
 	 </tr>
 	 <tr class="mbox">
-	  <td>Hook:</td>
+	  <td><?php echo $lang->phrase('admin_packages_plugins_add_hook'); ?></td>
 	  <td><select name="hook" id="hook">
 	  <?php foreach ($hooks as $group => $positions) { ?>
 	  <optgroup label="<?php echo $group; ?>">
@@ -2042,10 +2072,10 @@ elseif ($job == 'plugins_add') {
 		  <?php } ?>
 	  </optgroup>
 	  <?php } ?>
-	  </select> <a class="button" href="#" onclick="return openHookPosition();" target="_blank">Show Source Code around this Hook</a></td>
+	  </select> <a class="button" href="#" onclick="return openHookPosition();" target="_blank"><?php echo $lang->phrase('admin_packages_plugins_add_show_source_code_around_this_hook'); ?></a></td>
 	 </tr>
 	 <tr>
-	  <td class="ubox" colspan="2" align="center"><input type="submit" value="Save" /></td>
+	  <td class="ubox" colspan="2" align="center"><input type="submit" value="<?php echo $lang->phrase('admin_packages_button_save'); ?>" /></td>
 	 </tr>
 	</table>
 	</form>
@@ -2056,19 +2086,19 @@ elseif ($job == 'plugins_add2') {
 	echo head();
 	$hook = $gpc->get('hook', str);
 	$isInvisibleHook = isInvisibleHook($hook);
-	$packageid = $gpc->get('package', int);
+	$packageid = $id = $gpc->get('package', int);
 	$title = $gpc->get('title', str);
 	$result = $db->query("SELECT id, title FROM {$db->pre}packages WHERE id = '{$packageid}' LIMIT 1", __LINE__, __FILE__);
 	if ($db->num_rows($result) != 1) {
 		echo head();
-		error('admin.php?action=packages&job=plugins_add', 'Specified package ('.$packageid.') does not exist.');
+		error('admin.php?action=packages&job=plugins_add', $lang->phrase('admin_packages_err_specified_package_foo_does_not_exist'));
 	}
 	$package = $db->fetch_assoc($result);
 	if (strlen($title) < 4) {
-		error('admin.php?action=packages&job=plugins_add&id='.$package['id'], 'Minimum number of characters for title: 4');
+		error('admin.php?action=packages&job=plugins_add&id='.$package['id'], $lang->phrase('admin_packages_err_minimum_number_of_characters_for_title'));
 	}
 	elseif (strlen($title) > 200) {
-		error('admin.php?action=packages&job=plugins_add&id='.$package['id'], 'Maximum number of characters for title: 200');
+		error('admin.php?action=packages&job=plugins_add&id='.$package['id'], $lang->phrase('admin_packages_err_maximum_number_of_characters_for_title'));
 	}
 
 	if (!$isInvisibleHook) {
@@ -2100,52 +2130,59 @@ elseif ($job == 'plugins_add2') {
 	<form method="post" action="admin.php?action=packages&job=plugins_add3&id=<?php echo $pluginid; ?>&package=<?php echo $package['id']; ?>">
 	<table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
 	 <tr>
-	  <td class="obox" colspan="2">Add Plugin - Step 2 of 3</td>
+	  <td class="obox" colspan="2"><?php echo $lang->phrase('admin_packages_plugins_add_head_add_plugin_2'); ?></td>
 	 </tr>
 	 <tr class="mbox">
-	  <td width="25%">Title for Plugin:<br /><span class="stext">Maximum number of characters: 200; Minimum number of characters: 4</span></td>
+	  <td width="25%"><?php echo $lang->phrase('admin_packages_plugins_add_title_for_plugin'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_packages_plugins_add_title_for_plugin_text'); ?></span></td>
 	  <td width="75%"><input type="text" name="title" size="40" value="<?php echo htmlspecialchars($title); ?>" /></td>
 	 </tr>
 	 <tr class="mbox">
-	  <td>Package:</td>
+	  <td><?php echo $lang->phrase('admin_packages_plugins_add_package'); ?></td>
 	  <td><strong><?php echo $package['title']; ?></strong> (<?php echo $package['id']; ?>)</td>
 	 </tr>
 	 <tr class="mbox">
-	  <td>Hook:</td>
-	  <td><strong><?php echo $hook; ?></strong><input type="hidden" name="hook" value="<?php echo $hook; ?>"> <a class="button" href="#" onclick="return openHookPosition('<?php echo $hook; ?>');" target="_blank">Show Source Code around this Hook</a></td>
+	  <td><?php echo $lang->phrase('admin_packages_plugins_add_hook'); ?></td>
+	  <td><strong><?php echo $hook; ?></strong><input type="hidden" name="hook" value="<?php echo $hook; ?>"> <a class="button" href="#" onclick="return openHookPosition('<?php echo $hook; ?>');" target="_blank"><?php echo $lang->phrase('admin_packages_plugins_add_show_source_code_around_this_hook'); ?></a></td>
 	 </tr>
 	 <tr class="mbox" valign="top">
 	  <td>
-	  Code:<br /><br />
-	  <span class="stext">At this place you can insert PHP-Code which will be executed in the indicated hook. You don't need to use &lt;?php bzw. ?&gt;-Tags at the beginning and the end of your code. You also can use templates and phrases for this plugin (more information down of this page). More information can be found in the documentation.</span>
+	  <?php echo $lang->phrase('admin_packages_plugins_add_code'); ?><br /><br />
+	  <span class="stext"><?php echo $lang->phrase('admin_packages_plugins_add_code_text'); ?></span>
 	  <br /><br />
 	  <ul>
-		<li><a href="admin.php?action=packages&amp;job=plugins_template&amp;id=<?php echo $package['id']; ?>" target="_blank">Add/Edit Template</a></li>
-		<li><a href="admin.php?action=packages&amp;job=plugins_language&amp;id=<?php echo $package['id']; ?>" target="_blank">Add/Edit Phrase</a></li>
+		<li><a href="admin.php?action=packages&amp;job=plugins_template&amp;id=<?php echo $package['id']; ?>" target="_blank"><?php echo $lang->phrase('admin_packages_plugins_add_add_edit_template'); ?></a></li>
+		<li><a href="admin.php?action=packages&amp;job=plugins_language&amp;id=<?php echo $package['id']; ?>" target="_blank"><?php echo $lang->phrase('admin_packages_plugins_add_add_edit_phrase'); ?></a></li>
 	  </ul>
 	  </td>
 	  <td><textarea name="code" rows="10" cols="80" class="texteditor"></textarea></td>
 	 </tr>
 	 <tr class="mbox">
-	  <td width="25%">File for Code:<br /><span class="stext">In this file the code will be saved. This file is located in the folder <code><?php echo $config['fpath']; ?>/modules/<?php echo $package['id']; ?>/</code>. If the file exists, the code above will be ignored.</span></td>
+	  <td width="25%">
+	  $lang->phrase('admin_packages_plugins_add_file_for_code')
+	  	<br />
+	  	<?php
+	  		$path_temp = '<code>'.$config['fpath'].'/modules/'.$package['id'].'/</code>';
+	  		echo '<span class="stext">'.$lang->phrase('admin_packages_plugins_add_file_for_code_text').'</span>';
+	  	?>
+	  </td>
 	  <td width="75%"><input type="text" name="file" size="40" value="<?php echo $codefile; ?>" /></td>
 	 </tr>
 	 <?php if (!$isInvisibleHook) { ?>
 	 <tr class="mbox">
-	  <td>Priority:</td>
+	  <td><?php echo $lang->phrase('admin_packages_plugins_add_priority'); ?></td>
 	  <td><select name="priority">
 	  <?php while ($row = $db->fetch_assoc($hookPriority)) { $last = $row['name']; ?>
-	  <option value="<?php echo $row['id']; ?>">Before <?php echo $row['name']; ?></option>
+	  <option value="<?php echo $row['id']; ?>"><?php echo $lang->phrase('admin_packages_plugins_add_before'); ?> <?php echo $row['name']; ?></option>
 	  <?php } ?>
-	  <option value="max">After <?php echo $last; ?></option>
+	  <option value="max"><?php echo $lang->phrase('admin_packages_plugins_add_after'); ?> <?php echo $last; ?></option>
 	  </select></td>
 	 </tr>
 	 <tr class="mbox">
-	  <td>Required by the package:</td>
+	  <td><?php echo $lang->phrase('admin_packages_plugins_add_required_by_package'); ?></td>
 	  <td><input type="checkbox" name="required" value="1" /></td>
 	 </tr>
 	 <tr class="mbox">
-	  <td>Active:</td>
+	  <td><?php echo $lang->phrase('admin_packages_plugins_add_active'); ?></td>
 	  <td><input type="checkbox" name="active" value="1" /></td>
 	 </tr>
 	 <?php } ?>
@@ -2223,10 +2260,10 @@ elseif ($job == 'plugins_add3') {
 		$filesystem->unlink('cache/modules/'.$plugins->_group($hook).'.php');
 	}
 	if ($hook == 'navigation') {
-		ok('admin.php?action=cms&job=nav_addplugin&id='.$package, 'Step 3 of 3: Plugin successfully added! You have added a plugin to the hook "navigation". Before you can use it in your navigation, you have to add it to your Navigation Manager.');
+		ok('admin.php?action=cms&job=nav_addplugin&id='.$package, $lang->phrase('admin_packages_ok_step_3_of_3_plugin_successfully_added_to_navigation'));
 	}
 	else {
-		ok('admin.php?action=packages&job=plugins_add&id='.$package, 'Step 3 of 3: Plugin successfully added!');
+		ok('admin.php?action=packages&job=plugins_add&id='.$package, $lang->phrase('admin_packages_ok_step_3_of_3_plugin_successfully_added'));
 	}
 }
 elseif ($job == 'plugins_template') {
@@ -2235,7 +2272,7 @@ elseif ($job == 'plugins_template') {
 	$result = $db->query("SELECT id, title FROM {$db->pre}packages WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	if ($db->num_rows($result) != 1) {
 		echo head();
-		error('javascript: self.close();', 'Specified package ('.$id.') does not exist.');
+		error('javascript: self.close();', $lang->phrase('admin_packages_error_specified_package_foo_does_not_exist'));
 	}
 	$data = $db->fetch_assoc($result);
 	$dir = "modules/{$data['id']}/";
@@ -2266,14 +2303,14 @@ elseif ($job == 'plugins_template') {
 	<table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
 	 <tr>
 	  <td class="obox" colspan="3">
-	  <span style="float: right;"><a class="button" href="javascript: self.close();">Close Window</a></span>
-	  Manage Templates for Package: <?php echo $data['title']; ?></td>
+	  <span style="float: right;"><a class="button" href="javascript: self.close();"><?php echo $lang->phrase('admin_packages_plugins_template_close_window'); ?></a></span>
+	 $lang->phrase('admin_packages_plugins_template_manage_templates_for_package')<?php echo $data['title']; ?></td>
 	 </tr>
 	 <?php if (isset($ini['template']) && count($ini['template']) > 0) { ?>
 	 <tr class="mbox">
-	  <td width="10%">Edit</td>
-	  <td width="10%">Delete</td>
-	  <td width="80%">File</td>
+	  <td width="10%"><?php echo $lang->phrase('admin_packages_plugins_template_th_edit'); ?></td>
+	  <td width="10%"><?php echo $lang->phrase('admin_packages_plugins_template_th_delete'); ?></td>
+	  <td width="80%"><?php echo $lang->phrase('admin_packages_plugins_template_th_file'); ?></td>
 	 </tr>
 	 <?php foreach ($ini['template'] as $key => $file) { ?>
 	 <tr class="mbox">
@@ -2283,11 +2320,11 @@ elseif ($job == 'plugins_template') {
 	 </tr>
 	 <?php } ?>
 	 <tr>
-	  <td class="ubox" colspan="3" align="center"><input type="submit" value="Submit" /></td>
+	  <td class="ubox" colspan="3" align="center"><input type="submit" value="<?php echo $lang->phrase('admin_packages_form_submit'); ?>" /></td>
 	 </tr>
 	 <?php } else { ?>
 	 <tr class="mbox">
-	  <td colspan="3">No Template available for this Package.</td>
+	  <td colspan="3"><?php echo $lang->phrase('admin_packages_plugins_template_no_template_available_for_this_package'); ?></td>
 	 </tr>
 	 <?php } ?>
 	</table>
@@ -2296,23 +2333,28 @@ elseif ($job == 'plugins_template') {
 	<form method="post" action="admin.php?action=packages&job=plugins_template_add&id=<?php echo $data['id']; ?>">
 	<table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
 	 <tr>
-	  <td class="obox" colspan="2">Add Template</td>
+	  <td class="obox" colspan="2"><?php echo $lang->phrase('admin_packages_plugins_template_add_template'); ?></td>
 	 </tr>
 	 <tr class="mbox" valign="top">
 	  <td>
-	  Code:<br /><br />
+	  <?php echo $lang->phrase('admin_packages_plugins_template_code'); ?><br /><br />
 	  <ul>
-		<li><a href="admin.php?action=packages&amp;job=plugins_language&amp;id=<?php echo $data['id']; ?>" target="_blank">Add/Edit Phrase</a></li>
+		<li><a href="admin.php?action=packages&amp;job=plugins_language&amp;id=<?php echo $data['id']; ?>" target="_blank"><?php echo $lang->phrase('admin_packages_plugins_template_add_edit_phrase'); ?></a></li>
 	  </ul>
 	  </td>
 	  <td><textarea name="code" rows="8" cols="80" class="texteditor"></textarea></td>
 	 </tr>
 	 <tr class="mbox">
-	  <td width="25%">File for Code:<br /><span class="stext">In this file the code will be saved. This file is located in the folder <code><?php echo $config['fpath']; ?>/<?php echo $tpldir; ?></code>.</span></td>
+	  <td width="25%"><?php echo $lang->phrase('admin_packages_plugins_template_file_for_code'); ?>
+	  <br />
+	  	<?php
+	  		$path_temp = '<code>'.$config['fpath'].'/'.$tpldir.'</code>';
+	  		echo '<span class="stext">'.$lang->phrase('admin_packages_plugins_template_file_for_code_text').'</span></td>';
+	  	?>
 	  <td width="75%"><input type="text" name="file" size="40" value="<?php echo $codefile; ?>" /></td>
 	 </tr>
 	 <tr>
-	  <td class="ubox" colspan="2" align="center"><input type="submit" value="Save" /></td>
+	  <td class="ubox" colspan="2" align="center"><input type="submit" value="<?php echo $lang->phrase('admin_packages_button_save'); ?>" /></td>
 	 </tr>
 	</table>
 	</form>
@@ -2327,7 +2369,7 @@ elseif ($job == 'plugins_template_add') {
 	$result = $db->query("SELECT id, title FROM {$db->pre}packages WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	if ($db->num_rows($result) != 1) {
 		echo head();
-		error('javascript: self.close();', 'Specified package ('.$id.') does not exist.');
+		error('javascript: self.close();', $lang->phrase('admin_packages_err_specified_package_foo_does_not_exist'));
 	}
 	$data = $db->fetch_assoc($result);
 	$dir = "modules/{$data['id']}/";
@@ -2365,7 +2407,7 @@ elseif ($job == 'plugins_template_edit') {
 	$result = $db->query("SELECT id, title FROM {$db->pre}packages WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	if ($db->num_rows($result) != 1) {
 		echo head();
-		error('javascript: self.close();', 'Specified package ('.$id.') does not exist.');
+		error('javascript: self.close();', $lang->phrase('admin_packages_err_specified_package_foo_does_not_exist'));
 	}
 	$data = $db->fetch_assoc($result);
 	$dir = "modules/{$data['id']}/";
@@ -2397,8 +2439,8 @@ elseif ($job == 'plugins_template_edit') {
 		if ($output == 0) {
 			?>
 			<table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
-			  <tr><td class="obox">Confirmation:</td></tr>
-			  <tr><td class="mbox" align="center">Template(s) successfully deleted</td></tr>
+			  <tr><td class="obox"><?php echo $lang->phrase('admin_packages_template_edit_head_confirmation'); ?></td></tr>
+			  <tr><td class="mbox" align="center"><?php echo $lang->phrase('admin_packages_template_edit_template_successfully_deleted'); ?></td></tr>
 			</table><br class="minibr" />
 			<?php
 		}
@@ -2419,18 +2461,18 @@ elseif ($job == 'plugins_template_edit') {
 		<form method="post" action="admin.php?action=packages&job=plugins_template_edit2&id=<?php echo $data['id']; ?>&edit=<?php echo $editId; ?>">
 		<table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
 		 <tr>
-		  <td class="obox" colspan="2">Add/Edit Template</td>
+		  <td class="obox" colspan="2"><?php echo $lang->phrase('admin_packages_template_edit_add_edit_template'); ?></td>
 		 </tr>
 		 <tr class="mbox" valign="top">
 		  <td rowspan="<?php echo count($tpldirs); ?>">
-			Code:<br /><br />
-			<ul><li><a href="admin.php?action=packages&amp;job=plugins_language&amp;id=<?php echo $data['id']; ?>" target="_blank">Add/Edit Phrase</a></li></ul>
+			<?php echo $lang->phrase('admin_packages_template_edit_code'); ?><br /><br />
+			<ul><li><a href="admin.php?action=packages&amp;job=plugins_language&amp;id=<?php echo $data['id']; ?>" target="_blank"><?php echo $lang->phrase('admin_packages_template_edit_add_edit_phrase'); ?></a></li></ul>
 		  </td>
 		  <?php
 		  $first = true;
 		  foreach ($tpldirs as $tplid => $designId) {
 		  	if ( in_array($config['templatedir'], $designId['ids']) ) {
-		  		$affected = 'All designs that have not defined an own template';
+		  		$affected = $lang->phrase('admin_packages_template_edit_all_designs_that_have_not_defined_an_own_template');
 		  	}
 		  	else {
 		  		$affected = implode(', ', $designId['names']);
@@ -2442,18 +2484,18 @@ elseif ($job == 'plugins_template_edit') {
 		  		$first = false;
 		  	}
 		  	echo '<td>';
-		  	echo 'Template Group: <b>'.$tplid.'</b><br />';
-		  	echo 'Design(s) affected by changes: '.$affected.'<br />';
+		  	echo $lang->phrase('admin_packages_template_edit_template_groups').'<b>'.$tplid.'</b><br />';
+		  	echo $lang->phrase('admin_packages_template_edit_designs affected_by_changes').$affected.'<br />';
 		  	echo '<textarea name="code['.$tplid.']" rows="8" cols="80" class="texteditor">'.$content.'</textarea>';
 		  	echo '</td></tr>';
 		  }
 		  ?>
 		 <tr class="mbox">
-		  <td width="25%">File for Code:</td>
+		  <td width="25%"><?php echo $lang->phrase('admin_packages_template_edit_file_for_code'); ?></td>
 		  <td width="75%"><?php echo $codefile; ?></td>
 		 </tr>
 		 <tr>
-		  <td class="ubox" colspan="2" align="center"><input type="submit" value="Save" /></td>
+		  <td class="ubox" colspan="2" align="center"><input type="submit" value="<?php echo $lang->phrase('admin_packages_button_save'); ?>" /></td>
 		 </tr>
 		</table>
 		</form>
@@ -2462,10 +2504,10 @@ elseif ($job == 'plugins_template_edit') {
 	}
 
 	if ($output == -1) {
-		error('admin.php?action=packages&job=plugins_template&id='.$data['id'], 'Please choose at least one template...');
+		error('admin.php?action=packages&job=plugins_template&id='.$data['id'], $lang->phrase('admin_packages_err_please_choose_at_least_one_template'));
 	}
 	elseif ($output == 0) {
-		ok('admin.php?action=packages&job=plugins_template&id='.$data['id'], 'Template(s) successfully deleted');
+		ok('admin.php?action=packages&job=plugins_template&id='.$data['id'], $lang->phrase('admin_packages_ok_template_successfully_deleted'));
 	}
 }
 elseif ($job == 'plugins_template_edit2') {
@@ -2476,12 +2518,12 @@ elseif ($job == 'plugins_template_edit2') {
 	echo head();
 	$result = $db->query("SELECT id FROM {$db->pre}packages WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	if ($db->num_rows($result) != 1) {
-		error('javascript: self.close();', 'Specified package ('.$id.') does not exist.');
+		error('javascript: self.close();', $lang->phrase('admin_packages_err_specified_package_foo_does_not_exist'));
 	}
 	$data = $db->fetch_assoc($result);
 	$ini = $myini->read("modules/{$data['id']}/plugin.ini");
 	if (!isset($ini['template'][$editId])) {
-		error('javascript: self.close();', 'Specified template ('.$id.') does not exist in INI-File.');
+		error('javascript: self.close();', $lang->phrase('admin_packages_err_specified_template_foo_does_not_exist_in_ini_file'));
 	}
 	$file = $ini['template'][$editId];
 
@@ -2500,7 +2542,7 @@ elseif ($job == 'plugins_language') {
 	$result = $db->query("SELECT id, title FROM {$db->pre}packages WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	if ($db->num_rows($result) != 1) {
 		echo head();
-		error('javascript: self.close();', 'Specified package ('.$id.') does not exist.');
+		error('javascript: self.close();', $lang->phrase('admin_packages_err_specified_package_foo_does_not_exist'));
 	}
 	$data = $db->fetch_assoc($result);
 
@@ -2533,12 +2575,12 @@ elseif ($job == 'plugins_language') {
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr>
    <td class="obox" colspan="<?php echo count($cache)+1; ?>">
-   <span style="float: right;"><a class="button" href="admin.php?action=packages&job=plugins_language_add&id=<?php echo $id; ?>">Add new Phrases</a></span>
-   Phrase Manager</td>
+   <span style="float: right;"><a class="button" href="admin.php?action=packages&job=plugins_language_add&id=<?php echo $id; ?>"><?php echo $lang->phrase('admin_packages_plugins_language_add_new_phrases'); ?></a></span>
+   <?php echo $lang->phrase('admin_packages_plugins_language_phrase_manager'); ?></td>
   </tr>
   <?php if (count($ini['language']) == 0) { ?>
   <tr>
-   <td class="mbox" colspan="<?php echo count($cache)+1; ?>">There are no phrases for this package. <a class="button" href="admin.php?action=packages&job=plugins_language_add&id=<?php echo $id; ?>">Add a new Phrase</a></td>
+   <td class="mbox" colspan="<?php echo count($cache)+1; ?>"><?php echo $lang->phrase('admin_packages_plugins_language_there_are_no_phrases_for_this_package'); ?> <a class="button" href="admin.php?action=packages&job=plugins_language_add&id=<?php echo $id; ?>"><?php echo $lang->phrase('admin_packages_plugins_language_add_a_new_phrase'); ?></a></td>
   </tr>
   <?php } else { ?>
   <tr>
@@ -2549,7 +2591,7 @@ elseif ($job == 'plugins_language') {
   </tr>
   <?php foreach ($ini['language'] as $phrase => $value) { ?>
   <tr>
-   <td class="mmbox"><input type="checkbox" name="delete[]" value="<?php echo $phrase; ?>">&nbsp;<a class="button" href="admin.php?action=packages&job=plugins_language_edit&phrase=<?php echo $phrase; ?>&id=<?php echo $id; ?>">Edit</a>&nbsp;<?php echo $phrase; ?></td>
+   <td class="mmbox"><input type="checkbox" name="delete[]" value="<?php echo $phrase; ?>">&nbsp;<a class="button" href="admin.php?action=packages&job=plugins_language_edit&phrase=<?php echo $phrase; ?>&id=<?php echo $id; ?>"><?php echo $lang->phrase('admin_packages_plugins_language_edit'); ?></a>&nbsp;<?php echo $phrase; ?></td>
    <?php
    foreach ($cache as $row) {
    	$status = in_array($phrase, $diff[$row['id']]);
@@ -2559,7 +2601,7 @@ elseif ($job == 'plugins_language') {
   </tr>
   <?php } ?>
   <tr>
-   <td class="ubox" align="center" colspan="<?php echo count($cache)+1; ?>"><input type="submit" value="Delete selected phrases"></td>
+   <td class="ubox" align="center" colspan="<?php echo count($cache)+1; ?>"><input type="submit" value="<?php echo $lang->phrase('admin_packages_button_delete_selected_phrases'); ?>"></td>
   </tr>
   <?php } ?>
  </table>
@@ -2574,7 +2616,7 @@ elseif ($job == 'plugins_language_add') {
 	$result = $db->query("SELECT id, title FROM {$db->pre}packages WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	if ($db->num_rows($result) != 1) {
 		echo head();
-		error('javascript: self.close();', 'Specified package ('.$id.') does not exist.');
+		error('javascript: self.close();', $lang->phrase('admin_packages_err_specified_package_foo_does_not_exist'));
 	}
 	$data = $db->fetch_assoc($result);
 
@@ -2583,35 +2625,35 @@ elseif ($job == 'plugins_language_add') {
 <form name="form" method="post" action="admin.php?action=packages&job=plugins_language_save2&id=<?php echo $id; ?>">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr>
-   <td class="obox" colspan="2">Phrase Manager &raquo; Add new Phrase to Package</td>
+   <td class="obox" colspan="2"><?php echo $lang->phrase('admin_packages_language_add_phrase_manager_add_new_phrase_to_package'); ?></td>
   </tr>
   <tr>
-   <td class="mbox" width="50%">Varname:<br />
-   <span class="stext">Varname is a value which can only contain letters, numbers and underscores.</span></td>
+   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_packages_language_add_varname'); ?><br />
+   <span class="stext"><?php echo $lang->phrase('admin_packages_language_add_varname_text'); ?></span></td>
    <td class="mbox" width="50%"><input type="text" name="varname" size="50" value="" /></td>
   </tr>
   <tr>
-   <td class="mbox" width="50%">Text:<br />
-   <span class="stext">This is the default language used also in the exported packages. It is recommended to write English here.</span></td>
+   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_packages_language_add_text'); ?><br />
+   <span class="stext"><?php echo $lang->phrase('admin_packages_language_add_text_text'); ?></span></td>
    <td class="mbox" width="50%"><input type="text" name="text" size="50" /></td>
   </tr>
   <tr>
-   <td class="obox" colspan="2">Translations</td>
+   <td class="obox" colspan="2"><?php echo $lang->phrase('admin_packages_language_add_translations'); ?></td>
   </tr>
   <tr>
    <td class="ubox" colspan="2"><ul>
-	<li>When inserting a custom phrase, you may also specify the translations into whatever languages you have installed.</li>
-	<li>If you do leave a translation box blank, it will inherit the text from the 'Text' box.</li>
+	<li><?php echo $lang->phrase('admin_packages_language_add_translations_text_1'); ?></li>
+	<li><?php echo $lang->phrase('admin_packages_language_add_translations_text_2'); ?></li>
    </ul></td>
   </tr>
   <?php while($row = $db->fetch_assoc($result)) { ?>
   <tr>
-   <td class="mbox" width="50%"><em><?php echo $row['language']; ?></em> Translation:<br /><span class="stext">Optional. HTML is allowed but not recommended.</span></td>
+   <td class="mbox" width="50%"><em><?php echo $row['language']; ?></em> <?php echo $lang->phrase('admin_packages_language_add_translation'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_packages_language_add_translation_text'); ?></span></td>
    <td class="mbox" width="50%"><input type="text" name="langt[<?php echo $row['id']; ?>]" size="50" /></td>
   </tr>
   <?php } ?>
   <tr>
-   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="Save" /></td>
+   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="<?php echo $lang->phrase('admin_packages_button_save'); ?>" /></td>
   </tr>
  </table>
 </form>
@@ -2627,12 +2669,12 @@ elseif ($job == 'plugins_language_save2') {
 	$lang = $gpc->get('langt', none);
 
 	if (empty($text)) {
-		error('javascript: history.back(-1);', 'No default text specified.');
+		error('javascript: history.back(-1);', $lang->phrase('admin_packages_err_no_default_text_specified'));
 	}
 
 	$result = $db->query("SELECT id, title FROM {$db->pre}packages WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	if ($db->num_rows($result) != 1) {
-		error('javascript: self.close();', 'Specified package ('.$id.') does not exist.');
+		error('javascript: self.close();', $lang->phrase('admin_packages_err_specified_package_foo_does_not_exist'));
 	}
 	$data = $db->fetch_assoc($result);
 
@@ -2681,7 +2723,7 @@ elseif ($job == 'plugins_language_delete') {
 	$result = $db->query("SELECT id, title FROM {$db->pre}packages WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	if ($db->num_rows($result) != 1) {
 		echo head();
-		error('javascript: self.close();', 'Specified package ('.$id.') does not exist.');
+		error('javascript: self.close();', $lang->phrase('admin_packages_err_specified_package_foo_does_not_exist'));
 	}
 	$data = $db->fetch_assoc($result);
 
@@ -2711,7 +2753,7 @@ elseif ($job == 'plugins_language_delete') {
 			$c->savedata();
 		}
 	}
-	ok('admin.php?action=packages&job=plugins_language&id='.$data['id'], 'Selected phrases were successfully deleted.');
+	ok('admin.php?action=packages&job=plugins_language&id='.$data['id'], $lang->phrase('admin_packages_ok_selected_phrase_were_successfully_deleted'));
 }
 elseif ($job == 'plugins_language_edit') {
 	echo head();
@@ -2721,14 +2763,14 @@ elseif ($job == 'plugins_language_edit') {
 	$result = $db->query("SELECT id, title FROM {$db->pre}packages WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	if ($db->num_rows($result) != 1) {
 		echo head();
-		error('javascript: self.close();', 'Specified package ('.$id.') does not exist.');
+		error('javascript: self.close();', $lang->phrase('admin_packages_err_specified_package_foo_does_not_exist'));
 	}
 	$data = $db->fetch_assoc($result);
 
 	$dir = "modules/{$data['id']}/";
 	$ini = $myini->read($dir."plugin.ini");
 	if (!isset($ini['language'][$phrase])) {
-		error('admin.php?action=packages&job=plugins_edit&id=7', 'Phrase not found!');
+		error('admin.php?action=packages&job=plugins_edit&id=7', $lang->phrase('admin_packages_err_phrase_not_found'));
 	}
 
 	$result = $db->query('SELECT * FROM '.$db->pre.'language ORDER BY language',__LINE__,__FILE__);
@@ -2736,25 +2778,25 @@ elseif ($job == 'plugins_language_edit') {
 <form name="form" method="post" action="admin.php?action=packages&job=plugins_language_save2&id=<?php echo $id; ?>">
  <table class="border" border="0" cellspacing="0" cellpediting="4" align="center">
   <tr>
-   <td class="obox" colspan="2">Phrase Manager &raquo; Edit Phrase</td>
+   <td class="obox" colspan="2"><?php echo $lang->phrase('admin_packages_language_edit_head_phrase_manager_edit_phrase'); ?></td>
   </tr>
   <tr>
-   <td class="mbox" width="50%">Varname:<br />
-   <span class="stext">Varname is a value which can only contain letters, numbers and underscores.</span></td>
+   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_packages_language_edit_varname'); ?><br />
+   <span class="stext"><?php echo $lang->phrase('admin_packages_language_edit_varname_text'); ?></span></td>
    <td class="mbox" width="50%"><input type="hidden" name="varname" size="50" value="<?php echo $phrase; ?>" /><code><?php echo $phrase; ?></code></td>
   </tr>
   <tr>
-   <td class="mbox" width="50%">Text:<br />
-   <span class="stext">This is the default language used also in the exported packages. It is recommended to write English here.</span></td>
+   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_packages_language_edit_text'); ?><br />
+   <span class="stext"><?php echo $lang->phrase('admin_packages_language_edit_text_text'); ?></span></td>
    <td class="mbox" width="50%"><input type="text" name="text" size="50" value="<?php echo htmlspecialchars(nl2whitespace($ini['language'][$phrase])); ?>" /></td>
   </tr>
   <tr>
-   <td class="obox" colspan="2">Translations</td>
+   <td class="obox" colspan="2"><?php echo $lang->phrase('admin_packages_language_edit_translations'); ?></td>
   </tr>
   <tr>
    <td class="ubox" colspan="2"><ul>
-	<li>When editing a custom phrase, you may also specify the translations into whatever languages you have installed.</li>
-	<li>If you do leave a translation box blank, it will inherit the text from the 'Text' box.</li>
+	<li><?php echo $lang->phrase('admin_packages_language_edit_translations_text_1'); ?></li>
+	<li><?php echo $lang->phrase('admin_packages_language_edit_translations_text_2'); ?></li>
    </ul></td>
   </tr>
   <?php
@@ -2765,7 +2807,7 @@ elseif ($job == 'plugins_language_edit') {
   	}
   ?>
   <tr>
-   <td class="mbox" width="50%"><em><?php echo $row['language']; ?></em> Translation:<br /><span class="stext">Optional. HTML is allowed but not recommended.</span></td>
+   <td class="mbox" width="50%"><em><?php echo $row['language']; ?></em> <?php echo $lang->phrase('admin_packages_language_edit_translation'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_packages_language_edit_translation_text'); ?></span></td>
    <td class="mbox" width="50%"><input type="text" name="langt[<?php echo $row['id']; ?>]" size="50" value="<?php echo htmlspecialchars(nl2whitespace($phrases[$phrase])); ?>" /></td>
   </tr>
   <?php } ?>
@@ -2783,20 +2825,20 @@ elseif ($job == 'package_updates') {
 	$result = $db->query("SELECT internal, version FROM {$db->pre}packages WHERE id = '{$id}'");
 	$data = $db->fetch_assoc($result);
 	if (empty($data['version'])) {
-		error('admin.php?action=packages&job=package', 'No information about the current version found.');
+		error('admin.php?action=packages&job=package', $lang->phrase('admin_packages_err_no_information_about_the_current_version_found'));
 	}
 	$pb = $scache->load('package_browser');
 	$row = $pb->getOne(IMPTYPE_PACKAGE, $data['internal']);
 	if ($row !== false && !empty($row['version'])) {
 		if (version_compare($row['version'], $data['version'], '>')) {
-			ok('admin.php?action=packages&job=browser_detail&id='.$row['internal'].'&package='.IMPTYPE_PACKAGE, 'There is a new version ('.$row['version'].') on the server.', 3000);
+			ok('admin.php?action=packages&job=browser_detail&id='.$row['internal'].'&package='.IMPTYPE_PACKAGE, $lang->phrase('admin_packages_ok_there_is_a_new_version_foo_on_the_server'), 3000);
 		}
 		else {
-			ok('admin.php?action=packages&job=package_info&id='.$id, 'This package seems to be up to date.', 3000);
+			ok('admin.php?action=packages&job=package_info&id='.$id, $lang->phrase('admin_packages_ok_this_package_seems_to_be_up_to_date'), 3000);
 		}
 		break;
 	}
-	ok('admin.php?action=packages&job=package_info&id='.$id, 'The package was not found on one of the known servers.', 3000);
+	ok('admin.php?action=packages&job=package_info&id='.$id, $lang->phrase('admin_packages_ok_the_package_was_not_found_on_one_of_the_known_servers'), 3000);
 }
 elseif ($job == 'browser') {
 	$pb = $scache->load('package_browser');
@@ -2818,11 +2860,11 @@ elseif ($job == 'browser') {
 	?>
  <table class="border" border="0" cellspacing="0" cellpediting="4" align="center">
   <tr>
-   <td class="obox" colspan="2">Browse <?php echo $types[$type]['name']; ?></td>
+   <td class="obox" colspan="2"><?php $foo = $types[$type]; echo $lang->phrase('admin_packages_browser_head_browse_foo'); ?></td>
   </tr>
   <tr>
-   <td class="ubox" width="50%"><strong>Categories:</strong></td>
-   <td class="ubox" width="50%"><strong>Useful Links:</strong></td>
+   <td class="ubox" width="50%"><strong><?php echo $lang->phrase('admin_packages_browser_categories'); ?></strong></td>
+   <td class="ubox" width="50%"><strong><?php echo $lang->phrase('admin_packages_browser_useful_links'); ?></strong></td>
   <tr>
    <td class="mbox" valign="top" rowspan="3">
 	<ul>
@@ -2833,13 +2875,13 @@ elseif ($job == 'browser') {
    </td>
    <td class="mbox" valign="top">
 	<ul>
-		<li><a href="admin.php?action=packages&amp;job=browser_list&amp;type=<?php echo $type; ?>&amp;id=last">Recently updated <?php echo $types[$type]['name']; ?></a></li>
-		<li><a href="admin.php?action=settings&amp;job=admin">Change servers that offer <?php echo $types[$type]['name']; ?></a></li>
+		<li><a href="admin.php?action=packages&amp;job=browser_list&amp;type=<?php echo $type; ?>&amp;id=last"><?php echo $lang->phrase('admin_packages_browser_recently_updated'); ?> <?php echo $types[$type]['name']; ?></a></li>
+		<li><a href="admin.php?action=settings&amp;job=admin"><?php echo $foo = $types[$type]; $lang->phrase('admin_packages_browser_change_servers_that_offer_foo'); ?></a></li>
 	</ul>
    </td>
   </tr>
   <tr>
-   <td class="ubox" valign="top"><?php echo ucfirst($types[$type]['name2']); ?> of the moment:</td>
+   <td class="ubox" valign="top"><?php $foo = ucfirst($types[$type]['name2']); echo $lang->phrase('admin_packages_browser_foo_of_the_moment');?></td>
   </tr>
   <tr>
    <td class="mbox" valign="top">
@@ -2895,15 +2937,15 @@ elseif ($job == 'browser_list') {
 	?>
  <table class="border" border="0" cellspacing="0" cellpediting="4" align="center">
   <tr>
-   <td class="obox" colspan="4">Browse <?php echo $types[$type]['name']; ?> &raquo; <?php echo $title; ?></td>
+   <td class="obox" colspan="4"><?php $foo = $types[$type]; echo $lang->phrase('admin_packages_browser_browse_foo'); ?> &raquo; <?php echo $title; ?></td>
   </tr>
   <tr>
-   <td class="ubox" width="60%">Name<br />Description</td>
+   <td class="ubox" width="60%"><?php echo $lang->phrase('admin_packages_browser_name'); ?><br /><?php echo $lang->phrase('admin_packages_browser_description'); ?></td>
    <?php if (is_array($installed)) { ?>
-   <td class="ubox" width="10%">Installed</td>
+   <td class="ubox" width="10%"><?php echo $lang->phrase('admin_packages_browser_installed'); ?></td>
    <?php } ?>
-   <td class="ubox" width="10%">Compatible</td>
-   <td class="ubox" width="30%">Last Update<br />License</td>
+   <td class="ubox" width="10%"><?php echo $lang->phrase('admin_packages_browser_compatible'); ?></td>
+   <td class="ubox" width="30%"><?php echo $lang->phrase('admin_packages_browser_last_update2'); ?><br /><?php echo $lang->phrase('admin_packages_browser_license2'); ?></td>
   </tr>
   <?php
   foreach ($data as $key => $row) {
@@ -2917,22 +2959,22 @@ elseif ($job == 'browser_list') {
    <td valign="top">
     <span class="right">
     	<?php if (!$install || $row['multiple'] == 1) { ?>
-    	<a class="button" href="admin.php?action=packages&amp;job=browser_import&amp;id=<?php echo $key; ?>&amp;type=<?php echo $type; ?>">Import</a>
+    	<a class="button" href="admin.php?action=packages&amp;job=browser_import&amp;id=<?php echo $key; ?>&amp;type=<?php echo $type; ?>"><?php echo $lang->phrase('admin_packages_browser_import'); ?></a>
     	<?php } if ($install) { ?>
-    	<a class="button" href="admin.php?action=packages&amp;job=package_info&amp;id=<?php echo $installed[$row['internal']]['id']; ?>">Go to installed Package</a>
+    	<a class="button" href="admin.php?action=packages&amp;job=package_info&amp;id=<?php echo $installed[$row['internal']]['id']; ?>"><?php echo $lang->phrase('admin_packages_browser_go_to_installed_package'); ?></a>
     	<?php } ?>
     </span>
    	<a href="admin.php?action=packages&amp;job=browser_detail&amp;id=<?php echo $key; ?>&amp;type=<?php echo $type; ?>"><strong><?php echo $row['title']; ?></strong> <?php echo $row['version']; ?></a><br />
    	<span class="stext"><?php echo $row['summary']; ?></span>
    </td>
    <?php if (is_array($installed)) { ?>
-   <td align="center"><?php echo iif($install, 'Yes'.iif($update, '<br /><span class="stext" style="font-color: darkred;">Update available!</span>'), 'No'); ?></td>
+   <td align="center"><?php echo iif($install, 'Yes'.iif($update, '<br /><span class="stext" style="font-color: darkred;">'.$lang->phrase('admin_packages_browser_update_available').'</span>'), $lang->phrase('admin_packages_no')); ?></td>
    <?php } ?>
    <td align="center"><?php echo noki($compatible); ?></td>
    <td valign="top">
-   	Last update: <?php echo gmdate('d.m.Y', times($row['last_updated'])); ?><br />
-   	License: <?php echo empty($row['license']) ? 'Unknown' : $row['license']; ?>
-   	<?php if($show_cat == true) { $cat = $pb->categories($type, $row['category']); ?><br />Category: <?php echo $cat['name']; } ?>
+   $lang->phrase('admin_packages_browser_last_update')<?php echo gmdate('d.m.Y', times($row['last_updated'])); ?><br />
+   $lang->phrase('admin_packages_browser_license')<?php echo empty($row['license']) ? $lang->phrase('admin_packages_unknown') : $row['license']; ?>
+   	<?php if($show_cat == true) { $cat = $pb->categories($type, $row['category']); ?><br /><?php echo $lang->phrase('admin_packages_browser_category'); ?> <?php echo $cat['name']; } ?>
    	</td>
   </tr>
   <?php } ?>
@@ -2966,68 +3008,69 @@ elseif ($job == 'browser_detail') {
 		$installed = false;
 	}
 	echo head('onload="ResizeImg(FetchElement(\'preview\'),640)"');
+	$foo = $types[$type];
 	?>
 	 <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
 	  <tr>
 	   <td class="obox" colspan="2">
 	  	<?php if ($installed === false) { ?>
-	  	<span class="right"><a class="button" href="admin.php?action=packages&amp;job=browser_import&amp;id=<?php echo $id; ?>&amp;type=<?php echo $type; ?>">Import this <?php echo $types[$type]['name2']; ?></a></span>
+	  	<span class="right"><a class="button" href="admin.php?action=packages&amp;job=browser_import&amp;id=<?php echo $id; ?>&amp;type=<?php echo $type; ?>"><?php $foo = $types[$type]; echo $lang->phrase('admin_packages_browser_import_this'); ?></a></span>
 	  	<?php } ?>
-	    Browse <?php echo $types[$type]['name']; ?> &raquo; <?php echo $cat['name']; ?> &raquo; <?php echo $row['title']; ?>
+	    <?php echo $lang->phrase('admin_packages_browser_browse_foo'); ?> &raquo; <?php echo $cat['name']; ?> &raquo; <?php echo $row['title']; ?>
 	   </td>
 	  </tr>
 	  <tr>
-	   <td class="mbox" width="30%">Name:</td>
+	   <td class="mbox" width="30%"><?php echo $lang->phrase('admin_packages_browser_det_name'); ?></td>
 	   <td class="mbox" width="70%"><a href="<?php echo $row['url']; ?>" target="_blank"><?php echo $row['title']; ?></a></td>
 	  </tr>
 	  <tr>
-	   <td class="mbox" width="30%">Description:</td>
+	   <td class="mbox" width="30%"><?php echo $lang->phrase('admin_packages_browser_det_description'); ?></td>
 	   <td class="mbox" width="70%"><?php echo nl2br($row['summary']); ?></td>
 	  </tr>
 	  <?php if ($type == IMPTYPE_PACKAGE) { ?>
 	  <tr>
-	   <td class="mbox" width="30%">Status:</td>
+	   <td class="mbox" width="30%"><?php echo $lang->phrase('admin_packages_browser_status'); ?></td>
 	   <td class="mbox" width="70%">
 	   <?php if ($installed === false) { ?>
-	   You have not installed this package!&nbsp;&nbsp;&nbsp;&nbsp;<a class="button" href="admin.php?action=packages&amp;job=browser_import&amp;id=<?php echo $id; ?>&amp;type=<?php echo $type; ?>">Import this <?php echo $types[$type]['name2']; ?>!</a>
+	   <?php echo $lang->phrase('admin_packages_browser_you_have_not_installed_this_package'); ?>&nbsp;&nbsp;&nbsp;&nbsp;<a class="button" href="admin.php?action=packages&amp;job=browser_import&amp;id=<?php echo $id; ?>&amp;type=<?php echo $type; ?>"><?php echo $lang->phrase('admin_packages_browser_import_this'); ?>!</a>
 	   <?php }
 	   else {
 	   		?>
-	   		<span class="right"><a class="button" href="admin.php?action=packages&amp;job=package_info&amp;id=<?php echo $installed; ?>">Go to installed Package</a></span>
+	   		<span class="right"><a class="button" href="admin.php?action=packages&amp;job=package_info&amp;id=<?php echo $installed; ?>"><?php echo $lang->phrase('admin_packages_browser_go_to_installed_package'); ?></a></span>
 	   		<?php
 	   		$vc = version_compare($pack['version'], $row['version']);
 	   		if ($vc == 1) { ?>
-	   		<strong style="color: gold;">You have installed a newer version of this <?php echo $types[$type]['name2']; ?>.</strong>
+	   		<strong style="color: gold;"><?php $foo = $types[$type]; echo $lang->phrase('admin_packages_browser_you_have_installed_a_newer_version_of_this_foo'); ?>.</strong>
 		    <?php } elseif($vc == -1) { ?>
-		    <strong style="color: darkred;">You have installed an old version (<?php echo $pack['version']; ?>)!</strong>
+		    <strong style="color: darkred;"><?php echo $lang->phrase('admin_packages_browser_you_have_installed_an_old_version'); ?> (<?php echo $pack['version']; ?>)!</strong>
 		    <?php } else { ?>
-		    <strong style="color: darkgreen;">You have installed this <?php echo $types[$type]['name2']; ?>.</strong>
+		    <strong style="color: darkgreen;"><?php $foo = $types[$type]; echo $lang->phrase('admin_packages_browser_you_have_installed_this_foo'); ?>.</strong>
 	    <?php } } ?>
 	   </td>
 	  </tr>
 	  <?php } if (!empty($row['last_updated'])) { ?>
 	  <tr>
-	   <td class="mbox" width="30%">Last update:</td>
+	   <td class="mbox" width="30%"><?php echo $lang->phrase('admin_packages_browser_last_update'); ?></td>
 	   <td class="mbox" width="70%"><?php echo gmdate('d.m.Y H:i', times($row['last_updated'])); ?></td>
 	  </tr>
 	  <?php } if (!empty($row['copyright'])) { ?>
 	  <tr>
-	   <td class="mbox" width="30%">Copyright:</td>
+	   <td class="mbox" width="30%"><?php echo $lang->phrase('admin_packages_browser_copyright'); ?></td>
 	   <td class="mbox" width="70%"><?php echo str_ireplace('(C)', '&copy;', $row['copyright']); ?></td>
 	  </tr>
 	  <?php } if (!empty($row['license'])) { ?>
 	  <tr>
-	   <td class="mbox" width="30%">License:</td>
+	   <td class="mbox" width="30%"><?php echo $lang->phrase('admin_packages_browser_license'); ?></td>
 	   <td class="mbox" width="70%"><?php echo $row['license']; ?></td>
 	  </tr>
 	  <?php } if (!empty($row['version'])) { ?>
 	  <tr>
-	   <td class="mbox" width="30%">Version:</td>
+	   <td class="mbox" width="30%"><?php echo $lang->phrase('admin_packages_browser_version'); ?></td>
 	   <td class="mbox" width="70%"><?php echo $row['version']; ?></td>
 	  </tr>
 	  <?php } if (!empty($row['min_version']) || !empty($row['max_version'])) { ?>
 	  <tr>
-	   <td class="mbox" width="30%">Compatibility:</td>
+	   <td class="mbox" width="30%"><?php echo $lang->phrase('admin_packages_browser_compatibility'); ?></td>
 	   <td class="mbox" width="70%">
 	   	<?php if (!empty($row['min_version'])) { ?>
 	   	<div>Minimum: <?php echo $row['min_version']; ?></div>
@@ -3039,25 +3082,25 @@ elseif ($job == 'browser_detail') {
 	  </tr>
 	  <?php } if (isset($row['license'])) { ?>
 	  <tr>
-	   <td class="mbox" width="30%">Multiple installations allowed:</td>
+	   <td class="mbox" width="30%"><?php echo $lang->phrase('admin_packages_browser_multiple_installations_allowed'); ?></td>
 	   <td class="mbox" width="70%"><?php echo noki($row['multiple']); ?></td>
 	  </tr>
 	  <?php } ?>
 	  <tr>
-	   <td class="mbox" width="30%">Server:</td>
+	   <td class="mbox" width="30%"><?php echo $lang->phrase('admin_packages_browser_server'); ?></td>
 	   <td class="mbox" width="70%"><?php echo $row['server']; ?></td>
 	  </tr>
 	  <tr>
-	   <td class="mbox" width="30%">File:</td>
+	   <td class="mbox" width="30%"><?php echo $lang->phrase('admin_packages_browser_file'); ?></td>
 	   <td class="mbox" width="70%"><a href="<?php echo $row['file']; ?>"><?php echo $row['file']; ?></a></td>
 	  </tr>
 	  <tr>
-	   <td class="mbox" width="30%">Internal name:</td>
+	   <td class="mbox" width="30%"><?php echo $lang->phrase('admin_packages_browser_internal_name'); ?></td>
 	   <td class="mbox" width="70%"><tt><?php echo $row['internal']; ?></tt></td>
 	  </tr>
 	  <?php if (!empty($row['preview'])) { ?>
 	  <tr>
-	   <td class="ubox" colspan="2">Preview:</td>
+	   <td class="ubox" colspan="2"><?php echo $lang->phrase('admin_packages_browser_preview'); ?></td>
 	  </tr>
 	  <tr>
 	   <td class="mbox center" colspan="2"><img id="preview" src="<?php echo $row['preview']; ?>" border="0" alt="Preview/Screenshot" /></td>

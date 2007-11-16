@@ -7,7 +7,7 @@ $lang['admin_activate_character_set_info'] = 'Activate support for asian languag
 $lang['admin_activate_flodblocking'] = 'Activate Floodblocking for Search:';
 $lang['admin_activate_flodblocking_info'] = 'Flooding is a command which when very fast repeated in extreme case can inhibit normal work or bring the server down.';
 $lang['admin_activate_gzip_compression'] = 'Activate GZip-compression:';
-$lang['admin_activate_gzip_compression_info'] = '{$gzip}Selecting yes will enable GZIP to reduce bandwidth requirements, but there will be a small performance overhead instead. This feature requires the Zlib library, which is ';
+$lang['admin_activate_gzip_compression_info'] = 'Selecting yes will enable GZIP to reduce bandwidth requirements, but there will be a small performance overhead instead. This feature requires the Zlib library, which is {$gzip}! If you are already using mod_gzip on your server, do not enable this option.';
 $lang['admin_activate_logging_missing_ip'] = 'Activate logging of missing IPs or User Agents:';
 $lang['admin_activate_logging_missing_ip_info'] = 'The pending Crawler and Robots can be administered <a href="admin.php?action=spider&amp;job=pending">here</a>.';
 $lang['admin_activate_logging_visits'] = 'Activate logging of visits and last visits:';
@@ -597,4 +597,9 @@ $lang['admin_wordwrap_too_long_words_info'] = 'You can let too long words, which
 $lang['admin_ws_offline'] = 'Offline';
 $lang['admin_ws_online'] = 'Online';
 $lang['admin_your_version'] = 'Your version:';
+$lang['admin_positions_for_navigation1'] = 'Format:';
+$lang['admin_positions_for_navigation2'] = 'Each entry in a new line: <code>value=title</code><br /><code>value</code> is a value which can only contain letters, numbers and underscores with a maximum of 10 chars.<br /><code>title</code> is a one line value shown in the select box.';
+$lang['admin_allow_users_to_filter_members_info'] = '"A" will disable this feature.<br />"B" will show a select-box. You can select one ore more usergroups and show only members in the selected groups.<br />"C" will not show a select-box, but you can filter groups by specifying the group ids in the url.';
+$lang['admin_setting_type_values_info'] = 'Only for Select-Fields.<br /><strong>Format:</strong> (each entry in a new line)<br /><code>value=title</code><br /><code>value</code> is a value which can only contain letters, numbers and underscores.<br /><code>title</code> is a one line value shown in the select box.';
+
 ?>
