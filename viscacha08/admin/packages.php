@@ -1485,7 +1485,7 @@ elseif ($job == 'plugins') {
 			<a class="button" href="admin.php?action=packages&amp;job=plugins_add"><?php echo $lang->phrase('admin_packages_plugins_add_plugin'); ?></a>
 			<a class="button" href="admin.php?action=packages&amp;job=plugins_hook_add"><?php echo $lang->phrase('admin_packages_plugins_add_new_hook'); ?></a>
 		</span>
-	  $lang->phrase('admin_packages_plugins_group_plugins_by')
+	   <?php echo $lang->phrase('admin_packages_plugins_group_plugins_by'); ?>
 	   <a<?php echo iif($sort == 0, ' style="font-weight: bold;"'); ?> class="button" href="admin.php?action=packages&amp;job=plugins&amp;sort=0"><?php echo $lang->phrase('admin_packages_plugins_hooks'); ?></a>
 	   <a<?php echo iif($sort == 1, ' style="font-weight: bold;"'); ?> class="button" href="admin.php?action=packages&amp;job=plugins&amp;sort=1"><?php echo $lang->phrase('admin_packages_plugins_packages'); ?></a>
 	   </td>
@@ -2975,8 +2975,8 @@ elseif ($job == 'browser_list') {
    <?php } ?>
    <td align="center"><?php echo noki($compatible); ?></td>
    <td valign="top">
-   $lang->phrase('admin_packages_browser_last_update')<?php echo gmdate('d.m.Y', times($row['last_updated'])); ?><br />
-   $lang->phrase('admin_packages_browser_license')<?php echo empty($row['license']) ? $lang->phrase('admin_packages_unknown') : $row['license']; ?>
+    <?php echo $lang->phrase('admin_packages_browser_last_update'); ?> <?php echo gmdate('d.m.Y', times($row['last_updated'])); ?><br />
+    <?php echo $lang->phrase('admin_packages_browser_license'); ?> <?php echo empty($row['license']) ? $lang->phrase('admin_packages_unknown') : $row['license']; ?>
    	<?php if($show_cat == true) { $cat = $pb->categories($type, $row['category']); ?><br /><?php echo $lang->phrase('admin_packages_browser_category'); ?> <?php echo $cat['name']; } ?>
    	</td>
   </tr>

@@ -41,7 +41,7 @@ if ($job == 'emailsearch') {
    <td class="mbox" colspan="2" width="50%"><?php echo $lang->phrase('admin_member_exactness'); ?></td>
    <td class="mbox" colspan="1" width="50%">
    <input type="radio" name="type" value="0"> <?php echo $lang->phrase('admin_member_at_least_one_match'); ?><br>
-   <input type="radio" name="type" value="1" checked="checked"> $lang->phrase('admin_member_whole_match')
+   <input type="radio" name="type" value="1" checked="checked"> <?php echo $lang->phrase('admin_member_whole_match'); ?>
    </td>
   </tr>
   <tr>
@@ -1850,8 +1850,9 @@ elseif ($job == 'ban_add') {
    <td class="mbox" width="40%"><?php echo $lang->phrase('admin_member_user_or_ip'); ?></td>
    <td class="mbox" width="60%">
    	<input type="text" name="data" size="60" /><br />
-    <?php echo $lang->phrase('admin_member_data_above'); ?><input type="radio" name="type" value="user" checked="checked" /<?php echo $lang->phrase('admin_member_user_name'); ?>&nbsp;&nbsp;&nbsp;&nbsp;
-   	<input type="radio" name="type" value="ip" /$lang->phrase('admin_member_ip')
+    <?php echo $lang->phrase('admin_member_data_above'); ?>
+    <input type="radio" name="type" value="user" checked="checked" /> <?php echo $lang->phrase('admin_member_user_name'); ?>&nbsp;&nbsp;&nbsp;&nbsp;
+   	<input type="radio" name="type" value="ip" /> <?php echo $lang->phrase('admin_member_ip'); ?>
    	</td>
   </tr>
   <tr>
@@ -2211,7 +2212,7 @@ elseif ($job == 'search') {
    <td class="mbox" colspan="2"><?php echo $lang->phrase('admin_member_exactness'); ?></td>
    <td class="mbox" colspan="2">
    <input type="radio" name="type" value="0"> <?php echo $lang->phrase('admin_member_at_least_one_match'); ?><br>
-   <input type="radio" name="type" value="1" checked="checked"> $lang->phrase('admin_member_whole_match')
+   <input type="radio" name="type" value="1" checked="checked"> <?php echo $lang->phrase('admin_member_whole_match'); ?>
    </td>
   </tr>
   <tr>
@@ -2228,13 +2229,13 @@ elseif ($job == 'search') {
 	  <option value="1">&gt;</option>
 	</select></td>
    <td class="mbox"><input type="text" name="id" size="12"></td>
-   <td class="mbox"><input type="checkbox" name="show[id]" value="1" checked><?php echo $lang->phrase('admin_member_yes'); ?></td>
+   <td class="mbox"><input type="checkbox" name="show[id]" value="1" checked></td>
   </tr>
   <tr>
    <td class="mbox"><?php echo $lang->phrase('admin_member_nickname'); ?></td>
    <td class="mbox" align="center">=</td>
    <td class="mbox"><input type="text" name="name" size="50"></td>
-   <td class="mbox"><input type="checkbox" name="show[name]" value="1" checked><?php echo $lang->phrase('admin_member_yes'); ?></td>
+   <td class="mbox"><input type="checkbox" name="show[name]" value="1" checked></td>
   </tr>
   <tr>
    <td class="mbox"><?php echo $lang->phrase('admin_member_mail_address'); ?></td>
@@ -2747,7 +2748,7 @@ elseif ($job == 'activate') {
 		  <td class="ubox" width="30%"><?php echo $lang->phrase('admin_member_username'); ?></td>
 		  <td class="ubox" width="10%"><?php echo $lang->phrase('admin_member_mail'); ?></td>
 		  <td class="ubox" width="15%"><?php echo $lang->phrase('admin_member_registered'); ?></td>
-		  <td class="ubox" width="45%"><?php echo $lang->phrase('admin_member_status'); ?> (<input type="checkbox" onchange="check_all('delete[]')" />$lang->phrase('admin_member_all'))</td>
+		  <td class="ubox" width="45%"><?php echo $lang->phrase('admin_member_status'); ?> (<input type="checkbox" onchange="check_all('delete[]')" /> <?php echo $lang->phrase('admin_member_all'); ?>`)</td>
 		</tr>
 	<?php
 	while ($row = $gpc->prepare($db->fetch_object($result))) {
