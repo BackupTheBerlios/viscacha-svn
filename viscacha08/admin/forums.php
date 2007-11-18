@@ -19,7 +19,7 @@ function ForumSubs ($tree, $cat, $board, $char = '+', $level = 0) {
 			  <form name="act" action="admin.php?action=locate" method="post">
 			  	<select size="1" name="url" onchange="locate(this.value)">
 			  	<option value="" selected="selected"><?php echo $lang->phrase('admin_forum_please_choose'); ?></option>
-				 <optgroup label="General">
+				 <optgroup label="<?php echo $lang->phrase('admin_forum_label_general'); ?>">
 				  <option value="admin.php?action=forums&job=cat_edit&id=<?php echo $cdata['id']; ?>"><?php echo $lang->phrase('admin_forum_edit_category'); ?></option>
 				  <option value="admin.php?action=forums&job=cat_delete&id=<?php echo $cdata['id']; ?>"><?php echo $lang->phrase('admin_forum_delete_category'); ?></option>
 				 </optgroup>
@@ -42,22 +42,22 @@ function ForumSubs ($tree, $cat, $board, $char = '+', $level = 0) {
 				<form name="act" action="admin.php?action=locate" method="post">
 			  		<select size="1" name="url" onchange="locate(this.value)">
 			  		<option value="" selected="selected"><?php echo $lang->phrase('admin_forum_please_choose'); ?></option>
-					 <optgroup label="General">
+					 <optgroup label="<?php echo $lang->phrase('admin_forum_label_general'); ?>">
 					  <option value="admin.php?action=forums&job=forum_edit&id=<?php echo $bdata['id']; ?>"><?php echo $lang->phrase('admin_forum_edit_forum'); ?></option>
 					  <option value="admin.php?action=forums&job=forum_delete&id=<?php echo $bdata['id']; ?>"><?php echo $lang->phrase('admin_forum_delete_forum'); ?></option>
 					 </optgroup>
 					 <?php if ($bdata['opt'] != 're') { ?>
-					 <optgroup label="Permissions">
+					 <optgroup label="<?php echo $lang->phrase('admin_forum_label_permissions'); ?>">
 					  <option value="admin.php?action=forums&job=rights&id=<?php echo $bdata['id']; ?>"><?php echo $lang->phrase('admin_forum_manage_usergroups'); ?></option>
 					  <option value="admin.php?action=forums&job=rights_add&id=<?php echo $bdata['id']; ?>"><?php echo $lang->phrase('admin_forum_add_usergroup'); ?></option>
 					 </optgroup>
-					 <optgroup label="Prefixes">
+					 <optgroup label="<?php echo $lang->phrase('admin_forum_label_prefixes'); ?>">
 					  <option value="admin.php?action=forums&job=prefix&id=<?php echo $bdata['id']; ?>"><?php echo $lang->phrase('admin_forum_manage'); ?></option>
 					 </optgroup>
-					 <optgroup label="Statistics">
+					 <optgroup label="<?php echo $lang->phrase('admin_forum_label_statistics'); ?>">
 					  <option value="admin.php?action=forums&job=forum_recount&id=<?php echo $bdata['id']; ?>"><?php echo $lang->phrase('admin_forum_recount'); ?></option>
 					 </optgroup>
-					 <optgroup label="Moderators">
+					 <optgroup label="<?php echo $lang->phrase('admin_forum_label_moderators'); ?>">
 					  <option value="admin.php?action=forums&job=mods&id=<?php echo $bdata['id']; ?>"><?php echo $lang->phrase('admin_forum_manage'); ?></option>
 					  <option value="admin.php?action=forums&job=mods_add&id=<?php echo $bdata['id']; ?>"><?php echo $lang->phrase('admin_forum_add'); ?></option>
 					 </optgroup>
@@ -232,7 +232,7 @@ elseif ($job == 'mods_add') {
    <td class="mbox" width="50%">
    <input type="checkbox" name="ratings" value="1" checked="checked" /> <?php echo $lang->phrase('admin_forum_set_ratings'); ?><br />
    <input type="checkbox" name="news" value="1" checked="checked" /> <?php echo $lang->phrase('admin_forum_topic_news'); ?><br />
-   <input type="checkbox" name="article" value="1" checked="checked" />$lang->phrase('admin_forum_topic_article')
+   <input type="checkbox" name="article" value="1" checked="checked" /> <?php echo $lang->phrase('admin_forum_topic_article'); ?>
    </td>
   </tr>
   <tr>
@@ -333,10 +333,12 @@ elseif ($job == 'forum_delete') {
 	    <p align="center"><?php echo $lang->phrase('admin_forum_really_delete_data?'); ?></p>
 	    <p align="center">
 	        <a href="admin.php?action=forums&amp;job=forum_delete2&amp;id=<?php echo $id; ?>">
-	        	<img alt="<?php echo $lang->phrase('admin_forum_yes'); ?>" border="0" src="admin/html/images/yes.gif" />$lang->phrase('admin_forum_yes')
+	        	<img alt="<?php echo $lang->phrase('admin_forum_yes'); ?>" border="0" src="admin/html/images/yes.gif" /> <?php echo $lang->phrase('admin_forum_yes'); ?>
 	        </a>
 	        &nbsp;&nbsp;&nbsp;&nbsp;
-	        <a href="javascript: history.back(-1);"><img border="0" alt="<?php echo $lang->phrase('admin_forum_no'); ?>" src="admin/html/images/no.gif" /> <?php echo $lang->phrase('admin_forum_no'); ?></a>
+	        <a href="javascript: history.back(-1);">
+	        	<img border="0" alt="<?php echo $lang->phrase('admin_forum_no'); ?>" src="admin/html/images/no.gif" /> <?php echo $lang->phrase('admin_forum_no'); ?>
+	        </a>
 	    </p>
 	</td></tr>
 	</table>
@@ -764,7 +766,7 @@ elseif ($job == 'forum_add') {
    <td class="mbox"><input type="checkbox" name="active_topic" value="1" checked="checked" /></td>
   </tr>
   <tr>
-   <td class="mbox"><?php echo $lang->phrase('admin_forum_count_posts_user_post'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_forum_count_posts_user_post'); ?></span></td>
+   <td class="mbox"><?php echo $lang->phrase('admin_forum_posts_count_user'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_forum_count_posts_user_post'); ?></span></td>
    <td class="mbox"><input type="checkbox" name="count_posts" value="1" checked="checked" /></td>
   </tr>
   <tr>

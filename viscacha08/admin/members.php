@@ -123,7 +123,7 @@ if ($job == 'emailsearch') {
 	</select></td>
   </tr>
   <tr>
-   <td class="mbox"><?php echo $lang->phrase('admin_member_cmp_language'); ?></td>
+   <td class="mbox"><?php echo $lang->phrase('admin_member_cmp_lang'); ?></td>
    <td class="mbox" align="center"><select size="1" name="compare[language]">
 	  <option value="0" selected="selected">=</option>
 	  <option value="2">!=</option>
@@ -842,7 +842,7 @@ elseif ($job == 'merge2') {
 	if (empty($base['icq']) && !empty($old['icq'])) {
 		$newdata[] ="icq = '{$old['icq']}'";
 	}
-	if ($base['birthday'] == '0000-00-00' && $old['birthday'] != '0000-00-00') {
+	if (($base['birthday'] == '0000-00-00' || $base['birthday'] == '1000-00-00') && $old['birthday'] != '0000-00-00' && $old['birthday'] != '1000-00-00') {
 		$newdata[] ="birthday = '{$old['birthday']}'";
 	}
 	if (empty($base['timezone']) && !empty($old['timezone'])) {
@@ -2038,7 +2038,7 @@ elseif ($job == 'inactive') {
 	  <option selected="selected" value=""><?php echo $lang->phrase('admin_member_whatever'); ?></option>
 	  <option value="11"><?php echo $lang->phrase('admin_member_activated'); ?></option>
 	  <option value="10"><?php echo $lang->phrase('admin_member_activate_via_mail'); ?></option>
-	  <option value="01"><?php echo $lang->phrase('admin_member_activated_by_admin'); ?></option>
+	  <option value="01"><?php echo $lang->phrase('admin_member_activate_by_admin'); ?></option>
 	  <option value="00"><?php echo $lang->phrase('admin_member_not_activated'); ?></option>
 	</select></td>
   </tr>
@@ -2197,7 +2197,7 @@ elseif ($job == 'search') {
 	<td class="mbox" width="50%" colspan="4">
 	<b><?php echo $lang->phrase('admin_member_help'); ?></b>
 	<ul>
-	<li><?php echo $lang->phrase('admin_member_set_wildcards'); ?></li>
+	<li><?php echo $lang->phrase('admin_member_wildcard_description'); ?></li>
 	<li>
 	<?php echo $lang->phrase('admin_member_means_equal'); ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 	<?php echo $lang->phrase('admin_member_means_less'); ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;

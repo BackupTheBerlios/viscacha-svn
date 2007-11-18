@@ -1132,6 +1132,7 @@ class BBCode {
 		return $text;
 	}
 	function customBB ($text, $type='html') {
+		$this->getCustomBB();
 		foreach ($this->custombb as $re) {
 			// Paramter for Opening Tag
 			$param = ($re['twoparams'] ? '=([^\]\'\"]*?)' : '');
@@ -1208,7 +1209,7 @@ class BBCode {
 	function getbbhtml ($file = "main/bbhtml") {
 	    global $tpl, $lang;
 	    $lang->group("bbcodes");
-	    $cbb = $this->custombb;
+	    $cbb = $this->getCustomBB();
 	    foreach ($cbb as $key => $bb) {
 	    	if (empty($bb['buttonimage'])) {
 	    		unset($cbb[$key]);

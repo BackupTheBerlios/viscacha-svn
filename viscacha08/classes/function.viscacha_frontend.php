@@ -463,9 +463,10 @@ function BoardSelect($board = 0) {
 	    ($code = $plugins->load('forums_caching')) ? eval($code) : null;
 	}
 
+	$cats = array();
 	// Work with the chached data!
     foreach ($cat_cache as $cat) {
-    	$forums = array();
+    	$cat['forums'] = array();
         if (isset($forum_cache[$cat['id']]) == false) {
             continue;
         }
@@ -586,12 +587,15 @@ function BoardSelect($board = 0) {
 			}
 			($code = $plugins->load('forums_entry_prepared')) ? eval($code) : null;
 			if ($forum['show'] == true) {
-            	$forums[] = $forum;
+            	$cat['forums'][] = $forum;
             }
+        }
+        if (count($cat['forums']) > 0) {
+        	$cats[] = $cat;
         }
     }
 
-    $tpl->globalvars(compact("cat","forums"));
+    $tpl->globalvars(compact("cats", "board"));
     ($code = $plugins->load('forums_prepared')) ? eval($code) : null;
     echo $tpl->parse("categories");
 

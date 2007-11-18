@@ -1,6 +1,9 @@
 <?php
 if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
 
+// TR: MultiLangAdmin
+$lang->group("admin/misc");
+
 ($code = $plugins->load('admin_misc_jobs')) ? eval($code) : null;
 
 if ($job == 'phpinfo') {
@@ -78,7 +81,7 @@ elseif ($job == 'cache') {
    <td class="ubox" width="40%"><?php echo $lang->phrase('admin_misc_options'); ?></td>
   </tr>
   <tr>
-   <td class="mbox"><b><?php echo $lang->phrase('admin_misc_plugin'); ?></b> (<?php echo $files; ?>$lang->phrase('admin_misc_files'))</td>
+   <td class="mbox"><b><?php echo $lang->phrase('admin_misc_plugin'); ?></b> (<?php echo $files.$lang->phrase('admin_misc_files'); ?>)</td>
    <td class="mbox" nowrap="nowrap" align="right"><?php echo iif ($pluginsize > 0, formatFilesize($pluginsize), '-'); ?></td>
    <td class="mbox" nowrap="nowrap">-</td>
    <td class="mbox"><a class="button" href="admin.php?action=misc&amp;job=cache_delete_plugins"><?php echo $lang->phrase('admin_misc_delete_cache'); ?></a></td>

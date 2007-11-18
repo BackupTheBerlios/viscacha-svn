@@ -2,7 +2,7 @@
 if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
 
 function custom_select($arr) {
-	global $config;
+	global $config, $lang;
 	$val = prepare_custom($arr['optionscode']);
 ?>
 <tr>
@@ -20,7 +20,7 @@ function custom_select($arr) {
 <?php
 }
 function custom_checkbox($arr) {
-	global $config;
+	global $config, $lang;
 ?>
 <tr>
  <td class="mbox" width="35%"><?php echo $arr['title']; ?><br /><span class="stext"><?php echo $arr['description']; ?></span></td>
@@ -31,7 +31,7 @@ function custom_checkbox($arr) {
 <?php
 }
 function custom_text($arr) {
-	global $config;
+	global $config, $lang;
 ?>
 <tr>
  <td class="mbox" width="35%"><?php echo $arr['title']; ?><br /><span class="stext"><?php echo $arr['description']; ?></span></td>
@@ -42,7 +42,7 @@ function custom_text($arr) {
 <?php
 }
 function custom_textarea($arr) {
-	global $config;
+	global $config, $lang;
 ?>
 <tr>
  <td class="mbox" width="35%"><?php echo $arr['title']; ?><br /><span class="stext"><?php echo $arr['description']; ?></span></td>
@@ -53,6 +53,7 @@ function custom_textarea($arr) {
 <?php
 }
 function prepare_custom($str) {
+	global $lang;
 	$str = trim($str);
 	$explode = preg_split("~(\r\n|\r|\n)+~", $str);
 	$arr = array();

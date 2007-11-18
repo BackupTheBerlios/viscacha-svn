@@ -307,7 +307,7 @@ else {
 		}
 		if (isset($row['birthday'])) {
 			$bday = explode('-', $row['birthday']);
-			if ($row['birthday'] != null && $row['birthday'] != '0000-00-00') {
+			if ($row['birthday'] != '1000-00-00' && $row['birthday'] != '0000-00-00') {
 				$row['birthday'] = iif($bday[0] > 1000, $lang->phrase('members_bday_full'), $lang->phrase('members_bday_short'));
 			}
 			else {

@@ -8,7 +8,7 @@ require('classes/class.phpconfig.php');
 $myini = new INI();
 
 function BBCodeToolBox() {
-	global $db, $scache, $config;
+	global $db, $scache, $config, $lang;
 
 	$cache = $scache->load('smileys');
 	$cache->seturl($config['smileyurl']);

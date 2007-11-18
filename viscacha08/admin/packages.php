@@ -1,6 +1,9 @@
 <?php
 if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
 
+// PK: MultiLangAdmin
+$lang->group("admin/packages");
+
 require('admin/lib/function.language.php');
 require('classes/class.phpconfig.php');
 include('admin/lib/function.settings.php');
@@ -879,7 +882,7 @@ elseif ($job == 'package_edit') {
 	   <a class="button" href="admin.php?action=settings&amp;job=delete_group&amp;id=<?php echo $sg['id']; ?>&amp;package=<?php echo $row['id']; ?>"><?php echo $lang->phrase('admin_packages_edit_delete_all_settings'); ?></a>
 	   <?php } ?>
 	   </span>
-	  $lang->phrase('admin_packages_edit_configuration')
+	   <?php echo $lang->phrase('admin_packages_edit_configuration'); ?>
 	   </td>
 	  </tr>
 	  <?php if (is_array($settings) && count($settings) > 0) { ?>
@@ -897,7 +900,7 @@ elseif ($job == 'package_edit') {
 	  <?php } } else { ?>
 		<tr class="mbox">
 			<td colspan="4">
-			$lang->phrase('admin_packages_conf_no_settings_a_specified_for_this_package')&nbsp;&nbsp;&nbsp;&nbsp;
+				<?php echo $lang->phrase('admin_packages_conf_no_settings_a_specified_for_this_package'); ?>&nbsp;&nbsp;&nbsp;&nbsp;
 				<?php if (count($sg) == 0) { ?>
 				<a class="button" href="admin.php?action=settings&amp;job=new_group&amp;package=<?php echo $row['id']; ?>"><?php echo $lang->phrase('admin_packages_conf_add_a_new_group_for_settings'); ?></a>
 				<?php } else { ?>
@@ -1054,11 +1057,11 @@ elseif ($job == 'package_info') {
 	  <tr>
 	   <td class="mbox" width="30%"><?php echo $lang->phrase('admin_packages_info_compatibility'); ?></td>
 	   <td class="mbox" width="70%">
-	   	<?php if (!empty($package_ini['info']['min_version'])) { ?>
-	   	<div>Minimum: <?php echo $package_ini['info']['min_version']; ?></div>
+	   	<?php if (!empty($package_ini['info']['min_version'])) { $min = $package_ini['info']['min_version']; ?>
+	   	<div><?php echo $lang->phrase('admin_packages_minimum_v'); ?></div>
 	   	<?php } ?>
-	   	<?php if (!empty($package_ini['info']['max_version'])) { ?>
-	   	<div>Maximum: <?php echo $package_ini['info']['max_version']; ?></div>
+	   	<?php if (!empty($package_ini['info']['max_version'])) { $max = $package_ini['info']['max_version']; ?>
+	   	<div><?php echo $lang->phrase('admin_packages_maximum_v'); ?></div>
 	   	<?php } ?>
 	   </td>
 	  </tr>
@@ -1076,7 +1079,7 @@ elseif ($job == 'package_info') {
 	   <a class="button" href="admin.php?action=settings&amp;job=custom&amp;id=<?php echo $sg['id']; ?>&amp;package=<?php echo $package['id']; ?>"><?php echo $lang->phrase('admin_packages_info_change_settings'); ?></a>
 	   <?php } ?>
 	   </span>
-	  $lang->phrase('admin_packages_info_configuration')
+	   <?php echo $lang->phrase('admin_packages_info_configuration'); ?>
 	   </td>
 	  </tr>
 	  <?php if (is_array($settings) && count($settings) > 0) { ?>
@@ -1205,7 +1208,7 @@ elseif ($job == 'package_add') {
 	  <td><input type="text" name="version" size="60" value="1.0" /></td>
 	 </tr>
 	 <tr class="mbox">
-	  <td>Minimum Viscacha Version:<br /><span class="stext">Optional</span></td>
+	  <td><?php echo $lang->phrase('admin_packages_edit_minimum_viscacha_version'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_packages_edit_optional'); ?></span></td>
 	  <td><input type="text" name="min_version" size="60" /></td>
 	 </tr>
 	 <tr class="mbox">
@@ -2876,7 +2879,7 @@ elseif ($job == 'browser') {
    <td class="mbox" valign="top">
 	<ul>
 		<li><a href="admin.php?action=packages&amp;job=browser_list&amp;type=<?php echo $type; ?>&amp;id=last"><?php echo $lang->phrase('admin_packages_browser_recently_updated'); ?> <?php echo $types[$type]['name']; ?></a></li>
-		<li><a href="admin.php?action=settings&amp;job=admin"><?php echo $foo = $types[$type]; $lang->phrase('admin_packages_browser_change_servers_that_offer_foo'); ?></a></li>
+		<li><a href="admin.php?action=settings&amp;job=admin"><?php $foo = $types[$type]; echo $lang->phrase('admin_packages_browser_change_servers_that_offer_foo'); ?></a></li>
 	</ul>
    </td>
   </tr>
@@ -3072,11 +3075,11 @@ elseif ($job == 'browser_detail') {
 	  <tr>
 	   <td class="mbox" width="30%"><?php echo $lang->phrase('admin_packages_browser_compatibility'); ?></td>
 	   <td class="mbox" width="70%">
-	   	<?php if (!empty($row['min_version'])) { ?>
-	   	<div>Minimum: <?php echo $row['min_version']; ?></div>
+	   	<?php if (!empty($row['min_version'])) { $min = $row['min_version']; ?>
+	   	<div><?php echo $lang->phrase('admin_packages_minimum_v'); ?></div>
 	   	<?php } ?>
-	   	<?php if (!empty($row['max_version'])) { ?>
-	   	<div>Maximum: <?php echo $row['max_version']; ?></div>
+	   	<?php if (!empty($row['max_version'])) { $max = $row['max_version']; ?>
+	   	<div><?php echo $lang->phrase('admin_packages_maximum_v'); ?></div>
 	   	<?php } ?>
 	   </td>
 	  </tr>

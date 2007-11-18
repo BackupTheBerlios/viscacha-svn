@@ -2289,7 +2289,7 @@ elseif ($job == 'new') {
 </tr>
 <tr>
 <td class="mbox" width="40%"><?php echo $lang->phrase('admin_setting_group'); ?></td>
-<td class="mbox" width="60%"><select name="<?php echo $lang->phrase('admin_select_setting_group'); ?>">
+<td class="mbox" width="60%"><select name="group">
 <?php while ($row = $db->fetch_assoc($result)) { ?>
 <option value="<?php echo $row['id']; ?>"><?php echo $row['title']; ?></option>
 <?php } ?>

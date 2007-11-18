@@ -1,5 +1,5 @@
 <?php
-if (defined('VISCACHA_CORE') == false) { die($lang->phrase('admin_lang_hacking_attempt')); }
+if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
 
 // TR: MultiLangAdmin
 $lang->group("admin/language");
@@ -51,7 +51,7 @@ if ($job == 'manage') {
 	<a class="button" href="admin.php?action=language&amp;job=import" target="Main"><?php echo $lang->phrase('admin_lang_import_lang'); ?></a>
 	<a class="button" href="admin.php?action=language&amp;job=phrase" target="Main"><?php echo $lang->phrase('admin_lang_phrase_manager'); ?></a>
 	</span>
-$lang->phrase('admin_lang_lang_files')
+	<?php echo $lang->phrase('admin_lang_lang_files'); ?>
    </td>
   </tr>
   <tr>
@@ -367,7 +367,7 @@ elseif ($job == 'lang_settings') {
 <script language="JavaScript">
 <!--
 function errordefault(box) {
-	alert($lang->phrase('admin_lang_cannot_unpublish_until_defined_other'));
+	alert($lang->phrase('admin_lang_cannot_unpublish_until_defined_other_lang'));
 	box.checked = true;
 	return false;
 }
@@ -409,7 +409,7 @@ function errordefault(box) {
    <td class="ubox" colspan="2"><?php echo $lang->phrase('admin_lang_country_lang_settings'); ?></td>
   </tr>
   <tr>
-   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_lang_langcode'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_lang_specify_lang_for_pack'); ?></td>
+   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_lang_langcode'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_lang_specify_lang_for_pack'); ?></span></td>
    <td class="mbox" width="50%">
    <select name="lang_code">
    <?php foreach ($languages as $key => $val) { ?>
@@ -458,7 +458,7 @@ function errordefault(box) {
    <td class="mbox" width="50%"><input type="text" name="dformat1" value="<?php echo isset($settings['dformat1']) ?  $settings['dformat1'] : 'd.m.Y, H:i'; ?>" size="20"></td>
   </tr>
   <tr>
-   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_lang_regdate_format'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_lang_regdate_format_info'); ?></td>
+   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_lang_regdate_format'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_lang_last_activity_format_info'); ?></span></td>
    <td class="mbox" width="50%"><input type="text" name="dformat2" value="<?php echo isset($settings['dformat2']) ? $settings['dformat2'] : 'd.m.Y, H:i'; ?>" size="20"></td>
   </tr>
   <tr>
@@ -634,7 +634,7 @@ elseif ($job == 'lang_rules') {
    <?php } ?>
    </ol>
   <?php } else { ?>
-  $lang->phrase('admin_lang_add')<input type="text" name="c" size="3" value="0" />$lang->phrase('admin_lang_new_rules_after_saving')
+   <?php echo $lang->phrase('admin_lang_add'); ?> <input type="text" name="c" size="3" value="0" /> <?php echo $lang->phrase('admin_lang_new_rules_after_saving'); ?>
   <?php } ?>
    </td>
   </tr>
@@ -1249,8 +1249,8 @@ elseif ($job == 'phrase_file') {
 	if (!isset($data[$page-1])) {
 		$page = 1;
 	}
-	$pages = count($data);
-	$pages_html = "Pages ({$pages}):";
+	$pages = $anz = count($data);
+	$pages_html = $lang->phrase('admin_pages');
 	// ToDo: Ersetzen durch Buchstaben (?) -> [A] [B] ...
 	for($i=1;$i<=$pages;$i++) {
    		$pages_html .= ' ['.iif($i == $page, "<strong>{$i}</strong>", "<a href='admin.php?action=language&amp;job=phrase_file&amp;file={$file}&amp;page={$i}&amp;show={$show}&amp;key={$search}&amp;keys={$keys}&amp;values={$values}'>{$i}</a>").']';
