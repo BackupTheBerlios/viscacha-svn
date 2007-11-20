@@ -857,7 +857,7 @@ elseif ($job == 'templates_file_edit') {
   <tr>
    <td class="mbox">
    <strong><?php echo $lang->phrase('admin_design_make_backup'); ?></strong><br />
-   <input type="checkbox" name="backup" value="1" />&nbsp;$lang->phrase('admin_design_yes')
+   <input type="checkbox" name="backup" value="1" />&nbsp;<?php echo $lang->phrase('admin_design_yes'); ?>
    </td>
   </tr>
   <tr><td class="ubox" align="center"><input accesskey="s" type="submit" value="<?php echo $lang->phrase('admin_design_edit'); ?>" /></td></tr>

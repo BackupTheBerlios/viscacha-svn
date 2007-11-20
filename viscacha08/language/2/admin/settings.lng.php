@@ -47,7 +47,7 @@ $lang['admin_all_settings_deleted'] = 'All settings for this package have been d
 $lang['admin_autoresize_max_width_pics'] = 'Maximum width for included pictures:';
 $lang['admin_autoresize_max_width_pics_info'] = 'Picture width in pixels. Only relevant if "automatic resizing" is selected.';
 $lang['admin_autoresize_pics'] = 'Automatic resizing of too big pictures:';
-$lang['admin_autoresize_pics_info'] = 'Pictures pasted in through [img]-BB-Code and which are too big for the design, can automatically be resized by using Javascript. A click on the picture will show it  in original size.';
+$lang['admin_autoresize_pics_info'] = 'Pictures pasted in through [img]-BB-Code and which are too big for the design, can automatically be resized by using Javascript. A click on the picture will show it in original size.';
 $lang['admin_bb_text_progressing'] = 'BB-Code &amp; Text processing';
 $lang['admin_bb_text_progressing_info'] = 'BB-Codes, Wordwrap, Smileys, Censor, Glossary, Vocabulary, ...';
 $lang['admin_bb_text_smileys'] = 'BB-Code &amp; Text processing &raquo; Smileys';
@@ -85,7 +85,7 @@ $lang['admin_compress_pdf_info'] = 'If the output is compressed, the file can be
 $lang['admin_configure_ftp_connection'] = 'Configure FTP Connection';
 $lang['admin_connection_is_ok'] = 'Connection seems to be ok!';
 $lang['admin_content_syndication'] = 'Content Syndication (Javascript, RSS, ...)';
-$lang['admin_correct_all_caps'] = 'Correct all caps:';
+$lang['admin_correct_all_caps'] = 'Correct uppercase:';
 $lang['admin_correct_all_caps_info'] = 'If the whole title is capitalized, only the first letter of each word will be capitalized. Example: "NEED HELP!" will be "Need Help!"';
 $lang['admin_crawler_robots'] = 'Crawler &amp; Robots';
 $lang['admin_current_version'] = 'Current version:';
@@ -585,7 +585,7 @@ $lang['admin_value_not_in_setting_type_values'] = 'Value is not given in Setting
 $lang['admin_version_check'] = 'Version Check';
 $lang['admin_viscacha_on_off'] = 'Switch Viscacha on and off';
 $lang['admin_v_dev_version'] = 'Your Viscacha is a not yet approved test version.';
-$lang['admin_v_not_up2date'] = 'Your Viscacha is <strong>not up-to-date</strong>. The current version is {$data[\'version\']}!';
+$lang['admin_v_not_up2date'] = 'Your Viscacha is <strong>not up-to-date</strong>. The current version is {@data->version}!';
 $lang['admin_v_up2date'] = 'Your Viscacha is up-to-date!';
 $lang['admin_wave_filter_captcha'] = 'CAPTCHA: Use "wave"-filter on Spam-Bot-Protection-Picture:';
 $lang['admin_width_pic_pixels'] = 'Width for resized Pictures in Pixels:';
@@ -601,5 +601,4 @@ $lang['admin_positions_for_navigation1'] = 'Format:';
 $lang['admin_positions_for_navigation2'] = 'Each entry in a new line: <code>value=title</code><br /><code>value</code> is a value which can only contain letters, numbers and underscores with a maximum of 10 chars.<br /><code>title</code> is a one line value shown in the select box.';
 $lang['admin_allow_users_to_filter_members_info'] = '"A" will disable this feature.<br />"B" will show a select-box. You can select one ore more usergroups and show only members in the selected groups.<br />"C" will not show a select-box, but you can filter groups by specifying the group ids in the url.';
 $lang['admin_setting_type_values_info'] = 'Only for Select-Fields.<br /><strong>Format:</strong> (each entry in a new line)<br /><code>value=title</code><br /><code>value</code> is a value which can only contain letters, numbers and underscores.<br /><code>title</code> is a one line value shown in the select box.';
-
 ?>

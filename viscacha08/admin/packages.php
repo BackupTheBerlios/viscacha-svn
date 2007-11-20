@@ -54,8 +54,8 @@ if ($job == 'package') {
 	   <td class="obox" colspan="4"><?php echo $lang->phrase('admin_packages_head_installed_packages'); ?></td>
 	  </tr>
 	  <tr>
-	  	<td class="ubox" width="30%"><?php echo $lang->phrase('admin_packages_th_name'); ?></td>
-	  	<td class="ubox center" width="10%"><?php echo $lang->phrase('admin_packages_th_active'); ?></td>
+	  	<td class="ubox" width="30%"><?php echo $lang->phrase('admin_packages_info_name'); ?></td>
+	  	<td class="ubox center" width="10%"><?php echo $lang->phrase('admin_packages_active'); ?></td>
 	  	<td class="ubox center" width="10%"><?php echo $lang->phrase('admin_packages_th_core'); ?></td>
 	  	<td class="ubox" width="50%"><?php echo $lang->phrase('admin_packages_th_actions'); ?></td>
 	  </tr>
@@ -828,11 +828,11 @@ elseif ($job == 'package_edit') {
 	 </tr>
 	 <?php } ?>
 	 <tr class="mbox">
-	  <td><?php echo $lang->phrase('admin_packages_edit_description'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_packages_edit_optional'); ?></span></td>
+	  <td><?php echo $lang->phrase('admin_packages_info_description'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_packages_edit_optional'); ?></span></td>
 	  <td><textarea cols="60" rows="4" name="summary"><?php echo $ini['info']['summary']; ?></textarea></td>
 	 </tr>
 	 <tr class="mbox">
-	  <td><?php echo $lang->phrase('admin_packages_edit_version'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_packages_edit_optional'); ?></span></td>
+	  <td><?php echo $lang->phrase('admin_packages_info_version'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_packages_edit_optional'); ?></span></td>
 	  <td><input type="text" name="version" size="60" value="<?php echo $row['version']; ?>" /></td>
 	 </tr>
 	 <tr class="mbox">
@@ -844,11 +844,11 @@ elseif ($job == 'package_edit') {
 	  <td><input type="text" name="max_version" size="60" value="<?php echo $ini['info']['max_version']; ?>" /></td>
 	 </tr>
 	 <tr class="mbox">
-	  <td><?php echo $lang->phrase('admin_packages_edit_copyright'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_packages_edit_optional'); ?></span></td>
+	  <td><?php echo $lang->phrase('admin_packages_info_copyright'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_packages_edit_optional'); ?></span></td>
 	  <td><input type="text" name="copyright" size="60" value="<?php echo $ini['info']['copyright']; ?>" /></td>
 	 </tr>
 	 <tr class="mbox">
-	  <td><?php echo $lang->phrase('admin_packages_edit_license'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_packages_edit_optional'); ?></span></td>
+	  <td><?php echo $lang->phrase('admin_packages_einfo_license'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_packages_edit_optional'); ?></span></td>
 	  <td><input type="text" name="license" size="60" value="<?php echo $ini['info']['license']; ?>" /></td>
 	 </tr>
 	 <tr class="mbox">
@@ -877,19 +877,19 @@ elseif ($job == 'package_edit') {
 	   <td class="obox" colspan="4">
 	   <span class="right">
 	   <?php if (count($sg) > 0) { ?>
-	   <a class="button" href="admin.php?action=settings&amp;job=custom&amp;id=<?php echo $sg['id']; ?>&amp;package=<?php echo $row['id']; ?>"><?php echo $lang->phrase('admin_packages_edit_change_settings'); ?></a>
+	   <a class="button" href="admin.php?action=settings&amp;job=custom&amp;id=<?php echo $sg['id']; ?>&amp;package=<?php echo $row['id']; ?>"><?php echo $lang->phrase('admin_packages_info_change_settings'); ?></a>
 	   <a class="button" href="admin.php?action=settings&amp;job=new&amp;package=<?php echo $row['id']; ?>"><?php echo $lang->phrase('admin_packages_edit_add_a_new_setting'); ?></a>
 	   <a class="button" href="admin.php?action=settings&amp;job=delete_group&amp;id=<?php echo $sg['id']; ?>&amp;package=<?php echo $row['id']; ?>"><?php echo $lang->phrase('admin_packages_edit_delete_all_settings'); ?></a>
 	   <?php } ?>
 	   </span>
-	   <?php echo $lang->phrase('admin_packages_edit_configuration'); ?>
+	   <?php echo $lang->phrase('admin_packages_info_configuration'); ?>
 	   </td>
 	  </tr>
 	  <?php if (is_array($settings) && count($settings) > 0) { ?>
 	  <tr class="ubox">
 	   <td width="50%"><?php echo $lang->phrase('admin_packages_th_title'); ?></td>
-	   <td width="30%"><?php echo $lang->phrase('admin_packages_th_internal_name'); ?></td>
-	   <td width="20%"><?php echo $lang->phrase('admin_packages_th_delete'); ?></td>
+	   <td width="30%"><?php echo $lang->phrase('admin_packages_info_internal_name'); ?></td>
+	   <td width="20%"><?php echo $lang->phrase('admin_packages_delete'); ?></td>
 	  </tr>
 	  <?php foreach ($settings as $setting) { ?>
 	  <tr class="mbox">
@@ -900,11 +900,11 @@ elseif ($job == 'package_edit') {
 	  <?php } } else { ?>
 		<tr class="mbox">
 			<td colspan="4">
-				<?php echo $lang->phrase('admin_packages_conf_no_settings_a_specified_for_this_package'); ?>&nbsp;&nbsp;&nbsp;&nbsp;
+				<?php echo $lang->phrase('admin_packages_info_no_settings_specified_for_this_package'); ?>&nbsp;&nbsp;&nbsp;&nbsp;
 				<?php if (count($sg) == 0) { ?>
 				<a class="button" href="admin.php?action=settings&amp;job=new_group&amp;package=<?php echo $row['id']; ?>"><?php echo $lang->phrase('admin_packages_conf_add_a_new_group_for_settings'); ?></a>
 				<?php } else { ?>
-				<a class="button" href="admin.php?action=settings&amp;job=new&amp;package=<?php echo $row['id']; ?>"><?php echo $lang->phrase('admin_packages_conf_add_a_new_setting'); ?></a>
+				<a class="button" href="admin.php?action=settings&amp;job=new&amp;package=<?php echo $row['id']; ?>"><?php echo $lang->phrase('admin_packages_edit_add_a_new_setting'); ?></a>
 				<?php } ?>
 			</td>
 		</tr>
@@ -940,7 +940,7 @@ elseif ($job == 'package_edit2') {
 		error('admin.php?action=packages&job=package_edit&id='.$id, $lang->phrase('admin_packages_err_minimum_number_of_characters_for_title'));
 	}
 	elseif (strlen($title) > 200) {
-		error('admin.php?action=packages&job=package_edit&id='.$id, $lang->phrase('admin_packages_err_maximum_numbers_of_characters_for_title'));
+		error('admin.php?action=packages&job=package_edit&id='.$id, $lang->phrase('admin_packages_err_maximum_number_of_characters_for_title'));
 	}
 
 	$dbtitle = $gpc->save_str($title);
@@ -1014,7 +1014,7 @@ elseif ($job == 'package_info') {
 			$row['current'] = $config[$sg['name']][$row['name']];
 			if ($row['type'] == 'select') {
 				$val = prepare_custom($row['optionscode']);
-				$row['current'] = isset($val[$row['current']]) ? $gpc->prepare($val[$row['current']]) : '<em>'.$lang->phrase('admin_packages_info_unknown').'</em>';
+				$row['current'] = isset($val[$row['current']]) ? $gpc->prepare($val[$row['current']]) : '<em>'.$lang->phrase('admin_packages_iunknown').'</em>';
 			}
 			$settings[] = $row;
 		}
@@ -1027,7 +1027,7 @@ elseif ($job == 'package_info') {
 	   <span class="right">
 	   <a class="button" href="admin.php?action=packages&amp;job=package_edit&amp;id=<?php echo $package['id']; ?>"><?php echo $lang->phrase('admin_packages_info_edit'); ?></a>
 	    <?php if (!empty($component_ini['admin']['frontpage']) == true) { ?>
-	  	 <a class="button" href="admin.php?action=packages&amp;job=package_admin&amp;cid=<?php echo $package['id']; ?>"><?php echo $lang->phrase('admin_packages_info_administration'); ?></a>
+	  	 <a class="button" href="admin.php?action=packages&amp;job=package_admin&amp;cid=<?php echo $package['id']; ?>"><?php echo $lang->phrase('admin_packages_administration'); ?></a>
 	  	<?php } ?>
 	   </span>
 	   	<?php
@@ -1052,7 +1052,7 @@ elseif ($job == 'package_info') {
 	  </tr>
 	  <tr>
 	   <td class="mbox" width="30%"><?php echo $lang->phrase('admin_packages_info_version'); ?></td>
-	   <td class="mbox" width="70%"><?php echo $package_ini['info']['version']; ?>&nbsp;&nbsp;&nbsp;&nbsp;<a class="button" href="admin.php?action=packages&amp;job=package_updates&amp;id=<?php echo $package['id']; ?>"><?php echo $lang->phrase('admin_packages_info_check_for_updates'); ?></a></td>
+	   <td class="mbox" width="70%"><?php echo $package_ini['info']['version']; ?>&nbsp;&nbsp;&nbsp;&nbsp;<a class="button" href="admin.php?action=packages&amp;job=package_updates&amp;id=<?php echo $package['id']; ?>"><?php echo $lang->phrase('admin_packages_check_for_updates'); ?></a></td>
 	  </tr>
 	  <tr>
 	   <td class="mbox" width="30%"><?php echo $lang->phrase('admin_packages_info_compatibility'); ?></td>
@@ -1115,11 +1115,11 @@ elseif ($job == 'package_info') {
 		<td><?php echo $component_ini['info']['title']; ?></td>
 		<td class="center">
 		<?php if ($component['active'] == 1 && $package['active'] == 1) { ?>
-		<img class="valign" src="admin/html/images/yes.gif" border="0" alt="Active" title="<?php echo $lang->phrase('admin_packages_info_component_is_active'); ?>" />
+		<img class="valign" src="admin/html/images/yes.gif" border="0" alt="Active" title="<?php echo $lang->phrase('admin_packages_component_is_active'); ?>" />
 		<?php } elseif ($component['active'] == 1 && $package['active'] == 0) { ?>
-		<img class="valign" src="admin/html/images/avg.gif" border="0" alt="Partially" title="<?php echo $lang->phrase('admin_packages_info_component_is_active_but_package_is_not_active'); ?>" />
+		<img class="valign" src="admin/html/images/avg.gif" border="0" alt="Partially" title="<?php echo $lang->phrase('admin_packages_component_is_active_but_package_is_not_active'); ?>" />
 		<?php } else { ?>
-		<img class="valign" src="admin/html/images/no.gif" border="0" alt="Inactive" title="<?php echo $lang->phrase('admin_packages_info_component_is_not_active'); ?>" />
+		<img class="valign" src="admin/html/images/no.gif" border="0" alt="Inactive" title="<?php echo $lang->phrase('admin_packages_component_is_not_active'); ?>" />
 		<?php } ?>
 		</td>
 	  	<td class="center"><?php echo noki($component['required']); ?></td>
@@ -1142,7 +1142,7 @@ elseif ($job == 'package_info') {
 		  <tr class="ubox">
 		   <td width="40%"><?php echo $lang->phrase('admin_packages_info_th_plugin'); ?></td>
 		   <td width="40%"><?php echo $lang->phrase('admin_packages_info_th_hook'); ?></td>
-		   <td width="10%"><?php echo $lang->phrase('admin_packages_info_th_active'); ?></td>
+		   <td width="10%"><?php echo $lang->phrase('admin_packages_active'); ?></td>
 		   <td width="10%"><?php echo $lang->phrase('admin_packages_info_th_required'); ?></td>
 		  </tr>
 		 <?php
@@ -1189,22 +1189,22 @@ elseif ($job == 'package_add') {
 	<form method="post" action="admin.php?action=packages&job=package_add2">
 	<table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
 	 <tr>
-	  <td class="obox" colspan="2"><?php echo $lang->phrase('admin_packages_add_create_a_new_package'); ?></td>
+	  <td class="obox" colspan="2"><?php echo $lang->phrase('admin_packages_edit_create_a_new_package'); ?></td>
 	 </tr>
 	 <tr class="mbox">
-	  <td><?php echo $lang->phrase('admin_packages_add_title'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_packages_add_title_text'); ?></span></td>
+	  <td><?php echo $lang->phrase('admin_packages_edit_title'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_packages_edit_title_text'); ?></span></td>
 	  <td><input type="text" name="title" size="60" /></td>
 	 </tr>
 	 <tr class="mbox">
-	  <td><?php echo $lang->phrase('admin_packages_add_description'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_packages_add_optional'); ?></span></td>
+	  <td><?php echo $lang->phrase('admin_packages_info_description'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_packages_edit_optional'); ?></span></td>
 	  <td><textarea cols="60" rows="4" name="summary" /></textarea></td>
 	 </tr>
 	 <tr class="mbox">
-	  <td><?php echo $lang->phrase('admin_packages_add_internal_name'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_packages_add_internal_name_text'); ?></span></td>
+	  <td><?php echo $lang->phrase('admin_packages_edit_internal_name'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_packages_edit_internal_name_text'); ?></span></td>
 	  <td><input type="text" name="internal" size="60" /></td>
 	 </tr>
 	 <tr class="mbox">
-	  <td><?php echo $lang->phrase('admin_packages_add_version'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_packages_add_optional'); ?></span></td>
+	  <td><?php echo $lang->phrase('admin_packages_info_version'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_packages_edit_optional'); ?></span></td>
 	  <td><input type="text" name="version" size="60" value="1.0" /></td>
 	 </tr>
 	 <tr class="mbox">
@@ -1212,19 +1212,19 @@ elseif ($job == 'package_add') {
 	  <td><input type="text" name="min_version" size="60" /></td>
 	 </tr>
 	 <tr class="mbox">
-	  <td><?php echo $lang->phrase('admin_packages_add_maximum_viscacha_version'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_packages_add_optional'); ?></span></td>
+	  <td><?php echo $lang->phrase('admin_packages_edit_maximum_viscacha_version'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_packages_edit_optional'); ?></span></td>
 	  <td><input type="text" name="max_version" size="60" /></td>
 	 </tr>
 	 <tr class="mbox">
-	  <td><?php echo $lang->phrase('admin_packages_add_copyright'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_packages_add_optional'); ?></span></td>
+	  <td><?php echo $lang->phrase('admin_packages_info_copyright'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_packages_edit_optional'); ?></span></td>
 	  <td><input type="text" name="copyright" size="60" /></td>
 	 </tr>
 	 <tr class="mbox">
-	  <td><?php echo $lang->phrase('admin_packages_add_license'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_packages_add_optional'); ?></span></td>
+	  <td><?php echo $lang->phrase('admin_packages_info_license'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_packages_edit_optional'); ?></span></td>
 	  <td><input type="text" name="license" size="60" value="GNU General Public License" /></td>
 	 </tr>
 	 <tr class="mbox">
-	  <td><?php echo $lang->phrase('admin_packages_add_url_homepage'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_packages_add_optional'); ?></span></td>
+	  <td><?php echo $lang->phrase('admin_packages_edit_url_homepage'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_packages_edit_optional'); ?></span></td>
 	  <td><input type="text" name="url" size="60" value="" /></td>
 	 </tr>
 	 <tr>
@@ -1311,13 +1311,13 @@ elseif ($job == 'com') {
 ?>
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr>
-   <td class="obox" colspan="5"><?php echo $lang->phrase('admin_packages_com_head_component_manager'); ?></td>
+   <td class="obox" colspan="5"><?php echo $lang->phrase('admin_packages_component_manager'); ?></td>
   </tr>
   <tr class="ubox">
    <td width="30%"><?php echo $lang->phrase('admin_packages_com_th_component'); ?></td>
    <td width="30%"><?php echo $lang->phrase('admin_packages_com_th_package'); ?></td>
    <td width="10%"><?php echo $lang->phrase('admin_packages_com_th_active'); ?></td>
-   <td width="30%"><?php echo $lang->phrase('admin_packages_com_th_action'); ?></td>
+   <td width="30%"><?php echo $lang->phrase('admin_packages_action'); ?></td>
   </tr>
 <?php
 	$result = $db->query("
@@ -1337,17 +1337,17 @@ elseif ($job == 'com') {
 	<td><?php echo $row['title']; ?></td>
 	<td class="center">
 	<?php if ($row['active'] == 1 && $row['pactive'] == 1) { ?>
-	<img class="valign" src="admin/html/images/yes.gif" border="0" alt="Active" title="<?php echo $lang->phrase('admin_packages_com_component_is_active'); ?>" />
+	<img class="valign" src="admin/html/images/yes.gif" border="0" alt="Active" title="<?php echo $lang->phrase('admin_packages_component_is_active'); ?>" />
 	<?php } elseif ($row['active'] == 1 && $row['pactive'] == 0) { ?>
-	<img class="valign" src="admin/html/images/avg.gif" border="0" alt="Partially" title="<?php echo $lang->phrase('admin_packages_com_component_is_active_but_package_is_not_active'); ?>" />
+	<img class="valign" src="admin/html/images/avg.gif" border="0" alt="Partially" title="<?php echo $lang->phrase('admin_packages_component_is_active_but_package_is_not_active'); ?>" />
 	<?php } else { ?>
-	<img class="valign" src="admin/html/images/no.gif" border="0" alt="Inactive" title="<?php echo $lang->phrase('admin_packages_com_component_is_not_active'); ?>" />
+	<img class="valign" src="admin/html/images/no.gif" border="0" alt="Inactive" title="<?php echo $lang->phrase('admin_packages_component_is_not_active'); ?>" />
 	<?php } ?>
 	</td>
 	<td>
 	 <?php if ($row['required'] == 0) { ?>
 	 <a class="button" href="admin.php?action=packages&amp;job=com_active&amp;id=<?php echo $row['id']; ?>"><?php echo iif($row['active'] == 1, $lang->phrase('admin_packages_com_deactivate'), $lang->phrase('admin_packages_com_activate')); ?></a>
-	 <a class="button" href="admin.php?action=packages&amp;job=com_delete&amp;id=<?php echo $row['id']; ?>"><?php echo $lang->phrase('admin_packages_com_delete'); ?></a>
+	 <a class="button" href="admin.php?action=packages&amp;job=com_delete&amp;id=<?php echo $row['id']; ?>"><?php echo $lang->phrase('admin_packages_delete'); ?></a>
 	 <?php } else { echo "<em><?php echo $lang->phrase('admin_packages_com_component_is_required'); ?></em>"; } ?>
 	</td>
 	</tr>
@@ -1372,9 +1372,9 @@ elseif ($job == 'com_delete') {
 	else {
 		?>
 		<table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
-		<tr><td class="obox"><?php echo $lang->phrase('admin_packages_com_delete_head_delete_component'); ?></td></tr>
+		<tr><td class="obox"><?php echo $lang->phrase('admin_packages_delete_head_delete_component'); ?></td></tr>
 		<tr><td class="mbox">
-		<p align="center"><?php echo $lang->phrase('admin_packages_com_delete_do_you_really_want_to_delete_this_component'); ?></p>
+		<p align="center"><?php echo $lang->phrase('admin_packages_delete_do_you_really_want_to_delete_this_component'); ?></p>
 		<p align="center">
 		<a href="admin.php?action=packages&amp;job=com_delete2&amp;id=<?php echo $id; ?>"><img border="0" alt="Yes" src="admin/html/images/yes.gif"> <?php echo $lang->phrase('admin_packages_yes'); ?></a>
 		&nbsp&nbsp;&nbsp;&nbsp&nbsp;&nbsp;
@@ -1482,7 +1482,7 @@ elseif ($job == 'plugins') {
 	  <tr>
 	   <td class="mbox">
 		<span class="right">
-			<a class="button" href="admin.php?action=packages&amp;job=plugins_add"><?php echo $lang->phrase('admin_packages_plugins_add_plugin'); ?></a>
+			<a class="button" href="admin.php?action=packages&amp;job=plugins_add"><?php echo $lang->phrase('admin_packages_info_add_plugin'); ?></a>
 			<a class="button" href="admin.php?action=packages&amp;job=plugins_hook_add"><?php echo $lang->phrase('admin_packages_plugins_add_new_hook'); ?></a>
 		</span>
 	   <?php echo $lang->phrase('admin_packages_plugins_group_plugins_by'); ?>
@@ -1508,8 +1508,8 @@ elseif ($job == 'plugins') {
 		  <tr class="ubox">
 		   <td width="30%"><?php echo $lang->phrase('admin_packages_plugins_th_plugin'); ?></td>
 		   <td width="20%"><?php echo $lang->phrase('admin_packages_plugins_th_hook'); ?></td>
-		   <td width="10%"><?php echo $lang->phrase('admin_packages_plugins_th_active'); ?></td>
-		   <td width="40%"><?php echo $lang->phrase('admin_packages_plugins_th_action'); ?></td>
+		   <td width="10%"><?php echo $lang->phrase('admin_packages_active'); ?></td>
+		   <td width="40%"><?php echo $lang->phrase('admin_packages_action'); ?></td>
 		  </tr>
 		<?php
 		while ($head = $db->fetch_assoc($result)) {
@@ -1519,7 +1519,7 @@ elseif ($job == 'plugins') {
 				  <td colspan="3"><?php echo $head['title']; ?></td>
 				  <td>
 				  	<a class="button" href="admin.php?action=packages&amp;job=package_info&amp;id=<?php echo $head['module']; ?>"><?php echo $lang->phrase('admin_packages_plugins_go_to_package'); ?></a>
-				  	<a class="button" href="admin.php?action=packages&amp;job=plugins_add&id=<?php echo $head['module']; ?>"><?php echo $lang->phrase('admin_packages_plugins_add_plugins'); ?></a>
+				  	<a class="button" href="admin.php?action=packages&amp;job=plugins_add&id=<?php echo $head['module']; ?>"><?php echo $lang->phrase('admin_packages_info_add_plugin'); ?></a>
 				  </td>
 				</tr>
 				<?php
@@ -1532,18 +1532,18 @@ elseif ($job == 'plugins') {
 					<td><?php echo $head['position']; ?></td>
 					<td class="center">
 					<?php if ($head['active'] == 1 && $head['mactive'] == 1) { ?>
-					<img class="valign" src="admin/html/images/yes.gif" border="0" alt="Active" title="<?php echo $lang->phrase('admin_packages_plugins_plugin_is_active'); ?>" />
+					<img class="valign" src="admin/html/images/yes.gif" border="0" alt="Active" title="<?php echo $lang->phrase('admin_packages_info_plugin_is_active'); ?>" />
 					<?php } elseif ($head['active'] == 1 && $head['mactive'] == 0) { ?>
-					<img class="valign" src="admin/html/images/avg.gif" border="0" alt="Partially" title="<?php echo $lang->phrase('admin_packages_plugins_plugin_is_active_but_package_is_not_active'); ?>" />
+					<img class="valign" src="admin/html/images/avg.gif" border="0" alt="Partially" title="<?php echo $lang->phrase('admin_packages_info_plugin_is_active_but_package_is_not_active'); ?>" />
 					<?php } else { ?>
-					<img class="valign" src="admin/html/images/no.gif" border="0" alt="Inactive" title="<?php echo $lang->phrase('admin_packages_plugins_plugin_is_not_active'); ?>" />
+					<img class="valign" src="admin/html/images/no.gif" border="0" alt="Inactive" title="<?php echo $lang->phrase('admin_packages_plugin_is_not_active'); ?>" />
 					<?php } ?>
 					</td>
 					<td>
 					 <a class="button" href="admin.php?action=packages&amp;job=plugins_edit&amp;id=<?php echo $head['id']; ?>"><?php echo $lang->phrase('admin_packages_plugins_edit'); ?></a>
 					 <?php if ($head['required'] == 0) { ?>
-					 <a class="button" href="admin.php?action=packages&amp;job=plugins_active&amp;id=<?php echo $head['id']; ?>"><?php echo iif($head['active'] == 1, $lang->phrase('admin_packages_plugins_deactivate'), $lang->phrase('admin_packages_plugins_activate')); ?></a>
-					 <a class="button" href="admin.php?action=packages&amp;job=plugins_delete&amp;id=<?php echo $head['id']; ?>"><?php echo $lang->phrase('admin_packages_plugins_delete'); ?></a>
+					 <a class="button" href="admin.php?action=packages&amp;job=plugins_active&amp;id=<?php echo $head['id']; ?>"><?php echo iif($head['active'] == 1, $lang->phrase('admin_packages_plugins_deactivate'), $lang->phrase('admin_packages_active')); ?></a>
+					 <a class="button" href="admin.php?action=packages&amp;job=plugins_delete&amp;id=<?php echo $head['id']; ?>"><?php echo $lang->phrase('admin_packages_delete'); ?></a>
 					 <?php } ?>
 					</td>
 				</tr>
@@ -1552,7 +1552,7 @@ elseif ($job == 'plugins') {
 			else {
 				?>
 				<tr class="mbox">
-					<td colspan="4"><?php echo $lang->phrase('admin_packages_plugins_for_this_package_is_no_plugin_specified'); ?> <a href="admin.php?action=packages&amp;job=plugins_add&id=<?php echo $head['module']; ?>"><?php echo $lang->phrase('admin_packages_plugins_add_a_new_plugin'); ?></a></td>
+					<td colspan="4"><?php echo $lang->phrase('admin_packages_info_for_this_package_is_no_plugin_specified'); ?> <a href="admin.php?action=packages&amp;job=plugins_add&id=<?php echo $head['module']; ?>"><?php echo $lang->phrase('admin_packages_plugins_add_a_new_plugin'); ?></a></td>
 				</tr>
 				<?php
 			}
@@ -1574,9 +1574,9 @@ elseif ($job == 'plugins') {
 		  <tr class="ubox">
 		   <td width="30%"><?php echo $lang->phrase('admin_packages_plugins_plugin'); ?></td>
 		   <td width="28%"><?php echo $lang->phrase('admin_packages_plugins_package'); ?></td>
-		   <td width="11%"><?php echo $lang->phrase('admin_packages_plugins_active'); ?></td>
+		   <td width="11%"><?php echo $lang->phrase('admin_packages_active'); ?></td>
 		   <td width="9%"><?php echo $lang->phrase('admin_packages_plugins_priority'); ?></td>
-		   <td width="22%"><?php echo $lang->phrase('admin_packages_plugins_action'); ?></td>
+		   <td width="22%"><?php echo $lang->phrase('admin_packages_action'); ?></td>
 		  </tr>
 		<?php
 		while ($head = $db->fetch_assoc($result)) {
@@ -1594,11 +1594,11 @@ elseif ($job == 'plugins') {
 				<td><?php echo $head['title']; ?></td>
 				<td class="center">
 					<?php if ($head['active'] == 1 && $head['mactive'] == 1) { ?>
-					<img class="valign" src="admin/html/images/yes.gif" border="0" alt="Active" title="<?php echo $lang->phrase('admin_packages_plugins_plugin_is_active'); ?>" />
+					<img class="valign" src="admin/html/images/yes.gif" border="0" alt="Active" title="<?php echo $lang->phrase('admin_packages_info_plugin_is_active'); ?>" />
 					<?php } elseif ($head['active'] == 1 && $head['mactive'] == 0) { ?>
-					<img class="valign" src="admin/html/images/avg.gif" border="0" alt="Partially" title="<?php echo $lang->phrase('admin_packages_plugins_plugin_is_active_but_package_is_not_active'); ?>" />
+					<img class="valign" src="admin/html/images/avg.gif" border="0" alt="Partially" title="<?php echo $lang->phrase('admin_packages_info_plugin_is_active_but_package_is_not_active'); ?>" />
 					<?php } else { ?>
-					<img class="valign" src="admin/html/images/no.gif" border="0" alt="Inactive" title="<?php echo $lang->phrase('admin_packages_plugins_plugin_is_not_active'); ?>" />
+					<img class="valign" src="admin/html/images/no.gif" border="0" alt="Inactive" title="<?php echo $lang->phrase('admin_packages_plugin_is_not_active'); ?>" />
 					<?php } ?>
 				</td>
 				<td nowrap="nowrap" align="right">
@@ -1609,8 +1609,8 @@ elseif ($job == 'plugins') {
 				<td>
 				 <a class="button" href="admin.php?action=packages&amp;job=plugins_edit&amp;id=<?php echo $head['id']; ?>"><?php echo $lang->phrase('admin_packages_plugins_edit'); ?></a>
 				 <?php if ($head['required'] == 0) { ?>
-				 <a class="button" href="admin.php?action=packages&amp;job=plugins_active&amp;id=<?php echo $head['id']; ?>"><?php echo iif($head['active'] == 1, $lang->phrase('admin_packages_plugins_deactivate'), $lang->phrase('admin_packages_plugins_activate')); ?></a>
-				 <a class="button" href="admin.php?action=packages&amp;job=plugins_delete&amp;id=<?php echo $head['id']; ?>"><?php echo $lang->phrase('admin_packages_plugins_delete'); ?></a>
+				 <a class="button" href="admin.php?action=packages&amp;job=plugins_active&amp;id=<?php echo $head['id']; ?>"><?php echo iif($head['active'] == 1, $lang->phrase('admin_packages_plugins_deactivate'), $lang->phrase('admin_packages_active')); ?></a>
+				 <a class="button" href="admin.php?action=packages&amp;job=plugins_delete&amp;id=<?php echo $head['id']; ?>"><?php echo $lang->phrase('admin_packages_delete'); ?></a>
 				 <?php } ?>
 				</td>
 			</tr>
@@ -1735,9 +1735,9 @@ elseif ($job == 'plugins_delete') {
 	else {
 		?>
 		<table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
-		<tr><td class="obox"><?php echo $lang->phrase('admin_packages_plugins_delete_head_delete_package'); ?></td></tr>
+		<tr><td class="obox"><?php echo $lang->phrase('admin_packages_delete_head_delete_package'); ?></td></tr>
 		<tr><td class="mbox">
-		<p align="center"><?php echo $lang->phrase('admin_packages_plugins_delete_do_you_really_want_to_delete_this_plugin'); ?></p>
+		<p align="center"><?php echo $lang->phrase('admin_packages_delete_do_you_really_want_to_delete_this_plugin'); ?></p>
 		<p align="center">
 		<a href="admin.php?action=packages&job=plugins_delete2&id=<?php echo $id; ?>"><img border="0" alt="" src="admin/html/images/yes.gif"> <?php echo $lang->phrase('admin_packages_yes'); ?></a>
 		&nbsp&nbsp;&nbsp;&nbsp&nbsp;&nbsp;
@@ -1897,7 +1897,7 @@ elseif ($job == 'plugins_edit') {
 	  <td class="obox" colspan="2"><?php echo $lang->phrase('admin_packages_plugins_edit_head_edit_plugin'); ?></td>
 	 </tr>
 	 <tr class="mbox">
-	  <td width="25%"><?php echo $lang->phrase('admin_packages_plugins_edit_title_for_plugin'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_packages_plugins_edit_title_for_plugin_text'); ?></span></td>
+	  <td width="25%"><?php echo $lang->phrase('admin_packages_plugins_edit_title_for_plugin'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_packages_edit_title_text'); ?></span></td>
 	  <td width="75%"><input type="text" name="title" size="40" value="<?php echo $package['title']; ?>" /></td>
 	 </tr>
 	 <tr class="mbox">
@@ -1926,8 +1926,8 @@ elseif ($job == 'plugins_edit') {
 	  <td>
 	  <?php echo $lang->phrase('admin_packages_plugins_edit_code'); ?><br /><br />
 	  <ul>
-		<li><a href="admin.php?action=packages&amp;job=plugins_template&amp;id=<?php echo $package['module']; ?>" target="_blank"><?php echo $lang->phrase('admin_packages_plugins_edit_add_edit_templates'); ?></a></li>
-		<li><a href="admin.php?action=packages&amp;job=plugins_language&amp;id=<?php echo $package['module']; ?>" target="_blank"><?php echo $lang->phrase('admin_packages_plugins_edit_add_edit_phrases'); ?></a></li>
+		<li><a href="admin.php?action=packages&amp;job=plugins_template&amp;id=<?php echo $package['module']; ?>" target="_blank"><?php echo $lang->phrase('admin_packages_plugins_add_add_edit_template'); ?></a></li>
+		<li><a href="admin.php?action=packages&amp;job=plugins_language&amp;id=<?php echo $package['module']; ?>" target="_blank"><?php echo $lang->phrase('admin_packages_plugins_add_add_edit_phrase'); ?></a></li>
 	  </ul>
 	  <?php if (count($cp) > 0) { ?>
 	  <br /><br /><span class="stext"><?php echo $lang->phrase('admin_packages_plugins_edit_caution'); ?></span>
@@ -1944,9 +1944,9 @@ elseif ($job == 'plugins_edit') {
 	  <td width="25%">
 	  	<?php
 	  		$path_temp = '<code>'.$config['fpath'].'/modules/'.$package['module'].'</code>';
-	  		echo $lang->phrase('admin_packages_plugins_edit_file_for_code');
+	  		echo $lang->phrase('admin_packages_file_for_code');
 	  		echo '<br />';
-	  		echo '<span class="stext">'.$lang->phrase('admin_packages_plugins_edit_file_for_code_text').'</span>';
+	  		echo '<span class="stext">'.$lang->phrase('admin_packages_file_for_code_text').'</span>';
 	  	?>
 	  </td>
 	  <td width="75%"><?php echo $codefile; ?></td>
@@ -2047,11 +2047,11 @@ elseif ($job == 'plugins_add') {
 	  <td class="obox" colspan="2"><?php echo $lang->phrase('admin_packages_plugins_add_head_add_plugin_1'); ?></td>
 	 </tr>
 	 <tr class="mbox">
-	  <td width="25%"><?php echo $lang->phrase('admin_packages_plugins_add_title_for_plugin'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_packages_plugins_add_title_for_plugin_text'); ?></span></td>
+	  <td width="25%"><?php echo $lang->phrase('admin_packages_plugins_edit_title_for_plugin'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_packages_edit_title_text'); ?></span></td>
 	  <td width="75%"><input type="text" name="title" size="40" /></td>
 	 </tr>
 	 <tr class="mbox">
-	  <td><?php echo $lang->phrase('admin_packages_plugins_add_package'); ?></td>
+	  <td><?php echo $lang->phrase('admin_packages_plugins_edit_package'); ?></td>
 	  <td>
 	  <?php if ($packageid > 0) { ?>
 		<strong><?php echo $package['title']; ?></strong>
@@ -2075,7 +2075,7 @@ elseif ($job == 'plugins_add') {
 		  <?php } ?>
 	  </optgroup>
 	  <?php } ?>
-	  </select> <a class="button" href="#" onclick="return openHookPosition();" target="_blank"><?php echo $lang->phrase('admin_packages_plugins_add_show_source_code_around_this_hook'); ?></a></td>
+	  </select> <a class="button" href="#" onclick="return openHookPosition();" target="_blank"><?php echo $lang->phrase('admin_packages_plugins_edit_show_source_code_around_this_hook'); ?></a></td>
 	 </tr>
 	 <tr>
 	  <td class="ubox" colspan="2" align="center"><input type="submit" value="<?php echo $lang->phrase('admin_packages_button_save'); ?>" /></td>
@@ -2136,20 +2136,20 @@ elseif ($job == 'plugins_add2') {
 	  <td class="obox" colspan="2"><?php echo $lang->phrase('admin_packages_plugins_add_head_add_plugin_2'); ?></td>
 	 </tr>
 	 <tr class="mbox">
-	  <td width="25%"><?php echo $lang->phrase('admin_packages_plugins_add_title_for_plugin'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_packages_plugins_add_title_for_plugin_text'); ?></span></td>
+	  <td width="25%"><?php echo $lang->phrase('admin_packages_plugins_edit_title_for_plugin'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_packages_edit_title_text'); ?></span></td>
 	  <td width="75%"><input type="text" name="title" size="40" value="<?php echo htmlspecialchars($title); ?>" /></td>
 	 </tr>
 	 <tr class="mbox">
-	  <td><?php echo $lang->phrase('admin_packages_plugins_add_package'); ?></td>
+	  <td><?php echo $lang->phrase('admin_packages_plugins_edit_package'); ?></td>
 	  <td><strong><?php echo $package['title']; ?></strong> (<?php echo $package['id']; ?>)</td>
 	 </tr>
 	 <tr class="mbox">
 	  <td><?php echo $lang->phrase('admin_packages_plugins_add_hook'); ?></td>
-	  <td><strong><?php echo $hook; ?></strong><input type="hidden" name="hook" value="<?php echo $hook; ?>"> <a class="button" href="#" onclick="return openHookPosition('<?php echo $hook; ?>');" target="_blank"><?php echo $lang->phrase('admin_packages_plugins_add_show_source_code_around_this_hook'); ?></a></td>
+	  <td><strong><?php echo $hook; ?></strong><input type="hidden" name="hook" value="<?php echo $hook; ?>"> <a class="button" href="#" onclick="return openHookPosition('<?php echo $hook; ?>');" target="_blank"><?php echo $lang->phrase('admin_packages_plugins_edit_show_source_code_around_this_hook'); ?></a></td>
 	 </tr>
 	 <tr class="mbox" valign="top">
 	  <td>
-	  <?php echo $lang->phrase('admin_packages_plugins_add_code'); ?><br /><br />
+	  <?php echo $lang->phrase('admin_packages_plugins_edit_code'); ?><br /><br />
 	  <span class="stext"><?php echo $lang->phrase('admin_packages_plugins_add_code_text'); ?></span>
 	  <br /><br />
 	  <ul>
@@ -2161,11 +2161,11 @@ elseif ($job == 'plugins_add2') {
 	 </tr>
 	 <tr class="mbox">
 	  <td width="25%">
-	  $lang->phrase('admin_packages_plugins_add_file_for_code')
+	  $lang->phrase('admin_packages_file_for_code')
 	  	<br />
 	  	<?php
 	  		$path_temp = '<code>'.$config['fpath'].'/modules/'.$package['id'].'/</code>';
-	  		echo '<span class="stext">'.$lang->phrase('admin_packages_plugins_add_file_for_code_text').'</span>';
+	  		echo '<span class="stext">'.$lang->phrase('admin_packages_file_for_code_text').'</span>';
 	  	?>
 	  </td>
 	  <td width="75%"><input type="text" name="file" size="40" value="<?php echo $codefile; ?>" /></td>
@@ -2275,7 +2275,7 @@ elseif ($job == 'plugins_template') {
 	$result = $db->query("SELECT id, title FROM {$db->pre}packages WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	if ($db->num_rows($result) != 1) {
 		echo head();
-		error('javascript: self.close();', $lang->phrase('admin_packages_error_specified_package_foo_does_not_exist'));
+		error('javascript: self.close();', $lang->phrase('admin_packages_err_specified_package_foo_does_not_exist'));
 	}
 	$data = $db->fetch_assoc($result);
 	$dir = "modules/{$data['id']}/";
@@ -2312,7 +2312,7 @@ elseif ($job == 'plugins_template') {
 	 <?php if (isset($ini['template']) && count($ini['template']) > 0) { ?>
 	 <tr class="mbox">
 	  <td width="10%"><?php echo $lang->phrase('admin_packages_plugins_template_th_edit'); ?></td>
-	  <td width="10%"><?php echo $lang->phrase('admin_packages_plugins_template_th_delete'); ?></td>
+	  <td width="10%"><?php echo $lang->phrase('admin_packages_delete'); ?></td>
 	  <td width="80%"><?php echo $lang->phrase('admin_packages_plugins_template_th_file'); ?></td>
 	 </tr>
 	 <?php foreach ($ini['template'] as $key => $file) { ?>
@@ -2342,17 +2342,17 @@ elseif ($job == 'plugins_template') {
 	  <td>
 	  <?php echo $lang->phrase('admin_packages_plugins_template_code'); ?><br /><br />
 	  <ul>
-		<li><a href="admin.php?action=packages&amp;job=plugins_language&amp;id=<?php echo $data['id']; ?>" target="_blank"><?php echo $lang->phrase('admin_packages_plugins_template_add_edit_phrase'); ?></a></li>
+		<li><a href="admin.php?action=packages&amp;job=plugins_language&amp;id=<?php echo $data['id']; ?>" target="_blank"><?php echo $lang->phrase('admin_packages_plugins_add_add_edit_phrase'); ?></a></li>
 	  </ul>
 	  </td>
 	  <td><textarea name="code" rows="8" cols="80" class="texteditor"></textarea></td>
 	 </tr>
 	 <tr class="mbox">
-	  <td width="25%"><?php echo $lang->phrase('admin_packages_plugins_template_file_for_code'); ?>
+	  <td width="25%"><?php echo $lang->phrase('admin_packages_file_for_code'); ?>
 	  <br />
 	  	<?php
 	  		$path_temp = '<code>'.$config['fpath'].'/'.$tpldir.'</code>';
-	  		echo '<span class="stext">'.$lang->phrase('admin_packages_plugins_template_file_for_code_text').'</span></td>';
+	  		echo '<span class="stext">'.$lang->phrase('admin_packages_file_for_code_text').'</span></td>';
 	  	?>
 	  <td width="75%"><input type="text" name="file" size="40" value="<?php echo $codefile; ?>" /></td>
 	 </tr>
@@ -2494,7 +2494,7 @@ elseif ($job == 'plugins_template_edit') {
 		  }
 		  ?>
 		 <tr class="mbox">
-		  <td width="25%"><?php echo $lang->phrase('admin_packages_template_edit_file_for_code'); ?></td>
+		  <td width="25%"><?php echo $lang->phrase('admin_packages_file_for_code'); ?></td>
 		  <td width="75%"><?php echo $codefile; ?></td>
 		 </tr>
 		 <tr>
@@ -2631,27 +2631,27 @@ elseif ($job == 'plugins_language_add') {
    <td class="obox" colspan="2"><?php echo $lang->phrase('admin_packages_language_add_phrase_manager_add_new_phrase_to_package'); ?></td>
   </tr>
   <tr>
-   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_packages_language_add_varname'); ?><br />
-   <span class="stext"><?php echo $lang->phrase('admin_packages_language_add_varname_text'); ?></span></td>
+   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_packages_language_edit_varname'); ?><br />
+   <span class="stext"><?php echo $lang->phrase('admin_packages_language_edit_varname_text'); ?></span></td>
    <td class="mbox" width="50%"><input type="text" name="varname" size="50" value="" /></td>
   </tr>
   <tr>
-   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_packages_language_add_text'); ?><br />
-   <span class="stext"><?php echo $lang->phrase('admin_packages_language_add_text_text'); ?></span></td>
+   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_packages_language_edit_text'); ?><br />
+   <span class="stext"><?php echo $lang->phrase('admin_packages_language_aedit_text_text'); ?></span></td>
    <td class="mbox" width="50%"><input type="text" name="text" size="50" /></td>
   </tr>
   <tr>
-   <td class="obox" colspan="2"><?php echo $lang->phrase('admin_packages_language_add_translations'); ?></td>
+   <td class="obox" colspan="2"><?php echo $lang->phrase('admin_packages_language_edit_translations'); ?></td>
   </tr>
   <tr>
    <td class="ubox" colspan="2"><ul>
-	<li><?php echo $lang->phrase('admin_packages_language_add_translations_text_1'); ?></li>
-	<li><?php echo $lang->phrase('admin_packages_language_add_translations_text_2'); ?></li>
+	<li><?php echo $lang->phrase('admin_packages_language_edit_translations_text_1'); ?></li>
+	<li><?php echo $lang->phrase('admin_packages_language_edit_translations_text_2'); ?></li>
    </ul></td>
   </tr>
   <?php while($row = $db->fetch_assoc($result)) { ?>
   <tr>
-   <td class="mbox" width="50%"><em><?php echo $row['language']; ?></em> <?php echo $lang->phrase('admin_packages_language_add_translation'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_packages_language_add_translation_text'); ?></span></td>
+   <td class="mbox" width="50%"><em><?php echo $row['language']; ?></em> <?php echo $lang->phrase('admin_packages_language_edit_translation'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_packages_language_edit_translation_text'); ?></span></td>
    <td class="mbox" width="50%"><input type="text" name="langt[<?php echo $row['id']; ?>]" size="50" /></td>
   </tr>
   <?php } ?>
@@ -2943,11 +2943,11 @@ elseif ($job == 'browser_list') {
    <td class="obox" colspan="4"><?php $foo = $types[$type]; echo $lang->phrase('admin_packages_browser_browse_foo'); ?> &raquo; <?php echo $title; ?></td>
   </tr>
   <tr>
-   <td class="ubox" width="60%"><?php echo $lang->phrase('admin_packages_browser_name'); ?><br /><?php echo $lang->phrase('admin_packages_browser_description'); ?></td>
+   <td class="ubox" width="60%"><?php echo $lang->phrase('admin_packages_info_name'); ?><br /><?php echo $lang->phrase('admin_packages_info_description'); ?></td>
    <?php if (is_array($installed)) { ?>
    <td class="ubox" width="10%"><?php echo $lang->phrase('admin_packages_browser_installed'); ?></td>
    <?php } ?>
-   <td class="ubox" width="10%"><?php echo $lang->phrase('admin_packages_browser_compatible'); ?></td>
+   <td class="ubox" width="10%"><?php echo $lang->phrase('admin_packages_info_compatible'); ?></td>
    <td class="ubox" width="30%"><?php echo $lang->phrase('admin_packages_browser_last_update2'); ?><br /><?php echo $lang->phrase('admin_packages_browser_license2'); ?></td>
   </tr>
   <?php
@@ -2976,7 +2976,7 @@ elseif ($job == 'browser_list') {
    <td align="center"><?php echo noki($compatible); ?></td>
    <td valign="top">
     <?php echo $lang->phrase('admin_packages_browser_last_update'); ?> <?php echo gmdate('d.m.Y', times($row['last_updated'])); ?><br />
-    <?php echo $lang->phrase('admin_packages_browser_license'); ?> <?php echo empty($row['license']) ? $lang->phrase('admin_packages_unknown') : $row['license']; ?>
+    <?php echo $lang->phrase('admin_packages_info_license'); ?> <?php echo empty($row['license']) ? $lang->phrase('admin_packages_unknown') : $row['license']; ?>
    	<?php if($show_cat == true) { $cat = $pb->categories($type, $row['category']); ?><br /><?php echo $lang->phrase('admin_packages_browser_category'); ?> <?php echo $cat['name']; } ?>
    	</td>
   </tr>
@@ -3027,7 +3027,7 @@ elseif ($job == 'browser_detail') {
 	   <td class="mbox" width="70%"><a href="<?php echo $row['url']; ?>" target="_blank"><?php echo $row['title']; ?></a></td>
 	  </tr>
 	  <tr>
-	   <td class="mbox" width="30%"><?php echo $lang->phrase('admin_packages_browser_det_description'); ?></td>
+	   <td class="mbox" width="30%"><?php echo $lang->phrase('admin_packages_info_description'); ?></td>
 	   <td class="mbox" width="70%"><?php echo nl2br($row['summary']); ?></td>
 	  </tr>
 	  <?php if ($type == IMPTYPE_PACKAGE) { ?>
@@ -3058,22 +3058,22 @@ elseif ($job == 'browser_detail') {
 	  </tr>
 	  <?php } if (!empty($row['copyright'])) { ?>
 	  <tr>
-	   <td class="mbox" width="30%"><?php echo $lang->phrase('admin_packages_browser_copyright'); ?></td>
+	   <td class="mbox" width="30%"><?php echo $lang->phrase('admin_packages_info_copyright'); ?></td>
 	   <td class="mbox" width="70%"><?php echo str_ireplace('(C)', '&copy;', $row['copyright']); ?></td>
 	  </tr>
 	  <?php } if (!empty($row['license'])) { ?>
 	  <tr>
-	   <td class="mbox" width="30%"><?php echo $lang->phrase('admin_packages_browser_license'); ?></td>
+	   <td class="mbox" width="30%"><?php echo $lang->phrase('admin_packages_info_license'); ?></td>
 	   <td class="mbox" width="70%"><?php echo $row['license']; ?></td>
 	  </tr>
 	  <?php } if (!empty($row['version'])) { ?>
 	  <tr>
-	   <td class="mbox" width="30%"><?php echo $lang->phrase('admin_packages_browser_version'); ?></td>
+	   <td class="mbox" width="30%"><?php echo $lang->phrase('admin_packages_info_version'); ?></td>
 	   <td class="mbox" width="70%"><?php echo $row['version']; ?></td>
 	  </tr>
 	  <?php } if (!empty($row['min_version']) || !empty($row['max_version'])) { ?>
 	  <tr>
-	   <td class="mbox" width="30%"><?php echo $lang->phrase('admin_packages_browser_compatibility'); ?></td>
+	   <td class="mbox" width="30%"><?php echo $lang->phrase('admin_packages_info_compatibility'); ?></td>
 	   <td class="mbox" width="70%">
 	   	<?php if (!empty($row['min_version'])) { $min = $row['min_version']; ?>
 	   	<div><?php echo $lang->phrase('admin_packages_minimum_v'); ?></div>
@@ -3098,7 +3098,7 @@ elseif ($job == 'browser_detail') {
 	   <td class="mbox" width="70%"><a href="<?php echo $row['file']; ?>"><?php echo $row['file']; ?></a></td>
 	  </tr>
 	  <tr>
-	   <td class="mbox" width="30%"><?php echo $lang->phrase('admin_packages_browser_internal_name'); ?></td>
+	   <td class="mbox" width="30%"><?php echo $lang->phrase('admin_packages_info_internal_name'); ?></td>
 	   <td class="mbox" width="70%"><tt><?php echo $row['internal']; ?></tt></td>
 	  </tr>
 	  <?php if (!empty($row['preview'])) { ?>
