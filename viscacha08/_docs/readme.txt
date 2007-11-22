@@ -62,6 +62,7 @@ Upload (and overwrite) the following files (* = an ID):
  - admin.php
  - attachments.php
  - components.php
+ - docs.php
  - editprofile.php
  - images.php
  - log.php
@@ -74,10 +75,11 @@ Upload (and overwrite) the following files (* = an ID):
  - pm.php
  - popup.php
  - portal.php
+ - progile.php
  - register.php
  - search.php
  - showtopic.php
- 
+
  - Upload all files in the directory "admin":
     - admin/bbcodes.php
     - admin/cms.php
@@ -183,12 +185,13 @@ Upload (and overwrite) the following files (* = an ID):
 
  - Upload the following files from the directory "languages" (* = an ID):
    Note: Files from the directory language/1/ are German, files from the
-         directory language/2/ are English. Upload only the files from the 
+         directory language/2/ are English. Upload only the files from the
          language you need into the correct directory.
     - ALL FILES / WHOLE DIRECTORY: language/*/admin/
     - language/*/modules.lng.php
     - language/*/mails/report_post.php
     - language/*/bbcodes.lng.php
+    - language/*/timezones.lng.php
 
  - Upload the following files from the directory "templates" (* = an ID):
     - templates/*/admin/topic/reports.html
@@ -222,6 +225,7 @@ Upload (and overwrite) the following files (* = an ID):
     - templates/*/team/moderator_bit.html
     - templates/*/addreply.html
     - templates/*/banned.html
+    - templates/*/categories.html
     - templates/*/footer.html
     - templates/*/menu.html
     - templates/*/menu_noscript.html
@@ -234,7 +238,7 @@ Upload (and overwrite) the following files (* = an ID):
 
  - Delete the whole directory "templates/*/modules" on the server!
  - Upload all files from the directory "templates/*/modules" from your local PC.
- 
+
 To update the designs do the following steps:
 
 1. Add the code between the dashes to all ie.css-files:
@@ -345,7 +349,7 @@ To update the designs do the following steps:
 --------------------------------------------------------------------------------
 
 
-Finally upload the install/ directory and execute the update script. Please 
+Finally upload the install/ directory and execute the update script. Please
 excuse the hard and long update, but the massive changes made this neccessary.
 
 
