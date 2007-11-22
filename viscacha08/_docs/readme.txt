@@ -75,7 +75,7 @@ Upload (and overwrite) the following files (* = an ID):
  - pm.php
  - popup.php
  - portal.php
- - progile.php
+ - profile.php
  - register.php
  - search.php
  - showtopic.php
@@ -182,6 +182,9 @@ Upload (and overwrite) the following files (* = an ID):
     - classes/function.phpcore.php
     - classes/function.profilefields.php
     - classes/function.viscacha_frontend.php
+    
+ - Delete the whole directory "modules" on the server!
+ - Upload all files from the directory "modules" from your local PC.
 
  - Upload the following files from the directory "languages" (* = an ID):
    Note: Files from the directory language/1/ are German, files from the

@@ -45,41 +45,43 @@ class cache_package_browser extends CacheItem {
 			$this->data = array();
 			$myini = new INI();
 			$servers = explode(';', $admconfig['package_server']);
-			foreach ($servers as $server) {
-				$content = get_remote($server.'/external.ini');
-				if ($content != REMOTE_CLIENT_ERROR) {
-					$inis = $myini->parse($content);
-					foreach ($inis['files'] as $type => $remotefile) {
-						if (!isset($this->data[$type])) {
-							$this->data[$type] = array();
-						}
-						$path = $server.'/'.$remotefile;
-						$content = get_remote($path);
-						if ($content != REMOTE_CLIENT_ERROR) {
-							$new_data = $myini->parse($content);
-							foreach ($new_data['categories'] as $cid => $cname) {
-								$this->data[$type]['categories'][$cid] = array(
-									'name' => $cname,
-									'entries' => 0
-								);
-								$this->data[$type][$cid] = array();
+			if (is_array($servers)) {
+				foreach ($servers as $server) {
+					$content = get_remote($server.'/external.ini');
+					if ($content != REMOTE_CLIENT_ERROR) {
+						$inis = $myini->parse($content);
+						foreach ($inis['files'] as $type => $remotefile) {
+							if (!isset($this->data[$type])) {
+								$this->data[$type] = array();
 							}
-							foreach ($new_data as $key => $row) {
-								if ($key == 'categories') {
-									continue;
+							$path = $server.'/'.$remotefile;
+							$content = get_remote($path);
+							if ($content != REMOTE_CLIENT_ERROR) {
+								$new_data = $myini->parse($content);
+								foreach ($new_data['categories'] as $cid => $cname) {
+									$this->data[$type]['categories'][$cid] = array(
+										'name' => $cname,
+										'entries' => 0
+									);
+									$this->data[$type][$cid] = array();
 								}
-								else {
-									if (!isset($row['category']) || !isset($this->data[$type]['categories'][$row['category']])) {
+								foreach ($new_data as $key => $row) {
+									if ($key == 'categories') {
 										continue;
 									}
-									if (( isset($this->data[$type][$row['internal']]) &&
-											version_compare($this->data[$type][$this->data[$type][$row['internal']]][$row['internal']]['version'], $row['version'], ">") ) ||
-											!isset($this->data[$type][$row['internal']])
-										) {
-										$row['server'] = $server;
-										$this->data[$type]['categories'][$row['category']]['entries']++;
-										$this->data[$type][$row['category']][$row['internal']] = $row;
-										$this->data[$type][$row['internal']] = $row['category'];
+									else {
+										if (!isset($row['category']) || !isset($this->data[$type]['categories'][$row['category']])) {
+											continue;
+										}
+										if (( isset($this->data[$type][$row['internal']]) &&
+												version_compare($this->data[$type][$this->data[$type][$row['internal']]][$row['internal']]['version'], $row['version'], ">") ) ||
+												!isset($this->data[$type][$row['internal']])
+											) {
+											$row['server'] = $server;
+											$this->data[$type]['categories'][$row['category']]['entries']++;
+											$this->data[$type][$row['category']][$row['internal']] = $row;
+											$this->data[$type][$row['internal']] = $row['category'];
+										}
 									}
 								}
 							}
