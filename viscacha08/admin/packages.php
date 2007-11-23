@@ -2930,7 +2930,7 @@ elseif ($job == 'browser_list') {
 		}
 	}
 	elseif ($type == IMPTYPE_BBCODE) {
-
+		$installed = null; // ToDo: Check for installed bb-codes
 	}
 	else {
 		$installed = null;

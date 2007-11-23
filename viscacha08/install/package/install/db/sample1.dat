@@ -16,9 +16,9 @@ INSERT INTO `{:=DBPREFIX=:}replies` (`id`, `board`, `topic`, `topic_id`, `name`,
 INSERT INTO `{:=DBPREFIX=:}replies` (`id`, `board`, `topic`, `topic_id`, `name`, `guest`, `comment`, `dosmileys`, `dowords`, `email`, `ip`, `date`, `edit`, `tstart`) VALUES ('4', '2', 'How do you rate Viscacha?', '4', 'Viscacha-Team', '1', 'Please tell us: [b]How do you rate Viscacha?[/b]\r\n\r\nRegards, the Viscacha-Team :) ', '1', '1', 'spam@mamo-net.de', '127.0.0.1', UNIX_TIMESTAMP(), '', '1');
 
 --  Data: demo_textparser
-INSERT INTO `{:=DBPREFIX=:}textparser` (`id`, `search`, `replace`, `type`, `desc`) VALUES ('1', 'Asshole', 'A**h***', 'censor', '');
-INSERT INTO `{:=DBPREFIX=:}textparser` (`id`, `search`, `replace`, `type`, `desc`) VALUES ('2', 'Bitch', 'B***h', 'censor', '');
-INSERT INTO `{:=DBPREFIX=:}textparser` (`id`, `search`, `replace`, `type`, `desc`) VALUES ('3', 'CMS', 'Content Management System', 'word', 'System for the creation, modification, archiving and removal of information resources from an organised repository. Includes tools for publishing, format management, revision control, indexing, search and retrieval.');
+INSERT INTO `{:=DBPREFIX=:}textparser` (`search`, `replace`, `type`, `desc`) VALUES ('Asshole', 'A**h***', 'censor', '');
+INSERT INTO `{:=DBPREFIX=:}textparser` (`search`, `replace`, `type`, `desc`) VALUES ('Bitch', 'B***h', 'censor', '');
+INSERT INTO `{:=DBPREFIX=:}textparser` (`search`, `replace`, `type`, `desc`) VALUES ('CMS', 'Content Management System', 'word', 'System for the creation, modification, archiving and removal of information resources from an organised repository. Includes tools for publishing, format management, revision control, indexing, search and retrieval.');
 
 --  Data: demo_topics
 INSERT INTO `{:=DBPREFIX=:}topics` (`id`, `board`, `topic`, `prefix`, `posts`, `name`, `date`, `status`, `last`, `sticky`, `last_name`, `vquestion`, `mark`) VALUES ('1', '1', 'Welcome to Viscacha!', '0', '0', 'Viscacha-Team', UNIX_TIMESTAMP(), '0', UNIX_TIMESTAMP(), '0', 'Viscacha-Team', '', '');

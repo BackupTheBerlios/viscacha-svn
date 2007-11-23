@@ -85,6 +85,7 @@ $lang['admin_cms_manage_documents_and_pages'] = 'Dokumente & Seiten verwalten';
 $lang['admin_cms_manage_navifation_add_plugin'] = 'Plugin hinzufügen';
 $lang['admin_cms_manage_navigation_add_box'] = 'Box hinzufügen';
 $lang['admin_cms_manage_navigation_add_link'] = 'Link hinzufügen';
+$lang['admin_cms_more_smileys'] = 'Mehr Smileys...';
 $lang['admin_cms_move_up'] = 'Hoch';
 $lang['admin_cms_move_down'] = 'Runter';
 $lang['admin_cms_nav_active'] = 'Aktiv:';

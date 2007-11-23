@@ -242,7 +242,7 @@ elseif ($job == "chmod2") {
 elseif ($job == "rename") {
 	$path = urldecode($gpc->get('path', none));
 	$type = $gpc->get('type', str);
-	$name = iif($type == 'dir', 'directory', 'file');
+	$name = iif($type == 'dir', $lang->phrase('admin_explorer_switch_dir'), $lang->phrase('admin_explorer_switch_file'));
 	echo head();
 	?>
 <form name="form" method="post" action="admin.php?action=explorer&job=rename2">
@@ -299,7 +299,7 @@ elseif ($job == "rename2") {
 elseif ($job == "delete") {
 	$path = urldecode($gpc->get('path', none));
 	$type = $gpc->get('type', str);
-	$name = iif($type == 'dir', 'directory', 'file');
+	$name = iif($type == 'dir', $lang->phrase('admin_explorer_switch_dir'), $lang->phrase('admin_explorer_switch_file'));
 	echo head();
 	if (!file_exists($path)) {
 		$name = ucfirst($name);
@@ -323,7 +323,7 @@ elseif ($job == "delete") {
 elseif ($job == "delete2") {
 	$path = urldecode($gpc->get('path', none));
 	$type = $gpc->get('type', str);
-	$name = iif($type == 'dir', 'directory', 'file');
+	$name = iif($type == 'dir', $lang->phrase('admin_explorer_switch_dir'), $lang->phrase('admin_explorer_switch_file'));
 	echo head();
 
 	$repath = urlencode(extract_dir($path, false));

@@ -32,7 +32,12 @@ if (!defined('MAGPIE_DIR')) {
 require_once( MAGPIE_DIR . 'rss_parse.inc.php' );
 require_once( MAGPIE_DIR . 'rss_cache.inc.php' );
 
-require_once(extract_dir(MAGPIE_DIR) . 'class.snoopy.php');
+if (file_exists('../class.snoopy.php')) {
+	require_once('../class.snoopy.php');
+}
+else {
+	require_once(realpath(MAGPIE_DIR.'../') . 'class.snoopy.php');
+}
 
 /*
  * CONSTANTS - redefine these in your script to change the

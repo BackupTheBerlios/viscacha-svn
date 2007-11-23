@@ -53,7 +53,7 @@ function BBCodeToolBox() {
 		</tr>
 	<?php } ?>
 	</table>
-	<a id="menu_bbsmileys" style="display: block;text-align: center;width: 140px;" href="javascript:Link()"><img border="0" src="admin/html/images/desc.gif" alt="" /> more Smileys...</a>
+	<a id="menu_bbsmileys" style="display: block;text-align: center;width: 140px;" href="javascript:Link()"><img border="0" src="admin/html/images/desc.gif" alt="" /> <?php echo $lang->phrase('admin_cms_more_smileys'); ?></a>
 	<script type="text/javascript">RegisterMenu('bbsmileys');</script>
 	<div class="popup" id="popup_bbsmileys" style="height: 200px;width: 255px;overflow: auto;">
 	<strong><?php echo $lang->phrase('admin_cms_head_smileys'); ?></strong>
@@ -261,7 +261,7 @@ if ($job == 'nav') {
 					echo '<a href="admin.php?action=cms&job=nav_active&id='.$link['id'].'&act=0">'.$lang->phrase('admin_cms_deactivate').'</a>';
 				}
 				else {
-					echo '<a href="admin.php?action=cms&job=nav_active&id='.$link['id'].'&act=1">'.$lang->phrase('admin_cms_activate').'/a>';
+					echo '<a href="admin.php?action=cms&job=nav_active&id='.$link['id'].'&act=1">'.$lang->phrase('admin_cms_activate').'</a>';
 				}
 				?>
 				</td>

@@ -493,7 +493,7 @@ elseif ($job == 'search') {
 	   <td class="mbox" width="50%"><input type="text" name="searchzahl" value="<?php echo $config['searchzahl']; ?>" size="4"></td>
 	  </tr>
 	  <tr>
-	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_number-active_topics'); ?></td>
+	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_number_active_topics'); ?></td>
 	   <td class="mbox" width="50%"><input type="text" name="activezahl" value="<?php echo $config['activezahl']; ?>" size="4"></td>
 	  </tr>
 	  <tr>
@@ -1790,6 +1790,7 @@ elseif ($job == 'textprocessing') {
 	else {
 		$surl = $lang->phrase('admin_unable_to_analyze_url');
 	}
+	$spath = str_replace('\\', '/', realpath('./')).'/images/smileys';
 
 	echo head();
 	?>
@@ -1877,11 +1878,11 @@ elseif ($job == 'textprocessing') {
 	   <td class="mbox" width="50%"><input type="text" name="smileysperrow" value="<?php echo $config['smileysperrow']; ?>" size="8"></td>
 	  </tr>
 	  <tr>
-	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_path_smiley_dir'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_path_smiley_dir_info'); ?><?php echo str_replace('\\', '/', realpath('./')); ?><?php echo $lang->phrase('admin_path_smiley_dir_info_ws'); ?></span></td>
+	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_path_smiley_dir'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_path_smiley_dir_info'); ?><tt><?php echo $spath; ?></tt></span></td>
 	   <td class="mbox" width="50%"><input type="text" name="smileypath" value="<?php echo $config['smileypath']; ?>" size="60"></td>
 	  </tr>
 	  <tr>
-	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_url_smiley_dir'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_url_smiley_dir_info'); ?><tt><?php echo $surl; ?></tt> .</span></td>
+	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_url_smiley_dir'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_url_smiley_dir_info'); ?><tt><?php echo $surl; ?></tt></span></td>
 	   <td class="mbox" width="50%"><input type="text" name="smileyurl" value="<?php echo $config['smileyurl']; ?>" size="60"></td>
 	  </tr>
 	  <tr>
@@ -2457,7 +2458,7 @@ else {
 		  	  <option value="admin.php?action=spider&amp;job=manage"><?php echo $lang->phrase('admin_select_crawler_robot_manager'); ?></option>
 		  	  <option value="admin.php?action=spider&amp;job=pending"><?php echo $lang->phrase('admin_select_pending_manager'); ?></option>
 		  	  <option value="admin.php?action=spider&amp;job=add"><?php echo $lang->phrase('admin_select_add_robot'); ?></option>
-	        </select> <input style="width: 18%" type="submit" value="<?php echo $lang->phrase('admin_form-go'); ?>">
+	        </select> <input style="width: 18%" type="submit" value="<?php echo $lang->phrase('admin_form_go'); ?>">
 		  </form>
 		</td>
 	  </tr>
