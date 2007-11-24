@@ -184,6 +184,7 @@ Upload (and overwrite) the following files (* = an ID):
     - classes/function.viscacha_frontend.php
     
  - Delete the whole directory "modules" on the server!
+ - Delete the whole directory "components" on the server!
  - Upload all files from the directory "modules" from your local PC.
 
  - Upload the following files from the directory "languages" (* = an ID):
@@ -240,6 +241,7 @@ Upload (and overwrite) the following files (* = an ID):
     - templates/spellChecker.js
 
  - Delete the whole directory "templates/*/modules" on the server!
+ - Delete the whole directory "templates/*/components" on the server!
  - Upload all files from the directory "templates/*/modules" from your local PC.
 
 To update the designs do the following steps:

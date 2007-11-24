@@ -2848,17 +2848,24 @@ elseif ($job == 'browser') {
 	$types = $pb->types();
 	$type = $gpc->get('type', int, IMPTYPE_PACKAGE);
 	$cats = $pb->categories($type);
-	// Calculate random entry
-	unset($cat);
-	while (empty($cat['entries'])) {
-		$keys = array_keys($cats);
-		shuffle($keys);
-		$rid = current($keys);
-		$cat = $pb->categories($type, $rid);
+	if (count($cats) > 0) {
+		// Calculate random entry
+		unset($cat);
+		$i = 0;
+		do {
+			$keys = array_keys($cats);
+			shuffle($keys);
+			$rid = current($keys);
+			$cat = $pb->categories($type, $rid);
+			$i++;
+		} while (empty($cat['entries']) && $i < 200);
+		$e = $pb->get($type, $rid);
+		shuffle($e);
+		$random = current($e);
 	}
-	$e = $pb->get($type, $rid);
-	shuffle($e);
-	$random = current($e);
+	else {
+		$random = array();
+	}
 	echo head();
 	?>
  <table class="border" border="0" cellspacing="0" cellpediting="4" align="center">
@@ -2870,15 +2877,19 @@ elseif ($job == 'browser') {
    <td class="ubox" width="50%"><strong><?php echo $lang->phrase('admin_packages_browser_useful_links'); ?></strong></td>
   <tr>
    <td class="mbox" valign="top" rowspan="3">
+   	<?php if (count($cats) > 0) { ?>
 	<ul>
 		<?php foreach ($cats as $id => $row) { ?>
 		<li><a href="admin.php?action=packages&amp;job=browser_list&amp;type=<?php echo $type; ?>&amp;id=<?php echo $id; ?>"><?php echo $row['name']; ?></a> (<?php echo $row['entries']; ?>)</li>
 		<?php } ?>
 	</ul>
+	<?php } else { $foo = $types[$type]; echo $lang->phrase('admin_packages_no_x_found'); } ?>
    </td>
    <td class="mbox" valign="top">
 	<ul>
+		<?php if (count($cats) > 0) { ?>
 		<li><a href="admin.php?action=packages&amp;job=browser_list&amp;type=<?php echo $type; ?>&amp;id=last"><?php echo $lang->phrase('admin_packages_browser_recently_updated'); ?> <?php echo $types[$type]['name']; ?></a></li>
+		<?php } ?>
 		<li><a href="admin.php?action=settings&amp;job=admin"><?php $foo = $types[$type]; echo $lang->phrase('admin_packages_browser_change_servers_that_offer_foo'); ?></a></li>
 	</ul>
    </td>
@@ -2888,8 +2899,15 @@ elseif ($job == 'browser') {
   </tr>
   <tr>
    <td class="mbox" valign="top">
+   <?php if (count($random) > 0) { ?>
 	<a href="admin.php?action=packages&amp;job=browser_detail&amp;id=<?php echo $random['internal']; ?>&amp;type=<?php echo $type; ?>"><strong><?php echo $random['title']; ?></strong> <?php echo $random['version']; ?></a><br />
-	<?php echo $random['summary']; ?>
+	<?php echo $random['summary'];
+   }
+   else {
+   	$foo = $types[$type];
+	echo $lang->phrase('admin_packages_no_x_found');
+   }
+   ?>
    </td>
   </tr>
  </table>
@@ -2942,6 +2960,17 @@ elseif ($job == 'browser_list') {
   <tr>
    <td class="obox" colspan="4"><?php $foo = $types[$type]; echo $lang->phrase('admin_packages_browser_browse_foo'); ?> &raquo; <?php echo $title; ?></td>
   </tr>
+  <?php
+  if (count($data) == 0) {
+  	$foo = $types[$type];
+  	?>
+  <tr>
+   <td class="mbox" colspan="4"><?php echo $lang->phrase('admin_packages_no_x_found'); ?></td>
+  </tr>
+  	<?php
+  }
+  else {
+  	?>
   <tr>
    <td class="ubox" width="60%"><?php echo $lang->phrase('admin_packages_info_name'); ?><br /><?php echo $lang->phrase('admin_packages_info_description'); ?></td>
    <?php if (is_array($installed)) { ?>
@@ -2950,7 +2979,7 @@ elseif ($job == 'browser_list') {
    <td class="ubox" width="10%"><?php echo $lang->phrase('admin_packages_info_compatible'); ?></td>
    <td class="ubox" width="30%"><?php echo $lang->phrase('admin_packages_browser_last_update2'); ?><br /><?php echo $lang->phrase('admin_packages_browser_license2'); ?></td>
   </tr>
-  <?php
+  	<?php
   foreach ($data as $key => $row) {
  	$min_compatible = ((!empty($row['min_version']) && version_compare($config['version'], $row['min_version'], '>=')) || empty($row['min_version']));
 	$max_compatible = ((!empty($row['max_version']) && version_compare($config['version'], $row['max_version'], '<=')) || empty($row['max_version']));
@@ -2980,7 +3009,7 @@ elseif ($job == 'browser_list') {
    	<?php if($show_cat == true) { $cat = $pb->categories($type, $row['category']); ?><br /><?php echo $lang->phrase('admin_packages_browser_category'); ?> <?php echo $cat['name']; } ?>
    	</td>
   </tr>
-  <?php } ?>
+  <?php } } ?>
  </table>
 	<?php
 	echo foot();
@@ -2999,8 +3028,13 @@ elseif ($job == 'browser_detail') {
 	$type = $gpc->get('type', int, IMPTYPE_PACKAGE);
 	$id = $gpc->get('id', str);
 	$pb = $scache->load('package_browser');
-	$row = $pb->getOne($type, $id);
 	$types = $pb->types();
+	$row = $pb->getOne($type, $id);
+	if ($row == null) {
+		$foo = $types[$type];
+		echo head();
+		error('admin.php?action=packages&job=browser', $lang->phrase('admin_packages_no_x_found'));
+	}
 	$cat = $pb->categories($type, $row['category']);
 	$result = $db->query("SELECT id, version FROM {$db->pre}packages WHERE internal = '{$row['internal']}' LIMIT 1");
 	if ($db->num_rows($result) == 1) {

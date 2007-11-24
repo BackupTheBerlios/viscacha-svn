@@ -4,32 +4,36 @@ class cache_package_browser extends CacheItem {
 	var $types;
 
 	function cache_package_browser($filename, $cachedir = "cache/") {
+		global $lang;
+		if (SCRIPTNAME != 'admin') {
+			$lang->group('admin/global');
+		}
 		parent::CacheItem($filename, $cachedir);
 		$this->max_age = 60*60*6;
 		$this->types = array(
 		 	1 => array(
-			 		'name' => 'Packages',
-			 		'name2' => 'package',
+			 		'name' => $lang->phrase('admin_pb_type1_name'),
+			 		'name2' => $lang->phrase('admin_pb_type1_name2'),
 			 		'import' => 'admin.php?action=packages&job=package_import&file='
 		 		),
 		 	2 => array(
-		 			'name' => 'Designs',
-		 			'name2' => 'design',
+			 		'name' => $lang->phrase('admin_pb_type2_name'),
+			 		'name2' => $lang->phrase('admin_pb_type2_name2'),
 					'import' => 'admin.php?action=designs&job=design_import&file='
 		 		),
 		 	3 => array(
-		 			'name' => 'Smiley Packs',
-		 			'name2' => 'smiley pack',
+			 		'name' => $lang->phrase('admin_pb_type3_name'),
+			 		'name2' => $lang->phrase('admin_pb_type3_name2'),
 					'import' => 'admin.php?action=bbcodes&job=smileys_import&file='
 		 		),
 		 	4 => array(
-		 			'name' => 'Language Packs',
-		 			'name2' => 'language pack',
+			 		'name' => $lang->phrase('admin_pb_type4_name'),
+			 		'name2' => $lang->phrase('admin_pb_type4_name2'),
 					'import' => 'admin.php?action=language&job=import&file='
 		 		),
 		 	5 => array(
-		 			'name' => 'BB-Codes',
-		 			'name2' => 'BB-Code',
+			 		'name' => $lang->phrase('admin_pb_type5_name'),
+			 		'name2' => $lang->phrase('admin_pb_type5_name2'),
 					'import' => 'admin.php?action=bbcodes&job=custombb_import&file='
 		 		),
 		);
@@ -50,6 +54,9 @@ class cache_package_browser extends CacheItem {
 					$content = get_remote($server.'/external.ini');
 					if ($content != REMOTE_CLIENT_ERROR) {
 						$inis = $myini->parse($content);
+						if (!isset($inis['files'])) {
+							break;
+						}
 						foreach ($inis['files'] as $type => $remotefile) {
 							if (!isset($this->data[$type])) {
 								$this->data[$type] = array();
@@ -101,7 +108,12 @@ class cache_package_browser extends CacheItem {
 		if ($this->data == null || $this->expired($this->max_age)) {
 			$this->load();
 		}
-		return isset($this->data[$type][$this->data[$type][$id]][$id]) ? $this->data[$type][$this->data[$type][$id]][$id] : false;
+		if (isset($this->data[$type][$id]) && isset($this->data[$type][$this->data[$type][$id]][$id])) {
+			return $this->data[$type][$this->data[$type][$id]][$id];
+		}
+		else {
+			return false;
+		}
 	}
 
 	function categories($type = IMPTYPE_PACKAGE, $id = null) {

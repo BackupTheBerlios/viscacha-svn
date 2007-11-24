@@ -1562,10 +1562,10 @@ elseif ($job == 'phrase_add_lngfile') {
    <?php
    $result = $db->query("SELECT * FROM {$db->pre}component ORDER BY active DESC");
    while ($row = $db->fetch_assoc($result)) {
-	$cfg = $myini->read('components/'.$row['id'].'/components.ini');
+	$cfg = $myini->read('modules/'.$row['package'].'/component.ini');
 	$row = array_merge($row, $cfg);
    ?>
-    <option value="<?php echo base64_decode('components/'.$row['id'].'/'); ?>">language/ID/components/<?php echo $row['id']; ?> ($lang->phrase('admin_lang_component')<?php echo $row['config']['name']; ?>)</option>
+    <option value="<?php echo base64_decode('modules/'.$row['packages'].'/'); ?>">language/ID/modules/<?php echo $row['packages']; ?> (<?php echo $lang->phrase('admin_lang_component').$row['info']['title']; ?>)</option>
    <?php } ?>
    </select></td>
   </tr>
