@@ -670,64 +670,64 @@ elseif ($job == "credits") {
 
 	$ext = get_loaded_extensions();
 	if (in_array("zlib", $ext)) {
-		$zlibext = "<span style='color: green'><?php echo $lang->phrase('admin_misc_ok'); ?></span>";
+		$zlibext = "<span style='color: green'>".$lang->phrase('admin_misc_ok')."</span>";
 	}
 	else {
-		$zlibext = "<span style='color: red'><?php echo $lang->phrase('admin_misc_n_a'); ?></span>";
+		$zlibext = "<span style='color: red'>".$lang->phrase('admin_misc_n_a')."</span>";
 	}
 	if (in_array("mysql", $ext)) {
-		$mylibext = "<span style='color: green'><?php echo $lang->phrase('admin_misc_ok'); ?></span>";
+		$mylibext = "<span style='color: green'>".$lang->phrase('admin_misc_ok')."</span>";
 	}
 	else {
-		$mylibext = "<span style='color: red'><?php echo $lang->phrase('admin_misc_n_a'); ?></span>";
+		$mylibext = "<span style='color: red'>".$lang->phrase('admin_misc_n_a')."</span>";
 	}
 	if (in_array("mysqli", $ext)) {
-		$myilibext = "<span style='color: green'><?php echo $lang->phrase('admin_misc_ok'); ?></span>";
+		$myilibext = "<span style='color: green'>".$lang->phrase('admin_misc_ok')."</span>";
 	}
 	else {
-		$myilibext = "<span style='color: red'><?php echo $lang->phrase('admin_misc_n_a'); ?></span>";
+		$myilibext = "<span style='color: red'>".$lang->phrase('admin_misc_n_a')."</span>";
 	}
 	if (in_array("pcre", $ext)) {
-		$relibext = "<span style='color: green'><?php echo $lang->phrase('admin_misc_ok'); ?></span>";
+		$relibext = "<span style='color: green'>".$lang->phrase('admin_misc_ok')."</span>";
 	}
 	else {
-		$relibext = "<span style='color: red'><?php echo $lang->phrase('admin_misc_n_a'); ?></span>";
+		$relibext = "<span style='color: red'>".$lang->phrase('admin_misc_n_a')."</span>";
 	}
 	if (in_array("gd", $ext)) {
-		$gdlibext = "<span style='color: green'><?php echo $lang->phrase('admin_misc_ok'); ?></span>";
+		$gdlibext = "<span style='color: green'>".$lang->phrase('admin_misc_ok')."</span>";
 	}
 	else {
-		$gdlibext = "<span style='color: red'><?php echo $lang->phrase('admin_misc_n_a'); ?></span>>";
+		$gdlibext = "<span style='color: red'>".$lang->phrase('admin_misc_n_a')."</span>>";
 	}
 	if (in_array("pspell", $ext)) {
-		$pslibext = "<span style='color: green'><?php echo $lang->phrase('admin_misc_ok'); ?></span>";
+		$pslibext = "<span style='color: green'>".$lang->phrase('admin_misc_ok')."</span>";
 	}
 	else {
-		$pslibext = "<span style='color: red'><?php echo $lang->phrase('admin_misc_n_a'); ?></span>";
+		$pslibext = "<span style='color: red'>".$lang->phrase('admin_misc_n_a')."</span>";
 	}
 	if (in_array("xml", $ext)) {
-		$xmllibext = "<span style='color: green'><?php echo $lang->phrase('admin_misc_ok'); ?></span>";
+		$xmllibext = "<span style='color: green'>".$lang->phrase('admin_misc_ok')."</span>";
 	}
 	else {
-		$xmllibext = "<span style='color: red'><?php echo $lang->phrase('admin_misc_n_a'); ?></span>";
+		$xmllibext = "<span style='color: red'>".$lang->phrase('admin_misc_n_a')."</span>";
 	}
 	if (in_array("iconv", $ext)) {
-		$ivlibext = "<span style='color: green'><?php echo $lang->phrase('admin_misc_ok'); ?></span>";
+		$ivlibext = "<span style='color: green'>".$lang->phrase('admin_misc_ok')."</span>";
 	}
 	else {
-		$ivlibext = "<span style='color: red'><?php echo $lang->phrase('admin_misc_n_a'); ?></span>";
+		$ivlibext = "<span style='color: red'>".$lang->phrase('admin_misc_n_a')."</span>";
 	}
 	if (in_array("mbstring", $ext)) {
-		$mblibext = "<span style='color: green'><?php echo $lang->phrase('admin_misc_ok'); ?></span>";
+		$mblibext = "<span style='color: green'>".$lang->phrase('admin_misc_ok')."</span>";
 	}
 	else {
-		$mblibext = "<span style='color: red'><?php echo $lang->phrase('admin_misc_n_a'); ?></span>";
+		$mblibext = "<span style='color: red'>".$lang->phrase('admin_misc_n_a')."</span>";
 	}
 	if (in_array("mhash", $ext)) {
-		$mhashext = "<span style='color: green'><?php echo $lang->phrase('admin_misc_ok'); ?></span>";
+		$mhashext = "<span style='color: green'>".$lang->phrase('admin_misc_ok')."</span>";
 	}
 	else {
-		$mhashext = "<span style='color: red'><?php echo $lang->phrase('admin_misc_n_a'); ?></span>";
+		$mhashext = "<span style='color: red'>".$lang->phrase('admin_misc_n_a')."</span>";
 	}
 
 	if (version_compare(PHP_VERSION, '4.1.0', '>=')) {

@@ -319,7 +319,7 @@ $lang['admin_pic_quality_captcha'] = 'CAPTCHA: Quality of the picture:';
 $lang['admin_pic_quality_captcha_info'] = 'In percent (100 = very good, 0 = impossible to read). Only possible when you use JPEG pictures.';
 $lang['admin_positions_for_navigation'] = 'Positions for Navigation:';
 $lang['admin_positions_for_navigation1'] = 'Format:';
-$lang['admin_positions_for_navigation2'] = 'Each entry in a new line: <code>value=title</code><br /><code>value</code> is a value which can only contain letters, numbers and underscores with a maximum of 10 chars.<br /><code>title</code> is a one line value shown in the select box.';
+$lang['admin_positions_for_navigation2'] = 'Each entry in a new line: <code>value=title</code><br /><code>value</code> is the key for the navigation menu which can only contain letters, numbers and underscores with a maximum of 10 chars.<br /><code>title</code> is the shown title for the navigation menu position';
 $lang['admin_postrating_show_only_with_x_votes'] = 'Do not show the rating until a minimum amount of votes are received:';
 $lang['admin_posts_per_page'] = 'Number of Posts per Page:';
 $lang['admin_prefix_cookies'] = 'Prefix for cookies:';
