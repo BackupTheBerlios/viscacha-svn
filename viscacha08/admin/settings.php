@@ -907,11 +907,11 @@ elseif ($job == 'email') {
 	   <td class="mbox" width="50%"><input type="checkbox" name="smtp_auth" value="1"<?php echo iif($config['smtp_auth'] == 1,' checked="checked"'); ?>></td>
 	  </tr>
 	  <tr>
-	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_smtp_username'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_smtp_username_info'); ?></span></td>
+	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_smtp_username'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_smtp_username_pw_info'); ?></span></td>
 	   <td class="mbox" width="50%"><input type="text" name="smtp_username" value="<?php echo $config['smtp_username']; ?>" size="50"></td>
 	  </tr>
 	  <tr>
-	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_smtp_password'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_smtp_password_info'); ?></span></td>
+	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_smtp_password'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_smtp_username_pw_info'); ?></span></td>
 	   <td class="mbox" width="50%"><input type="text" name="smtp_password" value="<?php echo $config['smtp_password']; ?>" size="50"></td>
 	  </tr>
 	  <tr>
@@ -1214,7 +1214,7 @@ elseif ($job == 'spellcheck') {
 	   <td class="mbox" width="50%"><input type="checkbox" name="spellcheck" value="1"<?php echo iif($config['spellcheck'] == 1,' checked="checked"'); ?>></td>
 	  </tr>
 	  <tr>
-	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_spellcheck_system'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_spellcheck_system_info'); ?> <?php echo $ps; ?><?php echo $lang->phrase('admin_spellcheck_system_info_ws'); ?></span></td>
+	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_spellcheck_system'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_spellcheck_system_info'); ?></span></td>
 	   <td class="mbox" width="50%"><select name="pspell">
 	   <option value="pspell"<?php echo iif($config['pspell'] == 'pspell', ' selected="selected"'); ?>><?php echo $lang->phrase('admin_spellcheck_pspell_aspell'); ?></option>
 	   <option value="mysql"<?php echo iif($config['pspell'] == 'mysql', ' selected="selected"'); ?>><?php echo $lang->phrase('admin_spellcheck_mysql_php'); ?></option>
@@ -1614,7 +1614,7 @@ elseif ($job == 'sitestatus') {
 	<form name="form" method="post" action="admin.php?action=settings&job=sitestatus2">
 	 <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
 	  <tr>
-	   <td class="obox" colspan="2"><?php echo $lang->phrase('admin_viscacha_on_off'); ?></td>
+	   <td class="obox" colspan="2"><?php echo $lang->phrase('admin_switch_viscacha_on_off'); ?></td>
 	  </tr>
 	  <tr>
 	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_switch_off'); ?><br><span class="stext"><?php echo $lang->phrase('admin_switch_off_info'); ?></span></td>
@@ -2317,7 +2317,7 @@ elseif ($job == 'new') {
 <td class="mbox" width="60%"><textarea name="typevalue" rows="6" cols="50"></textarea></td>
 </tr>
 <tr>
-<td class="mbox" width="40%"> <?php echo $lang->phrase('admin_standard_value'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_standard_value_info'); ?></span></td>
+<td class="mbox" width="40%"><?php echo $lang->phrase('admin_standard_value'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_standard_value_info'); ?></span></td>
 <td class="mbox" width="60%"><input type="text" name="value" value="" size="40"></td>
 </tr>
 <tr><td class="ubox" colspan="2" align="center"><input type="submit" value="<?php echo $lang->phrase('admin_form_add_setting'); ?>"></td></tr>
@@ -2485,8 +2485,8 @@ else {
 		</td>
 	  </tr>
 	  <tr class="mbox">
-		<td nowrap="nowrap"><a href="admin.php?action=settings&amp;job=email"><?php echo $lang->phrase('admin_setting_email-option'); ?></a></td>
-		<td class="stext"><?php echo $lang->phrase('admin_setting_email-option_info'); ?></td>
+		<td nowrap="nowrap"><a href="admin.php?action=settings&amp;job=email"><?php echo $lang->phrase('admin_setting_email_option'); ?></a></td>
+		<td class="stext"><?php echo $lang->phrase('admin_setting_email_option_info'); ?></td>
 		<td>
 		  <form name="act" action="admin.php?action=locate" method="post">
 		    <select style="width: 80%" size="1" name="url" onchange="locate(this.value)">
@@ -2768,7 +2768,7 @@ if ($db->num_rows($result) > 0) {
 	  </td>
 	 </tr>
 	 <tr class="ubox">
-	  <td nowrap="nowrap" width="27%"><?php echo $lang->phrase('admin_setting_section'); ?></td>
+	  <td nowrap="nowrap" width="27%"><?php echo $lang->phrase('admin_setting_sections'); ?></td>
 	  <td width="50%"><?php echo $lang->phrase('admin_setting_description'); ?></td>
 	  <td nowrap="nowrap" width="23%"><?php echo $lang->phrase('admin_setting_option'); ?></td>
 	 </tr>

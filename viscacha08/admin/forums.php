@@ -685,7 +685,7 @@ elseif ($job == 'forum_add') {
    <td class="mbox"><?php echo $lang->phrase('admin_forum_description'); ?><br />
    <span class="stext">
    <?php echo $lang->phrase('admin_forum_info_short_description'); ?><br />
-   <?php echo $lang->phrase('dmin_forum_html_bbcode'); ?></span></td>
+   <?php echo $lang->phrase('admin_forum_html_bbcode'); ?></span></td>
    <td class="mbox"><textarea name="description" rows="3" cols="70"></textarea></td>
   </tr>
   <tr>
