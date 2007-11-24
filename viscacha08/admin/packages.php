@@ -1905,7 +1905,7 @@ elseif ($job == 'plugins_edit') {
 	  <td><strong><?php echo $package['title']; ?></strong></td>
 	 </tr>
 	 <tr class="mbox">
-	  <td>Hook:</td>
+	  <td><?php echo $lang->phrase('admin_packages_plugins_add_hook'); ?></td>
 	  <td>
 	  <?php if (is_id($pluginid) && $package['required'] == 0) { ?>
 	  <select name="hook" id="hook">
@@ -1953,7 +1953,7 @@ elseif ($job == 'plugins_edit') {
 	 </tr>
 	 <?php if ($package['required'] == 0 && is_id($pluginid)) { ?>
 	 <tr class="mbox">
-	  <td>Active:</td>
+	  <td><?php echo $lang->phrase('admin_packages_plugins_add_active'); ?></td>
 	  <td><input type="checkbox" name="active" value="1"<?php echo iif($package['active'] == 1, ' checked="checked"'); ?> /></td>
 	 </tr>
 	 <?php } else { ?>
@@ -2161,11 +2161,11 @@ elseif ($job == 'plugins_add2') {
 	 </tr>
 	 <tr class="mbox">
 	  <td width="25%">
-	  $lang->phrase('admin_packages_file_for_code')
+	   <?php echo $lang->phrase('admin_packages_file_for_code'); ?>
 	  	<br />
 	  	<?php
 	  		$path_temp = '<code>'.$config['fpath'].'/modules/'.$package['id'].'/</code>';
-	  		echo '<span class="stext">'.$lang->phrase('admin_packages_file_for_code_text').'</span>';
+	  		echo '<span class="stext">'.$lang->phrase('admin_packages_file_for_code_text').$lang->phrase('admin_packages_file_for_code_text_ext').'</span>';
 	  	?>
 	  </td>
 	  <td width="75%"><input type="text" name="file" size="40" value="<?php echo $codefile; ?>" /></td>
@@ -2307,7 +2307,7 @@ elseif ($job == 'plugins_template') {
 	 <tr>
 	  <td class="obox" colspan="3">
 	  <span style="float: right;"><a class="button" href="javascript: self.close();"><?php echo $lang->phrase('admin_packages_plugins_template_close_window'); ?></a></span>
-	 $lang->phrase('admin_packages_plugins_template_manage_templates_for_package')<?php echo $data['title']; ?></td>
+	  <?php echo $lang->phrase('admin_packages_plugins_template_manage_templates_for_package').$data['title']; ?></td>
 	 </tr>
 	 <?php if (isset($ini['template']) && count($ini['template']) > 0) { ?>
 	 <tr class="mbox">

@@ -2301,7 +2301,7 @@ elseif ($job == 'new') {
 <td class="mbox" width="60%"><input type="text" name="name" value="" size="40"></td>
 </tr>
 <tr>
-<td class="mbox" width="40%"><?php echo $lang->phrase('admin_setting-type'); ?></td>
+<td class="mbox" width="40%"><?php echo $lang->phrase('admin_setting_type'); ?></td>
 <td class="mbox" width="60%">
 <select name="type">
 <option value="select"><?php echo $lang->phrase('admin_type_select'); ?></option>
@@ -2443,7 +2443,7 @@ else {
 		  	  <option value="admin.php?action=cms&job=nav"><?php echo $lang->phrase('admin_select_navigation_manager'); ?></option>
 		  	  <option value="admin.php?action=packages&job=packages"><?php echo $lang->phrase('admin_package_manager'); ?></option>
 		  	  <option value="admin.php?action=cms&job=doc"><?php echo $lang->phrase('admin_select_docoments_pages'); ?></option>
-		  	  <option value="admin.php?action=explorer"><?php echo $lang->phrase('admin_select_file_manager'); ?></option>
+		  	  <option value="admin.php?action=explorer"><?php echo $lang->phrase('admin_select_filemanager'); ?></option>
 	        </select> <input style="width: 18%" type="submit" value="<?php echo $lang->phrase('admin_form_go'); ?>">
 		  </form>
 		</td>
@@ -2492,8 +2492,7 @@ else {
 		    <select style="width: 80%" size="1" name="url" onchange="locate(this.value)">
 		      <option value="" style="font-weight: bold;"><?php echo $lang->phrase('admin_select_tools'); ?></option>
 		  	  <option value="admin.php?action=misc&amp;job=sessionmails"><?php echo $lang->phrase('admin_select_trash_email'); ?></option>
-		  	  <option value="admin.php?action=members&amp;job=newsletter"><?php echo $lang->phrase('admin_select_newsletter_manager'); ?></option>
-		  	  <option value="admin.php?action=members&amp;job=emaillist"><?php echo $lang->phrase('admin_select_export_email'); ?></option>
+		  	  <option value="admin.php?action=members&amp;job=emailsearch"><?php echo $lang->phrase('admin_select_newsletter_manager'); ?></option>
 		  	  <option value="admin.php?action=language&amp;job=lang_emails&amp;id=<?php echo $config['langdir']; ?>"><?php echo $lang->phrase('admin_select_email_texts'); ?></option>
 	        </select> <input style="width: 18%" type="submit" value="<?php echo $lang->phrase('admin_form_go'); ?>">
 		  </form>
@@ -2562,19 +2561,18 @@ else {
 		<td>
 		  <form name="act" action="admin.php?action=locate" method="post">
 		    <select style="width: 80%" size="1" name="url" onchange="locate(this.value)">
-		      <option value="" style="font-weight: bold;">-- Tools --</option>
-		  	  <option value="admin.php?action=members&amp;job=manage">Manage Member</option>
-		  	  <option value="admin.php?action=members&amp;job=search">Search for Members</option>
-		  	  <option value="admin.php?action=members&amp;job=memberrating">Memberratings</option>
-		  	  <option value="admin.php?action=members&amp;job=activate">Moderate/Unlock Members</option>
-		  	  <option value="admin.php?action=groups&amp;job=manage">Usergroup Manager</option>
-		  	  <option value="admin.php?action=profilefield&amp;job=manage">Profile Field Manager</option>
-		  	  <option value="admin.php?action=members&amp;job=ips">Search IP Addresses</option>
-		  	  <option value="admin.php?action=members&amp;job=banned">Banned Members and IP Addresses</option>
-		  	  <option value="admin.php?action=forums&amp;job=mods">Moderator Manager</option>
-		  	  <option value="admin.php?action=members&amp;job=newsletter">Newsletter Manager</option>
-		  	  <option value="admin.php?action=members&amp;job=emaillist">Export E-mail Addresses</option>
-	        </select> <input style="width: 18%" type="submit" value="Go">
+		      <option value="" style="font-weight: bold;"><?php echo $lang->phrase('admin_select_tools'); ?></option>
+		  	  <option value="admin.php?action=members&amp;job=manage"><?php echo $lang->phrase('admin_select_manage_member'); ?></option>
+		  	  <option value="admin.php?action=members&amp;job=search"><?php echo $lang->phrase('admin_select_search_member'); ?></option>
+		  	  <option value="admin.php?action=members&amp;job=memberrating"><?php echo $lang->phrase('admin_select_memberrating'); ?></option>
+		  	  <option value="admin.php?action=members&amp;job=activate"><?php echo $lang->phrase('admin_select_moderate_members'); ?></option>
+		  	  <option value="admin.php?action=groups&amp;job=manage"><?php echo $lang->phrase('admin_select_usergroup_manager'); ?></option>
+		  	  <option value="admin.php?action=profilefield&amp;job=manage"><?php echo $lang->phrase('admin_select_profile_field_manager'); ?></option>
+		  	  <option value="admin.php?action=members&amp;job=ips"><?php echo $lang->phrase('admin_select_search_ip'); ?></option>
+		  	  <option value="admin.php?action=members&amp;job=banned"><?php echo $lang->phrase('admin_select_banned_members_ip'); ?></option>
+		  	  <option value="admin.php?action=forums&amp;job=mods"><?php echo $lang->phrase('admin_select_moderator_manager'); ?></option>
+		  	  <option value="admin.php?action=members&amp;job=emailsearch"><?php echo $lang->phrase('admin_select_newsletter_manager'); ?></option>
+	        </select> <input style="width: 18%" type="submit" value="<?php echo $lang->phrase('admin_form_go'); ?>">
 		  </form>
 		</td>
 	  </tr>
@@ -2679,7 +2677,7 @@ else {
 		  <form name="act" action="admin.php?action=locate" method="post">
 		    <select style="width: 80%" size="1" name="url" onchange="locate(this.value)">
 		      <option value="" style="font-weight: bold;"><?php echo $lang->phrase('admin_select_tools'); ?></option>
-		  	  <option value="admin.php?action=explorer"><?php echo $lang->phrase('admin_select_file_manager'); ?></option>
+		  	  <option value="admin.php?action=explorer"><?php echo $lang->phrase('admin_select_filemanager'); ?></option>
 		  	  <option value="admin.php?action=misc&amp;job=phpinfo"><?php echo $lang->phrase('admin_select_php_info'); ?></option>
 		  	  <option value="admin.php?action=misc&amp;job=cache"><?php echo $lang->phrase('admin_select_cache_manager'); ?></option>
 	        </select> <input style="width: 18%" type="submit" value="<?php echo $lang->phrase('admin_form_go'); ?>">

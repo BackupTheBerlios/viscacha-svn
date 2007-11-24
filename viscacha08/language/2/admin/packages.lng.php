@@ -106,6 +106,8 @@ $lang['admin_packages_err_this_package_is_required_you_cannot_change_the_status'
 $lang['admin_packages_err_this_plugin_is_required_you_cannot_change_the_status'] = 'This plugin is required. You can not change the status.';
 $lang['admin_packages_export'] = 'Export';
 $lang['admin_packages_file_for_code'] = 'File for Code:';
+$lang['admin_packages_file_for_code_text'] = 'In this file the code will be saved. The file is located in the folder {$path_temp}.';
+$lang['admin_packages_file_for_code_text_ext'] = ' If the file exists, the code above will be ignored.';
 $lang['admin_packages_form_submit'] = 'Submit';
 $lang['admin_packages_head_delete_package'] = 'Delete Package';
 $lang['admin_packages_head_edit_the_package_foo'] = 'Edit the Package "{@row->title}"';

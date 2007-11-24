@@ -106,6 +106,8 @@ $lang['admin_packages_err_this_package_is_required_you_cannot_change_the_status'
 $lang['admin_packages_err_this_plugin_is_required_you_cannot_change_the_status'] = 'Dieses Plugin wird benötigt. Sie können den Status nicht ändern.';
 $lang['admin_packages_export'] = 'Exportieren';
 $lang['admin_packages_file_for_code'] = 'Datei für Quelltext:';
+$lang['admin_packages_file_for_code_text'] = 'In diese Datei wird der Quelltext gespeichert. Die Datei wird im Verzeichnis {$path_temp} abgelegt.';
+$lang['admin_packages_file_for_code_text_ext'] = ' Wenn die Datei bereits existiert, wird der oben angegebene Quelltext ignoriert.';
 $lang['admin_packages_form_submit'] = 'Senden';
 $lang['admin_packages_head_delete_package'] = 'Paket löschen';
 $lang['admin_packages_head_edit_the_package_foo'] = 'Ändere das Paket "{@row->title}"';
