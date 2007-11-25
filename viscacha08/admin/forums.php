@@ -549,27 +549,27 @@ elseif ($job == 'forum_edit2') {
 	$error = array();
 	$result = $db->query("SELECT * FROM {$db->pre}forums WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	if ($db->num_rows($result) == 0) {
-		$error[] = 'Invalid ID given';
+		$error[] = $lang->phrase('admin_forum_invalid_id');
 	}
 	$data = $db->fetch_assoc($result);
 	if (strlen($name) < 2) {
-		$error[] = 'Name is too short (Minimum: 2 characters)';
+		$error[] = $lang->phrase('admin_forum_name_short');
 	}
 	if (strlen($name) > 200) {
-		$error[] = 'Name is too long (Maximum: 200 characters)';
+		$error[] = $lang->phrase('admin_forum_name_long');
 	}
 	if ($message_active > 0 && strlen($message_title) < 2) {
-		$error[] = 'Title for Forum Rules is too short (Minimum: 2 characters)';
+		$error[] = $lang->phrase('admin_forum_rules_title_short');
 	}
 	if ($message_active > 0 && strlen($message_title) > 200) {
-		$error[] = 'Title for Forum Rules is too long (Maximum: 200 characters)';
+		$error[] = $lang->phrase('admin_forum_rules_title_long');
 	}
 	if (strlen($opt_re) > 255) {
-		$error[] = 'Link is too long (Maximum: 255 characters)';
+		$error[] = $lang->phrase('admin_forum_link_too_long');
 	}
 	$result = $db->query("SELECT id FROM {$db->pre}categories WHERE id = '{$parent}' LIMIT 1");
 	if ($db->num_rows($result) != 1) {
-		$error[] = 'No valid parent category choosen.';
+		$error[] = $lang->phrase('admin_forum_parent_cat_invalid');
 	}
 	if (count($error) > 0) {
 		error('admin.php?action=forums&job=forum_edit&id='.$id, $error);
@@ -837,23 +837,23 @@ elseif ($job == 'forum_add2') {
 
 	$error = array();
 	if (strlen($name) < 2) {
-		$error[] = 'Name is too short (Minimum: 2 characters)';
+		$error[] = $lang->phrase('admin_forum_name_short');
 	}
 	if (strlen($name) > 200) {
-		$error[] = 'Name is too long (Maximum: 200 characters)';
+		$error[] = $lang->phrase('admin_forum_name_long');
 	}
 	if ($message_active > 0 && strlen($message_title) < 2) {
-		$error[] = 'Title for Forum Rules is too short (Minimum: 2 characters)';
+		$error[] = $lang->phrase('admin_forum_rules_title_short');
 	}
 	if ($message_active > 0 && strlen($message_title) > 200) {
-		$error[] = 'Title for Forum Rules is too long (Maximum: 200 characters)';
+		$error[] = $lang->phrase('admin_forum_rules_title_long');
 	}
 	if (strlen($opt_re) > 255) {
-		$error[] = 'Link is too long (Maximum: 255 characters)';
+		$error[] = $lang->phrase('admin_forum_link_too_long');
 	}
 	$result = $db->query("SELECT id FROM {$db->pre}categories WHERE id = '{$parent}' LIMIT 1");
 	if ($db->num_rows($result) != 1) {
-		$error[] = 'No valid parent category choosen.';
+		$error[] = $lang->phrase('admin_forum_parent_cat_invalid');
 	}
 	if (count($error) > 0) {
 		error('admin.php?action=forums&job=forum_add', $error);
@@ -995,7 +995,7 @@ elseif ($job == 'forum_add2') {
 		$delobj = $scache->load('parent_forums');
 		$delobj->delete();
 
-		ok('admin.php?action=forums&job=manage', 'Forum successfully added!');
+		ok('admin.php?action=forums&job=manage', $lang->phrase('admin_forum_successfully_added'));
 	}
 }
 elseif ($job == 'forum_recount') {
@@ -1003,10 +1003,10 @@ elseif ($job == 'forum_recount') {
 	$id = $gpc->get('id', int);
 	if (!is_id($id)) {
 		echo head();
-		error('admin.php?action=forums&job=manage', 'Forum or Category was not found on account of an invalid ID.');
+		error('admin.php?action=forums&job=manage', $lang->phrase('admin_forum_not_found_id'));
 	}
 	UpdateBoardStats($id);
-	ok('admin.php?action=forums&job=manage', 'Statistics successfully recounted!');
+	ok('admin.php?action=forums&job=manage', $lang->phrase('admin_forum_stats_recounted'));
 }
 elseif ($job == 'cat_move' || $job == 'forum_move') {
     $id = $gpc->get('id', int);
@@ -1014,7 +1014,7 @@ elseif ($job == 'cat_move' || $job == 'forum_move') {
 
 	if (!is_id($id)) {
 		echo head();
-		error('admin.php?action=forums&job=manage', 'Forum or Category was not found on account of an invalid ID.');
+		error('admin.php?action=forums&job=manage', $lang->phrase('admin_forum_not_found_id'));
 	}
 
 	$table = iif($job == 'cat_move', "{$db->pre}categories", "{$db->pre}forums");
@@ -1095,18 +1095,18 @@ elseif ($job == 'rights_ajax_changeperm') {
 	$id = $gpc->get('id', int);
 	$key = $gpc->get('key', str);
 	if(!is_id($id) || !in_array($key, $glk_forums)) {
-		die('The id or the key is not valid!');
+		die($lang->phrase('admin_forum_invalid_id'));
 	}
 	$result = $db->query("SELECT `f_{$key}` AS `{$key}`, gid FROM {$db->pre}fgroups WHERE fid = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	$perm = $db->fetch_assoc($result);
 	if ($db->num_rows($result) == 0) {
-		die('Not found!');
+		die($lang->phrase('admin_forum_not_found'));
 	}
 	if (in_array($key, $guest_limitation)) {
 		$result = $db->query("SELECT id FROM {$db->pre}groups WHERE guest = '1' LIMIT 1");
 		$row = $db->fetch_assoc($result);
 		if ($perm['gid'] == $row['id']) {
-			die('Guests can not vote or edit posts!');
+			die($lang->phrase('admin_forum_rights_guest_limit'));
 		}
 	}
 	$perm = invert($perm[$key]);
@@ -1119,7 +1119,7 @@ elseif ($job == 'rights_add') {
 	echo head();
 	$id = $gpc->get('id', int);
 	if ($id == 0) {
-		error('admin.pgp?action=forums&job=manage', 'Forum not found');
+		error('admin.pgp?action=forums&job=manage', $lang->phrase('admin_forum_not_found_id'));
 	}
 	$result = $db->query("SELECT id, name FROM {$db->pre}groups ORDER BY admin DESC , guest ASC , core ASC", __LINE__, __FILE__);
 	$result2 = $db->query("SELECT gid FROM {$db->pre}fgroups WHERE bid = '{$id}'", __LINE__, __FILE__);
@@ -1180,7 +1180,7 @@ elseif ($job == 'rights_add2') {
 
 	$db->query("SELECT * FROM {$db->pre}fgroups WHERE bid = '{$id}' AND gid = '{$group}'", __LINE__, __FILE__);
 	if ($db->num_rows($result) > 0) {
-		error('admin.php?action=forums&job=rights&id='.$id, 'Für die angegebene Gruppe besteht schon ein Eintrag!');
+		error('admin.php?action=forums&job=rights&id='.$id, $lang->phrase('admin_forum_group_entry_exists'));
 	}
 
 	$result = $db->query("SELECT id FROM {$db->pre}groups WHERE guest = '1' LIMIT 1");
@@ -1207,17 +1207,17 @@ elseif ($job == 'rights_add2') {
 	if ($db->affected_rows() == 1) {
 		$delobj = $scache->load('fgroups');
 		$delobj->delete();
-		ok('admin.php?action=forums&job=rights&id='.$id, 'Data successfully inserted!');
+		ok('admin.php?action=forums&job=rights&id='.$id);
 	}
 	else {
-		error('admin.php?action=forums&job=rights_add&id='.$id, 'There was an error while inserting data!');
+		error('admin.php?action=forums&job=rights_add&id='.$id);
 	}
 }
 elseif ($job == 'rights_delete') {
 	echo head();
 	$id = $gpc->get('id', int);
 	if (!is_id($id)) {
-		error('admin.pgp?action=forums&job=manage', 'Forum not found');
+		error('admin.pgp?action=forums&job=manage', $lang->phrase('admin_forum_not_found_id'));
 	}
 	$did = $gpc->get('delete', arr_int);
 	if (count($did) > 0) {
@@ -1225,10 +1225,10 @@ elseif ($job == 'rights_delete') {
 		$anz = $db->affected_rows();
 		$delobj = $scache->load('fgroups');
 		$delobj->delete();
-		ok('admin.php?action=forums&job=rights&id='.$id, $anz.' entries deleted!');
+		ok('admin.php?action=forums&job=rights&id='.$id, $lang->phrase('admin_forum_entries_deleted'));
 	}
 	else {
-		error('admin.php?action=forums&job=rights&id='.$id, 'You have not chosen which entry shall be deleted!');
+		error('admin.php?action=forums&job=rights&id='.$id, $lang->phrase('admin_forum_rights_nothing_chosen'));
 	}
 }
 elseif ($job == 'cat_add') {
@@ -1289,10 +1289,10 @@ elseif ($job == 'cat_add2') {
 	$position = null;
 
 	if (strlen($name) < 2) {
-		error('admin.php?action=forums&job=cat_add', 'Name is too short (Minimum: 2 characters)');
+		error('admin.php?action=forums&job=cat_add', $lang->phrase('admin_forum_name_short'));
 	}
 	elseif (strlen($name) > 200) {
-		error('admin.php?action=forums&job=cat_add', 'Name is too long (Maximum: 200 characters)');
+		error('admin.php?action=forums&job=cat_add', $lang->phrase('admin_forum_name_long'));
 	}
 
 	$positions = array();
@@ -1337,7 +1337,7 @@ elseif ($job == 'cat_add2') {
 	$delobj = $scache->load('forumtree');
 	$delobj->delete();
 
-	ok('admin.php?action=forums&job=manage', 'Category successfully created!');
+	ok('admin.php?action=forums&job=manage', $lang->phrase('admin_forum_cat_created'));
 }
 elseif ($job == 'cat_edit') {
 	echo head();
@@ -1345,7 +1345,7 @@ elseif ($job == 'cat_edit') {
 
 	$result = $db->query("SELECT id, name, description, parent FROM {$db->pre}categories WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	if ($db->num_rows($result) == 0) {
-		error('admin.pgp?action=forums&job=manage', 'Category not found');
+		error('admin.pgp?action=forums&job=manage', $lang->phrase('admin_forum_cat_not_found'));
 	}
 	$row = $gpc->prepare($db->fetch_assoc($result));
 	?>
@@ -1412,10 +1412,10 @@ elseif ($job == 'cat_edit2') {
 	}
 
 	if (strlen($name) < 2) {
-		error('admin.php?action=forums&job=cat_edit&id='.$id, 'Name is too short (Minimum: 2 characters)');
+		error('admin.php?action=forums&job=cat_edit&id='.$id, $lang->phrase('admin_forum_name_short'));
 	}
 	elseif (strlen($name) > 200) {
-		error('admin.php?action=forums&job=cat_edit&id='.$id, 'Name is too long (Maximum: 200 characters)');
+		error('admin.php?action=forums&job=cat_edit&id='.$id, $lang->phrase('admin_forum_name_long'));
 	}
 
 	$db->query("UPDATE {$db->pre}categories SET name = '{$name}', description = '{$description}', parent = '{$parent}' WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
@@ -1426,10 +1426,10 @@ elseif ($job == 'cat_edit2') {
 	$delobj->delete();
 
 	if ($parent_notice == false) {
-		ok('admin.php?action=forums&job=manage', 'Category successfully edited!');
+		ok('admin.php?action=forums&job=manage', $lang->phrase('admin_forum_cat_edited'));
 	}
 	else{
-		error('admin.php?action=forums&job=manage', 'Category successfully edited, but the parent forum was not changed, because you had specified a subforum of this category.');
+		error('admin.php?action=forums&job=manage', $lang->phrase('admin_forum_cat_edit_partially'));
 	}
 }
 elseif ($job == 'cat_delete') {
@@ -1438,7 +1438,7 @@ elseif ($job == 'cat_delete') {
 
 	$result = $db->query("SELECT id FROM {$db->pre}forums WHERE parent = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	if ($db->num_rows($result) > 0) {
-		error('admin.php?action=forums&job=manage', 'Until you can delete this category, you have to delete all forums this category contains.');
+		error('admin.php?action=forums&job=manage', $lang->phrase('admin_forum_delete_all_subforums'));
 	}
 
 	$db->query("DELETE FROM {$db->pre}categories WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
@@ -1448,7 +1448,7 @@ elseif ($job == 'cat_delete') {
 	$delobj = $scache->load('forumtree');
 	$delobj->delete();
 
-	ok('admin.php?action=forums&job=manage', 'Category successfully deleted!');
+	ok('admin.php?action=forums&job=manage', $lang->phrase('admin_forum_cat_deleted'));
 }
 elseif ($job == 'prefix') {
 	echo head();
@@ -1547,7 +1547,7 @@ elseif ($job == 'prefix_edit2') {
 
 	$result = $db->query('SELECT id FROM '.$db->pre.'prefix WHERE bid = "'.$row['bid'].'" AND value = "'.$val.'" AND id != "'.$id.'" LIMIT 1', __LINE__, __FILE__);
 	if ($db->num_rows($result) > 0) {
-		error('admin.php?action=forums&job=prefix&id='.$id, 'This value already exists!');
+		error('admin.php?action=forums&job=prefix&id='.$id, $lang->phrase('admin_forum_prefix_value_exists'));
 	}
 	else {
 		if ($row['standard'] != $standard && $standard == 1) {
@@ -1556,7 +1556,7 @@ elseif ($job == 'prefix_edit2') {
 		$db->query("UPDATE {$db->pre}prefix SET value = '{$val}', standard = '{$standard}' WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 		$delobj = $scache->load('prefix');
 		$delobj->delete();
-		ok('admin.php?action=forums&job=prefix&id='.$row['bid'], 'Prefix successfully edited!');
+		ok('admin.php?action=forums&job=prefix&id='.$row['bid'], $lang->phrase('admin_forum_prefix_changed'));
 	}
 }
 elseif ($job == 'prefix_delete') {
@@ -1567,8 +1567,8 @@ elseif ($job == 'prefix_delete') {
 	$delobj = $scache->load('prefix');
 	$delobj->delete();
 	$db->query('DELETE FROM '.$db->pre.'prefix WHERE id IN('.$did.') AND bid = "'.$id.'"', __LINE__, __FILE__);
-	$i = $db->affected_rows();
-	ok('admin.php?action=forums&job=prefix&id='.$id, $i.' prefixes deleted!');
+	$anz = $db->affected_rows();
+	ok('admin.php?action=forums&job=prefix&id='.$id, $lang->phrase('admin_forum_entries_deleted'));
 }
 elseif ($job == 'prefix_add') {
 	echo head();
@@ -1577,13 +1577,13 @@ elseif ($job == 'prefix_add') {
 	$standard = $gpc->get('standard', int);
 	$result = $db->query('SELECT id FROM '.$db->pre.'prefix WHERE bid = "'.$id.'" AND value = "'.$val.'" LIMIT 1', __LINE__, __FILE__);
 	if ($db->num_rows($result) > 0) {
-		error('admin.php?action=forums&job=prefix&id='.$id, 'This value already exists!');
+		error('admin.php?action=forums&job=prefix&id='.$id, $lang->phrase('admin_forum_prefix_value_exists'));
 	}
 	else {
 		$db->query("INSERT INTO {$db->pre}prefix (bid, value, standard) VALUES ('{$id}', '{$val}', '{$standard}')", __LINE__, __FILE__);
 		$delobj = $scache->load('prefix');
 		$delobj->delete();
-		ok('admin.php?action=forums&job=prefix&id='.$id, 'Prefix successfully added!');
+		ok('admin.php?action=forums&job=prefix&id='.$id, $lang->phrase('admin_forum_prefix_added'));
 	}
 }
 ?>
