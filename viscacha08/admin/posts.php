@@ -243,7 +243,7 @@ elseif ($_GET['job'] == 'reports') {
     }
     ?>
   <tr>
-	<td class="ubox" colspan="5"><span class="right"><?php echo $pages; ?></span><input type="submit" value="Set as done" /></td>
+	<td class="ubox" colspan="5"><span class="right"><?php echo $pages; ?></span><input type="submit" value="<?php echo $lang->phrase('admin_report_reset'); ?>" /></td>
   </tr>
 <?php } ?>
 </table>

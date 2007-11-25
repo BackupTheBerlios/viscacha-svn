@@ -1316,7 +1316,7 @@ elseif ($job == 'com') {
   <tr class="ubox">
    <td width="30%"><?php echo $lang->phrase('admin_packages_com_th_component'); ?></td>
    <td width="30%"><?php echo $lang->phrase('admin_packages_com_th_package'); ?></td>
-   <td width="10%"><?php echo $lang->phrase('admin_packages_com_th_active'); ?></td>
+   <td width="10%"><?php echo $lang->phrase('admin_packages_active'); ?></td>
    <td width="30%"><?php echo $lang->phrase('admin_packages_action'); ?></td>
   </tr>
 <?php

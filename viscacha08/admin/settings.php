@@ -2412,7 +2412,7 @@ else {
 		    <select style="width: 80%" size="1" name="url" onchange="locate(this.value)">
 		      <option value="" style="font-weight: bold;"><?php echo $lang->phrase('admin_select_tools'); ?></option>
 		  	  <option value="admin.php?action=filetypes&job=manage"><?php echo $lang->phrase('admin_select_file_type_manager'); ?></option>
-	        </select> <input style="width: 18%" type="submit" value="Go">
+	        </select> <input style="width: 18%" type="submit" value="<?php echo $lang->phrase('admin_form_go'); ?>">
 		  </form>
 		</td>
 	  </tr>
