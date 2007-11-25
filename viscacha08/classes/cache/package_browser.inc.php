@@ -61,10 +61,16 @@ class cache_package_browser extends CacheItem {
 							if (!isset($this->data[$type])) {
 								$this->data[$type] = array();
 							}
+							if (empty($remotefile)) {
+								continue;
+							}
 							$path = $server.'/'.$remotefile;
 							$content = get_remote($path);
 							if ($content != REMOTE_CLIENT_ERROR) {
 								$new_data = $myini->parse($content);
+								if (!isset($new_data['categories'])) {
+									continue;
+								}
 								foreach ($new_data['categories'] as $cid => $cname) {
 									$this->data[$type]['categories'][$cid] = array(
 										'name' => $cname,

@@ -220,7 +220,7 @@ else {
 	$query_letter =	http_build_query(
 						array(
 							'id' => $_GET['id'],
-							'page' => $_GET['page'],
+							'page' => 1,
 							'sort' => $_GET['sort'],
 							'order' => $_GET['order']
 						)
