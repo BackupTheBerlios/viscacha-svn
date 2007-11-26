@@ -42,15 +42,9 @@ class CacheItem {
 	}
 
 	function export() {
-
+		global $filesystem;
 	    $ser_data = serialize($this->data);
-	    if (file_put_contents($this->file,$ser_data) > 0) {
-	        return true;
-	    }
-	    else {
-	        return false;
-	    }
-
+	    return $filesystem->file_put_contents($this->file, $ser_data);
 	}
 
 	function import() {

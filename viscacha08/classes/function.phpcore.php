@@ -918,8 +918,7 @@ if (!viscacha_function_exists('file_put_contents')) {
 
         // Open the file for writing
         if (($fh = @fopen($filename, $mode, $use_inc_path)) === false) {
-            trigger_error('file_put_contents() failed to open stream: Permission denied',
-                E_USER_WARNING);
+            // trigger_error('file_put_contents() failed to open stream: Permission denied', E_USER_WARNING);
             return false;
         }
 

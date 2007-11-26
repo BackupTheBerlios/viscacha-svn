@@ -166,7 +166,7 @@ class PluginSystem {
 	}
 
 	function _build_code($pos) {
-		global $db;
+		global $db, $filesystem;
 		$group = $this->_group($pos);
 		$file = 'cache/modules/'.$group.'.php';
 
@@ -217,7 +217,7 @@ class PluginSystem {
 	    }
 
 		$save = serialize($code);
-		$save = file_put_contents($file, $save);
+		$filesystem->file_put_contents($file, $save);
 
 		return $code;
 	}

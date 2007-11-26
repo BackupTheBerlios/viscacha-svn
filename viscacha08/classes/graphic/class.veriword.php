@@ -124,7 +124,7 @@ class VeriWord {
 	}
 
 	function set_session() {
-
+		global $filesystem;
 		$fid = md5(microtime());
 		$floods = array();
 		$word = &$this->word;
@@ -148,7 +148,7 @@ class VeriWord {
 		}
 		$save[] = $fid."\t".time()."\t".$word;
 
-		file_put_contents($this->sess_file, implode("\n",$save));
+		$filesystem->file_put_contents($this->sess_file, implode("\n",$save));
 
 		return $fid;
 	}

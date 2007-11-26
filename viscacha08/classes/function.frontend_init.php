@@ -217,7 +217,7 @@ $htaccess = '';
 	    ";
 	}
 
-	@file_put_contents('.htaccess', $htaccess);
+	$filesystem->file_put_contents('.htaccess', $htaccess);
 }
 
 $breadcrumb = new breadcrumb();

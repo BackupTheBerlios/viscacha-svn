@@ -224,7 +224,7 @@ class DB_Driver {
 			$errmsg = str_replace(array("\r\n","\n","\r","\t"), " ", $errmsg);
 			$sru = str_replace(array("\r\n","\n","\r","\t"), " ", $_SERVER['REQUEST_URI']);
 			$new[] = $errno."\t".$errmsg."\t".$errfile."\t".$errline."\t".$errcomment."\t".$sru."\t".time()."\t".PHP_VERSION." (".PHP_OS.")";
-			file_put_contents($this->errlogfile, implode("\n", $new));
+			@file_put_contents($this->errlogfile, implode("\n", $new));
 		}
 		$errcomment = nl2br($errcomment);
 	    return "Database error {$errno}: {$errmsg}<br />File: {$errfile} on line {$errline}<br />Query: <code>{$errcomment}</code>";

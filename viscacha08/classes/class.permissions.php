@@ -63,7 +63,7 @@ function slog () {
  * @return boolean
  */
 function SessionDel () {
-	global $config;
+	global $config, $filesystem;
 
 	if ($config['sessionrefresh'] == 0) {
 		return true;
@@ -73,7 +73,7 @@ function SessionDel () {
 	$handleget = file_get_contents("data/session_del.php");
 	$lastrefresh = $time-$handleget;
 	if ($lastrefresh > $config['sessionrefresh']) {
-		file_put_contents("data/session_del.php",$time);
+		$filesystem->file_put_contents("data/session_del.php",$time);
 		return true;
 	}
 	else {
