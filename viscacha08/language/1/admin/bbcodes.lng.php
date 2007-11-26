@@ -107,6 +107,8 @@ $lang['admin_bbc_title'] = 'Titel';
 $lang['admin_bbc_upload'] = 'Hochladen';
 $lang['admin_bbc_upload_file'] = 'Datei hochladen:';
 $lang['admin_bbc_upload_image'] = 'Bild hochladen';
+$lang['admin_bbc_upload_info'] = 'Um eine Datei hochzuladen, klicken Sie auf "Durchsuchen" und wählen anschließend eine Datei aus. Dann klicken Sie auf "Hochladen", um den Vorgang abzuschließen.';
+$lang['admin_bbc_upload_info2'] = 'Erlaubte Dateitypen: .php<br />Maximale Dateigröße: 200 KB';
 $lang['admin_bbc_url'] = 'URL';
 $lang['admin_bbc_use_option'] = '{option} benutzen';
 $lang['admin_bbc_use_option_desc'] = 'Wenn Sie diese Option auf "Ja" setzen, so können Sie dem BB-Code einen Parameter beigeben. So sind nicht nur einfache BB-Codes wie [tag][/tag] möglich, sondern auch solche: [tag=option][/tag]';

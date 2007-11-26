@@ -1060,7 +1060,7 @@ elseif ($job == 'captcha') {
 	   <td class="obox" colspan="2"><b><?php echo $lang->phrase('admin_spambot_registration'); ?></b></td>
 	  </tr>
 	  <tr>
-	   <td class="mbox" width="50%"$lang->phrase('admin_activate_spambot_registration'):</td>
+	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_activate_spambot_registration'); ?></td>
 	   <td class="mbox" width="50%"><input type="checkbox" name="botgfxtest" value="1"<?php echo iif($config['botgfxtest'] == 1,' checked="checked"'); ?>></td>
 	  </tr>
 	  <tr>

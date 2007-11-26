@@ -20,6 +20,7 @@ $lang['admin_postratings'] = 'Postratings';
 $lang['admin_post_topic_forum'] = 'Post / Topic / Forum';
 $lang['admin_rating_votes'] = 'Rating (Votes)';
 $lang['admin_replies'] = 'Replies';
+$lang['admin_report_reset'] = 'Set as Done';
 $lang['admin_reported_posts'] = 'Reported Posts';
 $lang['admin_reports_set_as_done'] = 'All reports have been set as done.';
 $lang['admin_title_rating'] = 'Postrating &raquo; Choose Forum';

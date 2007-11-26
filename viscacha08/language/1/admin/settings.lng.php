@@ -17,7 +17,7 @@ $lang['admin_activate_newsfeed_info'] = 'Die Newsfeed-Formate können <a href="ad
 $lang['admin_activate_pdf_topics'] = 'Aktiviere PDF-Ausgabe für Themen:';
 $lang['admin_activate_pdf_topics_info'] = 'Diese Einstellung ist unabhängig von den speziellen Benutzerrechten.';
 $lang['admin_activate_spambot_at_guests'] = 'Aktiviere Spam-Bot-Schutz bei Gastbeiträgen';
-$lang['admin_activate_spambot_registration'] = 'Aktiviere Span-Bot-Schutz bei der Registration';
+$lang['admin_activate_spambot_registration'] = 'Aktiviere Span-Bot-Schutz bei der Registration:';
 $lang['admin_activation_admin'] = 'Aktivierung durch den Administrator';
 $lang['admin_activation_email'] = 'Aktivierung per E-Mail';
 $lang['admin_activation_email_and_admin'] = 'Aktivierung per E-Mail und durch den Administrator';
@@ -470,7 +470,7 @@ $lang['admin_setting_posts_topics_info'] = 'Minimale und Maximale Längen, PDF-Au
 $lang['admin_setting_profile_edit'] = 'Profil (Änderung &amp; Ansicht)';
 $lang['admin_setting_profile_edit_info'] = 'Profileinstellungen, Feldlängen, vCards und mehr.';
 $lang['admin_setting_registration'] = 'Registrierung';
-$lang['admin_setting_registration_info'] = 'Eiunstellungen zum Registriervorgang und den Forenregeln.';
+$lang['admin_setting_registration_info'] = 'Einstellungen zum Registriervorgang und den Forenregeln.';
 $lang['admin_setting_scheduled_task'] = 'Geplante Aufgaben (Cron Jobs)';
 $lang['admin_setting_scheduled_task_info'] = 'Einstellungen bezüglich der <a href="admin.php?action=cron&amp;job=manage">geplanten, wiederkehrenden Aufgaben</a> (Cron Jobs).';
 $lang['admin_setting_search'] = 'Suchfunktion';

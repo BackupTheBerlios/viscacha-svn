@@ -1612,22 +1612,18 @@ elseif ($job == 'phrase_add_mailfile') {
   </tr>
   <tr>
    <td class="mbox" width="30%"><?php echo $lang->phrase('admin_lang_text'); ?></td>
-   <td class="mbox" width="70%"><textarea name="tpl" rows="8" cols="80"><mla=compose_mail_filler_text>Hello,
-
-You can compose your text here...
-
-Yours sincerely,
-Your {@config->fname} Team
-{@config->furl}</mla></textarea></td>
+   <td class="mbox" width="70%"><textarea name="tpl" rows="8" cols="80"><?php echo $lang->phrase('admin_lang_mailfile_text'); ?></textarea></td>
   </tr>
   <tr>
    <td class="obox" colspan="2"><?php echo $lang->phrase('admin_lang_translations'); ?></td>
   </tr>
   <tr>
-   <td class="mmbox" colspan="2"><ul>
-	<li>When inserting a custom mail, you may also specify the translations into whatever languages you have installed.</li>
-	<li>If you do leave a translation box (text or title) blank, it will inherit the text or title from the box above.</li>
-   </ul></td>
+   <td class="mmbox" colspan="2">
+   <ul>
+	<li><?php echo $lang->phrase('admin_lang_mailfile_help1'); ?></li>
+	<li><?php echo $lang->phrase('admin_lang_mailfile_help2'); ?></li>
+   </ul>
+   </td>
   </tr>
   <?php while($row = $db->fetch_assoc($result)) { ?>
   <tr>

@@ -77,6 +77,7 @@ $lang['admin_misc_shown_info'] = 'Gibt an, ob dieser Feed angezeigt werden soll.
 $lang['admin_misc_show_feed'] = 'Zeige Feed';
 $lang['admin_misc_spellcheck_add_to_list'] = 'Rechtschreibprüfung &raquo; Wörter zur Wörterliste hinzufügen';
 $lang['admin_misc_spellcheck_add_to_list_info'] = 'Geben Sie hier benutzerdefinierte Wörter ein, die zu Ihrem Wörterbuch hinzugefügt werden sollen und zusätzlich zum Hauptwörterbuch benutzt werden. Pro Wort eine Zeile!';
+$lang['admin_misc_spellcheck_disabled'] = 'Rechtschreibprüfung ist nicht aktiviert.';
 $lang['admin_misc_submit'] = 'Senden';
 $lang['admin_misc_upload'] = 'Hochladen';
 $lang['admin_misc_upload_add'] = 'Hochladen &amp; Hinzufügen';

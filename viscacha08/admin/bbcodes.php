@@ -729,10 +729,8 @@ elseif ($job == 'codefiles') {
 <tr><td class="obox"><?php echo $lang->phrase('admin_bbc_add_highlighting_files'); ?></td></tr>
 <tr><td class="ubox"><?php echo $lang->phrase('admin_bbc_geshi_desc'); ?></td></tr>
 <tr><td class="mbox">
-<mla=highlighting_file_attach_desc>To attach a file, click on the &quot;browse&quot;-button and select a file.
-Then click on &quot;upload&quot; in order to complete the procedure.<br /><br />
-Allowed file types: .php<br />
-Maximum file size: 200 KB</mla><br /><br />
+<?php echo $lang->phrase('admin_bbc_upload_info'); ?><br /><br />
+<?php echo $lang->phrase('admin_bbc_upload_info2'); ?><br /><br />
 <strong><?php echo $lang->phrase('admin_bbc_upload_file'); ?></strong>
 <br /><input type="file" name="upload_0" size="40" />
 </td></tr>

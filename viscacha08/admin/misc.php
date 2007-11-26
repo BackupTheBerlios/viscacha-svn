@@ -593,7 +593,7 @@ elseif ($job == "captcha_fonts") {
 elseif ($job == "spellcheck") {
 	echo head();
 	if (!$config['spellcheck']) {
-		error('admin.php?action=settings&job=spellcheck', 'Spell Check is disabled.');
+		error('admin.php?action=settings&job=spellcheck', $lang->phrase(''));
 	}
 	$dicts = array();
 	$result = $db->query('SELECT id FROM '.$db->pre.'language',__LINE__,__FILE__);

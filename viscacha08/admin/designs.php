@@ -1371,9 +1371,9 @@ elseif ($job == 'confirm_delete') {
 	<tr><td class="mbox">
 	<p align="center"><?php echo $lang->phrase('admin_design_really_delete_this_data'); ?></p>
 	<p align="center">
-	<a href="admin.php?action=designs&job=<?php echo $type; ?>_delete&id=<?php echo $id; ?>"><img border="0" alt="Yes" src="admin/html/images/yes.gif"> <?php echo $lang->phrase('admin_design_yes'); ?></a> // Ja, ich will.
+	<a href="admin.php?action=designs&job=<?php echo $type; ?>_delete&id=<?php echo $id; ?>"><img border="0" alt="<?php echo $lang->phrase('admin_design_yes'); ?>" src="admin/html/images/yes.gif"> <?php echo $lang->phrase('admin_design_yes'); ?></a>
 	&nbsp&nbsp;&nbsp;&nbsp&nbsp;&nbsp;
-	<a href="javascript: history.back(-1);"><img border="0" alt="No" src="admin/html/images/no.gif"> <?php echo $lang->phrase('admin_design_no'); ?></a> // Braut/Braeutigam verlaesst die Kirche.
+	<a href="javascript: history.back(-1);"><img border="0" alt="<?php echo $lang->phrase('admin_design_no'); ?>" src="admin/html/images/no.gif"> <?php echo $lang->phrase('admin_design_no'); ?></a>
 	</p>
 	</td></tr>
 	</table>

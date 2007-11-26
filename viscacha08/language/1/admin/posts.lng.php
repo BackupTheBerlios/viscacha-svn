@@ -20,6 +20,7 @@ $lang['admin_postratings'] = 'Beitragsbewertungen';
 $lang['admin_post_topic_forum'] = 'Beitrag / Thema / Forum';
 $lang['admin_rating_votes'] = 'bewertung (Stimmen)';
 $lang['admin_replies'] = 'Antworten';
+$lang['admin_report_reset'] = 'Als erledigt markieren';
 $lang['admin_reported_posts'] = 'Gemeldete Beiträge';
 $lang['admin_reports_set_as_done'] = 'Alle Meldungen wurden als erledigt markiert.';
 $lang['admin_title_rating'] = 'Beitragsbewertungen &raquo; Auswahl des Forums';

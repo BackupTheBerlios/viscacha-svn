@@ -77,7 +77,7 @@ if ($job == 'package') {
 	  		<?php } ?>
 	  		<a class="button" href="admin.php?action=packages&amp;job=package_edit&amp;id=<?php echo $row['id']; ?>"><?php echo $lang->phrase('admin_packages_edit'); ?></a>
 	  		<?php if ($row['core'] != '1') { ?>
-	  		<a class="button" href="admin.php?action=packages&amp;job=package_active&amp;id=<?php echo $row['id']; ?>"><?php echo iif($row['active'] == 1, 'Deactivate', 'Activate'); ?></a>
+	  		<a class="button" href="admin.php?action=packages&amp;job=package_active&amp;id=<?php echo $row['id']; ?>"><?php echo iif($row['active'] == 1, $lang->phrase('admin_packages_plugins_deactivate'), $lang->phrase('admin_packages_plugins_activate')); ?></a>
 	  		<?php } ?>
 	  		<a class="button" href="admin.php?action=packages&amp;job=package_updates&amp;id=<?php echo $row['id']; ?>"><?php echo $lang->phrase('admin_packages_check_for_updates'); ?></a>
 	  		<a class="button" href="admin.php?action=packages&amp;job=package_export&amp;id=<?php echo $row['id']; ?>"><?php echo $lang->phrase('admin_packages_export'); ?></a>
@@ -1025,7 +1025,8 @@ elseif ($job == 'package_info') {
 	  <tr>
 	   <td class="obox" colspan="2">
 	   <span class="right">
-	   <a class="button" href="admin.php?action=packages&amp;job=package_edit&amp;id=<?php echo $package['id']; ?>"><?php echo $lang->phrase('admin_packages_info_edit'); ?></a>
+	    <a class="button" href="admin.php?action=packages&amp;job=package_delete&amp;id=<?php echo $package['id']; ?>"><?php echo $lang->phrase('admin_packages_delete'); ?></a>
+	    <a class="button" href="admin.php?action=packages&amp;job=package_edit&amp;id=<?php echo $package['id']; ?>"><?php echo $lang->phrase('admin_packages_info_edit'); ?></a>
 	    <?php if (!empty($component_ini['admin']['frontpage']) == true) { ?>
 	  	 <a class="button" href="admin.php?action=packages&amp;job=package_admin&amp;cid=<?php echo $package['id']; ?>"><?php echo $lang->phrase('admin_packages_administration'); ?></a>
 	  	<?php } ?>

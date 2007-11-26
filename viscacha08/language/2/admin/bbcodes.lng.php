@@ -107,6 +107,8 @@ $lang['admin_bbc_title'] = 'Title';
 $lang['admin_bbc_upload'] = 'Upload';
 $lang['admin_bbc_upload_file'] = 'Upload file:';
 $lang['admin_bbc_upload_image'] = 'Upload an image';
+$lang['admin_bbc_upload_info'] = 'To attach a file, click on the &quot;browse&quot;-button and select a file. Then click on &quot;upload&quot; in order to complete the procedure.';
+$lang['admin_bbc_upload_info2'] = 'Allowed file types: .php<br />Maximum file size: 200 KB';
 $lang['admin_bbc_url'] = 'URL';
 $lang['admin_bbc_use_option'] = 'Use {option}';
 $lang['admin_bbc_use_option_desc'] = 'Setting this option to yes will allow you to create a [tag=option][/tag] style tag, rather than just a [tag][/tag] style tag.';
