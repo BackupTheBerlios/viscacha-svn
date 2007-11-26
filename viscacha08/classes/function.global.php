@@ -364,15 +364,15 @@ function copyr($source, $dest) {
         return $filesystem->copy($source, $dest);
     }
     if (!is_dir($dest)) {
-        $filesystem->mkdir($dest);
+        $filesystem->mkdir($dest, 0777);
     }
     $dir = dir($source);
     while (false !== $entry = $dir->read()) {
         if ($entry == '.' || $entry == '..') {
             continue;
         }
-        if ($dest !== "$source/$entry") {
-            copyr("$source/$entry", "$dest/$entry");
+        if ($dest !== "{$source}/{$entry}") {
+            copyr("{$source}/{$entry}", "{$dest}/{$entry}");
         }
     }
 
@@ -416,7 +416,7 @@ function convert2adress($url) {
    $url = strtolower($url);
 
    $find = array(' ',
-      '&quot;',
+      '"',
       '&',
       '\r\n',
       '\n',

@@ -289,7 +289,7 @@ elseif ($job == 'lang_copy2') {
 	$desc = $gpc->get('desc', str);
 	$db->query("INSERT INTO {$db->pre}language (language, detail) VALUES ('{$name}', '{$desc}')");
 	$newid = $db->insert_id();
-	$filesystem->mkdir("language/{$newid}/", 0755);
+	$filesystem->mkdir("language/{$newid}/", 0777);
 	copyr("language/{$id}/", "language/{$newid}/");
 	$delobj = $scache->load('loadlanguage');
 	$delobj->delete();

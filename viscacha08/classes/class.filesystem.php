@@ -99,6 +99,7 @@ class filesystem {
 				if ($this->init()) {
 					fwrite($fp, $data);
 					fseek($fp, 0);
+					$this->ftp->chmod(dirname($file), 0777);
 					$ret = $this->ftp->put($fp, $file);
 				}
 				else {
@@ -124,7 +125,21 @@ class filesystem {
 			$this->mkdir($dir, 0777);
 			$dir = dirname($dir);
 		}
-		return copy($src, $dest);
+		$ret = @copy($src, $dest);
+		if ($ret == false) {
+            $fp = @fopen($file, "r");
+            if (is_resource($fp)) {
+            	if ($this->init()) {
+					$this->ftp->chmod(dirname($file), 0777);
+            		$ret = $this->ftp->put($fp, str_replace(' ', '_', $dest));
+            	}
+            	fclose($fp);
+            }
+		}
+		if ($ret == false) {
+			trigger_error("filesystem::copy({$src}, {$dest}): failed to open stream: Permission denied", E_USER_WARNING);
+		}
+		return $ret;
 	}
 
 	function mkdir($file, $chmod = 0755) {
