@@ -456,9 +456,6 @@ class ftp_base {
 	}
 
 	function put($localfile, $remotefile=NULL, $rest=0) {
-		if (is_null($remotefile)) {
-			$remotefile=$localfile;
-		}
 		if (!@file_exists($localfile) && !is_resource($localfile)) {
 			$this->PushError("put","can't open local file", "No such file or directory \"".$localfile."\"");
 			return FALSE;
@@ -466,8 +463,14 @@ class ftp_base {
 		if (is_resource($localfile)) {
 			$fp = $localfile;
 			$localfile = $remotefile;
+			if (!is_string($remotefile)) {
+				$this->PushError("put","second paramater is not a string", "String needed, when first parameter is resource.");
+			}
 		}
 		else {
+			if (is_null($remotefile)) {
+				$remotefile=$localfile;
+			}
 			$fp = @fopen($localfile, "r");
 			if (!$fp) {
 				$this->PushError("put","can't open local file", "Cannot read file \"".$localfile."\"");
@@ -477,6 +480,9 @@ class ftp_base {
 
 		if($this->_can_restore and $rest!=0) fseek($fp, $rest);
 		$pi=pathinfo($localfile);
+		if (empty($pi["extension"])) {
+			$pi["extension"] = '';
+		}
 		if($this->_type==FTP_ASCII or ($this->_type==FTP_AUTOASCII and in_array(strtoupper($pi["extension"]), $this->AutoAsciiExt))) $mode=FTP_ASCII;
 		else $mode=FTP_BINARY;
 		if(!$this->_data_prepare($mode)) {

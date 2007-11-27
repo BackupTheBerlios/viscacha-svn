@@ -92,7 +92,7 @@ class filesystem {
 		}
 		$this->chmod($file, 0666);
 
-		if (@file_put_contents($file, $data) == false) {
+		if (@file_put_contents($file, $data) === false) {
 			$ret = false;
 			$fp = @tmpfile();
 			if (is_resource($fp) == true) {
