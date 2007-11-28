@@ -46,6 +46,7 @@ if ($job == 'package') {
 	  		<a class="button" href="admin.php?action=packages&amp;job=browser"><?php echo $lang->phrase('admin_packages_browse_packages'); ?></a>
 	  		<a class="button" href="admin.php?action=packages&amp;job=package_import"><?php echo $lang->phrase('admin_packages_import_package'); ?></a>
 	  		<a class="button" href="admin.php?action=packages&amp;job=package_add"><?php echo $lang->phrase('admin_packages_create_package'); ?></a>
+	  		<a class="button" href="admin.php?action=packages&amp;job=package_updates"><?php echo $lang->phrase('admin_packages_check_for_updates'); ?></a>
 	  	</td>
 	  </tr>
 	 </table><br class="minibr" />
@@ -2826,23 +2827,75 @@ elseif ($job == 'plugins_language_edit') {
 elseif ($job == 'package_updates') {
 	$id = $gpc->get('id', int);
 	echo head();
-	$result = $db->query("SELECT internal, version FROM {$db->pre}packages WHERE id = '{$id}'");
-	$data = $db->fetch_assoc($result);
-	if (empty($data['version'])) {
-		error('admin.php?action=packages&job=package', $lang->phrase('admin_packages_err_no_information_about_the_current_version_found'));
-	}
-	$pb = $scache->load('package_browser');
-	$row = $pb->getOne(IMPTYPE_PACKAGE, $data['internal']);
-	if ($row !== false && !empty($row['version'])) {
-		if (version_compare($row['version'], $data['version'], '>')) {
-			ok('admin.php?action=packages&job=browser_detail&id='.$row['internal'].'&package='.IMPTYPE_PACKAGE, $lang->phrase('admin_packages_ok_there_is_a_new_version_foo_on_the_server'), 3000);
+	if (is_id($id)) {
+		$result = $db->query("SELECT internal, version FROM {$db->pre}packages WHERE id = '{$id}'");
+		$data = $db->fetch_assoc($result);
+		if (empty($data['version'])) {
+			error('admin.php?action=packages&job=package', $lang->phrase('admin_packages_err_no_information_about_the_current_version_found'));
 		}
-		else {
-			ok('admin.php?action=packages&job=package_info&id='.$id, $lang->phrase('admin_packages_ok_this_package_seems_to_be_up_to_date'), 3000);
+		$pb = $scache->load('package_browser');
+		$row = $pb->getOne(IMPTYPE_PACKAGE, $data['internal']);
+		if ($row !== false && !empty($row['version'])) {
+			if (version_compare($row['version'], $data['version'], '>')) {
+				ok('admin.php?action=packages&job=browser_detail&id='.$row['internal'].'&package='.IMPTYPE_PACKAGE, $lang->phrase('admin_packages_ok_there_is_a_new_version_foo_on_the_server'), 3000);
+			}
+			else {
+				ok('admin.php?action=packages&job=package_info&id='.$id, $lang->phrase('admin_packages_ok_this_package_seems_to_be_up_to_date'), 3000);
+			}
+			break;
 		}
-		break;
+		ok('admin.php?action=packages&job=package_info&id='.$id, $lang->phrase('admin_packages_ok_the_package_was_not_found_on_one_of_the_known_servers'), 3000);
 	}
-	ok('admin.php?action=packages&job=package_info&id='.$id, $lang->phrase('admin_packages_ok_the_package_was_not_found_on_one_of_the_known_servers'), 3000);
+	else {
+		$result = $db->query("SELECT * FROM {$db->pre}packages GROUP BY internal ORDER BY title", __LINE__, __FILE__);
+		$pb = $scache->load('package_browser');
+		?>
+		 <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
+		  <tr>
+		   <td class="obox" colspan="4"><?php echo $lang->phrase('admin_packages_version_check_all'); ?></td>
+		  </tr>
+		  <tr>
+		  	<td class="ubox" width="30%"><?php echo $lang->phrase('admin_packages_info_name'); ?></td>
+		  	<td class="ubox center" width="15%"><?php echo $lang->phrase('admin_packages_active_version'); ?></td>
+		  	<td class="ubox center" width="15%"><?php echo $lang->phrase('admin_packages_newest_version'); ?></td>
+		  	<td class="ubox" width="40%"><?php echo $lang->phrase('admin_packages_action'); ?></td>
+		  </tr>
+		  <?php
+		  while($row = $db->fetch_assoc($result)) {
+			if (empty($row['version'])) {
+				$row['version'] = $lang->phrase('admin_packages_version_na');
+			}
+			$data = $pb->getOne(IMPTYPE_PACKAGE, $row['internal']);
+			$new = null;
+			if ($data !== false && !empty($data['version'])) {
+				if (version_compare($data['version'], $row['version'], '>')) {
+					$new = true;
+				}
+				elseif (version_compare($data['version'], $row['version'], '<=')) {
+					$new = false;
+				}
+			}
+			else {
+				$data = array(
+					'version' => $lang->phrase('admin_packages_version_na')
+				);
+			}
+			$hl = iif($new !== null, iif($new === true, ' style="color: firebrick;"', ' style="color: forestgreen;"'));
+		  	?>
+		  <tr>
+		  	<td class="mbox"><strong<?php echo $hl; ?>><?php echo $row['title']; ?></strong></td>
+		  	<td class="mbox center"><?php echo $row['version']; ?></td>
+		  	<td class="mbox center"><?php echo $data['version']; ?></td>
+		  	<td class="mbox">
+		  		<a class="button" href="admin.php?action=packages&amp;job=package_info&amp;id=<?php echo $row['id']; ?>"><?php echo $lang->phrase('admin_packages_current_details'); ?></a>
+		  		<a class="button" href="admin.php?action=packages&amp;job=browser_detail&amp;id=<?php echo $row['internal']; ?>&amp;package=<?php echo IMPTYPE_PACKAGE; ?>"><?php echo $lang->phrase('admin_packages_browser_details'); ?></a>
+		  	</td>
+		  </tr>
+		  <?php } ?>
+		 </table>
+		<?php
+		echo foot();
+	}
 }
 elseif ($job == 'browser') {
 	$pb = $scache->load('package_browser');
@@ -3078,11 +3131,11 @@ elseif ($job == 'browser_detail') {
 	   		<?php
 	   		$vc = version_compare($pack['version'], $row['version']);
 	   		if ($vc == 1) { ?>
-	   		<strong style="color: gold;"><?php $foo = $types[$type]; echo $lang->phrase('admin_packages_browser_you_have_installed_a_newer_version_of_this_foo'); ?>.</strong>
+	   		<strong style="color: goldenrod;"><?php $foo = $types[$type]; echo $lang->phrase('admin_packages_browser_you_have_installed_a_newer_version_of_this_foo'); ?>.</strong>
 		    <?php } elseif($vc == -1) { ?>
-		    <strong style="color: darkred;"><?php echo $lang->phrase('admin_packages_browser_you_have_installed_an_old_version'); ?> (<?php echo $pack['version']; ?>)!</strong>
+		    <strong style="color: firebrick;"><?php echo $lang->phrase('admin_packages_browser_you_have_installed_an_old_version'); ?> (<?php echo $pack['version']; ?>)!</strong>
 		    <?php } else { ?>
-		    <strong style="color: darkgreen;"><?php $foo = $types[$type]; echo $lang->phrase('admin_packages_browser_you_have_installed_this_foo'); ?>.</strong>
+		    <strong style="color: forestgreen;"><?php $foo = $types[$type]; echo $lang->phrase('admin_packages_browser_you_have_installed_this_foo'); ?>.</strong>
 	    <?php } } ?>
 	   </td>
 	  </tr>
