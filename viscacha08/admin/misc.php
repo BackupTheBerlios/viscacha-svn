@@ -751,7 +751,7 @@ elseif ($job == "credits") {
 		<strong>Crew</strong>:<br />
 		Software engineer: <a href="http://www.mamo-net.de" target="_blank">Matthias Mohr</a><br />
 		Translations: et al. <a href="http://www.diaznet.de" target="_blank">DiazNet</a><br />
-		<em>Thanks to all testers and users who reported bugs and helped while development./em>
+		<em>Thanks to all testers and users who reported bugs and helped while development.</em>
 	</p>
 	<br class="minibr" />
 	<p>
@@ -784,21 +784,21 @@ elseif ($job == "credits") {
 		<br class="minibr" />
 		<strong><?php echo $lang->phrase('admin_misc_my_server'); ?></strong>:
 		<ul>
-		<li><?php echo $lang->phrase('admin_misc_php_version'); ?> <?php echo PHP_VERSION; ?>,$lang->phrase('admin_misc_compatible')<?php echo $phpv; ?></li>
+		<li><?php echo $lang->phrase('admin_misc_php_version'); ?> <?php echo PHP_VERSION; ?>, <?php echo $lang->phrase('admin_misc_compatible').' '.$phpv; ?></li>
 		<li><?php echo $lang->phrase('admin_misc_server_software'); ?> <?php echo $webserver; ?></li>
 		</ul>
 		<br class="minibr" />
 		<strong><?php echo $lang->phrase('admin_misc_my_php_extensions'); ?></strong>:
 		<ul>
-		<li>PCRE-$lang->phrase('admin_misc_extension')<?php echo $relibext; ?></li>
-		<li>MySQL-$lang->phrase('admin_misc_extension')<?php echo $mylibext; ?> / MySQLi-$lang->phrase('admin_misc_extension')<?php echo $myilibext; ?></li>
-		<li>GD-$lang->phrase('admin_misc_extension')<?php echo $gdlibext; ?></li>
-		<li>Zlib-$lang->phrase('admin_misc_extension')<?php echo $zlibext; ?></li>
-		<li>XML-$lang->phrase('admin_misc_extension')<?php echo $xmllibext; ?></li>
-		<li>PSpell-$lang->phrase('admin_misc_extension')<?php echo $pslibext; ?></li>
-		<li>IconV-$lang->phrase('admin_misc_extension')<?php echo $ivlibext; ?></li>
-		<li>MBString-$lang->phrase('admin_misc_extension')<?php echo $mblibext; ?></li>
-		<li>MHash-$lang->phrase('admin_misc_extension')<?php echo $mhashext; ?></li>
+		<li>PCRE-<?php echo $lang->phrase('admin_misc_extension').' '.$relibext; ?></li>
+		<li>MySQL-<?php echo $lang->phrase('admin_misc_extension').' '.$mylibext; ?> / MySQLi-<?php echo $lang->phrase('admin_misc_extension').' '.$myilibext; ?></li>
+		<li>GD-<?php echo $lang->phrase('admin_misc_extension').' '.$gdlibext; ?></li>
+		<li>Zlib-<?php echo $lang->phrase('admin_misc_extension').' '.$zlibext; ?></li>
+		<li>XML-<?php echo $lang->phrase('admin_misc_extension').' '.$xmllibext; ?></li>
+		<li>PSpell-<?php echo $lang->phrase('admin_misc_extension').' '.$pslibext; ?></li>
+		<li>IconV-<?php echo $lang->phrase('admin_misc_extension').' '.$ivlibext; ?></li>
+		<li>MBString-<?php echo $lang->phrase('admin_misc_extension').' '.$mblibext; ?></li>
+		<li>MHash-<?php echo $lang->phrase('admin_misc_extension').' '.$mhashext; ?></li>
 		</ul>
 	</p>
 	<br class="minibr" />

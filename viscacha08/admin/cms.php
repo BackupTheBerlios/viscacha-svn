@@ -566,7 +566,7 @@ elseif ($job == 'nav_active') {
 elseif ($job == 'nav_addplugin') {
 	echo head();
 	$id = $gpc->get('id', int);
-	$sort = $db->query("SELECT id, name, position FROM {$db->pre}menu WHERE sub = '0' ORDER BY ordering, id", __LINE__, __FILE__);
+	$sort = $db->query("SELECT id, name, position FROM {$db->pre}menu WHERE sub = '0' ORDER BY position, ordering, id", __LINE__, __FILE__);
 	$plugs = $db->query("SELECT id, name FROM {$db->pre}plugins WHERE position = 'navigation' ORDER BY ordering", __LINE__, __FILE__);
 	$groups = $db->query("SELECT id, name FROM {$db->pre}groups", __LINE__, __FILE__);
 	$pos = parseNavPosSetting();
@@ -602,8 +602,11 @@ elseif ($job == 'nav_addplugin') {
 				echo '</optgroup>';
 	   		}
 	   		$last = $row['position'];
-	   		echo '<optgroup label="'.htmlspecialchars($pos[$last], ENT_QUOTES).'">';
-	   		unset($pos[$last]);
+	   		if (!isset($pos[$last])) {
+	   			$pos[$last] = $row['position'];
+	   		}
+		   	echo '<optgroup label="'.htmlspecialchars($pos[$last], ENT_QUOTES).'">';
+		   	unset($pos[$last]);
 	   	}
    		echo '<option value="'.$row['id'].'">'.navLang($row['name']).'</option>';
 	}

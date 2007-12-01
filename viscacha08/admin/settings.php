@@ -2247,6 +2247,11 @@ elseif ($job == 'new_group2') {
 		error('admin.php?action=settings&job=custom', $lang->phrase('admin_group_name_short_long'));
 	}
 
+	$result = $db->query("SELECT id FROM {$db->pre}packages WHERE internal = '{$name}'");
+	$key = $db->fetch_assoc($result);
+	if ($package == 0 && $key['id'] > 0) {
+		$package = $key['id'];
+	}
 	if ($package > 0) {
 		$ini = $myini->read("modules/{$package}/package.ini");
 		$ini['config'] = array(
@@ -2367,6 +2372,11 @@ elseif ($job == 'new2') {
 	$c->updateconfig(array($row['name'], $name), none, $value);
 	$c->savedata();
 
+	$result = $db->query("SELECT id FROM {$db->pre}packages WHERE internal = '{$row['name']}'");
+	$key = $db->fetch_assoc($result);
+	if ($package == 0 && $key['id'] > 0) {
+		$package = $key['id'];
+	}
 	if ($package > 0) {
 		$ini = $myini->read("modules/{$package}/package.ini");
 		$ini['setting_'.$name] = array(

@@ -100,14 +100,14 @@ elseif ($job == 'package_admin') {
 		echo head();
 		error('admin.php?action=cms&job=package',$lang->phrase('admin_packages_err_no_package_with_this_id'));
 	}
-	$row = $db->fetch_assoc($result);
-	$com = $myini->read('modules/'.$row['id'].'/component.ini');
+	$pack = $row = $db->fetch_assoc($result); // $row for compatibility
+	$com = $myini->read('modules/'.$pack['id'].'/component.ini');
 	if (!isset($com['admin'][$mod])) {
 		echo head();
 		error('admin.php?action=cms&job=package',$lang->phrase('admin_packages_err_section_not_found'));
 	}
 
-	DEFINE('COM_ID', $row['id']);
+	DEFINE('COM_ID', $pack['id']);
 	DEFINE('COM_DIR', 'modules/'.COM_ID.'/');
 	if (!isset($com['admin'][$mod])) {
 		DEFINE('COM_MODULE', 'frontpage');
@@ -126,7 +126,7 @@ elseif ($job == 'package_admin') {
 	else {
 		$input = array();
 	}
-	include("modules/{$row['id']}/{$file}");
+	include("modules/{$pack['id']}/{$file}");
 }
 elseif ($job == 'package_import') {
 	echo head();
@@ -879,7 +879,7 @@ elseif ($job == 'package_edit') {
 	   <span class="right">
 	   <?php if (count($sg) > 0) { ?>
 	   <a class="button" href="admin.php?action=settings&amp;job=custom&amp;id=<?php echo $sg['id']; ?>&amp;package=<?php echo $row['id']; ?>"><?php echo $lang->phrase('admin_packages_info_change_settings'); ?></a>
-	   <a class="button" href="admin.php?action=settings&amp;job=new&amp;package=<?php echo $row['id']; ?>"><?php echo $lang->phrase('admin_packages_edit_add_a_new_setting'); ?></a>
+	   <a class="button" href="admin.php?action=settings&amp;job=new&amp;package=<?php echo $row['id']; ?>"><?php echo $lang->phrase('admin_packages_conf_add_a_new_setting'); ?></a>
 	   <a class="button" href="admin.php?action=settings&amp;job=delete_group&amp;id=<?php echo $sg['id']; ?>&amp;package=<?php echo $row['id']; ?>"><?php echo $lang->phrase('admin_packages_edit_delete_all_settings'); ?></a>
 	   <?php } ?>
 	   </span>
@@ -905,7 +905,7 @@ elseif ($job == 'package_edit') {
 				<?php if (count($sg) == 0) { ?>
 				<a class="button" href="admin.php?action=settings&amp;job=new_group&amp;package=<?php echo $row['id']; ?>"><?php echo $lang->phrase('admin_packages_conf_add_a_new_group_for_settings'); ?></a>
 				<?php } else { ?>
-				<a class="button" href="admin.php?action=settings&amp;job=new&amp;package=<?php echo $row['id']; ?>"><?php echo $lang->phrase('admin_packages_edit_add_a_new_setting'); ?></a>
+				<a class="button" href="admin.php?action=settings&amp;job=new&amp;package=<?php echo $row['id']; ?>"><?php echo $lang->phrase('admin_packages_conf_add_a_new_setting'); ?></a>
 				<?php } ?>
 			</td>
 		</tr>
@@ -1110,7 +1110,7 @@ elseif ($job == 'package_info') {
 	  <?php if (is_array($component_ini) && count($component_ini) > 0) { ?>
 	  <tr class="ubox">
 	   <td width="80%"><?php echo $lang->phrase('admin_packages_info_name'); ?></td>
-	   <td width="10%"><?php echo $lang->phrase('admin_packages_info_active'); ?></td>
+	   <td width="10%"><?php echo $lang->phrase('admin_packages_active'); ?></td>
 	   <td width="10%"><?php echo $lang->phrase('admin_packages_info_required'); ?></td>
 	  </tr>
 	  <tr class="mbox">
@@ -1928,7 +1928,7 @@ elseif ($job == 'plugins_edit') {
 	  <td>
 	  <?php echo $lang->phrase('admin_packages_plugins_edit_code'); ?><br /><br />
 	  <ul>
-		<li><a href="admin.php?action=packages&amp;job=plugins_template&amp;id=<?php echo $package['module']; ?>" target="_blank"><?php echo $lang->phrase('admin_packages_plugins_add_add_edit_template'); ?></a></li>
+		<li><a href="admin.php?action=packages&amp;job=plugins_template&amp;id=<?php echo $package['module']; ?>" target="_blank"><?php echo $lang->phrase('admin_packages_plugins_edit_add_edit_templates'); ?></a></li>
 		<li><a href="admin.php?action=packages&amp;job=plugins_language&amp;id=<?php echo $package['module']; ?>" target="_blank"><?php echo $lang->phrase('admin_packages_plugins_add_add_edit_phrase'); ?></a></li>
 	  </ul>
 	  <?php if (count($cp) > 0) { ?>
@@ -2155,7 +2155,7 @@ elseif ($job == 'plugins_add2') {
 	  <span class="stext"><?php echo $lang->phrase('admin_packages_plugins_add_code_text'); ?></span>
 	  <br /><br />
 	  <ul>
-		<li><a href="admin.php?action=packages&amp;job=plugins_template&amp;id=<?php echo $package['id']; ?>" target="_blank"><?php echo $lang->phrase('admin_packages_plugins_add_add_edit_template'); ?></a></li>
+		<li><a href="admin.php?action=packages&amp;job=plugins_template&amp;id=<?php echo $package['id']; ?>" target="_blank"><?php echo $lang->phrase('admin_packages_plugins_edit_add_edit_templates'); ?></a></li>
 		<li><a href="admin.php?action=packages&amp;job=plugins_language&amp;id=<?php echo $package['id']; ?>" target="_blank"><?php echo $lang->phrase('admin_packages_plugins_add_add_edit_phrase'); ?></a></li>
 	  </ul>
 	  </td>
@@ -2671,7 +2671,7 @@ elseif ($job == 'plugins_language_save2') {
 	$id = $gpc->get('id', int);
 	$varname = $gpc->get('varname', none);
 	$text = $gpc->get('text', none);
-	$lang = $gpc->get('langt', none);
+	$langt = $gpc->get('langt', none);
 
 	if (empty($text)) {
 		error('javascript: history.back(-1);', $lang->phrase('admin_packages_err_no_default_text_specified'));
@@ -2684,7 +2684,7 @@ elseif ($job == 'plugins_language_save2') {
 	$data = $db->fetch_assoc($result);
 
 	$c = new manageconfig();
-	foreach ($lang as $id => $t) {
+	foreach ($langt as $id => $t) {
 		if (empty($t)) {
 			$t = $text;
 		}
