@@ -158,6 +158,13 @@ class DB extends DB_Driver { // MySQLi
 	    return @mysqli_insert_id($this->conn);
 	}
 
+	function data_seek($result = null, $pos = 0) {
+		if (!is_object($result)) {
+	    	$result = $this->result;
+	    }
+	    return @mysqli_data_seek($result, $pos);
+	}
+
 	function fetch_object($result = null) {
 		if (!is_object($result)) {
 	    	$result = $this->result;

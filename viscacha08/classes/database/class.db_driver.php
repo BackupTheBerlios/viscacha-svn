@@ -30,7 +30,7 @@ class DB_Driver {
 	var $user;
 	var $pwd;
 	var $open;
-	var $dbname;
+	var $database;
 	var $pre;
 	var $conn;
 	var $result;
@@ -40,6 +40,7 @@ class DB_Driver {
 	var $new_line;
 	var $commentdel;
 	var $errlogfile;
+	var $std_limit;
 
 	function DB_Driver($host="localhost", $user="root", $pwd="", $dbname="", $dbprefix='', $open=false) {
 	    $this->host = $host;
@@ -52,80 +53,61 @@ class DB_Driver {
 	    $this->conn = null;
 	    $this->logerrors = true;
 	    $this->dbqd = array();
+        $this->new_line = "\n";
+        $this->commentdel = '-- ';
+        $this->std_limit = 1000;
 		if($open) {
 		   $this->open();
 		}
 	}
 
-    function backup_settings($new_line = "\n", $commentdel = "-- ") {
-        $this->new_line = $new_line;
-        $this->commentdel = $commentdel;
+    function getStructure($table, $drop = 1) {
+    	// Activate Quotes in sql names
+    	$this->query('SET SQL_QUOTE_SHOW_CREATE = 1',__LINE__,__FILE__);
+
+    	$table_data = '';
+        if ($drop == 1) {
+	        $table_data .= $this->new_line . $this->new_line. $this->commentdel.' Delete: ' .$table . $this->new_line;
+	        $table_data .= 'DROP TABLE IF EXISTS '.chr(96).$table.chr(96).';' .$this->new_line;
+	    }
+	    $table_data .= $this->new_line. $this->commentdel.' Create: ' .$table . $this->new_line;
+
+	    $result = $this->query('SHOW CREATE TABLE '.chr(96).$table.chr(96), __LINE__, __FILE__);
+	    $show_results = $this->fetch_num($result);
+	    if (!$show_results) {
+		    return false;
+	    }
+
+	    $table_data .= str_replace(array("\r\n", "\r", "\n"), $this->new_line, $show_results[1]). ';' .$this->new_line;
+	    return trim($table_data);
     }
 
-    function backup($tables, $structure = 1, $data = 1, $drop = 1, $gzip = 0) {
-
-	    // Variablen definieren
-	    $table_data = $this->commentdel.' Viscacha '.$this->system.'-Backup'.$this->new_line.
-				      $this->commentdel.' Host: '.$this->host.$this->new_line.
-				      $this->commentdel.' Database: '.$this->database.$this->new_line.
-				      $this->commentdel.' Created: '.gmdate('D, d M Y H:i:s').' GMT'.$this->new_line.
-				      $this->commentdel.' Tables: '.implode(', ', $tables).$this->new_line;
-
-		// Keine Anfuehrungszeichen in mySQL-Namen
-		$this->query('SET SQL_QUOTE_SHOW_CREATE = 1',__LINE__,__FILE__);
-
-		// Werte & Struktur der Tabellen ermitteln
-		foreach ($tables as $mysql_table) {
-		    if ($structure == 1) {
-		        if ($drop == 1) {
-    		        $table_data .= $this->new_line . $this->new_line. $this->commentdel.' Delete: ' .$mysql_table . $this->new_line;
-    		        $table_data .= $this->new_line . 'DROP TABLE IF EXISTS '.chr(96).$mysql_table.chr(96).';' .$this->new_line;
-    		    }
-    		    $table_data .= $this->new_line. $this->commentdel.' Create: ' .$mysql_table . $this->new_line;
-
-    		    $result = $this->query('SHOW CREATE TABLE ' .$mysql_table, __LINE__, __FILE__);
-    		    $show_results = $this->fetch_num($result);
-    		    if (!$show_results) {
-    			    return false;
-    		    }
-
-    		    $table_data .= str_replace("\n", $this->new_line, $show_results[1]). ';' .$this->new_line;
-		    }
-		    if ($data == 1) {
-    		    // Aktuelle Ueberschrift
-    		    $table_data .= $this->new_line. $this->commentdel.' Data: ' .$mysql_table . $this->new_line;
-
-    	     	// Datensaetze vorhanden?
-    	     	$result = $this->query('SELECT * FROM ' .$mysql_table,__LINE__,__FILE__);
-    	      	if ($this->num_rows($result) > 0) {
-    	      	    while ($select_result = $this->fetch_assoc($result)) {
-    	          		// Result-Keys
-    	          		$select_result_keys = array_keys($select_result);
-    	  	      		foreach ($select_result_keys as $table_field) {
-    	  		      		// Struktur & Werte der Tabelle
-    	  		      		if (isset($table_structure)) {
-    	              		$table_structure .= ', ';
-    	              		$table_value .= ', ';
-    	  		      		}
-    	  		      		else {
-    	  			            $table_structure = $table_value = '';
-    	  		            }
-    	                    $table_structure .= chr(96).$table_field.chr(96);
-    	                    $table_value .= "'".$this->escape_string($select_result[$table_field])."'";
-    	  		        }
-
-    	  		        // Aktuelle Werte
-    	  		        $table_data .= 'INSERT INTO '.chr(96).$mysql_table.chr(96).' (' .$table_structure. ') VALUES (' .$table_value. ');' .$this->new_line;
-	  		            // Temporaere Werte annulieren
-	  	                unset($table_structure, $table_value);
-	  		        }
-	  	        }
-    	        else {
-    	            $table_data .= $this->commentdel.' No entries found!' .$this->new_line;
-    	        }
+    // offset = -1 => Alle Zeilen
+    // offset >= 0 => Ab offset die nächsten $this->std_limit Zeilen
+    function getData($table, $offset = -1) {
+	    $table_data = $this->new_line. $this->commentdel.' Data: ' .$table . iif ($offset != -1, ' {'.$offset.', '.($offset+$this->std_limit).'}' ). $this->new_line;
+     	// Datensaetze vorhanden?
+     	$result = $this->query('SELECT * FROM '.chr(96).$table.chr(96).iif($offset >= 0, " LIMIT {$offset},{$this->std_limit}"), __LINE__, __FILE__);
+  	    while ($select_result = $this->fetch_assoc($result)) {
+      		// Result-Keys
+      		$select_result_keys = array_keys($select_result);
+      		foreach ($select_result_keys as $table_field) {
+	      		// Struktur & Werte der Tabelle
+	      		if (isset($table_structure)) {
+	          		$table_structure .= ', ';
+	          		$table_value .= ', ';
+	      		}
+	      		else {
+		            $table_structure = $table_value = '';
+	            }
+                $table_structure .= chr(96).$table_field.chr(96);
+                $table_value .= "'".$this->escape_string($select_result[$table_field])."'";
 	        }
-        }
-	    return $table_data;
+	        // Aktuelle Werte
+	        $table_data .= 'INSERT INTO '.chr(96).$table.chr(96).' (' .$table_structure. ') VALUES (' .$table_value. ');' .$this->new_line;
+			unset($table_structure, $table_value);
+  	    }
+		return trim($table_data);
     }
 
 	function multi_query($lines, $die = true) {

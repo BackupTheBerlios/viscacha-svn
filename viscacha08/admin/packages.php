@@ -840,9 +840,11 @@ elseif ($job == 'package_edit') {
 	$depend_packs = array();
 	while ($row2 = $db->fetch_assoc($result)) {
 		$depend_packs[] = $row2;
-		$pack = $myini->read("modules/{$row2['id']}/package.ini");
-		if (isset($pack['dependency']) && in_array($row['internal'], $pack['dependency'])) {
-			$dependency = true;
+		if ($row['active'] == 1) { // Verhindere nur das deaktivieren...
+			$pack = $myini->read("modules/{$row2['id']}/package.ini");
+			if (isset($pack['dependency']) && in_array($row['internal'], $pack['dependency'])) {
+				$dependency = true;
+			}
 		}
 	}
 	if (!isset($ini['dependency']) || count($ini['dependency']) == 0) {
@@ -972,7 +974,7 @@ elseif ($job == 'package_edit2') {
 		error('admin.php?action=packages&job=package', $lang->phrase('admin_packages_err_could_not_find_a_package_with_this_id'));
 	}
 	$row = $db->fetch_assoc($result);
-	if ($row['core'] != '1') {
+	if ($row['core'] != '1') { // ToDo: Add Dependency check
 		$active = $gpc->get('active', int);
 	}
 	else {
@@ -1261,6 +1263,7 @@ elseif ($job == 'package_info') {
 }
 elseif ($job == 'package_add') {
 	echo head();
+	$result = $db->query("SELECT id, title, internal FROM {$db->pre}packages WHERE id != '{$id}'", __LINE__, __FILE__);
 	?>
 	<form method="post" action="admin.php?action=packages&job=package_add2">
 	<table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
@@ -1292,6 +1295,16 @@ elseif ($job == 'package_add') {
 	  <td><input type="text" name="max_version" size="60" /></td>
 	 </tr>
 	 <tr class="mbox">
+	  <td><?php echo $lang->phrase('admin_packages_dependency_label'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_packages_dependency_info'); ?></span></td>
+	  <td>
+	  	<select name="dependency[]" multiple="multiple" size="5">
+	  		<?php while ($d = $db->fetch_assoc($result)) { ?>
+	  		<option value="<?php echo $d['internal']; ?>"><?php echo $d['title']; ?> (<?php echo $d['internal']; ?>)</option>
+	  		<?php } ?>
+	  	</select>
+	  </td>
+	 </tr>
+	 <tr class="mbox">
 	  <td><?php echo $lang->phrase('admin_packages_info_copyright'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_packages_edit_optional'); ?></span></td>
 	  <td><input type="text" name="copyright" size="60" /></td>
 	 </tr>
@@ -1313,15 +1326,16 @@ elseif ($job == 'package_add') {
 }
 elseif ($job == 'package_add2') {
 	echo head();
-	$title = $gpc->get('title', str);
-	$summary = $gpc->get('summary', str);
-	$internal = $gpc->get('internal', str);
-	$version = $gpc->get('version', str);
-	$copyright = $gpc->get('copyright', str);
-	$license = $gpc->get('license', str);
-	$max = $gpc->get('max_version', str);
-	$min = $gpc->get('min_version', str);
-	$url = $gpc->get('url', str);
+	$title = $gpc->get('title', none);
+	$summary = $gpc->get('summary', none);
+	$internal = $gpc->get('internal', none);
+	$version = $gpc->get('version', none);
+	$copyright = $gpc->get('copyright', none);
+	$license = $gpc->get('license', none);
+	$max = $gpc->get('max_version', none);
+	$min = $gpc->get('min_version', none);
+	$url = $gpc->get('url', none);
+	$dependency = $gpc->get('dependency', arr_none);
 
 	if (strlen($title) < 4) {
 		error('admin.php?action=packages&job=package_add', $lang->phrase('admin_packages_err_minimum_number_of_characters_for_title'));
@@ -1333,7 +1347,10 @@ elseif ($job == 'package_add2') {
 		error('admin.php?action=packages&job=package_add', $lang->phrase('admin_packages_err_internal_name_is_too_short'));
 	}
 
-	$db->query("INSERT INTO {$db->pre}packages (`title`,`version`,`internal`) VALUES ('{$title}','{$version}','{$internal}')");
+	$dbtitle = $gpc->save_str($title);
+	$dbversion = $gpc->save_str($version);
+	$dbinternal = $gpc->save_str($internal);
+	$db->query("INSERT INTO {$db->pre}packages (`title`,`version`,`internal`) VALUES ('{$dbtitle}','{$dbversion}','{$dbinternal}')");
 	$packageid = $db->insert_id();
 
 	$filesystem->mkdir("modules/{$packageid}/", 0777);
@@ -1352,6 +1369,7 @@ elseif ($job == 'package_add2') {
 			'multiple' => 0,
 			'core' => 0
 		),
+		'dependency' => $dependency,
 		'config' => array()
 	);
 	$myini->write("modules/{$packageid}/package.ini", $ini);
@@ -1372,6 +1390,15 @@ elseif ($job == 'package_active') {
 		error('admin.php?action=packages&job=package', $lang->phrase('admin_packages_err_this_package_is_required'));
 	}
 	else {
+		if ($row['active'] == 1) {
+			$result2 = $db->query("SELECT id, title, internal FROM {$db->pre}packages WHERE id != '{$row['id']}'", __LINE__, __FILE__);
+			while ($row2 = $db->fetch_assoc($result)) {
+				$pack = $myini->read("modules/{$row2['id']}/package.ini");
+				if (isset($pack['dependency']) && in_array($row['internal'], $pack['dependency'])) {
+					error('admin.php?action=packages&job=package_info&id='.$row['id'], $lang->phrase('admin_packages_err_package_required'));
+				}
+			}
+		}
 		$active = $row['active'] == 1 ? 0 : 1;
 		$db->query('UPDATE '.$db->pre.'packages SET active = "'.$active.'" WHERE id = "'.$id.'"', __LINE__, __FILE__);
 		$result = $db->query("SELECT DISTINCT position FROM {$db->pre}plugins WHERE module = '{$id}'");

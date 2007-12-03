@@ -144,6 +144,13 @@ class DB extends DB_Driver { // MySQL
 	    return @mysql_insert_id($this->conn);
 	}
 
+	function data_seek($result = null, $pos = 0) {
+		if (!is_resource($result)) {
+	    	$result = $this->result;
+	    }
+	    return @mysql_data_seek($result, $pos);
+	}
+
 	function fetch_object($result = null) {
 		if (!is_resource($result)) {
 	    	$result = $this->result;

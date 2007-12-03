@@ -207,7 +207,7 @@ class ServerNavigator
 		$html .= "\n".'		   <td class="obox">'.iif(count($dir_list) == 0, $newdir_html).$lang->phrase('admin_explorer_filemanager').'</td>';
 		$html .= "\n".'		 </tr>';
 		$html .= "\n".'		 <tr>';
-		$html .= "\n".'		   <td class="ubox">'. $lang->phrase('admin_explorer_directory') . extract_dir($this->root) . $heading_path . '</td>';
+		$html .= "\n".'		   <td class="ubox">'. $lang->phrase('admin_explorer_directory_x') . extract_dir($this->root) . $heading_path . '</td>';
 		$html .= "\n".'		 </tr>';
 		$html .= "\n".'	   </table><br />';
 		$html .= "\n".'	   <table cellpadding="4" cellspacing="0" class="border">';

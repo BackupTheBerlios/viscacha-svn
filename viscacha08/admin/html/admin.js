@@ -238,11 +238,22 @@ function ajax() {
   return this;
 }
 
+function ajax_backupinfo(file, id) {
+	inline = FetchElement(id);
+	inline.innerHTML = 'Loading Information from Backup. Please wait...';
+	var myConn = new ajax();
+	if (!myConn) {alert('Could not initalize AJAX. Make sure you are using an AJAX compatible browser.');}
+	var fnWhenDone = function (oXML) {
+    	inline.innerHTML = oXML.responseText;
+	};
+	myConn.connect("admin.php", "GET", "action=db&job=restore_info&file="+file+sidx, fnWhenDone);
+}
+
 function ajax_searchmember(field, ins) {
 	inline = FetchElement(ins);
 	if (field.value.length > 2) {
 		var myConn = new ajax();
-		if (!myConn) {alert('No connection');}
+		if (!myConn) {alert('Could not initalize AJAX. Make sure you are using an AJAX compatible browser.');}
 		var fnWhenDone = function (oXML) {
 		    suggest = oXML.responseText;
 		    if (suggest.length > 3) {

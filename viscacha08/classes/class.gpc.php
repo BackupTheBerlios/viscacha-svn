@@ -59,7 +59,7 @@ class GPC {
                 $var = $this->save_int($_REQUEST[$index]);
             }
             else {
-                $var = $_REQUEST[$index];
+                $var = $this->secure_null($_REQUEST[$index]);
             }
         }
         else {
