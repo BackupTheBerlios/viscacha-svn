@@ -634,7 +634,7 @@ elseif ($job == 'lang_rules') {
    <?php } ?>
    </ol>
   <?php } else { ?>
-   <?php echo $lang->phrase('admin_lang_add'); ?> <input type="text" name="c" size="3" value="0" /> <?php echo $lang->phrase('admin_lang_new_rules_after_saving'); ?>
+   <?php echo $lang->phrase('admin_lang_add_x'); ?> <input type="text" name="c" size="3" value="0" /> <?php echo $lang->phrase('admin_lang_new_rules_after_saving'); ?>
   <?php } ?>
    </td>
   </tr>

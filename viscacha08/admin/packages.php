@@ -248,9 +248,21 @@ elseif ($job == 'package_import2') {
 		}
 
 		$result = $db->query("SELECT id FROM {$db->pre}packages WHERE internal = '{$package['info']['internal']}'", __LINE__, __FILE__);
-		if ($db->num_rows($result) > 0 && $package['multiple'] == 0) {
+		if ($db->num_rows($result) > 0 && $package['info']['multiple'] == 0) {
 			error('admin.php?action=packages&job=package_import', $lang->phrase('admin_packages_a_package_with_this_name_does_allready_exist'));
 		}
+		if (isset($package['dependency']) && count($package['dependency']) > 0) {
+			$result = $db->query("SELECT internal FROM {$db->pre}packages", __LINE__, __FILE__);
+			$internals = array();
+			while ($row = $db->fetch_assoc($result)) {
+				$internals[] = $row['internal'];
+			}
+			$missing = array_diff($package['dependency'], $internals);
+			if (count($missing) > 0) {
+				error('admin.php?action=packages&job=package_import', $lang->phrase('admin_packages_dependency_missing').implode(', ', $missing), 60000);
+			}
+		}
+
 		$db->query("INSERT INTO {$db->pre}packages (title, version, internal, core) VALUES ('{$package['info']['title']}', '{$package['info']['version']}', '{$package['info']['internal']}', '{$package['info']['core']}')", __LINE__, __FILE__);
 		$packageid = $db->insert_id();
 
@@ -482,7 +494,7 @@ elseif ($job == 'package_export') {
 	$result = $db->query("SELECT id, internal FROM {$db->pre}packages WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	if ($db->num_rows($result) != 1) {
 		echo head();
-		error('admin.pgp?action=packages&job=package', $lang->phrase('admin_packages_err_package_does_not_exist'));
+		error('admin.php?action=packages&job=package', $lang->phrase('admin_packages_err_package_does_not_exist'));
 	}
 	$data = $db->fetch_assoc($result);
 
@@ -658,22 +670,29 @@ elseif ($job == 'package_export') {
 elseif ($job == 'package_delete') {
 	echo head();
 	$id = $gpc->get('id', int);
-	$result = $db->query("SELECT id, core FROM {$db->pre}packages WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
-	$row = $db->fetch_assoc($result);
+	$result = $db->query("SELECT id, core, internal FROM {$db->pre}packages WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
+	$data = $db->fetch_assoc($result);
 	if ($db->num_rows($result) == 0) {
 		error('admin.php?action=packages&job=package', $lang->phrase('admin_packages_err_package_does_not_exist'));
 	}
-	elseif ($row['core'] == '1') {
+	elseif ($data['core'] == '1') {
 		error('admin.php?action=packages&job=package', $lang->phrase('admin_packages_err_this_is_a_core_package_and_cannot_be_deleted'));
 	}
 	else {
+		$result2 = $db->query("SELECT id, title, internal FROM {$db->pre}packages WHERE id != '{$id}'", __LINE__, __FILE__);
+		while ($row = $db->fetch_assoc($result)) {
+			$pack = $myini->read("modules/{$row['id']}/package.ini");
+			if (isset($pack['dependency']) && in_array($data['internal'], $pack['dependency'])) {
+				error('admin.php?action=packages&job=package_info&id='.$data['id'], $lang->phrase('admin_packages_err_package_required'));
+			}
+		}
 		?>
 		<table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
 		<tr><td class="obox"><?php echo $lang->phrase('admin_packages_head_delete_package'); ?></td></tr>
 		<tr><td class="mbox">
 		<p align="center"><?php echo $lang->phrase('admin_packages_do_you_really_want_to_delete_this_package'); ?></p>
 		<p align="center">
-		<a href="admin.php?action=packages&job=package_delete2&id=<?php echo $id; ?>"><img border="0" alt="Yes" src="admin/html/images/yes.gif"> <?php echo $lang->phrase('admin_packages_yes'); ?></a>
+		<a href="admin.php?action=packages&job=package_delete2&id=<?php echo $data['id']; ?>"><img border="0" alt="Yes" src="admin/html/images/yes.gif"> <?php echo $lang->phrase('admin_packages_yes'); ?></a>
 		&nbsp&nbsp;&nbsp;&nbsp&nbsp;&nbsp;
 		<a href="javascript: history.back(-1);"><img border="0" alt="No" src="admin/html/images/no.gif"> <?php echo $lang->phrase('admin_packages_no'); ?></a>
 		</p>
@@ -696,6 +715,14 @@ elseif ($job == 'package_delete2') {
 		error('admin.php?action=packages&job=package', $lang->phrase('admin_packages_err_this_is_a_core_package_and_cannot_be_deleted'));
 	}
 	else {
+		$result2 = $db->query("SELECT id, title, internal FROM {$db->pre}packages WHERE id != '{$id}'", __LINE__, __FILE__);
+		while ($row = $db->fetch_assoc($result)) {
+			$pack = $myini->read("modules/{$row['id']}/package.ini");
+			if (isset($pack['dependency']) && in_array($package['internal'], $pack['dependency'])) {
+				echo head();
+				error('admin.php?action=packages&job=package_info&id='.$package['id'], $lang->phrase('admin_packages_err_package_required'));
+			}
+		}
 		$c = new manageconfig();
 
 		$dir = "modules/{$package['id']}/";
@@ -807,22 +834,35 @@ elseif ($job == 'package_edit') {
 	$row = $gpc->prepare($db->fetch_assoc($result));
 
 	$ini = $myini->read("modules/{$row['id']}/package.ini");
+
+	$dependency = false;
+	$result = $db->query("SELECT id, title, internal FROM {$db->pre}packages WHERE id != '{$id}'", __LINE__, __FILE__);
+	$depend_packs = array();
+	while ($row2 = $db->fetch_assoc($result)) {
+		$depend_packs[] = $row2;
+		$pack = $myini->read("modules/{$row2['id']}/package.ini");
+		if (isset($pack['dependency']) && in_array($row['internal'], $pack['dependency'])) {
+			$dependency = true;
+		}
+	}
+	if (!isset($ini['dependency']) || count($ini['dependency']) == 0) {
+		$ini['dependency'] = array();
+	}
+
 	echo head();
 	?>
 	<form method="post" action="admin.php?action=packages&amp;job=package_edit2&amp;id=<?php echo $row['id']; ?>">
 	<table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
 	 <tr>
 	  <td class="obox" colspan="2">
-	  	<?php
-	  		echo $lang->phrase('admin_packages_head_edit_the_package_foo');
-	  	?>
+	  	<?php echo $lang->phrase('admin_packages_head_edit_the_package_foo'); ?>
 	  </td>
 	 </tr>
 	 <tr class="mbox">
 	  <td><?php echo $lang->phrase('admin_packages_edit_title'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_packages_edit_title_text'); ?></span></td>
 	  <td><input type="text" name="title" size="60" value="<?php echo $row['title']; ?>" /></td>
 	 </tr>
-	 <?php if ($row['core'] != '1') { ?>
+	 <?php if ($row['core'] != '1' && $dependency == false) { ?>
 	 <tr class="mbox">
 	  <td><?php echo $lang->phrase('admin_packages_edit_active'); ?></td>
 	  <td><input type="checkbox" name="active" value="1"<?php echo iif($row['active'] == 1, ' checked="checked"'); ?> /></td>
@@ -843,6 +883,16 @@ elseif ($job == 'package_edit') {
 	 <tr class="mbox">
 	  <td><?php echo $lang->phrase('admin_packages_edit_maximum_viscacha_version'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_packages_edit_optional'); ?></span></td>
 	  <td><input type="text" name="max_version" size="60" value="<?php echo $ini['info']['max_version']; ?>" /></td>
+	 </tr>
+	 <tr class="mbox">
+	  <td><?php echo $lang->phrase('admin_packages_dependency_label'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_packages_dependency_info'); ?></span></td>
+	  <td>
+	  	<select name="dependency[]" multiple="multiple" size="5">
+	  		<?php foreach ($depend_packs as $d) { ?>
+	  		<option value="<?php echo $d['internal']; ?>"<?php echo iif(in_array($d['internal'], $ini['dependency']), ' selected="selected"'); ?>><?php echo $d['title']; ?> (<?php echo $d['internal']; ?>)</option>
+	  		<?php } ?>
+	  	</select>
+	  </td>
 	 </tr>
 	 <tr class="mbox">
 	  <td><?php echo $lang->phrase('admin_packages_info_copyright'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_packages_edit_optional'); ?></span></td>
@@ -936,6 +986,7 @@ elseif ($job == 'package_edit2') {
 	$max = $gpc->get('max_version', none);
 	$min = $gpc->get('min_version', none);
 	$url = $gpc->get('url', none);
+	$dependency = $gpc->get('dependency', arr_none);
 
 	if (strlen($title) < 4) {
 		error('admin.php?action=packages&job=package_edit&id='.$id, $lang->phrase('admin_packages_err_minimum_number_of_characters_for_title'));
@@ -957,6 +1008,7 @@ elseif ($job == 'package_edit2') {
 	$ini['info']['max_version'] = $max;
 	$ini['info']['license'] = $license;
 	$ini['info']['url'] = $url;
+	$ini['dependency'] = $dependency;
 	$filesystem->chmod("modules/{$id}/package.ini", 0666);
 	$myini->write("modules/{$id}/package.ini", $ini);
 
@@ -1021,6 +1073,16 @@ elseif ($job == 'package_info') {
 		}
 	}
 
+	$dependencies = array();
+	if (isset($package_ini['dependency']) && count($package_ini['dependency']) > 0) {
+		$result = $db->query("SELECT id, title, internal FROM {$db->pre}packages WHERE internal IN ('".implode("','", $package_ini['dependency'])."')", __LINE__, __FILE__);
+		while ($row = $db->fetch_assoc($result)) {
+			$dependencies[] = $row;
+		}
+	}
+
+	$plug_count = count($modules);
+
 	?>
 	 <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
 	  <tr>
@@ -1065,6 +1127,18 @@ elseif ($job == 'package_info') {
 	   	<?php if (!empty($package_ini['info']['max_version'])) { $max = $package_ini['info']['max_version']; ?>
 	   	<div><?php echo $lang->phrase('admin_packages_maximum_v'); ?></div>
 	   	<?php } ?>
+	   </td>
+	  </tr>
+	  <tr>
+	   <td class="mbox" width="30%"><?php echo $lang->phrase('admin_packages_dependency_label'); ?></td>
+	   <td class="mbox" width="70%">
+	   <?php if (count($dependencies) > 0) { ?>
+	   	<ul>
+	   		<?php foreach ($dependencies as $row) { ?>
+	   		<li><a href="admin.php?action=packages&amp;job=package_info&amp;id=<?php echo $row['id']; ?>"><?php echo $row['title']; ?></a> (<?php echo $row['internal']; ?>)</li>
+	   		<?php } ?>
+	   	</ul>
+	   	<?php } else { echo $lang->phrase('admin_package_no_dependency'); } ?>
 	   </td>
 	  </tr>
 	  <tr>
@@ -1137,7 +1211,7 @@ elseif ($job == 'package_info') {
 	  <tr>
 	   <td class="obox" colspan="4">
 	   	<span class="right"><a class="button" href="admin.php?action=packages&amp;job=plugins_add&amp;id=<?php echo $package['id']; ?>"><?php echo $lang->phrase('admin_packages_info_add_plugin'); ?></a></span>
-	   	Plugins (<?php echo count($modules); ?>)
+	   	<?php echo $lang->phrase('admin_packages_plugins_count'); ?>
 	   </td>
 	  </tr>
 	  <?php if (count($modules) > 0) { ?>
@@ -1350,7 +1424,7 @@ elseif ($job == 'com') {
 	 <?php if ($row['required'] == 0) { ?>
 	 <a class="button" href="admin.php?action=packages&amp;job=com_active&amp;id=<?php echo $row['id']; ?>"><?php echo iif($row['active'] == 1, $lang->phrase('admin_packages_com_deactivate'), $lang->phrase('admin_packages_com_activate')); ?></a>
 	 <a class="button" href="admin.php?action=packages&amp;job=com_delete&amp;id=<?php echo $row['id']; ?>"><?php echo $lang->phrase('admin_packages_delete'); ?></a>
-	 <?php } else { echo "<em><?php echo $lang->phrase('admin_packages_com_component_is_required'); ?></em>"; } ?>
+	 <?php } else { echo "<em>".$lang->phrase('admin_packages_com_component_is_required')."</em>"; } ?>
 	</td>
 	</tr>
 	<?php

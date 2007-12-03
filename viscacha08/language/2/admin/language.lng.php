@@ -7,6 +7,7 @@ $lang['admin_lang_add_new_langfile'] = 'Add new Language File';
 $lang['admin_lang_add_new_mail_file'] = 'Add new Mail File';
 $lang['admin_lang_add_new_phrase'] = 'Add new Phrase';
 $lang['admin_lang_add_new_rules'] = 'Add new rule(s):';
+$lang['admin_lang_add_x'] = 'Add';
 $lang['admin_lang_admin_control_panel'] = 'Admin Control Panel:';
 $lang['admin_lang_allowed_file_types'] = 'Allowed file types: .zip - Maximum file size: 1 MB';
 $lang['admin_lang_bbcode_phrases'] = 'Phrases for the BB-Code FAQ and for the BB-Code Interface.';

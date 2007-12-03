@@ -456,7 +456,7 @@ function foot() {
 	<?php
 }
 
-function error ($errorurl, $errormsg = null) {
+function error ($errorurl, $errormsg = null, $time = null) {
 	global $config, $my, $db, $lang;
 	if ($errormsg == null) {
 		$errormsg = array($lang->phrase('admin_an_unexpected_error_occured'));
@@ -464,7 +464,9 @@ function error ($errorurl, $errormsg = null) {
 	else if (!is_array($errormsg)) {
 	    $errormsg = array($errormsg);
 	}
-	$time = 7500 + count($errormsg)*2500;
+	if (!is_int($time)) {
+		$time = 7500 + count($errormsg)*2500;
+	}
 	?>
 <script language="Javascript" type="text/javascript">
 <!--

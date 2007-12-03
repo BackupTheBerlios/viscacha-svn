@@ -2,11 +2,12 @@
 if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
 $lang = array();
 $lang['admin_lang_action'] = 'Operationen';
-$lang['admin_lang_add'] = 'Nach dem Absenden füge';
+$lang['admin_lang_add'] = 'Hinzufügen';
 $lang['admin_lang_add_new_langfile'] = 'Sprachdatei hinzufügen';
 $lang['admin_lang_add_new_mail_file'] = 'E-Mail-Vorlage hinzufügen';
 $lang['admin_lang_add_new_phrase'] = 'Phrase hinzufügen';
 $lang['admin_lang_add_new_rules'] = 'Neue Regel(n) hinzufügen:';
+$lang['admin_lang_add_x'] = 'Nach dem Absenden füge';
 $lang['admin_lang_admin_control_panel'] = 'Administrationsbereich:';
 $lang['admin_lang_allowed_file_types'] = 'Erlaubte Dateitypen: .zip - Maximale Dateigröße: 1 MB';
 $lang['admin_lang_bbcode_phrases'] = 'Phrasen für die BB-Code-Hilfe und für das BB-Code-Ansicht.';
