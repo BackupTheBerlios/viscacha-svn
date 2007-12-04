@@ -55,7 +55,7 @@ class DB_Driver {
 	    $this->dbqd = array();
         $this->new_line = "\n";
         $this->commentdel = '-- ';
-        $this->std_limit = 1000;
+        $this->std_limit = 5000;
 		if($open) {
 		   $this->open();
 		}

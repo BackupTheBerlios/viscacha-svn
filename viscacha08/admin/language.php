@@ -203,8 +203,10 @@ elseif ($job == 'import2') {
 	}
 	$newdir = "language/{$overwrite}/";
 
-	copyr($tempdir, $newdir);
-	rmdirr($tempdir);
+	mover($tempdir, $newdir);
+	if (is_dir($tempdir)) {
+		rmdirr($tempdir);
+	}
 
 	$info = return_array('settings', $overwrite);
 	if (isset($info['lang_name'])) {

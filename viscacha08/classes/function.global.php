@@ -364,20 +364,42 @@ function copyr($source, $dest) {
         return $filesystem->copy($source, $dest);
     }
     if (!is_dir($dest)) {
-        $filesystem->mkdir($dest, 0777);
+        if (!$filesystem->mkdir($dest, 0777)) {
+        	return false;
+        }
     }
     $dir = dir($source);
+    $ret = true;
     while (false !== $entry = $dir->read()) {
         if ($entry == '.' || $entry == '..') {
             continue;
         }
         if ($dest !== "{$source}/{$entry}") {
-            copyr("{$source}/{$entry}", "{$dest}/{$entry}");
+            $ret2 = copyr("{$source}/{$entry}", "{$dest}/{$entry}");
+            if ($ret2 == false) {
+            	$ret = false;
+            }
         }
     }
-
     $dir->close();
-    return true;
+    return $ret;
+}
+
+function mover($source, $dest) {
+	global $filesystem;
+    if (!is_dir($dest)) {
+        $filesystem->mkdir($dest, 0777);
+    }
+	if ($filesystem->rename($source, $dest)) {
+		return true;
+	}
+	else {
+		if (copyr($source, $dest)) {
+			rmdirr($source);
+			return true;
+		}
+		return false;
+	}
 }
 
 function serverload($int = false) {

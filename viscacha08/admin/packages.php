@@ -267,7 +267,7 @@ elseif ($job == 'package_import2') {
 		$packageid = $db->insert_id();
 
 		$filesystem->mkdir("./modules/{$packageid}", 0777);
-		copyr("{$tdir}modules", "./modules/{$packageid}");
+		mover("{$tdir}modules", "./modules/{$packageid}");
 
 		if (!empty($package['config']['title'])) {
 			if (!isset($package['config']['description'])) {
@@ -307,15 +307,17 @@ elseif ($job == 'package_import2') {
 
 				if (isset($com['images']) && count($com['images']) > 0) {
 					foreach ($com['images'] as $file) {
-						$filesystem->copy("{$tdir}images/{$file}", "./images/{$design['images']}/{$file}");
+						$filesystem->rename("{$tdir}images/{$file}", "./images/{$design['images']}/{$file}");
 					}
 				}
 
-				$result = $db->query("SELECT DISTINCT stylesheet FROM {$db->pre}designs",__LINE__,__FILE__);
+				$result = $db->query("SELECT DISTINCT stylesheet FROM {$db->pre}designs WHERE stylesheet != '{$design['stylesheet']}'",__LINE__,__FILE__);
 				if (isset($com['designs']) && count($com['designs']) > 0) {
+					$stdcssdir = "./designs/{$css['stylesheet']}/{$file}";
+					$filesystem->rename("{$tdir}designs/{$file}", $stdcssdir);
 					while ($css = $db->fetch_assoc($result)) {
 						foreach ($com['designs'] as $file) {
-							$filesystem->copy("{$tdir}designs/{$file}", "./designs/{$css['stylesheet']}/{$file}");
+							$filesystem->copy($stdcssdir, "./designs/{$css['stylesheet']}/{$file}");
 						}
 					}
 				}
@@ -372,6 +374,7 @@ elseif ($job == 'package_import2') {
 							if (!empty($src)) {
 								$src = '/'.$src;
 							}
+							// ToDo: Move it first to standard dir, then copy it from there
 							$filesystem->copy("{$tdir}/language{$src}/{$file}", "./language/{$lid}/modules/{$packageid}/{$file}");
 						}
 					}
@@ -469,7 +472,7 @@ elseif ($job == 'package_import2') {
 				$filesystem->mkdir($tpldir, 0777);
 			}
 			$temptpldir = "{$tdir}templates/";
-			copyr($temptpldir, $tpldir);
+			mover($temptpldir, $tpldir);
 		}
 
 		// Custom Installer

@@ -99,7 +99,7 @@ class filesystem {
 				if ($this->init()) {
 					fwrite($fp, $data);
 					fseek($fp, 0);
-					$this->ftp->chmod(dirname($file), 0777);
+					$this->chmod(dirname($file), 0777);
 					$ret = $this->ftp->put($fp, $file);
 				}
 				else {
@@ -130,7 +130,7 @@ class filesystem {
             $fp = @fopen($file, "r");
             if (is_resource($fp)) {
             	if ($this->init()) {
-					$this->ftp->chmod(dirname($file), 0777);
+					$this->chmod(dirname($file), 0777);
             		$ret = $this->ftp->put($fp, str_replace(' ', '_', $dest));
             	}
             	fclose($fp);
@@ -159,6 +159,7 @@ class filesystem {
 			}
 		}
 		else {
+			$this->chmod($file, $chmod);
 			return true;
 		}
 	}
@@ -168,11 +169,16 @@ class filesystem {
 			return false;
 		}
 		if (!@rename($old, $new)) {
+			$ret = false;
 			if ($this->init()) {
-				return $this->ftp->rename($old, $new);
+				$ret = $this->ftp->rename($old, $new);
 			}
-			else {
-				return false;
+			if ($ret == false) {
+				$ret = copyr($old, $new);
+				if ($ret == true) {
+					rmdirr($old);
+				}
+				return $ret;
 			}
 		}
 		else {
