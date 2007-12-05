@@ -66,6 +66,13 @@ class lang {
 	}
 
 	function initAdmin($dir = null) {
+		global $admconfig, $my;
+		if (!empty($my->settings['default_language'])) {
+			$dir = $my->settings['default_language'];
+		}
+		elseif (is_id($admconfig['default_language'])) {
+			$dir = $admconfig['default_language'];
+		}
 		if ($dir != null) {
 			$this->setdir($dir);
 		}
@@ -80,14 +87,15 @@ class lang {
 		}
 	}
 
-	function javascript() {
-		$file = $this->dir.DIRECTORY_SEPARATOR.'javascript.lng.php';
+	function javascript($file = 'javascript') {
+		$file = $this->dir.DIRECTORY_SEPARATOR.$file.'.lng.php';
 		require($file);
 		echo 'var lng = new Array();'."\n";
 		foreach ($lang as $k => $l) {
 			$l = str_replace("'", "\\'", $l);
-			echo "lng['$k'] = '$l';\n";
+			echo "lng['{$k}'] = '{$l}';\n";
 		}
+		return $lang;
 	}
 
 	function return_array($group = '') {

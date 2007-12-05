@@ -412,7 +412,7 @@ function pages ($anzposts, $uri, $teiler=50) {
 }
 
 function head($onload = '') {
-	global $htmlhead, $config;
+	global $htmlhead, $config, $my;
 	?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
@@ -425,6 +425,7 @@ function head($onload = '') {
 	<link rel="stylesheet" type="text/css" href="admin/html/standard.css">
 	<link rel="up" href="javascript:self.scrollTo(0,0);">
 	<link rel="copyright" href="http://www.viscacha.org">
+	<script src="templates/lang2js.php?id=<?php echo $my->language; ?>&amp;admin=1" type="text/javascript"></script>
 	<script type="text/javascript">
 	<!--
 		var sidx = '<?php echo SID2URL_JS_x; ?>';
@@ -457,7 +458,7 @@ function foot() {
 }
 
 function error ($errorurl, $errormsg = null, $time = null) {
-	global $config, $my, $db, $lang;
+	global $config, $my, $db, $lang, $slog;
 	if ($errormsg == null) {
 		$errormsg = array($lang->phrase('admin_an_unexpected_error_occured'));
 	}
@@ -491,12 +492,13 @@ window.setTimeout('<?php echo JS_URL($errorurl); ?>', <?php echo $time; ?>);
 </table>
 	<?php
 	echo foot();
+	$slog->updatelogged();
 	$db->close();
 	exit;
 }
 
 function ok ($url, $msg = null, $time = 1500) {
-	global $config, $my, $db, $lang;
+	global $config, $my, $db, $lang, $slog;
 	if ($msg == null) {
 		$msg = $lang->phrase('admin_settings_successfully_saved');
 	}
@@ -519,6 +521,7 @@ window.setTimeout('<?php echo JS_URL($url); ?>', <?php echo $time; ?>);
 </table>
 	<?php
 	echo foot();
+	$slog->updatelogged();
 	$db->close();
 	exit;
 }

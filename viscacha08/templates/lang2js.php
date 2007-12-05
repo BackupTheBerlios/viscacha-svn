@@ -33,7 +33,8 @@ header('Content-type: text/javascript');
 if (!empty($_REQUEST['id'])) {
 	$id = intval(trim($_REQUEST['id']+0));
 	$lang = new lang($id);
-	$lang->javascript();
+	$file = !empty($_REQUEST['admin']) ? 'admin/javascript' : 'javascript';
+	$lang->javascript($file);
 }
 else {
 	echo 'alert("Could not load language file for javascript without id!");';

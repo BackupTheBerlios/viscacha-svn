@@ -17,6 +17,9 @@ $myini = new INI();
 if ($job == 'admin') {
 	$config = $gpc->prepare($config);
 
+	$loadlanguage_obj = $scache->load('loadlanguage');
+	$language = $loadlanguage_obj->get();
+
 	echo head();
 	?>
 	<form name="form" method="post" action="admin.php?action=settings&amp;job=admin2">
@@ -43,6 +46,32 @@ if ($job == 'admin') {
 	  <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="<?php echo $lang->phrase('admin_form_submit'); ?>" /></td>
 	 </tr>
 	</table>
+	<br />
+	<table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
+	 <tr>
+	  <td class="obox" colspan="2"><?php echo $lang->phrase('admin_admin_control_panel_settings_lang'); ?></td>
+	 </tr>
+	 <tr>
+	  <td class="mbox" width="50%"><?php echo $lang->phrase('admin_acp_standard_language'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_acp_standard_language_info'); ?></span></td>
+	  <td class="mbox" width="50%">
+		<select name="default_language">
+			<option style="font-weight: bold;" value="0"<?php echo iif($admconfig['default_language'] > 0, ' selected="selected"'); ?>><?php echo $lang->phrase('admin_user_standard_language_for_acp'); ?></option>
+			<?php foreach ($language as $row) { ?>
+			<option value="<?php echo $row['id']; ?>"<?php echo iif($row['id'] == $admconfig['default_language'], ' selected="selected"'); ?>><?php echo $row['language']; ?></option>
+			<?php } ?>
+		</select>
+	  </td>
+	 </tr>
+	 <tr>
+	  <td class="mbox" width="50%"><?php echo $lang->phrase('admin_standard_language_temp'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_standard_language_temp_info'); ?></span></td>
+	  <td class="mbox" width="50%">
+	  	<input type="checkbox" name="temp" value="1" />
+	  </td>
+	 </tr>
+	 </tr>
+	  <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit2" value="<?php echo $lang->phrase('admin_form_submit'); ?>" /></td>
+	 </tr>
+	</table>
 	</form>
 	<?php
 	echo foot();
@@ -57,6 +86,13 @@ elseif ($job == 'admin2') {
 	$c->updateconfig('nav_interface', int);
 	$c->updateconfig('package_server', str, $server);
 	$c->updateconfig('nav_positions', str);
+	$temp = $gpc->get('temp', int);
+	if ($temp == 1) {
+		$my->settings['default_language'] = $gpc->get('default_language', int);
+	}
+	else {
+		$c->updateconfig('default_language', int);
+	}
 	$c->savedata();
 
 	ok('admin.php?action=settings&job=settings');
