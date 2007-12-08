@@ -21,7 +21,7 @@ Homepage: <a href="http://www.domain.de" target="_blank">Name Ihrer Homepage</a>
 </div>
 <br class="minibr" />
 <div class="border">
-<h3><img src="./images/1/rules.gif" alt="" /> Haftungsausschluss</h3>
+<h3><img src="<?php echo $tpl->img('rules'); ?>" alt="" /> Haftungsausschluss</h3>
 <div class="bbody"><p><strong>1. Inhalt des Onlineangebotes</strong><br />
 Der Autor übernimmt keinerlei Gewähr für die Aktualität, Korrektheit, Vollständigkeit
 oder Qualität der bereitgestellten Informationen. Haftungsansprüche gegen den

@@ -148,6 +148,12 @@ class filesystem {
 				$this->ftp->chmod($file, $chmod);
 			}
 		}
+		$base = dirname($file);
+		if (!@is_dir($base)) {
+			if (!$this->mkdir($base, $chmod)) {
+				return false;
+			}
+		}
 		if (!@mkdir($file, $chmod)) {
 			if ($this->init()) {
 				$success = $this->ftp->mkdir($file);

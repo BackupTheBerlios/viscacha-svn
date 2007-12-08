@@ -433,6 +433,7 @@ function head($onload = '') {
 	-->
 	</script>
 	<script src="admin/html/admin.js" language="Javascript" type="text/javascript"></script>
+	<script src="templates/menu.js" language="Javascript" type="text/javascript"></script>
 	<?php echo $htmlhead; ?>
 </head>
 <body<?php echo iif(!empty($onload), ' '.$onload); ?>>

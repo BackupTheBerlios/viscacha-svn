@@ -40,6 +40,7 @@ class BBCode {
 	var $pid;
 	var $benchmark;
 	var $author;
+	var $index;
 
 	function BBCode ($profile = 'viscacha') {
 	    $this->benchmark = array(
@@ -55,6 +56,7 @@ class BBCode {
 		$this->noparse = array();
 		$this->pid = 0;
 		$this->author = -1;
+		$this->index = 0;
 
 		if (!class_exists('ConvertRoman')) {
 			include('classes/class.convertroman.php');
@@ -238,8 +240,9 @@ class BBCode {
 	}
 	function cb_note ($matches) {
 		list(,$desc,$word) = $matches;
+		$this->index++;
 		$pid = $this->noparse_id();
-		$o = "<acronym title=\"<!PID:".$pid.">\">{$word}</acronym>";
+		$o = "<acronym title=\"<!PID:{$pid}>\" id=\"menu_tooltip_{$this->index}\" onmouseover=\"RegisterTooltip({$this->index})\">{$word}</acronym><div class=\"tooltip tooltip_body\" id=\"popup_tooltip_{$this->index}\"><!PID:{$pid}></div>";
 		$this->noparse[$pid] = $desc;
 		return $o;
 	}
@@ -1055,8 +1058,7 @@ class BBCode {
 		if ($this->profile['useDict'] == 1) {
 			$this->cache_bbcode();
 			foreach ($this->bbcodes['word'] as $word) {
-				$ws = $word['search'];
-			    $wr = $word['replace'];
+				$this->index++;
 			    if ($type == 'pdf' || $type == 'plain') {
 			    	$text = str_replace(
 			    		'\"',
@@ -1065,8 +1067,8 @@ class BBCode {
 			    			preg_replace(
 			    				'#(\>(((?>([^><]+|(?R)))*)\<))#se',
 			    				"preg_replace(
-			    					'#\b(".$ws.")\b#i',
-			    					'\\\\1 (".$wr.")',
+			    					'#\b({$word['search']})\b#i',
+			    					'\\\\1 ({$word['replace']})',
 			    					'\\0'
 			    				)",
 			    				'>' . $text . '<'
@@ -1075,10 +1077,9 @@ class BBCode {
 			    			-1
 			    		)
 			    	);
-	                // $text = str_ireplace(, "{$word['search']} ({$word['replace']})", $text);
 	            }
 	            else {
-	            	$ws = htmlentities($ws);
+	            	$word['search'] = htmlspecialchars($word['search']);
 	            	$text = str_replace(
 	            		'\"',
 	            		'"',
@@ -1086,8 +1087,8 @@ class BBCode {
 	            			preg_replace(
 	            				'#(\>(((?>([^><]+|(?R)))*)\<))#se',
 	            				"preg_replace(
-	            					'#\b(".$ws.")\b#i',
-	            					'<acronym title=\"".$wr."\">\\\\1</acronym>',
+	            					'#\b({$word['search']})\b#i',
+	            					'<acronym title=\"{$word['replace']}\" id=\"menu_tooltip_{$this->index}\" onmouseover=\"RegisterTooltip({$this->index})\">\\\\1</acronym><div class=\"tooltip\" id=\"popup_tooltip_{$this->index}\"><span id=\"header_tooltip_{$this->index}\"></span><div class=\"tooltip_body\">{$word['desc']}</div></div>',
 	            					'\\0'
 	            				)",
 	            				'>' . $text . '<'
@@ -1096,7 +1097,6 @@ class BBCode {
 	            			-1
 	            		)
 	            	);
-	                // $text = str_ireplace($word['search'], "", $text);
 	            }
 			}
 		}

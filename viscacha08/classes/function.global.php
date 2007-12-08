@@ -706,7 +706,7 @@ function dateSpec($format, $timestamp = null) {
 	if ($timestamp == null) {
 		$timestamp = time();
 	}
-	if (is_int($timestamp) == false) {
+	if (is_numeric($timestamp) == false) {
 		trigger_error('dateSpec(): Second argument has to be an integer or null.', E_USER_NOTICE);
 	}
 	$timestamp = times($timestamp);

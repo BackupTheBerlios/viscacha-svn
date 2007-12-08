@@ -268,6 +268,7 @@ elseif ($job == 'package_import2') {
 
 		$filesystem->mkdir("./modules/{$packageid}", 0777);
 		mover("{$tdir}modules", "./modules/{$packageid}");
+		$moddir = "./modules/{$packageid}/";
 
 		if (!empty($package['config']['title'])) {
 			if (!isset($package['config']['description'])) {
@@ -293,8 +294,8 @@ elseif ($job == 'package_import2') {
 		$result = $db->query("SELECT template, stylesheet, images FROM {$db->pre}designs WHERE id = '{$config['templatedir']}'",__LINE__,__FILE__);
 		$design = $db->fetch_assoc($result);
 
-		if (file_exists($tdir.'modules/component.ini')) {
-			$com = $myini->read($tdir.'modules/component.ini');
+		if (file_exists($moddir.'component.ini')) {
+			$com = $myini->read($moddir.'component.ini');
 			if (isset($com['info']) && count($com['info']) > 0) {
 				$com['info'] = $gpc->save_str($com['info']);
 
@@ -385,8 +386,8 @@ elseif ($job == 'package_import2') {
 			}
 		}
 
-		if (file_exists($tdir.'modules/plugin.ini')) {
-			$plug = $myini->read("{$tdir}modules/plugin.ini");
+		if (file_exists($moddir.'plugin.ini')) {
+			$plug = $myini->read($moddir.'plugin.ini');
 
 			if (isset($plug['language']) && count($plug['language']) > 0) {
 
@@ -465,7 +466,7 @@ elseif ($job == 'package_import2') {
 		);
 		if (count($templates) > 0) {
 			$tpldir = "templates/{$design['template']}/modules/{$packageid}/";
-			if (file_exists($tpldir)) {
+			if (is_dir($tpldir)) {
 				$filesystem->chmod($tpldir, 0777);
 			}
 			else {
@@ -1266,7 +1267,7 @@ elseif ($job == 'package_info') {
 }
 elseif ($job == 'package_add') {
 	echo head();
-	$result = $db->query("SELECT id, title, internal FROM {$db->pre}packages WHERE id != '{$id}'", __LINE__, __FILE__);
+	$result = $db->query("SELECT id, title, internal FROM {$db->pre}packages", __LINE__, __FILE__);
 	?>
 	<form method="post" action="admin.php?action=packages&job=package_add2">
 	<table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
@@ -2743,7 +2744,7 @@ elseif ($job == 'plugins_language_add') {
   </tr>
   <tr>
    <td class="mbox" width="50%"><?php echo $lang->phrase('admin_packages_language_edit_text'); ?><br />
-   <span class="stext"><?php echo $lang->phrase('admin_packages_language_aedit_text_text'); ?></span></td>
+   <span class="stext"><?php echo $lang->phrase('admin_packages_language_edit_text_text'); ?></span></td>
    <td class="mbox" width="50%"><input type="text" name="text" size="50" /></td>
   </tr>
   <tr>
