@@ -14,25 +14,24 @@ class lang {
 
 	// ToDo: Alternatives Verzeichnis für den Fall, dass eine ID übergeben wurde, die nichtmehr aktiv ist...
 	function lang($js = false, $level = E_USER_ERROR) {
-		$this->js = $js;
 		$this->file = '';
 		$this->vars = array();
 		$this->benchmark = array('all' => 0, 'ok' => 0, 'error' => 0);
 		$this->lngarray = array();
 		$this->cache = array();
 		$this->assign = array();
+		$this->js = $js;
+
 		if ($this->js > 0) {
 			$dir = $this->js;
+			if (!$this->setdir($dir)) {
+				die('alert("Language-Directory not found!");');
+			}
 		}
 		else {
 			global $config;
 			$dir = $config['langdir'];
-		}
-		if (!$this->setdir($dir)) {
-			if ($this->js > 0) {
-				die('alert("Language-Directory not found!");');
-			}
-			else {
+			if (!$this->setdir($dir)) {
 				trigger_error('Language-Directory not found!', $level);
 			}
 		}
@@ -49,7 +48,7 @@ class lang {
 
 		@ini_set('default_charset', '');
 		if (!headers_sent()) {
-			viscacha_header('Content-type: text/html; charset='.$this->phrase('charset'));
+			viscacha_header('Content-type: text/html; charset='.$this->charset());
 		}
 
 		global $slog;
@@ -83,7 +82,7 @@ class lang {
 
 		@ini_set('default_charset', '');
 		if (!headers_sent()) {
-			viscacha_header('Content-type: text/html; charset='.$this->phrase('charset'));
+			viscacha_header('Content-type: text/html; charset='.$this->charset());
 		}
 	}
 
@@ -106,6 +105,16 @@ class lang {
 		}
 		else {
 			return $this->lngarray;
+		}
+	}
+
+	function charset() {
+		if (empty($this->lngarray['charset'])) {
+			global $config;
+			return $config['asia_charset'];
+		}
+		else {
+			return $this->lngarray['charset'];
 		}
 	}
 

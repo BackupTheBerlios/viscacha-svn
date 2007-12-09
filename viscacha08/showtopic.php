@@ -69,7 +69,7 @@ if ($last['topiczahl'] < 1) {
 }
 
 $q = urldecode($gpc->get('q', str));
-if (strlen($q) > 2) {
+if (strxlen($q) > 2) {
 	$qUrl = '&q='.urlencode($q);
 }
 else {

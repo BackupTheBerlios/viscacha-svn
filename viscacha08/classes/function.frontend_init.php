@@ -38,6 +38,10 @@ if (empty($config['dbpw']) || empty($config['dbuser'])) {
 	trigger_error('You have specified database authentification data that is not safe. Please change your database user and the database password!', E_USER_ERROR);
 }
 
+// A class for Languages
+require_once("classes/class.language.php");
+$lang = new lang();
+
 // Filesystem
 require_once("classes/class.filesystem.php");
 $filesystem = new filesystem($config['ftp_server'], $config['ftp_user'], $config['ftp_pw'], $config['ftp_port']);

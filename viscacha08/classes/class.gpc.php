@@ -26,6 +26,9 @@ if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
 
 class GPC {
 
+	var $prepare_original;
+	var $prepare_entity;
+
     function GPC() {
 		if (!defined('str')) {
 			define('str', 2);
@@ -45,6 +48,9 @@ class GPC {
 		if (!defined('arr_none')) {
 			define('arr_none', 3);
 		}
+		$this->prepare_original = array('"', "'", '<', '>');
+		$this->prepare_entity = array('&quot;', '&#039;', '&lt;', '&gt;');
+		$this->php523 = version_compare(PHP_VERSION, '5.2.3', '>=');
     }
 
     function get($index, $type = none, $standard = NULL) {
@@ -110,21 +116,13 @@ class GPC {
     		}
     	}
     	elseif (is_string($var)) {
-    		if ($config['asia'] == 0) {
-    			$var = htmlspecialchars($var, ENT_QUOTES);
-    		}
-    		else {
-        		$var = str_replace('"', '&quot;', $var);
-        		$var = str_replace("'", '&#039;', $var);
-        		$var = str_replace('>', '&gt;', $var);
-        		$var = str_replace('<', '&lt;', $var);
-    		}
+        	$var = str_replace($this->prepare_original, $this->prepare_entity, $var);
     	}
     	return $var;
     }
 
 	function save_str($var){
-    	global $db, $config;
+    	global $db, $config, $lang;
     	if (is_numeric($var) || empty($var)) {
     		// Do nothing to save time
     	}
@@ -140,10 +138,12 @@ class GPC {
     	elseif (is_string($var)){
     		$var = preg_replace('#(script|about|applet|activex|chrome|mocha):#is', "\\1&#058;", $var);
     		$var = $this->secure_null($var);
-    		if ($config['asia'] == 1) {
-    			$var = htmlentities($var, ENT_QUOTES, $config['asia_charset']);
+    		if ($this->php523) {
+    			$var = htmlentities($var, ENT_QUOTES, $lang->charset(), false);
+    		}
+    		else {
+    			$var = htmlentities($var, ENT_QUOTES, $lang->charset());
     			$var = str_replace('&amp;#', '&#', $var);
-				$var = htmlspecialchars_decode($var);
     		}
 			if (is_object($db)) {
     			$var = $db->escape_string($var);
@@ -234,23 +234,21 @@ class GPC {
 	}
 
 	function plain_str($var) {
-    	global $db, $config;
-    	if ($config['asia'] == 1) {
-	    	if (is_numeric($var) || empty($var)) {
-    			// Do nothing to save time
-    		}
-    		elseif (is_array($var)) {
-	    		$cnt = count($var);
-	    		$keys = array_keys($var);
+    	global $db, $config, $lang;
+    	if (is_numeric($var) || empty($var)) {
+			// Do nothing to save time
+		}
+		elseif (is_array($var)) {
+    		$cnt = count($var);
+    		$keys = array_keys($var);
 
-	    		for ($i = 0; $i < $cnt; $i++){
-	    			$key = $keys[$i];
-	    			$var[$key] = $this->save_str($var[$key]);
-	    		}
-	    	}
-	    	elseif (is_string($var)){
-	    		$var = html_entity_decode($var, ENT_QUOTES, $config['asia_charset']);
-	    	}
+    		for ($i = 0; $i < $cnt; $i++){
+    			$key = $keys[$i];
+    			$var[$key] = $this->save_str($var[$key]);
+    		}
+    	}
+    	elseif (is_string($var)){
+    		$var = html_entity_decode($var, ENT_QUOTES, $lang->charset());
     	}
     	return $var;
 	}

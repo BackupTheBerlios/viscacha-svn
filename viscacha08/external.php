@@ -95,7 +95,7 @@ else {
 
 // Header of feeds
 $rss = new UniversalFeedCreator();
-$rss->encoding = $lang->phrase('charset');
+$rss->encoding = $lang->charset();
 $rss->setDir("feeds/topics_");
 $rss->useCached($action, '', $h);
 $rss->title = $config['fname'];

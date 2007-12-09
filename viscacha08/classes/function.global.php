@@ -28,8 +28,6 @@ if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
 require_once('classes/class.cache.php');
 // INI-File-Class
 include_once("classes/class.ini.php");
-// A class for Languages
-require_once("classes/class.language.php");
 // Gets modules
 require_once("classes/class.plugins.php");
 // Gets a file with Output-functions
@@ -38,7 +36,6 @@ require_once("classes/class.docoutput.php");
 include_once ("classes/class.bbcode.php");
 
 $scache = new CacheServer();
-$lang = new lang();
 $plugins = new PluginSystem();
 
 // Database functions
@@ -299,26 +296,6 @@ function invert ($int) {
 	return $int;
 }
 
-function extract_dir($source, $realpath = true) {
-	if ($realpath) {
-		$source = realpath($source);
-	}
-	else {
-		$source = rtrim($source, '/\\');
-	}
-	$pos = strrpos($source, '/');
-	if ($pos === false) {
-		$pos = strrpos($source, '\\');
-	}
-	if ($pos > 0) {
-		$dest = substr($source, 0, $pos+1);
-	}
-	else {
-		$dest = '';
-	}
-	return $dest;
-}
-
 /*	Delete a file, or a folder and its contents
 *	@author      Aidan Lister <aidan@php.net>
 *	@version     1.0.0
@@ -369,6 +346,9 @@ function copyr($source, $dest) {
         }
     }
     $dir = dir($source);
+    if (!is_object($dir)) {
+    	return false;
+    }
     $ret = true;
     while (false !== $entry = $dir->read()) {
         if ($entry == '.' || $entry == '..') {
@@ -611,7 +591,7 @@ function benchmarktime() {
 }
 
 function strxlen($string) {
-	$string = preg_replace('~&#([0-9]+);~', '-', $string);
+	$string = preg_replace('~&#([0-9]{2,6});~', '-', $string);
 	return strlen($string);
 }
 
@@ -992,7 +972,7 @@ function xmail ($to, $from = array(), $topic, $comment, $type='plain', $attachme
 	require_once('classes/mail/extended.phpmailer.php');
 
 	$mail = new PHPMailer();
-	$mail->CharSet = $lang->phrase('charset');
+	$mail->CharSet = $lang->charset();
 
 	// Added Check_mail for better security
 	// Now it is not possible to add various headers to the mail

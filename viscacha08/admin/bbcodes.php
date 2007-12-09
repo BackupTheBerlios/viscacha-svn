@@ -651,13 +651,13 @@ elseif ($job == 'add') {
 	if ($type != 'word' && $type != 'censor' && $type != 'replace') {
 		$error[] = $lang->phrase('admin_bbc_no_valid_type');
 	}
-	if (strlen($gpc->get('temp1', str)) < 2) {
+	if (strxlen($gpc->get('temp1', str)) < 2) {
 		$error[] = $lang->phrase('admin_bbc_word_too_short');
 	}
-	if (strlen($gpc->get('temp2', str)) < 2) {
+	if (strxlen($gpc->get('temp2', str)) < 2) {
 		$error[] = $lang->phrase('admin_bbc_something_else_too_short');
 	}
-	if (strlen($gpc->get('temp3', str)) < 2 && $type == 'word') {
+	if (strxlen($gpc->get('temp3', str)) < 2 && $type == 'word') {
 		$error[] = $lang->phrase('admin_bbc_desc_too_short');
 	}
 	if (count($error) > 0) {
@@ -729,19 +729,19 @@ elseif ($job == 'edit2') {
 	if ($type != 'word' && $type != 'censor' && $type != 'replace') {
 		error('admin.php?action=index', $lang->phrase('admin_bbc_no_valid_type'));
 	}
-	if (strlen($gpc->get('temp1', str)) < 2) {
+	if (strxlen($gpc->get('temp1', str)) < 2) {
 		$error[] = $lang->phrase('admin_bbc_word_too_short');
 	}
-	if (strlen($gpc->get('temp1', str)) > 200) {
+	if (strxlen($gpc->get('temp1', str)) > 200) {
 		$error[] = $lang->phrase('admin_bbc_word_too_long');
 	}
-	if (strlen($gpc->get('temp2', str)) > 255) {
+	if (strxlen($gpc->get('temp2', str)) > 255) {
 		$error[] = $lang->phrase('admin_bbc_something_else_too_long');
 	}
-	if (strlen($gpc->get('temp2', str)) < 2) {
+	if (strxlen($gpc->get('temp2', str)) < 2) {
 		$error[] = $lang->phrase('admin_bbc_something_else_too_short');
 	}
-	if (strlen($gpc->get('temp3', str)) < 2 && $type == 'word') {
+	if (strxlen($gpc->get('temp3', str)) < 2 && $type == 'word') {
 		$error[] = $lang->phrase('admin_bbc_desc_too_short');
 	}
 	if (count($error) > 0) {

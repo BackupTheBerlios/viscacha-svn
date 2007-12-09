@@ -194,9 +194,10 @@ while ($row = $db->fetch_object($result)) { // no $gpc->prepare for pdf
 	if ($info['status'] == 2) {
 		$row->comment = $bbcode->ReplaceTextOnce($row->comment, 'moved');
 	}
-	$row->comment = html_entity_decode($bbcode->parse($row->comment, 'pdf'), ENT_QUOTES, $config['asia_charset']);
+	$row->comment = $bbcode->parse($row->comment, 'pdf');
+	$row->comment = $gpc->plain_str($row->comment);
 	$row->date = gmdate($lang->phrase('dformat1'), times($row->date));
-	$row->topic = html_entity_decode($row->topic, ENT_QUOTES, $config['asia_charset']);
+	$row->topic = $gpc->plain_str($row->topic);
 
 	if (isset($uploads[$row->id]) && $config['tpcallow'] == 1) {
 		$row->comment .= '<br><hr><b>'.$lang->phrase('pdf_attachments').'</b><br>';

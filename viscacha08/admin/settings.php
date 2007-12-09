@@ -995,64 +995,6 @@ elseif ($job == 'email2') {
 
 	ok('admin.php?action=settings&job=settings');
 }
-elseif ($job == 'lang') {
-	$config = $gpc->prepare($config);
-	echo head();
-
-	$charsets = array();
-	$charsets['ISO-8859-1'] = $lang->phrase('admin_charset_iso88591');
-	$charsets['ISO-8859-15'] = $lang->phrase('admin_charset_iso889515');
-	$charsets['UTF-8'] = $lang->phrase('admin_charset_utf8');
-	$charsets['cp1252'] = $lang->phrase('admin_charset_cp1252');
-	if (version_compare(PHP_VERSION, '4.3.2', '>=')) {
-		$charsets['cp866'] = $lang->phrase('admin_charset_cp866');
-		$charsets['cp1251'] = $lang->phrase('admin_charset_cp1251');
-		$charsets['KOI8-R'] = $lang->phrase('admin_charset_koi8r');
-	}
-	$charsets['BIG5'] = $lang->phrase('admin_charset_big5');
-	$charsets['GB2312'] = $lang->phrase('admin_charset_gb2312');
-	$charsets['BIG5-HKSCS'] = $lang->phrase('admin_charset_big5hkscs');
-	$charsets['Shift_JIS'] = $lang->phrase('admin_charset_shiftjis');
-	$charsets['EUC-JP'] = $lang->phrase('admin_charset_eucjp');
-
-
-	?>
-	<form name="form" method="post" action="admin.php?action=settings&job=lang2">
-	 <table class="border" border="0" cellspacing="0" cellpadding="4">
-	  <tr>
-	   <td class="obox" colspan="2"><?php echo $lang->phrase('admin_international_languane_edit'); ?></td>
-	  </tr>
-	  <tr>
-	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_activate_character_set'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_activate_character_set_info'); ?></span></td>
-	   <td class="mbox" width="50%"><input type="checkbox" name="asia" value="1"<?php echo iif($config['asia'] == 1,' checked="checked"'); ?>></td>
-	  </tr>
-	  <tr>
-	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_character_set_incomming_data_converted'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_character_set_incomming_data_converted_info'); ?></span></td>
-	   <td class="mbox" width="50%"><select name="asia_charset">
-	   <?php foreach ($charsets as $key => $opt) { ?>
-	   <option value="<?php echo $key; ?>"<?php echo iif($config['asia_charset'] == $key, ' selected="selected"'); ?>><?php echo $key.': '.$opt; ?></option>
-	   <?php } ?>
-	   </select>
-	   </td>
-	  </tr>
-	  <tr>
-	   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="<?php echo $lang->phrase('admin_form_submit'); ?>"></td>
-	  </tr>
-	 </table>
-	</form>
-	<?php
-	echo foot();
-}
-elseif ($job == 'lang2') {
-	echo head();
-
-	$c->getdata();
-	$c->updateconfig('asia',int);
-	$c->updateconfig('asia_charset',str);
-	$c->savedata();
-
-	ok('admin.php?action=settings&job=settings');
-}
 elseif ($job == 'captcha') {
 	$config = $gpc->prepare($config);
 	echo head();
@@ -2581,20 +2523,6 @@ else {
 		<td nowrap="nowrap"><a href="admin.php?action=settings&amp;job=http"><?php echo $lang->phrase('admin_setting_http_cookie_compression'); ?></a></td>
 		<td class="stext"><?php echo $lang->phrase('admin_setting_http_cookie_compression_info'); ?></td>
 		<td><?php echo $lang->phrase('admin_setting_none'); ?></td>
-	  </tr>
-	  <tr class="mbox">
-		<td nowrap="nowrap"><a href="admin.php?action=settings&amp;job=lang"><?php echo $lang->phrase('admin_setting_languane'); ?></a></td>
-		<td class="stext"><?php echo $lang->phrase('admin_setting_languane_info'); ?></td>
-		<td>
-		  <form name="act" action="admin.php?action=locate" method="post">
-		    <select style="width: 80%" size="1" name="url" onchange="locate(this.value)">
-		      <option value="" style="font-weight: bold;"><?php echo $lang->phrase('admin_select_tools'); ?></option>
-		  	  <option value="admin.php?action=language&amp;job=manage"><?php echo $lang->phrase('admin_select_languane_manager'); ?></option>
-		  	  <option value="admin.php?action=language&amp;job=import"><?php echo $lang->phrase('admin_select_import_languane'); ?></option>
-		  	  <option value="admin.php?action=language&amp;job=phrase"><?php echo $lang->phrase('admin_select_phare_manager'); ?></option>
-	        </select> <input style="width: 18%" type="submit" value="<?php echo $lang->phrase('admin_form_go'); ?>">
-		  </form>
-		</td>
 	  </tr>
 	  <tr class="mbox">
 		<td nowrap="nowrap"><a href="admin.php?action=settings&amp;job=jabber"><?php echo $lang->phrase('admin_setting_jabber'); ?></a></td>

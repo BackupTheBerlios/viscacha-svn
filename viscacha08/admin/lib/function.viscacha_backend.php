@@ -3,6 +3,9 @@ if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
 
 // Gets a file with php-functions
 @include_once("classes/function.phpcore.php");
+// A class for Languages
+require_once("classes/class.language.php");
+$lang = new lang();
 // Filesystem
 require_once("classes/class.filesystem.php");
 $filesystem = new filesystem($config['ftp_server'], $config['ftp_user'], $config['ftp_pw'], $config['ftp_port']);
@@ -60,12 +63,12 @@ require_once ("classes/function.global.php");
 
 $benchmark = benchmarktime();
 
-$job = $gpc->get('job', str);
-
 $slog = new slog();
 $my = $slog->logged();
 $lang->initAdmin($my->language);
 $my->p = $slog->Permissions();
+
+$job = $gpc->get('job', str);
 
 if (!isset($my->settings['admin_interface'])) {
 	$my->settings['admin_interface'] = $admconfig['nav_interface'];

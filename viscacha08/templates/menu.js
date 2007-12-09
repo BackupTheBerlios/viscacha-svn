@@ -67,7 +67,7 @@ function GetCookie(n) {
 function KillCookie(n) {
 	document.cookie = n+'=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
 }
-// ============================
+// === Not compatible with opera? ===
 var MenuTimeout = 500;
 var active = 0;
 var MenuCountHide = 0;

@@ -103,6 +103,26 @@ function getDocumentRoot(){
 function iif($if, $true, $false = '') {
 	return ($if ? $true : $false);
 }
+// extracts the top directory
+function extract_dir($source, $realpath = true) {
+	if ($realpath) {
+		$source = realpath($source);
+	}
+	else {
+		$source = rtrim($source, '/\\');
+	}
+	$pos = strrpos($source, '/');
+	if ($pos === false) {
+		$pos = strrpos($source, '\\');
+	}
+	if ($pos > 0) {
+		$dest = substr($source, 0, $pos+1);
+	}
+	else {
+		$dest = '';
+	}
+	return $dest;
+}
 
 /* Missing constants from PHP-Compat */
 

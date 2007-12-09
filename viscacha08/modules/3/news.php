@@ -27,6 +27,7 @@ while ($row = $gpc->prepare($db->fetch_assoc($result))) {
 
 	$row['date'] = str_date($lang->phrase('dformat1'), times($row['date']));
 
+	$row['comment'] = $gpc->plain_str($row['comment']);
 	$row['read_more'] = false;
 	$pos = stripos($row['comment'], $cutat);
 	if ($pos !== false) {
@@ -89,6 +90,7 @@ while ($row = $gpc->prepare($db->fetch_assoc($result))) {
 		}
 		// IntelliCut - End
 	}
+	$row['comment'] = $gpc->save_str($row['comment']);
 	$bbcode->setSmileys($row['dosmileys']);
 	if ($config['wordstatus'] == 0) {
 		$row['dowords'] = 0;

@@ -362,6 +362,23 @@ elseif ($job == 'lang_settings') {
 		$settings['country_code'] = '';
 	}
 
+	$charsets = array();
+	$charsets['ISO-8859-1'] = $lang->phrase('admin_charset_iso88591');
+	$charsets['ISO-8859-15'] = $lang->phrase('admin_charset_iso889515');
+	$charsets['UTF-8'] = $lang->phrase('admin_charset_utf8');
+	$charsets['cp1252'] = $lang->phrase('admin_charset_cp1252');
+	if (version_compare(PHP_VERSION, '4.3.2', '>=')) {
+		$charsets['cp866'] = $lang->phrase('admin_charset_cp866');
+		$charsets['cp1251'] = $lang->phrase('admin_charset_cp1251');
+		$charsets['KOI8-R'] = $lang->phrase('admin_charset_koi8r');
+	}
+	$charsets['BIG5'] = $lang->phrase('admin_charset_big5');
+	$charsets['GB2312'] = $lang->phrase('admin_charset_gb2312');
+	$charsets['BIG5-HKSCS'] = $lang->phrase('admin_charset_big5hkscs');
+	$charsets['Shift_JIS'] = $lang->phrase('admin_charset_shiftjis');
+	$charsets['EUC-JP'] = $lang->phrase('admin_charset_eucjp');
+	$settings['charset'] = isset($settings['charset']) ? $settings['charset'] : $config['asia_charset'];
+
 	$rss = file2array('admin/data/rss.txt');
 	$languages = file2array('admin/data/iso639.txt');
 	$country = file2array('admin/data/iso3166.txt');
@@ -449,8 +466,14 @@ function errordefault(box) {
    </select>
   </tr>
   <tr>
-   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_lang_charset'); ?></td>
-   <td class="mbox" width="50%"><input type="text" name="charset" value="<?php echo isset($settings['charset']) ? $settings['charset'] : 'ISO-8859-1'; ?>" size="20"></td>
+   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_lang_charset'); ?><br /><span class="stest"><?php echo $lang->phrase('admin_character_set_incomming_data_converted_info'); ?></span></td>
+   <td class="mbox" width="50%">
+	<select name="charset">
+	   <?php foreach ($charsets as $key => $opt) { ?>
+	   <option value="<?php echo $key; ?>"<?php echo iif($settings['charset'] == $key, ' selected="selected"'); ?>><?php echo $key.': '.$opt; ?></option>
+	   <?php } ?>
+	</select>
+   </td>
   </tr>
   <tr>
    <td class="ubox" colspan="2"><?php echo $lang->phrase('admin_lang_date_and_time'); ?></td>
@@ -530,6 +553,13 @@ elseif ($job == 'lang_settings2') {
 	$c->updateconfig('dformat4',str);
 	$c->updateconfig('charset',str);
 	$c->savedata();
+
+	if ($config['langdir'] == $id) {
+		$c = new manageconfig();
+		$c->getdata();
+		$c->updateconfig('asia_charset', str, $gpc->get('charset', str));
+		$c->savedata();
+	}
 
 	$delobj = $scache->load('loadlanguage');
 	$delobj->delete();
@@ -975,6 +1005,11 @@ elseif ($job == 'lang_default') {
 	$c = new manageconfig();
 	$c->getdata();
 	$c->updateconfig('langdir', int, $id);
+	$current = $lang->getdir();
+	$lang->setdir($id);
+	$data = $lang->return_array('settings');
+	$lang->setdir($current);
+	$c->updateconfig('asia_charset', str, $data['charset']);
 	$c->savedata();
 
 	$delobj = $scache->load('loadlanguage');

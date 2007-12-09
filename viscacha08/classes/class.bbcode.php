@@ -866,7 +866,7 @@ class BBCode {
 				if ($tab < 1) {
 					$tab = 4;
 				}
-				$line   = strlen($cell)+$tab;
+				$line   = strxlen($cell)+$tab;
 				if (!isset($result[$i]) || $line > $result[$i]) {
 					$result[$i] = $line;
 				}
@@ -972,7 +972,6 @@ class BBCode {
 				'wordwrap' => 1,
 				'wordwrap_char' => '-',
 				'wordwrap_wordlength' => 70,
-				'wordwrap_asia' => 0,
 				'useSmileys' => 0,
 				'SmileyUrl' => '',
 				'useDict' => 0,
@@ -1020,11 +1019,10 @@ class BBCode {
 	function setReplace ($use = 1) {
 		$this->profile['useReplace'] = $use;
 	}
-	function setWordwrap ($use = 1, $wordlength = 70, $char = ' ', $asia = 0) {
+	function setWordwrap ($use = 1, $wordlength = 70, $char = ' ') {
 		$this->profile['wordwrap'] = $use;
 		$this->profile['wordwrap_wordlength'] = $wordlength;
 		$this->profile['wordwrap_char'] = $char;
-		$this->profile['wordwrap_asia'] = $asia;
 	}
 	function setDoc ($reduce_endchars = 1, $reduce_nl = 1, $topicupper = 1) {
 		$this->profile['reduceEndChars'] = $reduce_endchars;
@@ -1047,7 +1045,7 @@ class BBCode {
 		if (isset($this->profile['highlight']) && count($this->profile['highlight']) > 0) {
 			$class = $this->profile['highlight_class'];
 			foreach ($this->profile['highlight'] as $token) {
-				if (strlen($token) > 2) {
+				if (strxlen($token) > 2) {
 					$text = str_replace('\"', '"', substr(preg_replace('#(\>(((?>([^><]+|(?R)))*)\<))#se', "preg_replace('#\b(" . $token . ")\b#i', '<span class=\"" . $class . "\">\\\\1</span>', '\\0')", '>' . $text . '<'), 1, -1));
 				}
 			}
@@ -1157,9 +1155,6 @@ class BBCode {
 			$length = $this->profile['wordwrap_wordlength'];
 		}
 		$text = preg_replace("~([^\n\r\s&\./<>\[\]\\\]{".$length.'})~i', "\\1".$this->profile['wordwrap_char'], $text);
-		if ($this->profile['wordwrap_asia'] == 0) {
-			$text = preg_replace("~(&amp;#?\w{2,5};)(&amp;#?\w{2,5};)(&amp;#?\w{2,5};)(&amp;#?\w{2,5};)(&amp;#?\w{2,5};)~iU", "\\1\\2\\3\\4\\5 ", $text);
-		}
 		return $text;
 	}
 	function cache_bbcode () {
@@ -1244,7 +1239,7 @@ function BBProfile(&$bbcode, $profile = 'standard') {
 			$bbcode->setProfile('signature', SP_NEW);
 			$bbcode->setProfile($profile, SP_NEW);
 			$bbcode->setMisc($config['dictstatus'], $config['censorstatus'], $config['resizebigimgwidth']);
-			$bbcode->setWordwrap($config['wordwrap'], $config['maxwordlength'], $config['maxwordlengthchar'], $config['asia']);
+			$bbcode->setWordwrap($config['wordwrap'], $config['maxwordlength'], $config['maxwordlengthchar']);
 			$bbcode->setDoc($config['reduce_endchars'], $config['reduce_nl'], $config['topicuppercase']);
 			$bbcode->setURL($config['reduce_url'], $config['maxurllength'], $config['maxurltrenner']);
 			if (isset($my->name)) {
@@ -1276,7 +1271,7 @@ function BBProfile(&$bbcode, $profile = 'standard') {
 		else {
 			$bbcode->setProfile($profile, SP_NEW);
 			$bbcode->setMisc($config['dictstatus'], $config['censorstatus'], $config['resizebigimgwidth']);
-			$bbcode->setWordwrap($config['wordwrap'], $config['maxwordlength'], $config['maxwordlengthchar'], $config['asia']);
+			$bbcode->setWordwrap($config['wordwrap'], $config['maxwordlength'], $config['maxwordlengthchar']);
 			$bbcode->setDoc($config['reduce_endchars'], $config['reduce_nl'], $config['topicuppercase']);
 			$bbcode->setURL($config['reduce_url'], $config['maxurllength'], $config['maxurltrenner']);
 			if (isset($my->name)) {

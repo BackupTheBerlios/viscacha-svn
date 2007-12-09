@@ -1,6 +1,19 @@
 <?php
 if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
 $lang = array();
+$lang['admin_character_set_incomming_data_converted_info'] = 'Information: ISO-8895-15 ist nahezu identisch mit ISO-8895-1, wurde jedoch um das Euro-Zeichen und einige weitere Sonderzeichen erweitert (u.a. finnische und französische Sonderzeichen).';
+$lang['admin_charset_big5'] = 'Traditionelles Chinesisch, hauptsächlich in Taiwan genutzt';
+$lang['admin_charset_big5hkscs'] = 'Big5 mit Hong Kong Erweiterung, Traditionelles Chinesisch.';
+$lang['admin_charset_cp866'] = 'DOS-spezifischer kyrillischer Zeichensatz (PHP >= 4.3.2)';
+$lang['admin_charset_cp1251'] = 'Windows-spezifischer kyrillisch Zeichensatz (PHP >= 4.3.2)';
+$lang['admin_charset_cp1252'] = 'Windows-spezifischer Zeichensatz für das westliche Europa';
+$lang['admin_charset_eucjp'] = 'Japanisch (EUC-JP)';
+$lang['admin_charset_gb2312'] = 'Vereinfachtes Chinesisch, nationaler Standardzeichensatz';
+$lang['admin_charset_iso88591'] = 'Westliches Europa, Latin-1';
+$lang['admin_charset_iso889515'] = 'Westliches Europa, Latin-9';
+$lang['admin_charset_koi8r'] = 'Russisch (PHP >= 4.3.2)';
+$lang['admin_charset_shiftjis'] = 'Japanisch (Shift JIS)';
+$lang['admin_charset_utf8'] = 'ASCII kompatibler Multi-Byte 8-Bit Unicode';
 $lang['admin_lang_action'] = 'Operationen';
 $lang['admin_lang_add'] = 'Hinzufügen';
 $lang['admin_lang_add_new_langfile'] = 'Sprachdatei hinzufügen';
