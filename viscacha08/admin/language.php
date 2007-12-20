@@ -365,7 +365,7 @@ elseif ($job == 'lang_settings') {
 	$charsets = array();
 	$charsets['ISO-8859-1'] = $lang->phrase('admin_charset_iso88591');
 	$charsets['ISO-8859-15'] = $lang->phrase('admin_charset_iso889515');
-	$charsets['UTF-8'] = $lang->phrase('admin_charset_utf8');
+//	$charsets['UTF-8'] = $lang->phrase('admin_charset_utf8');
 	$charsets['cp1252'] = $lang->phrase('admin_charset_cp1252');
 	if (version_compare(PHP_VERSION, '4.3.2', '>=')) {
 		$charsets['cp866'] = $lang->phrase('admin_charset_cp866');

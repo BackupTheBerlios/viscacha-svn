@@ -1024,7 +1024,7 @@ elseif ($job == 'custombb_add') {
 		<span class="stext"><?php echo $lang->phrase('admin_bbc_use_option_desc'); ?></span></td>
 		<td class="mbox">
 			<input type="radio" name="twoparams" value="1" /><?php echo $lang->phrase('admin_bbc_yes'); ?><br />
-			<input type="radio" name="twoparams" value="0" checked="checked" /$lang->phrase('admin_bbc_no')
+			<input type="radio" name="twoparams" value="0" checked="checked" /> <?php echo $lang->phrase('admin_bbc_no'); ?>
 		</td>
 	</tr>
 	<tr>
@@ -1239,8 +1239,8 @@ elseif ($job == 'custombb_test') {
   	<tr><td class="obox"><?php echo $lang->phrase('admin_bbc_parsing_results'); ?></td></tr>
   	<tr><td class="ubox">
   		<strong><?php echo $lang->phrase('admin_bbc_benchmark'); ?></strong><br />
-  	$lang->phrase('admin_bbc_smileys')<?php echo $smileys_time; ?> <?php echo $lang->phrase('admin_bbc_seconds'); ?><br />
-  	$lang->phrase('admin_bbc_bbcs')<?php echo $bbcode_time; ?> <?php echo $lang->phrase('admin_bbc_seconds'); ?><br />
+  	 	<?php echo $lang->phrase('admin_bbc_smileys'); ?> <?php echo $smileys_time; ?> <?php echo $lang->phrase('admin_bbc_seconds'); ?><br />
+  		<?php echo $lang->phrase('admin_bbc_bbcs'); ?> <?php echo $bbcode_time; ?> <?php echo $lang->phrase('admin_bbc_seconds'); ?><br />
   	</td></tr>
   	<tr><td class="mbox"><?php echo $parsed_test; ?></td></tr>
 </table>

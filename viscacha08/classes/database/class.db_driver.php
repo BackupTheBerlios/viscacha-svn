@@ -24,7 +24,7 @@
 
 if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
 
-class DB_Driver {
+class DB_Driver { // abstract class
 
 	var $host;
 	var $user;
@@ -41,8 +41,9 @@ class DB_Driver {
 	var $commentdel;
 	var $errlogfile;
 	var $std_limit;
+	var $persistence;
 
-	function DB_Driver($host="localhost", $user="root", $pwd="", $dbname="", $dbprefix='', $open=false) {
+	function DB_Driver($host="localhost", $user="root", $pwd="", $dbname="", $dbprefix='', $open = true) {
 	    $this->host = $host;
 	    $this->user = $user;
 	    $this->pwd = $pwd;
@@ -56,9 +57,26 @@ class DB_Driver {
         $this->new_line = "\n";
         $this->commentdel = '-- ';
         $this->std_limit = 5000;
+        $this->persistence = false;
 		if($open) {
 		   $this->open();
 		}
+	}
+
+	function quitOnError($die = true) {
+		if (!$this->hasConnection($this->conn)) {
+			if ($die == true) {
+				trigger_error('Could not connect to database! Pleasy try again later or check the database settings: host, username and password!<br /><strong>Database returned</strong>: '.$this->errstr(), E_USER_ERROR);
+			}
+			else {
+				trigger_error('Could not connect to database!<br /><strong>Database returned</strong>: '.$this->errstr(), E_USER_WARNING);
+			}
+		}
+	}
+
+	function setPersistence($persistence = false) {
+		$persistence = ($persistence == 1 || $persistence == true);
+		$this->persistence = $persistence;
 	}
 
     function getStructure($table, $drop = 1) {

@@ -40,7 +40,8 @@ $plugins = new PluginSystem();
 
 // Database functions
 require_once('classes/database/'.$config['dbsystem'].'.inc.php');
-$db = new DB($config['host'], $config['dbuser'], $config['dbpw'], $config['database'], $config['pconnect'], true, $config['dbprefix']);
+$db = new DB($config['host'], $config['dbuser'], $config['dbpw'], $config['database'], $config['dbprefix']);
+$db->setPersistence($config['pconnect']);
 
 // Construct base bb-code object
 $bbcode = new BBCode();
