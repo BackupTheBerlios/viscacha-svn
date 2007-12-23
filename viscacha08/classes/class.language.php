@@ -130,7 +130,10 @@ class lang {
         preg_match("|<title>(.+?)</title>.*?<comment>(.+?)</comment>|is", $content, $matches);
 		$matches[1] = $this->parse_pvar($matches[1]);
 		$matches[2] = $this->parse_pvar($matches[2]);
-        return array('title' => $matches[1], 'comment' => $matches[2]);
+        return array(
+        		'title' => $gpc->plain_str($matches[1]),
+        		'comment' => $gpc->plain_str($matches[2])
+        	   );
 	}
 	function get_text($file,$ext='php') {
 		$this->benchmark['all']++;

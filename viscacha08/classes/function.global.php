@@ -996,6 +996,8 @@ function check_forumperm($forum) {
 }
 
 /*
+Sends a plain-text E-Mail.
+
 Params:
 	(array/string)	$to		= Absender
 					$to[]['name'] = Empfängername (opt)
@@ -1005,21 +1007,16 @@ Params:
 					$from['mail'] = Absenderemail (opt)
 	(string)		$topic 		= Titel
 	(string)		$comment 	= Inhalt
-	(int)			$html 		= HTML-Modus (0/1)
-	(array)			$attachment = Empfänger (opt)
-					$attachment[]['file'] = Anhang der verschickt werden soll
-					$attachment[]['name'] = Dateiname für dei zu verschickende Datei
-					$attachment[]['type'] = [path|string] (opt)
 */
 
-function xmail ($to, $from = array(), $topic, $comment, $type='plain', $attachment = array()) {
+function xmail ($to, $from = array(), $topic, $comment) {
 	global $config, $my, $lang, $bbcode;
 
 	require_once("classes/mail/class.phpmailer.php");
 	require_once('classes/mail/extended.phpmailer.php');
 
 	$mail = new PHPMailer();
-	$mail->CharSet = $lang->charset();
+	$mail->CharSet = 'UTF-8';
 
 	// Added Check_mail for better security
 	// Now it is not possible to add various headers to the mail
@@ -1060,38 +1057,14 @@ function xmail ($to, $from = array(), $topic, $comment, $type='plain', $attachme
 	}
 	$i = 0;
 	foreach ($to as $email) {
-		if ($type == 'bb') {
-			BBProfile($bbcode);
-			$bbcode->setSmileys(0);
-			$bbcode->setReplace($config['wordstatus']);
-			$row->comment = ($row->comment);
-			$mail->IsHTML(TRUE);
-	    	$mail->Body    = $bbcode->parse($comment);
-	    	$mail->AltBody = $bbcode->parse($comment, 'plain');
-		}
-		elseif ($type == 'html') {
-			$mail->IsHTML(TRUE);
-	    	$mail->Body    = $comment;
-	    	$mail->AltBody = html_entity_decode(strip_tags($comment));
-	    }
-	    else {
-	    	$mail->Body    = html_entity_decode($comment);
-	    }
+		$mail->IsHTML(false);
+	    $mail->Body = $comment;
 
 	    if (isset($email['name'])) {
 	    	$mail->AddAddress($email['mail'], $email['name']);
 	    }
 	    else {
 	    	$mail->AddAddress($email['mail']);
-	    }
-
-	    foreach ($attachment as $file) {
-	    	if ($file['type'] == 'string') {
-	    		$mail->AddStringAttachment($file['file'], $file['name']);
-	    	}
-	    	else {
-	    		$mail->AddAttachment($file['file'], $file['name']);
-	    	}
 	    }
 
 		if ($mail->Send()) {
