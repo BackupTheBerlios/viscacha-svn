@@ -27,25 +27,24 @@ while ($row = $gpc->prepare($db->fetch_assoc($result))) {
 
 	$row['date'] = str_date($lang->phrase('dformat1'), times($row['date']));
 
-	$row['comment'] = $gpc->plain_str($row['comment']);
 	$row['read_more'] = false;
 	$pos = stripos($row['comment'], $cutat);
 	if ($pos !== false) {
-		$row['comment'] = substr($row['comment'], 0, $pos);
+		$row['comment'] = subxstr($row['comment'], 0, $pos);
 		$row['comment'] = rtrim($row['comment'], "\r\n").$lang->phrase('dot_more');
 		$row['read_more'] = true;
 	}
 	else {
 		// IntelliCut - Start
 		$stack = array();
-		if (strlen($row['comment']) > $teaserlength) {
+		if (strxlen($row['comment']) > $teaserlength) {
 			$culance = $teaserlength*0.1;
 			$teaserlength -= $culance;
 			$maxlength = $teaserlength+(2*$culance);
 			if ($intelliCut && preg_match("/[\.!\?]+[\s\r\n]+/", $row['comment'], $matches, PREG_OFFSET_CAPTURE, $teaserlength)) {
 				$pos = $matches[0][1];
 				if ($maxlength > $pos) {
-					$row['comment'] = substr($row['comment'], 0, $pos+2);
+					$row['comment'] = subxstr($row['comment'], 0, $pos+2);
 					$row['comment'] = rtrim($row['comment'], "\r\n").$lang->phrase('dot_more');
 					$row['read_more'] = true;
 				}
@@ -58,7 +57,7 @@ while ($row = $gpc->prepare($db->fetch_assoc($result))) {
 						$pos = $newpos;
 					}
 				}
-				$row['comment'] = substr($row['comment'], 0, $pos).$lang->phrase('dot_more');
+				$row['comment'] = subxstr($row['comment'], 0, $pos).$lang->phrase('dot_more');
 				$row['read_more'] = true;
 			}
 			$token = preg_split('/(\[[^\/\r\n\[\]]+?\]|\[\/[^\/\s\r\n\[\]]+?\])/', $row['comment'], -1, PREG_SPLIT_DELIM_CAPTURE);
@@ -90,7 +89,6 @@ while ($row = $gpc->prepare($db->fetch_assoc($result))) {
 		}
 		// IntelliCut - End
 	}
-	$row['comment'] = $gpc->save_str($row['comment']);
 	$bbcode->setSmileys($row['dosmileys']);
 	if ($config['wordstatus'] == 0) {
 		$row['dowords'] = 0;

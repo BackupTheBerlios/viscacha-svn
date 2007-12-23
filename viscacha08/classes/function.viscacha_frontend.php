@@ -522,7 +522,7 @@ function BoardSelect($board = 0) {
     				}
 		    		if (!empty($forum['l_topic'])) {
 		    			if (strxlen($forum['l_topic']) > $config['lasttopic_chars']) {
-		    				$forum['l_topic'] = substr($forum['l_topic'], 0, $config['lasttopic_chars']);
+		    				$forum['l_topic'] = subxstr($forum['l_topic'], 0, $config['lasttopic_chars']);
 		    				$forum['l_topic'] .= "...";
 		    			}
 		    			$forum['l_topic'] = $gpc->prepare($forum['l_topic']);

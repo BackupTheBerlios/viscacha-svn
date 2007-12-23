@@ -71,7 +71,7 @@ if ($_GET['action'] == 'vote') {
 	while ($row = $db->fetch_assoc($result)) {
 		$votes += $row['votes'];
 
-		$PG->x[$i] = $gpc->plain_str($row['answer']);
+		$PG->x[$i] = $gpc->plain_str($row['answer'], false);
 		$PG->y[$i] = $row['votes'];
 
 		$i++;

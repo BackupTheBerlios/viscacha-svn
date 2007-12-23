@@ -52,7 +52,7 @@ if ($_GET['action'] == "hlcode") {
 	}
 	$sourcecode = $codeObj->get();
 
-	$sourcecode['source'] = $gpc->plain_str($sourcecode['source']);
+	$sourcecode['source'] = $gpc->plain_str($sourcecode['source'], false);
 
 	($code = $plugins->load('popup_hlcode_start')) ? eval($code) : null;
 

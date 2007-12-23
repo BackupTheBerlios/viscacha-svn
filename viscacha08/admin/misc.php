@@ -757,9 +757,8 @@ elseif ($job == "credits") {
 	<p>
 		<strong>Used Scripts</strong>:
 		<ul>
-		<li><a href="http://www.fpdf.org" target="_blank">FPDF 1.53 by Olivier Plathey</a> (PDF Creation, Freeware)</li>
+		<li><a href="http://sourceforge.net/projects/tcpdf/" target="_blank">TCPDF 1.53.0.TC034 by Nicola Asuni</a> (PDF Creation, LGPL)</li>
 		<li><a href="http://www.phpclasses.org/browse/author/152329.html" target="_blank">Roman Numeral Conversion by Huda M Elmatsani</a> (Roman Numeral Conversion; Freeware)</li>
-		<li><a href="http://www.phpclasses.org/browse/author/152329.html" target="_blank">Image Converter by Huda M Elmatsani</a> (Convert Images; Freeware)</li>
 		<li><a href="http://www.flaimo.com" target="_blank">vCard-Class 1.001 by Michael Wimmer</a> (vCard Output; Unspecified)</li>
 		<li><a href="http://www.phpconcept.net" target="_blank">PclZip Library 2.6 by Vincent Blavet</a> (Zip File Handling; LPGL)</li>
 		<li><a href="http://qbnz.com/highlighter" target="_blank">GeSHi 1.0.7.20 by Nigel McNie</a> (Syntax Highlighting; GPL)</li>

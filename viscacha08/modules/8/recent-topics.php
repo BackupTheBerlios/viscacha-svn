@@ -21,10 +21,8 @@ if ($db->num_rows($result) > 0) {
 		}
 		$row['date'] = str_date($lang->phrase('dformat1'),times($row['date']));
 		if (strxlen($row['topic']) >= 75) {
-			$row['topic'] = $gpc->plain_str($row['topic']);
-			$row['topic'] = substr($row['topic'], 0, 75);
+			$row['topic'] = subxstr($row['topic'], 0, 75);
 			$row['topic'] .= $lang->phrase('dot_more');
-			$row['topic'] = $gpc->save_str($row['topic']);
 		}
 		if (isset($prefix[$row['board']][$row['prefix']]) && $row['prefix'] > 0) {
 			$lang->assign('prefix', $prefix[$row['board']][$row['prefix']]['value']);

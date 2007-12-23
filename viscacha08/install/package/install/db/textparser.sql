@@ -1,6 +1,6 @@
 CREATE TABLE `{:=DBPREFIX=:}textparser` (
   `id` mediumint(6) unsigned NOT NULL auto_increment,
-  `search` varchar(200) NOT NULL default '',
+  `search` varchar(255) NOT NULL default '',
   `replace` varchar(255) NOT NULL default '',
   `type` enum('censor','word','replace') NOT NULL default 'word',
   `desc` text NOT NULL,

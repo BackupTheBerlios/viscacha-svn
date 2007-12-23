@@ -592,8 +592,58 @@ function benchmarktime() {
 }
 
 function strxlen($string) {
-	$string = preg_replace('~&#([0-9]{2,6});~', '-', $string);
+	$string = preg_replace('~&(#[0-9]+|#x[0-9a-f]+|[a-z]{1}[0-9a-z]+);~i', '-', $string);
 	return strlen($string);
+}
+
+function subxstr($str, $start, $length = null) {
+	if ($length === 0) {
+		return ""; //stop wasting our time ;)
+	}
+
+	//check if we can simply use the built-in functions
+	if (strpos($str, '&') === false) { //No entities. Use built-in functions
+		if ($length === null) {
+			return substr($str, $start);
+		}
+		else {
+			return substr($str, $start, $length);
+		}
+	}
+
+	// create our array of characters and html entities
+	$chars = preg_split('/(&(#[0-9]+|#x[0-9a-f]+|[a-z]{1}[0-9a-z]+);)|/', $str, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_OFFSET_CAPTURE);
+	$html_length = count($chars);
+
+	// check if we can predict the return value and save some processing time
+	if ($html_length === 0 || $start >= $html_length || (isset($length) && $length <= -$html_length)) {
+     	return "";
+     }
+
+	//calculate start position
+	if ($start >= 0) {
+		$real_start = $chars[$start][1];
+	}
+	else { //start'th character from the end of string
+		$start = max($start,-$html_length);
+		$real_start = $chars[$html_length+$start][1];
+	}
+
+	if (!isset($length)) { // no $length argument passed, return all remaining characters
+		return substr($str, $real_start);
+	}
+	else if ($length > 0) { // copy $length chars
+		if ($start+$length >= $html_length) { // return all remaining characters
+			return substr($str, $real_start);
+		}
+		else { //return $length characters
+			return substr($str, $real_start, $chars[max($start,0)+$length][1] - $real_start);
+		}
+	}
+	else { //negative $length. Omit $length characters from end
+		return substr($str, $real_start, $chars[$html_length+$length][1] - $real_start);
+	}
+
 }
 
 function random_word($laenge=8) {
@@ -664,7 +714,6 @@ function str_date($format, $time=FALSE) {
 	return $returndate;
 }
 
-define('SPEC_RFC2822', 'rfc2822');
 define('SPEC_RFC822' , 'rfc822');
 define('SPEC_ISO8601', 'iso8601');
 define('SPEC_UNIX'   , 'unix');
@@ -673,7 +722,6 @@ define('SPEC_UNIX'   , 'unix');
  * Returns a date formatted in a standardized format.
  *
  * Possible formats:
- * - rfc2822 / SPEC_RFC2822
  * - rfc822 / SPEC_RFC822
  * - iso8601 / SPEC_ISO8601
  * - unix / SPEC_UNIX (default)
@@ -700,8 +748,6 @@ function dateSpec($format, $timestamp = null) {
 		case SPEC_ISO8601:
 		   	return (string) gmdate('Y-m-d\TH:i:s ', $timestamp).$tz[0].$tz[1].':'.$tz[2];
 		case SPEC_RFC822:
-			return (string) gmdate("D, d M y H:i:s ", $timestamp).implode('', $tz);
-		case SPEC_RFC2822:
 			return (string) gmdate("D, d M Y H:i:s ", $timestamp).implode('', $tz);
 		default:
 			return (int) $timestamp;

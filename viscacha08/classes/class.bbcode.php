@@ -288,10 +288,12 @@ class BBCode {
 		elseif ($this->profile['reduceUrl'] == 1 && strxlen($url) >= $config['maxurllength']) {
 			$prefix = ceil($config['maxurllength']/5);
 			$suffix = strpos($url, '/', 8);
+			$func = 'substr';
 			if ($suffix === false) {
 			   $suffix = ceil($config['maxurllength']/3);
+			   $func = 'subxstr';
 			}
-			$newurl = substr($url, 0, $suffix+1).$config['maxurltrenner'].substr($url, -$prefix);
+			$newurl = $func($url, 0, $suffix+1).$config['maxurltrenner'].subxstr($url, -$prefix);
 			$pid2 = $this->noparse_id();
 			$this->noparse[$pid2] = $newurl;
 			$ahref = '<a href="<!PID:'.$pid.'>" target="_blank"><!PID:'.$pid2.'></a>';

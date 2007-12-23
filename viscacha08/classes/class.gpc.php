@@ -233,7 +233,28 @@ class GPC {
 		}
 	}
 
-	function plain_str($var) {
+	// from php.net
+	// ToDo: Remove in 0.8 RC5
+	function html_entity_decode($string, $mode = ENT_COMPAT) {
+	    static $trans_tbl;
+
+	    // replace numeric entities
+	    $string = preg_replace('~&#x([0-9a-f]+);~ei', 'code2utf(hexdec("\\1"))', $string);
+	    $string = preg_replace('~&#0*([0-9]+);~e', 'code2utf(\\1)', $string);
+
+	    // replace literal entities
+	    if (!isset($trans_tbl)) {
+	        $trans_tbl = array();
+
+	        foreach (get_html_translation_table(HTML_ENTITIES, $mode) as $val=>$key) {
+	            $trans_tbl[$key] = utf8_encode($val);
+	        }
+	    }
+
+	    return strtr($string, $trans_tbl);
+	}
+
+	function plain_str($var, $utf = true) {
 		global $db, $config, $lang;
 		if (is_numeric($var) || empty($var)) {
 			// Do nothing to save time
@@ -244,15 +265,29 @@ class GPC {
 
 			for ($i = 0; $i < $cnt; $i++){
 				$key = $keys[$i];
-				$var[$key] = $this->plain_str($var[$key]);
+				$var[$key] = $this->plain_str($var[$key], $utf);
 			}
 		}
 		elseif (is_string($var)){
-			$var = html_entity_decode($var, ENT_QUOTES, $lang->charset());
-			$var = preg_replace('~&#0*([0-9]+);~e', 'chr(\\1)', $var);
+			if ($utf == true) {
+				$var = $this->html_entity_decode($var, ENT_QUOTES); // Todo: Make PHP5 only: html_entity_decode($var, ENT_QUOTES, 'UTF-8');
+			}
+			else {
+				$var = html_entity_decode($var, ENT_QUOTES, $lang->charset());
+			}
 		}
 		return $var;
 	}
 
+}
+
+// Returns the utf string corresponding to the unicode value (from php.net, courtesy - romans@void.lv)
+// ToDo: Remove in 0.8 RC5
+function code2utf($num) {
+    if ($num < 128) return chr($num);
+    if ($num < 2048) return chr(($num >> 6) + 192) . chr(($num & 63) + 128);
+    if ($num < 65536) return chr(($num >> 12) + 224) . chr((($num >> 6) & 63) + 128) . chr(($num & 63) + 128);
+    if ($num < 2097152) return chr(($num >> 18) + 240) . chr((($num >> 12) & 63) + 128) . chr((($num >> 6) & 63) + 128) . chr(($num & 63) + 128);
+    return '';
 }
 ?>

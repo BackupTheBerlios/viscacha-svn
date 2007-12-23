@@ -152,7 +152,7 @@ if ($_GET['action'] == "save") {
 		$error[] = $lang->phrase('comment_too_short');
 	}
 	// Add some chars for reply title prefix
-	$maxlength = $config['maxtitlelength'] + strlen($gpc->plain_str($lang->phrase('reply_prefix')));
+	$maxlength = $config['maxtitlelength'] + strxlen($lang->phrase('reply_prefix'));
 	if (strxlen($_POST['topic']) > $maxlength) {
 		$error[] = $lang->phrase('title_too_long');
 	}
