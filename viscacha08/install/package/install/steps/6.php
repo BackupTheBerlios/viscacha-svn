@@ -15,6 +15,7 @@ if (isset($_REQUEST['save']) && $_REQUEST['save'] == 1) {
 	$c->updateconfig('forenmail',str);
 	$c->updateconfig('cookie_prefix',str);
 	$c->updateconfig('langdir', int);
+	$langdir = $c->data['langdir'];
 	if (empty($c->data['cryptkey']) == true) {
 		$c->updateconfig('cryptkey',str,md5(microtime()));
 	}
@@ -26,7 +27,7 @@ if (isset($_REQUEST['save']) && $_REQUEST['save'] == 1) {
 	$c->savedata();
 
 	$c->getdata('../admin/data/config.inc.php');
-	$c->updateconfig('default_language', int, $c->data['langdir']);
+	$c->updateconfig('default_language', int, $langdir);
 	$c->savedata();
 
 ?>

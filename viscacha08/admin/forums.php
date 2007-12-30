@@ -773,7 +773,7 @@ elseif ($job == 'forum_add') {
    <td class="mbox"><?php echo $lang->phrase('admin_forum_copy_permissions'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_forum_info_permissions_copy'); ?> (<em><?php echo $lang->phrase('admin_forum_experimental'); ?></em>)</span></td>
    <td class="mbox">
 	<select name="copypermissions" size="1">
-   	 <option value="0" selected="selected">Default</option>
+   	 <option value="0" selected="selected"><?php echo $lang->phrase('admin_forum_default'); ?></option>
    	 <?php echo SelectBoardStructure('copypermissions', ADMIN_SELECT_FORUMS, null, true); ?>
    	</select>
    </td>

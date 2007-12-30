@@ -1,6 +1,7 @@
 Special Hooks
 -install
 -uninstall
+-update
 -source
 -navigation
 

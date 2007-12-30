@@ -51,6 +51,10 @@ class PluginSystem {
 		}
 	}
 
+	function update($id) {
+		return $this->_setup('update', $id);
+	}
+
 	function uninstall($id) {
 		return $this->_setup('uninstall', $id);
 	}
@@ -119,7 +123,7 @@ class PluginSystem {
 				   	$source = file_get_contents($sourcefile);
 	    		}
 				else {
-					trigger_error('Setup for package not found! File '.$sourcefile.' could not be loaded while executing '.$hook.'.', E_USER_WARNING);
+					trigger_error('Setup/Update for package not found! File '.$sourcefile.' could not be loaded while executing '.$hook.'.', E_USER_WARNING);
 				}
 	    	}
 		}

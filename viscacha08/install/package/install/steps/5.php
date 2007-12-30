@@ -47,10 +47,10 @@ $langarr = array();
 $d = dir('../language/');
 while (false !== ($entry = $d->read())) {
 	$dir = $d->path.DIRECTORY_SEPARATOR.$entry;
-	if (is_id($entry) && is_dir($dir)) {
+	if (is_numeric($entry) && $entry >= 1  && is_dir($dir)) {
 		$name = getLangNameByPath($dir);
+		$langarr[$entry] = $name;
 	}
-	$langarr[$entry] = $name;
 }
 $d->close();
 

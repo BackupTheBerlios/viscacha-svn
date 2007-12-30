@@ -234,15 +234,15 @@ elseif ($job == 'posts') {
 	  <tr>
 	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_length_of_post_title'); ?></td>
 	   <td class="mbox" width="50%">
-	   $lang->phrase('admin_minimum_x')<input type="text" name="mintitlelength" value="<?php echo $config['mintitlelength']; ?>" size="4">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-	   $lang->phrase('admin_maximum_x')<input type="text" name="maxtitlelength" value="<?php echo $config['maxtitlelength']; ?>" size="8">
+	    <?php echo $lang->phrase('admin_minimum_x'); ?> <input type="text" name="mintitlelength" value="<?php echo $config['mintitlelength']; ?>" size="4">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	    <?php echo $lang->phrase('admin_maximum_x'); ?> <input type="text" name="maxtitlelength" value="<?php echo $config['maxtitlelength']; ?>" size="8">
 	   </td>
 	  </tr>
 	  <tr>
 	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_length_of_post_text'); ?></td>
 	   <td class="mbox" width="50%">
-	   $lang->phrase('admin_minimum_x')<input type="text" name="minpostlength" value="<?php echo $config['minpostlength']; ?>" size="4">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-	   $lang->phrase('admin_maximum_x')<input type="text" name="maxpostlength" value="<?php echo $config['maxpostlength']; ?>" size="8">
+	    <?php echo $lang->phrase('admin_minimum_x'); ?> <input type="text" name="minpostlength" value="<?php echo $config['minpostlength']; ?>" size="4">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	    <?php echo $lang->phrase('admin_maximum_x'); ?> <input type="text" name="maxpostlength" value="<?php echo $config['maxpostlength']; ?>" size="8">
 	   </td>
 	  </tr>
 	  <tr>

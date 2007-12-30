@@ -128,6 +128,425 @@ elseif ($job == 'package_admin') {
 	}
 	include("modules/{$pack['id']}/{$file}");
 }
+elseif ($job == 'package_update') {
+	echo head();
+	$file = $gpc->get('file', str);
+	$id = $gpc->get('id', int);
+	?>
+<form name="form" method="post" action="admin.php?action=packages&amp;job=package_update2" enctype="multipart/form-data">
+ <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
+  <tr>
+   <td class="obox" colspan="2"><?php echo $lang->phrase('admin_packages_head_update_a_component'); ?></td>
+  </tr>
+  <tr>
+   <td class="mbox" width="50%">
+   	<?php
+   		$max_filesize = formatFilesize(ini_maxupload());
+   		echo $lang->phrase('admin_packages_import_upload_file');
+   		echo '<br />';
+   		echo '<span class="stext">'.$lang->phrase('admin_packages_import_text_upload_file_desc').'</span>';
+   	?>
+   	</td>
+   <td class="mbox" width="50%"><input type="file" name="upload" size="40" /></td>
+  </tr>
+  <tr>
+   <td class="mbox">
+   		<?php
+   			echo $lang->phrase('admin_packages_import_select_file');
+   			echo '<br />';
+   			echo '<span class="stext">'.$lang->phrase('admin_packages_import_select_file_desc').'</span>';
+   		?>
+   </td>
+   <td class="mbox"><input type="text" name="server" size="50" value="<?php echo $file; ?>" /></td>
+  </tr>
+  <tr>
+   <td class="mbox"><?php echo $lang->phrase('admin_packages_skip_version_check'); ?></td>
+   <td class="mbox"><input type="checkbox" name="version" value="1" /></td>
+  </tr>
+  <tr>
+   <td class="mbox"><?php echo $lang->phrase('admin_packages_delete_file_after_import'); ?></td>
+   <td class="mbox"><input type="checkbox" name="delete" value="1" checked="checked" /></td>
+  </tr>
+  <tr>
+   <td class="ubox" width="100%" colspan="2" align="center">
+   	<input type="hidden" name="id" value="<?php echo $id; ?>" />
+   	<input type="submit" name="Submit" value="<?php echo $lang->phrase('admin_packages_button_upload'); ?>">
+   </td>
+  </tr>
+ </table>
+</form>
+	<?php
+	echo foot();
+}
+elseif ($job == 'package_update2') {
+	echo head();
+
+	$del = $gpc->get('delete', int);
+	$id = $gpc->get('id', int);
+	$versioncheck = $gpc->get('version', int);
+	$server = $gpc->get('server', none);
+	$inserterrors = array();
+
+	$sourcefile = '';
+	if (!empty($_FILES['upload']['name'])) {
+		require("classes/class.upload.php");
+		$dir = 'temp/';
+		$my_uploader = new uploader();
+		$my_uploader->file_types(array('zip'));
+		$my_uploader->set_path($dir);
+		$my_uploader->max_filesize(ini_maxupload());
+		if ($my_uploader->upload('upload')) {
+			if ($my_uploader->save_file()) {
+				$sourcefile = $dir.$my_uploader->fileinfo('filename');
+			}
+		}
+		if ($my_uploader->upload_failed()) {
+			array_push($inserterrors,$my_uploader->get_error());
+		}
+	}
+	elseif (file_exists($server)) {
+		$ext = get_extension($server);
+		if ($ext == 'zip') {
+			$sourcefile = $server;
+		}
+		else {
+			$inserterrors[] = $lang->phrase('admin_packages_err_selected_file_is_not_a_zipfile');
+		}
+	}
+	if (!file_exists($sourcefile)) {
+		$inserterrors[] = $lang->phrase('admin_packages_err_selected_file_does_not_exist');
+	}
+	if (count($inserterrors) > 0) {
+		error('admin.php?action=designs&job=package_update', $inserterrors);
+	}
+	else {
+		$c = new manageconfig();
+
+		$tdir = "temp/".md5(microtime()).'/';
+		$filesystem->mkdir($tdir, 0777);
+		if (!is_dir($tdir)) {
+			error('admin.php?action=packages&job=package_update', $lang->phrase('admin_packages_err_temporary_directory_could_not_be_created'));
+		}
+		include('classes/class.zip.php');
+		$archive = new PclZip($sourcefile);
+		if ($archive->extract(PCLZIP_OPT_PATH, $tdir) == 0) {
+			error('admin.php?action=packages&job=package_update', $archive->errorInfo(true));
+		}
+
+		if (file_exists($tdir.'modules/package.ini')) {
+			$package = $myini->read($tdir.'modules/package.ini');
+			if ($versioncheck != 1) {
+				if (!empty($package['info']['min_version']) && version_compare($config['version'], $package['info']['min_version'], '<')) {
+					error('admin.php?action=packages&job=package_update', $lang->phrase('admin_packages_err_required_min_version'));
+				}
+				if (!empty($package['info']['max_version']) && version_compare($config['version'], $package['info']['max_version'], '>')) {
+					error('admin.php?action=packages&job=package_update', $lang->phrase('admin_packages_err_required_max_version'));
+				}
+			}
+			$package = $gpc->save_str($package);
+			if (!isset($package['core'])) {
+				$package['info']['core'] = 0;
+			}
+		}
+		else {
+			error('admin.php?action=packages&job=package_update', $lang->phrase('admin_packages_err_package_ini_does_not_exist'));
+		}
+
+		$result = $db->query("SELECT id FROM {$db->pre}packages WHERE internal = '{$package['info']['internal']}'", __LINE__, __FILE__);
+		if ($db->num_rows($result) == 0) {
+			error('admin.php?action=packages&job=package_update', $lang->phrase('admin_packages_package_with_name_not_installed'));
+		}
+		list($packageid) = $db->fetch_num($result);
+		if (is_id($id) == true && $packageid != $id) {
+			error('admin.php?action=packages&job=package_update', $lang->phrase('admin_packages_packache_id_doesnt_match'));
+		}
+		if (isset($package['dependency']) && count($package['dependency']) > 0) {
+			$result = $db->query("SELECT internal FROM {$db->pre}packages", __LINE__, __FILE__);
+			$internals = array();
+			while ($row = $db->fetch_assoc($result)) {
+				$internals[] = $row['internal'];
+			}
+			$missing = array_diff($package['dependency'], $internals);
+			if (count($missing) > 0) {
+				error('admin.php?action=packages&job=package_import', $lang->phrase('admin_packages_dependency_missing').implode(', ', $missing), 60000);
+			}
+		}
+
+		$db->query("UPDATE {$db->pre}packages SET title = '{$package['info']['title']}', version = '{$package['info']['version']}' WHERE id = ''", __LINE__, __FILE__);
+
+		$moddir = "./modules/{$packageid}/";
+		$old = $myini->read($moddir.'package.ini');
+
+		// Abgleich von Einstellungs-Gruppen
+		if (!empty($package['config']['title'])) {
+			if (!isset($package['config']['description'])) {
+				$package['config']['description'] = '';
+			}
+			$result = $db->query("SELECT id FROM {$db->pre}settings_groups WHERE name = '{$package['info']['internal']}'", __LINE__, __FILE__);
+			if ($db->num_rows($result) > 0) {
+				$db->query("UPDATE {$db->pre}settings_groups SET title = '{$package['config']['title']}', description = '{$package['config']['description']}' WHERE name = '{$package['info']['internal']}'", __LINE__, __FILE__);
+				list($sg) = $db->fetch_num($result);
+			}
+			else {
+				$db->query("INSERT INTO {$db->pre}settings_groups (title, name, description) VALUES ('{$package['config']['title']}', '{$package['info']['internal']}', '{$package['config']['description']}')", __LINE__, __FILE__);
+				$sg = $db->insert_id();
+			}
+		}
+		elseif (!empty($old['config']['title'])) {
+			$result = $db->query("SELECT id FROM {$db->pre}settings_groups WHERE name = '{$package['info']['internal']}'");
+			if ($db->num_rows($result) > 0) {
+				list($sg) = $db->fetch_num($result);
+				$db->query("DELETE FROM {$db->pre}settings_groups WHERE id = '{$sg}'");
+			}
+			$sg = null;
+		}
+
+		$settings = array_merge(array_keys($old), array_keys($package));
+		// Abgleich von Einstellungen
+		$c->getdata();
+		foreach ($settings as $section) {
+			if (substr($section, 0, 8) == 'setting_') {
+				$name = substr($section, 8);
+				if ($sg != null && isset($old[$section]) && isset($package[$section])) { // Nur aktualisieren
+					$values = $package[$section];
+					$db->query("UPDATE {$db->pre}settings SET title = '{$values['title']}', description = '{$values['description']}', type = '{$values['type']}', optionscode = '{$values['optionscode']}', value = '{$values['value']}') WHERE name = '{$name}' AND sgroup = '{$sg}'", __LINE__, __FILE__);
+				}
+				elseif ($sg != null && !isset($old[$section]) && isset($package[$section])) { // Hinzufügen
+					$values = $package[$section];
+					$db->query("
+					INSERT INTO {$db->pre}settings (name, title, description, type, optionscode, value, sgroup)
+					VALUES ('{$name}', '{$values['title']}', '{$values['description']}', '{$values['type']}', '{$values['optionscode']}', '{$values['value']}', '{$sg}')
+					", __LINE__, __FILE__);
+					$c->updateconfig(array($package['info']['internal'], $name), none, $values['value']);
+				}
+				else { // Löschen
+					$c->delete(array($package['info']['internal'], $name));
+					$db->query("DELETE FROM {$db->pre}settings WHERE sgroup = '{$sg}' AND name = '{$name}'");
+				}
+			}
+		}
+		$c->savedata();
+
+		$result = $db->query("SELECT template, stylesheet, images FROM {$db->pre}designs WHERE id = '{$config['templatedir']}'",__LINE__,__FILE__);
+		$design = $db->fetch_assoc($result);
+
+		if (file_exists($moddir.'component.ini')) {
+			$old_com = $myini->read($moddir.'component.ini');
+			if (file_exists($tdir.'component.ini')) {
+				$com = $myini->read($tdir.'component.ini');
+			}
+			else {
+				$com = array();
+			}
+
+			if (isset($com['info']) && count($com['info']) > 0) {
+				$com['info'] = $gpc->save_str($com['info']);
+
+				if (!isset($com['module']['frontpage'])) {
+					$com['module']['frontpage'] = '';
+				}
+
+				$db->query("INSERT INTO {$db->pre}component (file, package, required) VALUES ('".$gpc->save_str($com['module']['frontpage'])."', '{$packageid}', '{$com['info']['required']}')", __LINE__, __FILE__);
+				$comid = $db->insert_id();
+
+				if (isset($com['images']) && count($com['images']) > 0) {
+					foreach ($com['images'] as $file) {
+						$filesystem->rename("{$tdir}images/{$file}", "./images/{$design['images']}/{$file}");
+					}
+				}
+
+				$result = $db->query("SELECT DISTINCT stylesheet FROM {$db->pre}designs WHERE stylesheet != '{$design['stylesheet']}'",__LINE__,__FILE__);
+				if (isset($com['designs']) && count($com['designs']) > 0) {
+					$stdcssdir = "./designs/{$css['stylesheet']}/{$file}";
+					$filesystem->rename("{$tdir}designs/{$file}", $stdcssdir);
+					while ($css = $db->fetch_assoc($result)) {
+						foreach ($com['designs'] as $file) {
+							$filesystem->copy($stdcssdir, "./designs/{$css['stylesheet']}/{$file}");
+						}
+					}
+				}
+
+				if (isset($com['language']) && count($com['language']) > 0) {
+					$d = dir($tdir.'language/');
+					$codes = array();
+					while (false !== ($entry = $d->read())) {
+					   	if (preg_match('~^(\w{2})_?(\w{0,2})$~i', $entry, $code) && is_dir("{$tdir}/{$entry}")) {
+					   		if (!isset($codes[$code[1]])) {
+					   			$codes[$code[1]] = array();
+					   		}
+					   		if (isset($code[2])) {
+					   			$codes[$code[1]][] = $code[2];
+					   		}
+					   		else {
+					   			if (!in_array('', $codes[$code[1]])) {
+					   				$codes[$code[1]][] = '';
+					   			}
+					   		}
+					   	}
+					}
+					$d->close();
+					$langcodes = getLangCodes();
+					foreach ($langcodes as $code => $lid) {
+						$ldat = explode('_', $code);
+						if (isset($codes[$ldat[0]])) {
+							$count = count($codes[$ldat[0]]);
+							if (in_array('', $codes[$ldat[0]])) {
+								$count--;
+							}
+						}
+						else {
+							$count = -1;
+						}
+						$filesystem->mkdir("./language/{$lid}/modules/{$packageid}", 0777);
+						if (isset($codes[$ldat[0]]) && !empty($ldat[1]) && in_array($ldat[1], $codes[$ldat[0]])) { // Nehme Original
+							$src = $code;
+						}
+						elseif(isset($codes[$ldat[0]]) && in_array('', $codes[$ldat[0]])) { // Nehme gleichen Langcode, aber ohne Countrycode
+							$src = $ldat[0];
+						}
+						elseif(isset($codes[$ldat[0]]) && $count > 0) { // Nehme gleichen Langcode, aber falchen Countrycode
+							$src = $ldat[0].'_'.reset($codes[$ldat[0]]);
+						}
+						else { // Nehme Standard
+							$src = '';
+						}
+						$src = iif(!empty($src), '/'.$src);
+						foreach ($com['language'] as $file) {
+							if (file_exists("{$tdir}/language/{$src}/{$file}") == false) {
+								$src = '';
+							}
+							if (!empty($src)) {
+								$src = '/'.$src;
+							}
+							// ToDo: Move it first to standard dir, then copy it from there
+							$filesystem->copy("{$tdir}/language{$src}/{$file}", "./language/{$lid}/modules/{$packageid}/{$file}");
+						}
+					}
+				}
+
+				$delobj = $scache->load('components');
+				$delobj->delete();
+			}
+		}
+
+		if (file_exists($moddir.'plugin.ini')) {
+			$old_plug = $myini->read($moddir.'plugin.ini');
+			if (file_exists($tdir.'plugin.ini')) {
+				$plug = $myini->read($tdir.'plugin.ini');
+			}
+			else {
+				$plug = array();
+			}
+
+
+			if (isset($plug['language']) && count($plug['language']) > 0) {
+
+				$codes = array();
+				$keys = array_keys($plug);
+				foreach ($keys as $entry) {
+				   	if (preg_match('~language_(\w{2})_?(\w{0,2})~i', $entry, $code)) {
+				   		if (!isset($codes[$code[1]])) {
+				   			$codes[$code[1]] = array();
+				   		}
+				   		if (isset($code[2])) {
+				   			$codes[$code[1]][] = $code[2];
+				   		}
+				   		else {
+				   			if (!in_array('', $codes[$code[1]])) {
+				   				$codes[$code[1]][] = '';
+				   			}
+				   		}
+				   	}
+				}
+				$langcodes = getLangCodes();
+				foreach ($langcodes as $code => $lid) {
+					$ldat = explode('_', $code);
+					if (isset($codes[$ldat[0]])) {
+						$count = count($codes[$ldat[0]]);
+						if (in_array('', $codes[$ldat[0]])) {
+							$count--;
+						}
+					}
+					else {
+						$count = -1;
+					}
+					if (isset($codes[$ldat[0]]) && !empty($ldat[1]) && in_array($ldat[1], $codes[$ldat[0]])) { // Nehme Original
+						$src = 'language_'.$code;
+					}
+					elseif(isset($codes[$ldat[0]]) && in_array('', $codes[$ldat[0]])) { // Nehme gleichen Langcode, aber ohne Countrycode
+						$src = 'language_'.$ldat[0];
+					}
+					elseif(isset($codes[$ldat[0]]) && $count > 0) { // Nehme gleichen Langcode, aber falchen Countrycode
+						$src = 'language_'.$ldat[0].'_'.reset($codes[$ldat[0]]);
+					}
+					else { // Nehme Standard
+						$src = 'language';
+					}
+					$c->getdata("language/{$lid}/modules.lng.php", 'lang');
+					foreach ($plug[$src] as $varname => $text) {
+						$c->updateconfig($varname, str, $text);
+					}
+					$c->savedata();
+				}
+			}
+
+			if (isset($plug['php']) && count($plug['php']) > 0) {
+				foreach ($plug['php'] as $hook => $plugfile) {
+					if (isInvisibleHook($hook)) {
+						continue;
+					}
+					$result = $db->query("SELECT MAX(ordering) AS maximum FROM {$db->pre}plugins WHERE position = '{$hook}'", __LINE__, __FILE__);
+					$row = $db->fetch_assoc($result);
+					$priority = $row['maximum']+1;
+					$db->query("
+					INSERT INTO {$db->pre}plugins
+					(`name`,`module`,`ordering`,`required`,`position`)
+					VALUES
+					('{$plug['names'][$hook]}','{$packageid}','{$priority}','{$plug['required'][$hook]}','{$hook}')
+					", __LINE__, __FILE__);
+					$filesystem->unlink('cache/modules/'.$plugins->_group($hook).'.php');
+				}
+			}
+		}
+
+		// Templates
+		$templates = array_merge(
+			isset($plug['template']) ? $plug['template'] : array(),
+			isset($com['template']) ? $com['template'] : array()
+		);
+		$old_templates = array_merge(
+			isset($old_plug['template']) ? $old_plug['template'] : array(),
+			isset($old_com['template']) ? $old_com['template'] : array()
+		);
+		if (count($templates) > 0) {
+			$tpldir = "templates/{$design['template']}/modules/{$packageid}/";
+			if (is_dir($tpldir)) {
+				$filesystem->chmod($tpldir, 0777);
+			}
+			else {
+				$filesystem->mkdir($tpldir, 0777);
+			}
+			$temptpldir = "{$tdir}templates/";
+			mover($temptpldir, $tpldir);
+		}
+
+		// Custom Updater
+		$confirm = true;
+		($code = $plugins->update($packageid)) ? eval($code) : null;
+
+		rmdirr($tdir);
+
+		unset($archive);
+		if ($del > 0) {
+			$filesystem->unlink($sourcefile);
+		}
+		if ($confirm) {
+			echo head();
+			ok('admin.php?action=packages&job=package_info&id='.$packageid, $lang->phrase('admin_packages_successfully_updated'));
+		}
+
+	}
+}
 elseif ($job == 'package_import') {
 	echo head();
 	$file = $gpc->get('file', str);
@@ -1122,7 +1541,11 @@ elseif ($job == 'package_info') {
 	  </tr>
 	  <tr>
 	   <td class="mbox" width="30%"><?php echo $lang->phrase('admin_packages_info_version'); ?></td>
-	   <td class="mbox" width="70%"><?php echo $package_ini['info']['version']; ?>&nbsp;&nbsp;&nbsp;&nbsp;<a class="button" href="admin.php?action=packages&amp;job=package_updates&amp;id=<?php echo $package['id']; ?>"><?php echo $lang->phrase('admin_packages_check_for_updates'); ?></a></td>
+	   <td class="mbox" width="70%">
+	   	<?php echo $package_ini['info']['version']; ?>&nbsp;&nbsp;&nbsp;&nbsp;
+	   	<a class="button" href="admin.php?action=packages&amp;job=package_updates&amp;id=<?php echo $package['id']; ?>"><?php echo $lang->phrase('admin_packages_check_for_updates'); ?></a>
+	   	<a class="button" href="admin.php?action=packages&amp;job=package_update&amp;id=<?php echo $package['id']; ?>"><?php echo $lang->phrase('admin_packages_install_update_manually'); ?></a>
+	   	</td>
 	  </tr>
 	  <tr>
 	   <td class="mbox" width="30%"><?php echo $lang->phrase('admin_packages_info_compatibility'); ?></td>
@@ -2992,6 +3415,9 @@ elseif ($job == 'package_updates') {
 		  	<td class="mbox center"><?php echo $row['version']; ?></td>
 		  	<td class="mbox center"><?php echo $data['version']; ?></td>
 		  	<td class="mbox">
+		  		<?php if (!empty($data['update'])) { ?>
+		  		<a class="button" href="admin.php?action=packages&amp;job=browser_update&amp;id=<?php echo $row['internal']; ?>"><?php echo $lang->phrase('admin_packages_install_update'); ?></a>
+		  		<?php } ?>
 		  		<a class="button" href="admin.php?action=packages&amp;job=package_info&amp;id=<?php echo $row['id']; ?>"><?php echo $lang->phrase('admin_packages_current_details'); ?></a>
 		  		<a class="button" href="admin.php?action=packages&amp;job=browser_detail&amp;id=<?php echo $row['internal']; ?>&amp;package=<?php echo IMPTYPE_PACKAGE; ?>"><?php echo $lang->phrase('admin_packages_browser_details'); ?></a>
 		  	</td>
@@ -3096,7 +3522,7 @@ elseif ($job == 'browser_list') {
 		uasort($data, "browser_sort_date");
 		$data = array_slice($data, 0, 10);
 		$show_cat = true;
-		$title = 'Recently updated '.$types[$type]['name'];
+		$title = $lang->phrase('admin_packages_browser_recently_updated').' '.$types[$type]['name'];
 	}
 
 	if ($type == IMPTYPE_PACKAGE) {
@@ -3131,7 +3557,7 @@ elseif ($job == 'browser_list') {
   else {
   	?>
   <tr>
-   <td class="ubox" width="60%"><?php echo $lang->phrase('admin_packages_info_name'); ?><br /><?php echo $lang->phrase('admin_packages_info_description'); ?></td>
+   <td class="ubox" width="60%"><?php echo $lang->phrase('admin_packages_info_name'); ?><br /><?php echo $lang->phrase('admin_packages_head_description'); ?></td>
    <?php if (is_array($installed)) { ?>
    <td class="ubox" width="10%"><?php echo $lang->phrase('admin_packages_browser_installed'); ?></td>
    <?php } ?>
@@ -3183,6 +3609,15 @@ elseif ($job == 'browser_import') {
 	$filesystem->file_put_contents($file, get_remote($row['file']));
 	header('Location: '.$types[$type]['import'].$file);
 }
+elseif ($job == 'browser_update') {
+	$id = $gpc->get('id', str);
+	$pb = $scache->load('package_browser');
+	$row = $pb->getOne(IMPTYPE_PACKAGE, $id);
+	$types = $pb->type(IMPTYPE_PACKAGE);
+	$file = 'temp/'.basename($row['file']);
+	$filesystem->file_put_contents($file, get_remote($row['file']));
+	header('Location: '.$types['update'].$file);
+}
 elseif ($job == 'browser_detail') {
 	$type = $gpc->get('type', int, IMPTYPE_PACKAGE);
 	$id = $gpc->get('id', str);
@@ -3231,10 +3666,15 @@ elseif ($job == 'browser_detail') {
 	   <?php echo $lang->phrase('admin_packages_browser_you_have_not_installed_this_package'); ?>&nbsp;&nbsp;&nbsp;&nbsp;<a class="button" href="admin.php?action=packages&amp;job=browser_import&amp;id=<?php echo $id; ?>&amp;type=<?php echo $type; ?>"><?php echo $lang->phrase('admin_packages_browser_import_this'); ?>!</a>
 	   <?php }
 	   else {
-	   		?>
-	   		<span class="right"><a class="button" href="admin.php?action=packages&amp;job=package_info&amp;id=<?php echo $installed; ?>"><?php echo $lang->phrase('admin_packages_browser_go_to_installed_package'); ?></a></span>
-	   		<?php
 	   		$vc = version_compare($pack['version'], $row['version']);
+	   		?>
+	   		<span class="right">
+	   		<?php if ($vc == -1 && !empty($row['update'])) { ?>
+	   		<a class="button" href="admin.php?action=packages&amp;job=browser_update&amp;id=<?php echo $id; ?>"><?php echo $lang->phrase('admin_packages_install_update'); ?></a>
+	   		<?php } ?>
+	   		<a class="button" href="admin.php?action=packages&amp;job=package_info&amp;id=<?php echo $installed; ?>"><?php echo $lang->phrase('admin_packages_browser_go_to_installed_package'); ?></a>
+	   		</span>
+	   		<?php
 	   		if ($vc == 1) { ?>
 	   		<strong style="color: goldenrod;"><?php $foo = $types[$type]; echo $lang->phrase('admin_packages_browser_you_have_installed_a_newer_version_of_this_foo'); ?>.</strong>
 		    <?php } elseif($vc == -1) { ?>
