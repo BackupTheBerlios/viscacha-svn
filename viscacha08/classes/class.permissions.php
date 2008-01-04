@@ -357,15 +357,18 @@ function setlang($l1, $l2) {
  */
 function updatelogged () {
 	global $my, $db, $gpc, $plugins;
-	$serialized = serialize($my->mark);
 	if (!isset($my->pwfaccess) || !is_array($my->pwfaccess)) {
 		$my->pwfaccess = array();
 	}
-	if (!is_array($my->settings)) {
+	if (!isset($my->settings) || !is_array($my->settings)) {
 		$my->settings = array();
 	}
-	$serializedpwf = $gpc->save_str(serialize($my->pwfaccess));
-	$serializedstg = $gpc->save_str(serialize($my->settings));
+	if (!isset($my->mark) || !is_array($my->mark)) {
+		$my->mark = array();
+	}
+	$serialized = $db->escape_string(serialize($my->mark));
+	$serializedpwf = $db->escape_string(serialize($my->pwfaccess));
+	$serializedstg = $db->escape_string(serialize($my->settings));
 	$sqlwhere = $sqlset = array();
 	if ($my->id > 0 && !is_id($this->change_mid)) {
 		$sqlwhere[] = "mid = '{$my->id}'";
@@ -526,38 +529,29 @@ function logged () {
 	$expire = ($config['sessionsave']+1)*60;
 	makecookie($config['cookie_prefix'].'_vhash', $this->sid, $expire);
 
-	if ($gpc->get('action') == "markasread" || !isset($my->mark)) {
-		$my->mark = array();
-	}
-	else {
-		$my->mark = unserialize(html_entity_decode($my->mark, ENT_QUOTES));
-	}
-	if (!is_array($my->mark)) {
-		$my->mark = array();
-	}
-
 	if (!$my->vlogin) {
 		$my->id = 0;
 	}
 
-	if (!isset($my->pwfaccess)) {
-		$my->pwfaccess = array();
+	if ($gpc->get('action') == "markasread" || empty($my->mark) || !is_array($my->mark)) {
+		$my->mark = array();
 	}
 	else {
-		$my->pwfaccess = unserialize(html_entity_decode($my->pwfaccess, ENT_QUOTES));
-	}
-	if (!is_array($my->pwfaccess)) {
-		$my->pwfaccess = array();
+		$my->mark = unserialize($my->mark);
 	}
 
-	if (!isset($my->settings)) {
+	if (empty($my->pwfaccess) || !is_array($my->mark)) {
+		$my->pwfaccess = array();
+	}
+	else {
+		$my->pwfaccess = unserialize($my->pwfaccess);
+	}
+
+	if (empty($my->settings) || !is_array($my->settings)) {
 		$my->settings = array();
 	}
 	else {
-		$my->settings = unserialize(html_entity_decode($my->settings, ENT_QUOTES));
-	}
-	if (!is_array($my->settings)) {
-		$my->settings = array();
+		$my->settings = unserialize($my->settings);
 	}
 
 	if (!isset($my->timezone) || $my->timezone == NULL) {
@@ -760,7 +754,7 @@ function sid_load() {
 	',__LINE__,__FILE__);
 
 	if ($db->num_rows($result) == 1) {
-		$my = $gpc->prepare($db->fetch_object($result));
+		$my = $this->cleanUserData($db->fetch_object($result));
 		if ($my->id > 0 && $my->confirm == '11') {
 			$my->vlogin = TRUE;
 		}
@@ -798,7 +792,7 @@ function sid_new() {
 
 	if (!array_empty($this->cookiedata)) {
 		$result = $db->query('SELECT u.*, f.* FROM '.$db->pre.'user AS u LEFT JOIN '.$db->pre.'userfields as f ON f.ufid = u.id WHERE u.id = "'.$this->cookiedata[0].'" AND u.pw = "'.$this->cookiedata[1].'" LIMIT 1',__LINE__,__FILE__);
-		$my = $gpc->prepare($db->fetch_object($result));
+		$my = $this->cleanUserData($db->fetch_object($result));
 		$nodata = ($db->num_rows($result) == 1) ? false : true;
 	}
 	else {
@@ -835,7 +829,7 @@ function sid_new() {
 
 	$db->query("INSERT INTO {$db->pre}session
 	(sid, mid, wiw_script, wiw_action, wiw_id, active, ip, user_agent, lastvisit, mark, pwfaccess, settings, is_bot) VALUES
-	('{$this->sid}', '{$id}','".SCRIPTNAME."','{$action}','{$qid}','".time()."','{$this->ip}','".$gpc->save_str(htmlspecialchars($this->user_agent))."','{$lastvisit}','{$my->mark}','{$my->pwfaccess}','{$my->settings}','{$my->is_bot}')",__LINE__,__FILE__);
+	('{$this->sid}', '{$id}','".SCRIPTNAME."','{$action}','{$qid}','".time()."','{$this->ip}','".$gpc->save_str($this->user_agent)."','{$lastvisit}','".$db->escape_string($my->mark)."','".$db->escape_string($my->pwfaccess)."','".$db->escape_string($my->settings)."','{$my->is_bot}')",__LINE__,__FILE__);
 
 	return $my;
 }
@@ -884,12 +878,12 @@ function sid_login($remember = true) {
 	if ($sessions > 1) {
 		while ($row = $db->fetch_object($result)) {
 			if ($row->sid == $this->sid) {
-				$mytemp = $gpc->prepare($row);
+				$mytemp = $this->cleanUserData($row);
 				break;
 			}
 		}
 		if (!isset($mytemp)) {
-			$mytemp = $gpc->prepare($row);
+			$mytemp = $this->cleanUserData($row);
 			unset($row);
 		}
 		else {
@@ -898,7 +892,7 @@ function sid_login($remember = true) {
 		}
 	}
 	else {
-		$mytemp = $gpc->prepare($db->fetch_object($result));
+		$mytemp = $this->cleanUserData($db->fetch_object($result));
 	}
 
 	if ($sessions > 0 && $mytemp->confirm == '11') {
@@ -1014,6 +1008,22 @@ function sid2url($my = null) {
     		DEFINE('SID2URL', $this->sid);
     	}
 	}
+}
+
+function cleanUserData($data) {
+	global $gpc;
+	$trust = array(
+	 	'id', 'pw', 'regdate', 'posts', 'gender', 'birthday', 'lastvisit', 'icq', 'opt_textarea', 'language',
+	 	'opt_pmnotify', 'opt_hidebad', 'opt_hidemail', 'opt_newsletter', 'opt_showsig', 'template', 'confirm', // from user-table
+	 	'ufid', // from userfields-table
+	 	'mid', 'active', 'wiw_id', 'last_visit', 'is_bot', 'mark', 'pwfaccess', 'settings' // from session-table
+	);
+	foreach ($data as $key => $value) {
+		if (in_array($key, $trust) == false) {
+			$data->$key = $gpc->prepare($value);
+		}
+	}
+	return $data;
 }
 
 /**
@@ -1469,6 +1479,43 @@ function sqlinboards($spalte, $r_and = 0, $boards = null) {
 		$sql = ' AND '.$sql;
 	}
 	return $sql;
+}
+
+function setTopicRead($tid, $parents) {
+	global $my, $db;
+	$my->mark['t'][$tid] = time();
+
+	// Erstelle ein Array mit schon gelesenen Beiträgen
+	$keys = array();
+	while (list($key,) = each ($my->mark['t'])) {
+	   $keys[] = $key;
+	}
+	$inkeys = implode(',',$keys);
+	foreach ($parents as $tf) {
+		$result = $db->query("SELECT COUNT(*) FROM {$db->pre}topics WHERE board = '{$tf}' AND last > '{$my->clv}' AND id NOT IN({$inkeys})",__LINE__,__FILE__);
+		$row = $db->fetch_num($result);
+		if ($row[0] == 0) {
+			$my->mark['f'][$tf] = time();
+		}
+	}
+}
+function setForumRead($fid) {
+	$result = $db->query("SELECT id FROM {$db->pre}topics WHERE board = '{$fid}' AND last > '{$my->clv}'",__LINE__,__FILE__);
+	while ($row = $db->fetch_assoc($result)) {
+		$my->mark['t'][$row['id']] = time();
+	}
+	$my->mark['f'][$fid] = time();
+}
+function setAllRead() {
+	$this->mark_read();
+}
+function isForumRead($fid, $last_change) {
+	global $my;
+	return ((isset($my->mark['f'][$fid]) && $my->mark['f'][$fid] > $last_change) || $last_change < $my->clv);
+}
+function isTopicRead($tid, $last_change) {
+	global $my;
+	return ((isset($my->mark['t'][$tid]) && $my->mark['t'][$tid] > $last_change) || $last_change < $my->clv);
 }
 
 }

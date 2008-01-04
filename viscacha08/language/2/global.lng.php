@@ -548,6 +548,7 @@ $lang['profile_mail'] = 'E-mail address';
 $lang['profile_mail_1'] = 'N/A';
 $lang['profile_mail_2'] = 'Write E-mail';
 $lang['profile_na'] = '-';
+$lang['profile_never'] = 'Never';
 $lang['profile_no_im'] = 'No information provided concerning instant messengers.';
 $lang['profile_offline'] = 'Offline';
 $lang['profile_online'] = 'Online';

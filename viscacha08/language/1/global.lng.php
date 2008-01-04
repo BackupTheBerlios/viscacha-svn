@@ -548,6 +548,7 @@ $lang['profile_mail'] = 'E-Mail-Adresse';
 $lang['profile_mail_1'] = 'Nicht vorhanden';
 $lang['profile_mail_2'] = 'E-Mail schreiben';
 $lang['profile_na'] = '-';
+$lang['profile_never'] = 'Nie';
 $lang['profile_no_im'] = 'Keine Angaben zu den verwendeten Instant-Messengern!';
 $lang['profile_offline'] = 'Abwesend';
 $lang['profile_online'] = 'Anwesend';

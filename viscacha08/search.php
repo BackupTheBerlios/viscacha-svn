@@ -340,7 +340,7 @@ elseif ($_GET['action'] == "result") {
 			}
 		}
 
-		if ((isset($my->mark['t'][$row->id]) && $my->mark['t'][$row->id] > $row->last) || $row->last < $my->clv) {
+		if ($slog->isTopicRead($row->id, $row->last)) {
 	 		$firstnew = 0;
 			if ($row->status == 1 || $row->status == 2) {
 			   	$alt = $lang->phrase('forum_icon_closed');
@@ -430,10 +430,6 @@ elseif ($_GET['action'] == "active") {
 		$timestamp = time()-60*60*$type[2];
 	}
 	else { // $_GET['type'] == 'lastvisit'
-		if ($my->clv < 1) {
-		    $count = 0;
-	        echo $tpl->parse("search/active");
-	    }
 		$timestamp = $my->clv;
 	}
 
@@ -523,7 +519,7 @@ elseif ($_GET['action'] == "active") {
 					}
 				}
 
-    			if ((isset($my->mark['t'][$row->id]) && $my->mark['t'][$row->id] > $row->last) || $row->last < $my->clv) {
+    			if ($slog->isTopicRead($row->id, $row->last)) {
     		 		$firstnew = 0;
     				if ($row->status == 1 || $row->status == 2) {
     				   	$alt = $lang->phrase('forum_icon_closed');

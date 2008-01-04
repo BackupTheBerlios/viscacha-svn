@@ -182,7 +182,7 @@ elseif ($_GET['action'] == "abos") {
 		if (is_id($row['last_name'])) {
 			$row['last_name'] = $memberdata[$row['last_name']];
 		}
-		if ((isset($my->mark['t'][$row['tid']]) && $my->mark['t'][$row['tid']] > $row['last']) || $row['last'] < $my->clv) {
+		if ($slog->isTopicRead($row['tid'], $row['last'])) {
 			$row['firstnew'] = 0;
 			$row['alt'] = $lang->phrase('forum_icon_old');
 			$row['src'] = $tpl->img('dir_open');
@@ -793,7 +793,7 @@ elseif ($_GET['action'] == "mylast") {
 		$row['topic'] = $gpc->prepare($row['topic']);
 		$row['name'] = $gpc->prepare($row['name']);
 
-		if ((isset($my->mark['t'][$row['id']]) && $my->mark['t'][$row['id']] > $row['last']) || $row['last'] < $my->clv) {
+		if ($slog->isTopicRead($row['id'], $row['last'])) {
 	 		$row['firstnew'] = 0;
 			if ($row['status'] == 1 || $row['status'] == 2) {
 			   	$row['alt'] = $lang->phrase('forum_icon_closed');
