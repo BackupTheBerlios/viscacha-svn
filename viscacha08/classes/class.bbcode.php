@@ -304,47 +304,6 @@ class BBCode {
 
 	    return $ahref.$chop;
 	}
-	function cb_pdf_list ($matches) {
-		list(, $type, $pattern) = $matches;
-	    $liarray = preg_split('/(\n\s?-\s|\[\*\])/',$pattern);
-	    $list = '<br>';
-	    $i = 0;
-	    $pre = '&nbsp;&nbsp;';
-	    foreach ($liarray as $li) {
-	    	$li = trim($li);
-		    if (empty($li)) {
-		    	continue;
-		    }
-	    	$i++;
-	    	if (!empty($type)) {
-		        if ($type == 'i' || $type == 'I') {
-					$converter = new ConvertRoman($i);
-					$a = $converter->result();
-					if ($type == 'i') {
-						$a = strtolower($a);
-					}
-					$list .= $pre."{$a}.&nbsp;{$li}<br>";
-		        }
-		        elseif ($type == 'a' || $type == 'A') {
-					$converter = new ConvertRoman($i, TRUE);
-					$a = $converter->result();
-					if ($type == 'a') {
-						$a = strtolower($a);
-					}
-					$list .= $pre."{$a}.&nbsp;{$li}<br>";
-		        }
-		        else {
-		            $list .= $pre."{$i}.&nbsp;{$li}<br>";
-		        }
-		    }
-		    else {
-		        $list .= $pre."-&nbsp;{$li}<br>";
-		    }
-	    }
-	    // A workaround for a bug in the parser
-	    $list = preg_replace('/(&nbsp;)+?([a-zA-Z0-9\-\.]+?)&nbsp;<br>/is', '', $list);
-	    return $list;
-	}
 	function cb_pdf_code ($matches) {
 		global $lang;
 		$pid = $this->noparse_id();
@@ -371,20 +330,6 @@ class BBCode {
 			}
 		}
 	    return '<!PID:'.$pid.'>';
-	}
-	function cb_pdf_header ($matches) {
-		list(,$size,$content) = $matches;
-		if ($size == 'small') {
-			$level = 3;
-		}
-		elseif ($size == 'large') {
-			$level = 1;
-		}
-		else {
-			$level = 2;
-		}
-		$o = "<h{$level}>{$content}</h{$level}>";
-		return $o;
 	}
 	function cb_pdf_size ($matches) {
 		list(,$size,$content) = $matches;
@@ -533,7 +478,7 @@ class BBCode {
 		if ($type != 'pdf') {
 			$text = str_replace('$', '&#36;', $text);
 		}
-		if($type != 'pdf' && $type != 'plain' && ((isset($my->p['admin']) && $my->p['admin'] == 1) || ($my->id > 0 && $my->id == $this->author))) {
+		if($type == 'html' && (!empty($my->p['admin']) || ($my->id > 0 && $my->id == $this->author))) {
 		    $text = preg_replace('/\n?\[hide\](.+?)\[\/hide\]/is', '<br /><div class="bb_hide"><strong>'.$lang->phrase('bb_hidden_content').'</strong><span>\1</span></div>', $text);
 		}
 		else {
@@ -551,8 +496,7 @@ class BBCode {
 			'[email]','[/email]',
 			'[url]','[/url]',
 			'[img]','[/img]',
-			'[tt]', '[/tt]',
-			'[table]', '[/table]'
+			'[tt]', '[/tt]'
 			);
 			$text = str_ireplace($search, '', $text);
 
@@ -583,15 +527,14 @@ class BBCode {
 			while (empty($this->profile['disallow']['ot']) && preg_match('/\[ot\](.+?)\[\/ot\]/is',$text)) {
 				$text = preg_replace('/\[ot\](.+?)\[\/ot\]\n?/is', "\n".$lang->phrase('bb_offtopic')."\n-------------------\n\\1\n-------------------\n", $text);
 			}
+			$text = preg_replace_callback('/\[table(=[^\]]+)?\](.+?)\[\/table\]\n?/is', array(&$this, 'cb_plain_table'), $text);
 
 			$text = preg_replace('/(\[hr\]){1,}/is', "\n-------------------\n", $text);
 			$text = str_ireplace('[tab]', "    ", $text);
 		}
 		elseif ($type == 'pdf') {
 			$text = empty($this->profile['disallow']['code']) ? preg_replace_callback('/\[code(=\w+?)?\](.+?)\[\/code\](\n?)/is', array(&$this, 'cb_pdf_code'), $text) : $text;
-			while (empty($this->profile['disallow']['list']) && preg_match('/\[list(?:=(a|A|I|i|OL|ol))?\](.+?)\[\/list\]/is',$text)) {
-				$text = preg_replace_callback('/\n?\[list(?:=(a|A|I|i|OL|ol))?\](.+?)\[\/list\]\n?/is', array(&$this, 'cb_pdf_list'), $text);
-			}
+			$text = $this->ListWorkAround($text);
 			$text = preg_replace('/\[note=([^\]]+?)\](.+?)\[\/note\]/is', "\\1 (<i>\\2</i>)", $text);
 
 			$text = preg_replace("~\[url\]((telnet://|callto://|irc://|teamspeak://|http://|https://|ftp://|www.|mailto:|ed2k://|\w+?.\w{2,7})+:\/\/[a-z0-9;\/\?:@=\&\$\-_\.\+!\*'\(\),\~%#]+?)\[\/url\]~is", "<a href=\"\\1\">\\1</a>", $text);
@@ -603,7 +546,7 @@ class BBCode {
 			$text = preg_replace('/\[align=(left|center|right|justify)\](.+?)\[\/align\]/is', "<p align=\"\\1\">\\2</p>", $text);
 
 			$text = preg_replace("/\[email\]([a-z0-9\-_\.\+]+@[a-z0-9\-]+\.[a-z0-9\-\.]+?)\[\/email\]/is", "<a href=\"mailto:\\1\">\\1</a>", $text);
-			$text = empty($this->profile['disallow']['h']) ? preg_replace_callback('/\n?\[h=(middle|small|large)\](.+?)\[\/h\]\n?/is', array(&$this, 'cb_pdf_header'), $text) : $text;
+			$text = empty($this->profile['disallow']['h']) ? preg_replace_callback('/\n?\[h=(middle|small|large)\](.+?)\[\/h\]\n?/is', array(&$this, 'cb_header'), $text) : $text;
 			$text = preg_replace_callback('/\[size=(small|extended|large)\](.+?)\[\/size\]/is', array(&$this, 'cb_pdf_size'), $text);
 
 			while (preg_match('/\[quote=(.+?)\](.+?)\[\/quote\]/is',$text)) {
@@ -631,8 +574,8 @@ class BBCode {
 			$text = preg_replace('/\[sub\](.+?)\[\/sub\]/is', "<sub>\\1</sub>", $text);
 			$text = preg_replace('/\[sup\](.+?)\[\/sup\]/is', "<sup>\\1</sup>", $text);
 
+			$text = preg_replace_callback('/\[table(=(\d+\%;head|head;\d+\%|\d+\%|head))?\]\n*(.+?)\n*\[\/table\]\n?/is', array(&$this, 'cb_pdf_table'), $text);
 			$text = str_ireplace('[tab]', "\t", $text);
-			$text = preg_replace_callback('/\[table(=[^\]]+)?\](.+?)\[\/table\]\n?/is', array(&$this, 'cb_plain_table'), $text);
 
 			$text = $this->tab2space($text);
 			$text = $this->parseSmileys($text);
@@ -641,14 +584,7 @@ class BBCode {
 			$text = empty($this->profile['disallow']['code']) ? preg_replace_callback('/\[code\](.+?)\[\/code\](\n?)/is', array(&$this, 'cb_code'), $text) : $text;
 			$text = empty($this->profile['disallow']['code']) ? preg_replace_callback('/\[code=(\w+?)\](.+?)\[\/code\](\n?)/is', array(&$this, 'cb_hlcode'), $text) : $text;
 
-			if (empty($this->profile['disallow']['list'])) {
-				$char = chr(5);
-				$text = str_ireplace('[/list]', '[/list]'.$char, $text);
-				$text = str_ireplace('[list', $char.'[list', $text);
-				while (preg_match('/'.$char.'\[list(?:=(a|A|I|i|OL|ol))?\]([^'.$char.']+)\[\/list\]'.$char.'/is',$text, $treffer)) {
-					$text = preg_replace_callback('/\n?'.$char.'\[list(?:=(a|A|I|i|OL|ol))?\]([^'.$char.']+)\[\/list\]'.$char.'\n?/is', array(&$this, 'cb_list'), $text);
-				}
-			}
+			$text = $this->ListWorkAround($text);
 
 			$text = preg_replace_callback('/\[note=([^\]]+?)\](.+?)\[\/note\]/is', array(&$this, 'cb_note'), $text);
 
@@ -717,6 +653,18 @@ class BBCode {
 		return $text;
 	}
 
+	function ListWorkAround($text) {
+		if (empty($this->profile['disallow']['list'])) {
+			$char = chr(5);
+			$text = str_ireplace('[/list]', '[/list]'.$char, $text);
+			$text = str_ireplace('[list', $char.'[list', $text);
+			while (preg_match('/'.$char.'\[list(?:=(a|A|I|i|OL|ol))?\]([^'.$char.']+)\[\/list\]'.$char.'/is',$text, $treffer)) {
+				$text = preg_replace_callback('/\n?'.$char.'\[list(?:=(a|A|I|i|OL|ol))?\]([^'.$char.']+)\[\/list\]'.$char.'\n?/is', array(&$this, 'cb_list'), $text);
+			}
+		}
+		return $text;
+	}
+
 	function nl2br ($text, $type = 'html') {
 		$text = str_ireplace('[br]', "\n", $text);
 		if ($type == 'plain') {
@@ -753,7 +701,12 @@ class BBCode {
 			return $topic;
 		}
 	}
-	function cb_table($data) {
+
+	function cb_pdf_table($data) {
+		return $this->cb_table($data, 'pdf');
+	}
+
+	function cb_table($data, $type = 'html') {
 		list(,,$args,$code) = $data;
 		$table_content = array();
 		$table_head = array();
@@ -827,75 +780,49 @@ class BBCode {
 			}
 		}
 
-		$style = ' style="width:'.floor(100/$bbcode_table['table']['cols']).'%;"';
+		if ($type == 'pdf') {
+			$width = floor(100/$bbcode_table['table']['cols']);
 
-		if($bbcode_table['head']['enabled'] == true){
-			$table_head = '<tr><th'.$style.'>'.implode('</th><th'.$style.'>',$table_head).'</th></tr>';
-		}
-		else{
-			$table_head = '';
-		}
+			if($bbcode_table['head']['enabled'] == true){
+				$table_head = '<tr><th bgcolor="#dddddd">'.implode('</th><th bgcolor="#dddddd">',$table_head).'</th></tr>';
+			}
+			else{
+				$table_head = '';
+			}
 
-		for($i=0;$i<$bbcode_table['table']['rows'];$i++){
-			$table_rows[$i] = '<td'.iif($bbcode_table['head']['enabled'], $style).'>'.implode('</td><td'.iif($bbcode_table['head']['enabled'], $style).'>', $table_rows[$i]).'</td>';
-			$table_rows[$i] = '<tr>'.$table_rows[$i].'</tr>';
-		}
+			for($i=0;$i<$bbcode_table['table']['rows'];$i++){
+				$table_rows[$i] = '<td>'.implode('</td><td>', $table_rows[$i]).'</td>';
+				$table_rows[$i] = '<tr>'.$table_rows[$i].'</tr>';
+			}
 
-		$table_rows = implode('',$table_rows);
-		$table_html = '<table class="bb_table"';
-		if ($bbcode_table['width'] != null){
-			$table_html .= ' style="width:'.$bbcode_table['width'].';"';
+			$table_rows = implode('',$table_rows);
+			$table_html = '<table border="1">'.$table_head.$table_rows.'</table>';
 		}
-		$table_html .= '>'.$table_head.$table_rows.'</table>';
+		else {
+			$style = ' style="width:'.floor(100/$bbcode_table['table']['cols']).'%;"';
 
+			if($bbcode_table['head']['enabled'] == true){
+				$table_head = '<tr><th'.$style.'>'.implode('</th><th'.$style.'>',$table_head).'</th></tr>';
+			}
+			else{
+				$table_head = '';
+			}
+
+			for($i=0;$i<$bbcode_table['table']['rows'];$i++){
+				$table_rows[$i] = '<td'.iif($bbcode_table['head']['enabled'], $style).'>'.implode('</td><td'.iif($bbcode_table['head']['enabled'], $style).'>', $table_rows[$i]).'</td>';
+				$table_rows[$i] = '<tr>'.$table_rows[$i].'</tr>';
+			}
+
+			$table_rows = implode('',$table_rows);
+			$table_html = '<table class="bb_table"';
+			if ($bbcode_table['width'] != null){
+				$table_html .= ' style="width:'.$bbcode_table['width'].';"';
+			}
+			$table_html .= '>'.$table_head.$table_rows.'</table>';
+		}
 		return $table_html;
 	}
-	function cb_plain_table ($text, $tag = 'tt') {
-		$length = array();
-		$lines = explode("\n", $text[2]);
-		$char = chr(7);
-		foreach ($lines as $line) {
-			if (empty($line)) {
-				continue;
-			}
-			$i = 0;
-			$td = explode("\t", $line);
-			foreach ($td as $cell) {
-				$cell   = strip_tags($cell);
-				$tab_pos= strxlen($cell);
-				$min	= $tab_pos/4 - floor($tab_pos/4);
-				$tab	= (1-$min)*4;
-				if ($tab < 1) {
-					$tab = 4;
-				}
-				$line   = strxlen($cell)+$tab;
-				if (!isset($result[$i]) || $line > $result[$i]) {
-					$result[$i] = $line;
-				}
-				$i++;
-			}
-		}
-		$table = array();
-		foreach ($lines as $line) {
-			if (empty($line)) {
-				continue;
-			}
-			$i = 0;
-			$td = explode("\t", $line);
-			$line = '';
-			foreach ($td as $cell) {
-				$spaces = $result[$i];
-				$length = strxlen(strip_tags($cell));
-				$min	= $spaces - $length;
-				$tab	= str_repeat($char, $min);
-				$line  .= $cell.$tab;
-				$i++;
-			}
-			$table[] = $line;
-		}
-		$text = str_replace($char, '&nbsp;', implode("\n", $table));
-		return "<{$tag} class=\"bb_table\">{$text}</{$tag}>";
-	}
+
 	/**
 	 * Converts tabs to the appropriate amount of spaces while preserving formatting
 	 *

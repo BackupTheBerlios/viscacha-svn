@@ -24,10 +24,16 @@
 //    source code documentation using phpDocumentor (www.phpdoc.org);
 //    All ISO page formats were included;
 //    image scale factor;
-//    includes methods to parse and printsome XHTML code, supporting the following elements: h1, h2, h3, h4, h5, h6, b, u, i, a, img, p, br, strong, em, font, blockquote, li, ul, ol, hr, td, th, tr, table, sup, sub, small;
+//    includes methods to parse and print some XHTML code, supporting the following elements: h1, h2, h3, h4, h5, h6, b, u, i, a, img, p, br, strong, em, font, blockquote, li, ul, ol, hr, td, th, tr, table, sup, sub, small;
 //    includes a method to print various barcode formats using an improved version of "Generic Barcode Render Class" by Karim Mribti (http://www.mribti.com/barcode/) (require GD library: http://www.boutell.com/gd/);
 //    defines standard Header() and Footer() methods.
+// Additions by Matthias Mohr:
+//    Better XHTML Support
 //============================================================+
+
+if (!class_exists('ConvertRoman')) {
+	include($config['fpath'].'/classes/class.convertroman.php');
+}
 
 /**
  * TCPDF Class.
@@ -623,16 +629,22 @@ if(!class_exists('TCPDF')) {
 		var $issetcolor;
 
 		/**
-		 * @var HTML PARSER: true in case of ordered list (OL), false otherwise.
+		 * @var HTML PARSER: type of list (1,i,I,a,A) in case of ordered list (OL), false otherwise.
 		 * @access private
 		 */
 		var $listordered = false;
 
 		/**
-		 * @var HTML PARSER: count list items.
+		 * @var HTML PARSER: Depth of the lists.
 		 * @access private
 		 */
-		var $listcount = 0;
+		var $listdepth = 0;
+
+		/**
+		 * @var HTML PARSER: count list items for each depth.
+		 * @access private
+		 */
+		var $listcount = array();
 
 		/**
 		 * @var HTML PARSER: size of table border.
@@ -3913,6 +3925,7 @@ if(!class_exists('TCPDF')) {
 			//Opening tag
 			switch($tag) {
 				case 'table': {
+					$this->Ln(0); // Linebreak to avoid wrong positioned first row
 					if ((isset($attr['border'])) AND ($attr['border'] != '')) {
 						$this->tableborder = $attr['border'];
 					}
@@ -3926,7 +3939,7 @@ if(!class_exists('TCPDF')) {
 				}
 				case 'td':
 				case 'th': {
-					if ((isset($attr['width'])) AND ($attr['width'] != '')) {
+					if (isset($attr['width']) && $attr['width'] != '' && is_numeric($attr['width'])) { // Only numeric values, no values with percentages (%), % is not supported
 						$this->tdwidth = ($attr['width']/4);
 					}
 					else {
@@ -3959,6 +3972,9 @@ if(!class_exists('TCPDF')) {
 						$coul = $this->convertColorHexToDec($attr['bgcolor']);
 						$this->SetFillColor($coul['R'], $coul['G'], $coul['B']);
 						$this->tdbgcolor=true;
+					}
+					if ($tag == 'th') {
+						$this->setStyle('b', true);
 					}
 					$this->tdbegin=true;
 					break;
@@ -4019,22 +4035,38 @@ if(!class_exists('TCPDF')) {
 				}
 				case 'ul': {
 					$this->listordered = false;
-					$this->listcount = 0;
+					$this->listdepth++;
+					$this->listcount[$this->listdepth] = 0;
 					break;
 				}
 				case 'ol': {
-					$this->listordered = true;
-					$this->listcount = 0;
+					$this->listordered = empty($attr['type']) ? '1' : $attr['type']; // 1, a, A, i, I
+					$this->listdepth++;
+					$this->listcount[$this->listdepth] = 0;
 					break;
 				}
 				case 'li': {
 					$this->Ln();
-					if ($this->listordered) {
-						$this->lispacer = "    ".(++$this->listcount).". ";
+					if ($this->listordered != false) {
+						$this->listcount[$this->listdepth]++;
+						if ($this->listordered == 'a' || $this->listordered == 'A') {
+							$converter = new ConvertRoman($this->listcount[$this->listdepth], true);
+							$a = $converter->result(($this->listordered == 'a'));
+						}
+						elseif ($this->listordered == 'i' || $this->listordered == 'I') {
+							$converter = new ConvertRoman($this->listcount[$this->listdepth]);
+							$a = $converter->result(($this->listordered == 'i'));
+						}
+						else {
+							$a = $this->listcount[$this->listdepth].'.';
+
+						}
+
+						$this->lispacer = str_repeat('    ', $this->listdepth).str_repeat(' ', 4-strlen($a)).$a.' '; // With correct alignment of the numbers ;)
 					}
 					else {
 						//unordered list simbol
-						$this->lispacer = "    -  ";
+						$this->lispacer = str_repeat('    ', $this->listdepth).'-  ';
 					}
 					$this->Write($this->lasth, $this->lispacer, '', $fill);
 					break;
@@ -4139,6 +4171,9 @@ if(!class_exists('TCPDF')) {
 					$this->tdalign = "L";
 					$this->tdbgcolor = false;
 					$this->SetFillColor($this->prevFillColor[0], $this->prevFillColor[1], $this->prevFillColor[2]);
+					if ($tag == 'th') {
+						$this->setStyle('b', false);
+					}
 					break;
 				}
 				case 'tr': {
@@ -4219,12 +4254,12 @@ if(!class_exists('TCPDF')) {
 					$this->lasth = $this->FontSize * K_CELL_HEIGHT_RATIO;
 					break;
 				}
-				case 'ul': {
-					$this->Ln();
-					break;
-				}
+				case 'ul':
 				case 'ol': {
-					$this->Ln();
+					if ($this->listdepth == 1) {
+						$this->Ln();
+					}
+					$this->listdepth--;
 					break;
 				}
 				case 'li': {

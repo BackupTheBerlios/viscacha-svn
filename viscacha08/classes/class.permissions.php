@@ -9,7 +9,6 @@ var $user_agent;
 var $sid;
 var $cookies;
 var $cookiedata;
-var $cookielastvisit;
 var $bots;
 var $gFields;
 var $fFields;
@@ -41,7 +40,6 @@ function slog () {
 	$this->sid = '';
 	$this->cookies = false;
 	$this->cookiedata = array(0, '');
-	$this->cookielastvisit = 0;
 	$this->defineGID();
 	$this->groups = array();
 	$this->permissions = array();
@@ -392,7 +390,7 @@ function updatelogged () {
 		$db->query ("
 		UPDATE {$db->pre}session
 		SET mark = '{$serialized}', wiw_script = '".SCRIPTNAME."', wiw_action = '{$action}', wiw_id = '{$qid}', active = '".time()."',
-			pwfaccess = '{$serializedpwf}', settings = '{$serializedstg}' {$sqlset}
+			pwfaccess = '{$serializedpwf}', settings = '{$serializedstg}', lastvisit = '{$my->clv}' {$sqlset}
 		WHERE {$sqlwhere2}
 		LIMIT 1
 		",__LINE__,__FILE__);
@@ -450,7 +448,6 @@ function logged () {
 	}
 
     $vdata = $gpc->save_str(getcookie('vdata'));
-    $vlastvisit = $gpc->save_int(getcookie('vlastvisit'));
     $vhash = $gpc->save_str(getcookie('vhash'));
     if ($config['allow_http_auth'] == 1) {
 		if (!empty($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_PW'])) {
@@ -474,13 +471,6 @@ function logged () {
 	}
 	else {
 		$this->cookiedata = array(0,'');
-	}
-	if (!empty($vlastvisit)) {
-		$this->cookies = true;
-		$this->cookielastvisit = $vlastvisit;
-	}
-	else {
-		$this->cookielastvisit = 0;
 	}
 	if (isset($vhash)) {
 		$this->cookies = true;
@@ -533,25 +523,34 @@ function logged () {
 		$my->id = 0;
 	}
 
-	if ($gpc->get('action') == "markasread" || empty($my->mark) || !is_array($my->mark)) {
+	if ($gpc->get('action') == "markasread" || !isset($my->mark)) {
 		$my->mark = array();
 	}
 	else {
 		$my->mark = unserialize($my->mark);
+		if (!is_array($my->mark)) {
+			$my->mark = array();
+		}
 	}
 
-	if (empty($my->pwfaccess) || !is_array($my->mark)) {
+	if (empty($my->pwfaccess) || !isset($my->mark)) {
 		$my->pwfaccess = array();
 	}
 	else {
 		$my->pwfaccess = unserialize($my->pwfaccess);
+		if (!is_array($my->mark)) {
+			$my->pwfaccess = array();
+		}
 	}
 
-	if (empty($my->settings) || !is_array($my->settings)) {
+	if (empty($my->settings) || !isset($my->settings)) {
 		$my->settings = array();
 	}
 	else {
 		$my->settings = unserialize($my->settings);
+		if (!is_array($my->mark)) {
+			$my->settings = array();
+		}
 	}
 
 	if (!isset($my->timezone) || $my->timezone == NULL) {
@@ -611,8 +610,8 @@ function logged () {
 		$my->language = $q_lng;
 	}
 
-	if (isset($my->lastvisit) && !$my->clv) {
-		$my->clv = $my->lastvisit;
+	if (empty($my->clv)) {
+		$my->clv = 0;
 	}
 
 	if (!isset($my->opt_hidebad)) {
@@ -621,6 +620,8 @@ function logged () {
 	if (!isset($my->opt_showsig)) {
 		$my->opt_showsig = 1;
 	}
+
+	makecookie($config['cookie_prefix'].'_vlastvisit', time());
 
 	($code = $plugins->load('permissions_logged_end')) ? eval($code) : null;
 
@@ -801,20 +802,18 @@ function sid_new() {
 
 	if ($nodata == false && $my->confirm == '11') {
 		$id = &$my->id;
-		$lastvisit = &$my->lastvisit;
+		$lastvisit = $my->lastvisit;
 		$my->clv = $my->lastvisit;
 		$my->vlogin = true;
 		makecookie($config['cookie_prefix'].'_vdata', $my->id."|".$my->pw);
 	}
 	else {
 		$id = 0;
-		$lastvisit = $this->cookielastvisit;
-		$my->clv = $this->cookielastvisit;
+		$lastvisit = $gpc->save_int(getcookie('vlastvisit'));
+		$my->clv = $lastvisit;
 		$my->vlogin = false;
 		makecookie($config['cookie_prefix'].'_vdata', "|", -60);
 	}
-
-	makecookie($config['cookie_prefix'].'_vlastvisit', $lastvisit);
 
 	$my->is_bot = $this->log_robot();
 
@@ -867,7 +866,7 @@ function sid_login($remember = true) {
 	$pw = $gpc->get('pw', str);
 
 	$result = $db->query("
-	SELECT u.*, f.*, s.lastvisit as clv, s.ip, s.mark, s.pwfaccess, s.sid, s.settings, s.is_bot
+	SELECT u.*, f.*, u.lastvisit as clv, s.ip, s.mark, s.pwfaccess, s.sid, s.settings, s.is_bot
 	FROM {$db->pre}user AS u
 		LEFT JOIN {$db->pre}session AS s ON (u.id = s.mid OR s.sid = '{$this->sid}')
 		LEFT JOIN {$db->pre}userfields as f ON f.ufid = u.id
@@ -898,6 +897,8 @@ function sid_login($remember = true) {
 	if ($sessions > 0 && $mytemp->confirm == '11') {
 
 		$mytemp->mark = $my->mark;
+		$mytemp->pwfaccess = $my->pwfaccess;
+		$mytemp->settings = $my->settings;
 		$my = $mytemp;
 		unset($mytemp);
 		$my->vlogin = true;
@@ -967,7 +968,6 @@ function sid_login($remember = true) {
 			$expire = null;
 		}
 		makecookie($config['cookie_prefix'].'_vdata', $my->id.'|'.$my->pw, $expire);
-		makecookie($config['cookie_prefix'].'_vlastvisit', $my->lastvisit);
 		$this->cookiedata[0] = $my->id;
 		$this->cookiedata[1] = $my->pw;
 		return true;
@@ -1011,16 +1011,18 @@ function sid2url($my = null) {
 }
 
 function cleanUserData($data) {
-	global $gpc;
-	$trust = array(
-	 	'id', 'pw', 'regdate', 'posts', 'gender', 'birthday', 'lastvisit', 'icq', 'opt_textarea', 'language',
-	 	'opt_pmnotify', 'opt_hidebad', 'opt_hidemail', 'opt_newsletter', 'opt_showsig', 'template', 'confirm', // from user-table
-	 	'ufid', // from userfields-table
-	 	'mid', 'active', 'wiw_id', 'last_visit', 'is_bot', 'mark', 'pwfaccess', 'settings' // from session-table
-	);
-	foreach ($data as $key => $value) {
-		if (in_array($key, $trust) == false) {
-			$data->$key = $gpc->prepare($value);
+	if (is_object($data)) {
+		global $gpc;
+		$trust = array(
+		 	'id', 'pw', 'regdate', 'posts', 'gender', 'birthday', 'lastvisit', 'icq', 'opt_textarea', 'language',
+		 	'opt_pmnotify', 'opt_hidebad', 'opt_hidemail', 'opt_newsletter', 'opt_showsig', 'template', 'confirm', // from user-table
+		 	'ufid', // from userfields-table
+		 	'mid', 'active', 'wiw_id', 'last_visit', 'is_bot', 'mark', 'pwfaccess', 'settings' // from session-table
+		);
+		foreach ($data as $key => $value) {
+			if (in_array($key, $trust) == false) {
+				$data->$key = $gpc->prepare($value);
+			}
 		}
 	}
 	return $data;
@@ -1486,11 +1488,7 @@ function setTopicRead($tid, $parents) {
 	$my->mark['t'][$tid] = time();
 
 	// Erstelle ein Array mit schon gelesenen Beiträgen
-	$keys = array();
-	while (list($key,) = each ($my->mark['t'])) {
-	   $keys[] = $key;
-	}
-	$inkeys = implode(',',$keys);
+	$inkeys = implode(',', array_keys($my->mark['t']));
 	foreach ($parents as $tf) {
 		$result = $db->query("SELECT COUNT(*) FROM {$db->pre}topics WHERE board = '{$tf}' AND last > '{$my->clv}' AND id NOT IN({$inkeys})",__LINE__,__FILE__);
 		$row = $db->fetch_num($result);
