@@ -69,7 +69,7 @@ class GPC {
 			}
 		}
 		else {
-			if ($standard == NULL) {
+			if ($standard === null) {
 				if ($type == str) {
 					$var = '';
 				}
@@ -80,7 +80,7 @@ class GPC {
 					$var = array();
 				}
 				else {
-					$var = NULL;
+					$var = null;
 				}
 			}
 			else {
@@ -226,7 +226,7 @@ class GPC {
 			return $array;
 		}
 		elseif(is_array($array)) {
-			return array_map(array(&$this, 'stripslashes'), $array);
+			return array_map(array(&$this, 'stripslashes'), $array); // Durchsucht nur 1-dimensionale Arrays
 		}
 		else {
 			return stripslashes($array);

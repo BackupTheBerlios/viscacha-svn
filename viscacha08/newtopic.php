@@ -345,7 +345,7 @@ elseif ($_GET['action'] == "save") {
 		$close = $gpc->get('close', int);
 		$pin = $gpc->get('pin', int);
 		$stat = $gpc->get('status', int);
-		if (($close == 1 || $pin == 1 || $stat > 0) && $my->vlogin) {
+		if (($close == 1 || $pin == 1) && $my->vlogin) {
 			$my->mp = $slog->ModPermissions($board);
 			if ($close == 1 && $my->mp[0] == 1) {
 				$db->query("UPDATE {$db->pre}topics SET status = '1' WHERE id = '{$tredirect}'",__LINE__,__FILE__);
@@ -353,15 +353,18 @@ elseif ($_GET['action'] == "save") {
 			if ($pin == 1 && $my->mp[0] == 1) {
 				$db->query("UPDATE {$db->pre}topics SET sticky = '1' WHERE id = '{$tredirect}'",__LINE__,__FILE__);
 			}
-			if (($stat == 1 && $my->mp[3] == 1) || ($stat == 2 && $my->mp[2] == 1)) {
-				if ($stat == 1) {
-					$input = 'a';
-				}
-				if ($stat == 2) {
-					$input = 'n';
-				}
-				$db->query("UPDATE {$db->pre}topics SET mark = '{$input}' WHERE id = '{$tredirect}'",__LINE__,__FILE__);
+		}
+		if ((($stat == 1 && $my->mp[3] == 1) || ($stat == 2 && $my->mp[2] == 1) || $stat == 9) && $my->vlogin) { // null (Kein Status) ist standard und muss nicht geändert werden
+			if ($stat == 1) {
+				$input = 'a';
 			}
+			elseif ($stat == 2) {
+				$input = 'n';
+			}
+			elseif ($stat == 9) {
+				$input = '';
+			}
+			$db->query("UPDATE {$db->pre}topics SET mark = '{$input}' WHERE id = '{$tredirect}'",__LINE__,__FILE__);
 		}
 
 		if ($config['updatepostcounter'] == 1 && $last['count_posts'] == 1) {

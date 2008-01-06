@@ -263,7 +263,7 @@ elseif ($_GET['action'] == "ims" && $is_member) {
 	$result = $db->query("SELECT id, name, icq, aol, yahoo, msn, jabber, skype {$sqlfields} FROM {$db->pre}user WHERE id = '{$_GET['id']}'",__LINE__,__FILE__);
 
 	$row = $gpc->prepare($db->fetch_assoc($result));
-	if ($row[$_GET['type']] == NULL || $row[$_GET['type']] == '') {
+	if (empty($row[$_GET['type']])) {
 		$error[] = $lang->phrase('im_no_data');
 	}
 

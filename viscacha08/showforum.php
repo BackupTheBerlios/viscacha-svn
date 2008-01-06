@@ -72,10 +72,10 @@ $subforums = BoardSelect($board);
 
 $filter = $gpc->get('sort', int);
 if ($filter == 2) {
-	$marksql = ' AND mark = "a" '.iif($info['auto_status'] == 'a', 'AND mark = "" ');
+	$marksql = ' AND mark = "a" '.iif($info['auto_status'] == 'a', 'AND mark IS NULL ');
 }
 elseif ($filter == 3) {
-	$marksql = ' AND mark = "n" '.iif($info['auto_status'] == 'n', 'AND mark = "" ');
+	$marksql = ' AND mark = "n" '.iif($info['auto_status'] == 'n', 'AND mark IS NULL ');
 }
 elseif ($filter == 4) {
 	$marksql = ' AND mark = "g" ';
@@ -171,7 +171,7 @@ if ($info['topics'] > 0) {
 			$pref .= $lang->phrase('forum_moved');
 		}
 		else {
-			if (empty($row->mark) && !empty($info['auto_status'])) {
+			if ($row->mark === null && !empty($info['auto_status'])) {
 				$row->mark = $info['auto_status'];
 			}
 			if ($row->mark == 'n') {
