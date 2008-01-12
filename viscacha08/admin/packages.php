@@ -9,6 +9,23 @@ require('classes/class.phpconfig.php');
 include('admin/lib/function.settings.php');
 $myini = new INI();
 
+define('DO_UPD_ADD', '+');
+define('DO_UPD_DEL', '-');
+define('DO_UPD_CHNG', '~');
+define('DO_UPD_EQU', '=');
+
+function array_diff_all($arr_new, $arr_old) {
+    $arr_equ = array_intersect($arr_new, $arr_old);
+    $arr_del = array_diff($arr_old, $arr_new);
+    $arr_add = array_diff($arr_new, $arr_old);
+    return array(
+    	DO_UPD_EQU => $arr_equ,
+    	DO_UPD_DEL => $arr_del,
+    	DO_UPD_ADD => $arr_add,
+    	'count' => count($arr_del)+count($arr_add)+count($arr_equ)
+    );
+}
+
 function browser_sort_date($a, $b) {
 	if ($a['last_updated'] > $b['last_updated']) {
 		return -1;
@@ -330,121 +347,114 @@ elseif ($job == 'package_update2') {
 		$result = $db->query("SELECT template, stylesheet, images FROM {$db->pre}designs WHERE id = '{$config['templatedir']}'",__LINE__,__FILE__);
 		$design = $db->fetch_assoc($result);
 
-		if (file_exists($moddir.'component.ini')) {
-			$old_com = $myini->read($moddir.'component.ini');
+		// Components Start
+		$result = $db->query("SELECT id FROM {$db->pre}component WHERE package = '{$packageid}'", __LINE__, __FILE__);
+		$do = null;
+		if ($db->num_rows($result) == 0) {
 			if (file_exists($tdir.'component.ini')) {
-				$com = $myini->read($tdir.'component.ini');
+				$do = DO_UPD_ADD; // Insert
+			}
+		}
+		else {
+			list($comid) = $db->fetch_num($result);
+			if (file_exists($tdir.'component.ini')) {
+				$do = DO_UPD_CHNG; // Update
 			}
 			else {
-				$com = array();
-			}
-
-			if (isset($com['info']) && count($com['info']) > 0) {
-				$com['info'] = $gpc->save_str($com['info']);
-
-				if (!isset($com['module']['frontpage'])) {
-					$com['module']['frontpage'] = '';
-				}
-
-				$db->query("INSERT INTO {$db->pre}component (file, package, required) VALUES ('".$gpc->save_str($com['module']['frontpage'])."', '{$packageid}', '{$com['info']['required']}')", __LINE__, __FILE__);
-				$comid = $db->insert_id();
-
-				if (isset($com['images']) && count($com['images']) > 0) {
-					foreach ($com['images'] as $file) {
-						$filesystem->rename("{$tdir}images/{$file}", "./images/{$design['images']}/{$file}");
-					}
-				}
-
-				$result = $db->query("SELECT DISTINCT stylesheet FROM {$db->pre}designs WHERE stylesheet != '{$design['stylesheet']}'",__LINE__,__FILE__);
-				if (isset($com['designs']) && count($com['designs']) > 0) {
-					$stdcssdir = "./designs/{$css['stylesheet']}/{$file}";
-					$filesystem->rename("{$tdir}designs/{$file}", $stdcssdir);
-					while ($css = $db->fetch_assoc($result)) {
-						foreach ($com['designs'] as $file) {
-							$filesystem->copy($stdcssdir, "./designs/{$css['stylesheet']}/{$file}");
-						}
-					}
-				}
-
-				if (isset($com['language']) && count($com['language']) > 0) {
-					$d = dir($tdir.'language/');
-					$codes = array();
-					while (false !== ($entry = $d->read())) {
-					   	if (preg_match('~^(\w{2})_?(\w{0,2})$~i', $entry, $code) && is_dir("{$tdir}/{$entry}")) {
-					   		if (!isset($codes[$code[1]])) {
-					   			$codes[$code[1]] = array();
-					   		}
-					   		if (isset($code[2])) {
-					   			$codes[$code[1]][] = $code[2];
-					   		}
-					   		else {
-					   			if (!in_array('', $codes[$code[1]])) {
-					   				$codes[$code[1]][] = '';
-					   			}
-					   		}
-					   	}
-					}
-					$d->close();
-					$langcodes = getLangCodes();
-					foreach ($langcodes as $code => $lid) {
-						$ldat = explode('_', $code);
-						if (isset($codes[$ldat[0]])) {
-							$count = count($codes[$ldat[0]]);
-							if (in_array('', $codes[$ldat[0]])) {
-								$count--;
-							}
-						}
-						else {
-							$count = -1;
-						}
-						$filesystem->mkdir("./language/{$lid}/modules/{$packageid}", 0777);
-						if (isset($codes[$ldat[0]]) && !empty($ldat[1]) && in_array($ldat[1], $codes[$ldat[0]])) { // Nehme Original
-							$src = $code;
-						}
-						elseif(isset($codes[$ldat[0]]) && in_array('', $codes[$ldat[0]])) { // Nehme gleichen Langcode, aber ohne Countrycode
-							$src = $ldat[0];
-						}
-						elseif(isset($codes[$ldat[0]]) && $count > 0) { // Nehme gleichen Langcode, aber falchen Countrycode
-							$src = $ldat[0].'_'.reset($codes[$ldat[0]]);
-						}
-						else { // Nehme Standard
-							$src = '';
-						}
-						$src = iif(!empty($src), '/'.$src);
-						foreach ($com['language'] as $file) {
-							if (file_exists("{$tdir}/language/{$src}/{$file}") == false) {
-								$src = '';
-							}
-							if (!empty($src)) {
-								$src = '/'.$src;
-							}
-							// ToDo: Move it first to standard dir, then copy it from there
-							$filesystem->copy("{$tdir}/language{$src}/{$file}", "./language/{$lid}/modules/{$packageid}/{$file}");
-						}
-					}
-				}
-
-				$delobj = $scache->load('components');
-				$delobj->delete();
+				$do = DO_UPD_DEL; // Delete
 			}
 		}
 
-		if (file_exists($moddir.'plugin.ini')) {
-			$old_plug = $myini->read($moddir.'plugin.ini');
-			if (file_exists($tdir.'plugin.ini')) {
-				$plug = $myini->read($tdir.'plugin.ini');
+
+		$com = $old_com = array();
+		if (file_exists($moddir.'component.ini')) {
+			$old_com = $myini->read($moddir.'component.ini');
+		}
+		if (file_exists($tdir.'component.ini')) {
+			$com = $myini->read($tdir.'component.ini');
+			if (!isset($com['module']['frontpage'])) {
+				$com['module']['frontpage'] = '';
 			}
-			else {
-				$plug = array();
+		}
+
+		if ($do == DO_UPD_ADD) {
+			$db->query("INSERT INTO {$db->pre}component (file, package, required) VALUES ('".$gpc->save_str($com['module']['frontpage'])."', '{$packageid}', '".$gpc->save_str($com['info']['required'])."')", __LINE__, __FILE__);
+			$comid = $db->insert_id();
+		}
+		elseif ($do == DO_UPD_CHNG) {
+			$db->query("UPDATE {$db->pre}component SET file = '".$gpc->save_str($com['module']['frontpage'])."', required = '".$gpc->save_str($com['info']['required'])."' WHERE id = '{$comid}'", __LINE__, __FILE__);
+		}
+		elseif ($do == DO_UPD_DEL) {
+			$db->query("DELETE FROM {$db->pre}component WHERE id = '{$comid}'", __LINE__, __FILE__);
+		}
+
+		if ($do != null) {
+			// Images
+			$diff = array_diff_all(
+				isset($com['images']) ? $com['images'] : array(),
+				isset($old_com['images']) ? $old_com['images'] : array()
+			);
+			if ($diff['count'] > 0) {
+				foreach ($diff as $handler => $files) {
+					foreach($files as $file) {
+						$dir1 = "{$tdir}images/{$file}";
+						$dir2 = "./images/{$design['images']}/{$file}";
+						if ($handler == DO_UPD_ADD) {
+							$filesystem->unlink($dir2);
+							$filesystem->rename($dir1, $dir2);
+						}
+						elseif ($handler == DO_UPD_DEL) {
+							$filesystem->unlink($dir2);
+						}
+						// Dont update equal files. That has to be done by the custom updater when its required. We dont do that on account of loss of customized data.
+					}
+				}
 			}
 
+			// Stylesheets
+			$diff = array_diff_all(
+				isset($com['designs']) ? $com['designs'] : array(),
+				isset($old_com['designs']) ? $old_com['designs'] : array()
+			);
+			if ($diff['count'] > 0) {
+				$default_dir = "./designs/{$css['stylesheet']}/";
+				foreach ($diff as $handler => $files) {
+					foreach ($com['designs'] as $file) {
+						$dir1 = "{$tdir}designs/{$file}";
+						if ($handler == DO_UPD_ADD) {
+							$filesystem->unlink($default_dir.$file); // Delete old data (rename will fail if file exists)
+							$filesystem->rename($dir1, $default_dir.$file);
+						}
+						elseif ($handler == DO_UPD_DEL) {
+							$filesystem->unlink($default_dir.$file);
+						}
+					}
+				}
+				// Get non standard stylesheets. We have to copy them from the default... (safe mode workaround)
+				$result = $db->query("SELECT DISTINCT stylesheet FROM {$db->pre}designs WHERE stylesheet != '{$design['stylesheet']}'",__LINE__,__FILE__);
+				while ($css = $db->fetch_assoc($result)) {
+					foreach ($diff as $handler => $files) {
+						foreach ($com['designs'] as $file) {
+							$dir2 = "./designs/{$css['stylesheet']}/{$file}";
+							if ($handler == DO_UPD_ADD) {
+								$filesystem->unlink($dir2);  // Delete old data (rename will fail if file exists)
+								$filesystem->rename($default_dir.$file, $dir2);
+							}
+							elseif ($handler == DO_UPD_DEL) {
+								$filesystem->unlink($dir2);
+							}
+							// Dont update equal files. Like above...
+						}
+					}
+				}
+			}
 
-			if (isset($plug['language']) && count($plug['language']) > 0) {
-
+			// Todo
+			if (isset($com['language']) && count($com['language']) > 0) {
+				$d = dir($tdir.'language/');
 				$codes = array();
-				$keys = array_keys($plug);
-				foreach ($keys as $entry) {
-				   	if (preg_match('~language_(\w{2})_?(\w{0,2})~i', $entry, $code)) {
+				while (false !== ($entry = $d->read())) {
+				   	if (preg_match('~^(\w{2})_?(\w{0,2})$~i', $entry, $code) && is_dir("{$tdir}/{$entry}")) {
 				   		if (!isset($codes[$code[1]])) {
 				   			$codes[$code[1]] = array();
 				   		}
@@ -458,6 +468,7 @@ elseif ($job == 'package_update2') {
 				   		}
 				   	}
 				}
+				$d->close();
 				$langcodes = getLangCodes();
 				foreach ($langcodes as $code => $lid) {
 					$ldat = explode('_', $code);
@@ -470,44 +481,137 @@ elseif ($job == 'package_update2') {
 					else {
 						$count = -1;
 					}
+					$filesystem->mkdir("./language/{$lid}/modules/{$packageid}", 0777);
 					if (isset($codes[$ldat[0]]) && !empty($ldat[1]) && in_array($ldat[1], $codes[$ldat[0]])) { // Nehme Original
-						$src = 'language_'.$code;
+						$src = $code;
 					}
 					elseif(isset($codes[$ldat[0]]) && in_array('', $codes[$ldat[0]])) { // Nehme gleichen Langcode, aber ohne Countrycode
-						$src = 'language_'.$ldat[0];
+						$src = $ldat[0];
 					}
 					elseif(isset($codes[$ldat[0]]) && $count > 0) { // Nehme gleichen Langcode, aber falchen Countrycode
-						$src = 'language_'.$ldat[0].'_'.reset($codes[$ldat[0]]);
+						$src = $ldat[0].'_'.reset($codes[$ldat[0]]);
 					}
 					else { // Nehme Standard
-						$src = 'language';
+						$src = '';
 					}
-					$c->getdata("language/{$lid}/modules.lng.php", 'lang');
-					foreach ($plug[$src] as $varname => $text) {
-						$c->updateconfig($varname, str, $text);
+					$src = iif(!empty($src), '/'.$src);
+					foreach ($com['language'] as $file) {
+						if (file_exists("{$tdir}/language/{$src}/{$file}") == false) {
+							$src = '';
+						}
+						if (!empty($src)) {
+							$src = '/'.$src;
+						}
+						// ToDo: Move it first to standard dir, then copy it from there
+						$filesystem->copy("{$tdir}/language{$src}/{$file}", "./language/{$lid}/modules/{$packageid}/{$file}");
 					}
-					$c->savedata();
 				}
 			}
+			// Todo End
 
-			if (isset($plug['php']) && count($plug['php']) > 0) {
-				foreach ($plug['php'] as $hook => $plugfile) {
-					if (isInvisibleHook($hook)) {
-						continue;
-					}
-					$result = $db->query("SELECT MAX(ordering) AS maximum FROM {$db->pre}plugins WHERE position = '{$hook}'", __LINE__, __FILE__);
-					$row = $db->fetch_assoc($result);
-					$priority = $row['maximum']+1;
-					$db->query("
-					INSERT INTO {$db->pre}plugins
-					(`name`,`module`,`ordering`,`required`,`position`)
-					VALUES
-					('{$plug['names'][$hook]}','{$packageid}','{$priority}','{$plug['required'][$hook]}','{$hook}')
-					", __LINE__, __FILE__);
-					$filesystem->unlink('cache/modules/'.$plugins->_group($hook).'.php');
-				}
+			$delobj = $scache->load('components');
+			$delobj->delete();
+		}
+		// Components End
+
+		// Plugins Start
+		$result = $db->query("SELECT id FROM {$db->pre}plugins WHERE module = '{$packageid}' LIMIT 1", __LINE__, __FILE__);
+		$do = null;
+		if ($db->num_rows($result) == 0) {
+			if (file_exists($tdir.'plugin.ini')) {
+				$do = DO_UPD_ADD; // Insert
 			}
 		}
+		else {
+			if (file_exists($tdir.'plugin.ini')) {
+				$do = DO_UPD_CHNG; // Update
+			}
+			else {
+				$do = DO_UPD_DEL; // Delete
+			}
+		}
+
+
+		$plug = $old_plug = array();
+		if (file_exists($moddir.'plugin.ini')) {
+			$old_plug = $myini->read($moddir.'plugin.ini');
+		}
+		if (file_exists($tdir.'plugin.ini')) {
+			$plug = $myini->read($tdir.'plugin.ini');
+		}
+
+
+		// Todo
+		if (isset($plug['language']) && count($plug['language']) > 0) {
+
+			$codes = array();
+			$keys = array_keys($plug);
+			foreach ($keys as $entry) {
+			   	if (preg_match('~language_(\w{2})_?(\w{0,2})~i', $entry, $code)) {
+			   		if (!isset($codes[$code[1]])) {
+			   			$codes[$code[1]] = array();
+			   		}
+			   		if (isset($code[2])) {
+			   			$codes[$code[1]][] = $code[2];
+			   		}
+			   		else {
+			   			if (!in_array('', $codes[$code[1]])) {
+			   				$codes[$code[1]][] = '';
+			   			}
+			   		}
+			   	}
+			}
+			$langcodes = getLangCodes();
+			foreach ($langcodes as $code => $lid) {
+				$ldat = explode('_', $code);
+				if (isset($codes[$ldat[0]])) {
+					$count = count($codes[$ldat[0]]);
+					if (in_array('', $codes[$ldat[0]])) {
+						$count--;
+					}
+				}
+				else {
+					$count = -1;
+				}
+				if (isset($codes[$ldat[0]]) && !empty($ldat[1]) && in_array($ldat[1], $codes[$ldat[0]])) { // Nehme Original
+					$src = 'language_'.$code;
+				}
+				elseif(isset($codes[$ldat[0]]) && in_array('', $codes[$ldat[0]])) { // Nehme gleichen Langcode, aber ohne Countrycode
+					$src = 'language_'.$ldat[0];
+				}
+				elseif(isset($codes[$ldat[0]]) && $count > 0) { // Nehme gleichen Langcode, aber falchen Countrycode
+					$src = 'language_'.$ldat[0].'_'.reset($codes[$ldat[0]]);
+				}
+				else { // Nehme Standard
+					$src = 'language';
+				}
+				$c->getdata("language/{$lid}/modules.lng.php", 'lang');
+				foreach ($plug[$src] as $varname => $text) {
+					$c->updateconfig($varname, str, $text);
+				}
+				$c->savedata();
+			}
+		}
+
+		if (isset($plug['php']) && count($plug['php']) > 0) {
+			foreach ($plug['php'] as $hook => $plugfile) {
+				if (isInvisibleHook($hook)) {
+					continue;
+				}
+				$result = $db->query("SELECT MAX(ordering) AS maximum FROM {$db->pre}plugins WHERE position = '{$hook}'", __LINE__, __FILE__);
+				$row = $db->fetch_assoc($result);
+				$priority = $row['maximum']+1;
+				$db->query("
+				INSERT INTO {$db->pre}plugins
+				(`name`,`module`,`ordering`,`required`,`position`)
+				VALUES
+				('{$plug['names'][$hook]}','{$packageid}','{$priority}','{$plug['required'][$hook]}','{$hook}')
+				", __LINE__, __FILE__);
+				$filesystem->unlink('cache/modules/'.$plugins->_group($hook).'.php');
+			}
+		}
+		// Plugins End
+		// Todo End
 
 		// Templates
 		$templates = array_merge(
@@ -518,16 +622,41 @@ elseif ($job == 'package_update2') {
 			isset($old_plug['template']) ? $old_plug['template'] : array(),
 			isset($old_com['template']) ? $old_com['template'] : array()
 		);
-		if (count($templates) > 0) {
-			$tpldir = "templates/{$design['template']}/modules/{$packageid}/";
+		$tpldir = "templates/{$design['template']}/modules/{$packageid}/";
+		if (count($templates) > 0) { // Add/update files
+			$diff = array_diff_all($template, $old_templates);
+			if ($diff['count'] > 0) {
+				if (is_dir($tpldir)) {
+					$filesystem->chmod($tpldir, 0777);
+				}
+				else {
+					$filesystem->mkdir($tpldir, 0777);
+				}
+				$temptpldir = "{$tdir}templates/";
+				foreach ($diff as $handler => $files) {
+					foreach($files as $file) {
+						if ($handler == DO_UPD_ADD) {
+							$dir = dirname($tpldir.$file);
+							if (!is_dir($dir)) {
+								$filesystem->mkdir($dir, 0777);
+							}
+							else { // Delete old data (rename will fail if file exists)
+								$filesystem->unlink($tpldir.$file);
+							}
+							$filesystem->rename($temptpldir.$file, $tpldir.$file);
+						}
+						elseif ($handler == DO_UPD_DEL) {
+							$filesystem->unlink($tpldir.$file);
+						}
+						// Dont update equal files. Like above...
+					}
+				}
+			}
+		}
+		else { // Delete files
 			if (is_dir($tpldir)) {
-				$filesystem->chmod($tpldir, 0777);
+				rmdirr($tpldir);
 			}
-			else {
-				$filesystem->mkdir($tpldir, 0777);
-			}
-			$temptpldir = "{$tdir}templates/";
-			mover($temptpldir, $tpldir);
 		}
 
 		// Custom Updater
@@ -544,7 +673,6 @@ elseif ($job == 'package_update2') {
 			echo head();
 			ok('admin.php?action=packages&job=package_info&id='.$packageid, $lang->phrase('admin_packages_successfully_updated'));
 		}
-
 	}
 }
 elseif ($job == 'package_import') {
@@ -731,13 +859,15 @@ elseif ($job == 'package_import2') {
 					}
 				}
 
-				$result = $db->query("SELECT DISTINCT stylesheet FROM {$db->pre}designs WHERE stylesheet != '{$design['stylesheet']}'",__LINE__,__FILE__);
 				if (isset($com['designs']) && count($com['designs']) > 0) {
-					$stdcssdir = "./designs/{$css['stylesheet']}/{$file}";
-					$filesystem->rename("{$tdir}designs/{$file}", $stdcssdir);
+					$stdcssdir = "./designs/{$design['stylesheet']}/";
+					foreach ($com['designs'] as $file) {
+						$filesystem->rename("{$tdir}designs/{$file}", $stdcssdir.$file);
+					}
+					$result = $db->query("SELECT DISTINCT stylesheet FROM {$db->pre}designs WHERE stylesheet != '{$design['stylesheet']}'",__LINE__,__FILE__);
 					while ($css = $db->fetch_assoc($result)) {
 						foreach ($com['designs'] as $file) {
-							$filesystem->copy($stdcssdir, "./designs/{$css['stylesheet']}/{$file}");
+							$filesystem->copy($stdcssdir.$file, "./designs/{$css['stylesheet']}/{$file}");
 						}
 					}
 				}

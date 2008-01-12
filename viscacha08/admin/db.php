@@ -781,7 +781,6 @@ elseif ($job == 'query2') {
 
 	$sql = str_replace('{:=DBPREFIX=:}', $db->pre, $lines);
 	@exec_query_form($lines);
-	$hl = highlight_sql_query($sql);
 
 	if (!empty($lines)) {
 
@@ -799,6 +798,9 @@ elseif ($job == 'query2') {
 			<?php
 		}
 		else {
+			if (count($s['queries']) <= 20) { // To avoid reaching max exec. time
+				$hl = highlight_sql_query($sql);
+			}
 			echo '<table class="border" border="0" cellspacing="0" cellpadding="4" align="center"><tr><td class="obox">'.$lang->phrase('admin_db_queries_extd');
 			echo iif($q['affected'] > 0, ' - '.$lang->phrase('admin_db_rows_affected'));
 			echo '</td></tr>';
