@@ -30,6 +30,25 @@ function getLangCodes() {
 	}
 	return $l;
 }
+function getLangCodesByKeys($keys) {
+	$codes = array();
+	foreach ($keys as $entry) {
+		if (preg_match('~language_(\w{2})_?(\w{0,2})~i', $entry, $code)) {
+			if (!isset($codes[$code[1]])) {
+				$codes[$code[1]] = array();
+			}
+			if (isset($code[2])) {
+				$codes[$code[1]][] = $code[2];
+			}
+			else {
+				if (!in_array('', $codes[$code[1]])) {
+					$codes[$code[1]][] = '';
+				}
+			}
+		}
+	}
+	return $codes;
+}
 
 echo "- Source files loaded<br />";
 
@@ -419,21 +438,7 @@ $ini = array(
 $c = new manageconfig();
 $codes = array();
 $keys = array('language', 'language_de');
-foreach ($keys as $entry) {
-   	if (preg_match('~language_(\w{2})_?(\w{0,2})~i', $entry, $code)) {
-   		if (!isset($codes[$code[1]])) {
-   			$codes[$code[1]] = array();
-   		}
-   		if (isset($code[2])) {
-   			$codes[$code[1]][] = $code[2];
-   		}
-   		else {
-   			if (!in_array('', $codes[$code[1]])) {
-   				$codes[$code[1]][] = '';
-   			}
-   		}
-   	}
-}
+$codes = getLangCodesByKeys($keys);
 $langcodes = getLangCodes();
 foreach ($langcodes as $code => $lid) {
 	$ldat = explode('_', $code);

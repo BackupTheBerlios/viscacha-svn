@@ -155,6 +155,48 @@ function navLang($key, $show_key = true) {
 	}
 }
 
+function getLangCodesByDir($dir) {
+	$d = dir($dir);
+	$codes = array();
+	while (false !== ($entry = $d->read())) {
+		if (preg_match('~^(\w{2})_?(\w{0,2})$~i', $entry, $code) && is_dir("{$dir}/{$entry}")) {
+			if (!isset($codes[$code[1]])) {
+				$codes[$code[1]] = array();
+			}
+			if (isset($code[2])) {
+				$codes[$code[1]][] = $code[2];
+			}
+			else {
+				if (!in_array('', $codes[$code[1]])) {
+					$codes[$code[1]][] = '';
+				}
+			}
+		}
+	}
+	$d->close();
+	return $codes;
+}
+
+function getLangCodesByKeys($keys) {
+	$codes = array();
+	foreach ($keys as $entry) {
+		if (preg_match('~language_(\w{2})_?(\w{0,2})~i', $entry, $code)) {
+			if (!isset($codes[$code[1]])) {
+				$codes[$code[1]] = array();
+			}
+			if (isset($code[2])) {
+				$codes[$code[1]][] = $code[2];
+			}
+			else {
+				if (!in_array('', $codes[$code[1]])) {
+					$codes[$code[1]][] = '';
+				}
+			}
+		}
+	}
+	return $codes;
+}
+
 function nl2whitespace($str){
 	return preg_replace("~(\r\n|\n|\r)~", " ", $str);
 }

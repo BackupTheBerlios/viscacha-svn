@@ -14,10 +14,18 @@ define('DO_UPD_DEL', '-');
 define('DO_UPD_CHNG', '~');
 define('DO_UPD_EQU', '=');
 
-function array_diff_all($arr_new, $arr_old) {
-    $arr_equ = array_intersect($arr_new, $arr_old);
-    $arr_del = array_diff($arr_old, $arr_new);
-    $arr_add = array_diff($arr_new, $arr_old);
+function array_diff_all($arr_new, $arr_old, $assoc = false) {
+	if ($assoc == true) {
+		$intersect = 'array_intersect_assoc';
+		$diff = 'array_diff_assoc';
+	}
+	else {
+		$intersect = 'array_intersect';
+		$diff = 'array_diff';
+	}
+    $arr_equ = $intersect($arr_new, $arr_old);
+    $arr_del = $diff($arr_old, $arr_new);
+    $arr_add = $diff($arr_new, $arr_old);
     return array(
     	DO_UPD_EQU => $arr_equ,
     	DO_UPD_DEL => $arr_del,
@@ -449,26 +457,13 @@ elseif ($job == 'package_update2') {
 				}
 			}
 
-			// Todo
-			if (isset($com['language']) && count($com['language']) > 0) {
-				$d = dir($tdir.'language/');
-				$codes = array();
-				while (false !== ($entry = $d->read())) {
-				   	if (preg_match('~^(\w{2})_?(\w{0,2})$~i', $entry, $code) && is_dir("{$tdir}/{$entry}")) {
-				   		if (!isset($codes[$code[1]])) {
-				   			$codes[$code[1]] = array();
-				   		}
-				   		if (isset($code[2])) {
-				   			$codes[$code[1]][] = $code[2];
-				   		}
-				   		else {
-				   			if (!in_array('', $codes[$code[1]])) {
-				   				$codes[$code[1]][] = '';
-				   			}
-				   		}
-				   	}
-				}
-				$d->close();
+			// Language-Files
+			$diff = array_diff_all(
+				isset($com['language']) ? $com['language'] : array(),
+				isset($old_com['language']) ? $old_com['language'] : array()
+			);
+			if ($diff['count'] > 0) {
+				$codes = getLangCodesByDir($tdir.'language/');
 				$langcodes = getLangCodes();
 				foreach ($langcodes as $code => $lid) {
 					$ldat = explode('_', $code);
@@ -495,19 +490,54 @@ elseif ($job == 'package_update2') {
 						$src = '';
 					}
 					$src = iif(!empty($src), '/'.$src);
-					foreach ($com['language'] as $file) {
-						if (file_exists("{$tdir}/language/{$src}/{$file}") == false) {
-							$src = '';
+					$langcodes[$code] = array('lid' => $lid, 'src' => $src);
+				}
+
+				foreach ($diff as $handler => $files) {
+					foreach($files as $file) {
+						foreach ($langcodes as $code => $dat) {
+							if (file_exists("{$tdir}/language/{$dat['src']}/{$file}") == false) {
+								$dat['src'] = '';
+							}
+							if (!empty($dat['src'])) {
+								$source = "{$tdir}/language/{$dat['src']}/{$file}";
+							}
+							else {
+								$source = "{$tdir}/language/{$file}";
+							}
+							$target = "./language/{$dat['lid']}/modules/{$packageid}/{$file}";
+							if ($handler == DO_UPD_ADD) {
+								$filesystem->unlink($target);
+								$filesystem->copy($source, $target);
+							}
+							elseif ($handler == DO_UPD_DEL) {
+								$filesystem->unlink($target);
+							}
+							elseif ($handler == DO_UPD_EQU) {
+								// Add new phrases, delete old phrases.
+								// Update of existing phrases has to be done by the custom updater when its required.
+								$l1 = arrayFromFile($source);
+								$c = new manageconfig();
+								$c->getdata($target, 'lang');
+								$diff2 = array_diff_all(array_keys($l1), array_keys($c->data)); // Check the keys only
+								if ($diff['count'] > 0) {
+									foreach ($diff2 as $handler2 => $keys) {
+										foreach($keys as $key) {
+											if ($handler2 == DO_UPD_ADD) {
+												$c->updateconfig($key, str, $l1[$key]);
+											}
+											elseif ($handler2 == DO_UPD_DEL) {
+												$c->delete($key);
+											}
+										}
+									}
+									$c->savedata();
+								}
+							}
 						}
-						if (!empty($src)) {
-							$src = '/'.$src;
-						}
-						// ToDo: Move it first to standard dir, then copy it from there
-						$filesystem->copy("{$tdir}/language{$src}/{$file}", "./language/{$lid}/modules/{$packageid}/{$file}");
 					}
 				}
 			}
-			// Todo End
 
 			$delobj = $scache->load('components');
 			$delobj->delete();
@@ -518,12 +548,12 @@ elseif ($job == 'package_update2') {
 		$result = $db->query("SELECT id FROM {$db->pre}plugins WHERE module = '{$packageid}' LIMIT 1", __LINE__, __FILE__);
 		$do = null;
 		if ($db->num_rows($result) == 0) {
-			if (file_exists($tdir.'plugin.ini')) {
+			if (file_exists($tdir.'modules/plugin.ini')) {
 				$do = DO_UPD_ADD; // Insert
 			}
 		}
 		else {
-			if (file_exists($tdir.'plugin.ini')) {
+			if (file_exists($tdir.'modules/plugin.ini')) {
 				$do = DO_UPD_CHNG; // Update
 			}
 			else {
@@ -543,24 +573,8 @@ elseif ($job == 'package_update2') {
 
 		// Todo
 		if (isset($plug['language']) && count($plug['language']) > 0) {
-
-			$codes = array();
 			$keys = array_keys($plug);
-			foreach ($keys as $entry) {
-			   	if (preg_match('~language_(\w{2})_?(\w{0,2})~i', $entry, $code)) {
-			   		if (!isset($codes[$code[1]])) {
-			   			$codes[$code[1]] = array();
-			   		}
-			   		if (isset($code[2])) {
-			   			$codes[$code[1]][] = $code[2];
-			   		}
-			   		else {
-			   			if (!in_array('', $codes[$code[1]])) {
-			   				$codes[$code[1]][] = '';
-			   			}
-			   		}
-			   	}
-			}
+			$codes = getLangCodesByKeys($keys);
 			$langcodes = getLangCodes();
 			foreach ($langcodes as $code => $lid) {
 				$ldat = explode('_', $code);
@@ -592,26 +606,65 @@ elseif ($job == 'package_update2') {
 				$c->savedata();
 			}
 		}
+		// Todo End
 
-		if (isset($plug['php']) && count($plug['php']) > 0) {
-			foreach ($plug['php'] as $hook => $plugfile) {
-				if (isInvisibleHook($hook)) {
-					continue;
-				}
-				$result = $db->query("SELECT MAX(ordering) AS maximum FROM {$db->pre}plugins WHERE position = '{$hook}'", __LINE__, __FILE__);
-				$row = $db->fetch_assoc($result);
-				$priority = $row['maximum']+1;
-				$db->query("
-				INSERT INTO {$db->pre}plugins
-				(`name`,`module`,`ordering`,`required`,`position`)
-				VALUES
-				('{$plug['names'][$hook]}','{$packageid}','{$priority}','{$plug['required'][$hook]}','{$hook}')
-				", __LINE__, __FILE__);
-				$filesystem->unlink('cache/modules/'.$plugins->_group($hook).'.php');
+		$diff = array_diff_all(
+			isset($plug['php']) ? array_keys($plug['php']) : array(),
+			isset($old_plug['php']) ? array_keys($old_plug['php']) : array(),
+			true // Controll also the keys
+		);
+		if ($diff['count'] > 0) {
+			$result = $db->query("SELECT position, id FROM {$db->pre}plugins WHERE module = '{$packageid}'");
+			while ($row = $db->fetch_assoc($result)) {
+				$plugs[$row['position']] = $row['id'];
 			}
+			foreach ($diff as $handler => $files) {
+				foreach ($files as $hook => $plugfile) {
+					if (isInvisibleHook($hook)) {
+						continue;
+					}
+					$source = $tdir.'modules/'.$plugfile;
+					$target = $moddir.$plugfile;
+					if ($handler == DO_UPD_ADD) {
+						$result = $db->query("SELECT MAX(ordering) AS maximum FROM {$db->pre}plugins WHERE position = '{$hook}'", __LINE__, __FILE__);
+						$row = $db->fetch_assoc($result);
+						$priority = $row['maximum']+1;
+						$db->query("
+						INSERT INTO {$db->pre}plugins
+						(`name`,`module`,`ordering`,`required`,`position`)
+						VALUES
+						('{$plug['names'][$hook]}','{$packageid}','{$priority}','{$plug['required'][$hook]}','{$hook}')
+						", __LINE__, __FILE__);
+						if (file_exists($source)) { // Doesn't exist? => Already moved (or package not ok)
+							$filesystem->unlink($target);
+							$filesystem->rename($source, $target);
+						}
+					}
+					elseif ($handler == DO_UPD_DEL) {
+						$delete = true;
+						foreach ($plug['php'] as $pos => $val) {
+							if ($pos != $hook && $plugfile == $val) {
+								$delete = false;
+							}
+						}
+						if (file_exists($target) && $delete == true) {
+							$filesystem->unlink($target);
+						}
+
+						$db->query("DELETE FROM {$db->pre}plugins WHERE id = '{$plugs[$hook]}' LIMIT 1", __LINE__, __FILE__);
+						$db->query("DELETE FROM {$db->pre}menu WHERE module = '{$plugs[$hook]}'", __LINE__, __FILE__);
+					}
+					elseif ($handler == DO_UPD_EQU) {
+						// ToDo
+					}
+					$filesystem->unlink('cache/modules/'.$plugins->_group($hook).'.php');
+				}
+			}
+			$delobj = $scache->load('modules_navigation');
+			$delobj->delete();
 		}
 		// Plugins End
-		// Todo End
+
 
 		// Templates
 		$templates = array_merge(
@@ -658,6 +711,8 @@ elseif ($job == 'package_update2') {
 				rmdirr($tpldir);
 			}
 		}
+
+		// ToDo: Copy files (ini's)
 
 		// Custom Updater
 		$confirm = true;
@@ -873,24 +928,7 @@ elseif ($job == 'package_import2') {
 				}
 
 				if (isset($com['language']) && count($com['language']) > 0) {
-					$d = dir($tdir.'language/');
-					$codes = array();
-					while (false !== ($entry = $d->read())) {
-					   	if (preg_match('~^(\w{2})_?(\w{0,2})$~i', $entry, $code) && is_dir("{$tdir}/{$entry}")) {
-					   		if (!isset($codes[$code[1]])) {
-					   			$codes[$code[1]] = array();
-					   		}
-					   		if (isset($code[2])) {
-					   			$codes[$code[1]][] = $code[2];
-					   		}
-					   		else {
-					   			if (!in_array('', $codes[$code[1]])) {
-					   				$codes[$code[1]][] = '';
-					   			}
-					   		}
-					   	}
-					}
-					$d->close();
+					$codes = getLangCodesByDir($tdir.'language/');
 					$langcodes = getLangCodes();
 					foreach ($langcodes as $code => $lid) {
 						$ldat = explode('_', $code);
@@ -2442,6 +2480,8 @@ elseif ($job == 'plugins_delete2') {
 		// Delete references in navigation aswell
 		$db->query("DELETE FROM {$db->pre}menu WHERE module = '{$id}'", __LINE__, __FILE__);
 
+		$delobj = $scache->load('modules_navigation');
+		$delobj->delete();
 		$filesystem->unlink('cache/modules/'.$plugins->_group($data['position']).'.php');
 
 		ok('admin.php?action=packages&job=plugins', $lang->phrase('admin_packages_ok_plugin_successfully_deleted'));
