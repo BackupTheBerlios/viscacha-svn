@@ -50,13 +50,9 @@ function getLangCodesByKeys($keys) {
 	return $codes;
 }
 function setPackagesInactive() {
-	/*
-	Gehe jedes installiertes Paket durch
-		Hole Abhängigkeits, Maximal Version, Id, Internal
-		Speichere id, internal in Liste
-	Gehe Liste durch
-		Deaktiviere alle Pakete in der Liste
-	*/
+	global $db;
+	require_once('../classes/class.ini.php');
+	$myini = new INI();
 	$result = $db->query("SELECT id, internal FROM {$db->pre}packages");
 	$data = array();
 	$disable = array();
@@ -65,7 +61,7 @@ function setPackagesInactive() {
 	while ($row = $db->fetch_assoc($result)) {
 		$ini = $myini->read("../modules/{$row['id']}/package.ini");
 
-		if (!isset($ini['dependency']) && !is_array($ini['dependency'])) {
+		if (!isset($ini['dependency']) || !is_array($ini['dependency'])) {
 			$ini['dependency'] = array();
 		}
 
@@ -73,11 +69,11 @@ function setPackagesInactive() {
 		$max_compatible = ((!empty($ini['max_version']) && version_compare(VISCACHA_VERSION, $ini['max_version'], '<=')) || empty($ini['max_version']));
 
 		$data[$row['id']] = array(
-			'min_version' => $ini['min_version'],
-			'max_version' => $ini['max_version'],
+			'min_version' => !empty($ini['min_version']) ? $ini['min_version'] : '',
+			'max_version' => !empty($ini['max_version']) ? $ini['max_version'] : '',
 			'id' => $row['id'],
 			'internal' => $row['internal'],
-			'dependency' => $ini['dependency'],
+			'dependency' => (isset($ini['dependency']) && is_array($ini['dependency'])) ? $ini['dependency'] : array(),
 			'compatible' => ($min_compatible && $max_compatible)
 		);
 
@@ -134,8 +130,8 @@ if (!class_exists('filesystem')) {
 }
 if (!class_exists('DB')) {
 	require_once('../classes/database/'.$config['dbsystem'].'.inc.php');
-	$db = new DB($config['host'], $config['dbuser'], $config['dbpw'], $config['database'], $config['pconnect'], true, $config['dbprefix']);
-	$db->pre = $db->prefix();
+	$db = new DB($config['host'], $config['dbuser'], $config['dbpw'], $config['database'], $config['dbprefix']);
+	$db->setPersistence($config['pconnect']);
 	$db->errlogfile = '../'.$db->errlogfile;
 }
 
@@ -155,8 +151,10 @@ $c->updateconfig('checked_package_updates', int, 0);
 $c->savedata();
 
 $hooks = file_get_contents('../admin/data/hooks.txt');
-$hooks = str_ireplace("-uninstall", "-uninstall\r\n-source", $hooks);
-$filesystem->file_put_contents('../admin/data/hooks.txt', $hooks);
+if (strpos($hooks, "-update") === false) {
+	$hooks = str_replace("-uninstall", "-uninstall\r\n-update", $hooks);
+	$filesystem->file_put_contents('../admin/data/hooks.txt', $hooks);
+}
 echo "- Configuration and Hooks updated.<br />";
 
 // Old files
@@ -165,9 +163,9 @@ echo "- Old files deleted.<br />";
 
 // Stylesheets
 $dir = dir('../designs/');
-while (false !== ($entry = $d->read())) {
+while (false !== ($entry = $dir->read())) {
 	$path = $dir->path.DIRECTORY_SEPARATOR.$entry.DIRECTORY_SEPARATOR;
-	if (is_dir($path) && is_id($entry)) {
+	if (is_dir($path) && is_numeric($entry) && $entry > 0) {
    		if (file_exists($path.'standard.css')) {
    			$file = file_get_contents($path.'standard.css');
 			$file .= "\r\n.tooltip {\r\n	left: -1000px;\r\n	top: -1000px;\r\n	visibility: hidden;\r\n	position: absolute;\r\n	max-width: 300px;\r\n	max-height: 300px;\r\n	overflow: auto;\r\n	border: 1px solid #336699;\r\n	background-color: #ffffff;\r\n	font-size: 8pt;\r\n}\r\n";
@@ -183,13 +181,13 @@ while (false !== ($entry = $d->read())) {
    		}
 	}
 }
-$d->close();
+$dir->close();
 echo "- Stylesheets updated.<br />";
 
 // MySQL
 $file = 'package/'.$package.'/db/db_changes.sql';
-$sql = implode('', file($file));
-$sql = str_replace('{:=DBPREFIX=:}', $db->pre, $sql);
+$sql = file_get_contents($file);
+$sql = str_ireplace('{:=DBPREFIX=:}', $db->prefix(), $sql);
 $db->multi_query($sql);
 echo "- Database tables updated.<br />";
 
