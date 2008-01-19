@@ -49,6 +49,81 @@ function getLangCodesByKeys($keys) {
 	}
 	return $codes;
 }
+function setPackagesInactive() {
+	/*
+	Gehe jedes installiertes Paket durch
+		Hole Abhängigkeits, Maximal Version, Id, Internal
+		Speichere id, internal in Liste
+	Gehe Liste durch
+		Deaktiviere alle Pakete in der Liste
+	*/
+	$result = $db->query("SELECT id, internal FROM {$db->pre}packages");
+	$data = array();
+	$disable = array();
+	$dependencies = array();
+	$assoc = array();
+	while ($row = $db->fetch_assoc($result)) {
+		$ini = $myini->read("../modules/{$row['id']}/package.ini");
+
+		if (!isset($ini['dependency']) && !is_array($ini['dependency'])) {
+			$ini['dependency'] = array();
+		}
+
+		$min_compatible = ((!empty($ini['min_version']) && version_compare(VISCACHA_VERSION, $ini['min_version'], '>=')) || empty($ini['min_version']));
+		$max_compatible = ((!empty($ini['max_version']) && version_compare(VISCACHA_VERSION, $ini['max_version'], '<=')) || empty($ini['max_version']));
+
+		$data[$row['id']] = array(
+			'min_version' => $ini['min_version'],
+			'max_version' => $ini['max_version'],
+			'id' => $row['id'],
+			'internal' => $row['internal'],
+			'dependency' => $ini['dependency'],
+			'compatible' => ($min_compatible && $max_compatible)
+		);
+
+		if ($data[$row['id']]['compatible'] == false) {
+			$disable[$row['id']] = $row['internal'];
+		}
+		$dependencies = array_merge($dependencies, $ini['dependency']);
+		if (isset($assoc[$row['internal']])) {
+			$assoc[$row['internal']][] = $row['id'];
+		}
+		else {
+			$assoc[$row['internal']] = array($row['id']);
+		}
+	}
+
+	$n = 0;
+	while (count($dependencies) > 0) {
+		reset($dependencies);
+		$value = current($dependencies);
+		$key = key($dependencies);
+		if (isset($assoc[$value])) {
+			foreach ($assoc[$value] as $id) {
+				if (isset($data[$id]['dependency']) && is_array($data[$id]['dependency'])) {
+					foreach ($data[$id]['dependency'] as $int) {
+						if (!in_array($int, $disable) && !in_array($int, $dependencies)) {
+							$dependencies[] = $int;
+						}
+					}
+				}
+				if (!isset($disable[$id])) {
+					$disable[$id] = $value;
+				}
+			}
+		}
+		unset($dependencies[$key]);
+
+		$n++;
+		if ($n > 10000) {
+			trigger_error("setPackagesInactive(): Your database is inconsistent - Please ask the Viscacha support for help.", E_USER_ERROR); // Break loop, Database seems to be inconsistent (or thousands of packages are installed)
+		}
+	}
+	if (count($disable) > 0) {
+		$in = implode(',', array_keys($disable));
+		$db->query("UPDATE {$db->pre}packages SET active = '0' WHERE id IN ({$in})");
+	}
+}
 
 echo "- Source files loaded<br />";
 
@@ -66,46 +141,50 @@ if (!class_exists('DB')) {
 
 echo "- FTP class loaded, Database connection started.<br />";
 
-// Config
+// Config/Hooks
 $c = new manageconfig();
 $c->getdata('../data/config.inc.php');
 $c->updateconfig('version', str, VISCACHA_VERSION);
-$c->updateconfig('allow_http_auth', int, 0);
-$c->delete(array('module_1', 'relatednum'));
-$c->delete(array('module_3', 'items'));
-$c->delete(array('module_3', 'teaserlength'));
-$c->delete(array('module_4', 'feed'));
-$c->delete(array('module_4', 'title'));
-$c->delete(array('module_7', 'text'));
-$c->delete(array('module_7', 'title'));
-$c->delete(array('module_9', 'topicnum'));
-$c->delete(array('module_10', 'repliesnum'));
-$c->updateconfig(array('viscacha_addreply_last_replies', 'repliesnum'), int, 5);
-$c->updateconfig(array('viscacha_news_boxes', 'cutat'), str, 'teaser');
-$c->updateconfig(array('viscacha_news_boxes', 'items'), int, 5);
-$c->updateconfig(array('viscacha_news_boxes', 'teaserlength'), int, 300);
-$c->updateconfig(array('viscacha_recent_topics', 'topicnum'), int, 10);
-$c->updateconfig(array('viscacha_related_topics', 'hide_empty'), int, 1);
-$c->updateconfig(array('viscacha_related_topics', 'relatednum'), int, 5);
+$c->delete('asia');
 $c->savedata();
+
 $c = new manageconfig();
 $c->getdata('../admin/data/config.inc.php', 'admconfig');
-$c->updateconfig('nav_positions', str, 'left=Left Navigation'."\r\n".'bottom=Bottom Navigation');
-$c->updateconfig('package_server', str, 'http://files.viscacha.org/');
+$c->updateconfig('default_language', int, 0);
+$c->updateconfig('checked_package_updates', int, 0);
 $c->savedata();
-echo "- Configuration updated.<br />";
+
+$hooks = file_get_contents('../admin/data/hooks.txt');
+$hooks = str_ireplace("-uninstall", "-uninstall\r\n-source", $hooks);
+$filesystem->file_put_contents('../admin/data/hooks.txt', $hooks);
+echo "- Configuration and Hooks updated.<br />";
 
 // Old files
-$filesystem->unlink('../admin/data/lang_email.php');
-$filesystem->unlink('../admin/lib/language.inc.php');
-$filesystem->unlink('../spellcheck.php');
-$filesystem->unlink('../team.php');
-$filesystem->unlink('../data/banned.php');
-$filesystem->unlink('../classes/graphic/text2image.php');
-$filesystem->unlink('../images/1/word.gif');
-$filesystem->unlink('../classes/graphic/text2image.php');
-
+$filesystem->unlink('../classes/class.imageconverter.php');
 echo "- Old files deleted.<br />";
+
+// Stylesheets
+$dir = dir('../designs/');
+while (false !== ($entry = $d->read())) {
+	$path = $dir->path.DIRECTORY_SEPARATOR.$entry.DIRECTORY_SEPARATOR;
+	if (is_dir($path) && is_id($entry)) {
+   		if (file_exists($path.'standard.css')) {
+   			$file = file_get_contents($path.'standard.css');
+			$file .= "\r\n.tooltip {\r\n	left: -1000px;\r\n	top: -1000px;\r\n	visibility: hidden;\r\n	position: absolute;\r\n	max-width: 300px;\r\n	max-height: 300px;\r\n	overflow: auto;\r\n	border: 1px solid #336699;\r\n	background-color: #ffffff;\r\n	font-size: 8pt;\r\n}\r\n";
+			$file .= "\r\n.tooltip_header {\r\n	display: block;\r\n	background-color: #E1E8EF;\r\n	color: #24486C;\r\n	padding: 3px;\r\n	border-bottom: 1px solid #839FBC;\r\n}\r\n";
+			$file .= "\r\n.tooltip_body {\r\n	padding: 3px;\r\n}\r\n";
+   			$filesystem->file_put_contents($path.'standard.css', $file);
+
+   		}
+   		if ($path.'ie.css') {
+   			$file = file_get_contents($path.'ie.css');
+   			$file .= "\r\n* html .tooltip {\r\n	width: 300px;\r\n}\r\n";
+   			$filesystem->file_put_contents($path.'ie.css', $file);
+   		}
+	}
+}
+$d->close();
+echo "- Stylesheets updated.<br />";
 
 // MySQL
 $file = 'package/'.$package.'/db/db_changes.sql';
@@ -114,37 +193,8 @@ $sql = str_replace('{:=DBPREFIX=:}', $db->pre, $sql);
 $db->multi_query($sql);
 echo "- Database tables updated.<br />";
 
+// Languages
 $ini = array(
-	'custom' => array(
-		'language' => array(
-			'navigation' => 'Main Menu',
-			'n_forum' => 'Forums',
-			'n_portal' => 'Portal'
-		),
-		'language_de' => array(
-			'navigation' => 'Hauptmenü',
-			'n_forum' => 'Forum',
-			'n_portal' => 'Portal'
-		)
-	),
-	'modules' => array(
-		'language' => array(
-			'mymenu_newpm_1' => null,
-			'mymenu_newpm_2' => null,
-			'birthdaybox_module' => null,
-			'wwo_nav_detail' => 'Members: {@wwo->r}<br />Guests: {@wwo->g}<br />Spiders: {@wwo->b}',
-			'mymenu_newpm' => 'You have <strong>{%my->pms}</strong> new PM(s)!',
-			'last_private_message' => 'Last private message'
-		),
-		'language_de' => array(
-			'mymenu_newpm_1' => null,
-			'mymenu_newpm_2' => null,
-			'birthdaybox_module' => null,
-			'wwo_nav_detail' => 'Mitglieder: {@wwo->r}<br />Gäste: {@wwo->g}<br />Suchmaschinen: {@wwo->b}',
-			'mymenu_newpm' => 'Sie haben <strong>{%my->pms}</strong> neue PN!',
-			'last_private_message' => 'Letzte private Nachricht'
-		)
-	),
 	'settings' => array(
 		'language' => array(
 			'compatible_version' => VISCACHA_VERSION
@@ -153,284 +203,22 @@ $ini = array(
 			'compatible_version' => VISCACHA_VERSION
 		)
 	),
-	'wwo' => array(
-		'language' => array(
-			'wwo_misc_report_post' => 'is reporting a post to the administration',
-			'wwo_team' => 'is viewing the <a href="members.php?action=team">team overview</a>'
-		),
-		'language_de' => array(
-			'wwo_misc_report_post' => 'melden einen Beitrag',
-			'wwo_team' => 'Betrachtet die <a href="members.php?action=team">Teamübersicht</a>'
-		)
-	),
 	'global' => array(
 		'language' => array(
-			'bbcodes_align' => null,
-			'bbcodes_align_center' => null,
-			'bbcodes_align_desc' => null,
-			'bbcodes_align_justify' => null,
-			'bbcodes_align_left' => null,
-			'bbcodes_align_right' => null,
-			'bbcodes_align_title' => null,
-			'bbcodes_bold' => null,
-			'bbcodes_bold_desc' => null,
-			'bbcodes_code' => null,
-			'bbcodes_code_desc' => null,
-			'bbcodes_color' => null,
-			'bbcodes_color_desc' => null,
-			'bbcodes_color_title' => null,
-			'bbcodes_edit' => null,
-			'bbcodes_edit_desc' => null,
-			'bbcodes_email' => null,
-			'bbcodes_email_desc' => null,
-			'bbcodes_example_text' => null,
-			'bbcodes_example_text2' => null,
-			'bbcodes_expand' => null,
-			'bbcodes_header' => null,
-			'bbcodes_header_desc' => null,
-			'bbcodes_header_h1' => null,
-			'bbcodes_header_h2' => null,
-			'bbcodes_header_h3' => null,
-			'bbcodes_header_title' => null,
-			'bbcodes_help' => null,
-			'bbcodes_help_example' => null,
-			'bbcodes_help_output' => null,
-			'bbcodes_help_syntax' => null,
-			'bbcodes_hide' => null,
-			'bbcodes_hide_desc' => null,
-			'bbcodes_hr' => null,
-			'bbcodes_hr_desc' => null,
-			'bbcodes_img' => null,
-			'bbcodes_img_desc' => null,
-			'bbcodes_italic' => null,
-			'bbcodes_italic_desc' => null,
-			'bbcodes_list' => null,
-			'bbcodes_list_desc' => null,
-			'bbcodes_list_ol' => null,
-			'bbcodes_note' => null,
-			'bbcodes_note_desc' => null,
-			'bbcodes_note_prompt1' => null,
-			'bbcodes_note_prompt2' => null,
-			'bbcodes_option' => null,
-			'bbcodes_ot' => null,
-			'bbcodes_ot_desc' => null,
-			'bbcodes_param' => null,
-			'bbcodes_quote' => null,
-			'bbcodes_quote_desc' => null,
-			'bbcodes_reader' => null,
-			'bbcodes_reader_desc' => null,
-			'bbcodes_size' => null,
-			'bbcodes_size_desc' => null,
-			'bbcodes_size_extended' => null,
-			'bbcodes_size_large' => null,
-			'bbcodes_size_small' => null,
-			'bbcodes_size_title' => null,
-			'bbcodes_sub' => null,
-			'bbcodes_sub_desc' => null,
-			'bbcodes_sup' => null,
-			'bbcodes_sup_desc' => null,
-			'bbcodes_table' => null,
-			'bbcodes_table_desc' => null,
-			'bbcodes_tt' => null,
-			'bbcodes_tt_desc' => null,
-			'bbcodes_underline' => null,
-			'bbcodes_underline_desc' => null,
-			'bbcodes_url' => null,
-			'bbcodes_url_desc' => null,
-			'bbcodes_url_prompt1' => null,
-			'bbcodes_url_promtp2' => null,
-			'bbcode_help_overview' => null,
-			'bbcode_help_smileys' => null,
-			'bbcode_help_smileys_desc' => null,
-			'bbhelp_title' => null,
-			'timezone_0' => null,
-			'timezone_n1' => null,
-			'timezone_n2' => null,
-			'timezone_n3' => null,
-			'timezone_n4' => null,
-			'timezone_n5' => null,
-			'timezone_n6' => null,
-			'timezone_n7' => null,
-			'timezone_n8' => null,
-			'timezone_n9' => null,
-			'timezone_n10' => null,
-			'timezone_n11' => null,
-			'timezone_n12' => null,
-			'timezone_n35' => null,
-			'timezone_p1' => null,
-			'timezone_p2' => null,
-			'timezone_p3' => null,
-			'timezone_p4' => null,
-			'timezone_p5' => null,
-			'timezone_p6' => null,
-			'timezone_p7' => null,
-			'timezone_p8' => null,
-			'timezone_p9' => null,
-			'timezone_p10' => null,
-			'timezone_p11' => null,
-			'timezone_p12' => null,
-			'timezone_p35' => null,
-			'timezone_p45' => null,
-			'timezone_p55' => null,
-			'timezone_p65' => null,
-			'timezone_p95' => null,
-			'timezone_p575' => null,
-			'showtopic_options_word' => null,
-			'banned_head' => 'Access denied: You are banned!',
-			'banned_left_never' => 'Never',
-			'banned_no_reason' => 'No reason specified.',
-			'bot_banned' => 'User-Agent or IP-Address is equal to one that is used by spam bots or e-mail collectors.',
-			'error_no_forums_found' => 'There are currently no forums to show. Please visit the <a href="admin.php">Admin Control Panel</a> to create forums.',
-			'post_report' => 'Report',
-			'post_reported' => 'Reported Post',
-			'report_message' => 'Message:',
-			'report_message_desc' => 'Note: You should only report a post if there is a violation of our guidelines.',
-			'report_post' => 'Report Post',
-			'report_post_locked' => 'This post has been reported already and will be checked as soon as possible.',
-			'report_post_success' => 'Thanks for your message. The moderators and administrators have been informed and we will check the post as soon as possible.',
-			'spellcheck_disabled' => 'Spellcheck is disabled.',
-			'banned_reason' => 'You have been banned for the following reason:',
-			'banned_until' => 'Date the ban will be lifted: ',
-			'admin_report' => 'Reported Post',
-			'admin_report_not_found' => 'This post has been checked and has been set as done.',
-			'admin_report_reset' => 'Set as done:',
-			'admin_report_reset_success' => 'The reporst has been set as done.',
-			'board_rules' => 'Forum Guidelines',
-			'no_board_rules_specified' => 'No forum guidelines specified.',
-			'why_register_desc' => 'In order to login you must be registered. Registering takes only a few seconds but gives you increased access.  The board administrator may also grant additional permissions to registered users. Before you login please ensure you are familiar with our terms of use and related policies. Please ensure you heed the forum guidelines as you use the forum.',
-			'you_had_to_accept_agb' => 'You have to accept the forum guidelines!'
+			'ats_select9' => null,
+			'ats_choose' => 'No Status',
+			'ats_choose_standard_a' => 'Use default setting (Article)',
+			'ats_choose_standard_n' => 'Use default setting (News)',
+			'profile_never' => 'Never'
 		),
 		'language_de' => array(
-			'bbcodes_align' => null,
-			'bbcodes_align_center' => null,
-			'bbcodes_align_desc' => null,
-			'bbcodes_align_justify' => null,
-			'bbcodes_align_left' => null,
-			'bbcodes_align_right' => null,
-			'bbcodes_align_title' => null,
-			'bbcodes_bold' => null,
-			'bbcodes_bold_desc' => null,
-			'bbcodes_code' => null,
-			'bbcodes_code_desc' => null,
-			'bbcodes_color' => null,
-			'bbcodes_color_desc' => null,
-			'bbcodes_color_title' => null,
-			'bbcodes_edit' => null,
-			'bbcodes_edit_desc' => null,
-			'bbcodes_email' => null,
-			'bbcodes_email_desc' => null,
-			'bbcodes_example_text' => null,
-			'bbcodes_example_text2' => null,
-			'bbcodes_expand' => null,
-			'bbcodes_header' => null,
-			'bbcodes_header_desc' => null,
-			'bbcodes_header_h1' => null,
-			'bbcodes_header_h2' => null,
-			'bbcodes_header_h3' => null,
-			'bbcodes_header_title' => null,
-			'bbcodes_help' => null,
-			'bbcodes_help_example' => null,
-			'bbcodes_help_output' => null,
-			'bbcodes_help_syntax' => null,
-			'bbcodes_hide' => null,
-			'bbcodes_hide_desc' => null,
-			'bbcodes_hr' => null,
-			'bbcodes_hr_desc' => null,
-			'bbcodes_img' => null,
-			'bbcodes_img_desc' => null,
-			'bbcodes_italic' => null,
-			'bbcodes_italic_desc' => null,
-			'bbcodes_list' => null,
-			'bbcodes_list_desc' => null,
-			'bbcodes_list_ol' => null,
-			'bbcodes_note' => null,
-			'bbcodes_note_desc' => null,
-			'bbcodes_note_prompt1' => null,
-			'bbcodes_note_prompt2' => null,
-			'bbcodes_option' => null,
-			'bbcodes_ot' => null,
-			'bbcodes_ot_desc' => null,
-			'bbcodes_param' => null,
-			'bbcodes_quote' => null,
-			'bbcodes_quote_desc' => null,
-			'bbcodes_reader' => null,
-			'bbcodes_reader_desc' => null,
-			'bbcodes_size' => null,
-			'bbcodes_size_desc' => null,
-			'bbcodes_size_extended' => null,
-			'bbcodes_size_large' => null,
-			'bbcodes_size_small' => null,
-			'bbcodes_size_title' => null,
-			'bbcodes_sub' => null,
-			'bbcodes_sub_desc' => null,
-			'bbcodes_sup' => null,
-			'bbcodes_sup_desc' => null,
-			'bbcodes_table' => null,
-			'bbcodes_table_desc' => null,
-			'bbcodes_tt' => null,
-			'bbcodes_tt_desc' => null,
-			'bbcodes_underline' => null,
-			'bbcodes_underline_desc' => null,
-			'bbcodes_url' => null,
-			'bbcodes_url_desc' => null,
-			'bbcodes_url_prompt1' => null,
-			'bbcodes_url_promtp2' => null,
-			'bbcode_help_overview' => null,
-			'bbcode_help_smileys' => null,
-			'bbcode_help_smileys_desc' => null,
-			'bbhelp_title' => null,
-			'timezone_0' => null,
-			'timezone_n1' => null,
-			'timezone_n2' => null,
-			'timezone_n3' => null,
-			'timezone_n4' => null,
-			'timezone_n5' => null,
-			'timezone_n6' => null,
-			'timezone_n7' => null,
-			'timezone_n8' => null,
-			'timezone_n9' => null,
-			'timezone_n10' => null,
-			'timezone_n11' => null,
-			'timezone_n12' => null,
-			'timezone_n35' => null,
-			'timezone_p1' => null,
-			'timezone_p2' => null,
-			'timezone_p3' => null,
-			'timezone_p4' => null,
-			'timezone_p5' => null,
-			'timezone_p6' => null,
-			'timezone_p7' => null,
-			'timezone_p8' => null,
-			'timezone_p9' => null,
-			'timezone_p10' => null,
-			'timezone_p11' => null,
-			'timezone_p12' => null,
-			'timezone_p35' => null,
-			'timezone_p45' => null,
-			'timezone_p55' => null,
-			'timezone_p65' => null,
-			'timezone_p95' => null,
-			'timezone_p575' => null,
-			'showtopic_options_word' => null,
-			'banned_head' => 'Zugriff verweigert: Sie wurden gesperrt!',
-			'banned_left_never' => 'Niemals',
-			'banned_no_reason' => 'Keine Begründung angegeben.',
-			'bot_banned' => 'User-Agent oder IP-Adresse entspricht einem bekannten Spam-Bot oder E-Mail-Sammler.',
-			'error_no_forums_found' => 'Es wurde keine anzuzeigenden Foren gefunden. Sie können in der <a href="admin.php">Administration</a> neue Foren erstellen.',
-			'post_report' => 'Melden',
-			'post_reported' => 'Gemeldeter Beitrag',
-			'report_message' => 'Nachricht:',
-			'report_message_desc' => 'Hinweis: Ein Beitrag sollte nur dann gemeldet werden, wenn ein Verstoß gegen unsere Regeln vorliegt.',
-			'report_post' => 'Beitrag melden',
-			'report_post_locked' => 'Dieser Beitrag wurde bereits gemeldet und wird bald geprüft.',
-			'report_post_success' => 'Danke für Ihre Nachricht. Die Moderatoren und Administratoren wurden verständigt und es wird sich in Kürze jemand darum kümmern.',
-			'spellcheck_disabled' => 'Rechtschreibprüfung wurde deaktiviert.',
-			'banned_reason' => 'Sie wurden aus folgendem Grund gesperrt:',
-			'banned_until' => 'Ende der Sperre: ',
-			'admin_report' => 'Gemeldeter Beitrag',
-			'admin_report_not_found' => 'Dieser Beitrag wurde bereits überprüft und als erledigt markiert.',
-			'admin_report_reset' => 'Als erledigt markieren:',
-			'admin_report_reset_success' => 'Die Meldung wurde als erledigt markiert.'
+			'ats_select9' => null,
+			'ats_choose' => 'Kein Status',
+			'ats_choose_standard_a' => 'Standardeinstellung nutzen (Artikel)',
+			'ats_choose_standard_n' => 'Standardeinstellung nutzen (News)',
+			'editprofile_about_longdesc' => 'Hier können Sie sich eine persönliche "Forenseite" erstellen.<br /><br />Sie können BB-Codes und maximal <em>{$chars}</em> Zeichen für die Seite nutzen.',
+			'profile_about' => 'Persönliche Seite',
+			'profile_never' => 'Nie'
 		)
 	)
 );
@@ -478,6 +266,10 @@ foreach ($langcodes as $code => $lid) {
 }
 
 echo "- Language files updated.<br />";
+
+// Set incompatible packages inactive
+setPackagesInactive();
+echo "- Incompatible Packages set as 'inactive'.<br />";
 
 // Refresh Cache
 $dirs = array('../cache/', '../cache/modules/');

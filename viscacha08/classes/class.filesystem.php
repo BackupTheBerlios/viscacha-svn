@@ -106,7 +106,7 @@ class filesystem {
 					fclose($fp);
 				}
 			}
-			if ($ret == false) {
+			if ($ret === false) {
 				trigger_error("filesystem::file_put_contents({$file}): failed to open stream: Permission denied", E_USER_WARNING);
 			}
 			return $ret;

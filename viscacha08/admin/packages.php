@@ -3595,6 +3595,10 @@ elseif ($job == 'package_updates') {
 		  <?php } ?>
 		 </table>
 		<?php
+		$c = new manageconfig();
+		$c->getdata('admin/data/config.inc.php', 'admconfig');
+		$c->updateconfig('checked_package_updates', int, 1);
+		$c->savedata();
 		echo foot();
 	}
 }
