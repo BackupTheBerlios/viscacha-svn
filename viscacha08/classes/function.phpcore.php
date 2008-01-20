@@ -10,7 +10,7 @@ if (isset($config['error_reporting']) && $config['error_reporting'] > 0) {
 	error_reporting($config['error_reporting']);
 }
 if (isset($config['error_handler']) && $config['error_handler'] == 1) {
-	require_once(realpath(__FILE__).'/function.errorhandling.php');
+	require_once(realpath(__FILE__).'/function.errorhandler.php');
 	set_error_handler('msg_handler');
 }
 

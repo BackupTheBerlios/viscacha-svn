@@ -203,6 +203,13 @@ $ini = array(
 	),
 	'global' => array(
 		'language' => array(
+			'upload_error_default' => null,
+			'upload_error_fileexists' => null,
+			'upload_error_maxfilesize' => null,
+			'upload_error_maximagesize' => null,
+			'upload_error_noaccess' => null,
+			'upload_error_noupload' => null,
+			'upload_error_wrongfiletype' => null,
 			'ats_select9' => null,
 			'ats_choose' => 'No Status',
 			'ats_choose_standard_a' => 'Use default setting (Article)',
@@ -210,6 +217,13 @@ $ini = array(
 			'profile_never' => 'Never'
 		),
 		'language_de' => array(
+			'upload_error_default' => null,
+			'upload_error_fileexists' => null,
+			'upload_error_maxfilesize' => null,
+			'upload_error_maximagesize' => null,
+			'upload_error_noaccess' => null,
+			'upload_error_noupload' => null,
+			'upload_error_wrongfiletype' => null,
 			'ats_select9' => null,
 			'ats_choose' => 'Kein Status',
 			'ats_choose_standard_a' => 'Standardeinstellung nutzen (Artikel)',

@@ -13,8 +13,7 @@ $langbase = array(
 	'modules' => $lang->phrase('admin_lang_plugin_phrases'),
 	'javascript' => $lang->phrase('admin_lang_js_phrases'),
 	'wwo' => $lang->phrase('admin_lang_wwo_phrases'),
-	'thumbnail.class' => $lang->phrase('admin_lang_thumbnail_phrases'),
-	'phpmailer.class' => $lang->phrase('admin_lang_mailer_phrases'),
+	'classes' => $lang->phrase('admin_lang_classes_phrases'),
 	'custom' => $lang->phrase('admin_lang_custom_phrases')
 );
 

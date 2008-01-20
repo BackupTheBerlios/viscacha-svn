@@ -123,8 +123,12 @@ First make a complete backup of your (old) data!
  - classes/class.gpc.php
  - classes/class.language.php
  - classes/class.permissions.php
+ - classes/class.phpmailer.php
  - classes/class.plugins.php
  - classes/class.template.php
+ - classes/class.thumbnail.php
+ - classes/class.upload.php
+ - classes/class.veriword.php
  - classes/class.zip.php
  - classes/function.frontend_init.php
  - classes/function.global.php
@@ -177,8 +181,15 @@ First make a complete backup of your (old) data!
  - language/*/mails/report_post.php
  - language/*/mails/topic_moved.php
 
+ - language/*/classes.lng.php
 
-4. Upload the following files from the directory "templates" (* = an ID):
+
+4. Delete the following files (* = an ID):
+ - language/*/phpmailer.class.lng.php
+ - language/*/thumbnail.class.lng.php
+
+
+5. Upload the following files from the directory "templates" (* = an ID):
  - templates/1/admin/topic/status.html
  - templates/1/newtopic/index.html
  - templates/lang2js.php
@@ -186,7 +197,7 @@ First make a complete backup of your (old) data!
 
 
 Finally upload the install/ directory and execute the update script.
-After you the update is ready and you are back in your Admin Control Panel 
+After you the update is ready and you are back in your Admin Control Panel
 again, please check for Updates of your installed Packages!
 
 

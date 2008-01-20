@@ -1498,6 +1498,7 @@ function setTopicRead($tid, $parents) {
 	}
 }
 function setForumRead($fid) {
+	global $db, $my;
 	$result = $db->query("SELECT id FROM {$db->pre}topics WHERE board = '{$fid}' AND last > '{$my->clv}'",__LINE__,__FILE__);
 	while ($row = $db->fetch_assoc($result)) {
 		$my->mark['t'][$row['id']] = time();
