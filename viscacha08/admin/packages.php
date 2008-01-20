@@ -29,9 +29,12 @@ function array_diff_all($arr_new, $arr_old, $assoc = false) {
     return array(
     	DO_UPD_EQU => $arr_equ,
     	DO_UPD_DEL => $arr_del,
-    	DO_UPD_ADD => $arr_add,
-    	'count' => count($arr_del)+count($arr_add)+count($arr_equ)
+    	DO_UPD_ADD => $arr_add
     );
+}
+
+function count_diff_all($diff) {
+	return count($diff[DO_UPD_ADD])+count($diff[DO_UPD_DEL])+count($diff[DO_UPD_EQU]);
 }
 
 function browser_sort_date($a, $b) {
@@ -297,8 +300,8 @@ elseif ($job == 'package_update2') {
 			}
 		}
 
-		if (file_exists($tdir.'plugin.ini')) {
-			$plug = $myini->read($tdir.'plugin.ini');
+		if (file_exists($tdir.'modules/plugin.ini')) {
+			$plug = $myini->read($tdir.'modules/plugin.ini');
 		}
 		if (empty($plug['php']['update_init']) && empty($plug['php']['update_finish'])) {
 			error('admin.php?action=packages&job=package_update', $lang->phrase('admin_packages_err_package_not_updatable'));
@@ -369,13 +372,13 @@ elseif ($job == 'package_update2') {
 		$result = $db->query("SELECT id FROM {$db->pre}component WHERE package = '{$packageid}'", __LINE__, __FILE__);
 		$do = null;
 		if ($db->num_rows($result) == 0) {
-			if (file_exists($tdir.'component.ini')) {
+			if (file_exists($tdir.'modules/component.ini')) {
 				$do = DO_UPD_ADD; // Insert
 			}
 		}
 		else {
 			list($comid) = $db->fetch_num($result);
-			if (file_exists($tdir.'component.ini')) {
+			if (file_exists($tdir.'modules/component.ini')) {
 				$do = DO_UPD_CHNG; // Update
 			}
 			else {
@@ -388,8 +391,8 @@ elseif ($job == 'package_update2') {
 		if (file_exists($moddir.'component.ini')) {
 			$old_com = $myini->read($moddir.'component.ini');
 		}
-		if (file_exists($tdir.'component.ini')) {
-			$com = $myini->read($tdir.'component.ini');
+		if (file_exists($tdir.'modules/component.ini')) {
+			$com = $myini->read($tdir.'modules/component.ini');
 			if (!isset($com['module']['frontpage'])) {
 				$com['module']['frontpage'] = '';
 			}
@@ -412,7 +415,7 @@ elseif ($job == 'package_update2') {
 				isset($com['images']) ? $com['images'] : array(),
 				isset($old_com['images']) ? $old_com['images'] : array()
 			);
-			if ($diff['count'] > 0) {
+			if (count_diff_all($diff) > 0) {
 				foreach ($diff as $handler => $files) {
 					foreach($files as $file) {
 						$dir1 = "{$tdir}images/{$file}";
@@ -434,7 +437,7 @@ elseif ($job == 'package_update2') {
 				isset($com['designs']) ? $com['designs'] : array(),
 				isset($old_com['designs']) ? $old_com['designs'] : array()
 			);
-			if ($diff['count'] > 0) {
+			if (count_diff_all($diff) > 0) {
 				$default_dir = "./designs/{$css['stylesheet']}/";
 				foreach ($diff as $handler => $files) {
 					foreach ($com['designs'] as $file) {
@@ -472,7 +475,7 @@ elseif ($job == 'package_update2') {
 				isset($com['language']) ? $com['language'] : array(),
 				isset($old_com['language']) ? $old_com['language'] : array()
 			);
-			if ($diff['count'] > 0) {
+			if (count_diff_all($diff) > 0) {
 				$codes = getLangCodesByDir($tdir.'language/');
 				$langcodes = getLangCodes();
 				foreach ($langcodes as $code => $lid) {
@@ -530,7 +533,7 @@ elseif ($job == 'package_update2') {
 								$c = new manageconfig();
 								$c->getdata($target, 'lang');
 								$diff2 = array_diff_all(array_keys($l1), array_keys($c->data)); // Check the keys only
-								if ($diff['count'] > 0) {
+								if (count_diff_all($diff2) > 0) {
 									foreach ($diff2 as $handler2 => $keys) {
 										foreach($keys as $key) {
 											if ($handler2 == DO_UPD_ADD) {
@@ -572,7 +575,7 @@ elseif ($job == 'package_update2') {
 		}
 
 
-		$plug = $old_plug = array();
+		$old_plug = array();
 		if (file_exists($moddir.'plugin.ini')) {
 			$old_plug = $myini->read($moddir.'plugin.ini');
 		}
@@ -639,12 +642,13 @@ elseif ($job == 'package_update2') {
 		}
 
 		$diff = array_diff_all(
-			isset($plug['php']) ? array_keys($plug['php']) : array(),
-			isset($old_plug['php']) ? array_keys($old_plug['php']) : array(),
+			isset($plug['php']) ? $plug['php'] : array(),
+			isset($old_plug['php']) ? $old_plug['php'] : array(),
 			true // Controll also the keys
 		);
-		if ($diff['count'] > 0) {
+		if (count_diff_all($diff) > 0) {
 			$result = $db->query("SELECT position, id FROM {$db->pre}plugins WHERE module = '{$packageid}'");
+			$plugs = array();
 			while ($row = $db->fetch_assoc($result)) {
 				$plugs[$row['position']] = $row['id'];
 			}
@@ -672,9 +676,11 @@ elseif ($job == 'package_update2') {
 					}
 					elseif ($handler == DO_UPD_DEL) {
 						$delete = true;
-						foreach ($plug['php'] as $pos => $val) {
-							if ($pos != $hook && $plugfile == $val) {
-								$delete = false;
+						if (isset($plug['php']) && is_array($plug['php'])) {
+							foreach ($plug['php'] as $pos => $val) {
+								if ($pos != $hook && $plugfile == $val) {
+									$delete = false;
+								}
 							}
 						}
 						if (file_exists($target) && $delete == true) {
@@ -685,8 +691,8 @@ elseif ($job == 'package_update2') {
 						$db->query("DELETE FROM {$db->pre}menu WHERE module = '{$plugs[$hook]}'", __LINE__, __FILE__);
 					}
 					elseif ($handler == DO_UPD_EQU) {
-						// Simply overwrite old file... hopefully no changes were made and in this case no loss of data
-						// Other changes (required, ...) have to be done with the custom update script.
+						// Simply overwrite old file and update DB. Hopefully no changes were made and in this case no loss of data
+						$db->query("UPDATE {$db->pre}plugins SET `name` = '{$plug['names'][$hook]}', `required` = '{$plug['required'][$hook]}', `position` = '{$hook}' WHERE id = '{$plugs[$hook]}'", __LINE__, __FILE__);
 						if (file_exists($source)) {
 							$filesystem->unlink($target);
 							$filesystem->rename($source, $target);
@@ -712,8 +718,8 @@ elseif ($job == 'package_update2') {
 		);
 		$tpldir = "templates/{$design['template']}/modules/{$packageid}/";
 		if (count($templates) > 0) { // Add/update files
-			$diff = array_diff_all($template, $old_templates);
-			if ($diff['count'] > 0) {
+			$diff = array_diff_all($templates, $old_templates);
+			if (count_diff_all($diff) > 0) {
 				if (is_dir($tpldir)) {
 					$filesystem->chmod($tpldir, 0777);
 				}

@@ -41,7 +41,7 @@ class DB extends DB_Driver { // MySQL
 		}
 		$this->errlogfile = 'data/errlog_'.$this->system.'.inc.php';
 		parent::DB_Driver($host, $user, $pwd, $dbname, $dbprefix, $open);
-		$this->freeResult = ($persist == 1);
+		$this->freeResult = ($this->persistence == 1);
 	}
 
 	function version () {
@@ -72,7 +72,7 @@ class DB extends DB_Driver { // MySQL
 	}
 
 	function connect($die = true) {
-		if ($this->persist == 1) {
+		if ($this->persistence == 1) {
 			$func = 'mysql_pconnect';
 		}
 		else {
