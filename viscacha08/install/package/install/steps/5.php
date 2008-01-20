@@ -83,7 +83,7 @@ $d->close();
 	  <td class="mbox" width="50%">
 	  	<select name="langdir">
 	  		<?php foreach ($langarr as $lid => $lname) { ?>
-	  		<option value=""<?php echo iif($config['langdir'] == $lid, ' selected="selected"'); ?>><?php echo $lname; ?></option>
+	  		<option value="<?php echo $lid; ?>"<?php echo iif($config['langdir'] == $lid, ' selected="selected"'); ?>><?php echo $lname; ?></option>
 	  		<?php } ?>
 	  	</select>
 	  </td>

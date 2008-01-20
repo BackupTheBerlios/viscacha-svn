@@ -51,8 +51,12 @@ class PluginSystem {
 		}
 	}
 
-	function update($id) {
-		return $this->_setup('update', $id);
+	function update_init($id) {
+		return $this->_setup('update_init', $id);
+	}
+
+	function update_finish($id) {
+		return $this->_setup('update_finish', $id);
 	}
 
 	function uninstall($id) {

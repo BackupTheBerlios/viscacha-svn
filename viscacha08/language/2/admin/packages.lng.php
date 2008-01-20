@@ -86,6 +86,7 @@ $lang['admin_packages_err_no_package_with_this_id'] = 'There is no package with 
 $lang['admin_packages_err_package_does_not_exist'] = 'Specified package does not exist.';
 $lang['admin_packages_err_package_ini_does_not_exist'] = 'package.ini does not exist!';
 $lang['admin_packages_err_package_not_found'] = 'Specified package not found.';
+$lang['admin_packages_err_package_not_updatable'] = 'This package does not contain any update information and therefore cannot be updated.';
 $lang['admin_packages_err_package_required'] = 'This package cannot be deleted and it cannot be set inactive, because it is required by the package {@row->title} ({@row->internal})!';
 $lang['admin_packages_err_phrase_not_found'] = 'Phrase not found!';
 $lang['admin_packages_err_please_choose_at_least_one_template'] = 'Please choose at least one template...';

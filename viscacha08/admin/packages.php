@@ -297,6 +297,16 @@ elseif ($job == 'package_update2') {
 			}
 		}
 
+		if (file_exists($tdir.'plugin.ini')) {
+			$plug = $myini->read($tdir.'plugin.ini');
+		}
+		if (empty($plug['php']['update_init']) && empty($plug['php']['update_finish'])) {
+			error('admin.php?action=packages&job=package_update', $lang->phrase('admin_packages_err_package_not_updatable'));
+		}
+
+		// Custom Updater - Init
+		($code = $plugins->update_init($packageid)) ? eval($code) : null;
+
 		$db->query("UPDATE {$db->pre}packages SET title = '{$package['info']['title']}', version = '{$package['info']['version']}' WHERE id = ''", __LINE__, __FILE__);
 
 		$moddir = "./modules/{$packageid}/";
@@ -334,7 +344,7 @@ elseif ($job == 'package_update2') {
 				$name = substr($section, 8);
 				if ($sg != null && isset($old[$section]) && isset($package[$section])) { // Nur aktualisieren
 					$values = $package[$section];
-					$db->query("UPDATE {$db->pre}settings SET title = '{$values['title']}', description = '{$values['description']}', type = '{$values['type']}', optionscode = '{$values['optionscode']}', value = '{$values['value']}') WHERE name = '{$name}' AND sgroup = '{$sg}'", __LINE__, __FILE__);
+					$db->query("UPDATE {$db->pre}settings SET title = '{$values['title']}', description = '{$values['description']}', type = '{$values['type']}', optionscode = '{$values['optionscode']}', value = '{$values['value']}' WHERE name = '{$name}' AND sgroup = '{$sg}'", __LINE__, __FILE__);
 				}
 				elseif ($sg != null && !isset($old[$section]) && isset($package[$section])) { // Hinzufügen
 					$values = $package[$section];
@@ -566,13 +576,13 @@ elseif ($job == 'package_update2') {
 		if (file_exists($moddir.'plugin.ini')) {
 			$old_plug = $myini->read($moddir.'plugin.ini');
 		}
-		if (file_exists($tdir.'plugin.ini')) {
-			$plug = $myini->read($tdir.'plugin.ini');
+		// New plugin.ini is loaded above for update-check
+
+		if (!isset($old_plug['language']) || !is_array($old_plug['language'])) {
+			$old_plug['language'] = array();
 		}
-
-
-		// Todo
 		if (isset($plug['language']) && count($plug['language']) > 0) {
+			$lng_keys = array_diff_all(array_keys($plug), array_keys($old_plug));
 			$keys = array_keys($plug);
 			$codes = getLangCodesByKeys($keys);
 			$langcodes = getLangCodes();
@@ -600,13 +610,33 @@ elseif ($job == 'package_update2') {
 					$src = 'language';
 				}
 				$c->getdata("language/{$lid}/modules.lng.php", 'lang');
-				foreach ($plug[$src] as $varname => $text) {
-					$c->updateconfig($varname, str, $text);
+				foreach ($lng_keys as $handler => $varnames) {
+					foreach ($varnames as $varname) {
+						if (isset($plug[$src][$varname]) && ($handler == DO_UPD_ADD || $handler == DO_UPD_EQU)) {
+							$c->updateconfig($varname, str, $plug[$src][$varname]);
+						}
+						else {
+							$c->delete($varname);
+						}
+					}
 				}
 				$c->savedata();
 			}
 		}
-		// Todo End
+		else { // Delete all phrases from old plugin
+			if (count($old_plug['language']) > 0) {
+				$keys = array_keys($old_plug);
+				$codes = getLangCodesByKeys($keys);
+				$langcodes = getLangCodes();
+				foreach ($langcodes as $lid) {
+					$c->getdata("language/{$lid}/modules.lng.php", 'lang');
+					foreach ($old_plug['language'] as $varname => $text) {
+						$c->delete($varname);
+					}
+					$c->savedata();
+				}
+			}
+		}
 
 		$diff = array_diff_all(
 			isset($plug['php']) ? array_keys($plug['php']) : array(),
@@ -655,7 +685,12 @@ elseif ($job == 'package_update2') {
 						$db->query("DELETE FROM {$db->pre}menu WHERE module = '{$plugs[$hook]}'", __LINE__, __FILE__);
 					}
 					elseif ($handler == DO_UPD_EQU) {
-						// ToDo
+						// Simply overwrite old file... hopefully no changes were made and in this case no loss of data
+						// Other changes (required, ...) have to be done with the custom update script.
+						if (file_exists($source)) {
+							$filesystem->unlink($target);
+							$filesystem->rename($source, $target);
+						}
 					}
 					$filesystem->unlink('cache/modules/'.$plugins->_group($hook).'.php');
 				}
@@ -712,11 +747,23 @@ elseif ($job == 'package_update2') {
 			}
 		}
 
-		// ToDo: Copy files (ini's)
+		$tmoddir = $tdir.'modules/';
+		$filesystem->unlink($moddir.'package.ini');
+		if (file_exists($tmoddir.'package.ini')) {
+			$filesystem->rename($tmoddir.'package.ini', $moddir.'package.ini');
+		}
+		$filesystem->unlink($moddir.'component.ini');
+		if (file_exists($tmoddir.'component.ini')) {
+			$filesystem->rename($tmoddir.'component.ini', $moddir.'component.ini');
+		}
+		$filesystem->unlink($moddir.'plugin.ini');
+		if (file_exists($tmoddir.'plugin.ini')) {
+			$filesystem->rename($tmoddir.'plugin.ini', $moddir.'plugin.ini');
+		}
 
-		// Custom Updater
+		// Custom Updater - Finish
 		$confirm = true;
-		($code = $plugins->update($packageid)) ? eval($code) : null;
+		($code = $plugins->update_finish($packageid)) ? eval($code) : null;
 
 		rmdirr($tdir);
 
@@ -1565,7 +1612,7 @@ elseif ($job == 'package_edit2') {
 		error('admin.php?action=packages&job=package', $lang->phrase('admin_packages_err_could_not_find_a_package_with_this_id'));
 	}
 	$row = $db->fetch_assoc($result);
-	if ($row['core'] != '1') { // ToDo: Add Dependency check
+	if ($row['core'] != '1') { // ToDo: Add Dependency check, like in form (package_edit)
 		$active = $gpc->get('active', int);
 	}
 	else {

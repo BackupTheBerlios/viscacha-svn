@@ -229,7 +229,8 @@ function AdminLogInForm() {
 function isInvisibleHook($hook) {
 	switch ($hook) {
 		case 'uninstall':
-		case 'update':
+		case 'update_init':
+		case 'update_finish':
 		case 'install':
 		case 'source':
 			return true;

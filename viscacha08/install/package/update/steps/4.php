@@ -152,7 +152,7 @@ $c->savedata();
 
 $hooks = file_get_contents('../admin/data/hooks.txt');
 if (strpos($hooks, "-update") === false) {
-	$hooks = str_replace("-uninstall", "-uninstall\r\n-update", $hooks);
+	$hooks = str_replace("-uninstall", "-uninstall\r\n-update_init\r\n-update_finish", $hooks);
 	$filesystem->file_put_contents('../admin/data/hooks.txt', $hooks);
 }
 echo "- Configuration and Hooks updated.<br />";

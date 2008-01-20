@@ -16,4 +16,4 @@ INSERT INTO `{:=DBPREFIX=:}packages` (`id`, `title`, `active`, `version`, `inter
 (5, 'Legends', '1', '0.8.1', 'viscacha_help_legends', '0'),
 (6, 'Personal Panels', '1', '0.8', 'viscacha_personal_panels', '0'),
 (7, 'Quick Reply', '1', '0.8', 'viscacha_quick_reply', '0'),
-(8, 'Recent Topics', '1', '0.8', 'viscacha_recent_topics', '0');
+(8, 'Recent Topics', '1', '0.8.1', 'viscacha_recent_topics', '0');
