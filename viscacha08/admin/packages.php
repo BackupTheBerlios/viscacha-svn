@@ -310,7 +310,7 @@ elseif ($job == 'package_update2') {
 		// Custom Updater - Init
 		($code = $plugins->update_init($packageid)) ? eval($code) : null;
 
-		$db->query("UPDATE {$db->pre}packages SET title = '{$package['info']['title']}', version = '{$package['info']['version']}' WHERE id = ''", __LINE__, __FILE__);
+		$db->query("UPDATE {$db->pre}packages SET title = '{$package['info']['title']}', version = '{$package['info']['version']}' WHERE id = '{$packageid}'", __LINE__, __FILE__);
 
 		$moddir = "./modules/{$packageid}/";
 		$old = $myini->read($moddir.'package.ini');
@@ -3840,7 +3840,7 @@ elseif ($job == 'browser_update') {
 	$id = $gpc->get('id', str);
 	$pb = $scache->load('package_browser');
 	$row = $pb->getOne(IMPTYPE_PACKAGE, $id);
-	$types = $pb->type(IMPTYPE_PACKAGE);
+	$types = $pb->types(IMPTYPE_PACKAGE);
 	$file = 'temp/'.basename($row['file']);
 	$filesystem->file_put_contents($file, get_remote($row['file']));
 	header('Location: '.$types['update'].$file);

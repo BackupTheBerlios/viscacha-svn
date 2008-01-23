@@ -113,6 +113,11 @@ First make a complete backup of your (old) data!
  - classes/feedcreator/rss20.inc.php
  - classes/feedcreator/xbel.inc.php
 
+ - classes/graphic/class.thumbnail.php
+ - classes/graphic/class.veriword.php
+
+ - classes/mail/class.phpmailer.php
+
  - classes/magpie_rss/rss_fetch.inc.php
 
  - classes/class.bbcode.php
@@ -123,12 +128,9 @@ First make a complete backup of your (old) data!
  - classes/class.gpc.php
  - classes/class.language.php
  - classes/class.permissions.php
- - classes/class.phpmailer.php
  - classes/class.plugins.php
  - classes/class.template.php
- - classes/class.thumbnail.php
  - classes/class.upload.php
- - classes/class.veriword.php
  - classes/class.zip.php
  - classes/function.frontend_init.php
  - classes/function.global.php

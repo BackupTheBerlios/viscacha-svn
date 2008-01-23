@@ -27,7 +27,7 @@ if (isset($_REQUEST['save']) && $_REQUEST['save'] == 1) {
 	$c->savedata();
 
 	$c->getdata('../admin/data/config.inc.php', 'admconfig');
-	$c->updateconfig('default_language', int, $langdir);
+	$c->updateconfig('default_language', int, 0);
 	$c->savedata();
 
 ?>
