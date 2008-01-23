@@ -92,8 +92,9 @@ First make a complete backup of your (old) data!
  - admin/posts.php
  - admin/settings.php
  - admin/spider.php
- - asmin/start.php
+ - admin/start.php
 
+ - classes/cache/index_moderators.inc.php
  - classes/cache/package_browser.inc.php
 
  - classes/database/class.db_driver.php
@@ -112,6 +113,8 @@ First make a complete backup of your (old) data!
  - classes/feedcreator/rss10.inc.php
  - classes/feedcreator/rss20.inc.php
  - classes/feedcreator/xbel.inc.php
+ 
+ - classes/ftp/class.ftp.php
 
  - classes/graphic/class.thumbnail.php
  - classes/graphic/class.veriword.php
@@ -122,6 +125,7 @@ First make a complete backup of your (old) data!
 
  - classes/class.bbcode.php
  - classes/class.breadcrumb.php
+ - classes/class.cache.php
  - classes/class.convertroman.php
  - classes/class.feedcreator.php
  - classes/class.filesystem.php
@@ -132,6 +136,7 @@ First make a complete backup of your (old) data!
  - classes/class.template.php
  - classes/class.upload.php
  - classes/class.zip.php
+ - classes/function.flood.php
  - classes/function.frontend_init.php
  - classes/function.global.php
  - classes/function.phpcore.php

@@ -51,8 +51,9 @@ _docs/readme.txt
  - admin/posts.php
  - admin/settings.php
  - admin/spider.php
- - asmin/start.php
+ - admin/start.php
 
+ - classes/cache/index_moderators.inc.php
  - classes/cache/package_browser.inc.php
 
  - classes/database/class.db_driver.php
@@ -71,24 +72,30 @@ _docs/readme.txt
  - classes/feedcreator/rss10.inc.php
  - classes/feedcreator/rss20.inc.php
  - classes/feedcreator/xbel.inc.php
+ 
+ - classes/ftp/class.ftp.php
+
+ - classes/graphic/class.thumbnail.php
+ - classes/graphic/class.veriword.php
+
+ - classes/mail/class.phpmailer.php
 
  - classes/magpie_rss/rss_fetch.inc.php
 
  - classes/class.bbcode.php
  - classes/class.breadcrumb.php
+ - classes/class.cache.php
  - classes/class.convertroman.php
  - classes/class.feedcreator.php
  - classes/class.filesystem.php
  - classes/class.gpc.php
  - classes/class.language.php
  - classes/class.permissions.php
- - classes/class.phpmailer.php
  - classes/class.plugins.php
  - classes/class.template.php
- - classes/class.thumbnail.php
  - classes/class.upload.php
- - classes/class.veriword.php
  - classes/class.zip.php
+ - classes/function.flood.php
  - classes/function.frontend_init.php
  - classes/function.global.php
  - classes/function.phpcore.php
