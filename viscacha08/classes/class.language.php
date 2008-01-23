@@ -119,6 +119,7 @@ class lang {
 	}
 
 	function get_mail($file,$ext='php') {
+		global $gpc;
 		$this->benchmark['all']++;
 		$this->file = $this->dir.DIRECTORY_SEPARATOR.'mails/'.$file.'.'.$ext;
 		if (file_exists($this->file) == false) {

@@ -1,5 +1,5 @@
 ########################################
-# Readme for Viscacha 0.8 RC 3         #
+# Readme for Viscacha 0.8 RC 4         #
 ########################################
 
 == Table of Contents ==
