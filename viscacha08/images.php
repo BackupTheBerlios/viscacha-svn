@@ -107,6 +107,9 @@ elseif ($_GET['action'] == 'textimage') {
 	require('classes/graphic/class.text2image.php');
 
 	$img = new text2image();
+	if (empty($_GET['text'])) {
+		$_GET['text'] = '-';
+	}
 	if (empty($_GET['angle'])) {
 		$_GET['angle'] = 0;
 	}

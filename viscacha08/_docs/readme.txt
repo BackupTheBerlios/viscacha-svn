@@ -53,6 +53,7 @@ Following files need CHMOD 666:
 
 == Update ==
 First make a complete backup of your (old) data!
+Note: You can only update from Viscacha 0.8 RC3 to 0.8 RC4!
 
 1. Upload (and overwrite) the following files (* = an ID):
  - addreply.php

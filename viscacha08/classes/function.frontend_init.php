@@ -52,7 +52,7 @@ require_once ("classes/function.gpc.php");
  	_ENV, _SERVER: Won't be checked, but null-byte is deleted
  	_COOKIE: You can check them in the script ( getcookie() ), won't be checked
  	_REQUEST: Won't be checked - array has the original values (but without magic_quotes)
- 	_POST, _GET with heysk specified in http_vars are checked and save
+ 	_POST, _GET with keys specified in http_vars are checked and save
 */
 $http_vars = array(
 'action' => str,
@@ -132,14 +132,17 @@ foreach ($http_all as $key) {
 		$type = $http_vars[$key];
 	}
 	else {
-		$type = str;
+		$type = none;
 	}
 	if (isset($_POST[$key])) {
         if ($type == int || $type == arr_int) {
             $_POST[$key] = $gpc->save_int($_POST[$key]);
         }
-        else {
+        elseif ($type == str || $type == arr_str) {
             $_POST[$key] = $gpc->save_str($_POST[$key]);
+        }
+        else {
+        	$_POST[$key] = $gpc->secure_null($_POST[$key]);
         }
 	}
 	else {
@@ -149,8 +152,11 @@ foreach ($http_all as $key) {
         if ($type == int || $type == arr_int) {
             $_GET[$key] = $gpc->save_int($_GET[$key]);
         }
-        else {
+        elseif ($type == str || $type == arr_str) {
             $_GET[$key] = $gpc->save_str($_GET[$key]);
+        }
+        else {
+        	$_GET[$key] = $gpc->secure_null($_GET[$key]);
         }
 	}
 	else {
