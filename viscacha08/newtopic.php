@@ -341,12 +341,13 @@ elseif ($_GET['action'] == "save") {
 				$db->query("INSERT INTO {$db->pre}abos (mid,tid,type) VALUES ('{$my->id}','{$tredirect}','{$type}')",__LINE__,__FILE__);
 			}
 		}
+		
+		$my->mp = $slog->ModPermissions($board);
 
 		$close = $gpc->get('close', int);
 		$pin = $gpc->get('pin', int);
 		$stat = $gpc->get('status', int);
 		if (($close == 1 || $pin == 1) && $my->vlogin) {
-			$my->mp = $slog->ModPermissions($board);
 			if ($close == 1 && $my->mp[0] == 1) {
 				$db->query("UPDATE {$db->pre}topics SET status = '1' WHERE id = '{$tredirect}'",__LINE__,__FILE__);
 			}

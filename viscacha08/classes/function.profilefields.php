@@ -244,7 +244,7 @@ function editprofile_customsave($editable, $uid) {
 
 		$value = $gpc->get($field, none);
 
-		if($profilefield['required'] == 1 && ((is_string($value) && strlen($value) == 0) || (is_array($value) && count($value) == 0))) {
+		if($profilefield['required'] == 1 && (empty($value) || (is_array($value) && count($value) == 0))) {
 			$error[] = $lang->phrase('error_missingrequiredfield');
 		}
 		if($profilefield['maxlength'] > 0 && ((is_string($value) && strxlen($value) > $profilefield['maxlength']) || (is_array($value) && count($value) > $profilefield['maxlength']))) {
