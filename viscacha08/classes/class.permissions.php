@@ -1029,30 +1029,6 @@ function cleanUserData($data) {
 }
 
 /**
- * Sets all posts read (sets lastvisit time to now).
- *
- * Returns 'true' on success and 'false' on failure.
- *
- * @return boolean
- */
-function mark_read() {
-	global $my, $db;
-	if ($my->vlogin) {
-		$db->query ("UPDATE {$db->pre}session SET lastvisit = '".time()."' WHERE mid = '$my->id'",__LINE__,__FILE__);
-	}
-	else {
-		$db->query ("UPDATE {$db->pre}session SET lastvisit = '".time()."' WHERE sid = '$this->sid'",__LINE__,__FILE__);
-	}
-	$my->mark = array();
-	if ($db->affected_rows() > 0) {
-		return true;
-	}
-	else {
-		return false;
-	}
-}
-
-/**
  * Creates a Session-ID.
  *
  * The ID has the length specified in $config['sid_length']. Possible lengths are 64, 96, 128 and 32 characters.
@@ -1497,6 +1473,7 @@ function setTopicRead($tid, $parents) {
 		}
 	}
 }
+
 function setForumRead($fid) {
 	global $db, $my;
 	$result = $db->query("SELECT id FROM {$db->pre}topics WHERE board = '{$fid}' AND last > '{$my->clv}'",__LINE__,__FILE__);
@@ -1505,13 +1482,39 @@ function setForumRead($fid) {
 	}
 	$my->mark['f'][$fid] = time();
 }
+
+/**
+ * Sets all posts read (sets lastvisit time to now).
+ *
+ * Returns 'true' on success and 'false' on failure.
+ *
+ * @return boolean
+ */
 function setAllRead() {
-	$this->mark_read();
+	global $my, $db;
+	if ($my->vlogin) {
+		$db->query ("UPDATE {$db->pre}session SET lastvisit = '".time()."' WHERE mid = '$my->id'",__LINE__,__FILE__);
+	}
+	else {
+		$db->query ("UPDATE {$db->pre}session SET lastvisit = '".time()."' WHERE sid = '$this->sid'",__LINE__,__FILE__);
+	}
+	// Todo: Save some queries!
+	// This queries can be saved normally, because it will be saved with updatelogged (in ok/error funcs) later!
+	$my->mark = array();
+	$my->clv = time();
+	if ($db->affected_rows() > 0) {
+		return true;
+	}
+	else {
+		return false;
+	}
 }
+
 function isForumRead($fid, $last_change) {
 	global $my;
 	return ((isset($my->mark['f'][$fid]) && $my->mark['f'][$fid] > $last_change) || $last_change < $my->clv);
 }
+
 function isTopicRead($tid, $last_change) {
 	global $my;
 	return ((isset($my->mark['t'][$tid]) && $my->mark['t'][$tid] > $last_change) || $last_change < $my->clv);

@@ -398,6 +398,9 @@ function serverload($int = false) {
 		$serverload = explode(" ", $load);
 		$serverload[0] = round($serverload[0], 4);
 	}
+	if (viscacha_function_exists('sys_getloadavg')) {
+		$serverload = @sys_getloadavg();
+	}
 	if (empty($serverload[0]) && viscacha_function_exists('exec') == true) {
 		$load = @exec("uptime");
 		$load = split("load averages?: ", $load);

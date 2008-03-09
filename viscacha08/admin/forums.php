@@ -513,7 +513,7 @@ elseif ($job == 'forum_edit') {
    <td class="mbox"><input type="text" name="message_title" size="70" value="<?php echo $row['message_title']; ?>" /></td>
   </tr>
   <tr>
-   <td class="mbox"><?php echo $lang->phrase('admin_forum_rules'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_forum_html_bbcode'); ?></span></td>
+   <td class="mbox"><?php echo $lang->phrase('admin_forum_rules'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_forum_bbcode_html'); ?></span></td>
    <td class="mbox"><textarea name="message_text" rows="4" cols="70"><?php echo $row['message_text']; ?></textarea></td>
   </tr>
   <tr>
@@ -794,7 +794,7 @@ elseif ($job == 'forum_add') {
    <td class="mbox"><input type="text" name="message_title" size="70" /></td>
   </tr>
   <tr>
-   <td class="mbox"><?php echo $lang->phrase('admin_forum_rules'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_forum_html_bbcode'); ?></span></td>
+   <td class="mbox"><?php echo $lang->phrase('admin_forum_rules'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_forum_bbcode_html'); ?></span></td>
    <td class="mbox"><textarea name="message_text" rows="4" cols="70"></textarea></td>
   </tr>
   <tr><td class="ubox" colspan="2"><?php echo $lang->phrase('admin_forum_head_prefixes'); ?></td></tr>
@@ -1178,7 +1178,7 @@ elseif ($job == 'rights_add2') {
 	$id = $gpc->get('id', int);
 	$group = $gpc->get('group', int);
 
-	$db->query("SELECT * FROM {$db->pre}fgroups WHERE bid = '{$id}' AND gid = '{$group}'", __LINE__, __FILE__);
+	$result = $db->query("SELECT * FROM {$db->pre}fgroups WHERE bid = '{$id}' AND gid = '{$group}'", __LINE__, __FILE__);
 	if ($db->num_rows($result) > 0) {
 		error('admin.php?action=forums&job=rights&id='.$id, $lang->phrase('admin_forum_group_entry_exists'));
 	}

@@ -732,8 +732,8 @@ class BBCode {
 		}
 
 		do {
-			$code = preg_replace("#(\n\n)#", "\n\n", $code);
-		} while (preg_match("#\n\n#", $code));
+			$code = preg_replace("~\n\n~", "\n", $code);
+		} while (preg_match("~\n\n~", $code));
 
 		$table_content = explode("\n",$code);
 		$bbcode_table['table']['rows'] = count($table_content);

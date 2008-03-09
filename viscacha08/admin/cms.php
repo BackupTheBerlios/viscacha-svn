@@ -1158,7 +1158,7 @@ elseif ($job == 'doc_add3') {
 	  			$content = '';
 	  		}
 	  		else {
-	  			$content = $gpc->save_str($content);
+	  			$content = $db->escape_string($content);
 	  			$file = '';
 	  		}
 		}
@@ -1349,7 +1349,7 @@ elseif ($job == 'doc_edit2') {
 	  			$content = '';
 	  		}
 	  		else {
-	  			$content = $gpc->save_str($content);
+	  			$content = $db->escape_string($content);
 	  			$file = '';
 	  		}
 		}

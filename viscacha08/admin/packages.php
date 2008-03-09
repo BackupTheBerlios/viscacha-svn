@@ -3638,7 +3638,7 @@ elseif ($job == 'package_updates') {
 		  	<td class="mbox center"><?php echo $row['version']; ?></td>
 		  	<td class="mbox center"><?php echo $data['version']; ?></td>
 		  	<td class="mbox">
-		  		<?php if (!empty($data['update'])) { ?>
+		  		<?php if (!empty($data['update']) && version_compare($row['version'], $data['version'], '>')) { ?>
 		  		<a class="button" href="admin.php?action=packages&amp;job=browser_update&amp;id=<?php echo $row['internal']; ?>"><?php echo $lang->phrase('admin_packages_install_update'); ?></a>
 		  		<?php } ?>
 		  		<a class="button" href="admin.php?action=packages&amp;job=package_info&amp;id=<?php echo $row['id']; ?>"><?php echo $lang->phrase('admin_packages_current_details'); ?></a>

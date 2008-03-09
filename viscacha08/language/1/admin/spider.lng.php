@@ -41,7 +41,7 @@ $lang['admin_spider_no_bots_in_database'] = 'Es sind derzeit leider keine Spider
 $lang['admin_spider_no_data_chosen'] = 'Keine Daten ausgewählt.';
 $lang['admin_spider_no_entries_deleted'] = 'Keine Einträge gelöscht.';
 $lang['admin_spider_no_entries_reset'] = 'Keine Einträge zurückgesetzt.';
-$lang['admin_spider_no_pending_bots'] = 'Es sein derzeit leider keine neu erkannten Spider vorhanden.';
+$lang['admin_spider_no_pending_bots'] = 'Es sind derzeit leider keine neu erkannten Spider vorhanden.';
 $lang['admin_spider_pending_bots'] = 'Neu erkannte Spider';
 $lang['admin_spider_pending_bots_description'] = 'Unterhalb werden Besucher angezeigt, die teilweise Ihren Spider-Kriterien entsprachen. In anderen Worten entsprach der Benutzer entweder einem hinterlegten User-Agent oder einer hinterlegten IP-Adresse. Sie können hier auswählen, ob Sie die neu erkannten Daten zum existierenden Eintrag hinzufügen wollen oder ob Sie die Daten ignorieren, also entfernen, wollen.';
 $lang['admin_spider_pending_function_currently_disabled'] = 'Diese Funktion ist derzeit nicht aktiviert, Sie können diese jedoch in Ihren <a href="admin.php?action=settings&amp;job=spiders">Viscacha Einstellungen</a> aktivieren!';
