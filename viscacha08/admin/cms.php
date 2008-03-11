@@ -1148,17 +1148,13 @@ elseif ($job == 'doc_add3') {
 	$types = doctypes();
 	$format = $types[$type];
 
+	$content = $gpc->get('template', none);
 	if ($format['remote'] != 1) {
-	  	if (empty($file)) {
-	  		$content = $gpc->get('template', str);
-	  	}
-	  	else {
-	  		$content = $gpc->get('template', none);
+	  	if (!empty($file)) {
 	  		if ($filesystem->file_put_contents($file, $content) > 0) {
 	  			$content = '';
 	  		}
 	  		else {
-	  			$content = $db->escape_string($content);
 	  			$file = '';
 	  		}
 		}
@@ -1182,7 +1178,7 @@ elseif ($job == 'doc_add3') {
 
 	$time = time();
 
-	$db->query("INSERT INTO {$db->pre}documents ( `title` , `content` , `author` , `date` , `update` , `type` , `groups` , `active` , `file` ) VALUES ('{$title}', '{$content}', '{$my->id}', '{$time}' , '{$time}' , '{$type}', '{$groups}', '{$active}', '{$file}')", __LINE__, __FILE__);
+	$db->query("INSERT INTO {$db->pre}documents ( `title` , `content` , `author` , `date` , `update` , `type` , `groups` , `active` , `file` ) VALUES ('{$title}', '".$db->escape_string($content)."', '{$my->id}', '{$time}' , '{$time}' , '{$type}', '{$groups}', '{$active}', '{$file}')", __LINE__, __FILE__);
 
 	$delobj = $scache->load('wraps');
 	$delobj->delete();
@@ -1339,17 +1335,13 @@ elseif ($job == 'doc_edit2') {
 	$types = doctypes();
 	$format = $types[$doc['type']];
 
+	$content = $gpc->get('template', none);
 	if ($format['remote'] != 1) {
-	  	if (empty($file)) {
-	  		$content = $gpc->get('template', str);
-	  	}
-	  	else {
-	  		$content = $gpc->get('template', none);
+	  	if (!empty($file)) {
 	  		if ($filesystem->file_put_contents($file, $content) > 0) {
 	  			$content = '';
 	  		}
 	  		else {
-	  			$content = $db->escape_string($content);
 	  			$file = '';
 	  		}
 		}
@@ -1369,7 +1361,7 @@ elseif ($job == 'doc_edit2') {
 
 	$time = time();
 
-	$db->query("UPDATE {$db->pre}documents SET `title` = '{$title}', `content` = '{$content}', `update` = '{$time}', `groups` = '{$groups}', `active` = '{$active}', `file` = '{$file}', `author` = '{$author}' WHERE id = '{$id}' LIMIT 1",__LINE__,__FILE__);
+	$db->query("UPDATE {$db->pre}documents SET `title` = '{$title}', `content` = '".$db->escape_string($content)."', `update` = '{$time}', `groups` = '{$groups}', `active` = '{$active}', `file` = '{$file}', `author` = '{$author}' WHERE id = '{$id}' LIMIT 1",__LINE__,__FILE__);
 
 	$delobj = $scache->load('wraps');
 	$delobj->delete();

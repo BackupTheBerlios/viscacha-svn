@@ -171,6 +171,7 @@ elseif ($_GET['action'] == "report_post" || $_GET['action'] == "report_post2") {
 elseif ($_GET['action'] == "wwo") {
 
 	$my->p = $slog->Permissions();
+	$my->pb = $slog->GlobalPermissions();
 	if ($my->p['wwo'] == 0) {
 		errorLogin();
 	}
@@ -196,8 +197,11 @@ elseif ($_GET['action'] == "wwo") {
 	$catbid = $scache->load('cat_bid');
 	$cat_cache = $catbid->get();
 	// Documents cachen
-	$wraps_obj = $scache->load('wraps');
-	$wrap_cache = $wraps_obj->get();
+	$result = $db->query("SELECT id, title, groups FROM {$db->pre}documents WHERE active = '1' LIMIT 1");
+	$wrap_cache = array();
+	while ($row = $db->fetch_assoc($result)) {
+		$wrap_cache[$row['id']] = $row;
+	}
 	// Mitglieder
 	$memberdata_obj = $scache->load('memberdata');
 	$memberdata = $memberdata_obj->get();
@@ -269,52 +273,44 @@ elseif ($_GET['action'] == "wwo") {
 			break;
 		case 'docs':
 			$id = $row->wiw_id;
-			if (isset($wrap_cache[$id])) {
-				$title = $wrap_cache[$id];
+			if (isset($wrap_cache[$id]) && $my->p['docs'] == 1 && GroupCheck($wrap_cache[$id]['groups'])) {
+				$title = $wrap_cache[$id]['title'];
+				$loc = $lang->phrase('wwo_docs');
 			}
 			else {
-				$title = $lang->phrase('wwo_fallback');
+				$loc = $lang->phrase('wwo_docs_fallback');
 			}
-			$loc = $lang->phrase('wwo_docs');
 			break;
 		case 'showforum':
 			$id = $row->wiw_id;
-			if (isset($cat_cache[$id]['name'])) {
-				$title = $cat_cache[$id]['name'];
+			if (!isset($cat_cache[$id]['name']) || (($cat_cache[$id]['opt'] == 'pw' && (!isset($my->pwfaccess[$id]) || $my->pwfaccess[$id] != $cat_cache[$id]['optvalue'])) || $my->pb[$id]['forum'] == 0)) {
+				$loc = $lang->phrase('wwo_showforum_fallback');
 			}
 			else {
-				$title = $lang->phrase('wwo_fallback');
+				$title = $cat_cache[$id]['name'];
+				$loc = $lang->phrase('wwo_showforum');
 			}
-			$loc = $lang->phrase('wwo_showforum');
 			break;
 		case 'newtopic':
 			$id = $row->wiw_id;
-			if (is_id($id)) {
-				if (isset($cat_cache[$id]['name'])) {
-					$title = $cat_cache[$id]['name'];
-				}
-				else {
-					$title = $lang->phrase('wwo_fallback');
-				}
-				$loc = $lang->phrase('wwo_newtopic_forum');
+			if (!isset($cat_cache[$id]['name']) || (($cat_cache[$id]['opt'] == 'pw' && (!isset($my->pwfaccess[$id]) || $my->pwfaccess[$id] != $cat_cache[$id]['optvalue'])) || $my->pb[$id]['forum'] == 0)) {
+				$loc = $lang->phrase('wwo_newtopic');
 			}
 			else {
-				$loc = $lang->phrase('wwo_newtopic');
+				$title = $cat_cache[$id]['name'];
+				$loc = $lang->phrase('wwo_newtopic_forum');
 			}
 			break;
 		case 'profile':
 			$id = $row->wiw_id;
-			if (isset($memberdata[$id])) {
-				$title = $memberdata[$id];
-			}
-			else {
-				$title = $lang->phrase('wwo_fallback');
-			}
 			if ($row->wiw_action == 'sendmail' || $row->wiw_action == 'mail' || $row->wiw_action == 'sendjabber') {
 				$loc = $lang->phrase('wwo_profile_send');
 			}
 			else {
 				$loc = $lang->phrase('wwo_profile');
+			}
+			if (isset($memberdata[$id])) {
+				$loc .= ': <a href="profile.php?id='.$id.'">'.$memberdata[$id].'</a>';
 			}
 			break;
 		case 'popup':
@@ -324,18 +320,29 @@ elseif ($_GET['action'] == "wwo") {
 			elseif ($row->wiw_action == 'filetypes') {
 				$loc = $lang->phrase('wwo_popup_filetypes');
 			}
-			elseif ($row->wiw_action == 'showpost') {
+			elseif ($row->wiw_action == 'showpost') {// Todo: Auf eine Query begrenzen (alle IDs auf einmal auslesen am Anfang)
 				$id = $row->wiw_id;
+
 				if (!isset($cache['p'.$id])) {
-					$result2 = $db->query('SELECT topic FROM '.$db->pre.'replies WHERE id = "'.$id.'" LIMIT 1');
-					$nfo = $db->fetch_assoc($result2);
-					$cache['p'.$id] = $gpc->prepare($nfo['topic']);
+					$result2 = $db->query("
+						SELECT t.topic, t.board, r.topic as post
+						FROM {$db->pre}replies AS r
+							LEFT JOIN {$db->pre}topics AS t ON r.topic_id = t.id
+						WHERE r.id = '{$id}'
+						LIMIT 1
+					", __LINE__, __FILE__);
+					if ($db->num_rows($result2) == 1) {
+						$nfo = $db->fetch_assoc($result2);
+						$cache['p'.$id] = $nfo;
+					}
 				}
-				$title = $cache['p'.$id];
-				if (empty($title)) {
-					$title = $lang->phrase('wwo_fallback');
+				if (!isset($cache['p'.$id]) || (($cat_cache[$cache['p'.$id]['board']]['opt'] == 'pw' && (!isset($my->pwfaccess[$cache['p'.$id]['board']]) || $my->pwfaccess[$cache['p'.$id]['board']] != $cat_cache[$cache['p'.$id]['board']]['optvalue'])) || $my->pb[$cache['p'.$id]['board']]['forum'] == 0)) {
+					$loc = $lang->phrase('wwo_popup_showpost_fallback');
 				}
-				$loc = $lang->phrase('wwo_popup_showpost');
+				else {
+					$title = $gpc->prepare($cache['p'.$id]['post']);
+					$loc = $lang->phrase('wwo_popup_showpost');
+				}
 			}
 			else {
 				$loc = $lang->phrase('wwo_popup');
@@ -366,18 +373,22 @@ elseif ($_GET['action'] == "wwo") {
 		case 'addreply':
 		case 'showtopic':
 		case 'print':
-		case 'pdf':
+		case 'pdf': // Todo: Auf eine Query begrenzen (alle IDs auf einmal auslesen am Anfang)
 			$id = $row->wiw_id;
 			if (!isset($cache['t'.$id])) {
-				$result2 = $db->query('SELECT topic FROM '.$db->pre.'topics WHERE id = "'.$id.'" LIMIT 1');
-				$nfo = $db->fetch_assoc($result2);
-				$cache['t'.$id] = $gpc->prepare($nfo['topic']);
+				$result2 = $db->query("SELECT topic, board FROM {$db->pre}topics WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
+				if ($db->num_rows($result2) == 1) {
+					$nfo = $db->fetch_assoc($result2);
+					$cache['t'.$id] = $nfo;
+				}
 			}
-			$title = $cache['t'.$id];
-			if (empty($title)) {
-				$title = $lang->phrase('wwo_fallback');
+			if (!isset($cache['t'.$id]) || (($cat_cache[$cache['t'.$id]['board']]['opt'] == 'pw' && (!isset($my->pwfaccess[$cache['t'.$id]['board']]) || $my->pwfaccess[$cache['t'.$id]['board']] != $cat_cache[$cache['t'.$id]['board']]['optvalue'])) || $my->pb[$cache['t'.$id]['board']]['forum'] == 0)) {
+				$loc = $lang->phrase('wwo_'.$row->wiw_script.'_fallback');
 			}
-			$loc = $lang->phrase('wwo_'.$row->wiw_script);
+			else {
+				$title = $gpc->prepare($cache['t'.$id]['topic']);
+				$loc = $lang->phrase('wwo_'.$row->wiw_script);
+			}
 			break;
 		case 'misc':
 			switch ($row->wiw_action) {
@@ -385,6 +396,7 @@ elseif ($_GET['action'] == "wwo") {
 			case 'bbhelp':
 			case 'rules':
 			case 'error':
+			case 'board_rules':
 				$loc = $lang->phrase('wwo_misc_'.$row->wiw_action);
 				break;
 			case 'spellcheck_execute':
@@ -396,16 +408,6 @@ elseif ($_GET['action'] == "wwo") {
 			case 'report_post':
 			case 'report_post2':
 				$loc = $lang->phrase('wwo_misc_report_post');
-				break;
-			case 'board_rules':
-				$id = $row->wiw_id;
-				if (isset($cat_cache[$id]['name'])) {
-					$title = $cat_cache[$id]['name'];
-				}
-				else {
-					$title = $lang->phrase('wwo_fallback');
-				}
-				$loc = $lang->phrase('wwo_misc_board_rules');
 				break;
 			default:
 				$loc = $lang->phrase('wwo_misc');
