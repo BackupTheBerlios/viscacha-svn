@@ -104,6 +104,9 @@ foreach ($langcodes as $code => $lid) {
 		$src = 'language';
 	}
 	foreach($ini as $file => $data){
+		if (!isset($data[$src])) {
+			continue;
+		}
 		$c->getdata("../language/{$lid}/{$file}.lng.php", 'lang');
 		foreach ($data[$src] as $varname => $text) {
 			if ($text === null) {
