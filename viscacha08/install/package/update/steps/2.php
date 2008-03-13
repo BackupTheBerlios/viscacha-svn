@@ -72,7 +72,7 @@ _docs/readme.txt
  - classes/feedcreator/rss10.inc.php
  - classes/feedcreator/rss20.inc.php
  - classes/feedcreator/xbel.inc.php
- 
+
  - classes/ftp/class.ftp.php
 
  - classes/graphic/class.thumbnail.php
@@ -148,6 +148,7 @@ _docs/readme.txt
  - language/*/mails/topic_moved.php
 
  - language/*/classes.lng.php
+ - language/*/wwo.lng.php
 
 
 4. Delete the following files (* = an ID):
@@ -156,15 +157,11 @@ _docs/readme.txt
 
 
 5. Upload the following files from the directory "templates" (* = an ID):
- - templates/1/admin/topic/status.html
- - templates/1/newtopic/index.html
+ - templates/*/attachments.html
+ - templates/*/admin/topic/status.html
+ - templates/*/newtopic/index.html
  - templates/lang2js.php
- - templates/menu.js
-
-
-Finally upload the install/ directory and execute the update script.
-After you the update is ready and you are back in your Admin Control Panel
-again, please check for Updates of your installed Packages!</textarea>
+ - templates/menu.js</textarea>
 </p>
 </div>
 <div class="bfoot center"><input type="submit" value="Continue" /></div>

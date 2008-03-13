@@ -1,13 +1,14 @@
 ########################################
-# Readme for Viscacha 0.8 RC 4         #
+# Readme for Viscacha 0.8 RC 4 PL1     #
 ########################################
 
 == Table of Contents ==
 1. Installation
 2. CHMODs
-3. Update
-4. System requirements
-5. Contact
+3. Update Viscacha 0.8 RC4 to 0.8 RC4 PL1
+4  Update Viscacha 0.8 RC3 to 0.8 RC4 PL1
+5. System requirements
+6. Contact
 
 
 == Installation ==
@@ -51,9 +52,44 @@ Following files need CHMOD 666:
   "templates"
 
 
-== Update ==
+== Update Viscacha 0.8 RC4 to 0.8 RC4 PL1 ==
 First make a complete backup of your (old) data!
-Note: You can only update from Viscacha 0.8 RC3 to 0.8 RC4!
+Note: This instructions are only for an update from Viscacha 0.8 RC4 to
+0.8 RC4 PL1! The update instructions for 0.8 RC3 to 0.8 RC4 PL1 are below.
+
+1. Upload (and overwrite) the following files (* = an ID):
+ - misc.php
+ - register.php
+
+ - admin/cms.php
+ - admin/forums.php
+ - admin/packages.php
+ - admin/profilefield.php
+
+ - classes/class.bbcode.php
+ - classes/class.permissions.php
+ - classes/function.global.php
+ - classes/function.viscacha_frontend.php
+
+2. Upload (and overwrite) the following files (* = an ID):
+       Note: Files from the directory language/1/ are German, files from the
+             directory language/2/ are English. Upload only the files from the
+             language you need into the correct directory.
+ - language/*/wwo.lng.php
+
+3. Upload the following files from the directory "templates" (* = an ID):
+ - templates/*/attachments.html
+ - templates/menu.js
+
+Finally upload the install/ directory and execute the update script.
+After the update is ready and you are back in your Admin Control Panel,
+please check for Updates of your installed Packages!
+
+
+== Update Viscacha 0.8 RC3 to 0.8 RC4 PL1 ==
+First make a complete backup of your (old) data!
+Note: This instructions are only for an update from Viscacha 0.8 RC3 to
+0.8 RC4 PL1! The update instructions for 0.8 RC4 to 0.8 RC4 PL1 are above.
 
 1. Upload (and overwrite) the following files (* = an ID):
  - addreply.php
@@ -114,7 +150,7 @@ Note: You can only update from Viscacha 0.8 RC3 to 0.8 RC4!
  - classes/feedcreator/rss10.inc.php
  - classes/feedcreator/rss20.inc.php
  - classes/feedcreator/xbel.inc.php
- 
+
  - classes/ftp/class.ftp.php
 
  - classes/graphic/class.thumbnail.php
@@ -190,6 +226,7 @@ Note: You can only update from Viscacha 0.8 RC3 to 0.8 RC4!
  - language/*/mails/topic_moved.php
 
  - language/*/classes.lng.php
+ - language/*/wwo.lng.php
 
 
 4. Delete the following files (* = an ID):
@@ -198,15 +235,16 @@ Note: You can only update from Viscacha 0.8 RC3 to 0.8 RC4!
 
 
 5. Upload the following files from the directory "templates" (* = an ID):
- - templates/1/admin/topic/status.html
- - templates/1/newtopic/index.html
+ - templates/*/attachments.html
+ - templates/*/admin/topic/status.html
+ - templates/*/newtopic/index.html
  - templates/lang2js.php
  - templates/menu.js
 
 
 Finally upload the install/ directory and execute the update script.
-After you the update is ready and you are back in your Admin Control Panel
-again, please check for Updates of your installed Packages!
+After the update is ready and you are back in your Admin Control Panel,
+please check for Updates of your installed Packages!
 
 
 == System requirements ==

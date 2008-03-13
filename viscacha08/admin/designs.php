@@ -622,10 +622,11 @@ elseif ($job == 'design_export2') {
 	}
 	if ($error) {
 		echo head();
+		$error = $archive->errorInfo(true);
 		unset($archive);
 		$filesystem->unlink($tempdir.$file);
 		$filesystem->unlink($settings);
-		error('admin.php?action=designs&job=export&id='.$id, $archive->errorInfo(true));
+		error('admin.php?action=designs&job=export&id='.$id, $error);
 	}
 	else {
 		viscacha_header('Content-Type: application/zip');

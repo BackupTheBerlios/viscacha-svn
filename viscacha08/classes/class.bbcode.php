@@ -756,11 +756,11 @@ class BBCode {
 
 		if($bbcode_table['head']['enabled'] == true){
 			for($i=0;$i<($bbcode_table['table']['cols']);$i++){
-				if(empty($table_content[0][$i])){
-					$table_head[$i] = '&nbsp;';
-				}
-				else{
+				if(!empty($table_content[0][$i]) || (isset($table_content[0][$i]) && $table_content[0][$i] == 0)){
 					$table_head[$i] = $table_content[0][$i];
+				}
+				else {
+					$table_head[$i] = '&nbsp;';
 				}
 			}
 			for($i=1;$i<$bbcode_table['table']['rows'];$i++){

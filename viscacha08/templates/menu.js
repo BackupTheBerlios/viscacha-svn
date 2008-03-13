@@ -199,6 +199,9 @@ function RegisterTooltip(id) {
 		if (active != 0 && active != id) {
 			HideMenu(active);
 		}
+		else {
+			this.onmouseout = elemMouseOut;
+		}
 		ShowMenu(id);
 	}
 }

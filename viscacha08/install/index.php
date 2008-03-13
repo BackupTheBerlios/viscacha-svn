@@ -1,8 +1,11 @@
 <?php
 error_reporting(E_ALL);
 
-define('VISCACHA_VERSION', '0.8 RC4');
-define('VISCACHA_VERSION_OLD', '0.8 RC3');
+define('VISCACHA_VERSION', '0.8 RC4 pl1');
+$old_versions = array(
+	'update' => '0.8 RC3',
+	'update_pl' => '0.8 RC4'
+);
 define('VISCACHA_CORE', '1');
 define('SCRIPTNAME', 'install');
 
@@ -21,12 +24,14 @@ if (!$locked) {
 		'install' => array(
 			'title' => 'Installation',
 			'description' => 'Choose this if you want to install a new copy of this software.'
-		),
-		'update' => array(
-			'title' => 'Update: '.VISCACHA_VERSION_OLD.' => '.VISCACHA_VERSION,
-			'description' => 'Already running Viscacha? Then choose this option to update to the new Version!'
 		)
 	);
+	foreach ($old_versions as $dir => $old_version) {
+		$packages[$dir] = array(
+			'title' => 'Update: '.$old_version.' => '.VISCACHA_VERSION,
+			'description' => 'Already running Viscacha? Then choose this option to update from '.$old_version.' to the new Version!'
+		);
+	}
 
 	$package = null;
 	if (isset($_REQUEST['package']) && isset($packages[$_REQUEST['package']])) {
@@ -109,7 +114,7 @@ if (!$locked) {
 		<form method="post" action="index.php?package=<?php echo $package;?>&amp;step=<?php echo $nextstep; ?>">
 		<div class="border">
 			<h3><?php echo $steps[$step]; ?></h3>
-			<?php include('package/'.$package.'/steps/'.$step.'.php'); ?>
+			<?php include(getFilePath($package, $step)); ?>
 		</div>
 		</form>
 		<?php } elseif (!$locked) { ?>
