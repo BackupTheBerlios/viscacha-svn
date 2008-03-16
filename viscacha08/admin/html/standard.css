@@ -304,26 +304,185 @@ a:hover {
 	background-color: #F5F8FA;
 }
 #menu_bbcolor, #menu_bbsize, #menu_bbhx, #menu_help, #menu_bbalign {
-	font-size: 9pt;font-weight: bold;font-family: Trebuchet MS, Verdana, Arial, Helvetica, sans-serif;
+	font-size: 9pt;
+	font-weight: bold;
+	font-family: Trebuchet MS, Verdana, Arial, Helvetica, sans-serif;
 }
 #codebuttons a, #menu_bbcolor, #menu_bbsize, #menu_bbhx, #menu_help, #menu_bbalign {
-	border: 1px solid #336699;background-color: #F5F8FA;
+	border: 1px solid #336699;
+	background-color: #F5F8FA;
 }
 #codebuttons br {
 	clear: left;
 }
 #codebuttons a {
-	height: 18px;float: left;display: block;padding: 2px;margin: 1px;vertical-align: middle;
+	height: 18px;
+	float: left;
+	display: block;
+	padding: 2px;
+	margin: 1px;
+	vertical-align: middle;
 }
 #codebuttons a:hover {
 	background-color: #BCCADA;
 }
 #codebuttons img {
-	vertical-align: middle;border-width: 0px;
+	vertical-align: middle;
+	border-width: 0px;
 }
 .bbcolor {
-	line-height: 10px;font-size: 10px;
+	line-height: 10px;
+	font-size: 10px;
 }
 .bbcolor span {
-	width: 10px;height: 10px;display: block;float: left;cursor: pointer;
+	width: 10px;
+	height: 10px;
+	display: block;
+	float: left;
+	cursor: pointer;
+}
+
+/********************************************************************
+ * openWYSIWYG stylesheet file Copyright (c) 2006 openWebWare.com
+ * Contact us at devs@openwebware.com
+ * This copyright notice MUST stay intact for use.
+ ********************************************************************/
+.toolbar1 {
+	height: 26px;
+	background-color: #F4F4F4;
+	border-bottom:1px solid #C9C9C9;
+}
+
+.buttonEditor {
+	width: 20px;
+	height: 20px;
+	border: 0px solid transparent;
+	margin: 1px;
+	padding: 0px;
+	background: transparent;
+}
+.buttonEditorOver {
+	width: 20px;
+	height: 20px;
+	border: 1px solid #999999;
+	margin: 0;
+	padding: 0px;
+}
+
+.tableTextareaEditor {
+	border: 1px solid #888888;
+}
+.tableTextareaEditor td {
+	border-width: 0px;
+}
+.iframeText {
+	background-color: #FFFFFF;
+}
+
+.wysiwyg-statusbar {
+	font-family: Arial;
+	font-size: 9px;
+	background-color: #EEEEEE;
+}
+a.wysiwyg-statusbar {
+	font-family: Arial;
+	font-size: 9px;
+	color: #000000;
+	text-decoration:none;
+}
+a.wysiwyg-statusbar:hover {
+	text-decoration:underline;
+}
+
+.dropdown {
+	background-color: #FFFFFF;
+	border: 1px solid #333333;
+	height: 160px;
+	overflow: auto;
+	padding: 1px;
+}
+button.mouseOver {
+	background-color: #EEEEEE;
+	border: 1px solid #CCCCCC;
+	padding: 3px;
+	cursor: default;
+	text-align: left;
+}
+button.mouseOut {
+	background-color: #FFFFFF;
+	border: 1px solid #FFFFFF;
+	padding: 3px;
+	cursor: default;
+	text-align: left;
+}
+
+.wysiwyg-context-menu-div {
+	background-color:#F4F4F4;
+	border: 1px solid #C9C9C9;
+	width:170px;
+}
+.wysiwyg-context-menu {
+	font-family: Arial;
+	font-size:11px;
+	color:#000000;
+	width:100%;
+}
+.wysiwyg-context-menu .icon {
+	background-color:#EEEEEE;
+}
+.wysiwyg-context-menu .disabled {
+	font-family: Arial;
+	font-size:11px;
+	color:#999999;
+	text-decoration:none;
+	padding-left: 3px;
+}
+.wysiwyg-context-menu a {
+	font-family: Arial;
+	font-size:11px;
+	color:#000000;
+	text-decoration:none;
+	padding-left: 3px;
+}
+.wysiwyg-context-menu .mouseover {
+	background-color: #EEEEEE;
+}
+
+.on {
+	background-color: #EEEEEE;
+	border: 1px solid #CCCCCC;
+	padding: 6px;
+	width: 160px;
+	cursor: default;
+	height: 5px;
+}
+.off {
+	background-color: #FFFFFF;
+	border: 1px solid #FFFFFF;
+	padding: 6px;
+	width: 160px;
+	cursor: default;
+	height: 5px;
+}
+
+.wysiwyg-color-picker-table {
+	border: 1px solid #7E7E81;
+	background-color: #F7F7F7;
+	padding: 1px;
+}
+.wysiwyg-color-picker-div {
+	font-size: 1px;
+	height:12px;
+	width:12px;
+}
+.selectColorBorder {
+	border: 1px solid #F7F7F7;
+}
+.selectColorOn {
+	border: 1px solid #999999;
+	background-color: #CCCCCC;
+}
+.selectColorOff {
+	border: 1px solid #F7F7F7;
+	background-color: #F7F7F7;
 }

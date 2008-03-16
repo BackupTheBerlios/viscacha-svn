@@ -53,6 +53,7 @@ $lang['admin_cms_err_no_title'] = 'You have not got specified a valid title';
 $lang['admin_cms_existing_documents'] = 'Existing Components';
 $lang['admin_cms_existing_documents_and_pages'] = 'Existing Documents and Pages';
 $lang['admin_cms_extended_font'] = 'Extended Font';
+$lang['admin_cms_file_does_not_exist'] = 'The file does not exist!';
 $lang['admin_cms_form_add'] = 'Add';
 $lang['admin_cms_form_delete'] = 'Delete';
 $lang['admin_cms_form_edit'] = 'Edit';

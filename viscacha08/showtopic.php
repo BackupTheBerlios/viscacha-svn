@@ -365,7 +365,7 @@ while ($row = $gpc->prepare($db->fetch_object($result))) {
 			$imginfo = get_extension($uppath);
 
 			if (!isset($fileicons[$imginfo])) {
-				$icon = 'unknown.gif';
+				$icon = 'unknown';
 			}
 			else {
 				$icon = $fileicons[$imginfo];

@@ -486,20 +486,22 @@ function head($onload = '') {
 <body<?php echo iif(!empty($onload), ' '.$onload); ?>>
 	<?php
 }
-function foot() {
-	global $config, $benchmark, $db, $lang;
-	$benchmark = round(benchmarktime()-$benchmark, 5);
-	$queries = $db->benchmark('queries');
-	$lang->assign('queries', $queries);
-	$lang->assign('benchmark', $benchmark);
-	?>
-	<br style="line-height: 8px;" />
-	<div class="stext center">[<?php echo $lang->phrase('admin_benchmark_generation_time'); ?>] [<?php echo $lang->phrase('admin_benchmark_queries'); ?>]</div>
-    <div id="copyright">
-        <strong><a href="http://www.viscacha.org" target="_blank">Viscacha <?php echo $config['version']; ?></a></strong><br />
-        Copyright &copy; 2004-2007, MaMo Net
-        <?php echo iif($config['pccron'] == 1, '<img src="cron.php" width="0" height="0" alt="" />'); ?>
-    </div>
+function foot($nocopy = false) {
+	if ($nocopy == false) {
+		global $config, $benchmark, $db, $lang;
+		$benchmark = round(benchmarktime()-$benchmark, 5);
+		$queries = $db->benchmark('queries');
+		$lang->assign('queries', $queries);
+		$lang->assign('benchmark', $benchmark);
+		?>
+		<br style="line-height: 8px;" />
+		<div class="stext center">[<?php echo $lang->phrase('admin_benchmark_generation_time'); ?>] [<?php echo $lang->phrase('admin_benchmark_queries'); ?>]</div>
+	    <div id="copyright">
+	        <strong><a href="http://www.viscacha.org" target="_blank">Viscacha <?php echo $config['version']; ?></a></strong><br />
+	        Copyright &copy; 2004-2007, MaMo Net
+	        <?php echo iif($config['pccron'] == 1, '<img src="cron.php" width="0" height="0" alt="" />'); ?>
+	    </div>
+	<?php } ?>
     </body>
     </html>
 	<?php

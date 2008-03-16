@@ -130,7 +130,6 @@ $lang['admin_examples_textcodes'] = 'Text-Darstellungen';
 $lang['admin_e_all'] = 'E_ALL: Alle Fehler, Warnungen und Hinweise (Außgenommen: E_STRICT)';
 $lang['admin_e_error'] = 'E_ERROR: Laufzeit-Fehler';
 $lang['admin_e_notice'] = 'E_NOTICE: Laufzeit-Hinweise';
-$lang['admin_e_parse'] = 'E_PARSE: Parse-Fehler';
 $lang['admin_e_strict'] = 'E_STRICT: Kompatibilitäts-Informationen zur Laufzeit (nur PHP5; derzeit nicht unterstützt)';
 $lang['admin_e_warning'] = 'E_WARNING: Laufzeit-Warnungen';
 $lang['admin_file_typ_captcha'] = 'CAPTCHA: Dateityp:';
@@ -299,7 +298,7 @@ $lang['admin_persistent_connection'] = 'Persistente Datenbankverbindungen benutz
 $lang['admin_persistent_connection_info'] = 'Nur für "Standard MySQL". Datenbank-Verbindungen werden nach dem Ende des Scripts nicht geschlossen. Wenn eine Verbindung angefordert wird, wird geprüft ob bereits eine Verbindung besteht und diese dann ggf. wieder aufgenommen.<br />Nähere Informationen: <a href="http://www.php.net/manual/features.persistent-connections.php" target="_blank">php.net - Persistente Datenbankverbindungen</a>';
 $lang['admin_php_error_report'] = 'PHP-Fehlerberichte (error_reporting):';
 $lang['admin_php_error_report_info'] = 'Gibt an, welche Fehler von PHP angezeigt werden sollen und welche nicht. Nähere Informationen: <a href="http://www.php.net/manual/ref.errorfunc.php#errorfunc.constants" target="_blank">Fehler Behandlung: Konstanten</a> und <a href="http://www.php.net/error-reporting" target="_blank">error_reporting()</a>.';
-$lang['admin_php_standard'] = 'PHP-Standard';
+$lang['admin_php_standard'] = 'Keine PHP-Fehlermeldungen anzeigen';
 $lang['admin_php_web_file_edit'] = 'PHP, Webserver und Dateisystem';
 $lang['admin_pic_quality_captcha'] = 'CAPTCHA: Qualität der Bilder:';
 $lang['admin_pic_quality_captcha_info'] = 'In Prozent (100 = Sehr Gut, 0 = Sehr schlecht). Nur bei JPEG-Bildern möglich.';

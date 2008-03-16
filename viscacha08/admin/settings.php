@@ -592,13 +592,12 @@ elseif ($job == 'server') {
 	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_php_error_report'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_php_error_report_info'); ?></span></td>
 	   <td class="mbox" width="50%"><select name="error_reporting">
 	   <option value="-1"<?php echo iif($config['error_reporting'] == -1, ' selected="selected"'); ?>><?php echo $lang->phrase('admin_php_standard'); ?></option>
-	   <option value="1"<?php echo iif($config['error_reporting'] == 1, ' selected="selected"'); ?>><?php echo $lang->phrase('admin_e_error'); ?></option>
-	   <option value="2"<?php echo iif($config['error_reporting'] == 2, ' selected="selected"'); ?>><?php echo $lang->phrase('admin_e_warning'); ?> </option>
-	   <option value="4"<?php echo iif($config['error_reporting'] == 4, ' selected="selected"'); ?>><?php echo $lang->phrase('admin_e_parse'); ?> </option>
-	   <option value="8"<?php echo iif($config['error_reporting'] == 8, ' selected="selected"'); ?>><?php echo $lang->phrase('admin_e_notice'); ?></option>
-	   <option value="2047"<?php echo iif($config['error_reporting'] == 2047, ' selected="selected"'); ?>><?php echo $lang->phrase('admin_e_all'); ?></option>
+	   <option value="E_ERROR"<?php echo iif($config['error_reporting'] == 1 || $config['error_reporting'] == 'E_ERROR', ' selected="selected"'); ?>><?php echo $lang->phrase('admin_e_error'); ?></option>
+	   <option value="E_WARNING"<?php echo iif($config['error_reporting'] == 2 || $config['error_reporting'] == 'E_WARNING', ' selected="selected"'); ?>><?php echo $lang->phrase('admin_e_warning'); ?> </option>
+	   <option value="E_NOTICE"<?php echo iif($config['error_reporting'] == 8 || $config['error_reporting'] == 'E_NOTICE', ' selected="selected"'); ?>><?php echo $lang->phrase('admin_e_notice'); ?></option>
+	   <option value="E_ALL"<?php echo iif($config['error_reporting'] == 2047 || $config['error_reporting'] == 'E_ALL', ' selected="selected"'); ?>><?php echo $lang->phrase('admin_e_all'); ?></option>
 	   <?php if (version_compare(PHP_VERSION, '5.0.0', '>=')) { ?>
-	   <option value="2048"<?php echo iif($config['error_reporting'] == 2048, ' selected="selected"'); ?>><?php echo $lang->phrase('admin_e_strict'); ?></option>
+	   <option value="E_STRICT"<?php echo iif($config['error_reporting'] == 2048 || $config['error_reporting'] == 'E_STRICT', ' selected="selected"'); ?>><?php echo $lang->phrase('admin_e_strict'); ?></option>
 	   <?php } ?>
 	   </select></td>
 	  </tr>

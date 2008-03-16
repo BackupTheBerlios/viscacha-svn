@@ -151,6 +151,14 @@ function parseNavPosSetting() {
 	}
 	return $arr;
 }
+function getWYSIWYG($textarea) {
+	$r = '<script type="text/javascript" src="templates/editor/wysiwyg.js"></script>';
+	$r .= '<script type="text/javascript"> WYSIWYG.attach(\''.$textarea.'\', full); </script>';
+	return $r;
+}
+
+define('EDITOR_IMAGEDIR', './uploads/images/');
+$supportedextentions = array('gif','png','jpeg','jpg');
 
 ($code = $plugins->load('admin_cms_jobs')) ? eval($code) : null;
 
@@ -432,11 +440,13 @@ elseif ($job == 'nav_edit2') {
 	$result = $db->query("SELECT * FROM {$db->pre}menu WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	$data = $db->fetch_assoc($result);
 
-	$title = $gpc->get('title', str);
+	$title = $gpc->get('title', none);
 	$title = trim($title);
 	if (empty($title)) {
 		error('admin.php?action=cms&job=nav_addbox', $lang->phrase('admin_cms_err_no_title'));
 	}
+	$title = $db->escape_string($title);
+
 	$active = $gpc->get('active', int);
 	$groups = $gpc->get('groups', arr_int);
 	$result = $db->query('SELECT COUNT(*) FROM '.$db->pre.'groups', __LINE__, __FILE__);
@@ -644,11 +654,12 @@ elseif ($job == 'nav_addplugin2') {
 	$plug = $gpc->get('plugin', int);
 	$result = $db->query("SELECT id, name, active FROM {$db->pre}plugins WHERE id = '{$plug}' AND position = 'navigation'", __LINE__, __FILE__);
 	$data = $db->fetch_assoc();
-	$title = $gpc->get('title', str);
+	$title = $gpc->get('title', none);
 	$title = trim($title);
 	if (empty($title)) {
 		$title = $data['name'];
 	}
+	$title = $db->escape_string($title);
 	$sort = $gpc->get('sort', str);
 	if (substr($sort, 0, 4) == 'pos_') {
 		$sort = array(
@@ -761,7 +772,8 @@ elseif ($job == 'nav_add') {
 }
 elseif ($job == 'nav_add2') {
 	echo head();
-	$title = $gpc->get('title', str);
+	$title = $gpc->get('title', none);
+	$title = $db->escape_string($title);
 	$target = $gpc->get('target', str);
 	$url = $gpc->get('url', str);
 	$sub = $gpc->get('sub', int);
@@ -863,10 +875,11 @@ elseif ($job == 'nav_addbox') {
 }
 elseif ($job == 'nav_addbox2') {
 	echo head();
-	$title = $gpc->get('title', str);
+	$title = $gpc->get('title', none);
 	if (empty($title)) {
 		error('admin.php?action=cms&job=nav_addbox', $lang->phrase('admin_cms_err_no_title'));
 	}
+	$title = $db->escape_string($title);
 	$sort = $gpc->get('sort', str);
 	if (substr($sort, 0, 4) == 'pos_') {
 		$sort = array(
@@ -935,6 +948,276 @@ elseif ($job == 'nav_comslist') {
 	   <?php } ?>
 	   </td>
 	 </table>
+	<?php
+	echo foot();
+}
+elseif ($job == 'doc_select_image') {
+	/********************************************************************
+	 * openImageLibrary addon Copyright (c) 2006 openWebWare.com
+	 * Contact us at devs@openwebware.com
+	 * This copyright notice MUST stay intact for use.
+	 ********************************************************************/
+	$tpl = new tpl();
+
+	$leadon = realpath(EDITOR_IMAGEDIR).DIRECTORY_SEPARATOR;
+	$leadon = str_replace('\\', '/', $leadon);
+	$dir = $gpc->get('dir', none);
+	$dotdotdir = false;
+	$dirok = false;
+	if(!empty($dir)) {
+		if ($dir == '..') {
+			$leadon = extract_dir($leadon, true).DIRECTORY_SEPARATOR;
+			$leadon = str_replace('\\', '/', $leadon);
+			$dir = '';
+		}
+		else {
+			$leadon .= $dir.DIRECTORY_SEPARATOR;
+			$dotdotdir = true;
+		}
+	}
+
+	if(!file_exists($leadon)) {
+		$leadon = realpath(EDITOR_IMAGEDIR).DIRECTORY_SEPARATOR;
+		$leadon = str_replace('\\', '/', $leadon);
+	}
+
+	$sort = $gpc->get('sort', none);
+
+	clearstatcache();
+	$n = 0;
+	if ($handle = opendir($leadon)) {
+		while (false !== ($file = readdir($handle))) {
+			//first see if this file is required in the listing
+			if ($file == "." || $file == "..")  continue;
+			if (@filetype($leadon.$file) == "dir") {
+
+				$n++;
+				if($sort=="date") {
+					$key = @filemtime($leadon.$file) . ".$n";
+				}
+				else {
+					$key = $n;
+				}
+				$dirs[$key] = $file . "/";
+			}
+			else {
+				$n++;
+				if($sort=="date") {
+					$key = @filemtime($leadon.$file) . ".$n";
+				}
+				elseif($sort=="size") {
+					$key = @filesize($leadon.$file) . ".$n";
+				}
+				else {
+					$key = $n;
+				}
+				$files[$key] = $file;
+			}
+		}
+		closedir($handle);
+	}
+
+	if($sort=="date") {
+		@ksort($dirs, SORT_NUMERIC);
+		@ksort($files, SORT_NUMERIC);
+	}
+	elseif($sort=="size") {
+		@natcasesort($dirs);
+		@ksort($files, SORT_NUMERIC);
+	}
+	else {
+		@natcasesort($dirs);
+		@natcasesort($files);
+	}
+
+	$order = $gpc->get('order', none);
+
+	if($order=="desc" && $sort!="size") {$dirs = @array_reverse($dirs);}
+	if($order=="desc") {$files = @array_reverse($files);}
+	$dirs = @array_values($dirs); $files = @array_values($files);
+
+	$fileicons_obj = $scache->load('fileicons');
+	$fileicons = $fileicons_obj->get();
+
+	echo head('style="background-color: #ffffff;"');
+	?>
+	<script type="text/javascript">
+		function selectImage(url) {
+			if(parent) {
+				parent.document.getElementById("src").value = url;
+			}
+		}
+
+		if(parent) {
+			parent.document.getElementById("dir").value = '<?php echo iif($dotdotdir, $dir); ?>';
+		}
+
+	</script>
+	<table class="border" border="0" cellspacing="0" cellpadding="4" align="center" style="width: 230px;">
+		<tr>
+			<td>
+			  <?php
+				if($dotdotdir) {
+					?>
+					<a href="admin.php?action=cms&job=doc_select_image&dir=<?php echo extract_dir($dir); ?>"><img src="<?php echo $tpl->img('filetypes/folder'); ?>" alt="" border="0" />&nbsp;<em>Previous Directory</em></a><br>
+					<?php
+				}
+				$arsize = count($dirs);
+				for($i=0;$i<$arsize;$i++) {
+					$dir = substr($dirs[$i], 0, strlen($dirs[$i]) - 1);
+					?>
+					<a href="admin.php?action=cms&job=doc_select_image&dir=<?php echo urlencode($dirs[$i]); ?>"><img src="<?php echo $tpl->img('filetypes/folder'); ?>" alt="" border="0" />&nbsp;<?php echo $dir; ?></a><br>
+					<?php
+				}
+				if ($arsize > 0 || $dotdotdir) {
+					echo "</td></tr><tr><td>";
+				}
+				$arsize = count($files);
+				for($i=0;$i<$arsize;$i++) {
+					$ext = strtolower(substr($files[$i], strrpos($files[$i], '.')+1));
+					if(in_array($ext, $supportedextentions)) {
+						$filename = $files[$i];
+						if (!isset($fileicons[$ext])) {
+							$icon = 'unknown';
+						}
+						else {
+							$icon = $fileicons[$ext];
+						}
+					?>
+					<a href="javascript:void(0)" onclick="selectImage('<?php echo EDITOR_IMAGEDIR.$filename; ?>');">
+					<img src="<?php echo $tpl->img('filetypes/'.$icon); ?>" alt="" border="0" />&nbsp;<?php echo $filename; ?>
+					</a><br>
+					<?php
+					}
+				}
+				?>
+			</td>
+		</tr>
+	</table>
+	<?php
+	echo foot(true);
+}
+elseif ($job == 'doc_insert_image') {
+	$wysiwyg = $gpc->get('wysiwyg', str);
+	$leadon = realpath(EDITOR_IMAGEDIR).DIRECTORY_SEPARATOR;
+	$leadon = str_replace('\\', '/', $leadon);
+	$dir = $gpc->get('dir', none);
+	if(!empty($dir)) {
+		if(substr($dir, -1, 1)!='/') {
+			$dir = $dir . '/';
+		}
+		$dirok = true;
+		$dirnames = split('/', $dir);
+		$count = count($dirnames);
+		for($di=0; $di < $count; $di++) {
+			if($di<(sizeof($dirnames)-2)) {
+				$dotdotdir = $dotdotdir . $dirnames[$di] . '/';
+			}
+		}
+		if(substr($dir, 0, 1)=='/') {
+			$dirok = false;
+		}
+		if($dir == $leadon) {
+			$dirok = false;
+		}
+		if($dirok) {
+			$leadon .= $dir;
+		}
+		else {
+			$dir = '';
+		}
+	}
+
+	// upload file
+	$error = null;
+    if (!empty($_FILES['file']['name'])) {
+    	require("classes/class.upload.php");
+		$my_uploader = new uploader();
+		$my_uploader->max_filesize(ini_maxupload());
+		$my_uploader->file_types($supportedextentions);
+		$my_uploader->set_path($leadon);
+		if ($my_uploader->upload('file')) {
+			$my_uploader->save_file();
+		}
+		if ($my_uploader->upload_failed()) {
+			$error = $my_uploader->get_error();
+		}
+		$file = $leadon.$my_uploader->fileinfo('filename');
+		if (!file_exists($file)) {
+		    $error = $lang->phrase('admin_cms_file_does_not_exist');
+		}
+    }
+    $htmlhead .= '<script type="text/javascript" src="templates/editor/wysiwyg-popup.js"></script>';
+    echo head(' onLoad="loadImage();"');
+	?>
+<form method="post" action="admin.php?action=cms&amp;job=doc_insert_image&amp;wysiwyg=<?php echo $wysiwyg; ?>" enctype="multipart/form-data">
+<input type="hidden" id="dir" name="dir" value="">
+<table class="border" border="0" cellspacing="0" cellpadding="4" align="center" style="width: 660px;">
+	<tr>
+		<td class="obox" colspan="4">Insert Image</td>
+		<td class="obox">Select Image</td>
+	</tr>
+	<tr class="mbox">
+		<td colspan="2">Upload:<br /><span class="stext">Max Filesize: <?php echo formatFilesize(ini_maxupload()); ?></span></td>
+		<td colspan="2">
+			<input type="file" name="file" />
+			<?php
+			if ($error !== null) {
+				echo '<br /><span class="stext">'.$error.'</span>';
+			}
+			?>
+		</td>
+		<td rowspan="7">
+			<iframe id="chooser" height="260" width="250" frameborder="0" src="admin.php?action=cms&amp;job=doc_select_image&amp;dir=<?php echo urlencode($dir); ?>"></iframe>
+		</td>
+	</tr><tr class="mbox">
+		<td colspan="2">Image URL:</td>
+		<td colspan="2"><input type="text" name="src" id="src" value="" size="40" /></td>
+	</tr><tr class="mbox">
+		<td colspan="2">Alternate Text:</td>
+		<td colspan="2"><input type="text" name="alt" id="alt" value="" size="40" /></td>
+	</tr>
+	<tr><td class="obox" colspan="4">Layout</td></tr>
+	<tr class="mbox">
+	  <td>Width:</td>
+	  <td><input type="text" name="width" id="width" value="" size="10" /></td>
+	  <td>Height:</td>
+	  <td><input type="text" name="height" id="height" value="" size="10" /></td>
+	</tr>
+	<tr class="mbox">
+	  <td>Border:</td>
+	  <td><input type="text" name="border" id="border" value="0" size="10" /></td>
+	  <td>Alignment:</td>
+	  <td>
+		<select name="align" id="align">
+		 <option value="">Not Set</option>
+		 <option value="left">Left</option>
+		 <option value="right">Right</option>
+		 <option value="texttop">Texttop</option>
+		 <option value="absmiddle">Absmiddle</option>
+		 <option value="baseline">Baseline</option>
+		 <option value="absbottom">Absbottom</option>
+		 <option value="bottom">Bottom</option>
+		 <option value="middle">Middle</option>
+		 <option value="top">Top</option>
+		</select>
+	  </td>
+	</tr>
+	<tr class="mbox">
+	  <td>Horizontal Space:</td>
+	  <td><input type="text" name="hspace" id="hspace" value="" size="10" /></td>
+	  <td>Vertical Space:</td>
+	  <td><input type="text" name="vspace" id="vspace" value="" size="10" /></td>
+	</tr>
+	<tr class="mbox">
+	  <td colspan="5" class="ubox" align="center">
+		<input type="submit" value="Submit" onclick="insertImage();return false;">
+		<input type="submit" value="Upload">
+		<input type="button" value="Cancel" onclick="window.close();">
+	  </td>
+	</tr>
+	</table>
+	</form>
 	<?php
 	echo foot();
 }
@@ -1049,6 +1332,9 @@ elseif ($job == 'doc_add2') {
 	$type = $gpc->get('type', int);
 	$types = doctypes();
 	$format = $types[$type];
+	if ($format['parser'] == 1) {
+		$htmlhead .= getWYSIWYG('template');
+	}
 	echo head();
   	$groups = $db->query("SELECT id, name FROM {$db->pre}groups", __LINE__, __FILE__);
 ?>
@@ -1069,7 +1355,6 @@ elseif ($job == 'doc_add2') {
    <td class="mbox">
 	<?php echo $lang->phrase('admin_cms_doc_sourcecode'); ?><br />
 	<?php
-	$editorpath = 'templates/editor/';
 	$path = $tpl->altdir.'docs/'.$format['template'].'.html';
 	if ($format['inline'] == 1 && file_exists($path)) {
 		$preload = file_get_contents($path);
@@ -1082,30 +1367,6 @@ elseif ($job == 'doc_add2') {
 	}
 	?>
 	<textarea id="template" name="template" rows="20" cols="110" class="texteditor"><?php echo $preload; ?></textarea>
-	<?php if ($format['parser'] == 1) { ?>
-	<link rel="stylesheet" type="text/css" href="<?php echo $editorpath; ?>rte.css" />
-	<script language="JavaScript" type="text/javascript" src="<?php echo $editorpath; ?>lang/en.js"></script>
-	<script language="JavaScript" type="text/javascript" src="<?php echo $editorpath; ?>richtext.js"></script>
-	<script language="JavaScript" type="text/javascript" src="<?php echo $editorpath; ?>html2xhtml.js"></script>
-	<script language="JavaScript" type="text/javascript">
-	<!--
-	window.onload = function() {
-		forms = FetchElement('form');
-		ta = FetchElement('template');
-		forms.onsubmit = function() {
-	   		updateRTE('rte');
-	  		ta.value = forms.rte.value;
-	  		forms.submit();
-		};
-		ta.style.display = 'none';
-	};
-	var lang = "en";
-	var encoding = "iso-8859-1";
-	initRTE("templates/editor/images/", "<?php echo $editorpath; ?>", '', true);
-	writeRichText('rte', FetchElement('template').value, '', 750, 350, true, false, false);
-	//-->
-	</script>
-	<?php } ?>
    </td>
   </tr>
   <?php } ?>
@@ -1214,14 +1475,13 @@ elseif ($job == 'doc_delete') {
 	}
 }
 elseif ($job == 'doc_edit') {
-	echo head();
 	$tpl = new tpl();
 	$id = $gpc->get('id', int);
 	$types = doctypes();
 	$result = $db->query("SELECT * FROM {$db->pre}documents WHERE id = '{$id}'", __LINE__, __FILE__);
 	$row = $db->fetch_assoc($result);
 	if ($db->num_rows($result) == 0) {
-		error('admin.php?action=cms&job=doc', 'Keine gültige ID übergeben');
+		error('admin.php?action=cms&job=doc', $lang->phrase('admin_cms_invalid_id_given'));
 	}
 	$format = $types[$row['type']];
 	if (!empty($row['file']) && $format['remote'] != 1 && !check_hp($row['file'])) {
@@ -1233,6 +1493,10 @@ elseif ($job == 'doc_edit') {
 	$memberdata_obj = $scache->load('memberdata');
 	$memberdata = $memberdata_obj->get();
 
+	if ($format['parser'] == 1) {
+		$htmlhead .= getWYSIWYG('template');
+	}
+	echo head();
 ?>
 <form id="form" method="post" action="admin.php?action=cms&job=doc_edit2&id=<?php echo $id; ?>">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
@@ -1256,30 +1520,6 @@ elseif ($job == 'doc_edit') {
 	}
 	?>
 	<textarea id="template" name="template" rows="20" cols="110" class="texteditor"><?php echo $row['content']; ?></textarea>
-	<?php if ($format['parser'] == 1) { ?>
-	<link rel="stylesheet" type="text/css" href="templates/editor/rte.css" />
-	<script language="JavaScript" type="text/javascript" src="templates/editor/lang/en.js"></script>
-	<script language="JavaScript" type="text/javascript" src="templates/editor/richtext.js"></script>
-	<script language="JavaScript" type="text/javascript" src="templates/editor/html2xhtml.js"></script>
-	<script language="JavaScript" type="text/javascript">
-	<!--
-	window.onload = function() {
-		forms = FetchElement('form');
-		ta = FetchElement('template');
-		forms.onsubmit = function() {
-	   		updateRTE('rte');
-	  		ta.value = forms.rte.value;
-	  		forms.submit();
-		};
-		ta.style.display = 'none';
-	};
-	var lang = "en";
-	var encoding = "iso-8859-1";
-	initRTE("templates/editor/images/", "templates/editor/", '', true);
-	writeRichText('rte', FetchElement('template').value, '', 750, 350, true, false, false);
-	//-->
-	</script>
-	<?php } ?>
    </td>
   </tr>
   <?php } ?>

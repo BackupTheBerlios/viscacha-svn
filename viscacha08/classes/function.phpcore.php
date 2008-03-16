@@ -6,8 +6,15 @@ if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
 @ini_set('magic_quotes_gpc',0);
 
 /* Error Handling */
-if (isset($config['error_reporting']) && $config['error_reporting'] > 0) {
-	error_reporting($config['error_reporting']);
+if (!empty($config['error_reporting'])) {
+	$bitmask = 0;
+	if (is_numeric($config['error_reporting']) == false && $config['error_reporting'] > 0) {
+		$bitmask = $config['error_reporting'];
+	}
+	else if (defined($config['error_reporting']) == true) {
+		$bistmask = constant($config['error_reporting']);
+	}
+	error_reporting($bitmask);
 }
 if (isset($config['error_handler']) && $config['error_handler'] == 1) {
 	require_once(realpath(__FILE__).'/function.errorhandler.php');
