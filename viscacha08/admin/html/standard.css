@@ -365,7 +365,7 @@ a:hover {
 	width: 20px;
 	height: 20px;
 	border: 1px solid #999999;
-	margin: 0;
+	margin: 0px;
 	padding: 0px;
 }
 
@@ -382,6 +382,7 @@ a:hover {
 .wysiwyg-statusbar {
 	font-family: Arial;
 	font-size: 9px;
+	height: 12px;
 	background-color: #EEEEEE;
 }
 a.wysiwyg-statusbar {
@@ -404,54 +405,22 @@ a.wysiwyg-statusbar:hover {
 button.mouseOver {
 	background-color: #EEEEEE;
 	border: 1px solid #CCCCCC;
-	padding: 3px;
+	padding: 2px;
 	cursor: default;
 	text-align: left;
 }
 button.mouseOut {
 	background-color: #FFFFFF;
 	border: 1px solid #FFFFFF;
-	padding: 3px;
+	padding: 2px;
 	cursor: default;
 	text-align: left;
-}
-
-.wysiwyg-context-menu-div {
-	background-color:#F4F4F4;
-	border: 1px solid #C9C9C9;
-	width:170px;
-}
-.wysiwyg-context-menu {
-	font-family: Arial;
-	font-size:11px;
-	color:#000000;
-	width:100%;
-}
-.wysiwyg-context-menu .icon {
-	background-color:#EEEEEE;
-}
-.wysiwyg-context-menu .disabled {
-	font-family: Arial;
-	font-size:11px;
-	color:#999999;
-	text-decoration:none;
-	padding-left: 3px;
-}
-.wysiwyg-context-menu a {
-	font-family: Arial;
-	font-size:11px;
-	color:#000000;
-	text-decoration:none;
-	padding-left: 3px;
-}
-.wysiwyg-context-menu .mouseover {
-	background-color: #EEEEEE;
 }
 
 .on {
 	background-color: #EEEEEE;
 	border: 1px solid #CCCCCC;
-	padding: 6px;
+	padding: 3px;
 	width: 160px;
 	cursor: default;
 	height: 5px;
@@ -459,7 +428,7 @@ button.mouseOut {
 .off {
 	background-color: #FFFFFF;
 	border: 1px solid #FFFFFF;
-	padding: 6px;
+	padding: 3px;
 	width: 160px;
 	cursor: default;
 	height: 5px;
@@ -485,4 +454,12 @@ button.mouseOut {
 .selectColorOff {
 	border: 1px solid #F7F7F7;
 	background-color: #F7F7F7;
+}
+
+.select_color {
+	cursor: hand;
+}
+.select_color td {
+	width: 10px;
+	height: 10px;
 }

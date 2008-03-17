@@ -31,24 +31,20 @@ var WYSIWYG = {
 	Settings: function() {
 
 		// Images Directory
-		this.ImagesDir = "images/";
+		this.ImagesDir = "templates/editor/images/";
 
 		// Popups Directory
-		this.PopupsDir = "popups/";
+		this.PopupsDir = "templates/editor/popups/";
 
 		// Default WYSIWYG width and height (use px or %)
-		this.Width = "640px";
-		this.Height = "480px";
+		this.Width = "95%";
+		this.Height = "350px";
 
 		// Default stylesheet of the WYSIWYG editor window
-		this.DefaultStyle = "font-family: Arial; font-size: 12px; background-color: #FFFFFF";
+		this.DefaultStyle = "font-family: \"Trebuchet MS\", Verdana, Arial, Helvetica, sans-serif; font-size: 9pt; background-color: #FFFFFF; white-space: normal;";
 
 		// Stylesheet if editor is disabled
-		this.DisabledStyle = "font-family: Arial; font-size: 12px; background-color: #EEEEEE";
-
-		// Width + Height of the preview window
-		this.PreviewWidth = 500;
-		this.PreviewHeight = 400;
+		this.DisabledStyle = "";
 
 		// Confirmation message if you strip any HTML added by word
 		this.RemoveFormatConfMessage = "Clean HTML inserted by MS Word?";
@@ -66,9 +62,6 @@ var WYSIWYG = {
 		// (only IE)
 		this.ImagePathToStrip = "auto";
 
-		// Enable / Disable the custom context menu
-		this.ContextMenu = true;
-
 		// Enabled the status bar update. Within the status bar
 		// node tree of the actually selected element will build
 		this.StatusBarEnabled = true;
@@ -85,9 +78,9 @@ var WYSIWYG = {
 		this.Opener = "#";
 
 		// Insert image implementation
-		this.ImagePopupFile = "";
-		this.ImagePopupWidth = 0;
-		this.ImagePopupHeight = 0;
+		this.ImagePopupFile = "admin.php?action=cms&job=doc_insert_image&";
+		this.ImagePopupWidth = 730;
+		this.ImagePopupHeight = 350;
 
 		// Holds the available buttons displayed
 		// on the toolbar of the editor
@@ -119,9 +112,10 @@ var WYSIWYG = {
 			"forecolor",
 			"backcolor",
 			"seperator",
-			"inserttable",
+			"inserthr",
 			"insertimage",
 			"createlink",
+			"inserttable",
 			"seperator",
 			"cut",
 			"copy",
@@ -141,7 +135,7 @@ var WYSIWYG = {
 		this.DropDowns['font'] = {
 			id: "fonts",
 			command: "FontName",
-			label: "<font style=\"font-family:{value};font-size:12px;\">{value}</font>",
+			label: "<font style=\"font-family:{value};font-size:11px;\">{value}</font>",
 			width: "90px",
 			elements: new Array(
 				"Arial",
@@ -257,6 +251,7 @@ var WYSIWYG = {
 	"backcolor":      ['BackColor',            'Back Color',          	'backcolor_on.gif',          'backcolor_on.gif'],
 	"undo":           ['Undo',                 'Undo',               	'undo_on.gif',               'undo_on.gif'],
 	"redo":           ['Redo',                 'Redo',               	'redo_on.gif',               'redo_on.gif'],
+	"inserthr":    	  ['InsertHR',             'Insert HR',        		'insert_hr_on.gif',       	 'insert_hr_on.gif'],
 	"inserttable":    ['InsertTable',          'Insert Table',        	'insert_table_on.gif',       'insert_table_on.gif'],
 	"insertimage":    ['InsertImage',          'Insert Image',        	'insert_picture_on.gif',     'insert_picture_on.gif'],
 	"createlink":     ['CreateLink',           'Create Link',         	'insert_hyperlink_on.gif',   'insert_hyperlink_on.gif'],
@@ -424,7 +419,7 @@ var WYSIWYG = {
 	 * @param {Integer} vspace Vertical Space
 	 * @param {String} n The editor identifier (the textarea's ID)
 	 */
-	insertImage: function(src, width, height, align, border, alt, hspace, vspace, n) {
+	insertImage: function(src, width, height, align, border, alt, hspace, vspace, bordercolor, n) {
 
 		// get editor
 		var doc = this.getEditorWindow(n).document;
@@ -443,12 +438,30 @@ var WYSIWYG = {
 
 		// set the attributes
 		WYSIWYG_Core.setAttribute(img, "src", src);
-		WYSIWYG_Core.setAttribute(img, "style", "width:" + width + ";height:" + height);
+		var dim = new Array();
+		if (width > 0) {
+			dim[0] = "width:" + width;
+		}
+		if (height > 0) {
+			dim[1] = "height:" + height;
+		}
+		if (border != '') {
+			if (bordercolor != '' && bordercolor != 'none') {
+				dim[2] = "border: " + border + "px solid " + bordercolor + ";";
+			}
+			else {
+				WYSIWYG_Core.setAttribute(img, "border", border);
+			}
+		}
+		WYSIWYG_Core.setAttribute(img, "style", dim.join(";"));
 		if(align != "") { WYSIWYG_Core.setAttribute(img, "align", align); } else { img.removeAttribute("align"); }
-		WYSIWYG_Core.setAttribute(img, "border", border);
 		WYSIWYG_Core.setAttribute(img, "alt", alt);
-		WYSIWYG_Core.setAttribute(img, "hspace", hspace);
-		WYSIWYG_Core.setAttribute(img, "vspace", vspace);
+		if (hspace > 0) {
+			WYSIWYG_Core.setAttribute(img, "hspace", hspace);
+		}
+		if (vspace > 0) {
+			WYSIWYG_Core.setAttribute(img, "vspace", vspace);
+		}
 		img.removeAttribute("width");
 		img.removeAttribute("height");
 
@@ -501,12 +514,22 @@ var WYSIWYG = {
 		}
 
 		// set the attributes
-		WYSIWYG_Core.setAttribute(lin, "href", href);
-		WYSIWYG_Core.setAttribute(lin, "class", styleClass);
-		WYSIWYG_Core.setAttribute(lin, "className", styleClass);
-		WYSIWYG_Core.setAttribute(lin, "target", target);
-		WYSIWYG_Core.setAttribute(lin, "name", name);
-		WYSIWYG_Core.setAttribute(lin, "style", style);
+		if ((href != '' && href != 'http://') || name == '') {
+			WYSIWYG_Core.setAttribute(lin, "href", href);
+		}
+		if (styleClass != '') {
+			WYSIWYG_Core.setAttribute(lin, "class", styleClass);
+			WYSIWYG_Core.setAttribute(lin, "className", styleClass);
+		}
+		if (target != '') {
+			WYSIWYG_Core.setAttribute(lin, "target", target);
+		}
+		if (name != '') {
+			WYSIWYG_Core.setAttribute(lin, "name", name);
+		}
+		if (style != '') {
+			WYSIWYG_Core.setAttribute(lin, "style", style);
+		}
 
 		// on update exit here
 		if(update) { return; }
@@ -789,7 +812,7 @@ var WYSIWYG = {
 	    + '</td></tr>';
 	    // Status bar HTML code
 	    if(this.config[n].StatusBarEnabled) {
-		    editor += '<tr><td class="wysiwyg-statusbar" style="height:10px;" id="wysiwyg_statusbar_' + n + '">&nbsp;</td></tr>';
+		    editor += '<tr><td class="wysiwyg-statusbar" id="wysiwyg_statusbar_' + n + '">&nbsp;</td></tr>';
 		}
 	    editor += '</table>';
 	    editor += '</div>';
@@ -850,11 +873,6 @@ var WYSIWYG = {
 		// status bar update
 		if(this.config[n].StatusBarEnabled) {
 			WYSIWYG_Core.addEvent(doc, "mouseup", function xxx_dd() { WYSIWYG.updateStatusBar(n); });
-		}
-
-    	// custom context menu
-		if(this.config[n].ContextMenu) {
-			WYSIWYG_ContextMenu.init(n);
 		}
 
 		// init viewTextMode var
@@ -1105,13 +1123,13 @@ var WYSIWYG = {
 			case "ForeColor":
 				var rgb = this.getEditorWindow(n).document.queryCommandValue(cmd);
 		      	var currentColor = rgb != '' ? toHexColor(this.getEditorWindow(n).document.queryCommandValue(cmd)) : "000000";
-			  	window.open(this.config[n].PopupsDir + 'select_color.html?color=' + currentColor + '&command=' + cmd + '&wysiwyg=' + n, 'popup', 'location=0,status=0,scrollbars=0,width=210,height=165,top=' + popupPosition.top + ',left=' + popupPosition.left).focus();
+			  	window.open(this.config[n].PopupsDir + 'select_color.html?color=' + currentColor + '&command=' + cmd + '&wysiwyg=' + n, 'popup', 'location=0,status=0,scrollbars=0,width=275,height=215,top=' + popupPosition.top + ',left=' + popupPosition.left).focus();
 			break;
 
 			// BackColor
 			case "BackColor":
 				var currentColor = toHexColor(this.getEditorWindow(n).document.queryCommandValue(cmd));
-			  	window.open(this.config[n].PopupsDir + 'select_color.html?color=' + currentColor + '&command=' + cmd + '&wysiwyg=' + n, 'popup', 'location=0,status=0,scrollbars=0,width=210,height=165,top=' + popupPosition.top + ',left=' + popupPosition.left).focus();
+			  	window.open(this.config[n].PopupsDir + 'select_color.html?color=' + currentColor + '&command=' + cmd + '&wysiwyg=' + n, 'popup', 'location=0,status=0,scrollbars=0,width=275,height=215,top=' + popupPosition.top + ',left=' + popupPosition.left).focus();
 			break;
 
 			// InsertImage
@@ -1139,9 +1157,14 @@ var WYSIWYG = {
 				window.open(this.config[n].PopupsDir + 'insert_hyperlink.html?wysiwyg=' + n, 'popup', 'location=0,status=0,scrollbars=1,resizable=1,width=400,height=160,top=' + popupPosition.top + ',left=' + popupPosition.left).focus();
 			break;
 
+			// InsertHR
+			case "InsertHR":
+				window.open(this.config[n].PopupsDir + 'insert_hr.html?wysiwyg=' + n, 'popup', 'location=0,status=0,scrollbars=1,resizable=1,width=400,height=250,top=' + popupPosition.top + ',left=' + popupPosition.left).focus();
+			break;
+
 			// InsertTable
 			case "InsertTable":
-				window.open(this.config[n].PopupsDir + 'create_table.html?wysiwyg=' + n, 'popup', 'location=0,status=0,scrollbars=1,resizable=1,width=500,height=260,top=' + popupPosition.top + ',left=' + popupPosition.left).focus();
+				window.open(this.config[n].PopupsDir + 'create_table.html?wysiwyg=' + n, 'popup', 'location=0,status=0,scrollbars=1,resizable=1,width=530,height=260,top=' + popupPosition.top + ',left=' + popupPosition.left).focus();
 			break;
 
 			// ViewSource
@@ -1196,6 +1219,56 @@ var WYSIWYG = {
 				WYSIWYG_Core.setAttribute(editor, "style", "width:100%;height:100%;");
 				this.maximized[n] = true;
 			}
+		}
+	},
+
+	/**
+	 * Insert HR into WYSIWYG in rich text
+	 *
+	 * @param {String} html The HTML being inserted (e.g. <b>hello</b>)
+	 * @param {String} n The editor identifier
+	 */
+	insertHR: function(width, height, shade, align, n) {
+		if (WYSIWYG_Core.isMSIE) {
+			if (height > 0) {
+				var varHeight = ' size="' + height + '"';
+			} else {
+				var varHeight = '';
+	        }
+			if (width > 0) {
+				var varWidth = ' width="' + width + '"';
+			} else {
+				var varWidth = '';
+	        }
+			if (shade == true) {
+				var varShade = ' noshade=\"noshade\"';
+			} else if (shade == false) {
+				var varShade = '';
+			}
+	   		if (align != '') {
+	   			var varAlign = ' align="'+align+'"';
+	   		}
+	   		else {
+	     		var varAlign = '';
+	   		}
+
+			this.getEditorWindow(n).document.selection.createRange().pasteHTML('<hr ' + varWidth + varHeight + varShade + varAlign + '/>');
+		}
+		else {
+			var hr = this.getEditorWindow(n).document.createElement("hr");
+			if (height > 0) {
+				hr.size = height;
+			}
+			if (shade == true) {
+				hr.noShade = true;
+			}
+	   		if (align != '') {
+	   			hr.align = align;
+	   		}
+			if (width > 0 || width.indexOf('%') > -1) {
+				hr.width = width;
+			}
+			this.insertNodeAtSelection(hr, n);
 		}
 	},
 
@@ -1301,27 +1374,6 @@ var WYSIWYG = {
 	},
 
 	/**
-	 * Prints the content of the WYSIWYG editor area
-	 *
-	 * @param {String} n The editor identifier (textarea ID)
-	 */
-	print: function(n) {
-		if(document.all && navigator.appVersion.substring(22,23)==4) {
-			var doc = this.getEditorWindow(n).document;
-			doc.focus();
-			var OLECMDID_PRINT = 6;
-			var OLECMDEXECOPT_DONTPROMPTUSER = 2;
-			var OLECMDEXECOPT_PROMPTUSER = 1;
-			var WebBrowser = '<object id="WebBrowser1" width="0" height="0" classid="CLSID:8856F961-340A-11D0-A96B-00C04FD705A2"></object>';
-			doc.body.insertAdjacentHTML('beforeEnd',WebBrowser);
-			WebBrowser.ExecWB(OLECMDID_PRINT, OLECMDEXECOPT_DONTPROMPTUSER);
-			WebBrowser.outerHTML = '';
-		} else {
-			this.getEditorWindow(n).print();
-		}
-	},
-
-	/**
 	 * Writes the content of an drop down
 	 *
 	 * @param {String} n The editor identifier (textarea ID)
@@ -1419,6 +1471,8 @@ var WYSIWYG = {
 	  	else {
 	  		// replace all decimal color strings with hex decimal color strings
 			var html = WYSIWYG_Core.replaceRGBWithHexColor(doc.body.innerHTML);
+	    	WYSIWYG_Beautifier.Init();
+	    	html = WYSIWYG_Beautifier.Format(html);
 	    	html = document.createTextNode(html);
 	    	doc.body.innerHTML = "";
 	    	doc.body.appendChild(html);
@@ -1436,6 +1490,7 @@ var WYSIWYG = {
 		// set the font values for displaying HTML source
 		doc.body.style.fontSize = "12px";
 		doc.body.style.fontFamily = "Courier New";
+		doc.body.style.whiteSpace = 'pre';
 
 	  	this.viewTextMode[n] = true;
 	},
@@ -1681,7 +1736,9 @@ var WYSIWYG = {
 	\* ---------------------------------------------------------------------- */
 	hideStatusBar: function(n) {
 		var statusbar = $('wysiwyg_statusbar_' + n);
-		if(statusbar) {	statusbar.style.display = "none"; }
+		if(statusbar) {
+			statusbar.style.display = "none";
+		}
 	},
 
 	/* ---------------------------------------------------------------------- *\
@@ -1692,7 +1749,9 @@ var WYSIWYG = {
 	\* ---------------------------------------------------------------------- */
 	showStatusBar: function(n) {
 		var statusbar = $('wysiwyg_statusbar_' + n);
-		if(statusbar) { statusbar.style.display = ""; }
+		if(statusbar) {
+			statusbar.style.display = "";
+		}
 	},
 
 	/**
@@ -2368,177 +2427,86 @@ var WYSIWYG_Core = {
 	}
 }
 
-/**
- * Context menu object
+/*
+ * FCKeditor - The text editor for Internet - http://www.fckeditor.net
+ * Copyright (C) 2003-2007 Frederico Caldeira Knabben
+ *
+ * == BEGIN LICENSE ==
+ * Licensed under the terms of any of the following licenses at your
+ * choice:
+ *  - GNU General Public License Version 2 or later (the "GPL")
+ *    http://www.gnu.org/licenses/gpl.html
+ *  - GNU Lesser General Public License Version 2.1 or later (the "LGPL")
+ *    http://www.gnu.org/licenses/lgpl.html
+ *  - Mozilla Public License Version 1.1 or later (the "MPL")
+ *    http://www.mozilla.org/MPL/MPL-1.1.html
+ * == END LICENSE ==
+ *
+ * Format the HTML.
  */
-var WYSIWYG_ContextMenu = {
+var WYSIWYG_Beautifier = {
 
-	html: "",
-	contextMenuDiv: null,
+	Init: function() {
+		var oRegex = this.Regex = new Object();
 
-	/**
-	 * Init function
-	 *
-	 * @param {String} n Editor identifier
-	 */
-	init: function(n) {
-		var doc = WYSIWYG.getEditorWindow(n).document;
+		// Regex for line breaks.
+		oRegex.BlocksOpener = /\<(P|DIV|H1|H2|H3|H4|H5|H6|ADDRESS|PRE|OL|UL|LI|TITLE|META|LINK|BASE|SCRIPT|LINK|TD|TH|AREA|OPTION)[^\>]*\>/gi ;
+		oRegex.BlocksCloser = /\<\/(P|DIV|H1|H2|H3|H4|H5|H6|ADDRESS|PRE|OL|UL|LI|TITLE|META|LINK|BASE|SCRIPT|LINK|TD|TH|AREA|OPTION)[^\>]*\>/gi ;
 
-		// create context menu div
-		this.contextMenuDiv = document.createElement("div");
-		this.contextMenuDiv.className = "wysiwyg-context-menu-div";
-		this.contextMenuDiv.setAttribute("class", "wysiwyg-context-menu-div");
-		this.contextMenuDiv.style.display = "none";
-		this.contextMenuDiv.style.position = "absolute";
-		this.contextMenuDiv.style.zIndex = 9999;
-		this.contextMenuDiv.style.left = "0";
-		this.contextMenuDiv.style.top = "0";
-		this.contextMenuDiv.unselectable = "on";
-		document.body.insertBefore(this.contextMenuDiv, document.body.firstChild);
+		oRegex.NewLineTags	= /\<(BR|HR)[^\>]*\>/gi ;
 
-		// bind event listeners
-		WYSIWYG_Core.addEvent(doc, "contextmenu", function context(e) { WYSIWYG_ContextMenu.show(e, n); });
-		WYSIWYG_Core.addEvent(doc, "click", function context(e) { WYSIWYG_ContextMenu.close(); });
-		WYSIWYG_Core.addEvent(doc, "keydown", function context(e) { WYSIWYG_ContextMenu.close(); });
-		WYSIWYG_Core.addEvent(document, "click", function context(e) { WYSIWYG_ContextMenu.close(); });
+		oRegex.MainTags = /\<\/?(HTML|HEAD|BODY|FORM|TABLE|TBODY|THEAD|TR)[^\>]*\>/gi ;
+
+		oRegex.LineSplitter = /\s*\n+\s*/g ;
+
+		// Regex for indentation.
+		oRegex.IncreaseIndent = /^\<(HTML|HEAD|BODY|FORM|TABLE|TBODY|THEAD|TR|UL|OL)[ \/\>]/i ;
+		oRegex.DecreaseIndent = /^\<\/(HTML|HEAD|BODY|FORM|TABLE|TBODY|THEAD|TR|UL|OL)[ \>]/i ;
+		oRegex.FormatIndentatorRemove = new RegExp( '^' + '  ' ) ;
+
+		oRegex.ProtectedTags = /(<PRE[^>]*>)([\s\S]*?)(<\/PRE>)/gi ;
 	},
 
-	/**
-	 * Show the context menu
-	 *
-	 * @param e Event
-	 * @param n Editor identifier
-	 */
-	show: function(e, n) {
-		if(this.contextMenuDiv == null) return false;
-
-		var ifrm = WYSIWYG.getEditor(n);
-		var doc = WYSIWYG.getEditorWindow(n).document;
-
-		// set the context menu position
-		var pos = WYSIWYG_Core.getElementPosition(ifrm);
-		var x = WYSIWYG_Core.isMSIE ? pos.left + e.clientX : pos.left + (e.pageX - doc.body.scrollLeft);
-		var y = WYSIWYG_Core.isMSIE ? pos.top + e.clientY : pos.top + (e.pageY - doc.body.scrollTop);
-
-		this.contextMenuDiv.style.left = x + "px";
-		this.contextMenuDiv.style.top = y + "px";
-		this.contextMenuDiv.style.visibility = "visible";
-		this.contextMenuDiv.style.display = "block";
-
-		// call the context menu, mozilla needs some time
-		window.setTimeout("WYSIWYG_ContextMenu.output('" + n + "')", 10);
-
-		WYSIWYG_Core.cancelEvent(e);
-		return false;
+	_ProtectData: function( outer, opener, data, closer ) {
+		return opener + '___FCKpd___' + this.ProtectedData.AddItem( data ) + closer;
 	},
 
-	/**
-	 * Output the context menu items
-	 *
-	 * @param n Editor identifier
-	 */
-	output: function (n) {
+	Format: function( html ) {
+		if ( !this.Regex ) this.Init();
 
-		// get selection
-		var sel = WYSIWYG.getSelection(n);
-		var range = WYSIWYG.getRange(sel);
+		// Protected content that remain untouched during the
+		// process go in the following array.
+		this.ProtectedData = new Array() ;
 
-		// get current selected node
-		var tag = WYSIWYG.getTag(range);
-		if(tag == null) { return; }
+		var sFormatted = html.replace( this.Regex.ProtectedTags, this._ProtectData ) ;
 
-		// clear context menu
-		this.clear();
+		// Line breaks.
+		sFormatted		= sFormatted.replace( this.Regex.BlocksOpener, '\n$&' ) ;
+		sFormatted		= sFormatted.replace( this.Regex.BlocksCloser, '$&\n' ) ;
+		sFormatted		= sFormatted.replace( this.Regex.NewLineTags, '$&\n' ) ;
+		sFormatted		= sFormatted.replace( this.Regex.MainTags, '\n$&\n' ) ;
 
-		// Determine kind of nodes
-		var isImg = (tag.nodeName == "IMG") ? true : false;
-		var isLink = (tag.nodeName == "A") ? true : false;
+		// Indentation.
+		var sIndentation = '' ;
 
-		// Selection is an image or selection is a text with length greater 0
-		var len = 0;
-		if(WYSIWYG_Core.isMSIE)
-			len = (document.selection && range.text) ? range.text.length : 0;
-		else
-			len = range.toString().length;
-		var sel = len != 0 || isImg;
+		var asLines = sFormatted.split( this.Regex.LineSplitter ) ;
+		sFormatted = '' ;
 
-		// Icons
-		var iconLink = { enabled: WYSIWYG.config[n].ImagesDir + WYSIWYG.ToolbarList["createlink"][3], disabled: WYSIWYG.config[n].ImagesDir + WYSIWYG.ToolbarList["createlink"][2]};
-		var iconImage = { enabled: WYSIWYG.config[n].ImagesDir + WYSIWYG.ToolbarList["insertimage"][3], disabled: WYSIWYG.config[n].ImagesDir + WYSIWYG.ToolbarList["insertimage"][2]};
-		var iconDelete = { enabled: WYSIWYG.config[n].ImagesDir + WYSIWYG.ToolbarList["delete"][3], disabled: WYSIWYG.config[n].ImagesDir + WYSIWYG.ToolbarList["delete"][2]};
-		var iconCopy = { enabled: WYSIWYG.config[n].ImagesDir + WYSIWYG.ToolbarList["copy"][3], disabled: WYSIWYG.config[n].ImagesDir + WYSIWYG.ToolbarList["copy"][2]};
-		var iconCut = { enabled: WYSIWYG.config[n].ImagesDir + WYSIWYG.ToolbarList["cut"][3], disabled: WYSIWYG.config[n].ImagesDir + WYSIWYG.ToolbarList["cut"][2]};
-		var iconPaste = { enabled: WYSIWYG.config[n].ImagesDir + WYSIWYG.ToolbarList["paste"][3], disabled: WYSIWYG.config[n].ImagesDir + WYSIWYG.ToolbarList["paste"][2]};
-
-		// Create context menu html
-		this.html += '<table class="wysiwyg-context-menu" border="0" cellpadding="0" cellspacing="0">';
-
-		// Add items
-		this.addItem(n, 'Copy', iconCopy, 'Copy', sel);
-		this.addItem(n, 'Cut', iconCut, 'Cut', sel);
-		this.addItem(n, 'Paste', iconPaste, 'Paste', true);
-		this.addSeperator();
-		this.addItem(n, 'InsertImage', iconImage, 'Modify Image Properties...', isImg);
-		this.addItem(n, 'CreateLink', iconLink, 'Create or Modify Link...', sel || isLink);
-		this.addItem(n, 'RemoveNode', iconDelete, 'Remove', true);
-
-		this.html += '</table>';
-		this.contextMenuDiv.innerHTML = this.html;
-	},
-
-	/**
-	 * Close the context menu
-	 */
-	close: function() {
-		this.contextMenuDiv.style.visibility = "hidden";
-		this.contextMenuDiv.style.display = "none";
-	},
-
-	/**
-	 * Clear context menu
-	 */
-	clear: function() {
-		this.contextMenuDiv.innerHTML = "";
-		this.html = "";
-	},
-
-	/**
-	 * Add context menu item
-	 *
-	 * @param n editor identifier
-	 * @param cmd Command
-	 * @param icon Icon which is diabled
-	 * @param title Title of the item
-	 * @param disabled If item is diabled
-	 */
-	addItem: function(n, cmd, icon, title, disabled) {
-		var item = '';
-
-		if(disabled) {
-			item += '<tr>';
-			item += '<td class="icon"><a href="javascript:WYSIWYG.execCommand(\'' + n + '\',\'' + cmd + '\', null);"><img src="' + icon.enabled + '" border="0"></a></td>';
-			item += '<td onmouseover="this.className=\'mouseover\'" onmouseout="this.className=\'\'" onclick="WYSIWYG.execCommand(\'' + n + '\', \'' + cmd + '\', null);WYSIWYG_ContextMenu.close();"><a href="javascript:void(0);">' + title + '</a></td>';
-			item += '</tr>';
-		}
-		else {
-			item += '<tr>';
-			item += '<td class="icon"><img src="' + icon.disabled + '" border="0"></td>';
-			item += '<td onmouseover="this.className=\'mouseover\'" onmouseout="this.className=\'\'"><span class="disabled">' + title + '</span></td>';
-			item += '</tr>';
+		for ( var i = 0 ; i < asLines.length ; i++ ) {
+			var sLine = asLines[i] ;
+			if ( sLine.length == 0 ) continue ;
+			if ( this.Regex.DecreaseIndent.test( sLine ) ) sIndentation = sIndentation.replace( this.Regex.FormatIndentatorRemove, '' ) ;
+			sFormatted += sIndentation + sLine + '\n' ;
+			if ( this.Regex.IncreaseIndent.test( sLine ) ) sIndentation += '  ' ;
 		}
 
-		this.html += item;
-	},
+		// Now we put back the protected data.
+		for ( var j = 0 ; j < this.ProtectedData.length ; j++ ) {
+			var oRegex = new RegExp( '___FCKpd___' + j ) ;
+			sFormatted = sFormatted.replace( oRegex, this.ProtectedData[j].replace( /\$/g, '$$$$' ) ) ;
+		}
 
-	/**
-	 * Add seperator to context menu
-	 */
-	addSeperator: function() {
-		var output = '';
-		output += '<tr>';
-		output += '<td colspan="2" style="text-align:center;"><hr size="1" color="#C9C9C9" width="95%"></td>';
-		output += '</tr>';
-		this.html += output;
+		return sFormatted;
 	}
 }
 
@@ -2550,14 +2518,13 @@ var WYSIWYG_Table = {
 	/**
 	 *
 	 */
-	create: function(n, tbl) {
-
+	create: function(n, table, cols, rows, td_style) {
 		// get editor
 		var doc = WYSIWYG.getEditorWindow(n).document;
 		// get selection and range
 		var sel = WYSIWYG.getSelection(n);
 		var range = WYSIWYG.getRange(sel);
-		var table = null;
+		var td;
 
 		// get element from selection
 		if(WYSIWYG_Core.isMSIE) {
@@ -2567,30 +2534,17 @@ var WYSIWYG_Table = {
 			}
 		}
 
-		// find a parent TABLE element
-		//table = WYSIWYG.findParent("table", range);
-
-		// check if parent is found
-		//var update = (table == null) ? false : true;
-		//if(!update) table = tbl;
-		table = tbl;
-
 		// add rows and cols
-		var rows = WYSIWYG_Core.getAttribute(tbl, "tmprows");
-		var cols = WYSIWYG_Core.getAttribute(tbl, "tmpcols");
-		WYSIWYG_Core.removeAttribute(tbl, "tmprows");
-		WYSIWYG_Core.removeAttribute(tbl, "tmpcols");
 		for(var i=0;i<rows;i++) {
 			var tr = doc.createElement("tr");
 			for(var j=0;j<cols;j++){
-				var td = createTD();
+				td = doc.createElement("td");
+				WYSIWYG_Core.setAttribute(td, "style", td_style);
+				td.innerHTML = "&nbsp;";
 				tr.appendChild(td);
 			}
 			table.appendChild(tr);
 		}
-
-		// on update exit here
-		//if(update) { return; }
 
 		// Check if IE or Mozilla (other)
 		if (WYSIWYG_Core.isMSIE) {
@@ -2602,17 +2556,6 @@ var WYSIWYG_Table = {
 
 		// refresh table highlighting
 		this.refreshHighlighting(n);
-
-
-
-
-	 	// functions
-		function createTD() {
-			var td = doc.createElement("td");
-			td.innerHTML = "&nbsp;";
-			return td;
-		}
-
 	},
 
 	/**
@@ -2669,10 +2612,6 @@ var WYSIWYG_Table = {
 		var style = WYSIWYG_Core.getAttribute(node, "prevstyle");
 		//alert("DISABLE: ELM = " + node.tagName + "; STYLE = " + style);
 		// if no prevstyle is defined, the table is not in highlighting mode
-		if(style == null || style == "") {
-			this._enableHighlighting(node);
-			return;
-		}
 		WYSIWYG_Core.removeAttribute(node, "prevstyle");
 		WYSIWYG_Core.removeAttribute(node, "style");
 		WYSIWYG_Core.setAttribute(node, "style", style);
@@ -2733,13 +2672,6 @@ if(typeof HTMLElement!="undefined" && !HTMLElement.prototype.insertAdjacentEleme
 
 // Config
 var full = new WYSIWYG.Settings();
-full.ImagesDir = "templates/editor/images/";
-full.PopupsDir = "templates/editor/popups/";
-full.Width = "95%";
-full.Height = "300px";
 full.addToolbarElement("font", 3, 1);
 full.addToolbarElement("fontsize", 3, 2);
 full.addToolbarElement("headings", 3, 3);
-full.ImagePopupFile = "admin.php?action=cms&job=doc_insert_image&";
-full.ImagePopupWidth = 730;
-full.ImagePopupHeight = 350;

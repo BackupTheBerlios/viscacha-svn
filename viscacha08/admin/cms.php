@@ -152,7 +152,8 @@ function parseNavPosSetting() {
 	return $arr;
 }
 function getWYSIWYG($textarea) {
-	$r = '<script type="text/javascript" src="templates/editor/wysiwyg.js"></script>';
+	$r = '<link rel="stylesheet" type="text/css" href="admin/html/wysiwyg.css" />';
+	$r .= '<script type="text/javascript" src="templates/editor/wysiwyg.js"></script>';
 	$r .= '<script type="text/javascript"> WYSIWYG.attach(\''.$textarea.'\', full); </script>';
 	return $r;
 }
@@ -1148,55 +1149,59 @@ elseif ($job == 'doc_insert_image') {
 		}
     }
     $htmlhead .= '<script type="text/javascript" src="templates/editor/wysiwyg-popup.js"></script>';
-    echo head(' onLoad="loadImage();"');
+    $htmlhead .= '<script type="text/javascript" src="templates/editor/wysiwyg-color.js"></script>';
+    $htmlhead .= '<script type="text/javascript"> function onloader() { WYSIWYG_ColorInst.init(); loadImage(); } </script>';
+    echo head(' onLoad="onloader();"');
 	?>
 <form method="post" action="admin.php?action=cms&amp;job=doc_insert_image&amp;wysiwyg=<?php echo $wysiwyg; ?>" enctype="multipart/form-data">
 <input type="hidden" id="dir" name="dir" value="">
-<table class="border" border="0" cellspacing="0" cellpadding="4" align="center" style="width: 660px;">
+<table class="border" border="0" cellspacing="0" cellpadding="4" align="center" style="width: 700px;">
 	<tr>
 		<td class="obox" colspan="4">Insert Image</td>
 		<td class="obox">Select Image</td>
 	</tr>
 	<tr class="mbox">
-		<td colspan="2">Upload:<br /><span class="stext">Max Filesize: <?php echo formatFilesize(ini_maxupload()); ?></span></td>
-		<td colspan="2">
-			<input type="file" name="file" />
+		<td width="120">Upload:<br /><span class="stext">Max Filesize: <?php echo formatFilesize(ini_maxupload()); ?></span></td>
+		<td colspan="3" width="330">
+			<input type="file" name="file" size="30" />
 			<?php
 			if ($error !== null) {
 				echo '<br /><span class="stext">'.$error.'</span>';
 			}
 			?>
 		</td>
-		<td rowspan="7">
+		<td rowspan="8" width="250">
 			<iframe id="chooser" height="260" width="250" frameborder="0" src="admin.php?action=cms&amp;job=doc_select_image&amp;dir=<?php echo urlencode($dir); ?>"></iframe>
 		</td>
 	</tr><tr class="mbox">
-		<td colspan="2">Image URL:</td>
-		<td colspan="2"><input type="text" name="src" id="src" value="" size="40" /></td>
+		<td>Image URL:</td>
+		<td colspan="3"><input type="text" name="src" id="src" value="" size="50" /></td>
 	</tr><tr class="mbox">
-		<td colspan="2">Alternate Text:</td>
-		<td colspan="2"><input type="text" name="alt" id="alt" value="" size="40" /></td>
+		<td>Alternate Text:</td>
+		<td colspan="3"><input type="text" name="alt" id="alt" value="" size="50" /></td>
 	</tr>
 	<tr><td class="obox" colspan="4">Layout</td></tr>
 	<tr class="mbox">
-	  <td>Width:</td>
-	  <td><input type="text" name="width" id="width" value="" size="10" /></td>
-	  <td>Height:</td>
-	  <td><input type="text" name="height" id="height" value="" size="10" /></td>
+	  <td width="120">Width:</td>
+	  <td width="105"><input type="text" name="width" id="width" value="" size="10" />px</td>
+	  <td width="120">Height:</td>
+	  <td width="105"><input type="text" name="height" id="height" value="" size="10" />px</td>
 	</tr>
 	<tr class="mbox">
-	  <td>Border:</td>
-	  <td><input type="text" name="border" id="border" value="0" size="10" /></td>
+	  <td>Horizontal Space:</td>
+	  <td><input type="text" name="hspace" id="hspace" value="" size="10" /></td>
+	  <td>Vertical Space:</td>
+	  <td><input type="text" name="vspace" id="vspace" value="" size="10" /></td>
+	</tr>
+	<tr class="mbox">
+	  <td>Border-Width:</td>
+	  <td><input type="text" name="border" id="border" value="0" size="10" />px</td>
 	  <td>Alignment:</td>
 	  <td>
 		<select name="align" id="align">
 		 <option value="">Not Set</option>
 		 <option value="left">Left</option>
 		 <option value="right">Right</option>
-		 <option value="texttop">Texttop</option>
-		 <option value="absmiddle">Absmiddle</option>
-		 <option value="baseline">Baseline</option>
-		 <option value="absbottom">Absbottom</option>
 		 <option value="bottom">Bottom</option>
 		 <option value="middle">Middle</option>
 		 <option value="top">Top</option>
@@ -1204,10 +1209,11 @@ elseif ($job == 'doc_insert_image') {
 	  </td>
 	</tr>
 	<tr class="mbox">
-	  <td>Horizontal Space:</td>
-	  <td><input type="text" name="hspace" id="hspace" value="" size="10" /></td>
-	  <td>Vertical Space:</td>
-	  <td><input type="text" name="vspace" id="vspace" value="" size="10" /></td>
+	  <td>Border-Color:</td>
+	  <td colspan="3">
+	  	<input type="text" name="bordercolor" id="bordercolor" value="none" size="10" />
+	  	<input type="button" value="Choose" onClick="WYSIWYG_ColorInst.choose('bordercolor');" />
+	  </td>
 	</tr>
 	<tr class="mbox">
 	  <td colspan="5" class="ubox" align="center">
