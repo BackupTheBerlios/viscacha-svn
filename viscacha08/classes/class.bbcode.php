@@ -1108,8 +1108,38 @@ class BBCode {
 			$this->smileys = $cache->get();
 		}
 	}
-	function getsmileyhtml ($perrow = 5) {
-	    global $tpl, $config;
+
+	function getEditorArea ($id, $content = '', $taAttr = '', $maxlength = null, $disable = array()) {
+		global $tpl, $lang, $scache, $config;
+		if ($maxlength == null) {
+			$maxlength = $config['maxpostlength'];
+		}
+		if (!is_array($disable)) {
+			$disable = array($disable);
+		}
+
+		$lang->group("bbcodes");
+
+		$taAttr = ' '.trim($taAttr);
+
+		$cbb = $this->getCustomBB();
+		foreach ($cbb as $key => $bb) {
+			if (empty($bb['buttonimage'])) {
+				unset($cbb[$key]);
+				continue;
+			}
+			$cbb[$key]['title'] = htmlspecialchars($bb['title']);
+			if ($bb['twoparams']) {
+				$cbb[$key]['href'] = "InsertTags('{$id}', '[{$bb['bbcodetag']}=]','[/{$bb['bbcodetag']}]');";
+			}
+			else {
+				$cbb[$key]['href'] = "InsertTags('{$id}', '[{$bb['bbcodetag']}]','[/{$bb['bbcodetag']}]');";
+			}
+		}
+
+		$codelang = $scache->load('syntaxhighlight');
+		$clang = $codelang->get();
+
 	    $this->cache_smileys();
 		$smileys = array(0 => array(), 1 => array());
 		foreach ($this->smileys as $bb) {
@@ -1120,37 +1150,11 @@ class BBCode {
 				$smileys[0][] = $bb;
 			}
 		}
-		$smileys[1] = array_chunk($smileys[1], $perrow);
 
-		end($smileys[1]);
-		$last = current($smileys[1]);
-		$lastKey = key($smileys[1]);
-		reset($smileys[1]);
-		$colspan = $perrow - count($last);
+		$tpl->globalvars(compact("id", "content", "taAttr", "cbb", "clang", "smileys", "maxlength", "disable"));
+		return $tpl->parse("main/bbhtml");
+	}
 
-		$tpl->globalvars(compact("smileys", "colspan", "lastKey"));
-		return $tpl->parse("main/smileys");
-	}
-	function getbbhtml ($file = "main/bbhtml") {
-	    global $tpl, $lang;
-	    $lang->group("bbcodes");
-	    $cbb = $this->getCustomBB();
-	    foreach ($cbb as $key => $bb) {
-	    	if (empty($bb['buttonimage'])) {
-	    		unset($cbb[$key]);
-	    		continue;
-	    	}
-	    	$cbb[$key]['title'] = htmlspecialchars($bb['title']);
-	    	if ($bb['twoparams']) {
-	    		$cbb[$key]['href'] = "InsertTagsParams('[{$bb['bbcodetag']}={param1}]{param2}','[/{$bb['bbcodetag']}]');";
-	    	}
-	    	else {
-	    		$cbb[$key]['href'] = "InsertTags('[{$bb['bbcodetag']}]','[/{$bb['bbcodetag']}]');";
-	    	}
-	    }
-	    $tpl->globalvars(compact("cbb"));
-	    return $tpl->parse($file);
-	}
 	function replaceTextOnce($original, $newindex) {
 		global $lang;
 		$lang->assign('originalid', $original);
@@ -1214,5 +1218,9 @@ function BBProfile(&$bbcode, $profile = 'standard') {
 		$bbcode->setProfile($profile, SP_CHANGE);
 	}
 }
+
+define('TOOLBAR_STATUS', 1);
+define('TOOLBAR_FORMATTING', 2);
+define('TOOLBAR_SMILEYS', 3);
 
 ?>

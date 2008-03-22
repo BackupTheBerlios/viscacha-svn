@@ -389,9 +389,6 @@ else {
 		$abox = array('id' => null);
 	}
 
-	$inner['smileys'] = $bbcode->getsmileyhtml($config['smileysperrow']);
-	$inner['bbhtml'] = $bbcode->getbbhtml();
-
 	echo $tpl->parse("header");
 	echo $tpl->parse("menu");
 

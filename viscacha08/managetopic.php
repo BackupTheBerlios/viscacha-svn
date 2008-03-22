@@ -490,8 +490,6 @@ if ($my->vlogin && $my->mp[0] == 1) {
 		$comment = array_unique($comment);
 
 		BBProfile($bbcode);
-		$inner['smileys'] = $bbcode->getsmileyhtml($config['smileysperrow']);
-		$inner['bbhtml'] = $bbcode->getbbhtml();
 
 		($code = $plugins->load('managetopic_pmerge_prepared')) ? eval($code) : null;
 

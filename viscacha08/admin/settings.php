@@ -102,7 +102,7 @@ elseif ($job == 'ftp') {
 
 	$path = 'N/A';
 	if (isset($_SERVER['DOCUMENT_ROOT'])) {
-		$path = str_replace(realpath($_SERVER['DOCUMENT_ROOT']).DIRECTORY_SEPARATOR, '', realpath('../'));
+		$path = str_replace(realpath($_SERVER['DOCUMENT_ROOT']).DIRECTORY_SEPARATOR, '', realpath('./'));
 	}
 
 	echo head();
@@ -847,18 +847,31 @@ elseif ($job == 'user2') {
 }
 elseif ($job == 'cmsp') {
 	$config = $gpc->prepare($config);
+	$language_obj = $scache->load('loadlanguage');
+	$language = $language_obj->get();
 	echo head();
 	?>
 	<form name="form" method="post" action="admin.php?action=settings&job=cmsp2">
 	 <table class="border" border="0" cellspacing="0" cellpadding="4">
 	  <tr>
-	   <td class="obox" colspan="2"><b><?php echo $lang->phrase('admin_cms_portal_edit'); ?></b></td>
+	   <td class="obox" colspan="2"><?php echo $lang->phrase('admin_cms_portal_edit'); ?></td>
 	  </tr>
 	  <tr>
 	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_switch_cms_portal'); ?></td>
 	   <td class="mbox" width="50%"><select name="indexpage">
 	   <option value="forum"<?php echo iif($config['indexpage'] == 'forum', ' selected="selected"'); ?>><?php echo $lang->phrase('admin_switch_forum'); ?></option>
 	   <option value="portal"<?php echo iif($config['indexpage'] == 'portal', ' selected="selected"'); ?>><?php echo $lang->phrase('admin_switch_portal'); ?></option>
+	   </select></td>
+	  </tr>
+	  <tr>
+	   <td class="mbox" width="50%">
+	   	<?php echo $lang->phrase('admin_doclang_title'); ?><br />
+	   	<span class="stext"><?php echo $lang->phrase('admin_doclang_desc'); ?></span>
+	   </td>
+	   <td class="mbox" width="50%"><select name="doclang">
+	   <?php foreach ($language as $lid => $data) { ?>
+	   <option value="<?php echo $lid; ?>"<?php echo iif($config['doclang'] == $lid, ' selected="selected"'); ?>><?php echo $data['language']; ?></option>
+	   <?php } ?>
 	   </select></td>
 	  </tr>
 	   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="<?php echo $lang->phrase('admin_form_submit'); ?>"></td>
@@ -873,6 +886,7 @@ elseif ($job == 'cmsp2') {
 
 	$c->getdata();
 	$c->updateconfig('indexpage', str);
+	$c->updateconfig('doclang', int);
 	$c->savedata();
 
 	ok('admin.php?action=settings&job=cmsp');
@@ -884,7 +898,7 @@ elseif ($job == 'pm') {
 	<form name="form" method="post" action="admin.php?action=settings&job=pm2">
 	 <table class="border" border="0" cellspacing="0" cellpadding="4">
 	  <tr>
-	   <td class="obox" colspan="2"><b><?php echo $lang->phrase('admin_admin_edit'); ?></b></td>
+	   <td class="obox" colspan="2"><?php echo $lang->phrase('admin_admin_edit'); ?></td>
 	  </tr>
 	  <tr>
 	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_number_of_pm'); ?></td>
@@ -1165,66 +1179,6 @@ elseif ($job == 'register2') {
 	$c->updateconfig('register_notification', str, $register_notification);
 	$c->updateconfig('disableregistration', int);
 	$c->updateconfig('acceptrules', int);
-	$c->savedata();
-
-	ok('admin.php?action=settings&job=settings');
-}
-elseif ($job == 'spellcheck') {
-	$config = $gpc->prepare($config);
-	$ext = get_loaded_extensions();
-	if (in_array("pspell", $ext)) {
-		$ps = "<span style='color: green;'>'.$lang->phrase('admin_pspell_available').'</span>";
-	}
-	else {
-		$ps = "<span style='color: red;'>'.$lang->phrase('admin_pspell_not_available').'</span>";
-	}
-	echo head();
-	?>
-	<form name="form" method="post" action="admin.php?action=settings&job=spellcheck2">
-	 <table class="border" border="0" cellspacing="0" cellpadding="4">
-	  <tr>
-	   <td class="obox" colspan="2"><b><?php echo $lang->phrase('admin_spellcheck_edit'); ?></b></td>
-	  </tr>
-	  <tr>
-	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_enable_spellchecker'); ?><br />
-	   <span class="stext"><?php echo $lang->phrase('admin_enable_spellchecker_info'); ?></span></td>
-	   <td class="mbox" width="50%"><input type="checkbox" name="spellcheck" value="1"<?php echo iif($config['spellcheck'] == 1,' checked="checked"'); ?>></td>
-	  </tr>
-	  <tr>
-	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_spellcheck_system'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_spellcheck_system_info'); ?></span></td>
-	   <td class="mbox" width="50%"><select name="pspell">
-	   <option value="pspell"<?php echo iif($config['pspell'] == 'pspell', ' selected="selected"'); ?>><?php echo $lang->phrase('admin_spellcheck_pspell_aspell'); ?></option>
-	   <option value="mysql"<?php echo iif($config['pspell'] == 'mysql', ' selected="selected"'); ?>><?php echo $lang->phrase('admin_spellcheck_mysql_php'); ?></option>
-	   <option value="php"<?php echo iif($config['pspell'] == 'php', ' selected="selected"'); ?>><?php echo $lang->phrase('admin_spellcheck_textfile_php'); ?></option>
-	   </select></td>
-	  </tr>
-	  <tr>
-	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_ignor_words_less_chackters'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_ignor_words_less_chackters_info'); ?></span></td>
-	   <td class="mbox" width="50%"><input type="text" name="spellcheck_ignore" value="<?php echo $config['spellcheck_ignore']; ?>" size="4"></td>
-	  </tr>
-	  <tr>
-	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_mode_suggestions'); ?></td>
-	   <td class="mbox" width="50%"><select name="spellcheck_mode">
-	   <option value="0"<?php echo iif($config['spellcheck_mode'] == 0, ' selected="selected"'); ?>><?php echo $lang->phrase('admin_suggestions_fast_mode'); ?></option>
-	   <option value="1"<?php echo iif($config['spellcheck_mode'] == 1, ' selected="selected"'); ?>><?php echo $lang->phrase('admin_suggestions_normal_mode'); ?></option>
-	   <option value="2"<?php echo iif($config['spellcheck_mode'] == 2, ' selected="selected"'); ?>><?php echo $lang->phrase('admin_suggestions_slow_mode'); ?></option>
-	   </select></td>
-	  </tr>
-	   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="<?php echo $lang->phrase('admin_form_submit'); ?>"></td>
-	  </tr>
-	 </table>
-	</form>
-	<?php
-	echo foot();
-}
-elseif ($job == 'spellcheck2') {
-	echo head();
-
-	$c->getdata();
-	$c->updateconfig('spellcheck',int);
-	$c->updateconfig('spellcheck_ignore',int);
-	$c->updateconfig('spellcheck_mode',int);
-	$c->updateconfig('pspell',str);
 	$c->savedata();
 
 	ok('admin.php?action=settings&job=settings');
@@ -1851,10 +1805,6 @@ elseif ($job == 'textprocessing') {
 	   <td class="obox" colspan="2"><b><?php echo $lang->phrase('admin_bb_text_smileys'); ?></b></td>
 	  </tr>
 	  <tr>
-	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_number_of_smileys'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_number_of_smileys_info'); ?></span></td>
-	   <td class="mbox" width="50%"><input type="text" name="smileysperrow" value="<?php echo $config['smileysperrow']; ?>" size="8"></td>
-	  </tr>
-	  <tr>
 	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_path_smiley_dir'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_path_smiley_dir_info'); ?><tt><?php echo $spath; ?></tt></span></td>
 	   <td class="mbox" width="50%"><input type="text" name="smileypath" value="<?php echo $config['smileypath']; ?>" size="60"></td>
 	  </tr>
@@ -1886,11 +1836,6 @@ elseif ($job == 'textprocessing2') {
 	$c->updateconfig('reduce_url',int);
 	$c->updateconfig('maxurllength',int);
 	$c->updateconfig('maxurltrenner',str);
-	$smileysperrow = $gpc->get('smileysperrow', int);
-	if ($smileysperrow < 1) {
-		$smileysperrow = $config['smileysperrow'];
-	}
-	$c->updateconfig('smileysperrow',int,$smileysperrow);
 	$c->updateconfig('topicuppercase',int);
 	$c->updateconfig('smileypath',str);
 	$c->updateconfig('smileyurl',str);
@@ -2691,18 +2636,6 @@ else {
 		      <option value="" style="font-weight: bold;"><?php echo $lang->phrase('admin_select_tools'); ?></option>
 		  	  <option value="admin.php?action=misc&amp;job=captcha_noises"><?php echo $lang->phrase('admin_select_captcha_bg'); ?></option>
 		  	  <option value="admin.php?action=misc&amp;job=captcha_fonts"><?php echo $lang->phrase('admin_select_captcha_fonts'); ?></option>
-	        </select> <input style="width: 18%" type="submit" value="<?php echo $lang->phrase('admin_form_go'); ?>">
-		  </form>
-		</td>
-	  </tr>
-	  <tr class="mbox">
-		<td nowrap="nowrap"><a href="admin.php?action=settings&amp;job=spellcheck"><?php echo $lang->phrase('admin_setting_spell_check'); ?></a></td>
-		<td class="stext"><?php echo $lang->phrase('admin_setting_spell_check_info'); ?></td>
-		<td>
-		  <form name="act" action="admin.php?action=locate" method="post">
-		    <select style="width: 80%" size="1" name="url" onchange="locate(this.value)">
-		      <option value="" style="font-weight: bold;"><?php echo $lang->phrase('admin_select_tools'); ?></option>
-		  	  <option value="admin.php?action=misc&amp;job=spellcheck"><?php echo $lang->phrase('admin_select_spell_check'); ?></option>
 	        </select> <input style="width: 18%" type="submit" value="<?php echo $lang->phrase('admin_form_go'); ?>">
 		  </form>
 		</td>

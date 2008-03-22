@@ -15,7 +15,6 @@ $chmod = array(
 array('path' => 'data', 'chmod' => CHEX, 'recursive' => false, 'req' => true),
 array('path' => 'data/cron', 'chmod' => CHEX, 'recursive' => false, 'req' => true),
 array('path' => 'feeds', 'chmod' => CHEX, 'recursive' => false, 'req' => true),
-array('path' => 'docs', 'chmod' => CHEX, 'recursive' => false, 'req' => false),
 array('path' => 'classes/cron/jobs', 'chmod' => CHEX, 'recursive' => false, 'req' => false),
 array('path' => 'classes/feedcreator', 'chmod' => CHEX, 'recursive' => false, 'req' => false),
 array('path' => 'classes/fonts', 'chmod' => CHEX, 'recursive' => false, 'req' => false),
@@ -35,17 +34,6 @@ array('path' => 'data', 'chmod' => CHWR, 'recursive' => true, 'req' => true),
 array('path' => 'feeds', 'chmod' => CHWR, 'recursive' => true, 'req' => false),
 array('path' => 'language', 'chmod' => CHWR, 'recursive' => true, 'req' => false)
 );
-$path = 'docs';
-$dh = opendir('../'.$path);
-while ($file = readdir($dh)) {
-	if($file != '.' && $file != '..') {
-		$fullpath = $path.'/'.$file;
-		if(is_file('../'.$fullpath)) {
-			$chmod[] = array('path' => $fullpath, 'chmod' => CHWR, 'recursive' => false, 'req' => false);
-		}
-	}
-}
-closedir($dh);
 $path = 'templates';
 $dh = opendir('../'.$path);
 while ($file = readdir($dh)) {

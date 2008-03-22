@@ -1529,7 +1529,7 @@ elseif ($job == 'prefix_edit') {
    <td class="mbox" width="50%"><input type="checkbox" name="standard" value="1" <?php echo iif($row['standard'] == 1, ' checked="checked"'); ?> /></td>
   </tr>
   <tr>
-   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="<mla=form_edit>Edit</edit>"></td>
+   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="<?php echo $lang->phrase('admin_forum_form_submit'); ?>"></td>
   </tr>
  </table>
 </form>

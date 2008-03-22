@@ -341,7 +341,7 @@ elseif ($_GET['action'] == "save") {
 				$db->query("INSERT INTO {$db->pre}abos (mid,tid,type) VALUES ('{$my->id}','{$tredirect}','{$type}')",__LINE__,__FILE__);
 			}
 		}
-		
+
 		$my->mp = $slog->ModPermissions($board);
 
 		$close = $gpc->get('close', int);
@@ -408,8 +408,6 @@ else {
 	echo $tpl->parse("menu");
 
 	BBProfile($bbcode);
-	$inner['smileys'] = $bbcode->getsmileyhtml($config['smileysperrow']);
-	$inner['bbhtml'] = $bbcode->getbbhtml();
 
 	$prefix_obj = $scache->load('prefix');
 	$prefix_arr = $prefix_obj->get($board);

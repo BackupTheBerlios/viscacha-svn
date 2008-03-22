@@ -751,7 +751,7 @@ elseif ($job == 'merge') {
 </td>
 </tr>
 <tr>
-<td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="<?php echo $lang->phrase('admin_member_delete'); ?>"></td>
+<td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="<?php echo $lang->phrase('admin_member_submit'); ?>"></td>
 </tr>
 </table>
 </form>
@@ -865,6 +865,9 @@ elseif ($job == 'merge2') {
 	}
 	// Step 12: Delete old user
 	$db->query("DELETE FROM {$db->pre}user WHERE id = '".$old['id']."'");
+
+	// Step 13: Recount User Post Count
+	UpdateMemberStats($base['id']);
 
 	$cache = $scache->load('memberdata');
 	$cache = $cache->delete();
@@ -1254,7 +1257,7 @@ elseif ($job == 'register2') {
 	    $reg = time();
 	    $pw_md5 = md5($_POST['pwx']);
 
-		$db->query("INSERT INTO {$db->pre}user (name, pw, mail, regdate, confirm) VALUES ('{$_POST['name']}', '{$pw_md5}', '{$_POST['email']}', '{$reg}', '11')",__LINE__,__FILE__);
+		$db->query("INSERT INTO {$db->pre}user (name, pw, mail, regdate, confirm, groups) VALUES ('{$_POST['name']}', '{$pw_md5}', '{$_POST['email']}', '{$reg}', '11', '".GROUP_MEMBER."')",__LINE__,__FILE__);
         $redirect = $db->insert_id();
 
 		if (count($upquery) > 0) {
@@ -1806,7 +1809,7 @@ elseif ($job == 'banned') {
 	  	$diff = "{$days}d {$hours}h {$sec}m";
   	}
   	else {
-  		$diff = "<em><?php echo $lang->phrase('admin_member_expired'); ?></em>";
+  		$diff = "<em>".$lang->phrase('admin_member_expired')."</em>";
   	}
 
   	$row[2] = intval($row[2]);

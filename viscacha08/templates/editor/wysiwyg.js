@@ -218,50 +218,45 @@ var WYSIWYG = {
 
 	},
 
-
-	/* ---------------------------------------------------------------------- *\
-		!! Do not change something below or you know what you are doning !!
-	\* ---------------------------------------------------------------------- */
-
 	// List of available block formats (not in use)
 	//BlockFormats: new Array("Address", "Bulleted List", "Definition", "Definition Term", "Directory List", "Formatted", "Heading 1", "Heading 2", "Heading 3", "Heading 4", "Heading 5", "Heading 6", "Menu List", "Normal", "Numbered List"),
 
 	// List of available actions and their respective ID and images
 	ToolbarList: {
-	//Name              buttonID               buttonTitle           	buttonImage               buttonImageRollover
-	"bold":           ['Bold',                 'Bold',               	'bold_on.gif',               'bold_on.gif'],
-	"italic":         ['Italic',               'Italic',             	'italics_on.gif',            'italics_on.gif'],
-	"underline":      ['Underline',            'Underline',          	'underline_on.gif',          'underline_on.gif'],
-	"strikethrough":  ['Strikethrough',        'Strikethrough',      	'strikethrough_on.gif',      'strikethrough_on.gif'],
-	"seperator":      ['',                     '',                   	'seperator.gif',          ''],
-	"subscript":      ['Subscript',            'Subscript',          	'subscript_on.gif',          'subscript_on.gif'],
-	"superscript":    ['Superscript',          'Superscript',        	'superscript_on.gif',        'superscript_on.gif'],
-	"justifyleft":    ['Justifyleft',          'Justifyleft',        	'justify_left_on.gif',       'justify_left_on.gif'],
-	"justifycenter":  ['Justifycenter',        'Justifycenter',      	'justify_center_on.gif',     'justify_center_on.gif'],
-	"justifyright":   ['Justifyright',         'Justifyright',       	'justify_right_on.gif',      'justify_right_on.gif'],
-	"justifyfull": 	  ['Justifyfull', 		   'Justifyfull', 			'justify_justify_on.gif', 	  'justify_justify_on.gif'],
-	"unorderedlist":  ['InsertUnorderedList',  'Insert Unordered List',	'list_unordered_on.gif',     'list_unordered_on.gif'],
-	"orderedlist":    ['InsertOrderedList',    'Insert Ordered List',  	'list_ordered_on.gif',       'list_ordered_on.gif'],
-	"outdent":        ['Outdent',              'Outdent',            	'indent_left_on.gif',        'indent_left_on.gif'],
-	"indent":         ['Indent',               'Indent',             	'indent_right_on.gif',       'indent_right_on.gif'],
-	"cut":            ['Cut',                  'Cut',                	'cut_on.gif',                'cut_on.gif'],
-	"copy":           ['Copy',                 'Copy',               	'copy_on.gif',               'copy_on.gif'],
-	"paste":          ['Paste',                'Paste',              	'paste_on.gif',              'paste_on.gif'],
-	"forecolor":      ['ForeColor',            'Fore Color',          	'forecolor_on.gif',          'forecolor_on.gif'],
-	"backcolor":      ['BackColor',            'Back Color',          	'backcolor_on.gif',          'backcolor_on.gif'],
-	"undo":           ['Undo',                 'Undo',               	'undo_on.gif',               'undo_on.gif'],
-	"redo":           ['Redo',                 'Redo',               	'redo_on.gif',               'redo_on.gif'],
-	"inserthr":    	  ['InsertHR',             'Insert HR',        		'insert_hr_on.gif',       	 'insert_hr_on.gif'],
-	"inserttable":    ['InsertTable',          'Insert Table',        	'insert_table_on.gif',       'insert_table_on.gif'],
-	"insertimage":    ['InsertImage',          'Insert Image',        	'insert_picture_on.gif',     'insert_picture_on.gif'],
-	"createlink":     ['CreateLink',           'Create Link',         	'insert_hyperlink_on.gif',   'insert_hyperlink_on.gif'],
-	"viewSource":     ['ViewSource',           'View Source',         	'view_source.gif',        ''],
-	"viewText":       ['ViewText',             'View Text',           	'view_text.gif',          ''],
-	"fonts":     	  ['Fonts',           	   'Select Font',        	'select_font.gif',        'select_font.gif'],
-	"fontsizes":      ['Fontsizes',            'Select Size',        	'select_size.gif',        'select_size.gif'],
-	"headings":       ['Headings',             'Select Size',        	'select_heading.gif',     'select_heading.gif'],
-	"removeformat":   ['RemoveFormat',         'Strip Word HTML',    	'remove_format_on.gif',      'remove_format_on.gif'],
-	"maximize": 	  ['Maximize', 			   'Maximize the editor',   'maximize_on.gif', 		  'maximize_on.gif']
+	//Name			buttonID			 	buttonTitle		 		buttonImage			 	buttonImageRollover
+	"bold":			['Bold',				'Bold',					'bold.gif',				'bold.gif'],
+	"italic":		['Italic',				'Italic',				'italic.gif',			'italic.gif'],
+	"underline":	['Underline',			'Underline',			'underline.gif',		'underline.gif'],
+	"strikethrough":['Strikethrough',		'Strikethrough',		'strikethrough.gif',	'strikethrough.gif'],
+	"seperator":	['',					'',						'seperator.gif',		''],
+	"subscript":	['Subscript',			'Subscript',			'subscript.gif',		'subscript.gif'],
+	"superscript":	['Superscript',			'Superscript',			'superscript.gif',		'superscript.gif'],
+	"justifyleft":	['Justifyleft',			'Justify Left',			'left.gif',				'left.gif'],
+	"justifycenter":['Justifycenter',		'Justify Center',		'center.gif',			'center.gif'],
+	"justifyright":	['Justifyright',		'Justify Right',		'right.gif',			'right.gif'],
+	"justifyfull":	['Justifyfull',			'Justify',				'justify.gif',			'justify.gif'],
+	"unorderedlist":['InsertUnorderedList',	'Unordered List',		'list_unordered.gif',	'list_unordered.gif'],
+	"orderedlist":	['InsertOrderedList',	'Ordered List',			'list_ordered.gif',		'list_ordered.gif'],
+	"outdent":		['Outdent',				'Outdent',				'indent_left.gif',		'indent_left.gif'],
+	"indent":		['Indent',				'Indent',				'indent_right.gif',		'indent_right.gif'],
+	"cut":			['Cut',					'Cut',					'sys_cut.gif',			'sys_cut.gif'],
+	"copy":			['Copy',				'Copy',					'sys_copy.gif',			'sys_copy.gif'],
+	"paste":		['Paste',				'Paste',				'sys_paste.gif',		'sys_paste.gif'],
+	"forecolor":	['ForeColor',			'Fore Color',			'color.gif',			'color.gif'],
+	"backcolor":	['BackColor',			'Back Color',			'bgcolor.gif',			'bgcolor.gif'],
+	"undo":			['Undo',				'Undo',					'sys_undo.gif',			'sys_undo.gif'],
+	"redo":			['Redo',				'Redo',					'sys_redo.gif',			'sys_redo.gif'],
+	"inserthr":		['InsertHR',			'Horizontal Ruler',		'hr.gif',				'hr.gif'],
+	"inserttable":	['InsertTable',			'Table',				'table.gif',			'table.gif'],
+	"insertimage":	['InsertImage',			'Image',				'img.gif',				'img.gif'],
+	"createlink":	['CreateLink',			'Link',					'url.gif',				'url.gif'],
+	"viewSource":	['ViewSource',			'View Source',			'view_html.gif',		''],
+	"viewText":		['ViewText',			'View Text',			'view_text.gif',		''],
+	"fonts":		['Fonts',				'Font face',			'select_font.gif',		'select_font.gif'],
+	"fontsizes":	['Fontsizes',			'Font Size',			'select_size.gif',		'select_size.gif'],
+	"headings":		['Headings',			'Headings',				'select_heading.gif',	'select_heading.gif'],
+	"removeformat":	['RemoveFormat',		'Strip Word HTML',		'remove_format.gif',	'remove_format.gif'],
+	"maximize":		['Maximize',			'Maximize the editor',	'maximize.gif',			'maximize.gif']
 	},
 
 	// stores the different settings for each textarea
@@ -663,8 +658,8 @@ var WYSIWYG = {
 		}
 
 		// Create iframe which will be used for rich text editing
-		var iframe = '<table cellpadding="0" cellspacing="0" border="0" style="width:' + currentWidth + '; height:' + currentHeight + ';" class="tableTextareaEditor"><tr><td valign="top">\n'
-	    + '<iframe frameborder="0" id="wysiwyg' + n + '" class="iframeText" style="width:' + ifrmWidth + ';height:' + ifrmHeight + ';"></iframe>\n'
+		var iframe = '<table cellpadding="0" cellspacing="0" border="0" style="width:' + currentWidth + '; height:' + currentHeight + ';" class="editor_textarea_outer"><tr><td valign="top">\n'
+	    + '<iframe frameborder="0" id="wysiwyg' + n + '" class="editor_textarea_inner" style="width:' + ifrmWidth + ';height:' + ifrmHeight + ';"></iframe>\n'
 	    + '</td></tr></table>\n';
 
 	    // Insert after the textArea both toolbar one and two
@@ -742,8 +737,8 @@ var WYSIWYG = {
 	    // This table holds the toolbars and the iframe as the editor
 	    var editor = "";
 	    editor += '<div id="wysiwyg_div_' + n + '" style="width:' + currentWidth  +';">';
-	    editor += '<table border="0" cellpadding="0" cellspacing="0" class="tableTextareaEditor" id="wysiwyg_table_' + n + '" style="width:' + currentWidth  + '; height:' + currentHeight + ';">';
-	    editor += '<tr><td style="height:22px;vertical-align:top;">';
+	    editor += '<table border="0" cellpadding="0" cellspacing="0" class="editor_textarea_outer" id="wysiwyg_table_' + n + '" style="width:' + currentWidth  + '; height:' + currentHeight + ';">';
+	    editor += '<tr><td style="height:22px;vertical-align:top;padding:0px;">';
 
 		// Output all command buttons that belong to toolbar one
 		for (var j = 0; j < this.config[n].Toolbar.length;j++) {
@@ -751,7 +746,7 @@ var WYSIWYG = {
 				var toolbar = this.config[n].Toolbar[j];
 
 				// Generate WYSIWYG toolbar one
-			    editor += '<table border="0" cellpadding="0" cellspacing="0" class="toolbar1" style="width:100%;" id="toolbar' + j + '_' + n + '">';
+			    editor += '<table border="0" cellpadding="0" cellspacing="0" class="editor_toolbar" style="width:100%;" id="toolbar' + j + '_' + n + '">';
 	    		editor += '<tr>';
 
 				// Interate over the toolbar element
@@ -783,19 +778,19 @@ var WYSIWYG = {
 								// View Source button
 								else if (toolbar[i] == "viewSource"){
 								    editor += '<td style="width: 22px;">';
-									editor += '<span id="HTMLMode' + n + '"><img src="' + buttonImage +  '" border="0" unselectable="on" title="' + buttonTitle + '" id="' + buttonID + '" class="buttonEditor" onmouseover="this.className=\'buttonEditorOver\';" onmouseout="this.className=\'buttonEditor\';" onclick="WYSIWYG.execCommand(\'' + n + '\', \'' + buttonID + '\');" unselectable="on" width="20" height="20"></span>';
-									editor += '<span id="textMode' + n + '"><img src="' + this.config[n].ImagesDir + 'view_text.gif" border="0" unselectable="on" title="viewText" id="ViewText" class="buttonEditor" onmouseover="this.className=\'buttonEditorOver\';" onmouseout="this.className=\'buttonEditor\';" onclick="WYSIWYG.execCommand(\'' + n + '\',\'ViewText\');" unselectable="on"  width="20" height="20"></span>';
+									editor += '<span id="HTMLMode' + n + '"><img src="' + buttonImage +  '" border="0" unselectable="on" title="' + buttonTitle + '" id="' + buttonID + '" class="editor_toolbar_button" onmouseover="this.className=\'editor_toolbar_button_on\';" onmouseout="this.className=\'editor_toolbar_button\';" onclick="WYSIWYG.execCommand(\'' + n + '\', \'' + buttonID + '\');" unselectable="on" width="20" height="20"></span>';
+									editor += '<span id="textMode' + n + '"><img src="' + this.config[n].ImagesDir + 'view_text.gif" border="0" unselectable="on" title="viewText" id="ViewText" class="editor_toolbar_button" onmouseover="this.className=\'editor_toolbar_button_on\';" onmouseout="this.className=\'editor_toolbar_button\';" onclick="WYSIWYG.execCommand(\'' + n + '\',\'ViewText\');" unselectable="on"  width="20" height="20"></span>';
 							        editor += '</td>';
 						        }
 								else {
 									editor += '<td style="width: 22px;">';
 									if (buttonObj[2] == buttonObj[3]) {
-										onevent = 'onmouseover="this.className=\'buttonEditorOver\';" onmouseout="this.className=\'buttonEditor\';"';
+										onevent = 'onmouseover="this.className=\'editor_toolbar_button_on\';" onmouseout="this.className=\'editor_toolbar_button\';"';
 									}
 									else {
-										onevent = 'onmouseover="this.className=\'buttonEditorOver\'; this.src=\'' + buttonImageRollover + '\';" onmouseout="this.className=\'buttonEditor\'; this.src=\'' + buttonImage + '\';"';
+										onevent = 'onmouseover="this.className=\'editor_toolbar_button_on\'; this.src=\'' + buttonImageRollover + '\';" onmouseout="this.className=\'editor_toolbar_button\'; this.src=\'' + buttonImage + '\';"';
 									}
-									editor += '<img src="' + buttonImage + '" border=0 unselectable="on" title="' + buttonTitle + '" id="' + buttonID + '" class="buttonEditor" '+onevent+' onclick="WYSIWYG.execCommand(\'' + n + '\', \'' + buttonID + '\');" unselectable="on" width="20" height="20">';
+									editor += '<img src="' + buttonImage + '" border=0 unselectable="on" title="' + buttonTitle + '" id="' + buttonID + '" class="editor_toolbar_button" '+onevent+' onclick="WYSIWYG.execCommand(\'' + n + '\', \'' + buttonID + '\');" unselectable="on" width="20" height="20">';
 									editor += '</td>';
 								}
 							}
@@ -808,11 +803,11 @@ var WYSIWYG = {
 
 	 	editor += '</td></tr><tr><td valign="top">\n';
 		// Create iframe which will be used for rich text editing
-		editor += '<iframe frameborder="0" id="wysiwyg' + n + '" class="iframeText" style="width:100%;height:' + currentHeight + ';"></iframe>\n'
+		editor += '<iframe frameborder="0" id="wysiwyg' + n + '" class="editor_textarea_inner" style="width:100%;height:' + currentHeight + ';"></iframe>\n'
 	    + '</td></tr>';
 	    // Status bar HTML code
 	    if(this.config[n].StatusBarEnabled) {
-		    editor += '<tr><td class="wysiwyg-statusbar" id="wysiwyg_statusbar_' + n + '">&nbsp;</td></tr>';
+		    editor += '<tr><td class="editor_statusbar" id="wysiwyg_statusbar_' + n + '">&nbsp;</td></tr>';
 		}
 	    editor += '</table>';
 	    editor += '</div>';
@@ -1049,7 +1044,7 @@ var WYSIWYG = {
 		var max = nodeTree.length - 1;
 		for(var i=max;i>=0;i--) {
 			if(nodeTree[i].nodeName != "HTML" && nodeTree[i].nodeName != "BODY") {
-				outputTree += '<a class="wysiwyg-statusbar" href="javascript:WYSIWYG.selectNode(\'' + n + '\',' + i + ');">' + nodeTree[i].nodeName + '</a>';
+				outputTree += '<a class="editor_statusbar" href="javascript:WYSIWYG.selectNode(\'' + n + '\',' + i + ');">' + nodeTree[i].nodeName + '</a>';
 			}
 			else {
 				outputTree += nodeTree[i].nodeName;
@@ -1366,7 +1361,7 @@ var WYSIWYG = {
 				range.setStart(afterNode, 0);
 			}
 			catch(e) {
-				alert(e);
+				// alert(e);
 			}
 		}
 
@@ -1398,7 +1393,7 @@ var WYSIWYG = {
 				var value = dropdown.elements[i];
 				var label = dropdown.label.replace(/{value}/gi, value);
 				// output
-		  		output += '<button type="button" onClick="WYSIWYG.execCommand(\'' + n + '\',\'' + dropdown.command + '\',\'' + value + '\')\;" onMouseOver="this.className=\'mouseOver\'" onMouseOut="this.className=\'mouseOut\'" class="mouseOut" style="width: 120px;">';
+		  		output += '<button type="button" onClick="WYSIWYG.execCommand(\'' + n + '\',\'' + dropdown.command + '\',\'' + value + '\')\;" onMouseOver="this.className=\'mouseOver\'" onMouseOut="this.className=\'mouseOut\'" class="mouseOut" style="width: 125px;">';
 		  		output += '<table cellpadding="0" cellspacing="0" border="0"><tr>';
 		  		output += '<td align="left">' + label + '</td>';
 		  		output += '</tr></table></button><br>';
@@ -1496,7 +1491,7 @@ var WYSIWYG = {
 	},
 
 	/**
-	 * Shows the HTML source code generated by the WYSIWYG editor
+	 * Shows the HTML Design generated by the WYSIWYG editor
 	 *
 	 * @param {String} n The editor identifier (textarea ID)
 	 */
@@ -2468,7 +2463,7 @@ var WYSIWYG_Beautifier = {
 	},
 
 	_ProtectData: function( outer, opener, data, closer ) {
-		return opener + '___FCKpd___' + this.ProtectedData.AddItem( data ) + closer;
+		return opener + '___VISCACHA_PD___' + this.ProtectedData.AddItem( data ) + closer;
 	},
 
 	Format: function( html ) {
@@ -2502,7 +2497,7 @@ var WYSIWYG_Beautifier = {
 
 		// Now we put back the protected data.
 		for ( var j = 0 ; j < this.ProtectedData.length ; j++ ) {
-			var oRegex = new RegExp( '___FCKpd___' + j ) ;
+			var oRegex = new RegExp( '___VISCACHA_PD___' + j ) ;
 			sFormatted = sFormatted.replace( oRegex, this.ProtectedData[j].replace( /\$/g, '$$$$' ) ) ;
 		}
 

@@ -34,7 +34,6 @@ Following directories need CHMOD 777:
 - "components"
 - "data" and all subdirectories
 - "designs" and all subdirectories
-- "docs"
 - "feeds"
 - "images" and all subdirectories
 - "language" and all subdirectories
@@ -45,7 +44,6 @@ Following directories need CHMOD 777:
 Following files need CHMOD 666:
 - All files in the directory "admin/data/"
 - All files in the directories "data" and "data/cron"
-- All files in the directory "docs"
 - All files in the directory "language" and all files in the subdirectories of
   "language"
 - All files in the directory "templates" and all files in the subdirectories of
@@ -261,7 +259,7 @@ Normal system requirements:
 
 Optimal system requirements:
  - PHP Version: 5.0.0 and above
- - PHP-Extensions: mysql, pcre, gd, zlib, xml, pspell, iconv, mbstring, mhash,
+ - PHP-Extensions: mysql, pcre, gd, zlib, xml, iconv, mbstring, mhash,
                    sockets, mime_magic
  - MySQL Version: 5.0 and above (Strict mode off)
 
@@ -274,8 +272,7 @@ Following information interest me:
 - E-mail-server (SMTP, Sendmail, PHP's mail() function)
 - MySQL version
 - PHP version
-- Status of the extensions: mysql, pcre, gd, zlib, xml, pspell, iconv, mbstring,
-                            mhash
+- Status of the extensions: mysql, pcre, gd, zlib, xml, iconv, mbstring, mhash
 - The following settings in the file php.ini:
   - safe_mode
   - magic_quotes_gpc

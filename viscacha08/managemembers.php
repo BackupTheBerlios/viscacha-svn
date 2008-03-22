@@ -113,8 +113,6 @@ if ($my->vlogin && $my->p['admin'] == 1) {
 
 		$chars = numbers($config['maxaboutlength']);
 		BBProfile($bbcode);
-		$inner['bbhtml'] = $bbcode->getbbhtml();
-		$inner['smileys'] = $bbcode->getsmileyhtml($config['smileysperrow']);
 
 		($code = $plugins->load('managemembers_edit_start')) ? eval($code) : null;
 

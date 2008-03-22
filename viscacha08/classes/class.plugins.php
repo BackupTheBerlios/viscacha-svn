@@ -32,12 +32,16 @@ class PluginSystem {
 	var $pos;
 	var $sqlcache;
 	var $menu;
+	var $docs;
 
 	function PluginSystem() {
 		$this->cache = array();
 		$this->pos = array();
 		$this->sqlcache = null;
 		$this->menu = null;
+		global $scache;
+		$cache = $scache->load('wraps');
+		$this->docs = $cache->get();
 		$this->plugdir = 'modules/';
 	}
 
@@ -90,7 +94,7 @@ class PluginSystem {
 				else {
 					if ($this->_check_permissions($row['groups'])) {
 						$navigation = $this->_prepare_navigation($position, $row['id']);
-						$row['name'] = navLang($row['name']);
+						$row['name'] = $this->navLang($row['name']);
 						$tpl->globalvars(compact("row","navigation"));
 						if ($tpl->exists("modules/navigation_".$position)) {
 							$html = $tpl->parse("modules/navigation_".$position);
@@ -116,6 +120,23 @@ class PluginSystem {
     	", __LINE__, __FILE__);
 		$info = $db->fetch_assoc($result);
 		return $info['num'];
+	}
+
+	function navLang($key, $show_key = false) {
+		global $lang, $gpc;
+		@list($prefix, $suffix) = explode('->', $gpc->plain_str($key, false), 2);
+		$prefix = strtolower($prefix);
+		if ($prefix == 'lang' && $suffix != null) {
+			return $lang->phrase($suffix).iif($show_key, " [{$key}]");
+		}
+		elseif ($prefix == 'doc' && is_id($suffix)) {
+			$data = $this->docs[$suffix]['titles'];
+			$lid = getDocLangID($data);
+			return $data[$lid].iif($show_key, " [{$key}]");
+		}
+		else {
+			return $key;
+		}
 	}
 
 	function _setup($hook, $id) {
@@ -155,7 +176,7 @@ class PluginSystem {
 			foreach ($this->menu[$position][$id] as $row) {
 				if ($this->_check_permissions($row['groups'])) {
 					$row['navigation'] = $this->_prepare_navigation($position, $row['id']);
-					$row['name'] = navLang($row['name']);
+					$row['name'] = $this->navLang($row['name']);
 					$navigation[] = $row;
 				}
 			}

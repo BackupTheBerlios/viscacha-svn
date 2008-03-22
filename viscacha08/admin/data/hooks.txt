@@ -124,8 +124,6 @@ editprofile.php
 -editprofile_mylast_end
 -editprofile_addabo_types
 -editprofile_addabo_prepared
--editprofile_copy_start
--editprofile_copy_savedata
 -editprofile_index_start
 -editprofile_index_end
 -editprofile_end
@@ -285,8 +283,6 @@ popup.php
 -popup_filetypes_query
 -popup_filetypes_prepared
 -popup_filetypes_end
--popup_code_start
--popup_code_end
 -popup_showpost_query
 -popup_showpost_start
 -popup_showpost_attachments_prepared

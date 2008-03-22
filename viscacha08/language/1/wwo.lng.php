@@ -51,6 +51,5 @@ $lang['wwo_showforum'] = 'Betrachtet ein Forum: <a href="showforum.php?id={$id}"
 $lang['wwo_showforum_fallback'] = 'Betrachtet ein Forum';
 $lang['wwo_showtopic'] = 'Liest ein Thema: <a href="showtopic.php?id={$id}">{$title}</a>';
 $lang['wwo_showtopic_fallback'] = 'Liest ein Thema';
-$lang['wwo_spellcheck'] = 'Versucht mit der Rechtschreibkontrolle seine Fehler zu korrigieren';
 $lang['wwo_team'] = 'Betrachtet die <a href="members.php?action=team">Teamübersicht</a>';
 ?>

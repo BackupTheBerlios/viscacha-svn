@@ -303,98 +303,60 @@ a:hover {
 	color: #000000;
 	background-color: #F5F8FA;
 }
-#menu_bbcolor, #menu_bbsize, #menu_bbhx, #menu_help, #menu_bbalign {
-	font-size: 9pt;
-	font-weight: bold;
-	font-family: Trebuchet MS, Verdana, Arial, Helvetica, sans-serif;
-}
-#codebuttons a, #menu_bbcolor, #menu_bbsize, #menu_bbhx, #menu_help, #menu_bbalign {
-	border: 1px solid #336699;
-	background-color: #F5F8FA;
-}
-#codebuttons br {
-	clear: left;
-}
-#codebuttons a {
-	height: 18px;
-	float: left;
-	display: block;
-	padding: 2px;
-	margin: 1px;
-	vertical-align: middle;
-}
-#codebuttons a:hover {
-	background-color: #BCCADA;
-}
-#codebuttons img {
-	vertical-align: middle;
-	border-width: 0px;
-}
-.bbcolor {
-	line-height: 10px;
-	font-size: 10px;
-}
-.bbcolor span {
-	width: 10px;
-	height: 10px;
-	display: block;
-	float: left;
-	cursor: pointer;
-}
 
-/********************************************************************
- * openWYSIWYG stylesheet file Copyright (c) 2006 openWebWare.com
- * Contact us at devs@openwebware.com
- * This copyright notice MUST stay intact for use.
- ********************************************************************/
-.toolbar1 {
-	height: 26px;
+/* WYSIWYG- and BB-Code-Editor */
+.editor_toolbar {
+	height: 28px;
+	width: 100%;
 	background-color: #F4F4F4;
-	border-bottom:1px solid #C9C9C9;
+	border-bottom: 1px solid #C9C9C9;
 }
 
-.buttonEditor {
+.editor_toolbar_button {
 	width: 20px;
 	height: 20px;
 	border: 0px solid transparent;
-	margin: 1px;
+	margin: 2px;
 	padding: 0px;
 	background: transparent;
 }
-.buttonEditorOver {
+.editor_toolbar_button_on {
 	width: 20px;
 	height: 20px;
 	border: 1px solid #999999;
-	margin: 0px;
+	margin: 1px;
 	padding: 0px;
 }
 
-.tableTextareaEditor {
+.editor_statusbar {
+	font-family: Arial;
+	font-size: 10px;
+	height: 1em;
+	background-color: #EEEEEE;
+	border-top: 1px solid #C9C9C9;
+	color: #000000;
+}
+a.editor_statusbar {
+	color: #000000;
+	text-decoration: none;
+}
+a.editor_statusbar:hover {
+	text-decoration: underline;
+}
+
+.editor_textarea_outer {
 	border: 1px solid #888888;
 }
-.tableTextareaEditor td {
+.editor_textarea_outer td {
 	border-width: 0px;
+	padding: 3px;
 }
-.iframeText {
+
+.editor_textarea_inner {
 	background-color: #FFFFFF;
 }
 
-.wysiwyg-statusbar {
-	font-family: Arial;
-	font-size: 9px;
-	height: 12px;
-	background-color: #EEEEEE;
-}
-a.wysiwyg-statusbar {
-	font-family: Arial;
-	font-size: 9px;
-	color: #000000;
-	text-decoration:none;
-}
-a.wysiwyg-statusbar:hover {
-	text-decoration:underline;
-}
-
+/* WYSIWYG-only */
 .dropdown {
 	background-color: #FFFFFF;
 	border: 1px solid #333333;
@@ -416,24 +378,6 @@ button.mouseOut {
 	cursor: default;
 	text-align: left;
 }
-
-.on {
-	background-color: #EEEEEE;
-	border: 1px solid #CCCCCC;
-	padding: 3px;
-	width: 160px;
-	cursor: default;
-	height: 5px;
-}
-.off {
-	background-color: #FFFFFF;
-	border: 1px solid #FFFFFF;
-	padding: 3px;
-	width: 160px;
-	cursor: default;
-	height: 5px;
-}
-
 .wysiwyg-color-picker-table {
 	border: 1px solid #7E7E81;
 	background-color: #F7F7F7;
@@ -455,7 +399,6 @@ button.mouseOut {
 	border: 1px solid #F7F7F7;
 	background-color: #F7F7F7;
 }
-
 .select_color {
 	cursor: hand;
 }

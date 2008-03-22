@@ -367,8 +367,6 @@ elseif ($_GET['action'] == "new" || $_GET['action'] == "preview" || $_GET['actio
 	}
 
 	echo $tpl->parse("menu");
-	$inner['smileys'] = $bbcode->getsmileyhtml($config['smileysperrow']);
-	$inner['bbhtml'] = $bbcode->getbbhtml();
 	echo $tpl->parse("pm/menu");
 	($code = $plugins->load('pm_compose_prepared')) ? eval($code) : null;
 	echo $tpl->parse("pm/new");

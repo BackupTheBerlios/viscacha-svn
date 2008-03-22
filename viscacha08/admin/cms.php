@@ -40,7 +40,7 @@ function BBCodeToolBox() {
 		}
 	}
 	?>
-<script type="text/javascript" src="admin/html/editor.js"></script>
+<script type="text/javascript" src="templates/editor/bbcode.js"></script>
 <table class="invisibletable">
  <tr>
   <td width="30%">
@@ -53,8 +53,7 @@ function BBCodeToolBox() {
 		</tr>
 	<?php } ?>
 	</table>
-	<a id="menu_bbsmileys" style="display: block;text-align: center;width: 140px;" href="javascript:Link()"><img border="0" src="admin/html/images/desc.gif" alt="" /> <?php echo $lang->phrase('admin_cms_more_smileys'); ?></a>
-	<script type="text/javascript">RegisterMenu('bbsmileys');</script>
+	<a id="menu_bbsmileys" style="display: block;text-align: center;width: 140px;" href="javascript:RegisterMenu('bbsmileys');"><img border="0" src="admin/html/images/desc.gif" alt="" /> <?php echo $lang->phrase('admin_cms_more_smileys'); ?></a>
 	<div class="popup" id="popup_bbsmileys" style="height: 200px;width: 255px;overflow: auto;">
 	<strong><?php echo $lang->phrase('admin_cms_head_smileys'); ?></strong>
 	<table style="width: 250px;border-collapse: collapse;margin-bottom: 5px;">
@@ -70,16 +69,14 @@ function BBCodeToolBox() {
   </td>
   <td width="70%">
 	<div class="label" id="codebuttons">
-	<a id="menu_bbcolor" href="javascript:Link()"><img src="admin/html/images/desc.gif" alt="" /> <?php echo $lang->phrase('admin_cms_head_color'); ?></a>
-		<script type="text/javascript">RegisterMenu('bbcolor');</script>
+	<a id="menu_bbcolor" href="javascript:RegisterMenu('bbcolor');"><img src="admin/html/images/desc.gif" alt="" /> <?php echo $lang->phrase('admin_cms_head_color'); ?></a>
 		<DIV class="popup" id="popup_bbcolor">
 		<strong><?php echo $lang->phrase('admin_cms_head_choose_color'); ?></strong>
 		<div class="bbody">
 		<script type="text/javascript">document.write(writeRow());</script>
 		</div>
 		</DIV>
-	<a id="menu_bbsize" href="javascript:Link()"><img src="admin/html/images/desc.gif" alt="" /> <?php echo $lang->phrase('admin_cms_head_size'); ?></a>
-		<script type="text/javascript">RegisterMenu('bbsize');</script>
+	<a id="menu_bbsize" href="javascript:RegisterMenu('bbsize');"><img src="admin/html/images/desc.gif" alt="" /> <?php echo $lang->phrase('admin_cms_head_size'); ?></a>
 		<div class="popup" id="popup_bbsize">
 		<strong><?php echo $lang->phrase('admin_cms_head_choose_size'); ?></strong>
 	   	<ul>
@@ -88,7 +85,7 @@ function BBCodeToolBox() {
 			<li><span class="popup_line" onclick="InsertTagsMenu('[size=extended]','[/size]','bbsize')" style="letter-spacing: 3px;"><?php echo $lang->phrase('admin_cms_extended_font'); ?></span></li>
 		</ul>
 		</div>
-	<a id="menu_bbalign" href="javascript:Link()"><img src="admin/html/images/desc.gif" alt="" /> <?php echo $lang->phrase('admin_cms_head_alignment'); ?></a>
+	<a id="menu_bbalign" href="#"><img src="admin/html/images/desc.gif" alt="" /> <?php echo $lang->phrase('admin_cms_head_alignment'); ?></a>
 		<script type="text/javascript">RegisterMenu('bbalign');</script>
 		<DIV class="popup" id="popup_bbalign">
 	   <strong><?php echo $lang->phrase('admin_cms_head_choose_alignment'); ?></strong>
@@ -99,7 +96,7 @@ function BBCodeToolBox() {
 			<li><span class="popup_line" onclick="InsertTagsMenu('[align=justify]','[/align]','bbalign')" style="text-align: justify;"><?php echo $lang->phrase('admin_cms_justify'); ?></span></li>
 		</ul>
 		</DIV>
-	<a id="menu_bbhx" href="javascript:Link()"><img src="admin/html/images/desc.gif" alt="" /> <?php echo $lang->phrase('admin_cms_head_heading'); ?></a>
+	<a id="menu_bbhx" href="#"><img src="admin/html/images/desc.gif" alt="" /> <?php echo $lang->phrase('admin_cms_head_heading'); ?></a>
 		<script type="text/javascript">RegisterMenu('bbhx');</script>
 		<div class="popup" id="popup_bbhx">
 		<strong><?php echo $lang->phrase('admin_cms_head_choose_heading'); ?></strong>
@@ -110,10 +107,6 @@ function BBCodeToolBox() {
 		</ul>
 		</div>
 	<a id="menu_help" href="misc.php?action=bbhelp<?php echo SID2URL_x; ?>" style="cursor: help;" target="_blank"><img src="./images/1/bbcodes/help.gif" alt="" /> <strong><?php echo $lang->phrase('admin_cms_head_help'); ?></strong></a>
-	<?php if ($config['spellcheck'] == 1) { ?>
-	<script type="text/javascript" src="templates/spellChecker.js"></script>
-	<a href="javascript:openSpellChecker(textfield);"><img src="./images/1/bbcodes/spellcheck.gif" alt="Spell Check" /></a>
-	<?php } ?>
 	<br />
 	<a href="javascript:InsertTags('[b]','[/b]');" title="<?php echo $lang->phrase('admin_cms_tag_boldface'); ?>"><img src="./images/1/bbcodes/b.gif" alt="<?php echo $lang->phrase('admin_cms_tag_boldface'); ?>" /></a>
 	<a href="javascript:InsertTags('[i]','[/i]');" title="<?php echo $lang->phrase('admin_cms_tag_italic'); ?>"><img src="./images/1/bbcodes/i.gif" alt="<?php echo $lang->phrase('admin_cms_tag_italic'); ?>" /></a>
@@ -151,10 +144,10 @@ function parseNavPosSetting() {
 	}
 	return $arr;
 }
-function getWYSIWYG($textarea) {
+function attachWYSIWYG() {
 	$r = '<link rel="stylesheet" type="text/css" href="admin/html/wysiwyg.css" />';
 	$r .= '<script type="text/javascript" src="templates/editor/wysiwyg.js"></script>';
-	$r .= '<script type="text/javascript"> WYSIWYG.attach(\''.$textarea.'\', full); </script>';
+	$r .= '<script type="text/javascript"> WYSIWYG.attach("all", full); </script>';
 	return $r;
 }
 
@@ -220,15 +213,15 @@ if ($job == 'nav') {
 		}
 		$type = array();
 		if ($head['module'] > 0) {
-			$type[] = '<em>'.$lang->phrase('admin_cms_plugin').'</em>';
+			$type[] = $lang->phrase('admin_cms_plugin');
 		}
 		if ($head['active'] == 0) {
-			$type[] = '<em>'.$lang->phrase('admin_cms_inactive').'</em>';
+			$type[] = $lang->phrase('admin_cms_inactive');
 		}
 	?>
 	<tr class="mmbox">
 	<td width="50%">
-	<?php echo navLang($head['name']); ?><?php echo iif(count($type) > 0, ' ('.implode('; ', $type).')' ); ?>
+	<?php echo $plugins->navLang($head['name'], true); ?><?php echo iif(count($type) > 0, ' ['.implode('; ', $type).']' ); ?>
 	</td>
 	<td width="10%">
 	<?php
@@ -257,12 +250,12 @@ if ($job == 'nav') {
 			<td width="50%">&nbsp;&middot;&nbsp;
 			<?php
 			if (empty($link['link'])) {
-				echo navLang($link['name']);
+				echo $plugins->navLang($link['name'], true);
 			}
 			else {
 				?>
-				<a href="<?php echo $link['link']; ?>" target="<?php echo $link['param']; ?>"><?php echo navLang($link['name']); ?></a>
-				<?php } echo iif ($link['active'] == '0', ' (<em>'.$lang->phrase('admin_cms_inactive').'</em>)'); ?><br />
+				<a href="<?php echo $link['link']; ?>" target="<?php echo $link['param']; ?>"><?php echo $plugins->navLang($link['name'], true); ?></a>
+				<?php } echo iif ($link['active'] == '0', ' ['.$lang->phrase('admin_cms_inactive').']'); ?><br />
 				</td>
 				<td class="mbox" width="10%">
 				<?php
@@ -291,12 +284,12 @@ if ($job == 'nav') {
 						<td width="50%">&nbsp;&nbsp;&nbsp;<img src='admin/html/images/list.gif' border="0" alt="">&nbsp;
 						<?php
 						if (empty($sublink['link'])) {
-							echo navLang($sublink['name']);
+							echo $plugins->navLang($sublink['name'], true);
 						}
 						else {
 							?>
-							<a href='<?php echo $sublink['link']; ?>' target='<?php echo $sublink['param']; ?>'><?php echo navLang($sublink['name']); ?></a>
-							<?php } echo iif ($sublink['active'] == '0', ' (<i>'.$lang->phrase('admin_cms_inactive').'</i>)'); ?></font><br>
+							<a href='<?php echo $sublink['link']; ?>' target='<?php echo $sublink['param']; ?>'><?php echo $plugins->navLang($sublink['name'], true); ?></a>
+							<?php } echo iif ($sublink['active'] == '0', ' ['.$lang->phrase('admin_cms_inactive').']'); ?></font><br>
 							</td>
 							<td class="mbox" width="10%">
 							<?php
@@ -389,11 +382,11 @@ elseif ($job == 'nav_edit') {
 	   		echo '<optgroup label="'.htmlspecialchars($pos[$last], ENT_QUOTES).'">';
 	   	}
    		$select = iif($row['id'] == $data['sub'], ' selected="selected"');
-   		echo '<option style="font-weight: bold;" value="'.$row['id'].'"'.$select.'>'.navLang($row['name']).'</option>';
+   		echo '<option style="font-weight: bold;" value="'.$row['id'].'"'.$select.'>'.$plugins->navLang($row['name'], true).'</option>';
    		if (isset($cache[$row['id']])) {
    			foreach ($cache[$row['id']] as $row) {
    				$select = iif($row['id'] == $data['sub'], ' selected="selected"');
-   				echo '<option value="'.$row['id'].'"'.$select.'>+&nbsp;'.navLang($row['name']).'</option>';
+   				echo '<option value="'.$row['id'].'"'.$select.'>+&nbsp;'.$plugins->navLang($row['name'], true).'</option>';
    			}
    		}
 	}
@@ -441,12 +434,11 @@ elseif ($job == 'nav_edit2') {
 	$result = $db->query("SELECT * FROM {$db->pre}menu WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	$data = $db->fetch_assoc($result);
 
-	$title = $gpc->get('title', none);
+	$title = $gpc->get('title', str);
 	$title = trim($title);
 	if (empty($title)) {
 		error('admin.php?action=cms&job=nav_addbox', $lang->phrase('admin_cms_err_no_title'));
 	}
-	$title = $db->escape_string($title);
 
 	$active = $gpc->get('active', int);
 	$groups = $gpc->get('groups', arr_int);
@@ -619,7 +611,7 @@ elseif ($job == 'nav_addplugin') {
 		   	echo '<optgroup label="'.htmlspecialchars($pos[$last], ENT_QUOTES).'">';
 		   	unset($pos[$last]);
 	   	}
-   		echo '<option value="'.$row['id'].'">'.navLang($row['name']).'</option>';
+   		echo '<option value="'.$row['id'].'">'.$plugins->navLang($row['name'], true).'</option>';
 	}
 	foreach ($pos as $key => $name) {
 		?>
@@ -655,12 +647,11 @@ elseif ($job == 'nav_addplugin2') {
 	$plug = $gpc->get('plugin', int);
 	$result = $db->query("SELECT id, name, active FROM {$db->pre}plugins WHERE id = '{$plug}' AND position = 'navigation'", __LINE__, __FILE__);
 	$data = $db->fetch_assoc();
-	$title = $gpc->get('title', none);
+	$title = $gpc->get('title', str);
 	$title = trim($title);
 	if (empty($title)) {
 		$title = $data['name'];
 	}
-	$title = $db->escape_string($title);
 	$sort = $gpc->get('sort', str);
 	if (substr($sort, 0, 4) == 'pos_') {
 		$sort = array(
@@ -734,10 +725,10 @@ elseif ($job == 'nav_add') {
 	   		$last = $row['position'];
 	   		echo '<optgroup label="'.htmlspecialchars($pos[$last], ENT_QUOTES).'">';
 	   	}
-   		echo '<option style="font-weight: bold;" value="'.$row['id'].'">'.navLang($row['name']).'</option>';
+   		echo '<option style="font-weight: bold;" value="'.$row['id'].'">'.$plugins->navLang($row['name'], true).'</option>';
    		if (isset($cache[$row['id']])) {
    			foreach ($cache[$row['id']] as $row) {
-   				echo '<option value="'.$row['id'].'">+&nbsp;'.navLang($row['name']).'</option>';
+   				echo '<option value="'.$row['id'].'">+&nbsp;'.$plugins->navLang($row['name'], true).'</option>';
    			}
    		}
 	}
@@ -773,8 +764,7 @@ elseif ($job == 'nav_add') {
 }
 elseif ($job == 'nav_add2') {
 	echo head();
-	$title = $gpc->get('title', none);
-	$title = $db->escape_string($title);
+	$title = $gpc->get('title', str);
 	$target = $gpc->get('target', str);
 	$url = $gpc->get('url', str);
 	$sub = $gpc->get('sub', int);
@@ -844,7 +834,7 @@ elseif ($job == 'nav_addbox') {
 	   		echo '<optgroup label="'.htmlspecialchars($pos[$last], ENT_QUOTES).'">';
 	   		unset($pos[$last]);
 	   	}
-   		echo '<option value="'.$row['id'].'">'.navLang($row['name']).'</option>';
+   		echo '<option value="'.$row['id'].'">'.$plugins->navLang($row['name'], true).'</option>';
 	}
 	foreach ($pos as $key => $name) {
 		?>
@@ -876,11 +866,10 @@ elseif ($job == 'nav_addbox') {
 }
 elseif ($job == 'nav_addbox2') {
 	echo head();
-	$title = $gpc->get('title', none);
+	$title = $gpc->get('title', str);
 	if (empty($title)) {
 		error('admin.php?action=cms&job=nav_addbox', $lang->phrase('admin_cms_err_no_title'));
 	}
-	$title = $db->escape_string($title);
 	$sort = $gpc->get('sort', str);
 	if (substr($sort, 0, 4) == 'pos_') {
 		$sort = array(
@@ -909,7 +898,8 @@ elseif ($job == 'nav_addbox2') {
 }
 elseif ($job == 'nav_docslist') {
 	echo head();
-	$result = $db->query('SELECT id, title FROM '.$db->pre.'documents');
+	$wrap_obj = $scache->load('wraps');
+	$wraps = $wrap_obj->get();
 	?>
 	 <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
 	  <tr>
@@ -917,8 +907,8 @@ elseif ($job == 'nav_docslist') {
 	  </tr>
 	  <tr>
 	   <td class="mbox">
-	   <?php while ($row = $db->fetch_assoc($result)) { ?>
-	   <input type="radio" name="data" onclick="insert_doc('docs.php?id=<?php echo $row['id']; ?>','<?php echo htmlentities($row['title']); ?>')"> <?php echo $row['title']; ?><br>
+	   <?php foreach ($wraps as $id => $data) { ksort($data['titles']); ?>
+	   <input type="radio" name="data" onclick="insert_doc('docs.php?id=<?php echo $id; ?>','doc-><?php echo $id; ?>')"> <?php echo implode(' / ', $data['titles']); ?><br>
 	   <?php } ?>
 	   </td>
 	 </table>
@@ -1228,30 +1218,18 @@ elseif ($job == 'doc_insert_image') {
 	echo foot();
 }
 elseif ($job == 'doc') {
-	$result = $db->query('SELECT * FROM '.$db->pre.'documents', __LINE__, __FILE__);
-	echo head();
-?>
-<form name="form" method="post" action="admin.php?action=cms&job=doc_delete">
- <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
-  <tr>
-   <td class="obox" colspan="7">
-   <span style="float: right;"><a class="button" href="admin.php?action=cms&job=doc_add"><?php echo $lang->phrase('admin_cms_create_new_document'); ?></a></span>
-	<?php echo $lang->phrase('admin_cms_manage_documents_and_pages'); ?>
-   </td>
-  </tr>
-  <tr>
-   <td class="ubox" width="5%"><?php echo $lang->phrase('admin_cms_doc_delete'); ?><br /><span class="stext"><input type="checkbox" onclick="check_all('delete[]');" name="all" value="1" /> <?php echo $lang->phrase('admin_cms_doc_delete_all'); ?></span></td>
-   <td class="ubox" width="40%"><?php echo $lang->phrase('admin_cms_doc_title'); ?></td>
-   <td class="ubox" width="5%"><?php echo $lang->phrase('admin_cms_doc_id'); ?></td>
-   <td class="ubox" width="20%"><?php echo $lang->phrase('admin_cms_doc_author'); ?></td>
-   <td class="ubox" width="15%"><?php echo $lang->phrase('admin_cms_doc_last_change'); ?></td>
-   <td class="ubox" width="5%"><?php echo $lang->phrase('admin_cms_doc_published'); ?></td>
-   <td class="ubox" width="10%"><?php echo $lang->phrase('admin_cms_doc_action'); ?></td>
-  </tr>
-<?php
 	$memberdata_obj = $scache->load('memberdata');
 	$memberdata = $memberdata_obj->get();
+	$language_obj = $scache->load('loadlanguage');
+	$language = $language_obj->get();
 
+	$result = $db->query("
+		SELECT d.id, d.author, d.update, c.lid, c.title, c.active
+		FROM {$db->pre}documents AS d
+			LEFT JOIN {$db->pre}documents_content AS c ON d.id = c.did
+		ORDER BY c.title
+	", __LINE__, __FILE__);
+	$data = array();
 	while ($row = $db->fetch_assoc($result)) {
 		if(is_id($row['author']) && isset($memberdata[$row['author']])) {
 			$row['author'] = $memberdata[$row['author']];
@@ -1265,22 +1243,79 @@ elseif ($job == 'doc') {
 		else {
 			$row['update'] = $lang->phrase('admin_cms_unknown');
 		}
+		$newRow = array(
+			'title' => $row['title'],
+			'active' => $row['active']
+		);
+		if (!isset($data[$row['id']])) {
+			$row['languages'] = array($row['lid'] => $newRow);
+			$data[$row['id']] = $row;
+		}
+		else if (!in_array($row['lid'], $data[$row['id']]['languages'])) {
+			$data[$row['id']]['languages'][$row['lid']] = $newRow;
+		}
+	}
+
+
+	echo head();
 ?>
+<form name="form" method="post" action="admin.php?action=cms&job=doc_delete">
+ <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr>
-   <td class="mbox" width="5%"><input type="checkbox" name="delete[]" value="<?php echo $row['id']; ?>"></td>
-   <td class="mbox" width="40%"><a href="admin.php?action=cms&job=doc_edit&id=<?php echo $row['id']; ?>"><?php echo $row['title']; ?></a></td>
-   <td class="mbox" width="5%"><?php echo $row['id']; ?></td>
-   <td class="mbox" width="20%"><?php echo $row['author']; ?></td>
-   <td class="mbox" width="15%"><?php echo $row['update']; ?></td>
-   <td class="mbox center" width="5%"><?php echo noki($row['active'], ' onmouseover="HandCursor(this)" onclick="ajax_noki(this, \'action=cms&job=doc_ajax_active&id='.$row['id'].'\')"'); ?></td>
-   <td class="mbox" width="10%">
-   <a class="button" href="docs.php?id=<?php echo $row['id'].SID2URL_x; ?>" target="_blank"><?php echo $lang->phrase('admin_cms_view'); ?></a>
-   <a class="button" href="admin.php?action=cms&job=doc_edit&id=<?php echo $row['id']; ?>"><?php echo $lang->phrase('admin_cms_edit'); ?></a>
+   <td class="obox" colspan="8">
+   <span style="float: right;"><a class="button" href="admin.php?action=cms&job=doc_add"><?php echo $lang->phrase('admin_cms_create_new_document'); ?></a></span>
+	<?php echo $lang->phrase('admin_cms_manage_documents_and_pages'); ?>
    </td>
   </tr>
-<?php } ?>
   <tr>
-   <td class="ubox" width="100%" colspan="7" align="center"><input type="submit" name="Submit" value="<?php echo $lang->phrase('admin_cms_form_delete'); ?>"></td>
+   <td class="ubox" width="2%"><?php echo $lang->phrase('admin_cms_doc_delete'); ?><br /><span class="stext"><input type="checkbox" onclick="check_all('delete[]');" name="all" value="1" /> <?php echo $lang->phrase('admin_cms_doc_delete_all'); ?></span></td>
+   <td class="ubox" width="32%"><?php echo $lang->phrase('admin_cms_doc_title'); ?></td>
+   <td class="ubox" width="14%"><?php echo $lang->phrase('admin_cms_doc_av_languages'); ?></td>
+   <td class="ubox" width="3%"><?php echo $lang->phrase('admin_cms_doc_published'); ?></td>
+   <td class="ubox" width="16%"><?php echo $lang->phrase('admin_cms_doc_author'); ?></td>
+   <td class="ubox" width="12%"><?php echo $lang->phrase('admin_cms_doc_last_change'); ?></td>
+   <td class="ubox" width="3%"><?php echo $lang->phrase('admin_cms_doc_id'); ?></td>
+   <td class="ubox" width="18%"><?php echo $lang->phrase('admin_cms_doc_action'); ?></td>
+  </tr>
+<?php
+	foreach ($data as $id => $row) {
+		$rowspan = count($data[$id]['languages']);
+		$i = 0;
+		foreach ($data[$id]['languages'] as $lid => $row2) {
+			$i++;
+			?>
+  			<tr>
+  			<?php if ($i == 1) { ?>
+  			 <td class="mbox center" rowspan="<?php echo $rowspan; ?>"><input type="checkbox" name="delete[]" value="<?php echo $id; ?>"></td>
+   			<?php } ?>
+   			 <td class="mbox"><a href="admin.php?action=cms&job=doc_edit&id=<?php echo $id; ?>"><?php echo $row2['title']; ?></a></td>
+   			 <td class="mbox stext">
+   			<?php
+   			 if (isset($row['languages'][$lid]) && isset($language[$lid])) {
+	   			echo $language[$lid]['language'];
+	   		 }
+	   		 else if (isset($row['languages'][$lid]) && !isset($language[$lid])) {
+	   			echo "<em>".$lang->phrase('admin_cms_unknown')."</em> ({$lid})";
+	   		 }
+	   		?>
+   			 </td>
+  			 <td class="mbox center"><?php echo noki($row2['active'], ' onmouseover="HandCursor(this)" onclick="ajax_noki(this, \'action=cms&job=doc_ajax_active&id='.$id.'&lid='.$lid.'\')"'); ?></td>
+			<?php if ($i == 1) { ?>
+  			 <td class="mbox" rowspan="<?php echo $rowspan; ?>"><?php echo $row['author']; ?></td>
+			 <td class="mbox" rowspan="<?php echo $rowspan; ?>"><?php echo $row['update']; ?></td>
+			 <td class="mbox" rowspan="<?php echo $rowspan; ?>"><?php echo $id; ?></td>
+			 <td class="mbox" rowspan="<?php echo $rowspan; ?>">
+			  <a class="button" href="docs.php?id=<?php echo $id.SID2URL_x; ?>" target="_blank"><?php echo $lang->phrase('admin_cms_view'); ?></a>
+			  <a class="button" href="admin.php?action=cms&job=doc_edit&id=<?php echo $id; ?>"><?php echo $lang->phrase('admin_cms_edit'); ?></a>
+			 </td>
+			<?php } ?>
+			</tr>
+<?php
+		}
+	}
+?>
+  <tr>
+   <td class="ubox" width="100%" colspan="8" align="center"><input type="submit" name="Submit" value="<?php echo $lang->phrase('admin_cms_form_delete'); ?>"></td>
   </tr>
  </table>
 </form>
@@ -1289,10 +1324,11 @@ elseif ($job == 'doc') {
 }
 elseif ($job == 'doc_ajax_active') {
 	$id = $gpc->get('id', int);
-	$result = $db->query("SELECT active FROM {$db->pre}documents WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
+	$lid = $gpc->get('lid', int);
+	$result = $db->query("SELECT active FROM {$db->pre}documents_content WHERE did = '{$id}' AND lid = '{$lid}' LIMIT 1", __LINE__, __FILE__);
 	$use = $db->fetch_assoc($result);
 	$use = invert($use['active']);
-	$db->query("UPDATE {$db->pre}documents SET active = '{$use}' WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
+	$db->query("UPDATE {$db->pre}documents_content SET active = '{$use}' WHERE did = '{$id}' AND lid = '{$lid}' LIMIT 1", __LINE__, __FILE__);
 	$delobj = $scache->load('wraps');
 	$delobj->delete();
 	die(strval($use));
@@ -1337,51 +1373,29 @@ elseif ($job == 'doc_add2') {
 	$tpl = new tpl();
 	$type = $gpc->get('type', int);
 	$types = doctypes();
-	$format = $types[$type];
-	if ($format['parser'] == 1) {
-		$htmlhead .= getWYSIWYG('template');
+	if (!isset($types[$type])) {
+		$type = 3;
 	}
-	echo head();
+	$format = $types[$type];
+	$language_obj = $scache->load('loadlanguage');
+	$language = $language_obj->get();
+	if ($format['parser'] == 1) {
+		$tas = array();
+		foreach ($language as $lid => $data) {
+			$tas[] = "template[{$lid}]";
+		}
+		$htmlhead .= attachWYSIWYG();
+	}
+	echo head(' onload="hideLanguageBoxes()"');
   	$groups = $db->query("SELECT id, name FROM {$db->pre}groups", __LINE__, __FILE__);
 ?>
 <form id="form" method="post" action="admin.php?action=cms&job=doc_add3&type=<?php echo $type; ?>">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr>
-   <td class="obox" colspan="4"><?php echo $lang->phrase('admin_cms_create_doc_step_2'); ?></td>
+   <td class="obox"><?php echo $lang->phrase('admin_cms_create_doc_step_2'); ?></td>
   </tr>
-  <tr>
-   <td class="mbox">
-	<?php if ($format['inline'] == 1 && empty($format['template'])) { ?><span class="stext right"><?php echo $lang->phrase('admin_cms_if_no_title_can_be_parsed'); ?></span><?php } ?>
-	<?php echo $lang->phrase('admin_cms_news_title'); ?><br />
-	<input type="text" name="title" size="60" />
-   </td>
-  </tr>
-  <?php if($format['remote'] != 1) { ?>
-  <tr>
-   <td class="mbox">
-	<?php echo $lang->phrase('admin_cms_doc_sourcecode'); ?><br />
-	<?php
-	$path = $tpl->altdir.'docs/'.$format['template'].'.html';
-	if ($format['inline'] == 1 && file_exists($path)) {
-		$preload = file_get_contents($path);
-	}
-	else {
-		$preload = '';
-	}
-	if($format['parser'] == 3) {
-		BBCodeToolBox();
-	}
-	?>
-	<textarea id="template" name="template" rows="20" cols="110" class="texteditor"><?php echo $preload; ?></textarea>
-   </td>
-  </tr>
-  <?php } ?>
-  <tr>
-   <td class="mbox">
-   <?php if($format['remote'] != 1) { ?><span class="stext right"><?php echo $lang->phrase('admin_cms_if_path_is_given'); ?></span><?php } ?>
-   <?php echo $lang->phrase('admin_cms_doc_file'); ?><br />
-	<input type="text" name="file" size="60" />
-   </td>
+ <tr>
+  <td class="ubox"><?php echo $lang->phrase('admin_cms_doc_global_settings'); ?></td>
   </tr>
   <tr>
    <td class="mbox"><span class="stext right"><?php echo $lang->phrase('admin_cms_doc_groups_text'); ?></span><?php echo $lang->phrase('admin_cms_doc_groups'); ?><br />
@@ -1390,12 +1404,50 @@ elseif ($job == 'doc_add2') {
    <?php } ?>
    </td>
   </tr>
+<?php foreach ($language as $lid => $data) { ?>
+  <tr>
+   <td class="ubox">
+   	<input type="checkbox" id="use_<?php echo $lid; ?>" name="use[<?php echo $lid; ?>]" value="1" title="<?php echo $lang->phrase('admin_cms_doc_click_for_adding_lang'); ?>" onclick="return changeLanguageUsage(<?php echo $lid; ?>)" />
+   	<strong><?php echo $data['language']; ?></strong>
+   </td>
+  </tr>
+  <tbody id="language_<?php echo $lid; ?>">
+  <tr>
+   <td class="mbox">
+	<?php if ($format['inline'] == 1 && empty($format['template'])) { ?><span class="stext right"><?php echo $lang->phrase('admin_cms_if_no_title_can_be_parsed'); ?></span><?php } ?>
+	<?php echo $lang->phrase('admin_cms_news_title'); ?><br />
+	<input type="text" name="title[<?php echo $lid; ?>]" size="60" />
+   </td>
+  </tr>
+  <tr>
+   <td class="mbox">
+   <?php
+	if($format['remote'] != 1) {
+	   	echo $lang->phrase('admin_cms_doc_sourcecode');
+	   	echo '<br />';
+		if($format['parser'] == 3) {
+			BBCodeToolBox();
+		}
+		?>
+		<textarea id="template[<?php echo $lid; ?>]" name="template[<?php echo $lid; ?>]" rows="20" cols="110" class="texteditor"></textarea>
+	<?php
+	}
+	else {
+	   	echo $lang->phrase('admin_cms_nav_file_url');
+		?>
+		<br />
+		<input type="text" name="template[<?php echo $lid; ?>]" size="60" />
+	<?php } ?>
+   </td>
+  </tr>
   <tr>
    <td class="mbox">
 	<?php echo $lang->phrase('admin_cms_doc_active'); ?><br />
-	<input type="checkbox" value="1" name="active" />
+	<input type="checkbox" value="1" name="active[<?php echo $lid; ?>]" />
    </td>
   </tr>
+  </tbody>
+<?php } ?>
   <tr><td class="ubox" align="center"><input type="submit" name="Submit" value="<?php echo $lang->phrase('admin_cms_form_add'); ?>" /></td></tr>
  </table>
 </form>
@@ -1406,32 +1458,26 @@ elseif ($job == 'doc_add3') {
 	echo head();
 
 	$type = $gpc->get('type', int);
-	$title = $gpc->get('title', str);
-	$active = $gpc->get('active', int);
+	$title = $gpc->get('title', arr_str);
+	$active = $gpc->get('active', arr_int);
+	$use = $gpc->get('use', arr_int);
   	$groups = $gpc->get('groups', arr_int);
-  	$file = $gpc->get('file', none);
-  	$file = trim($file);
+  	$content = $gpc->get('template', arr_none);
 
 	$types = doctypes();
 	$format = $types[$type];
 
-	$content = $gpc->get('template', none);
-	if ($format['remote'] != 1) {
-	  	if (!empty($file)) {
-	  		if ($filesystem->file_put_contents($file, $content) > 0) {
-	  			$content = '';
-	  		}
-	  		else {
-	  			$file = '';
-	  		}
+	$i = 0;
+	foreach ($use as $lid => $usage) {
+		if ($format['remote'] == 1) {
+			$content[$lid] = '';
+		}
+		if ($usage == 1) {
+			$i++;
 		}
 	}
-	else {
-		$content = '';
-	}
-
-	if (empty($title)) {
-		error('admin.php?action=cms&job=doc_add', 'Title is empty!');
+	if ($i == 0) {
+		error('javascript:history.back(-1);', $lang->phrase('admin_cms_havent_checked_box'));
 	}
 
 	$result = $db->query('SELECT COUNT(*) FROM '.$db->pre.'groups', __LINE__, __FILE__);
@@ -1445,7 +1491,27 @@ elseif ($job == 'doc_add3') {
 
 	$time = time();
 
-	$db->query("INSERT INTO {$db->pre}documents ( `title` , `content` , `author` , `date` , `update` , `type` , `groups` , `active` , `file` ) VALUES ('{$title}', '".$db->escape_string($content)."', '{$my->id}', '{$time}' , '{$time}' , '{$type}', '{$groups}', '{$active}', '{$file}')", __LINE__, __FILE__);
+	$db->query("INSERT INTO {$db->pre}documents ( `author` , `date` , `update` , `type` , `groups` ) VALUES ('{$my->id}', '{$time}' , '{$time}' , '{$type}', '{$groups}')", __LINE__, __FILE__);
+	$did = $db->insert_id();
+
+	foreach ($use as $lid => $usage) {
+		if ($usage == 1) {
+			if (strlen($content[$lid]) < 20) {
+				$content[$lid] = trim(strip_tags($content[$lid]));
+			}
+			if (empty($content[$lid])) {
+				continue;
+			}
+			if (empty($title[$lid])) {
+				$title[$lid] = substr(strip_tags($content[$lid]), 0, 50).'...';
+			}
+			if (empty($active[$lid])) {
+				$active[$lid] = 0;
+			}
+			$lid = $gpc->save_int($lid);
+			$db->query("INSERT INTO {$db->pre}documents_content ( `did` , `lid` , `title` , `content` , `active` ) VALUES ('{$did}', '{$lid}', '{$title[$lid]}', '".$db->escape_string($content[$lid])."', '{$active[$lid]}')", __LINE__, __FILE__);
+		}
+	}
 
 	$delobj = $scache->load('wraps');
 	$delobj->delete();
@@ -1456,20 +1522,10 @@ elseif ($job == 'doc_delete') {
 	echo head();
 	$delete = $gpc->get('delete', arr_int);
 	if (count($delete) > 0) {
-		$deleteids = array();
-		foreach ($delete as $did) {
-			$deleteids[] = 'id = '.$did;
-		}
-		$result = $db->query('SELECT file FROM '.$db->pre.'documents WHERE '.implode(' OR ',$deleteids), __LINE__, __FILE__);
-		while ($row = $db->fetch_assoc($result)) {
-			$rest = @substr(strtolower($row['file']), 0, 7);
-			if (!empty($row['file']) && $rest != 'http://') {
-				$filesystem->unlink($row['file']);
-			}
-		}
-
-		$db->query('DELETE FROM '.$db->pre.'documents WHERE '.implode(' OR ',$deleteids), __LINE__, __FILE__);
+		$deleteids = implode(',', $delete);
+		$db->query("DELETE FROM {$db->pre}documents WHERE id IN ({$deleteids})", __LINE__, __FILE__);
 		$anz = $db->affected_rows();
+		$db->query("DELETE FROM {$db->pre}documents_content WHERE did IN ({$deleteids})", __LINE__, __FILE__);
 
 		$delobj = $scache->load('wraps');
 		$delobj->delete();
@@ -1484,57 +1540,41 @@ elseif ($job == 'doc_edit') {
 	$tpl = new tpl();
 	$id = $gpc->get('id', int);
 	$types = doctypes();
+
 	$result = $db->query("SELECT * FROM {$db->pre}documents WHERE id = '{$id}'", __LINE__, __FILE__);
-	$row = $db->fetch_assoc($result);
 	if ($db->num_rows($result) == 0) {
 		error('admin.php?action=cms&job=doc', $lang->phrase('admin_cms_invalid_id_given'));
 	}
-	$format = $types[$row['type']];
-	if (!empty($row['file']) && $format['remote'] != 1 && !check_hp($row['file'])) {
-		$row['content'] = file_get_contents($row['file']);
+	$row = $db->fetch_assoc($result);
+
+	$result = $db->query("SELECT content, active, title, lid FROM {$db->pre}documents_content WHERE did = '{$id}'", __LINE__, __FILE__);
+	$content = array();
+	while ($row2 = $db->fetch_assoc($result)) {
+		$content[$row2['lid']] = $row2;
 	}
+
+	$format = $types[$row['type']];
 	$groups = $db->query("SELECT id, name FROM {$db->pre}groups", __LINE__, __FILE__);
 	$garr = explode(',', $row['groups']);
 
 	$memberdata_obj = $scache->load('memberdata');
 	$memberdata = $memberdata_obj->get();
 
+	$language_obj = $scache->load('loadlanguage');
+	$language = $language_obj->get();
+
 	if ($format['parser'] == 1) {
-		$htmlhead .= getWYSIWYG('template');
+		$htmlhead .= attachWYSIWYG();
 	}
-	echo head();
+	echo head(' onload="hideLanguageBoxes()"');
 ?>
 <form id="form" method="post" action="admin.php?action=cms&job=doc_edit2&id=<?php echo $id; ?>">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr>
-   <td class="obox" colspan="4"><?php echo $lang->phrase('admin_cms_create_doc_step_2'); ?></td>
+   <td class="obox"><?php echo $lang->phrase('admin_cms_edit_doc'); ?></td>
   </tr>
-  <tr>
-   <td class="mbox">
-	<?php if ($format['inline'] == 1 && empty($format['template'])) { ?><span class="stext right"><?php echo $lang->phrase('admin_cms_if_no_title_can_be_parsed'); ?></span><?php } ?>
-	<?php echo $lang->phrase('admin_cms_news_title'); ?><br />
-	<input type="text" name="title" size="60" value="<?php echo $gpc->prepare($row['title']); ?>" />
-   </td>
-  </tr>
-  <?php if($format['remote'] != 1) { ?>
-  <tr>
-   <td class="mbox">
-	<?php echo $lang->phrase('admin_cms_doc_sourcecode'); ?><br />
-	<?php
-	if($format['parser'] == 3) {
-		BBCodeToolBox();
-	}
-	?>
-	<textarea id="template" name="template" rows="20" cols="110" class="texteditor"><?php echo $row['content']; ?></textarea>
-   </td>
-  </tr>
-  <?php } ?>
-  <tr>
-   <td class="mbox">
-   <?php if($format['remote'] != 1) { ?><span class="stext right"><?php echo $lang->phrase('admin_cms_if_path_is_given'); ?></span><?php } ?>
-   <?php echo $lang->phrase('admin_cms_doc_file'); ?><br />
-	<input type="text" name="file" value="<?php echo $row['file']; ?>" size="60" />
-   </td>
+ <tr>
+  <td class="ubox"><?php echo $lang->phrase('admin_cms_doc_global_settings'); ?></td>
   </tr>
   <tr>
    <td class="mbox"><span class="stext right"><?php echo $lang->phrase('admin_cms_doc_groups_text'); ?></span><?php echo $lang->phrase('admin_cms_doc_groups'); ?><br />
@@ -1546,16 +1586,68 @@ elseif ($job == 'doc_edit') {
   <tr>
    <td class="mbox">
 	<?php echo $lang->phrase('admin_cms_doc_author_change'); ?><br />
-	<input type="radio" value="<?php echo $row['author']; ?>" name="author" checked="checked" /><?php echo $lang->phrase('admin_cms_keep_current_author'); ?><strong><?php echo isset($memberdata[$row['author']]) ? $memberdata[$row['author']] : 'Unknown'; ?></strong><br />
-	<input type="radio" value="<?php echo $my->id; ?>" name="author" /><?php echo $lang->phrase('admin_cms_change_author_to'); ?><strong><?php echo $my->name; ?></strong>
+	<input type="radio" value="<?php echo $row['author']; ?>" name="author" checked="checked" /> <?php echo $lang->phrase('admin_cms_keep_current_author'); ?> <strong><?php echo isset($memberdata[$row['author']]) ? $memberdata[$row['author']] : $lang->phrase('admin_cms_unknown'); ?></strong><br />
+	<input type="radio" value="<?php echo $my->id; ?>" name="author" /> <?php echo $lang->phrase('admin_cms_change_author_to'); ?> <strong><?php echo $my->name; ?></strong>
+   </td>
+  </tr>
+<?php
+	foreach ($language as $lid => $data) {
+		if (isset($content[$lid])) {
+			$row2 = $content[$lid];
+		}
+		else {
+			$row2 = array(
+				'content' => '',
+				'active' => 0,
+				'title' => '',
+				'lid' => $lid
+			);
+		}
+?>
+  <tr>
+   <td class="ubox">
+   	<input type="checkbox"<?php echo iif(isset($content[$lid]), ' checked="checked"'); ?> id="use_<?php echo $lid; ?>" name="use[<?php echo $lid; ?>]" value="1" title="<?php echo $lang->phrase('admin_cms_doc_click_for_adding_lang'); ?>" onclick="return changeLanguageUsage(<?php echo $lid; ?>)" />
+   	<strong><?php echo $data['language']; ?></strong>
+   </td>
+  </tr>
+  <tbody id="language_<?php echo $lid; ?>">
+  <tr>
+   <td class="mbox">
+	<?php if ($format['inline'] == 1 && empty($format['template'])) { ?><span class="stext right"><?php echo $lang->phrase('admin_cms_if_no_title_can_be_parsed'); ?></span><?php } ?>
+	<?php echo $lang->phrase('admin_cms_news_title'); ?><br />
+	<input type="text" name="title[<?php echo $lid; ?>]" size="60" value="<?php echo $gpc->prepare($row2['title']); ?>" />
+   </td>
+  </tr>
+  <tr>
+   <td class="mbox">
+   <?php
+	if($format['remote'] != 1) {
+	   	echo $lang->phrase('admin_cms_doc_sourcecode');
+	   	echo '<br />';
+		if($format['parser'] == 3) {
+			BBCodeToolBox();
+		}
+		?>
+		<textarea id="template[<?php echo $lid; ?>]" name="template[<?php echo $lid; ?>]" rows="20" cols="110" class="texteditor"><?php echo $row2['content']; ?></textarea>
+	<?php
+	}
+	else {
+	   	echo $lang->phrase('admin_cms_nav_file_url');
+		?>
+		<br />
+		<input type="text" name="template[<?php echo $lid; ?>]" size="60" value="<?php echo $gpc->prepare($row2['content']); ?>" />
+	<?php } ?>
    </td>
   </tr>
   <tr>
    <td class="mbox">
 	<?php echo $lang->phrase('admin_cms_doc_active'); ?><br />
-	<input type="checkbox" value="1" name="active"<?php echo iif($row['active'] == 1, ' checked="checked"'); ?> />
+	<input type="checkbox" value="1" name="active[<?php echo $lid; ?>]"<?php echo iif($row2['active'] == 1, ' checked="checked"'); ?> />
    </td>
   </tr>
+  </tbody>
+<?php } ?>
+  <tr><td class="mbox"><?php echo $lang->phrase('admin_cms_doc_checkboxes_help'); ?></td></tr>
   <tr><td class="ubox" align="center"><input type="submit" name="Submit" value="<?php echo $lang->phrase('admin_cms_form_edit'); ?>" /></td></tr>
  </table>
 </form>
@@ -1563,15 +1655,16 @@ elseif ($job == 'doc_edit') {
 echo foot();
 }
 elseif ($job == 'doc_edit2') {
+
 	echo head();
 
 	$id = $gpc->get('id', int);
-	$title = $gpc->get('title', str);
-	$active = $gpc->get('active', int);
+	$title = $gpc->get('title', arr_str);
+	$active = $gpc->get('active', arr_int);
 	$author = $gpc->get('author', int);
+	$use = $gpc->get('use', arr_int);
   	$groups = $gpc->get('groups', arr_int);
-  	$file = $gpc->get('file', none);
-  	$file = trim($file);
+  	$content = $gpc->get('template', arr_none);
 
 	$result = $db->query("SELECT type FROM {$db->pre}documents WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	if ($db->num_rows($result) == 0) {
@@ -1581,19 +1674,17 @@ elseif ($job == 'doc_edit2') {
 	$types = doctypes();
 	$format = $types[$doc['type']];
 
-	$content = $gpc->get('template', none);
-	if ($format['remote'] != 1) {
-	  	if (!empty($file)) {
-	  		if ($filesystem->file_put_contents($file, $content) > 0) {
-	  			$content = '';
-	  		}
-	  		else {
-	  			$file = '';
-	  		}
+	$i = 0;
+	foreach ($use as $lid => $usage) {
+		if ($format['remote'] == 1) {
+			$content[$lid] = '';
+		}
+		if ($usage == 1) {
+			$i++;
 		}
 	}
-	else {
-		$content = '';
+	if ($i == 0) {
+		error('javascript:history.back(-1);', $lang->phrase('admin_cms_havent_checked_box'));
 	}
 
 	$result = $db->query('SELECT COUNT(*) FROM '.$db->pre.'groups');
@@ -1607,7 +1698,41 @@ elseif ($job == 'doc_edit2') {
 
 	$time = time();
 
-	$db->query("UPDATE {$db->pre}documents SET `title` = '{$title}', `content` = '".$db->escape_string($content)."', `update` = '{$time}', `groups` = '{$groups}', `active` = '{$active}', `file` = '{$file}', `author` = '{$author}' WHERE id = '{$id}' LIMIT 1",__LINE__,__FILE__);
+	$db->query("UPDATE {$db->pre}documents SET `update` = '{$time}', `groups` = '{$groups}', `author` = '{$author}' WHERE id = '{$id}' LIMIT 1",__LINE__,__FILE__);
+
+	$language_obj = $scache->load('loadlanguage');
+	$language = $language_obj->get();
+
+	foreach ($language as $lid => $x) {
+		if (empty($use[$lid])) {
+			$usage = 0;
+		}
+		else {
+			$usage = 1;
+		}
+		$lid = $gpc->save_int($lid);
+		if (strlen($content[$lid]) < 20) {
+			$content[$lid] = trim(strip_tags($content[$lid]));
+		}
+		if (empty($content[$lid]) || $usage != 1) {
+			$db->query("DELETE FROM v_documents_content WHERE did = '{$id}' AND lid = '{$lid}'");
+		}
+		elseif ($usage == 1) {
+			if (empty($title[$lid])) {
+				$title[$lid] = substr(strip_tags($content[$lid]), 0, 50).'...';
+			}
+			if (empty($active[$lid])) {
+				$active[$lid] = 0;
+			}
+			$result = $db->query("SELECT lid FROM v_documents_content WHERE did = '{$id}' AND lid = '{$lid}'");
+			if ($db->num_rows($result) == 1) {
+				$db->query("UPDATE {$db->pre}documents_content SET `title` = '{$title[$lid]}', `content` = '".$db->escape_string($content[$lid])."', `active` = '{$active[$lid]}' WHERE did = '{$id}' AND lid = '{$lid}'", __LINE__, __FILE__);
+			}
+			else {
+				$db->query("INSERT INTO {$db->pre}documents_content ( `did` , `lid` , `title` , `content` , `active` ) VALUES ('{$id}', '{$lid}', '{$title[$lid]}', '".$db->escape_string($content[$lid])."', '{$active[$lid]}')", __LINE__, __FILE__);
+			}
+		}
+	}
 
 	$delobj = $scache->load('wraps');
 	$delobj->delete();
@@ -1619,7 +1744,7 @@ elseif ($job == 'doc_code') {
 	$codelang = $scache->load('syntaxhighlight');
 	$clang = $codelang->get();
 	?>
-	<script src="admin/html/editor.js" type="text/javascript"></script>
+	<script src="templates/editor/bbcode.js" type="text/javascript"></script>
 	<table class="border">
 	<tr><td class="obox"><?php echo $lang->phrase('admin_cms_bb_tag_code'); ?></td></tr>
 	<tr><td class="mbox">

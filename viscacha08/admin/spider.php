@@ -295,7 +295,7 @@ elseif ($job == 'add' || $job == 'edit') {
 	<form action="admin.php?action=spider&amp;job=<?php echo $job; ?>2<?php echo iif($id > 0, '&amp;id='.$id); ?>" method="post">
 	<table border="0" align="center" class="border">
 		<tr>
-			<td class="obox" colspan="2"><?php echo iif($action == $lang->phrase('admin_spider_add_lowercase'), $lang->phrase('admin_spider_add'), '<mla=edit>Edit</edit>'); ?> Bots</th>
+			<td class="obox" colspan="2"><?php echo iif($action == $lang->phrase('admin_spider_add_lowercase'), $lang->phrase('admin_spider_add'), $lang->phrase('admin_spider_edit')); ?> <?php echo $lang->phrase('admin_spider_bots'); ?></th>
 		</tr>
 		<tr>
 			<td class="ubox" colspan="2"><?php echo $lang->phrase('admin_spider_add_edit_description'); ?></th>

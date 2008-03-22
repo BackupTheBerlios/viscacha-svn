@@ -2123,9 +2123,9 @@ elseif ($job == 'com_delete') {
 	else {
 		?>
 		<table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
-		<tr><td class="obox"><?php echo $lang->phrase('admin_packages_delete_head_delete_component'); ?></td></tr>
+		<tr><td class="obox"><?php echo $lang->phrase('admin_packages_com_delete_head_delete_component'); ?></td></tr>
 		<tr><td class="mbox">
-		<p align="center"><?php echo $lang->phrase('admin_packages_delete_do_you_really_want_to_delete_this_component'); ?></p>
+		<p align="center"><?php echo $lang->phrase('admin_packages_com_delete_do_you_really_want_to_delete_this_component'); ?></p>
 		<p align="center">
 		<a href="admin.php?action=packages&amp;job=com_delete2&amp;id=<?php echo $id; ?>"><img border="0" alt="Yes" src="admin/html/images/yes.gif"> <?php echo $lang->phrase('admin_packages_yes'); ?></a>
 		&nbsp&nbsp;&nbsp;&nbsp&nbsp;&nbsp;
@@ -2486,9 +2486,9 @@ elseif ($job == 'plugins_delete') {
 	else {
 		?>
 		<table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
-		<tr><td class="obox"><?php echo $lang->phrase('admin_packages_delete_head_delete_package'); ?></td></tr>
+		<tr><td class="obox"><?php echo $lang->phrase('admin_packages_head_delete_plugin'); ?></td></tr>
 		<tr><td class="mbox">
-		<p align="center"><?php echo $lang->phrase('admin_packages_delete_do_you_really_want_to_delete_this_plugin'); ?></p>
+		<p align="center"><?php echo $lang->phrase('admin_packages_plugins_delete_do_you_really_want_to_delete_this_plugin'); ?></p>
 		<p align="center">
 		<a href="admin.php?action=packages&job=plugins_delete2&id=<?php echo $id; ?>"><img border="0" alt="" src="admin/html/images/yes.gif"> <?php echo $lang->phrase('admin_packages_yes'); ?></a>
 		&nbsp&nbsp;&nbsp;&nbsp&nbsp;&nbsp;

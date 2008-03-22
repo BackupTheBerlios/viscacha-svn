@@ -26,18 +26,6 @@ if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
 
 require_once("classes/function.frontend_init.php");
 
-function navLang($key) {
-	global $lang;
-	$prefix = substr(strtolower($key), 0, 6);
-	if ($prefix == 'lang->') {
-		$suffix = substr($key, 6);
-		return $lang->phrase($suffix);
-	}
-	else {
-		return $key;
-	}
-}
-
 function getRedirectURL($standard = true) {
 	global $gpc;
 	$loc = strip_tags($gpc->get('redirect', none));
@@ -52,6 +40,12 @@ function getRedirectURL($standard = true) {
 	if (strpos($file, '?') !== false) {
 		$parts = explode('?', $file, 2);
 		$file = $parts[0];
+		if (!empty($parts[1])) {
+			parse_str($parts[1], $q);
+			if (!empty($q['action']) && substr($q['action'], -1) == '2') {
+				$loc = ''; // When the last char of the value of action is 2 we have in most cases a "POST" form
+			}
+		}
 	}
 	if (empty($loc) || !file_exists($file) || $file == 'log.php' || $file == 'register.php') {
 		if ($standard == true) {
@@ -109,6 +103,12 @@ function getRefererURL() {
 	$request_uri = '';
 	if (check_hp($_SERVER['HTTP_REFERER'])) {
 		$url = parse_url($_SERVER['HTTP_REFERER']);
+		if (!empty($url['query'])) {
+			parse_str($url['query'], $q);
+			if (!empty($q['action']) && substr($q['action'], -1) == '2') {
+				return ''; // When the last char of the value of action is 2 we have in most cases a "POST" form
+			}
+		}
 		if (!empty($url['host']) && strpos($config['furl'], $url['host']) !== FALSE) {
 			$request_uri = $_SERVER['HTTP_REFERER'];
 		}

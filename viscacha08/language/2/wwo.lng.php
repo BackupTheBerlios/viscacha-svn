@@ -51,6 +51,5 @@ $lang['wwo_showforum'] = 'is viewing the following board: <a href="showforum.php
 $lang['wwo_showforum'] = 'is viewing a board';
 $lang['wwo_showtopic'] = 'is reading the following topic: <a href="showtopic.php?id={$id}">{$title}</a>';
 $lang['wwo_showtopic_fallback'] = 'is reading a topic';
-$lang['wwo_spellcheck'] = 'is trying to correct mistakes with the spell-check';
 $lang['wwo_team'] = 'is viewing the <a href="members.php?action=team">team overview</a>';
 ?>

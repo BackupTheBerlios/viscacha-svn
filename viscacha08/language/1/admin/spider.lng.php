@@ -8,6 +8,7 @@ $lang['admin_spider_add_edit_description'] = 'Hier können Sie entweder einen exi
 $lang['admin_spider_add_lowercase'] = 'hinzufügen';
 $lang['admin_spider_add_new_robot'] = 'Neuen Spider hinzufügen';
 $lang['admin_spider_all_title'] = 'Alle';
+$lang['admin_spider_bots'] = 'Bots';
 $lang['admin_spider_bots_description'] = 'Spider (auch bekannt als Crawler) sind automatisierte Programme/Rechner die meistens dazu genutzt werden Informationen im Internet zu sammeln oder zu verbreiten. Nur sehr wenige dieser Spider können korrekt mit Cookies oder Sessions umgehen und deswegen schlägt die korrekte Indexierung Ihrer Seite häufig fehl. Hier können Sie Spider definieren um diese Probleme zu umgehen und auch um Sie korrekt von normalen besuchern zu unterscheiden. Sie können vereinzelte Spider auch sperren.';
 $lang['admin_spider_bots_note'] = 'Die Speicherung von (letzten) Besuchen ist derzeit deaktiviert, aber es könnten bereits vorhandene Daten angezeigt werden. Sie können diese Option in Ihren <a href="admin.php?action=settings&amp;job=spiders">Viscacha Einstellungen</a> ändern!';
 $lang['admin_spider_bot_data_successfully_deleted'] = 'Daten des Spiders wurden erfolgreich gelöscht.';

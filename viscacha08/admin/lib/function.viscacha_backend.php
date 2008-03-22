@@ -141,20 +141,6 @@ $glk_forums = array(
 );
 $guest_limitation = array('admin', 'gmod', 'pm', 'usepic', 'useabout', 'usesignature', 'voting', 'edit');
 
-
-// functions //
-function navLang($key, $show_key = true) {
-	global $lang;
-	$prefix = substr(strtolower($key), 0, 6);
-	if ($prefix == 'lang->') {
-		$suffix = substr($key, 6);
-		return $lang->phrase($suffix).iif($show_key, " [{$key}]");
-	}
-	else {
-		return $key;
-	}
-}
-
 function getLangCodesByDir($dir) {
 	$d = dir($dir);
 	$codes = array();
@@ -473,14 +459,8 @@ function head($onload = '') {
 	<link rel="up" href="javascript:self.scrollTo(0,0);">
 	<link rel="copyright" href="http://www.viscacha.org">
 	<script src="templates/lang2js.php?id=<?php echo $my->language; ?>&amp;admin=1" type="text/javascript"></script>
-	<script type="text/javascript">
-	<!--
-		var sidx = '<?php echo SID2URL_JS_x; ?>';
-		var sid1 = '<?php echo SID2URL_JS_1; ?>';
-	-->
-	</script>
+	<script src="templates/global.js" language="Javascript" type="text/javascript"></script>
 	<script src="admin/html/admin.js" language="Javascript" type="text/javascript"></script>
-	<script src="templates/menu.js" language="Javascript" type="text/javascript"></script>
 	<?php echo $htmlhead; ?>
 </head>
 <body<?php echo iif(!empty($onload), ' '.$onload); ?>>

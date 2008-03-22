@@ -240,6 +240,23 @@ function double_udata ($opt,$val) {
 	}
 }
 
+function getDocLangID($data) {
+	global $my, $config;
+	if (isset($my->language) && is_id($my->language) && isset($data[$my->language])) {
+		return $my->language; // Best case: Language specified by the user
+	}
+	elseif (is_id($config['doclang']) && isset($data[$config['doclang']])) {
+		return $config['doclang']; // Normal Case: Standard language specified for documents
+	}
+	elseif (is_id($config['langdir']) && isset($data[$config['langdir']])) {
+		return $config['langdir']; // Worse Case: Standard language of the page
+	}
+	else {
+		reset($data);
+		return key($data); // Worst Case: Take another language... let's say just the first in the list?!
+	}
+}
+
 function send_nocache_header() {
 	if (!empty($_SERVER['SERVER_SOFTWARE']) && strstr($_SERVER['SERVER_SOFTWARE'], 'Apache/2')) {
 		header ('Cache-Control: no-cache, no-store, must-revalidate, pre-check=0, post-check=0');
@@ -346,7 +363,10 @@ function copyr($source, $dest) {
         	return false;
         }
     }
-    $dir = dir($source);
+    if (!is_dir($source)) {
+    	return false;
+    }
+    $dir = @dir($source);
     if (!is_object($dir)) {
     	return false;
     }

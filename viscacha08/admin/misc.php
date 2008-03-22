@@ -590,81 +590,6 @@ elseif ($job == "captcha_fonts") {
 	<?php
 	echo foot();
 }
-elseif ($job == "spellcheck") {
-	echo head();
-	if (!$config['spellcheck']) {
-		error('admin.php?action=settings&job=spellcheck', $lang->phrase(''));
-	}
-	$dicts = array();
-	$result = $db->query('SELECT id FROM '.$db->pre.'language',__LINE__,__FILE__);
-	while ($row = $db->fetch_assoc($result)) {
-		@include('language/'.$row['id'].'/settings.lng.php');
-		$dicts[] = $lang['spellcheck_dict'];
-	}
-	?>
-<form name="form2" method="post" action="admin.php?action=misc&amp;job=spellcheck_add">
- <table class="border">
-  <tr>
-   <td class="obox"><?php echo $lang->phrase('admin_misc_spellcheck_add_to_list'); ?></td>
-  </tr>
-  <tr>
-   <td class="mbox">
-   <?php echo $lang->phrase('admin_misc_spellcheck_add_to_list_info'); ?><br /><br />
-   <textarea name="words" rows="10" cols="100"></textarea><br />
-   <strong><?php echo $lang->phrase('admin_misc_dictionary'); ?></strong> <select name="dict">
-   <?php foreach ($dicts as $dict) { ?>
-   <option value="<?php echo $dict; ?>"><?php echo $dict; ?></option>
-   <?php } ?>
-   </select>
-   </td>
-  </tr>
-  <tr><td class="ubox" align="center"><input accesskey="s" type="submit" value="<?php echo $lang->phrase('admin_misc_save'); ?>" /></td></tr>
- </table>
-</form>
-	<?php
-	echo foot();
-}
-elseif ($job == "spellcheck_add") {
-	echo head();
-	$dict = $gpc->get('dict', str);
-	if ($config['pspell'] == 'pspell') {
-		include('classes/spellchecker/pspell.class.php');
-	}
-	elseif ($config['pspell'] == 'mysql') {
-		include('classes/spellchecker/mysql.class.php');
-		global $db;
-		$path = $db;
-	}
-	else {
-		include('classes/spellchecker/php.class.php');
-		$path = 'classes/spellchecker/dict/';
-	}
-	$sc = new spellchecker($dict,$config['spellcheck_ignore'],$config['spellcheck_mode'], true);
-	if (isset($path)) {
-		$sc->set_path($path);
-	}
-	$sc->init();
-
-	$x = $sc->error();
-	if (!empty($x)) {
-		error('admin.php?action=misc&job=spellcheck', $x);
-	}
-
-	$words = $gpc->get('words', none);
-	$word_seperator = "0-9\\.,;:!\\?\\-\\|\n\r\s\"'\\[\\]\\{\\}\\(\\)\\/\\\\";
-	$words = preg_split('~['.$word_seperator.']+?~', $words, -1, PREG_SPLIT_NO_EMPTY);
-	foreach ($words as $k => $w) {
-		if (empty($w)) {
-			unset($words[$k]);
-		}
-	}
-	if ($sc->add($words)) {
-		ok('admin.php?action=misc&job=spellcheck');
-	}
-	else {
-		error('admin.php?action=misc&job=spellcheck');
-	}
-}
 elseif ($job == "credits") {
 	echo head();
 
@@ -698,12 +623,6 @@ elseif ($job == "credits") {
 	}
 	else {
 		$gdlibext = "<span style='color: red'>".$lang->phrase('admin_misc_n_a')."</span>>";
-	}
-	if (in_array("pspell", $ext)) {
-		$pslibext = "<span style='color: green'>".$lang->phrase('admin_misc_ok')."</span>";
-	}
-	else {
-		$pslibext = "<span style='color: red'>".$lang->phrase('admin_misc_n_a')."</span>";
 	}
 	if (in_array("xml", $ext)) {
 		$xmllibext = "<span style='color: green'>".$lang->phrase('admin_misc_ok')."</span>";
@@ -766,7 +685,6 @@ elseif ($job == "credits") {
 		<li><a href="http://phpmailer.sourceforge.net/" target="_blank">PHPMailer 1.73 by Brent R. Matzelle and SMTP Class 1.02 by Chris Ryan</a> (Sending E-Mails with SMTP; LGPL)</li>
 		<li><a href="http://cjphp.netflint.net" target="_blank">Class.Jabber.PHP v0.4.3a by Nathan Fritz</a> (Jabber Messages; GPL)</li>
 		<li><a href="http://www.bitfolge.de" target="_blank">FeedCreator v1.7.x by Kai Blankenhorn</a> (Creating Newsfeeds; LGPL)</li>
-		<li><a href="http://spellerpages.sourceforge.net/" target="_blank">Speller Pages 0.5.1 by James Shimada</a> (Spell Checker User Interface; LPGL)</li>
 		<li><a href="http://pear.php.net/package/PHP_Compat" target="_blank">PHP_Compat 1.5.0 by Aidan Lister, Stephan Schmidt</a> (PHP Core Functions; PHP)</li>
 		<li><a href="http://www.phpclasses.org/browse/author/169072.html" target="_blank">ServerNavigator 1.0 by Carlos Reche</a> (Basic File Manager; GPL)</li>
 		<li><a href="http://www.phpclasses.org/browse/author/169072.html" target="_blank">PowerGraphic 1.0 by Carlos Reche</a> (Charts &amp; Diagrams; GPL)</li>
@@ -794,7 +712,6 @@ elseif ($job == "credits") {
 		<li>GD-<?php echo $lang->phrase('admin_misc_extension').' '.$gdlibext; ?></li>
 		<li>Zlib-<?php echo $lang->phrase('admin_misc_extension').' '.$zlibext; ?></li>
 		<li>XML-<?php echo $lang->phrase('admin_misc_extension').' '.$xmllibext; ?></li>
-		<li>PSpell-<?php echo $lang->phrase('admin_misc_extension').' '.$pslibext; ?></li>
 		<li>IconV-<?php echo $lang->phrase('admin_misc_extension').' '.$ivlibext; ?></li>
 		<li>MBString-<?php echo $lang->phrase('admin_misc_extension').' '.$mblibext; ?></li>
 		<li>MHash-<?php echo $lang->phrase('admin_misc_extension').' '.$mhashext; ?></li>

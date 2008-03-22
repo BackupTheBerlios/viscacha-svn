@@ -111,14 +111,6 @@ elseif ($_GET['action'] == "filetypes") {
 	echo $tpl->parse("popup/filetypes");
 	($code = $plugins->load('popup_filetypes_end')) ? eval($code) : null;
 }
-elseif ($_GET['action'] == "code") {
-	$codelang = $scache->load('syntaxhighlight');
-	$clang = $codelang->get();
-	($code = $plugins->load('popup_code_start')) ? eval($code) : null;
-	echo $tpl->parse("popup/header");
-	echo $tpl->parse("popup/code");
-	($code = $plugins->load('popup_code_end')) ? eval($code) : null;
-}
 elseif ($_GET['action'] == "showpost") {
 	echo $tpl->parse("popup/header");
 

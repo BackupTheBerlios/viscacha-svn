@@ -2,7 +2,7 @@
 /*
 	Viscacha - A bulletin board solution for easily managing your content
 	Copyright (C) 2004-2007  Matthias Mohr, MaMo Net
-	
+
 	Author: Matthias Mohr
 	Publisher: http://www.viscacha.org
 	Start Date: May 22, 2004
@@ -41,9 +41,9 @@ $tpl = new tpl();
 
 $result = $db->query('
 SELECT r.topic, r.board, r.name, r.comment, r.topic_id, r.dosmileys, r.dowords, t.posts, r.topic_id, r.date, t.prefix, r.id, r.edit, t.vquestion, r.tstart, t.status, r.guest
-FROM '.$db->pre.'replies AS r 
-	LEFT JOIN '.$db->pre.'topics AS t ON r.topic_id = t.id 
-WHERE r.id = "'.$_GET['id'].'" 
+FROM '.$db->pre.'replies AS r
+	LEFT JOIN '.$db->pre.'topics AS t ON r.topic_id = t.id
+WHERE r.id = "'.$_GET['id'].'"
 LIMIT 1
 ',__LINE__,__FILE__);
 
@@ -92,15 +92,15 @@ if ($my->mp[4] == 1 && ($info['topic_id'] > 0 || $info['posts'] == 0)) {
 	$del_mod = TRUE;
 }
 else {
-	$del_mod = FALSE; 
+	$del_mod = FALSE;
 }
 if ($delete_seconds >= $diff && ($info['topic_id'] > 0 || $info['posts'] == 0)) {
 	$del_user = TRUE;
 }
 else {
-	$del_user = FALSE; 
+	$del_user = FALSE;
 }
-if ($config['tpcallow'] == 1 && $my->p['attachments'] == 1) { 
+if ($config['tpcallow'] == 1 && $my->p['attachments'] == 1) {
 	$p_upload = TRUE;
 }
 else {
@@ -112,9 +112,9 @@ $allowed = (($info['name'] == $my->id || $my->mp[0] == 1) && $my->p['edit'] && $
 ($code = $plugins->load('edit_start')) ? eval($code) : null;
 
 if ($allowed == true) {
-	
+
 	if ($_GET['action'] == "save") {
-		
+
 		if ($_POST['temp'] == '1' && $my->mp[4] == '1') {
 			if ($info['tstart'] == 0 || $info['posts'] == 0) {
 				if ($config['updatepostcounter'] == 1 && $last['count_posts'] == 1) {
@@ -153,14 +153,14 @@ if ($allowed == true) {
 				($code = $plugins->load('edit_save_delete')) ? eval($code) : null;
 				UpdateBoardStats($info['board']);
 				UpdateTopicStats($info['topic_id']);
-				
+
 				ok($lang->phrase('edit_postdeleted'),iif($info['tstart'] == 1, "showforum.php?id=".$info['board'], "showtopic.php?action=last&id=".$info['topic_id']).SID2URL_x);
 			}
 			else {
 				error($lang->phrase('threadstarts_no_delete'),"edit.php?id=".$info['id']);
 			}
 		}
-		else { 
+		else {
 			$error = array();
 			if (strxlen($_POST['comment']) > $config['maxpostlength']) {
 				$error[] = $lang->phrase('comment_too_long');
@@ -212,21 +212,21 @@ if ($allowed == true) {
 			else {
 				$info['edit'] .= $my->name."\t".time()."\t".$_POST['about']."\t".$my->ip."\n";
 				($code = $plugins->load('edit_save_queries')) ? eval($code) : null;
-				
+
 				$db->query ("
-				UPDATE {$db->pre}replies 
-				SET edit = '{$info['edit']}', topic = '{$_POST['topic']}', comment = '{$_POST['comment']}', dosmileys = '{$_POST['dosmileys']}', dowords = '{$_POST['dowords']}' 
+				UPDATE {$db->pre}replies
+				SET edit = '{$info['edit']}', topic = '{$_POST['topic']}', comment = '{$_POST['comment']}', dosmileys = '{$_POST['dosmileys']}', dowords = '{$_POST['dowords']}'
 				WHERE id = '{$_GET['id']}'
 				",__LINE__,__FILE__);
-				
+
 				if ($info['tstart'] == '1') {
-				
+
 					$db->query ("
-					UPDATE {$db->pre}topics 
-					SET prefix = '{$_POST['opt_0']}', topic = '{$_POST['topic']}' 
+					UPDATE {$db->pre}topics
+					SET prefix = '{$_POST['opt_0']}', topic = '{$_POST['topic']}'
 					WHERE id = '{$info['topic_id']}'
 					",__LINE__,__FILE__);
-					
+
 				}
 				ok($lang->phrase('data_success'),'showtopic.php?action=jumpto&id='.$info['topic_id'].'&topic_id='.$info['id']);
 			}
@@ -280,13 +280,10 @@ if ($allowed == true) {
 			$inner['index_prefix'] = '';
 		}
 
-		$inner['smileys'] = $bbcode->getsmileyhtml($config['smileysperrow']);
-		$inner['bbhtml'] = $bbcode->getbbhtml();
-
 		($code = $plugins->load('edit_form_prepared')) ? eval($code) : null;
 
 		echo $tpl->parse("edit/edit");
-		
+
 		($code = $plugins->load('edit_form_end')) ? eval($code) : null;
 	}
 }
@@ -304,5 +301,5 @@ $slog->updatelogged();
 $zeitmessung = t2();
 echo $tpl->parse("footer");
 $phpdoc->Out();
-$db->close();		
+$db->close();
 ?>

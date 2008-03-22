@@ -197,11 +197,8 @@ elseif ($_GET['action'] == "wwo") {
 	$catbid = $scache->load('cat_bid');
 	$cat_cache = $catbid->get();
 	// Documents cachen
-	$result = $db->query("SELECT id, title, groups FROM {$db->pre}documents WHERE active = '1' LIMIT 1");
-	$wrap_cache = array();
-	while ($row = $db->fetch_assoc($result)) {
-		$wrap_cache[$row['id']] = $row;
-	}
+	$wrap_obj = $scache->load('wraps');
+	$wrap_cache = $wrap_obj->get();
 	// Mitglieder
 	$memberdata_obj = $scache->load('memberdata');
 	$memberdata = $memberdata_obj->get();
@@ -274,7 +271,8 @@ elseif ($_GET['action'] == "wwo") {
 		case 'docs':
 			$id = $row->wiw_id;
 			if (isset($wrap_cache[$id]) && $my->p['docs'] == 1 && GroupCheck($wrap_cache[$id]['groups'])) {
-				$title = $wrap_cache[$id]['title'];
+				$lid = getDocLangID($wrap_cache[$id]);
+				$title = $wrap_cache[$id]['titles'][$lid];
 				$loc = $lang->phrase('wwo_docs');
 			}
 			else {
@@ -398,12 +396,6 @@ elseif ($_GET['action'] == "wwo") {
 			case 'error':
 			case 'board_rules':
 				$loc = $lang->phrase('wwo_misc_'.$row->wiw_action);
-				break;
-			case 'spellcheck_execute':
-			case 'spellcheck_frames':
-			case 'spellcheck_controls':
-			case 'spellcheck_blank':
-				$loc = $lang->phrase('wwo_misc_spellcheck');
 				break;
 			case 'report_post':
 			case 'report_post2':
@@ -778,28 +770,6 @@ elseif ($_GET['action'] == "error") {
 	$breadcrumb->Add($lang->phrase('htaccess_error_'.$_GET['id']));
 	echo $tpl->parse("header");
 	echo $tpl->parse("misc/error");
-}
-elseif ($_GET['action'] == "spellcheck_execute") {
-	if ($config['spellcheck'] == 0) {
-		error($lang->phrase('spellcheck_disabled'), 'self.close()');
-	}
-	include("classes/spellchecker/function.php");
-	echo $tpl->parse("spellcheck/execute");
-}
-elseif ($_GET['action'] == "spellcheck_frames") {
-	if ($config['spellcheck'] == 0) {
-		error($lang->phrase('spellcheck_disabled'), 'self.close()');
-	}
-	echo $tpl->parse("spellcheck/frames");
-}
-elseif ($_GET['action'] == "spellcheck_controls") {
-	if ($config['spellcheck'] == 0) {
-		error($lang->phrase('spellcheck_disabled'), 'self.close()');
-	}
-	echo $tpl->parse("spellcheck/controls");
-}
-elseif ($_GET['action'] == "spellcheck_blank") {
-	echo '';
 }
 
 ($code = $plugins->load('misc_end')) ? eval($code) : null;
