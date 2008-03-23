@@ -80,4 +80,8 @@ $lang['bbcode_help_overview'] = 'Übersicht';
 $lang['bbcode_help_smileys'] = 'Smileys';
 $lang['bbcode_help_smileys_desc'] = 'Folgende Smileys stehen auf dieser Seite zur Verfügung:';
 $lang['bbhelp_title'] = 'BB-Code Hilfe';
+$lang['more_smileys'] = 'mehr Smileys';
+$lang['textarea_check_length'] = 'Überprüfe Textlänge';
+$lang['textarea_decrease_size'] = 'Verkleinern';
+$lang['textarea_increase_size'] = 'Vergrößern';
 ?>

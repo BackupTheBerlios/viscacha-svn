@@ -89,6 +89,29 @@ function changeLanguageUsage(lid) {
 		}
 	}
 }
+function init() {
+	for(var i=0; i < document.images.length; i++) {
+	    name = document.images[i].alt;
+		if (name == 'collapse') {
+			switchimg = document.images[i];
+			id = switchimg.id.replace("img_","");
+			boxes[i] = id;
+			part = FetchElement("part_"+id);
+			if(document.cookie && part.style.display != 'none') {
+				hide = GetCookie(id);
+				if(hide != '') {
+					switchimg.src = box_img_plus;
+					part.style.display = 'none';
+				}
+				else {
+					switchimg.src = box_img_minus;
+				}
+			}
+			HandCursor(switchimg);
+			Switch(switchimg);
+		}
+	}
+}
 function initTranslateDetails() {
 	for(var i=0; i < document.images.length; i++) {
 	    name = document.images[i].name;

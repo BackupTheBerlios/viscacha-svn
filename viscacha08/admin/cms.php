@@ -7,14 +7,37 @@ $lang->group("admin/cms");
 require('classes/class.phpconfig.php');
 $myini = new INI();
 
-function BBCodeToolBox() {
-	global $db, $scache, $config, $lang;
+function BBCodeToolBox($id, $content = '', $taAttr = '') {
+	global $tpl, $lang, $scache, $config;
+
+	$lang->group("bbcodes");
+
+	$taAttr = ' '.trim($taAttr);
+
+	$cache = $scache->load('custombb');
+	$cbb = $cache->get();
+	foreach ($cbb as $key => $bb) {
+		if (empty($bb['buttonimage'])) {
+			unset($cbb[$key]);
+			continue;
+		}
+		$cbb[$key]['title'] = htmlspecialchars($bb['title']);
+		if ($bb['twoparams']) {
+			$cbb[$key]['href'] = "InsertTags('{$id}', '[{$bb['bbcodetag']}=]','[/{$bb['bbcodetag']}]');";
+		}
+		else {
+			$cbb[$key]['href'] = "InsertTags('{$id}', '[{$bb['bbcodetag']}]','[/{$bb['bbcodetag']}]');";
+		}
+	}
+
+	$codelang = $scache->load('syntaxhighlight');
+	$clang = $codelang->get();
 
 	$cache = $scache->load('smileys');
 	$cache->seturl($config['smileyurl']);
-	$csmileys = $cache->get();
+	$smileydata = $cache->get();
 	$smileys = array(0 => array(), 1 => array());
-	foreach ($csmileys as $bb) {
+	foreach ($smileydata as $bb) {
 	   	if ($bb['show'] == 1) {
 			$smileys[1][] = $bb;
 		}
@@ -22,116 +45,118 @@ function BBCodeToolBox() {
 			$smileys[0][] = $bb;
 		}
 	}
-	$smileys[1] = array_chunk($smileys[1], 5);
-
-	$cache = $scache->load('custombb');
-	$cbb = $cache->get();
-	foreach ($cbb as $key => $bb) {
-   		if (empty($bb['buttonimage'])) {
-			unset($cbb[$key]);
-			continue;
-		}
-		$cbb[$key]['title'] = htmlspecialchars($bb['title']);
-		if ($bb['twoparams']) {
-			$cbb[$key]['href'] = "InsertTagsParams('[{$bb['bbcodetag']}={param1}]{param2}','[/{$bb['bbcodetag']}]');";
-		}
-		else {
-			$cbb[$key]['href'] = "InsertTags('[{$bb['bbcodetag']}]','[/{$bb['bbcodetag']}]');";
-		}
-	}
 	?>
-<script type="text/javascript" src="templates/editor/bbcode.js"></script>
-<table class="invisibletable">
- <tr>
-  <td width="30%">
-	<table style="margin-bottom: 5px;width: 140px">
-	<?php foreach ($smileys[1] as $row) { ?>
-		<tr>
-		<?php foreach ($row as $bb) { ?>
-			<td class="center"><a href="javascript:InsertTagsMenu(' <?php echo $bb['jssearch'] ?> ', '', 'bbsmileys')"><img border="0" src="<?php echo $bb['replace']; ?>" alt="<?php echo $bb['desc']; ?>" /></a></td>
-		<?php } ?>
-		</tr>
-	<?php } ?>
+	<script src="templates/editor/bbcode.js" type="text/javascript"></script>
+	<table class="editor_textarea_outer">
+		<tr><td class="editor_toolbar">
+			<a id="menu_bbcolor_<?php echo $id; ?>" href="#" onmouseover="RegisterMenu('bbcolor_<?php echo $id; ?>');" class="editor_toolbar_dropdown"><img src="<?php echo $tpl->img('desc'); ?>" alt="<?php echo $lang->phrase('bbcodes_expand'); ?>" /> <?php echo $lang->phrase('bbcodes_color'); ?></a>
+			<div class="popup" id="popup_bbcolor_<?php echo $id; ?>">
+			<strong><?php echo $lang->phrase('bbcodes_color_title'); ?></strong>
+			<div class="bbcolor"><script type="text/javascript">document.write(writeRow('<?php echo $id; ?>'));</script></div>
+			</div>
+			<img src="templates/editor/images/seperator.gif" alt="" />
+			<a id="menu_bbsize" href="#" onmouseover="RegisterMenu('bbsize');" class="editor_toolbar_dropdown"><img src="<?php echo $tpl->img('desc'); ?>" alt="<?php echo $lang->phrase('bbcodes_expand'); ?>" /> <?php echo $lang->phrase('bbcodes_size'); ?></a>
+		    <div class="popup" id="popup_bbsize">
+		    <strong><?php echo $lang->phrase('bbcodes_size_title'); ?></strong>
+		   	<ul>
+		    	<li><span class="popup_line" onclick="InsertTagsMenu('<?php echo $id; ?>', '[size=large]','[/size]','bbsize_<?php echo $id; ?>')" style="font-size: 1.3em;"><?php echo $lang->phrase('bbcodes_size_large'); ?></span></li>
+		    	<li><span class="popup_line" onclick="InsertTagsMenu('<?php echo $id; ?>', '[size=small]','[/size]','bbsize_<?php echo $id; ?>')" style="font-size: 0.8em;"><?php echo $lang->phrase('bbcodes_size_small'); ?></span></li>
+		    	<li><span class="popup_line" onclick="InsertTagsMenu('<?php echo $id; ?>', '[size=extended]','[/size]','bbsize_<?php echo $id; ?>')" style="letter-spacing: 3px;"><?php echo $lang->phrase('bbcodes_size_extended'); ?></span></li>
+		    </ul>
+		    </div>
+		    <img src="templates/editor/images/seperator.gif" alt="" />
+			<a id="menu_bbhx_<?php echo $id; ?>" href="#" onmouseover="RegisterMenu('bbhx_<?php echo $id; ?>');" class="editor_toolbar_dropdown"><img src="<?php echo $tpl->img('desc'); ?>" alt="<?php echo $lang->phrase('bbcodes_expand'); ?>" /> <?php echo $lang->phrase('bbcodes_header'); ?></a>
+			<div class="popup" id="popup_bbhx_<?php echo $id; ?>">
+			<strong><?php echo $lang->phrase('bbcodes_header_title'); ?></strong>
+			<ul>
+				<li><h4 class="popup_line" onclick="InsertTagsMenu('<?php echo $id; ?>', '[h=large]','[/h]','bbhx_<?php echo $id; ?>')" style="margin: 0px; font-size: 14pt;"><?php echo $lang->phrase('bbcodes_header_h1'); ?></h4></li>
+				<li><h5 class="popup_line" onclick="InsertTagsMenu('<?php echo $id; ?>', '[h=middle]','[/h]','bbhx_<?php echo $id; ?>')" style=" margin: 0px; font-size: 13pt;"><?php echo $lang->phrase('bbcodes_header_h2'); ?></h5></li>
+				<li><h6 class="popup_line" onclick="InsertTagsMenu('<?php echo $id; ?>', '[h=small]','[/h]','bbhx_<?php echo $id; ?>')" style="margin: 0px; font-size: 12pt;"><?php echo $lang->phrase('bbcodes_header_h3'); ?></h6></li>
+			</ul>
+			</div>
+			<img src="templates/editor/images/seperator.gif" alt="" />
+			<a id="menu_bbtable_<?php echo $id; ?>" href="#" onmouseover="RegisterMenu('bbtable_<?php echo $id; ?>');" class="editor_toolbar_dropdown"><img src="<?php echo $tpl->img('desc'); ?>" alt="<?php echo $lang->phrase('bbcodes_expand'); ?>" /> <?php echo $lang->phrase('bbcodes_table'); ?></a>
+			<div class="popup" id="popup_bbtable_<?php echo $id; ?>">
+			<strong><?php echo $lang->phrase('bbcodes_create_table'); ?></strong>
+			<div class="bbtable">
+				<input type="checkbox" style="height: 2em;" id="table_head_<?php echo $id; ?>" value="1" /> <?php echo $lang->phrase('bbcodes_table_show_head'); ?>
+				<br class="newinput" /><hr class="formsep" />
+				<input type="text" size="4" id="table_rows_<?php echo $id; ?>" value="2" /> <?php echo $lang->phrase('bbcodes_table_rows'); ?>
+				<br class="newinput" /><hr class="formsep" />
+				<input type="text" size="4" id="table_cols_<?php echo $id; ?>" value="2" /> <?php echo $lang->phrase('bbcodes_table_cols'); ?>
+				<br class="newinput" /><hr class="formsep" />
+				<div class="center">[ <b><a href="javascript:InsertTable('<?php echo $id; ?>')"><?php echo $lang->phrase('bbcodes_table_insert_table'); ?></a></b> ]</div>
+				<br class="iefix_br" />
+			</div>
+			</div>
+			<img src="templates/editor/images/seperator.gif" alt="" />
+			<a id="menu_bbsourcecode_<?php echo $id; ?>" href="#" onmouseover="RegisterMenu('bbsourcecode_<?php echo $id; ?>');" class="editor_toolbar_dropdown"><img src="<?php echo $tpl->img('desc'); ?>" alt="<?php echo $lang->phrase('bbcodes_expand'); ?>" /> <?php echo $lang->phrase('bbcodes_code_short'); ?></a>
+			<div class="popup" id="popup_bbsourcecode_<?php echo $id; ?>">
+			<strong><?php echo $lang->phrase('bbcodes_code'); ?></strong>
+			<ul>
+				<li><span class="popup_line" onclick="InsertTagsMenu('<?php echo $id; ?>', '[code]','[/code]', 'bbsourcecode_<?php echo $id; ?>')"><?php echo $lang->phrase('geshi_bbcode_nohighlighting'); ?></span></li>
+				<?php foreach ($clang as $row) { ?>
+				<li><span class="popup_line" onclick="InsertTagsMenu('<?php echo $id; ?>', '[code=<?php echo $row['short']; ?>]','[/code]', 'bbsourcecode_<?php echo $id; ?>')"><?php echo $row['name']; ?></span></li>
+				<?php } ?>
+			</ul>
+			</div>
+			<?php foreach ($cbb as $bb) { echo iif(count($cbb), '<img src="templates/editor/images/seperator.gif" alt="" />'); ?>
+			<img src="templates/editor/images/<?php echo $bb['buttonimage']; ?>" onclick="<?php echo $bb['href']; ?>" title="<?php echo $bb['title']; ?>" alt="<?php echo $bb['title']; ?>" class="editor_toolbar_button" onmouseover="buttonOver(this)" onmouseout="buttonOut(this)" />
+			<?php } ?>
+		</td></tr>
+		<tr><td class="editor_toolbar">
+			<img src="templates/editor/images/bold.gif" onclick="InsertTags('<?php echo $id; ?>', '[b]','[/b]');" title="<?php echo $lang->phrase('bbcodes_bold'); ?>" alt="<?php echo $lang->phrase('bbcodes_bold'); ?>" class="editor_toolbar_button" onmouseover="buttonOver(this)" onmouseout="buttonOut(this)" />
+			<img src="templates/editor/images/italic.gif" onclick="InsertTags('<?php echo $id; ?>', '[i]','[/i]');" title="<?php echo $lang->phrase('bbcodes_italic'); ?>" alt="<?php echo $lang->phrase('bbcodes_italic'); ?>" class="editor_toolbar_button" onmouseover="buttonOver(this)" onmouseout="buttonOut(this)" />
+			<img src="templates/editor/images/underline.gif" onclick="InsertTags('<?php echo $id; ?>', '[u]','[/u]');" title="<?php echo $lang->phrase('bbcodes_underline'); ?>" alt="<?php echo $lang->phrase('bbcodes_underline'); ?>" class="editor_toolbar_button" onmouseover="buttonOver(this)" onmouseout="buttonOut(this)" />
+			<img src="templates/editor/images/seperator.gif" alt="" />
+			<img src="templates/editor/images/left.gif" onclick="InsertTags('<?php echo $id; ?>','[align=left]','[/align]');" title="<?php echo $lang->phrase('bbcodes_align_left'); ?>" alt="<?php echo $lang->phrase('bbcodes_align_left'); ?>" class="editor_toolbar_button" onmouseover="buttonOver(this)" onmouseout="buttonOut(this)" />
+			<img src="templates/editor/images/center.gif" onclick="InsertTags('<?php echo $id; ?>','[align=center]','[/align]');" title="<?php echo $lang->phrase('bbcodes_align_center'); ?>" alt="<?php echo $lang->phrase('bbcodes_align_center'); ?>" class="editor_toolbar_button" onmouseover="buttonOver(this)" onmouseout="buttonOut(this)" />
+			<img src="templates/editor/images/right.gif" onclick="InsertTags('<?php echo $id; ?>','[align=right]','[/align]');" title="<?php echo $lang->phrase('bbcodes_align_right'); ?>" alt="<?php echo $lang->phrase('bbcodes_align_right'); ?>" class="editor_toolbar_button" onmouseover="buttonOver(this)" onmouseout="buttonOut(this)" />
+			<img src="templates/editor/images/justify.gif" onclick="InsertTags('<?php echo $id; ?>','[align=justify]','[/align]');" title="<?php echo $lang->phrase('bbcodes_align_justify'); ?>" alt="<?php echo $lang->phrase('bbcodes_align_justify'); ?>" class="editor_toolbar_button" onmouseover="buttonOver(this)" onmouseout="buttonOut(this)" />
+			<img src="templates/editor/images/seperator.gif" alt="" />
+			<img src="templates/editor/images/img.gif" onclick="InsertTags('<?php echo $id; ?>', '[img]','[/img]');" title="<?php echo $lang->phrase('bbcodes_img'); ?>" alt="<?php echo $lang->phrase('bbcodes_img'); ?>" class="editor_toolbar_button" onmouseover="buttonOver(this)" onmouseout="buttonOut(this)" />
+			<img src="templates/editor/images/url.gif" onclick="InsertTagsURL('<?php echo $id; ?>', '[url={param1}]{param2}','[/url]');" title="<?php echo $lang->phrase('bbcodes_url'); ?>" alt="<?php echo $lang->phrase('bbcodes_url'); ?>" class="editor_toolbar_button" onmouseover="buttonOver(this)" onmouseout="buttonOut(this)" />
+			<img src="templates/editor/images/email.gif" onclick="InsertTags('<?php echo $id; ?>', '[email]','[/email]');" title="<?php echo $lang->phrase('bbcodes_email'); ?>" alt="<?php echo $lang->phrase('bbcodes_email'); ?>" class="editor_toolbar_button" onmouseover="buttonOver(this)" onmouseout="buttonOut(this)" />
+			<img src="templates/editor/images/seperator.gif" alt="" />
+			<img src="templates/editor/images/quote.gif" onclick="InsertTags('<?php echo $id; ?>', '[quote]','[/quote]');" title="<?php echo $lang->phrase('bbcodes_quote'); ?>" alt="<?php echo $lang->phrase('bbcodes_quote'); ?>" class="editor_toolbar_button" onmouseover="buttonOver(this)" onmouseout="buttonOut(this)" />
+			<img src="templates/editor/images/ot.gif" onclick="InsertTags('<?php echo $id; ?>', '[ot]','[/ot]');" title="<?php echo $lang->phrase('bbcodes_ot'); ?>" alt="<?php echo $lang->phrase('bbcodes_ot'); ?>" class="editor_toolbar_button" onmouseover="buttonOver(this)" onmouseout="buttonOut(this)" />
+			<img src="templates/editor/images/edit.gif" onclick="InsertTags('<?php echo $id; ?>', '[edit]','[/edit]');" title="<?php echo $lang->phrase('bbcodes_edit'); ?>" alt="<?php echo $lang->phrase('bbcodes_edit'); ?>" class="editor_toolbar_button" onmouseover="buttonOver(this)" onmouseout="buttonOut(this)" />
+			<img src="templates/editor/images/seperator.gif" alt="" />
+			<img src="templates/editor/images/list_unordered.gif" onclick="InsertTagsList('<?php echo $id; ?>');" title="<?php echo $lang->phrase('bbcodes_list'); ?>" alt="<?php echo $lang->phrase('bbcodes_list'); ?>" class="editor_toolbar_button" onmouseover="buttonOver(this)" onmouseout="buttonOut(this)" />
+			<img src="templates/editor/images/list_ordered.gif" onclick="InsertTagsList('<?php echo $id; ?>', 'ol');" title="<?php echo $lang->phrase('bbcodes_list_ol'); ?>" alt="<?php echo $lang->phrase('bbcodes_list_ol'); ?>" class="editor_toolbar_button" onmouseover="buttonOver(this)" onmouseout="buttonOut(this)" />
+			<img src="templates/editor/images/seperator.gif" alt="" />
+			<img src="templates/editor/images/hr.gif" onclick="InsertTags('<?php echo $id; ?>', '[hr]','');" title="<?php echo $lang->phrase('bbcodes_hr'); ?>" alt="<?php echo $lang->phrase('bbcodes_hr'); ?>" class="editor_toolbar_button" onmouseover="buttonOver(this)" onmouseout="buttonOut(this)" />
+			<img src="templates/editor/images/note.gif" onclick="InsertTagsNote('<?php echo $id; ?>', '[note={param1}]{param2}','[/note]');" title="<?php echo $lang->phrase('bbcodes_note'); ?>" alt="<?php echo $lang->phrase('bbcodes_note'); ?>" class="editor_toolbar_button" onmouseover="buttonOver(this)" onmouseout="buttonOut(this)" />
+			<img src="templates/editor/images/tt.gif" onclick="InsertTags('<?php echo $id; ?>', '[tt]','[/tt]');" title="<?php echo $lang->phrase('bbcodes_tt'); ?>" alt="<?php echo $lang->phrase('bbcodes_tt'); ?>" class="editor_toolbar_button" onmouseover="buttonOver(this)" onmouseout="buttonOut(this)" />
+			<img src="templates/editor/images/seperator.gif" alt="" />
+			<img src="templates/editor/images/subscript.gif" onclick="InsertTags('<?php echo $id; ?>', '[sub]','[/sub]');" title="<?php echo $lang->phrase('bbcodes_sub'); ?>" alt="<?php echo $lang->phrase('bbcodes_sub'); ?>" class="editor_toolbar_button" onmouseover="buttonOver(this)" onmouseout="buttonOut(this)" />
+			<img src="templates/editor/images/superscript.gif" onclick="InsertTags('<?php echo $id; ?>', '[sup]','[/sup]');" title="<?php echo $lang->phrase('bbcodes_sup'); ?>" alt="<?php echo $lang->phrase('bbcodes_sup'); ?>" class="editor_toolbar_button" onmouseover="buttonOver(this)" onmouseout="buttonOut(this)" />
+		</td></tr>
+		<tr><td class="editor_toolbar" style="height: auto; overflow: auto;">
+			<?php foreach ($smileys[1] as $bb) { ?>
+			<img src="<?php echo $bb['replace']; ?>" onclick="InsertTags('<?php echo $id; ?>', ' <?php echo $bb['jssearch'] ?> ', '');" title="<?php echo $bb['desc']; ?>" alt="<?php echo $bb['desc']; ?>" class="editor_toolbar_smiley" onmouseover="buttonOverSmiley(this)" onmouseout="buttonOutSmiley(this)" /></a>
+			<?php } ?>
+		<img src="templates/editor/images/seperator.gif" alt="" />
+			<?php if (count($smileys[0]) > 0) { ?>
+			<a id="menu_bbsmileys_<?php echo $id; ?>" href="#" onmouseover="RegisterMenu('bbsmileys_<?php echo $id; ?>');" class="editor_toolbar_dropdown"><img src="<?php echo $tpl->img('desc'); ?>" alt="<?php echo $lang->phrase('box_collapse'); ?>" /> <?php echo $lang->phrase('more_smileys'); ?></a>
+			<div class="popup" id="popup_bbsmileys_<?php echo $id; ?>">
+			<strong><?php echo $lang->phrase('more_smileys'); ?></strong>
+			<ul class="bbsmileys">
+			<?php foreach ($smileys[0] as $bb) { ?>
+			  <li><span class="popup_line stext" onclick="InsertTagsMenu('<?php echo $id; ?>', ' <?php echo $bb['jssearch'] ?> ', '', 'bbsmileys_<?php echo $id; ?>')"><img src="<?php echo $bb['replace']; ?>" alt="<?php echo $bb['desc']; ?>" /> <?php echo $bb['desc']; ?></span></li>
+			<?php }?>
+			</ul>
+			</div>
+			<?php } ?>
+		</td></tr>
+		<tr><td class="editor_textarea_td">
+			<textarea name="<?php echo $id; ?>" id="<?php echo $id; ?>" class="editor_textarea_inner"<?php echo $taAttr; ?>><?php echo $content; ?></textarea>
+		</td></tr>
+		<tr><td class="editor_statusbar" style="text-align: right;">
+			<a href="javascript:resize_textarea('<?php echo $id; ?>', 1);"><?php echo $lang->phrase('textarea_increase_size'); ?></a> &middot;
+			<a href="javascript:resize_textarea('<?php echo $id; ?>', -1);"><?php echo $lang->phrase('textarea_decrease_size'); ?></a>
+		</td></tr>
 	</table>
-	<a id="menu_bbsmileys" style="display: block;text-align: center;width: 140px;" href="javascript:RegisterMenu('bbsmileys');"><img border="0" src="admin/html/images/desc.gif" alt="" /> <?php echo $lang->phrase('admin_cms_more_smileys'); ?></a>
-	<div class="popup" id="popup_bbsmileys" style="height: 200px;width: 255px;overflow: auto;">
-	<strong><?php echo $lang->phrase('admin_cms_head_smileys'); ?></strong>
-	<table style="width: 250px;border-collapse: collapse;margin-bottom: 5px;">
-	<?php foreach ($smileys[0] as $bb) { ?>
-	  <tr class="mbox">
-		<td width="20%" class="center"><a href="javascript:InsertTagsMenu(' <?php echo $bb['jssearch'] ?>', ' ', 'bbsmileys')"><img border="0" src="<?php echo $bb['replace']; ?>" alt="<?php echo $bb['desc']; ?>" /></a></td>
-		<td width="20%" class="center"><?php echo $bb['search']; ?></td>
-		<td width="60%"><span class="stext"><?php echo $bb['desc']; ?></span></td>
-	  </tr>
-	<?php } ?>
-	</table>
-	</div>
-  </td>
-  <td width="70%">
-	<div class="label" id="codebuttons">
-	<a id="menu_bbcolor" href="javascript:RegisterMenu('bbcolor');"><img src="admin/html/images/desc.gif" alt="" /> <?php echo $lang->phrase('admin_cms_head_color'); ?></a>
-		<DIV class="popup" id="popup_bbcolor">
-		<strong><?php echo $lang->phrase('admin_cms_head_choose_color'); ?></strong>
-		<div class="bbody">
-		<script type="text/javascript">document.write(writeRow());</script>
-		</div>
-		</DIV>
-	<a id="menu_bbsize" href="javascript:RegisterMenu('bbsize');"><img src="admin/html/images/desc.gif" alt="" /> <?php echo $lang->phrase('admin_cms_head_size'); ?></a>
-		<div class="popup" id="popup_bbsize">
-		<strong><?php echo $lang->phrase('admin_cms_head_choose_size'); ?></strong>
-	   	<ul>
-			<li><span class="popup_line" onclick="InsertTagsMenu('[size=large]','[/size]','bbsize')" style="font-size: 1.3em;"><?php echo $lang->phrase('admin_cms_big_font'); ?></span></li>
-			<li><span class="popup_line" onclick="InsertTagsMenu('[size=small]','[/size]','bbsize')" style="font-size: 0.8em;"><?php echo $lang->phrase('admin_cms_small_font'); ?></span></li>
-			<li><span class="popup_line" onclick="InsertTagsMenu('[size=extended]','[/size]','bbsize')" style="letter-spacing: 3px;"><?php echo $lang->phrase('admin_cms_extended_font'); ?></span></li>
-		</ul>
-		</div>
-	<a id="menu_bbalign" href="#"><img src="admin/html/images/desc.gif" alt="" /> <?php echo $lang->phrase('admin_cms_head_alignment'); ?></a>
-		<script type="text/javascript">RegisterMenu('bbalign');</script>
-		<DIV class="popup" id="popup_bbalign">
-	   <strong><?php echo $lang->phrase('admin_cms_head_choose_alignment'); ?></strong>
-		<ul>
-			<li><span class="popup_line" onclick="InsertTagsMenu('[align=left]','[/align]','bbalign')" style="text-align: left;"><?php echo $lang->phrase('admin_cms_left'); ?></span></li>
-			<li><span class="popup_line" onclick="InsertTagsMenu('[align=center]','[/align]','bbalign')" style="text-align: center;"><?php echo $lang->phrase('admin_cms_center'); ?></span></li>
-			<li><span class="popup_line" onclick="InsertTagsMenu('[align=right]','[/align]','bbalign')" style="text-align: right;"><?php echo $lang->phrase('admin_cms_right'); ?></span></li>
-			<li><span class="popup_line" onclick="InsertTagsMenu('[align=justify]','[/align]','bbalign')" style="text-align: justify;"><?php echo $lang->phrase('admin_cms_justify'); ?></span></li>
-		</ul>
-		</DIV>
-	<a id="menu_bbhx" href="#"><img src="admin/html/images/desc.gif" alt="" /> <?php echo $lang->phrase('admin_cms_head_heading'); ?></a>
-		<script type="text/javascript">RegisterMenu('bbhx');</script>
-		<div class="popup" id="popup_bbhx">
-		<strong><?php echo $lang->phrase('admin_cms_head_choose_heading'); ?></strong>
-		<ul>
-			<li><h4 class="popup_line" onclick="InsertTagsMenu('[h=large]','[/h]','bbhx')" style="margin: 0px; font-size: 14pt;"><?php echo $lang->phrase('admin_cms_heading_1'); ?></h4></li>
-			<li><h5 class="popup_line" onclick="InsertTagsMenu('[h=middle]','[/h]','bbhx')" style=" margin: 0px; font-size: 13pt;"><?php echo $lang->phrase('admin_cms_heading_2'); ?></h5></li>
-			<li><h6 class="popup_line" onclick="InsertTagsMenu('[h=small]','[/h]','bbhx')" style="margin: 0px; font-size: 12pt;"><?php echo $lang->phrase('admin_cms_heading_3'); ?></h6></li>
-		</ul>
-		</div>
-	<a id="menu_help" href="misc.php?action=bbhelp<?php echo SID2URL_x; ?>" style="cursor: help;" target="_blank"><img src="./images/1/bbcodes/help.gif" alt="" /> <strong><?php echo $lang->phrase('admin_cms_head_help'); ?></strong></a>
-	<br />
-	<a href="javascript:InsertTags('[b]','[/b]');" title="<?php echo $lang->phrase('admin_cms_tag_boldface'); ?>"><img src="./images/1/bbcodes/b.gif" alt="<?php echo $lang->phrase('admin_cms_tag_boldface'); ?>" /></a>
-	<a href="javascript:InsertTags('[i]','[/i]');" title="<?php echo $lang->phrase('admin_cms_tag_italic'); ?>"><img src="./images/1/bbcodes/i.gif" alt="<?php echo $lang->phrase('admin_cms_tag_italic'); ?>" /></a>
-	<a href="javascript:InsertTags('[u]','[/u]');" title="<?php echo $lang->phrase('admin_cms_tag_underline'); ?>"><img src="./images/1/bbcodes/u.gif" alt="<?php echo $lang->phrase('admin_cms_tag_underline'); ?>" /></a>
-	<a href="javascript:InsertTags('[hr]','');" title="<?php echo $lang->phrase('admin_cms_tag_horizontal_ruler'); ?>"><img src="./images/1/bbcodes/hr.gif" alt="<?php echo $lang->phrase('admin_cms_tag_horizontal_ruler'); ?>" /></a>
-	<a href="javascript:InsertTags('[img]','[/img]');" title="<?php echo $lang->phrase('admin_cms_tag_image'); ?>"><img src="./images/1/bbcodes/img.gif" alt="<?php echo $lang->phrase('admin_cms_tag_image'); ?>" /></a>
-	<a href="javascript:InsertTagsParams('[url={param1}]{param2}','[/url]',$lang->phrase('admin_cms_tag_url_please_provide_url'),$lang->phrase('admin_cms_tag_url_please_provide_text'));" title="<?php echo $lang->phrase('admin_cms_tag_url'); ?>"><img src="./images/1/bbcodes/url.gif" alt="<?php echo $lang->phrase('admin_cms_tag_url'); ?>" /></a>
-	<a href="javascript:InsertTags('[email]','[/email]');" title="<?php echo $lang->phrase('admin_cms_tag_email'); ?>"><img src="./images/1/bbcodes/email.gif" alt="<?php echo $lang->phrase('admin_cms_tag_email'); ?>" /></a>
-	<a href="javascript:InsertTags('[quote]','[/quote]');" title="<?php echo $lang->phrase('admin_cms_tag_quote'); ?>"><img src="./images/1/bbcodes/quote.gif" alt="<mla_tag_quote>Quote" /></a>
-	<a href="javascript:InsertTags('[ot]','[/ot]');" title="<?php echo $lang->phrase('admin_cms_tag_off_topic'); ?>"><img src="./images/1/bbcodes/ot.gif" alt="<?php echo $lang->phrase('admin_cms_tag_off_topic'); ?>" /></a>
-	<a href="javascript:popup_code();" title="<?php echo $lang->phrase('admin_cms_tag_source_code'); ?>"><img src="./images/1/bbcodes/code.gif" alt="<?php echo $lang->phrase('admin_cms_tag_source_code'); ?>" /></a>
-	<a href="javascript:InsertTags('[edit]','[/edit]');" title="<?php echo $lang->phrase('admin_cms_tag_edited_passage'); ?>"><img src="./images/1/bbcodes/edit.gif" alt="<?php echo $lang->phrase('admin_cms_tag_edited_passage'); ?>" /></a>
-	<a href="javascript:list();" title="<?php echo $lang->phrase('admin_cms_tag_unordered_list'); ?>"><img src="./images/1/bbcodes/ul.gif" alt="<?php echo $lang->phrase('admin_cms_tag_unordered_list'); ?>" /></a>
-	<a href="javascript:list('ol');" title="<?php echo $lang->phrase('admin_cms_tag_ordered_list'); ?>"><img src="./images/1/bbcodes/ol.gif" alt="<?php echo $lang->phrase('admin_cms_tag_ordered_list'); ?>" /></a>
-	<a href="javascript:InsertTagsParams('[note={param1}]{param2}','[/note]',$lang->phrase('admin_cms_tag_definition_please_enter_definition'),$lang->phrase('admin_cms_tag_definition_please_enter_word'));" title="<?php echo $lang->phrase('admin_cms_tag_definition'); ?>"><img src="./images/1/bbcodes/note.gif" alt="<?php echo $lang->phrase('admin_cms_tag_definition'); ?>" /></a>
-	<a href="javascript:InsertTags('[tt]','[/tt]');" title="<?php echo $lang->phrase('admin_cms_tag_typewriter'); ?>"><img src="./images/1/bbcodes/tt.gif" alt="<?php echo $lang->phrase('admin_cms_tag_typewriter'); ?>" /></a>
-	<a href="javascript:InsertTags('[sub]','[/sub]');" title="<?php echo $lang->phrase('admin_cms_tag_subscript'); ?>"><img src="./images/1/bbcodes/sub.gif" alt="<?php echo $lang->phrase('admin_cms_tag_subscript'); ?>" /></a>
-	<a href="javascript:InsertTags('[sup]','[/sup]');" title="<?php echo $lang->phrase('admin_cms_tag_superscript'); ?>"><img src="./images/1/bbcodes/sup.gif" alt="<?php echo $lang->phrase('admin_cms_tag_superscript'); ?>" /></a>
-	<?php foreach ($cbb as $bb) { ?>
-	<a href="javascript:<?php echo $bb['href']; ?>" title="<?php echo $bb['title']; ?>"><img src="<?php echo $bb['buttonimage']; ?>" alt="<?php echo $bb['title']; ?>" /></a>
-	<?php } ?>
-	</div>
-  </td>
- </tr>
-</table>
 	<?php
 }
 function parseNavPosSetting() {
@@ -1423,14 +1448,20 @@ elseif ($job == 'doc_add2') {
    <td class="mbox">
    <?php
 	if($format['remote'] != 1) {
-	   	echo $lang->phrase('admin_cms_doc_sourcecode');
-	   	echo '<br />';
 		if($format['parser'] == 3) {
-			BBCodeToolBox();
+			?>
+			<a class="right" href="misc.php?action=bbhelp<?php echo SID2URL_x; ?>" target="_blank"><?php echo $lang->phrase('bbcode_help'); ?></a>
+			<?php echo $lang->phrase('admin_cms_doc_sourcecode'); ?>
+			<br />
+			<?php
+			BBCodeToolBox("template[{$lid}]", '', 'rows="18" cols="110" class="texteditor editor_textarea_inner"');
 		}
-		?>
-		<textarea id="template[<?php echo $lid; ?>]" name="template[<?php echo $lid; ?>]" rows="20" cols="110" class="texteditor"></textarea>
-	<?php
+		else {
+			echo $lang->phrase('admin_cms_doc_sourcecode');
+			?>
+			<br /><textarea id="template[<?php echo $lid; ?>]" name="template[<?php echo $lid; ?>]" rows="20" cols="110" class="texteditor"></textarea>
+			<?php
+		}
 	}
 	else {
 	   	echo $lang->phrase('admin_cms_nav_file_url');
@@ -1622,14 +1653,20 @@ elseif ($job == 'doc_edit') {
    <td class="mbox">
    <?php
 	if($format['remote'] != 1) {
-	   	echo $lang->phrase('admin_cms_doc_sourcecode');
-	   	echo '<br />';
 		if($format['parser'] == 3) {
-			BBCodeToolBox();
+			?>
+			<a class="right" href="misc.php?action=bbhelp<?php echo SID2URL_x; ?>" target="_blank"><?php echo $lang->phrase('bbcode_help'); ?></a>
+			<?php echo $lang->phrase('admin_cms_doc_sourcecode'); ?>
+			<br />
+			<?php
+			BBCodeToolBox("template[{$lid}]", $row2['content'], 'rows="18" cols="110" class="texteditor editor_textarea_inner"');
 		}
-		?>
-		<textarea id="template[<?php echo $lid; ?>]" name="template[<?php echo $lid; ?>]" rows="20" cols="110" class="texteditor"><?php echo $row2['content']; ?></textarea>
-	<?php
+		else {
+			echo $lang->phrase('admin_cms_doc_sourcecode');
+			?>
+			<br /><textarea id="template[<?php echo $lid; ?>]" name="template[<?php echo $lid; ?>]" rows="20" cols="110" class="texteditor"><?php echo $row2['content']; ?></textarea>
+			<?php
+		}
 	}
 	else {
 	   	echo $lang->phrase('admin_cms_nav_file_url');

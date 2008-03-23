@@ -329,31 +329,134 @@ a:hover {
 }
 
 .editor_statusbar {
-	font-family: Arial;
-	font-size: 10px;
+	font-size: 8pt;
 	height: 1em;
-	background-color: #EEEEEE;
-	border-top: 1px solid #C9C9C9;
+	background-color: #F4F4F4;
 	color: #000000;
 }
-a.editor_statusbar {
+.editor_statusbar a {
 	color: #000000;
 	text-decoration: none;
 }
-a.editor_statusbar:hover {
+.editor_statusbar a:hover {
 	text-decoration: underline;
 }
 
 .editor_textarea_outer {
-	border: 1px solid #888888;
+	width: 100%;
+	border-collapse: collapse;
 }
 .editor_textarea_outer td {
-	border-width: 0px;
 	padding: 3px;
+	border: 1px solid #C9C9C9;
+}
+.editor_textarea_outer td td {
+	border-width: 0px;
 }
 
 .editor_textarea_inner {
 	background-color: #FFFFFF;
+	font-size: 9pt;
+	border-width: 0px;
+	width: 100%;
+	overflow: auto;
+}
+.editor_textarea_inner:hover, .editor_textarea_inner:focus {
+	background-color: #FFFFFF;
+	border-width: 0px;
+}
+
+/* BB-Code-Editor-only */
+
+.editor_toolbar_dropdown {
+	border: 1px solid #F4F4F4;
+	padding: 2px;
+	color: #000000;
+	font-size: 9pt;
+}
+.editor_toolbar_dropdown:hover {
+	border: 1px solid #999999;
+}
+.editor_toolbar_smiley {
+	border: 1px solid #F4F4F4;
+	padding: 2px;
+}
+.editor_toolbar_smiley_on {
+	border: 1px solid #999999;
+	border-width: 1px;
+	padding: 2px;
+}
+
+.editor_textarea_outer a img {
+	border-width: 0px;
+}
+.editor_textarea_outer img {
+	vertical-align: middle;
+}
+.editor_textarea_outer .popup {
+	border: 1px solid #888888;
+	max-height: 250px;
+}
+.editor_textarea_outer .popup strong {
+	text-align: center;
+	color: #000000;
+	background-color: #eeeeee;
+	border-width: 0px;
+	border-bottom: 1px solid #888888;
+}
+.editor_textarea_outer .popup li {
+	border-width: 0px;
+	padding: 2px 3px 1px 3px;
+}
+.editor_textarea_outer .popup li a, .editor_textarea_outer .popup_line {
+	color: #000000;
+	text-decoration: none;
+	border: 1px solid #ffffff;
+}
+.editor_textarea_outer .popup li a:hover, .editor_textarea_outer .popup_line:hover {
+	background-color: #eeeeee;
+	border: 1px solid #cccccc;
+}
+
+.bbcolor {
+	padding: 10px;
+	background-color: #ffffff;
+	line-height: 13px;
+	font-size: 13px;
+}
+.bbcolor span {
+	width: 10px;
+	height: 13px;
+	display: block;
+	float: left;
+	cursor: pointer;
+}
+.bbcolor img {
+	width: 10px;
+	height: 13px;
+	border-width: 0px;
+}
+.bbcolor img:hover {
+	width: 8px;
+	height: 11px;
+	border: 1px solid #ffffff;
+}
+
+.bbtable {
+	background-color: #ffffff;
+	padding: 4px;
+}
+.bbtable input {
+	width: 35px;
+	float: left;
+	background-color: #ffffff;
+	border: 1px solid 888888;
+	text-align: center;
+	margin-right: 5px;
+}
+
+.bbsmileys img {
+	margin: 2px 8px 2px 4px;
 }
 
 /* WYSIWYG-only */

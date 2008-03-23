@@ -801,7 +801,7 @@ var WYSIWYG = {
 			}
 		}
 
-	 	editor += '</td></tr><tr><td valign="top">\n';
+	 	editor += '</td></tr><tr><td valign="top" class="editor_textarea_td">\n';
 		// Create iframe which will be used for rich text editing
 		editor += '<iframe frameborder="0" id="wysiwyg' + n + '" class="editor_textarea_inner" style="width:100%;height:' + currentHeight + ';"></iframe>\n'
 	    + '</td></tr>';
@@ -1044,10 +1044,10 @@ var WYSIWYG = {
 		var max = nodeTree.length - 1;
 		for(var i=max;i>=0;i--) {
 			if(nodeTree[i].nodeName != "HTML" && nodeTree[i].nodeName != "BODY") {
-				outputTree += '<a class="editor_statusbar" href="javascript:WYSIWYG.selectNode(\'' + n + '\',' + i + ');">' + nodeTree[i].nodeName + '</a>';
+				outputTree += '<a href="javascript:WYSIWYG.selectNode(\'' + n + '\',' + i + ');">' + nodeTree[i].nodeName.toLowerCase() + '</a>';
 			}
 			else {
-				outputTree += nodeTree[i].nodeName;
+				outputTree += nodeTree[i].nodeName.toLowerCase();
 			}
 			if(i > 0) { outputTree += " > "; }
 		}
