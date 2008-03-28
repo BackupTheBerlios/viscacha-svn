@@ -175,6 +175,25 @@ function attachWYSIWYG() {
 	$r .= '<script type="text/javascript"> WYSIWYG.attach("all", full); </script>';
 	return $r;
 }
+function getNavTitle() {
+	global $gpc, $db;
+	$title = $gpc->get('title', none);
+	$title = trim($title);
+	$parts = explode('->', $title);
+	if (!empty($parts[0])) {
+		$parts[0] = strtolower($parts[0]);
+		if ($parts[0] == 'doc' || $parts[0] == 'lang') {
+			$title = $db->escape_string($title);
+		}
+		else {
+			$title = $gpc->save_str($title);
+		}
+		return $title;
+	}
+	else {
+		return '';
+	}
+}
 
 define('EDITOR_IMAGEDIR', './uploads/images/');
 $supportedextentions = array('gif','png','jpeg','jpg');
@@ -459,8 +478,7 @@ elseif ($job == 'nav_edit2') {
 	$result = $db->query("SELECT * FROM {$db->pre}menu WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 	$data = $db->fetch_assoc($result);
 
-	$title = $gpc->get('title', str);
-	$title = trim($title);
+	$title = getNavTitle();
 	if (empty($title)) {
 		error('admin.php?action=cms&job=nav_addbox', $lang->phrase('admin_cms_err_no_title'));
 	}
@@ -672,8 +690,7 @@ elseif ($job == 'nav_addplugin2') {
 	$plug = $gpc->get('plugin', int);
 	$result = $db->query("SELECT id, name, active FROM {$db->pre}plugins WHERE id = '{$plug}' AND position = 'navigation'", __LINE__, __FILE__);
 	$data = $db->fetch_assoc();
-	$title = $gpc->get('title', str);
-	$title = trim($title);
+	$title = getNavTitle();
 	if (empty($title)) {
 		$title = $data['name'];
 	}
@@ -789,7 +806,7 @@ elseif ($job == 'nav_add') {
 }
 elseif ($job == 'nav_add2') {
 	echo head();
-	$title = $gpc->get('title', str);
+	$title = getNavTitle();
 	$target = $gpc->get('target', str);
 	$url = $gpc->get('url', str);
 	$sub = $gpc->get('sub', int);
@@ -891,7 +908,7 @@ elseif ($job == 'nav_addbox') {
 }
 elseif ($job == 'nav_addbox2') {
 	echo head();
-	$title = $gpc->get('title', str);
+	$title = getNavTitle();
 	if (empty($title)) {
 		error('admin.php?action=cms&job=nav_addbox', $lang->phrase('admin_cms_err_no_title'));
 	}
@@ -1881,7 +1898,7 @@ elseif ($job == 'feed_add2') {
 		$entries = 0;
 	}
 
-	$db->query('INSERT INTO '.$db->pre.'grab (title, file, entries) VALUES ("'.$title.'","'.$file.'","'.$entries.'")', __LINE__, __FILE__);
+	$db->query("INSERT INTO {$db->pre}grab (title, file, entries) VALUES ('{$title}','{$file}','{$entries}')", __LINE__, __FILE__);
 
 	$delobj = $scache->load('grabrss');
 	$delobj->delete();

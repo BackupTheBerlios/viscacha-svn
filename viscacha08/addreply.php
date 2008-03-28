@@ -218,8 +218,8 @@ if ($_GET['action'] == "save") {
 		",__LINE__,__FILE__);
 
 		$db->query("
-		INSERT INTO {$db->pre}replies (board,topic,topic_id,name,comment,dosmileys,dowords,email,date,ip,guest)
-		VALUES ('{$info['board']}','{$_POST['topic']}','{$_POST['id']}','{$pnameid}','{$_POST['comment']}','{$_POST['dosmileys']}','{$_POST['dowords']}','{$_POST['email']}','{$date}','{$my->ip}','{$guest}')
+		INSERT INTO {$db->pre}replies (board,topic,topic_id,name,comment,dosmileys,dowords,email,date,ip,guest,edit,report)
+		VALUES ('{$info['board']}','{$_POST['topic']}','{$_POST['id']}','{$pnameid}','{$_POST['comment']}','{$_POST['dosmileys']}','{$_POST['dowords']}','{$_POST['email']}','{$date}','{$my->ip}','{$guest}','','')
 		",__LINE__,__FILE__);
 		$redirect = $db->insert_id();
 

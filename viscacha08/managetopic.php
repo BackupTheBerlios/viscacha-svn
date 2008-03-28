@@ -159,9 +159,9 @@ if ($my->vlogin && $my->mp[0] == 1) {
 		$anz += $db->affected_rows();
 
 		if ($_POST['temp'] == 1) {
-			$db->query("INSERT INTO {$db->pre}topics SET status = '2', topic = '".$gpc->save_str($old['topic'])."', board='{$info['board']}', name = '".$gpc->save_str($old['name'])."', date = '{$old['date']}', last_name = '".$gpc->save_str($info['last_name'])."', prefix = '{$info['prefix']}', last = '{$old['date']}'",__LINE__,__FILE__);
+			$db->query("INSERT INTO {$db->pre}topics SET status = '2', topic = '".$gpc->save_str($old['topic'])."', board='{$info['board']}', name = '".$gpc->save_str($old['name'])."', date = '{$old['date']}', last_name = '".$gpc->save_str($info['last_name'])."', prefix = '{$info['prefix']}', last = '{$old['date']}', vquestion = ''",__LINE__,__FILE__);
 			$tid = $db->insert_id();
-			$db->query("INSERT INTO {$db->pre}replies SET tstart = '1', topic_id = '{$tid}', comment = '{$info['id']}', topic = '".$gpc->save_str($old['topic'])."', board='{$info['board']}', name = '".$gpc->save_str($old['name'])."', email = '{$old['email']}', date = '{$old['date']}', guest = '{$old['guest']}'",__LINE__,__FILE__);
+			$db->query("INSERT INTO {$db->pre}replies SET tstart = '1', topic_id = '{$tid}', comment = '{$info['id']}', topic = '".$gpc->save_str($old['topic'])."', board='{$info['board']}', name = '".$gpc->save_str($old['name'])."', email = '{$old['email']}', date = '{$old['date']}', guest = '{$old['guest']}', edit = '', report = ''",__LINE__,__FILE__);
 		}
 		if ($_POST['temp2'] == 1) {
 			$old = $gpc->plain_str($old);

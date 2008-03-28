@@ -246,7 +246,7 @@ elseif ($job == 'add2' || $job == 'edit2') {
 	}
 	else {
 		if ($job == 'add2') {
-			$db->query("INSERT INTO {$db->pre}spider (name, user_agent, bot_ip, type) VALUES ('{$bot_name}', '{$bot_agent}', '{$bot_ip}', '{$type}')", __LINE__, __FILE__);
+			$db->query("INSERT INTO {$db->pre}spider (name, user_agent, bot_ip, type, last_visit, pending_agent, pending_ip) VALUES ('{$bot_name}', '{$bot_agent}', '{$bot_ip}', '{$type}', '', '', '')", __LINE__, __FILE__);
 		}
 		else {
 			$bot_visits = $gpc->get('visits', int);

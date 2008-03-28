@@ -174,7 +174,7 @@ elseif ($_GET['action'] == "savevote") {
 		($code = $plugins->load('newtopic_savevote_queries')) ? eval($code) : null;
 
 		$db->query("UPDATE {$db->pre}topics SET vquestion = '{$_POST['question']}' WHERE id = '{$info['id']}'",__LINE__,__FILE__);
-		$db->query("INSERT INTO {$db->pre}vote (tid, answer) VALUES {$sqlwhere}",__LINE__,__FILE__);
+		$db->query("INSERT INTO {$db->pre}vote (tid, answer) VALUES ({$sqlwhere})",__LINE__,__FILE__);
 		$inserted = $db->affected_rows();
 		if ($inserted > 1) {
 			ok($lang->phrase('data_success'),"showtopic.php?id={$topic_id}".SID2URL_x);
@@ -313,14 +313,14 @@ elseif ($_GET['action'] == "save") {
 		($code = $plugins->load('newtopic_save_savedata')) ? eval($code) : null;
 
 		$db->query("
-		INSERT INTO {$db->pre}topics (board,topic,name,date,last,last_name,prefix)
-		VALUES ('{$board}','{$_POST['topic']}','{$pnameid}','{$date}','{$date}','{$pnameid}','{$_POST['opt_0']}')
+		INSERT INTO {$db->pre}topics (board,topic,name,date,last,last_name,prefix,vquestion)
+		VALUES ('{$board}','{$_POST['topic']}','{$pnameid}','{$date}','{$date}','{$pnameid}','{$_POST['opt_0']}','')
 		",__LINE__,__FILE__);
 		$tredirect = $db->insert_id();
 
 		$db->query("
-		INSERT INTO {$db->pre}replies (board,topic,topic_id,name,comment,dosmileys,dowords,email,date,tstart,ip,guest)
-		VALUES ('{$board}','{$_POST['topic']}','{$tredirect}','{$pnameid}','{$_POST['comment']}','{$_POST['dosmileys']}','{$_POST['dowords']}','{$_POST['email']}','{$date}','1','{$my->ip}','{$guest}')
+		INSERT INTO {$db->pre}replies (board,topic,topic_id,name,comment,dosmileys,dowords,email,date,tstart,ip,guest,edit,report)
+		VALUES ('{$board}','{$_POST['topic']}','{$tredirect}','{$pnameid}','{$_POST['comment']}','{$_POST['dosmileys']}','{$_POST['dowords']}','{$_POST['email']}','{$date}','1','{$my->ip}','{$guest}','','')
 		",__LINE__,__FILE__);
 		$rredirect = $db->insert_id();
 
