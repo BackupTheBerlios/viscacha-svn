@@ -39,9 +39,7 @@ class PluginSystem {
 		$this->pos = array();
 		$this->sqlcache = null;
 		$this->menu = null;
-		global $scache;
-		$cache = $scache->load('wraps');
-		$this->docs = $cache->get();
+		$this->docs = null;
 		$this->plugdir = 'modules/';
 	}
 
@@ -123,7 +121,11 @@ class PluginSystem {
 	}
 
 	function navLang($key, $show_key = false) {
-		global $lang, $gpc;
+		global $lang, $gpc, $scache;
+		if ($this->docs == null) {
+			$cache = $scache->load('wraps');
+			$this->docs = $cache->get();
+		}
 		@list($prefix, $suffix) = explode('->', $gpc->plain_str($key, false), 2);
 		$prefix = strtolower($prefix);
 		if ($prefix == 'lang' && $suffix != null) {

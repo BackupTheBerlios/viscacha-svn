@@ -1225,7 +1225,7 @@ elseif ($job == 'register2') {
 		$type = $thing[0];
 		$field = "fid{$profilefield['fid']}";
 
-		$value = $gpc->get($field, none);
+		$value = $gpc->get($field, str);
 
 		if((is_string($value) && strlen($value) == 0) || (is_array($value) && count($value) == 0)) {
 			$error[] = $lang->phrase('admin_member_no_value_for_required_field');
@@ -1236,17 +1236,15 @@ elseif ($job == 'register2') {
 
 		if($type == "multiselect" || $type == "checkbox") {
 			if (is_array($value)) {
-				$options = implode("\n", $value);
+				$upquery[$field] = implode("\n", $value);
 			}
 			else {
-				$options = '';
+				$upquery[$field] = '';
 			}
 		}
 		else {
-			$options = $value;
+			$upquery[$field] = $value;
 		}
-		$options = $gpc->save_str($options);
-		$upquery[] = "`{$field}` = '{$options}'";
 	}
 
 	if (count($error) > 0) {
@@ -1257,12 +1255,24 @@ elseif ($job == 'register2') {
 	    $reg = time();
 	    $pw_md5 = md5($_POST['pwx']);
 
-		$db->query("INSERT INTO {$db->pre}user (name, pw, mail, regdate, confirm, groups) VALUES ('{$_POST['name']}', '{$pw_md5}', '{$_POST['email']}', '{$reg}', '11', '".GROUP_MEMBER."')",__LINE__,__FILE__);
+		$db->query("INSERT INTO {$db->pre}user (name, pw, mail, regdate, confirm, groups, signature, about, notice) VALUES ('{$_POST['name']}', '{$pw_md5}', '{$_POST['email']}', '{$reg}', '11', '".GROUP_MEMBER."', '', '', '')",__LINE__,__FILE__);
         $redirect = $db->insert_id();
 
 		if (count($upquery) > 0) {
-			$upquery[] = "`ufid` = '{$redirect}'";
-			$db->query("INSERT INTO {$db->pre}userfields SET ".implode(', ', $upquery));
+			$fields = $db->list_fields("{$db->pre}userfields");
+			$sqldata = array();
+			foreach ($fields as $field) {
+				if (isset($upquery[$field])) {
+					$sqldata[$field] = "'{$upquery[$field]}'";
+				}
+				else {
+					$sqldata[$field] = "''";
+				}
+			}
+			$sqldata['ufid'] = "'{$redirect}'";
+			$fields = implode(', ', array_keys($fields));
+			$sqldata = implode(', ', $sqldata);
+			$db->query("INSERT INTO {$db->pre}userfields ({$fields}) VALUES ({$sqldata})");
 		}
 
 		$com = $scache->load('memberdata');

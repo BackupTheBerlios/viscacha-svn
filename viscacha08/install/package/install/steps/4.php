@@ -117,7 +117,6 @@ array('path' => '.htaccess', 'chmod' => CHWR, 'recursive' => false, 'req' => fal
 array('path' => 'data', 'chmod' => CHWR, 'recursive' => true, 'req' => true),
 array('path' => 'language', 'chmod' => CHWR, 'recursive' => true, 'req' => false)
 );
-closedir($dh);
 $path = 'templates';
 $dh = opendir('../'.$path);
 while ($file = readdir($dh)) {
