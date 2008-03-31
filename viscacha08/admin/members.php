@@ -1227,7 +1227,7 @@ elseif ($job == 'register2') {
 
 		$value = $gpc->get($field, str);
 
-		if((is_string($value) && strlen($value) == 0) || (is_array($value) && count($value) == 0)) {
+		if($profilefield['required'] == 1 && (empty($value) || (is_array($value) && count($value) == 0))) {
 			$error[] = $lang->phrase('admin_member_no_value_for_required_field');
 		}
 		if($profilefield['maxlength'] > 0 && ((is_string($value) && strxlen($value) > $profilefield['maxlength']) || (is_array($value) && count($value) > $profilefield['maxlength']))) {

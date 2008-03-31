@@ -80,8 +80,8 @@ elseif ($job == 'smileys_edit2') {
 	$id = $gpc->get('id', arr_int);
 	foreach ($id as $i) {
 		$search = $gpc->get('search_'.$i, str);
-		$replace = $gpc->get('replace_'.$i, str);
-		$desc = $gpc->get('desc_'.$i, str);
+		$replace = $gpc->get('replace_'.$i, db_esc);
+		$desc = $gpc->get('desc_'.$i, db_esc);
 		$show = $gpc->get('show_'.$i, int);
 		$db->query("UPDATE {$db->pre}smileys AS s SET s.search = '{$search}', s.replace = '{$replace}', s.desc = '{$desc}', s.show = '{$show}' WHERE s.id = '{$i}' LIMIT 1",__LINE__,__FILE__);
 	}
@@ -269,7 +269,7 @@ elseif ($job == 'smileys_import2') {
 			$codes[] = $ini['search'];
 			$filesystem->copy($ini['replace_temp'], $ini['replace_new']);
 		}
-		$sqlinsert[] = '("'.$gpc->save_str($ini['search']).'", "'.$gpc->save_str($ini['replace']).'", "'.$gpc->save_str($ini['desc']).'")';
+		$sqlinsert[] = '("'.$gpc->save_str($ini['search']).'", "'.$db->escape_string($ini['replace']).'", "'.$db->escape_string($ini['desc']).'")';
 	}
 	$db->query('INSERT INTO '.$db->pre.'smileys (`search`, `replace`, `desc`) VALUES '.implode(', ', $sqlinsert));
 	$anz = $db->affected_rows();
@@ -664,7 +664,7 @@ elseif ($job == 'add') {
 		error('admin.php?action=bbcodes&job='.$type, $error);
 	}
 
-	$db->query("INSERT INTO {$db->pre}textparser (`search`,`replace`,`type`,`desc`) VALUES ('".$gpc->get('temp1', str)."','".$gpc->get('temp2', str)."','{$type}','".$gpc->get('temp3', str)."')",__LINE__,__FILE__);
+	$db->query("INSERT INTO {$db->pre}textparser (`search`,`replace`,`type`,`desc`) VALUES ('".$gpc->get('temp1', str)."','".$gpc->get('temp2', db_esc)."','{$type}','".$gpc->get('temp3', db_esc)."')",__LINE__,__FILE__);
 
 	$delobj = $scache->load('bbcode');
 	$delobj->delete();
@@ -735,20 +735,20 @@ elseif ($job == 'edit2') {
 	if (strxlen($gpc->get('temp1', str)) > 200) {
 		$error[] = $lang->phrase('admin_bbc_word_too_long');
 	}
-	if (strxlen($gpc->get('temp2', str)) > 255) {
+	if (strlen($gpc->get('temp2', none)) > 255) {
 		$error[] = $lang->phrase('admin_bbc_something_else_too_long');
 	}
-	if (strxlen($gpc->get('temp2', str)) < 2) {
+	if (strlen($gpc->get('temp2', none)) < 2) {
 		$error[] = $lang->phrase('admin_bbc_something_else_too_short');
 	}
-	if (strxlen($gpc->get('temp3', str)) < 2 && $type == 'word') {
+	if (strlen($gpc->get('temp3', none)) < 2 && $type == 'word') {
 		$error[] = $lang->phrase('admin_bbc_desc_too_short');
 	}
 	if (count($error) > 0) {
 		error('admin.php?action=bbcodes&job=edit&tp='.$type.'&id='.$id, $error);
 	}
 
-	$db->query("UPDATE {$db->pre}textparser SET `search` = '".$gpc->get('temp1', str)."', `replace` = '".$gpc->get('temp2', str)."', `desc` = '".$gpc->get('temp3', str)."' WHERE id = '{$id}' AND type = '{$type}'",__LINE__,__FILE__);
+	$db->query("UPDATE {$db->pre}textparser SET `search` = '".$gpc->get('temp1', str)."', `replace` = '".$gpc->get('temp2', db_esc)."', `desc` = '".$gpc->get('temp3', db_esc)."' WHERE id = '{$id}' AND type = '{$type}'",__LINE__,__FILE__);
 
 	$delobj = $scache->load('bbcode');
 	$delobj->delete();
@@ -1043,11 +1043,11 @@ elseif ($job == 'custombb_add2') {
 	$vars = array(
 		'title'				=> str,
 		'bbcodetag'			=> str,
-		'bbcodereplacement' => str,
+		'bbcodereplacement' => db_esc,
 		'bbcodeexample'		=> str,
-		'bbcodeexplanation' => str,
+		'bbcodeexplanation' => db_esc,
 		'twoparams'			=> int,
-		'buttonimage'		=> str
+		'buttonimage'		=> db_esc
 	);
 	$query = array();
 	foreach ($vars as $key => $type) {
@@ -1142,11 +1142,11 @@ elseif ($job == 'custombb_edit2') {
 		'title'				=> str,
 		'bbcodetag'			=> str,
 		'bbcodetag_old'		=> str,
-		'bbcodereplacement' => str,
+		'bbcodereplacement' => db_esc,
 		'bbcodeexample'		=> str,
-		'bbcodeexplanation' => str,
+		'bbcodeexplanation' => db_esc,
 		'twoparams'			=> int,
-		'buttonimage'		=> str
+		'buttonimage'		=> db_esc
 	);
 	$query = array();
 	foreach ($vars as $key => $type) {

@@ -117,17 +117,15 @@ if ($_GET['action'] == "save") {
 
 		if($type == "multiselect" || $type == "checkbox") {
 			if (is_array($value)) {
-				$options = implode("\n", $value);
+				$upquery[$field] = implode("\n", $value);
 			}
 			else {
-				$options = '';
+				$upquery[$field] = '';
 			}
 		}
 		else {
-			$options = $value;
+			$upquery[$field] = $value;
 		}
-		$options = $gpc->save_str($options);
-		$upquery[] = "`{$field}` = '{$options}'";
 	}
 
 	($code = $plugins->load('register_save_errorhandling')) ? eval($code) : null;
@@ -144,13 +142,25 @@ if ($_GET['action'] == "save") {
 	    $pw_md5 = md5($_POST['pwx']);
 
 	    ($code = $plugins->load('register_save_queries')) ? eval($code) : null;
-		$db->query("INSERT INTO {$db->pre}user (name, pw, mail, regdate, confirm, groups) VALUES ('{$_POST['name']}', '{$pw_md5}', '{$_POST['email']}', '{$reg}', '{$config['confirm_registration']}', '".GROUP_MEMBER."')",__LINE__,__FILE__);
+		$db->query("INSERT INTO {$db->pre}user (name, pw, mail, regdate, confirm, groups, signature, about, notice) VALUES ('{$_POST['name']}', '{$pw_md5}', '{$_POST['email']}', '{$reg}', '{$config['confirm_registration']}', '".GROUP_MEMBER."', '', '', '')",__LINE__,__FILE__);
         $redirect = $db->insert_id();
 
 		// Custom profile fields
 		if (count($upquery) > 0) {
-			$upquery[] = "`ufid` = '{$redirect}'";
-			$db->query("INSERT INTO {$db->pre}userfields SET ".implode(', ', $upquery));
+			$fields = $db->list_fields("{$db->pre}userfields");
+			$sqldata = array();
+			foreach ($fields as $field) {
+				if (isset($upquery[$field])) {
+					$sqldata[$field] = "'{$upquery[$field]}'";
+				}
+				else {
+					$sqldata[$field] = "''";
+				}
+			}
+			$sqldata['ufid'] = "'{$redirect}'";
+			$fields = implode(', ', array_keys($fields));
+			$sqldata = implode(', ', $sqldata);
+			$db->query("INSERT INTO {$db->pre}userfields ({$fields}) VALUES ({$sqldata})");
 		}
 
         if ($config['confirm_registration'] != '11') {

@@ -56,7 +56,7 @@ elseif ($job == 'add2') {
 
 	$extension = $gpc->get('extension', str);
 	$program = $gpc->get('program', str);
-	$desctxt = $db->escape_string($gpc->get('desctxt', none));
+	$desctxt = $gpc->get('desctxt', db_esc);
 	$icon = $gpc->get('icon', str);
 	$mimetype = $gpc->get('mimetype', str);
 	$stream = $gpc->get('stream', str);
@@ -142,7 +142,7 @@ elseif ($job == 'edit2') {
 
 	$extension = $gpc->get('extension', str);
 	$program = $gpc->get('program', str);
-	$desctxt = $db->escape_string($gpc->get('desctxt', none));
+	$desctxt = $gpc->get('desctxt', db_esc);
 	$icon = $gpc->get('icon', str);
 	$mimetype = $gpc->get('mimetype', str);
 	$stream = $gpc->get('stream', str);
