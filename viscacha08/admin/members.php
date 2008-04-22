@@ -1923,6 +1923,7 @@ elseif ($job == 'ban_add2') {
 		}
 	}
 	elseif ($type == 'user') {
+		$data = $gpc->save_str($data);
 		$result = $db->query("SELECT id FROM {$db->pre}user WHERE name = '{$data}' LIMIT 1", __LINE__, __FILE__);
 		if ($db->num_rows($result) == 0) {
 			$error[] = $lang->phrase('admin_member_no_user_found');
@@ -1930,11 +1931,11 @@ elseif ($job == 'ban_add2') {
 		else {
 			$user = $db->fetch_assoc($result);
 			if ($user['id'] == $my->id) {
-			//	$error[] = $lang->phrase('admin_member_cannot_ban_yourself');
+				$error[] = $lang->phrase('admin_member_cannot_ban_yourself');
 			}
 			else {
 				$data = $user['id'];
-			}$data = $user['id'];
+			}
 		}
 	}
 	else {

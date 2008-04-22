@@ -1293,9 +1293,7 @@ elseif ($job == 'custombb') {
 			<a class="button" href="admin.php?action=bbcodes&job=custombb_delete&id=<?php echo $bbcode['id']; ?>"><?php echo $lang->phrase('admin_bbc_delete'); ?></a>
 			</td>
 		</tr>
-		<?
-	}
-	?>
+	<?php } ?>
 	</table>
 	<?php
 }
