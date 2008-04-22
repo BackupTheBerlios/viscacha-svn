@@ -769,7 +769,7 @@ function dateSpec($format, $timestamp = null) {
 
 	switch($format) {
 		case SPEC_ISO8601:
-		   	return (string) gmdate('Y-m-d\TH:i:s ', $timestamp).$tz[0].$tz[1].':'.$tz[2];
+		   	return (string) gmdate('Y-m-d\TH:i:s', $timestamp).$tz[0].$tz[1].':'.$tz[2];
 		case SPEC_RFC822:
 			return (string) gmdate("D, d M Y H:i:s ", $timestamp).implode('', $tz);
 		default:

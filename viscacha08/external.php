@@ -165,7 +165,7 @@ if ($config['foffline'] == 0) {
 	   	$item->link = $config['furl']."/showtopic.php?id=".$row->id;
 	    $item->source = $config['furl']."/showforum.php?id=".$row->board;
 	    $item->description = $row->comment;
-	    $item->date = dateSpec(SPEC_RFC822, $row->date);
+	    $item->date = $row->date;
 	    $item->author = $row->name;
 	    if ($config['syndication_insert_email'] == 1) {
 			$item->authorEmail = $row->email;
@@ -173,7 +173,7 @@ if ($config['foffline'] == 0) {
 		else {
 			$item->authorEmail = '';
 		}
-	    $item->pubDate = dateSpec(SPEC_RFC822, $row->date);
+	    $item->pubDate = $row->date;
 		$item->category = $row->forum;
 
 		($code = $plugins->load('external_item_prepared')) ? eval($code) : null;
@@ -186,7 +186,7 @@ else {
     $item->title = $lang->phrase('offline_head_ext');
     $item->link = $config['furl'];
     $item->description = $lang->phrase('offline_body_ext');
-    $item->date = dateSpec(SPEC_RFC_2822);
+    $item->date = time();
     $item->author = $config['fname'];
 
 	($code = $plugins->load('external_offline')) ? eval($code) : null;

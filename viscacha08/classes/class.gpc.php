@@ -280,6 +280,8 @@ class GPC {
 				$var = $this->html_entity_decode($var, ENT_QUOTES); // Todo: Make PHP5 only: html_entity_decode($var, ENT_QUOTES, 'UTF-8');
 			}
 			else {
+				$var = preg_replace('~&#x([0-9a-f]+);~ei', 'chr(hexdec("\\1"))', $var); // ToDo: Convert to correct charset
+				$var = preg_replace('~&#([0-9]+);~e', 'chr("\\1")', $var);
 				$var = html_entity_decode($var, ENT_QUOTES, $lang->charset());
 			}
 		}

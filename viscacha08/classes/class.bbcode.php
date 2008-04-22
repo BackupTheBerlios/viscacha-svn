@@ -528,7 +528,7 @@ class BBCode {
 			while (empty($this->profile['disallow']['ot']) && preg_match('/\[ot\](.+?)\[\/ot\]/is',$text)) {
 				$text = preg_replace('/\[ot\](.+?)\[\/ot\]\n?/is', "\n".$lang->phrase('bb_offtopic')."\n-------------------\n\\1\n-------------------\n", $text);
 			}
-			$text = preg_replace_callback('/\[table(=[^\]]+)?\](.+?)\[\/table\]\n?/is', array(&$this, 'cb_plain_table'), $text);
+			$text = preg_replace('/\[table(=[^\]]+)?\](.+?)\[\/table\]\n?/is', "\n", $text); // ToDo: Plain Table
 
 			$text = preg_replace('/(\[hr\]){1,}/is', "\n-------------------\n", $text);
 			$text = str_ireplace('[tab]', "    ", $text);
