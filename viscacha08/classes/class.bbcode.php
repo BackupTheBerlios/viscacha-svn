@@ -987,6 +987,7 @@ class BBCode {
 			$this->cache_bbcode();
 			foreach ($this->bbcodes['word'] as $word) {
 				$this->index++;
+				$word['search'] = trim($word['search']);
 			    if ($type == 'pdf' || $type == 'plain') {
 			    	$text = str_replace(
 			    		'\"',
@@ -999,7 +1000,8 @@ class BBCode {
 			    					'\\\\1 ({$word['replace']})',
 			    					'\\0'
 			    				)",
-			    				'>' . $text . '<'
+			    				'>' . $text . '<',
+			    				1 // Only the first occurance
 			    			)
 			    			, 1,
 			    			-1
@@ -1019,7 +1021,8 @@ class BBCode {
 	            					'<acronym title=\"{$word['replace']}\" id=\"menu_tooltip_{$this->index}\" onmouseover=\"RegisterTooltip({$this->index})\">\\\\1</acronym><div class=\"tooltip\" id=\"popup_tooltip_{$this->index}\"><span id=\"header_tooltip_{$this->index}\"></span><div class=\"tooltip_body\">{$word['desc']}</div></div>',
 	            					'\\0'
 	            				)",
-	            				'>' . $text . '<'
+	            				'>' . $text . '<',
+	            				1 // Only the first occurance
 	            			),
 	            			1,
 	            			-1
