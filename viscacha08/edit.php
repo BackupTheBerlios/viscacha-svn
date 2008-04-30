@@ -73,7 +73,7 @@ if ($info['status'] != 0) {
 	error($lang->phrase('topic_closed'), 'showtopic.php?action=jumpto&id='.$info['topic_id'].'&topic_id='.$info['id']);
 }
 
-$diff = times()-$info['date'];
+$diff = time()-$info['date'];
 if ($config['edit_edit_time'] == 0) {
     $edit_seconds = $diff;
 }
@@ -81,26 +81,12 @@ else {
     $edit_seconds = $config['edit_edit_time']*60;
 }
 $delete_seconds = $config['edit_delete_time']*60;
-if ($my->mp[4] == 1 && ($info['topic_id'] > 0 || $info['posts'] == 0)) {
-	$del_mod = TRUE;
-}
-else {
-	$del_mod = FALSE;
-}
-if ($delete_seconds >= $diff && ($info['topic_id'] > 0 || $info['posts'] == 0)) {
-	$del_user = TRUE;
-}
-else {
-	$del_user = FALSE;
-}
-if ($config['tpcallow'] == 1 && $my->p['attachments'] == 1) {
-	$p_upload = TRUE;
-}
-else {
-	$p_upload = FALSE;
-}
 
-$allowed = (($info['name'] == $my->id || $my->mp[0] == 1) && $my->p['edit'] && $my->vlogin && ($edit_seconds >= $diff || $my->mp[0] == 1)) ? true : false;
+$del_mod = ($my->mp[4] == 1 && ($info['topic_id'] > 0 || $info['posts'] == 0));
+$del_user = ($delete_seconds >= $diff && ($info['topic_id'] > 0 || $info['posts'] == 0));
+$p_upload = ($config['tpcallow'] == 1 && $my->p['attachments'] == 1);
+
+$allowed = ((($info['name'] == $my->id && $info['guest'] == 0 && $edit_seconds >= $diff) || $my->mp[0] == 1) && $my->p['edit'] == 1 && $last['readonly'] == 0 && $info['status'] == 0);
 
 ($code = $plugins->load('edit_start')) ? eval($code) : null;
 

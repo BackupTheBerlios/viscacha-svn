@@ -272,7 +272,7 @@ $sql_join = iif($config['pm_user_status'] == 1, "LEFT JOIN {$db->pre}session AS 
 ($code = $plugins->load('showtopic_query')) ? eval($code) : null;
 $result = $db->query("
 SELECT
-	r.id, r.edit, r.dosmileys, r.dowords, r.topic, r.comment, r.date, r.email as gmail, r.guest, r.name as gname, r.report,
+	r.id, r.edit, r.dosmileys, r.dowords, r.topic, r.comment, r.date, r.email as gmail, r.guest, r.name as gname, r.report, r.tstart,
 	u.id as mid, u.name as uname, u.mail, u.regdate, u.posts, u.fullname, u.hp, u.signature, u.location, u.gender, u.birthday, u.pic, u.lastvisit, u.icq, u.yahoo, u.aol, u.msn, u.jabber, u.skype, u.groups,
 	f.* {$sql_select}
 FROM {$db->pre}replies AS r
@@ -311,6 +311,14 @@ while ($row = $gpc->prepare($db->fetch_object($result))) {
 	if ($row->date > $my->clv && $firstnew == 0) {
 		$firstnew = 1;
 		$firstnew_url = "#firstnew";
+	}
+
+	$diff = time()-$row->date;
+	if ($config['edit_edit_time'] == 0) {
+	    $edit_seconds = $diff;
+	}
+	else {
+	    $edit_seconds = $config['edit_edit_time']*60;
 	}
 
 	$new = iif($row->date > $my->clv, 'new', 'old');

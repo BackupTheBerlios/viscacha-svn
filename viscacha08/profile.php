@@ -324,7 +324,7 @@ elseif ($is_member) {
 
 		$days2 = null;
 		if ($config['showpostcounter'] == 1) {
-			$days2 = $row->posts / ((times() - $row->regdate) / 86400);
+			$days2 = $row->posts / ((time() - $row->regdate) / 86400);
 			$days2 = sprintf("%01.2f", $days2);
 			if ($row->posts < $days2) {
 				$days2 = $row->posts;

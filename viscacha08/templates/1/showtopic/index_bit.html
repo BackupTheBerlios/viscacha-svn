@@ -1,7 +1,7 @@
 <div class="border">
 <div class="bfoot topfooter">
     <span class="right">
-    <?php if($my->p['edit'] == 1 && $last['readonly'] == 0 && $info['status'] == 0 && ($my->mp[4] == 1 || $my->id == $row->mid)) { ?>
+    <?php if((($row->mid == $my->id && $row->guest == 0 && $edit_seconds >= $diff) || $my->mp[0] == 1) && $my->p['edit'] == 1 && $last['readonly'] == 0 && $info['status'] == 0) { ?>
 	    <a href="edit.php?id=<?php echo $row->id.SID2URL_x; ?>"><img src="<?php echo $tpl->img('edit'); ?>" alt="" /> <?php echo $lang->phrase('post_edit'); ?></a>
     <?php } if($my->p['postreplies'] == 1 && $info['status'] == 0 && $last['readonly'] == '0') { ?>
 	    <a class="sep" id="menu_mquote_<?php echo $row->id; ?>" onmouseover="RegisterMenu('mquote_<?php echo $row->id; ?>');" href="addreply.php?id=<?php echo $info['id'].SID2URL_x; ?>&amp;qid[]=<?php echo $row->id; ?>">
