@@ -244,15 +244,20 @@ else {
 
 ($code = $plugins->load('frontend_init')) ? eval($code) : null;
 
-if ($config['foffline'] && defined('TEMPSHOWLOG') == false && SCRIPTNAME != 'external') {
+// Global and important functions (not for cron and external)
+if (defined('TEMPNOFUNCINIT') == false || ($config['foffline'] && defined('TEMPSHOWLOG') == false)) {
+	$zeitmessung1 = t1();
 	$slog = new slog();
 	$my = $slog->logged();
+	$lang->init($my->language);
+	$tpl = new tpl();
+	$slog->checkBan();
+}
+
+if ($config['foffline'] && defined('TEMPSHOWLOG') == false) {
 	$my->p = $slog->Permissions();
 
 	if ($my->p['admin'] != 1) {
-		$lang->init($my->language);
-		$tpl = new tpl();
-
 		$offline = file_get_contents('data/offline.php');
         ($code = $plugins->load('frontend_init_offline')) ? eval($code) : null;
 		echo $tpl->parse("offline");

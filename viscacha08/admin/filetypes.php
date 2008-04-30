@@ -173,7 +173,6 @@ elseif ($job == 'edit2') {
 }
 elseif ($job == 'manage') {
 	echo head();
-	$tpl = new tpl();
 	$result = $db->query('SELECT * FROM '.$db->pre.'filetypes ORDER BY extension');
 	?>
 	<form name="form" method="post" action="admin.php?action=filetypes&job=delete">

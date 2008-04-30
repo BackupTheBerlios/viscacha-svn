@@ -24,20 +24,14 @@
 
 error_reporting(E_ALL);
 
-DEFINE('SCRIPTNAME', 'newtopic');
+define('SCRIPTNAME', 'newtopic');
 define('VISCACHA_CORE', '1');
 
 include ("data/config.inc.php");
 include ("classes/function.viscacha_frontend.php");
 
-$zeitmessung1 = t1();
-
 $board = $gpc->get('id', int);
 
-$slog = new slog();
-$my = $slog->logged();
-$lang->init($my->language);
-$tpl = new tpl();
 $my->p = $slog->Permissions($board);
 
 $catbid = $scache->load('cat_bid');
@@ -236,7 +230,7 @@ elseif ($_GET['action'] == "save") {
 		$pid = $my->id;
 		$pnameid = $my->id;
 	}
-	if (flood_protect() == FALSE) {
+	if (flood_protect(FLOOD_TYPE_POSTING) == false) {
 		$error[] = $lang->phrase('flood_control');
 	}
 	if (strxlen($_POST['comment']) > $config['maxpostlength']) {
@@ -299,7 +293,7 @@ elseif ($_GET['action'] == "save") {
 		}
 	}
 	else {
-		set_flood();
+		set_flood(FLOOD_TYPE_POSTING);
 
 		$date = time();
 

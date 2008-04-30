@@ -990,8 +990,6 @@ elseif ($job == 'doc_select_image') {
 	 * Contact us at devs@openwebware.com
 	 * This copyright notice MUST stay intact for use.
 	 ********************************************************************/
-	$tpl = new tpl();
-
 	$leadon = realpath(EDITOR_IMAGEDIR).DIRECTORY_SEPARATOR;
 	$leadon = str_replace('\\', '/', $leadon);
 	$dir = $gpc->get('dir', none);
@@ -1412,7 +1410,6 @@ foreach ($type as $id => $row) {
 	echo foot();
 }
 elseif ($job == 'doc_add2') {
-	$tpl = new tpl();
 	$type = $gpc->get('type', int);
 	$types = doctypes();
 	if (!isset($types[$type])) {
@@ -1585,7 +1582,6 @@ elseif ($job == 'doc_delete') {
 	}
 }
 elseif ($job == 'doc_edit') {
-	$tpl = new tpl();
 	$id = $gpc->get('id', int);
 	$types = doctypes();
 

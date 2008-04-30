@@ -24,19 +24,12 @@
 
 error_reporting(E_ALL);
 
-DEFINE('SCRIPTNAME', 'docs');
+define('SCRIPTNAME', 'docs');
 define('VISCACHA_CORE', '1');
 
-//DEFINE('TEMPSHOWLOG', 1);
 include ("data/config.inc.php");
 include ("classes/function.viscacha_frontend.php");
 
-$zeitmessung1 = t1();
-
-$slog = new slog();
-$my = $slog->logged();
-$lang->init($my->language);
-$tpl = new tpl();
 $my->p = $slog->Permissions();
 
 $id = $gpc->get('id', int);

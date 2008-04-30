@@ -23,18 +23,12 @@
 */
 error_reporting(E_ALL);
 
-DEFINE('SCRIPTNAME', 'members');
+define('SCRIPTNAME', 'members');
 define('VISCACHA_CORE', '1');
 
 include ("data/config.inc.php");
 include ("classes/function.viscacha_frontend.php");
 
-$zeitmessung1 = t1();
-
-$slog = new slog();
-$my = $slog->logged();
-$lang->init($my->language);
-$tpl = new tpl();
 $my->p = $slog->Permissions();
 
 if ($_GET['action'] == 'team' && $my->p['team'] == 0) {

@@ -1815,8 +1815,7 @@ elseif ($job == 'banned') {
 	  	$hours = floor($sec/(60*60));
 	  	$sec = $sec - $hours*60*60;
 	  	$mins = floor($sec/60);
-	  	$sec = $sec - $mins*60;
-	  	$diff = "{$days}d {$hours}h {$sec}m";
+	  	$diff = "{$days}d {$hours}h {$mins}m";
   	}
   	else {
   		$diff = "<em>".$lang->phrase('admin_member_expired')."</em>";
@@ -1830,13 +1829,13 @@ elseif ($job == 'banned') {
   		$row[2] = $lang->phrase('admin_member_never');
   	}
 
-  	$row[4] = gmdate('d.m.Y H:i', times($row[4]));
+  	$crea = gmdate('d.m.Y H:i', times($row[4]));
   	?>
   <tr>
-   <td class="mbox"><input type="checkbox" name="delete[]" value="<?php echo $row[0]; ?>#<?php echo $row[1]; ?>" /></td>
+   <td class="mbox"><input type="checkbox" name="delete[]" value="<?php echo $row[0]; ?>#<?php echo $row[1]; ?>#<?php echo $row[4]; ?>" /></td>
    <td class="mbox"><?php echo $data; ?></td>
    <td class="mbox"><?php echo $row[3]; ?></td>
-   <td class="mbox"><?php echo $row[4]; ?></td>
+   <td class="mbox"><?php echo $crea; ?></td>
    <td class="mbox"><?php echo $row[2]; ?></td>
    <td class="mbox"><?php echo $diff; ?></td>
    <td class="mbox"><?php echo htmlspecialchars($row[5]); ?></td>
@@ -1955,7 +1954,9 @@ elseif ($job == 'ban_add2') {
 		$row = rtrim($line, "\r\n");
 		$file[] = $row;
 		$row = explode("\t", $row, 6);
-		if ($row[0] == $type && strcasecmp($row[1], $data) == 0) {
+		// Check if there is a ban that is currently(!) active
+		// If there are expired bans, don't print an error
+		if ($row[0] == $type && strcasecmp($row[1], $data) == 0 && $row[2] > time()) {
 			$error[] = $lang->phrase('admin_member_user_or_ip_already_banned');
 		}
 	}
@@ -1997,8 +1998,8 @@ elseif ($job == 'ban_delete') {
 		$add = true;
 		$row = explode("\t", rtrim($line, "\r\n"), 6);
 		foreach ($delete as $del) {
-			$del = explode("#", $del, 2);
-			if ($del[0] == $row[0] && $del[1] == $row[1]) {
+			$del = explode("#", $del, 3);
+			if ($del[0] == $row[0] && $del[1] == $row[1] && $del[2] == $row[4]) {
 				$add = false;
 			}
 		}

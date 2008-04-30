@@ -248,17 +248,17 @@ please check for Updates of your installed Packages!
 == System requirements ==
 
 Minimum system requirements:
- - PHP Version: 4.1.0 and above
+ - PHP Version: 4.3.0 and above
  - PHP-Extensions: mysql, pcre, gd, zlib
  - MySQL Version: 4.0 and above
 
 Normal system requirements:
- - PHP Version: 4.3.0 and above
+ - PHP Version: 5.0.0 and above
  - PHP-Extensions: mysql, pcre, gd, zlib, xml
  - MySQL Version: 4.1 and above
 
 Optimal system requirements:
- - PHP Version: 5.0.0 and above
+ - PHP Version: 5.2.0 and above
  - PHP-Extensions: mysql, pcre, gd, zlib, xml, iconv, mbstring, mhash,
                    sockets, mime_magic
  - MySQL Version: 5.0 and above (Strict mode off)

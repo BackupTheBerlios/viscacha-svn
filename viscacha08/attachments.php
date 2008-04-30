@@ -24,18 +24,11 @@
 
 error_reporting(E_ALL);
 
-DEFINE('SCRIPTNAME', 'attachments');
+define('SCRIPTNAME', 'attachments');
 define('VISCACHA_CORE', '1');
 
 include ("data/config.inc.php");
 include ("classes/function.viscacha_frontend.php");
-
-$zeitmessung1 = t1();
-
-$slog = new slog();
-$my = $slog->logged();
-$lang->init($my->language);
-$tpl = new tpl();
 
 if ($config['tpcallow'] == 0 && $_GET['action'] == "thumbnail") {
 	include('classes/graphic/class.thumbnail.php');

@@ -178,6 +178,9 @@ function array_columnsort(&$arr, $l , $f='strnatcasecmp') {
 }
 
 function array_empty($array) {
+	if (!is_array($array)) {
+		return null;
+	}
 	$array = array_unique($array);
 	if (count($array) == 0) {
 		return true;

@@ -148,22 +148,6 @@ if (!defined('E_STRICT')) {
 }
 
 /**
- * Replace constant PATH_SEPARATOR
- *
- * @category    PHP
- * @package     PHP_Compat
- * @link        http://php.net/ref.dir
- * @author      Aidan Lister <aidan@php.net>
- * @version     $Revision: 1.13 $
- * @since       PHP 4.3.0
- */
-if (!defined('PATH_SEPARATOR')) {
-    define('PATH_SEPARATOR',
-        isWindows() ? ';' : ':'
-     );
-}
-
-/**
  * Replace PHP_EOL constant
  *
  * @category    PHP
@@ -183,36 +167,6 @@ if (!defined('PHP_EOL')) {
 	else {
 		define('PHP_EOL', "\n");
 	}
-}
-
-/**
- * Replace upload error constants
- *
- * @category    PHP
- * @package     PHP_Compat
- * @link        http://php.net/features.file-upload.errors
- * @author      Aidan Lister <aidan@php.net>
- * @version     $Revision: 1.1 $
- * @since       PHP 4.3.0
- */
-if (!defined('UPLOAD_ERR_OK')) {
-    define('UPLOAD_ERR_OK', 0);
-}
-
-if (!defined('UPLOAD_ERR_INI_SIZE')) {
-    define('UPLOAD_ERR_INI_SIZE', 1);
-}
-
-if (!defined('UPLOAD_ERR_FORM_SIZE')) {
-    define('UPLOAD_ERR_FORM_SIZE', 2);
-}
-
-if (!defined('UPLOAD_ERR_PARTIAL')) {
-    define('UPLOAD_ERR_PARTIAL', 3);
-}
-
-if (!defined('UPLOAD_ERR_NO_FILE')) {
-    define('UPLOAD_ERR_NO_FILE', 4);
 }
 
 /**
@@ -406,65 +360,6 @@ if (!defined('IMAGETYPE_XBM')) {
 
 /* Missing functions */
 
-/**
- * Replace image_type_to_mime_type()
- *
- * @category    PHP
- * @package     PHP_Compat
- * @link        http://php.net/function.image_type_to_mime_type
- * @author      Aidan Lister <aidan@php.net>
- * @since       PHP 4.3.0
- * @require     PHP 4.0.0 (user_error)
- */
-if (!viscacha_function_exists('image_type_to_mime_type')) {
-    function image_type_to_mime_type($imagetype) {
-        switch ($imagetype):
-            case IMAGETYPE_GIF:
-                return 'image/gif';
-                break;
-            case IMAGETYPE_JPEG:
-                return 'image/jpeg';
-                break;
-            case IMAGETYPE_PNG:
-                return 'image/png';
-                break;
-            case IMAGETYPE_SWF:
-            case IMAGETYPE_SWC:
-                return 'application/x-shockwave-flash';
-                break;
-            case IMAGETYPE_PSD:
-                return 'image/psd';
-                break;
-            case IMAGETYPE_BMP:
-                return 'image/bmp';
-                break;
-            case IMAGETYPE_TIFF_MM:
-            case IMAGETYPE_TIFF_II:
-                return 'image/tiff';
-                break;
-            case IMAGETYPE_JP2:
-                return 'image/jp2';
-                break;
-            case IMAGETYPE_IFF:
-                return 'image/iff';
-                break;
-            case IMAGETYPE_WBMP:
-                return 'image/vnd.wap.wbmp';
-                break;
-            case IMAGETYPE_XBM:
-                return 'image/xbm';
-                break;
-            case IMAGETYPE_JPX:
-            case IMAGETYPE_JB2:
-            case IMAGETYPE_JPC:
-            default:
-                return 'application/octet-stream';
-                break;
-
-        endswitch;
-    }
-}
-
 /*
  * These functions can be used on WindowsNT to replace
  * their built-in counterparts that do not work as
@@ -644,263 +539,110 @@ if (!viscacha_function_exists('mhash')) {
 */
 
 if (!viscacha_function_exists('sha1')) {
-function sha1_str2blks_SHA1($str) {
-   $strlen_str = strlen($str);
+	function sha1_str2blks_SHA1($str) {
+	   $strlen_str = strlen($str);
 
-   $nblk = (($strlen_str + 8) >> 6) + 1;
+	   $nblk = (($strlen_str + 8) >> 6) + 1;
 
-   for ($i=0; $i < $nblk * 16; $i++) $blks[$i] = 0;
+	   for ($i=0; $i < $nblk * 16; $i++) $blks[$i] = 0;
 
-   for ($i=0; $i < $strlen_str; $i++)
-   {
-       $blks[$i >> 2] |= ord(substr($str, $i, 1)) << (24 - ($i % 4) * 8);
-   }
+	   for ($i=0; $i < $strlen_str; $i++)
+	   {
+	       $blks[$i >> 2] |= ord(substr($str, $i, 1)) << (24 - ($i % 4) * 8);
+	   }
 
-   $blks[$i >> 2] |= 0x80 << (24 - ($i % 4) * 8);
-   $blks[$nblk * 16 - 1] = $strlen_str * 8;
+	   $blks[$i >> 2] |= 0x80 << (24 - ($i % 4) * 8);
+	   $blks[$nblk * 16 - 1] = $strlen_str * 8;
 
-   return $blks;
-}
+	   return $blks;
+	}
 
-function sha1_safe_add($x, $y)
-{
-   $lsw = ($x & 0xFFFF) + ($y & 0xFFFF);
-   $msw = ($x >> 16) + ($y >> 16) + ($lsw >> 16);
+	function sha1_safe_add($x, $y)
+	{
+	   $lsw = ($x & 0xFFFF) + ($y & 0xFFFF);
+	   $msw = ($x >> 16) + ($y >> 16) + ($lsw >> 16);
 
-   return ($msw << 16) | ($lsw & 0xFFFF);
-}
+	   return ($msw << 16) | ($lsw & 0xFFFF);
+	}
 
-function sha1_rol($num, $cnt)
-{
-   return ($num << $cnt) | sha1_zeroFill($num, 32 - $cnt);
-}
+	function sha1_rol($num, $cnt)
+	{
+	   return ($num << $cnt) | sha1_zeroFill($num, 32 - $cnt);
+	}
 
-function sha1_zeroFill($a, $b)
-{
-   $bin = decbin($a);
+	function sha1_zeroFill($a, $b)
+	{
+	   $bin = decbin($a);
 
-   $strlen_bin = strlen($bin);
+	   $strlen_bin = strlen($bin);
 
-   $bin = $strlen_bin < $b ? 0 : substr($bin, 0, $strlen_bin - $b);
+	   $bin = $strlen_bin < $b ? 0 : substr($bin, 0, $strlen_bin - $b);
 
-   for ($i=0; $i < $b; $i++) $bin = '0'.$bin;
+	   for ($i=0; $i < $b; $i++) $bin = '0'.$bin;
 
-   return bindec($bin);
-}
+	   return bindec($bin);
+	}
 
-function sha1_ft($t, $b, $c, $d)
-{
-   if ($t < 20) return ($b & $c) | ((~$b) & $d);
-   if ($t < 40) return $b ^ $c ^ $d;
-   if ($t < 60) return ($b & $c) | ($b & $d) | ($c & $d);
+	function sha1_ft($t, $b, $c, $d)
+	{
+	   if ($t < 20) return ($b & $c) | ((~$b) & $d);
+	   if ($t < 40) return $b ^ $c ^ $d;
+	   if ($t < 60) return ($b & $c) | ($b & $d) | ($c & $d);
 
-   return $b ^ $c ^ $d;
-}
+	   return $b ^ $c ^ $d;
+	}
 
-function sha1_kt($t)
-{
-   if ($t < 20) return 1518500249;
-   if ($t < 40) return 1859775393;
-   if ($t < 60) return -1894007588;
+	function sha1_kt($t)
+	{
+	   if ($t < 20) return 1518500249;
+	   if ($t < 40) return 1859775393;
+	   if ($t < 60) return -1894007588;
 
-   return -899497514;
-}
+	   return -899497514;
+	}
 
-function sha1($str, $raw_output=FALSE)
-{
-   if ( $raw_output === TRUE ) return pack('H*', sha1($str, FALSE));
+	function sha1($str, $raw_output=FALSE)
+	{
+	   if ( $raw_output === TRUE ) return pack('H*', sha1($str, FALSE));
 
-   $x = sha1_str2blks_SHA1($str);
-   $a =  1732584193;
-   $b = -271733879;
-   $c = -1732584194;
-   $d =  271733878;
-   $e = -1009589776;
+	   $x = sha1_str2blks_SHA1($str);
+	   $a =  1732584193;
+	   $b = -271733879;
+	   $c = -1732584194;
+	   $d =  271733878;
+	   $e = -1009589776;
 
-   $x_count = count($x);
+	   $x_count = count($x);
 
-   for ($i = 0; $i < $x_count; $i += 16)
-   {
-       $olda = $a;
-       $oldb = $b;
-       $oldc = $c;
-       $oldd = $d;
-       $olde = $e;
+	   for ($i = 0; $i < $x_count; $i += 16)
+	   {
+	       $olda = $a;
+	       $oldb = $b;
+	       $oldc = $c;
+	       $oldd = $d;
+	       $olde = $e;
 
-       for ($j = 0; $j < 80; $j++)
-       {
-           $w[$j] = ($j < 16) ? $x[$i + $j] : sha1_rol($w[$j - 3] ^ $w[$j - 8] ^ $w[$j - 14] ^ $w[$j - 16], 1);
+	       for ($j = 0; $j < 80; $j++)
+	       {
+	           $w[$j] = ($j < 16) ? $x[$i + $j] : sha1_rol($w[$j - 3] ^ $w[$j - 8] ^ $w[$j - 14] ^ $w[$j - 16], 1);
 
-           $t = sha1_safe_add(sha1_safe_add(sha1_rol($a, 5), sha1_ft($j, $b, $c, $d)), sha1_safe_add(sha1_safe_add($e, $w[$j]), sha1_kt($j)));
-           $e = $d;
-           $d = $c;
-           $c = sha1_rol($b, 30);
-           $b = $a;
-           $a = $t;
-       }
+	           $t = sha1_safe_add(sha1_safe_add(sha1_rol($a, 5), sha1_ft($j, $b, $c, $d)), sha1_safe_add(sha1_safe_add($e, $w[$j]), sha1_kt($j)));
+	           $e = $d;
+	           $d = $c;
+	           $c = sha1_rol($b, 30);
+	           $b = $a;
+	           $a = $t;
+	       }
 
-       $a = sha1_safe_add($a, $olda);
-       $b = sha1_safe_add($b, $oldb);
-       $c = sha1_safe_add($c, $oldc);
-       $d = sha1_safe_add($d, $oldd);
-       $e = sha1_safe_add($e, $olde);
-   }
+	       $a = sha1_safe_add($a, $olda);
+	       $b = sha1_safe_add($b, $oldb);
+	       $c = sha1_safe_add($c, $oldc);
+	       $d = sha1_safe_add($d, $oldd);
+	       $e = sha1_safe_add($e, $olde);
+	   }
 
-   return sprintf('%08x%08x%08x%08x%08x', $a, $b, $c, $d, $e);
-}
-}
-
-/**
- * Replace str_shuffle()
- *
- * @category    PHP
- * @package     PHP_Compat
- * @link        http://php.net/function.str_shuffle
- * @author      Aidan Lister <aidan@php.net>
- * @version     $Revision: 1.6 $
- * @since       PHP 4.3.0
- * @require     PHP 4.0.0 (trigger_error)
- */
-if (!viscacha_function_exists('str_shuffle')) {
-    function str_shuffle($str)
-    {
-        // Init
-        $str = (string) $str;
-
-        // Seed
-        list($usec, $sec) = explode(' ', microtime());
-        $seed = (float) $sec + ((float) $usec * 100000);
-        mt_srand($seed);
-
-        // Shuffle
-        for ($new = '', $len = strlen($str); $len > 0; $str{$p} = $str{$len}) {
-            $new .= $str{$p = mt_rand(0, --$len)};
-        }
-
-        return $new;
-    }
-}
-
-/**
- * Replace array_change_key_case()
- *
- * @category    PHP
- * @package     PHP_Compat
- * @link        http://php.net/function.array_change_key_case
- * @author      Stephan Schmidt <schst@php.net>
- * @author      Aidan Lister <aidan@php.net>
- * @version     $Revision: 1.10 $
- * @since       PHP 4.2.0
- * @require     PHP 4.0.0 ()
- */
-if (!viscacha_function_exists('array_change_key_case')) {
-    function array_change_key_case($input, $case = CASE_LOWER)
-    {
-        if (!is_array($input)) {
-            trigger_error('array_change_key_case(): The argument should be an array',
-                E_USER_WARNING);
-            return false;
-        }
-
-        $output   = array ();
-        $keys     = array_keys($input);
-        $casefunc = ($case == CASE_LOWER) ? 'strtolower' : 'strtoupper';
-
-        foreach ($keys as $key) {
-            $output[$casefunc($key)] = $input[$key];
-        }
-
-        return $output;
-    }
-}
-
-/**
- * Replace html_entity_decode()
- *
- * @category    PHP
- * @package     PHP_Compat
- * @link        http://php.net/function.html_entity_decode
- * @author      David Irvine <dave@codexweb.co.za>
- * @author      Aidan Lister <aidan@php.net>
- * @version     $Revision: 1.7 $
- * @since       PHP 4.3.0
- * @internal    Setting the charset will not do anything
- * @require     PHP 4.0.0 ()
- */
-if (!viscacha_function_exists('html_entity_decode')) {
-    function html_entity_decode($string, $quote_style = ENT_COMPAT, $charset = null)
-    {
-        if (!is_int($quote_style)) {
-            trigger_error('html_entity_decode() expects parameter 2 to be long, ' .
-                gettype($quote_style) . ' given', E_USER_WARNING);
-            return;
-        }
-
-        $trans_tbl = get_html_translation_table(HTML_ENTITIES);
-        $trans_tbl = array_flip($trans_tbl);
-
-        // Add single quote to translation table;
-        $trans_tbl['&#039;'] = '\'';
-
-        // Not translating double quotes
-        if ($quote_style & ENT_NOQUOTES) {
-            // Remove double quote from translation table
-            unset($trans_tbl['&quot;']);
-        }
-
-        return strtr($string, $trans_tbl);
-    }
-}
-
-/**
- * Replace array_combine()
- *
- * @category    PHP
- * @package     PHP_Compat
- * @link        http://php.net/function.array_chunk
- * @author      Aidan Lister <aidan@php.net>
- * @author      Thiemo Mättig (http://maettig.com)
- * @version     $Revision: 1.14 $
- * @since       PHP 4.2.0
- * @require     PHP 4.0.0 ()
- */
-if (!viscacha_function_exists('array_chunk')) {
-    function array_chunk($input, $size, $preserve_keys = false)
-    {
-        if (!is_array($input)) {
-            trigger_error('array_chunk() expects parameter 1 to be array, ' .
-                gettype($input) . ' given', E_USER_WARNING);
-            return;
-        }
-
-        if (!is_numeric($size)) {
-            trigger_error('array_chunk() expects parameter 2 to be long, ' .
-                gettype($size) . ' given', E_USER_WARNING);
-            return;
-        }
-
-        $size = (int)$size;
-        if ($size <= 0) {
-            trigger_error('array_chunk() Size parameter expected to be greater than 0',
-                E_USER_WARNING);
-            return;
-        }
-
-        $chunks = array();
-        $i = 0;
-
-        if ($preserve_keys !== false) {
-            foreach ($input as $key => $value) {
-                $chunks[(int)($i++ / $size)][$key] = $value;
-            }
-        } else {
-            foreach ($input as $value) {
-                $chunks[(int)($i++ / $size)][] = $value;
-            }
-        }
-
-        return $chunks;
-    }
+	   return sprintf('%08x%08x%08x%08x%08x', $a, $b, $c, $d, $e);
+	}
 }
 
 /**
@@ -981,42 +723,6 @@ if (!viscacha_function_exists('file_put_contents')) {
 
         // Return length
         return $bytes;
-    }
-}
-
-/**
- * Replace file_get_contents()
- *
- * @category    PHP
- * @package     PHP_Compat
- * @link        http://php.net/function.file_get_contents
- * @author      Aidan Lister <aidan@php.net>
- * @version     $Revision: 1.21 $
- * @internal    resource_context is not supported
- * @since       PHP 5
- * @require     PHP 4.0.0 ()
- */
-if (!viscacha_function_exists('file_get_contents')) {
-    function file_get_contents($filename, $incpath = false, $resource_context = null)
-    {
-        if (false === $fh = fopen($filename, 'rb', $incpath)) {
-            trigger_error('file_get_contents() failed to open stream: No such file or directory',
-                E_USER_WARNING);
-            return false;
-        }
-
-        clearstatcache();
-        if ($fsize = @filesize($filename)) {
-            $data = fread($fh, $fsize);
-        } else {
-            $data = '';
-            while (!feof($fh)) {
-                $data .= fread($fh, 8192);
-            }
-        }
-
-        fclose($fh);
-        return $data;
     }
 }
 
@@ -1259,25 +965,6 @@ if (!viscacha_function_exists('array_intersect_key')) {
 }
 
 /**
- * Replace array_fill()
- *
- * @category    PHP
- * @link        http://php.net/function.array_fill
- * @author      Matthias Mohr <webmaster@mamo-net.de>
- * @since       PHP 4.2.0
- * @require     PHP 3
- */
-if (!viscacha_function_exists('array_fill')) {
-    function array_fill($iStart, $iLen, $vValue) {
-       $aResult = array();
-       for ($iCount = $iStart; $iCount < $iLen + $iStart; $iCount++) {
-           $aResult[$iCount] = $vValue;
-       }
-       return (array) $aResult;
-    }
-}
-
-/**
  * Replace array_combine()
  *
  * @category    PHP
@@ -1324,33 +1011,6 @@ if (!viscacha_function_exists('array_combine')) {
         }
 
         return $combined;
-    }
-}
-
-/**
- * Replace function is_a()
- *
- * @category    PHP
- * @package     PHP_Compat
- * @link        http://php.net/function.is_a
- * @author      Aidan Lister <aidan@php.net>
- * @version     $Revision: 1.16 $
- * @since       PHP 4.2.0
- * @require     PHP 4.0.0 () (is_subclass_of)
- */
-//  Required for lib_diff.php
-if (!viscacha_function_exists('is_a')) {
-    function is_a($object, $class)
-    {
-        if (!is_object($object)) {
-            return false;
-        }
-
-        if (get_class($object) == strtolower($class)) {
-            return true;
-        } else {
-            return is_subclass_of($object, $class);
-        }
     }
 }
 

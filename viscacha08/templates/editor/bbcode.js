@@ -233,7 +233,6 @@ function InsertTable(id) {
 		str_close += "\r\n";
 	}
 	str_close += "[/table]";
-	alert(str_open+str_close);
 	InsertTags(id, str_open, str_close, 3);
 	HideMenu('bbtable_'+id);
 }

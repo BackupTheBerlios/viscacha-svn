@@ -653,7 +653,7 @@ elseif ($job == 'session') {
 	<form name="form" method="post" action="admin.php?action=settings&job=session2">
 	 <table class="border" border="0" cellspacing="0" cellpadding="4">
 	  <tr>
-	   <td class="obox" colspan="2"><b><?php echo $lang->phrase('admin_session_edit'); ?></b></td>
+	   <td class="obox" colspan="2"><?php echo $lang->phrase('admin_session_edit'); ?></td>
 	  </tr>
 	  <tr>
 	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_session_id_length'); ?><br /><span class="stext"></span></td>
@@ -689,6 +689,26 @@ elseif ($job == 'session') {
 	  <tr>
 	   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="<?php echo $lang->phrase('admin_form_submit'); ?>"></td>
 	  </tr>
+	 </table><br />
+	 <table class="border" border="0" cellspacing="0" cellpadding="4">
+	  <tr>
+	   <td class="obox" colspan="2"><?php echo $lang->phrase('admin_session_edit'); ?> &raquo; <?php echo $lang->phrase('admin_login_attempts'); ?></td>
+	  </tr>
+	  <tr>
+	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_login_attempts_max'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_login_attempts_max_info'); ?></span></td>
+	   <td class="mbox" width="50%"><input type="text" name="login_attempts_max" value="<?php echo $config['login_attempts_max']; ?>" size="3"></td>
+	  </tr>
+	  <tr>
+	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_login_attempts_time'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_login_attempts_time_info'); ?></span></td>
+	   <td class="mbox" width="50%"><input type="text" name="login_attempts_time" value="<?php echo $config['login_attempts_time']; ?>" size="4"></td>
+	  </tr>
+	  <tr>
+	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_login_attempts_blocktime'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_login_attempts_blocktime_info'); ?></span></td>
+	   <td class="mbox" width="50%"><input type="text" name="login_attempts_blocktime" value="<?php echo $config['login_attempts_blocktime']; ?>" size="4"></td>
+	  </tr>
+	  <tr>
+	   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="<?php echo $lang->phrase('admin_form_submit'); ?>"></td>
+	  </tr>
 	 </table>
 	</form>
 	<?php
@@ -703,6 +723,9 @@ elseif ($job == 'session2') {
 	$c->updateconfig('sessionsave', int);
 	$c->updateconfig('enableflood', int);
 	$c->updateconfig('session_checkip', int);
+	$c->updateconfig('login_attempts_max', int);
+	$c->updateconfig('login_attempts_time', int);
+	$c->updateconfig('login_attempts_blocktime', int);
 	$c->savedata();
 
 	ok('admin.php?action=settings&job=settings');

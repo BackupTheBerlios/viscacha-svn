@@ -30,13 +30,6 @@ define('VISCACHA_CORE', '1');
 include ("data/config.inc.php");
 include ("classes/function.viscacha_frontend.php");
 
-$zeitmessung1 = t1();
-
-$slog = new slog();
-$my = $slog->logged();
-$lang->init($my->language);
-$tpl = new tpl();
-
 if (!empty($_POST['id'])) {
 	$_GET['id'] = $_POST['id'];
 }
@@ -142,7 +135,7 @@ if ($_GET['action'] == "save") {
 		$pnameid = $my->id;
 		$pid = $my->id;
 	}
-	if (flood_protect() == FALSE) {
+	if (flood_protect(FLOOD_TYPE_POSTING) == false) {
 		$error[] = $lang->phrase('flood_control');
 	}
 	if (strxlen($_POST['comment']) > $config['maxpostlength']) {
@@ -198,7 +191,7 @@ if ($_GET['action'] == "save") {
 		}
 	}
 	else {
-		set_flood();
+		set_flood(FLOOD_TYPE_POSTING);
 
 		if ($my->vlogin) {
 			$guest = 0;

@@ -24,20 +24,13 @@
 
 error_reporting(E_ALL);
 
-DEFINE('SCRIPTNAME', 'manageforum');
+define('SCRIPTNAME', 'manageforum');
 define('VISCACHA_CORE', '1');
 
 include ("data/config.inc.php");
 include ("classes/function.viscacha_frontend.php");
 
-$zeitmessung1 = t1();
-
 $board = $gpc->get('id', int);
-
-$slog = new slog();
-$my = $slog->logged();
-$lang->init($my->language);
-$tpl = new tpl();
 
 $catbid = $scache->load('cat_bid');
 $fc = $catbid->get();

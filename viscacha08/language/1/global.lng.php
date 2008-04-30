@@ -386,7 +386,9 @@ $lang['log_pwremind_success'] = 'Die E-Mail mit den Anweisungen zum Ändern des P
 $lang['log_pwremind_title'] = 'Passwort vergessen';
 $lang['log_pwremind_wrong_code'] = 'Der eingegebene Bestätigungscode passt nicht zur Benutzer-ID oder ist ausgelaufen.';
 $lang['log_title'] = 'Anmelden';
-$lang['log_wrong_data'] = 'Sie haben falsche Benutzerdaten angegeben oder Sie sind noch nicht freigeschaltet.<br />Benutzen Sie die <a href="log.php?action=pwremind">Passwort vergessen</a>-Funktion wenn Sie Ihr Passwort nicht mehr wissen. Falls Sie keine Freischalt-E-Mail bekommen haben, klicken Sie <a href="register.php?action=resend">hier</a>.';
+$lang['log_wrong_data'] = 'Sie haben falsche Benutzerdaten angegeben oder Sie sind noch nicht freigeschaltet. {$can_try}<br />Benutzen Sie die <a href="log.php?action=pwremind">Passwort vergessen</a>-Funktion wenn Sie Ihr Passwort nicht mehr wissen. Falls Sie keine Freischalt-E-Mail bekommen haben, klicken Sie <a href="register.php?action=resend">hier</a>.';
+$lang['log_wrong_data_block'] = 'Sie wurden temporär gebannt, da Sie die maximale Anzahl an Anmeldeversuchen in einer bestimmten Zeit überschritten haben. Mehr Informationen erhalten Sie auf der nächsten Seite...';
+$lang['log_x_attempts'] = 'Sie haben noch {$attempts} Versuche sich anzumelden!';
 $lang['managemembers_gid'] = 'ID';
 $lang['managemembers_gint'] = 'Öffentlicher Gruppentitel';
 $lang['managemembers_gpublic'] = 'Interner Gruppenname';

@@ -66,6 +66,8 @@ $benchmark = benchmarktime();
 $slog = new slog();
 $my = $slog->logged();
 $lang->initAdmin($my->language);
+$tpl = new tpl();
+$slog->checkBan();
 $my->p = $slog->Permissions();
 
 $job = $gpc->get('job', str);
@@ -459,6 +461,10 @@ function head($onload = '') {
 	<link rel="up" href="javascript:self.scrollTo(0,0);">
 	<link rel="copyright" href="http://www.viscacha.org">
 	<script src="templates/lang2js.php?id=<?php echo $my->language; ?>&amp;admin=1" type="text/javascript"></script>
+	<script language="JavaScript" type="text/javascript"><!--
+		var sidx = '<?php echo SID2URL_JS_x; ?>';
+		var sid1 = '<?php echo SID2URL_JS_1; ?>';
+	--></script>
 	<script src="templates/global.js" language="Javascript" type="text/javascript"></script>
 	<script src="admin/html/admin.js" language="Javascript" type="text/javascript"></script>
 	<?php echo $htmlhead; ?>

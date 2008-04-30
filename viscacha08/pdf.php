@@ -24,7 +24,7 @@
 
 error_reporting(E_ALL);
 
-DEFINE('SCRIPTNAME', 'pdf');
+define('SCRIPTNAME', 'pdf');
 define('VISCACHA_CORE', '1');
 
 include ("data/config.inc.php");
@@ -33,11 +33,6 @@ include ("classes/function.viscacha_frontend.php");
 // PDF powered by FPDF (www.fpdf.org)
 include('classes/fpdf/class.php');
 include('classes/fpdf/extension.php');
-
-$slog = new slog();
-$my = $slog->logged();
-$lang->init($my->language);
-$tpl = new tpl();
 
 ($code = $plugins->load('pdf_topic_query')) ? eval($code) : null;
 $result = $db->query('

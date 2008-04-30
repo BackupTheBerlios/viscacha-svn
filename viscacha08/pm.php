@@ -24,18 +24,12 @@
 
 error_reporting(E_ALL);
 
-DEFINE('SCRIPTNAME', 'pm');
+define('SCRIPTNAME', 'pm');
 define('VISCACHA_CORE', '1');
 
 include ("data/config.inc.php");
 include ("classes/function.viscacha_frontend.php");
 
-$zeitmessung1 = t1();
-
-$slog = new slog();
-$my = $slog->logged();
-$lang->init($my->language);
-$tpl = new tpl();
 $my->p = $slog->Permissions();
 
 if ($my->p['pm'] == 0 || !$my->vlogin) {

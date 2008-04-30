@@ -24,18 +24,12 @@
 
 error_reporting(E_ALL);
 
-DEFINE('SCRIPTNAME', 'search');
+define('SCRIPTNAME', 'search');
 define('VISCACHA_CORE', '1');
 
 include ("data/config.inc.php");
 include ("classes/function.viscacha_frontend.php");
 
-$zeitmessung1 = t1();
-
-$slog = new slog();
-$my = $slog->logged();
-$lang->init($my->language);
-$tpl = new tpl();
 $my->p = $slog->Permissions();
 $my->pb = $slog->GlobalPermissions();
 
@@ -50,9 +44,10 @@ $breadcrumb->Add($lang->phrase('search'));
 if ($_GET['action'] == "search") {
 
 	if ($config['floodsearch'] == 1) {
-		if (flood_protect() == FALSE) {
+		if (flood_protect(FLOOD_TYPE_SEARCH) == false) {
 			error($lang->phrase('flood_control'));
 		}
+		set_flood(FLOOD_TYPE_SEARCH);
 	}
 	$boards = array();
 	if (isset($_POST['boards']) && is_array($_POST['boards'])) {
@@ -385,6 +380,13 @@ elseif ($_GET['action'] == "result") {
 
 }
 elseif ($_GET['action'] == "active") {
+
+	if ($config['floodsearch'] == 1) {
+		if (flood_protect(FLOOD_TYPE_ACTIVE) == FALSE) {
+			error($lang->phrase('flood_control'));
+		}
+		set_flood(FLOOD_TYPE_ACTIVE);
+	}
 
 	$breadcrumb->AddUrl('search.php'.SID2URL_1);
 	$breadcrumb->Add($lang->phrase('active_topics_title'));

@@ -638,35 +638,33 @@ function logged () {
  * This is not shown in the AdminCP!
  */
 function banish($reason = null, $until = null) {
-	if (SCRIPTNAME != 'admin') {
-		global $config, $db, $phpdoc, $lang, $plugins, $tpl, $my, $breadcrumb;
+	global $config, $db, $phpdoc, $lang, $plugins, $tpl, $my, $breadcrumb;
 
-		if (substr($reason, 0, 6) == 'lang->') {
-			$key = substr($reason, 6);
-			$reason = $lang->phrase($key);
-		}
-		if ($reason == null) {
-			$reason = $lang->phrase('banned_no_reason');
-		}
-		else {
-			$reason = htmlspecialchars($reason);
-		}
-		if ($until > 0) {
-			$until = gmdate($lang->phrase('dformat1'), times($until));
-		}
-		else {
-			$until = $lang->phrase('banned_left_never');
-		}
-
-		($code = $plugins->load('permissions_banish')) ? eval($code) : null;
-
-		$tpl->globalvars(compact('reason', 'until'));
-		echo $tpl->parse("banned");
-
-	    $phpdoc->Out();
-		$db->close();
-		exit();
+	if (substr($reason, 0, 6) == 'lang->') {
+		$key = substr($reason, 6);
+		$reason = $lang->phrase($key);
 	}
+	if ($reason == null) {
+		$reason = $lang->phrase('banned_no_reason');
+	}
+	else {
+		$reason = htmlspecialchars($reason);
+	}
+	if ($until > 0) {
+		$until = gmdate($lang->phrase('dformat1'), times($until));
+	}
+	else {
+		$until = $lang->phrase('banned_left_never');
+	}
+
+	($code = $plugins->load('permissions_banish')) ? eval($code) : null;
+
+	$tpl->globalvars(compact('reason', 'until'));
+	echo $tpl->parse("banned");
+
+    $phpdoc->Out();
+	$db->close();
+	exit();
 }
 
 /**
@@ -674,43 +672,49 @@ function banish($reason = null, $until = null) {
  */
 function checkBan() {
 	global $my;
-	$bannedip = file('data/bannedip.php');
-	$bannedip = array_map('trim', $bannedip);
-	$ban = false;
-	foreach ($bannedip as $row) {
-		$row = explode("\t", $row, 6);
-		if ($row[0] == 'ip') {
-			$row[2] = intval($row[2]);
-			if (strpos(' '.$this->ip, ' '.trim($row[1])) !== false && ($row[2] > time() || $row[2] == 0)) {
-				$ban = true;
-				break;
-			}
-		}
-		elseif ($row[0] == 'user') {
-			$row[2] = intval($row[2]);
-			if ($my->id == $row[1] && ($row[2] > time() || $row[2] == 0)) {
-				$ban = true;
-				break;
-			}
-		}
-		else {
-			continue;
-		}
+	if (!empty($this->bots[$my->is_bot]['type']) && $this->bots[$my->is_bot]['type'] == 'e') {
+		$this->banish('lang->bot_banned'); // Ban sucking spam bots
 	}
-	if ($ban == true) {
-		if (empty($row[5]) == true) {
-			$reson = null;
+	else {
+		// Try to ban other banned people or do nothing
+		$bannedip = file('data/bannedip.php');
+		$bannedip = array_map('trim', $bannedip);
+		$ban = false;
+		foreach ($bannedip as $row) {
+			$row = explode("\t", $row, 6);
+			if ($row[0] == 'ip') {
+				$row[2] = intval($row[2]);
+				if (strpos(' '.$this->ip, ' '.trim($row[1])) !== false && ($row[2] > time() || $row[2] == 0)) {
+					$ban = true;
+					break;
+				}
+			}
+			elseif ($row[0] == 'user') {
+				$row[2] = intval($row[2]);
+				if ($my->id == $row[1] && ($row[2] > time() || $row[2] == 0)) {
+					$ban = true;
+					break;
+				}
+			}
+			else {
+				continue;
+			}
 		}
-		else {
-			$reason = $row[5];
+		if ($ban == true) {
+			if (empty($row[5]) == true) {
+				$reson = null;
+			}
+			else {
+				$reason = $row[5];
+			}
+			if ($row[2] == 0) {
+				$until = null;
+			}
+			else {
+				$until = $row[2];
+			}
+			$this->banish($reason, $until);
 		}
-		if ($row[2] == 0) {
-			$until = null;
-		}
-		else {
-			$until = $row[2];
-		}
-		$this->banish($reason, $until);
 	}
 }
 
@@ -795,6 +799,9 @@ function sid_new() {
 		$result = $db->query('SELECT u.*, f.* FROM '.$db->pre.'user AS u LEFT JOIN '.$db->pre.'userfields as f ON f.ufid = u.id WHERE u.id = "'.$this->cookiedata[0].'" AND u.pw = "'.$this->cookiedata[1].'" LIMIT 1',__LINE__,__FILE__);
 		$my = $this->cleanUserData($db->fetch_object($result));
 		$nodata = ($db->num_rows($result) == 1) ? false : true;
+		if ($nodata == true) { // Loginversuch mit falschen Daten => Versuch protokollieren!
+			set_failed_login();
+		}
 	}
 	else {
 		$nodata = true;
@@ -1080,13 +1087,6 @@ function getBoards() {
  */
 function Permissions ($board = 0, $groups = null, $member = null) {
 	global $db, $my, $scache;
-
-	if (!empty($this->bots[$my->is_bot]['type']) && $this->bots[$my->is_bot]['type'] == 'e') {
-		$this->banish('lang->bot_banned'); // Ban sucking spam bots
-	}
-	else {
-		$this->checkBan($my); // Try to ban other banned people or do nothing
-	}
 
 	if ($groups == null && isset($my->groups)) {
 		$groups = $my->groups;

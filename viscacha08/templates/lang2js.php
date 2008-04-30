@@ -16,8 +16,6 @@ if (!empty($_REQUEST['id'])) {
 	$file = !empty($_REQUEST['admin']) ? 'admin/javascript' : 'javascript';
 	echo $lang->javascript($file);
 	echo "var cookieprefix = '{$config['cookie_prefix']}';";
-	echo "var sidx = '".SID2URL_JS_x."';";
-	echo "var sid1 = '".SID2URL_JS_1."';";
 }
 else {
 	echo 'alert("Could not load language file for javascript without id!");';

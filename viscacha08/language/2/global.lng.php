@@ -386,7 +386,9 @@ $lang['log_pwremind_success'] = 'An e-mail with instructions to change your pass
 $lang['log_pwremind_title'] = 'Forgotten your password?';
 $lang['log_pwremind_wrong_code'] = 'The supplied confirmation code does not belong to this user account or is expired.';
 $lang['log_title'] = 'Log in';
-$lang['log_wrong_data'] = 'You entered invalid login data or your account has not yet been activated.<br />Did you <a href="log.php?action=pwremind">forget your password</a>? If you have not received a validation e-mail click <a href="register.php?action=resend">here</a>.';
+$lang['log_wrong_data'] = 'You entered invalid login data or your account has not yet been activated. {$can_try}<br />Did you <a href="log.php?action=pwremind">forget your password</a>? If you have not received a validation e-mail click <a href="register.php?action=resend">here</a>.';
+$lang['log_wrong_data_block'] = 'You have been blocked temporarily, because you reached the maximum login attempts allowed in a certain time range. More information you can find on the follwoing page...';
+$lang['log_x_attempts'] = 'You have {$attempts} login attempts left!';
 $lang['managemembers_gid'] = 'ID';
 $lang['managemembers_gint'] = 'Public groupname';
 $lang['managemembers_gpublic'] = 'Internal groupname';
