@@ -266,7 +266,5 @@ if ($config['foffline'] && defined('TEMPSHOWLOG') == false) {
 		$db->close();
 	    exit();
 	}
-
-	unset($slog, $my);
 }
 ?>

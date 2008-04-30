@@ -481,7 +481,7 @@ elseif ($job == 'forum_edit') {
     <input type="radio" name="invisible" value="1"<?php echo iif($row['invisible'] == '1', ' checked="checked"'); ?> /> <?php echo $lang->phrase('admin_forum_select_hide_forum_from_users_without_authorization'); ?><br />
     <span class="stext"><?php echo $lang->phrase('admin_forum_forum_not_shown_locked'); ?></span>
    </td></tr><tr><td class="mbox">
-    <input type="radio" name="invisible" value="2"<?php echo iif($row['invisible'] == '2', ' checked="checked"'); ?> /> <?php echo $lang->phrase('admin_forum_select_hide_forum_completely'); ?><br />
+    <input type="radio" name="invisible" value="2"<?php echo iif($row['invisible'] == '2', ' checked="checked"'); ?> /> <?php echo $lang->phrase('admin_forum_select_hide_forum_completly'); ?><br />
     <span class="stext"><?php echo $lang->phrase('admin_forum_info_forum_access'); ?></span>
    </td>
   </tr>

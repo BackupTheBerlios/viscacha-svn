@@ -131,7 +131,7 @@ class PluginSystem {
 		if ($prefix == 'lang' && $suffix != null) {
 			return $lang->phrase($suffix).iif($show_key, " [{$key}]");
 		}
-		elseif ($prefix == 'doc' && is_id($suffix)) {
+		elseif ($prefix == 'doc' && is_id($suffix) && isset($this->docs[$suffix]['titles'])) {
 			$data = $this->docs[$suffix]['titles'];
 			$lid = getDocLangID($data);
 			return $data[$lid].iif($show_key, " [{$key}]");

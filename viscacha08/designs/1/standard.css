@@ -113,7 +113,7 @@ h1 a, h1 a:hover {
 	width: 757px;
 	padding: 3px 4px 4px 4px;
  	font-size: 11px;
- 	color: #eeeeee;
+ 	color: #fefefe;
 }
 .breadcrumb a {
 	color: #fefefe;
@@ -193,6 +193,24 @@ h1 a, h1 a:hover {
 	background-color: #E1E8EF;
 	font-size: 8pt;
 	color: #24486C;
+}
+
+.notice_box {
+	border: 1px solid #839FBC;
+	background-color: #ffffff;
+	padding: 4px;
+	font-size: 8pt;
+}
+.notice_box strong {
+	float: left;
+	display: block;
+	width: 70px;
+	text-align: center;
+	color: maroon;
+}
+.notice_box span {
+	margin-left: 75px;
+	display: block;
 }
 
 /* Navigation */

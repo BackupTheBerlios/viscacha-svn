@@ -17,6 +17,14 @@ class cache_custombb extends CacheItem {
 					$bb['bbcodereplacement'] = str_replace('{param}', '\1', $bb['bbcodereplacement']);
 				}
 				$bb['bbcodereplacement'] = str_replace(array("\r\n", "\n"), "\r", $bb['bbcodereplacement']);
+				if (!preg_match('/^(http:\/\/|www.)([\wäöüÄÖÜ@\-_\.]+)\:?([0-9]*)\/(.*)$/', $bb['buttonimage'])) {
+					if (@file_exists(CBBC_BUTTONDIR.$bb['buttonimage'])) {
+						$bb['buttonimage'] = $config['furl'].'/'.CBBC_BUTTONDIR.$bb['buttonimage'];
+					}
+					else {
+						$bb['buttonimage'] = '';
+					}
+				}
 				$this->data[] = $bb;
 			}
 			$this->export();

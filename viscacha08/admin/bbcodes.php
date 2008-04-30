@@ -849,12 +849,12 @@ elseif ($job == 'custombb_export') {
 	$data = $db->fetch_assoc($result);
 	$data['button'] = null;
 
-	if (!empty($data['buttonimage']) && (file_exists($data['buttonimage']) || preg_match('/^(http:\/\/|www.)([\w‰ˆ¸ƒ÷‹@\-_\.]+)\:?([0-9]*)\/(.*)$/', $data['buttonimage'])) ) {
+	if (!empty($data['buttonimage']) && (preg_match('/^(http:\/\/|www.)([\w‰ˆ¸ƒ÷‹@\-_\.]+)\:?([0-9]*)\/(.*)$/', $data['buttonimage']) || file_exists(CBBC_BUTTONDIR.$data['buttonimage'])) ) {
 		if (preg_match('/^(http:\/\/|www.)([\w‰ˆ¸ƒ÷‹@\-_\.]+)\:?([0-9]*)\/(.*)$/', $data['buttonimage'])) {
 			$button = get_remote($data['buttonimage']);
 		}
 		else {
-			$button = file_get_contents($data['buttonimage']);
+			$button = file_get_contents(CBBC_BUTTONDIR.$data['buttonimage']);
 		}
 		if ($button == REMOTE_CLIENT_ERROR || $button == REMOTE_INVALID_URL) {
 			$data['buttonimage'] = '';
@@ -966,10 +966,9 @@ elseif ($job == 'custombb_import2') {
 		$bb['buttonimage'] = '';
 	}
 	else {
-		$name = basename($bb['buttonimage']);
-		$bb['buttonimage'] = "images/{$name}";
-		if (!file_exists($bb['buttonimage'])) {
-			$filesystem->file_put_contents($bb['buttonimage'], base64_decode($bb['button']));
+		$bb['buttonimage'] = basename($bb['buttonimage']);
+		if (!file_exists(CBBC_BUTTONDIR.$bb['buttonimage'])) {
+			$filesystem->file_put_contents(CBBC_BUTTONDIR.$bb['buttonimage'], base64_decode($bb['button']));
 		}
 	}
 
@@ -1185,7 +1184,7 @@ elseif ($job == 'custombb_delete') {
 	<tr><td class="mbox">
 	<p align="center"><?php echo $lang->phrase('admin_bbc_delete_bbc_question'); ?></p>
 	<p align="center">
-	<?php if (@file_exists($image['buttonimage']) && !preg_match('/^(http:\/\/|www.)([\w‰ˆ¸ƒ÷‹@\-_\.]+)\:?([0-9]*)\/(.*)$/', $image['buttonimage'])) { ?>
+	<?php if (!preg_match('/^(http:\/\/|www.)([\w‰ˆ¸ƒ÷‹@\-_\.]+)\:?([0-9]*)\/(.*)$/', $image['buttonimage']) && @file_exists(CBBC_BUTTONDIR.$image['buttonimage'])) { ?>
 	<a href="admin.php?action=bbcodes&amp;job=custombb_delete2&amp;id=<?php echo $id; ?>&amp;img=1"><img border="0" align="absmiddle" alt="" src="admin/html/images/yes.gif"> <?php echo $lang->phrase('admin_bbc_including_image'); ?></a><br />
 	<a href="admin.php?action=bbcodes&amp;job=custombb_delete2&amp;id=<?php echo $id; ?>"><img border="0" align="absmiddle" alt="" src="admin/html/images/yes.gif"> <?php echo $lang->phrase('admin_bbc_without_image'); ?></a><br />
 	<?php } else { ?>
@@ -1205,8 +1204,8 @@ elseif ($job == 'custombb_delete2'){
 	if ($img == 1) {
 		$result = $db->query("SELECT buttonimage FROM {$db->pre}bbcode WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
 		$image = $db->fetch_assoc($result);
-		if (@file_exists($image['buttonimage']) && !preg_match('/^(http:\/\/|www.)([\w‰ˆ¸ƒ÷‹@\-_\.]+)\:?([0-9]*)\/(.*)$/', $image['buttonimage'])) {
-			$filesystem->unlink($image['buttonimage']);
+		if (!preg_match('/^(http:\/\/|www.)([\w‰ˆ¸ƒ÷‹@\-_\.]+)\:?([0-9]*)\/(.*)$/', $image['buttonimage']) && @file_exists(CBBC_BUTTONDIR.$image['buttonimage'])) {
+			$filesystem->unlink(CBBC_BUTTONDIR.$image['buttonimage']);
 		}
 	}
 	$db->query("DELETE FROM {$db->pre}bbcode WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
@@ -1277,6 +1276,9 @@ elseif ($job == 'custombb') {
 	<?php
 	while ($bbcode = $db->fetch_assoc($result)) {
 		if (!empty($bbcode['buttonimage'])) {
+			if (!preg_match('/^(http:\/\/|www.)([\w‰ˆ¸ƒ÷‹@\-_\.]+)\:?([0-9]*)\/(.*)$/', $bbcode['buttonimage'])) {
+				$bbcode['buttonimage'] = CBBC_BUTTONDIR.$bbcode['buttonimage'];
+			}
 			$src = "<img style=\"background-color: buttonface; border:solid 1px highlight;\" src=\"{$bbcode['buttonimage']}\" alt=\"\" />";
 		}
 		else {

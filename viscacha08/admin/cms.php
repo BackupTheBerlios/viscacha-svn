@@ -100,8 +100,10 @@ function BBCodeToolBox($id, $content = '', $taAttr = '') {
 				<?php } ?>
 			</ul>
 			</div>
-			<?php foreach ($cbb as $bb) { echo iif(count($cbb), '<img src="templates/editor/images/seperator.gif" alt="" />'); ?>
-			<img src="templates/editor/images/<?php echo $bb['buttonimage']; ?>" onclick="<?php echo $bb['href']; ?>" title="<?php echo $bb['title']; ?>" alt="<?php echo $bb['title']; ?>" class="editor_toolbar_button" onmouseover="buttonOver(this)" onmouseout="buttonOut(this)" />
+			<?php
+			echo iif(count($cbb), '<img src="templates/editor/images/seperator.gif" alt="" />');
+			foreach ($cbb as $bb) { ?>
+			<img src="<?php echo $bb['buttonimage']; ?>" onclick="<?php echo $bb['href']; ?>" title="<?php echo $bb['title']; ?>" alt="<?php echo $bb['title']; ?>" class="editor_toolbar_button" onmouseover="buttonOver(this)" onmouseout="buttonOut(this)" />
 			<?php } ?>
 		</td></tr>
 		<tr><td class="editor_toolbar">

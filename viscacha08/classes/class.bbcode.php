@@ -28,6 +28,8 @@ define('SP_CHANGE', 1);
 define('SP_COPY', 2);
 define('SP_NEW', 4);
 
+define('CBBC_BUTTONDIR', 'templates/editor/images/');
+
 class BBCode {
 
 	var $smileys;
