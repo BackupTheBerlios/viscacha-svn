@@ -1,7 +1,7 @@
 <?php
 class cache_custombb extends CacheItem {
 	function load () {
-		global $db;
+		global $db, $config;
 		if ($this->exists() == true) {
 			$this->import();
 		}

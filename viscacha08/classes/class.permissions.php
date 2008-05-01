@@ -300,6 +300,7 @@ function getStatus($groups, $implode = '') {
 			if (!isset($this->statusdata[$gid])) {
 				continue;
 			}
+/* This is to show only the Admintitle for admins. Removed in 0.8 RC5 (was an undocumented feature before ;-) )
 			if ($this->statusdata[$gid]['admin'] == 1) {
 				if (empty($implode)) {
 					return array($this->statusdata[$gid]['title']);
@@ -307,8 +308,8 @@ function getStatus($groups, $implode = '') {
 				else {
 					return $this->statusdata[$gid]['title'];
 				}
-			}
-			if ($this->statusdata[$gid]['core'] != 1) {
+			} */
+			if ($this->statusdata[$gid]['core'] != 1 || $this->statusdata[$gid]['admin'] == 1) {
 				$titles[] = $this->statusdata[$gid]['title'];
 			}
 		}

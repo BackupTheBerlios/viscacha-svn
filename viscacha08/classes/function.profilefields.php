@@ -290,7 +290,7 @@ function editprofile_customsave($editable, $uid) {
 				$sqldata[] = "{$field} = '{$value}'";
 			}
 			$sqldata = implode(', ', $sqldata);
-			$db->query("UPDATE {$db->pre}userfields SET ".implode(', ', $upquery)." WHERE ufid = '{$uid}' LIMIT 1");
+			$db->query("UPDATE {$db->pre}userfields SET {$sqldata} WHERE ufid = '{$uid}' LIMIT 1");
 		}
 	}
 
