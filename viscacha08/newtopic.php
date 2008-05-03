@@ -123,7 +123,7 @@ elseif ($_GET['action'] == "savevote") {
 		errorLogin($lang->phrase('not_allowed'),"showforum.php?id=".$info['board'].SID2URL_x);
 	}
 
-	$result = $db->query('SELECT id, vquestion, board FROM '.$db->pre.'topics WHERE id = "'.$topic_id.'" LIMIT 1');
+	$result = $db->query('SELECT id, vquestion, board FROM '.$db->pre.'topics WHERE id = "'.$topic_id.'" LIMIT 1', __LINE__, __FILE__);
 	$info = $db->fetch_assoc($result);
 
 	$error = $sqlwhere = array();
@@ -183,6 +183,7 @@ elseif ($_GET['action'] == "save") {
 
 	$error = array();
 	$human = null;
+	$digest = $gpc->get('digest', int);
 
 	if (!$my->vlogin) {
 		if ($config['botgfxtest_posts'] == 1) {
@@ -268,7 +269,8 @@ elseif ($_GET['action'] == "save") {
 			'vote' => $_POST['opt_2'],
 			'replies' => $_POST['temp'],
 			'guest' => 1,
-			'human' => $human
+			'human' => $human,
+			'digest' => $digest
 		);
 		if (!$my->vlogin) {
 			if ($config['guest_email_optional'] == 0 && empty($_POST['email'])) {
@@ -320,21 +322,16 @@ elseif ($_GET['action'] == "save") {
 
 		$db->query("UPDATE {$db->pre}uploads SET topic_id = '{$tredirect}', tid = '{$rredirect}' WHERE mid = '{$pid}' AND topic_id = '0' AND tid = '0'",__LINE__,__FILE__);
 
-		if ($_POST['page'] && $my->vlogin) {
-			$type = NULL;
-			if ($_POST['page'] == '1') {
-				$type='';
+		// Insert notifications
+		if ($my->vlogin && $type != 0) {
+			switch ($digest) {
+				case 2:  $type = 'd'; break;
+				case 3:  $type = 'w'; break;
+				default: $type = '';  break;
 			}
-			elseif ($_POST['page'] == '2') {
-				$type='d';
-			}
-			elseif ($_POST['page'] == '3') {
-				$type='w';
-			}
-			if ($type != NULL) {
-				$db->query("INSERT INTO {$db->pre}abos (mid,tid,type) VALUES ('{$my->id}','{$tredirect}','{$type}')",__LINE__,__FILE__);
-			}
+			$db->query("INSERT INTO {$db->pre}abos (mid, tid, type) VALUES ('{$my->id}', '{$tredirect}', '{$type}')",__LINE__,__FILE__);
 		}
+
 
 		$my->mp = $slog->ModPermissions($board);
 
@@ -436,7 +433,8 @@ else {
 			'dosmileys' => 1,
 			'dowords' => 1,
 			'topic' => '',
-			'human' => null
+			'human' => null,
+			'digest' => 0
 		);
 		$_GET['action'] = '';
 	}

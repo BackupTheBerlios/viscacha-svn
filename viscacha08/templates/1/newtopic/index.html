@@ -91,10 +91,21 @@
   <?php echo $lang->phrase('vote_replies'); ?> <input tabindex="11" type="text" id="temp" name="temp" size="4" value="<?php echo $data['replies']; ?>" />
 </div>
 <br class="newinput" />
+<?php if ($my->vlogin) { ?>
+<hr class="formsep" />
+<label for="digest"><?php echo $lang->phrase('topic_abo'); ?></label>
+<select class="label" name="digest" id="digest" tabindex="12">
+	<option value="0"<?php echo iif($data['digest'] == 0, ' selected="selected"'); ?>><?php echo $lang->phrase('digest_none'); ?></option>
+	<option value="1"<?php echo iif($data['digest'] == 1, ' selected="selected"'); ?>><?php echo $lang->phrase('digest_s'); ?></option>
+	<option value="2"<?php echo iif($data['digest'] == 2, ' selected="selected"'); ?>><?php echo $lang->phrase('digest_d'); ?></option>
+	<option value="3"<?php echo iif($data['digest'] == 3, ' selected="selected"'); ?>><?php echo $lang->phrase('digest_w'); ?></option>
+</select>
+<br class="newinput" />
+<?php } ?>
 <br class="iefix_br" />
 <?php } ?>
 </div>
-<div class="bfoot center"><input accesskey="s" tabindex="12" type="submit" name="Submit" value="<?php echo $lang->phrase('submit_form'); ?>"> <input tabindex="13" type="submit" name="Preview" value="<?php echo $lang->phrase('preview_form'); ?>" /></div>
+<div class="bfoot center"><input accesskey="s" tabindex="13" type="submit" name="Submit" value="<?php echo $lang->phrase('submit_form'); ?>"> <input tabindex="14" type="submit" name="Preview" value="<?php echo $lang->phrase('preview_form'); ?>" /></div>
 </div>
 <?php if ($my->mp[0] == 1) { ?>
 <br class="minibr" />
@@ -102,15 +113,15 @@
 <h3><?php echo $lang->phrase('admin_options'); ?></h3>
 <div class="bbody">
 <label for="close"><?php echo $lang->phrase('admin_addpost_close'); ?></label>
-<div class="label"><input type="checkbox" tabindex="14" id="close" name="close" value="1" /> <?php echo $lang->phrase('admin_addpost_close_desc'); ?></div>
+<div class="label"><input type="checkbox" tabindex="15" id="close" name="close" value="1" /> <?php echo $lang->phrase('admin_addpost_close_desc'); ?></div>
 <br class="newinput" /><hr class="formsep" />
 <label for="pin"><?php echo $lang->phrase('admin_addpost_pin'); ?></label>
-<div class="label"><input type="checkbox" tabindex="15" id="pin" name="pin" value="1" /> <?php echo $lang->phrase('admin_addpost_pin_desc'); ?></div>
+<div class="label"><input type="checkbox" tabindex="16" id="pin" name="pin" value="1" /> <?php echo $lang->phrase('admin_addpost_pin_desc'); ?></div>
 <br class="newinput" />
 <?php if ($my->mp[2] == 1 || $my->mp[3] == 1) { ?>
 <hr class="formsep" />
 <label for="close"><?php echo $lang->phrase('admin_addpost_status'); ?></label>
-<select tabindex="16" class="label" size="1" name="status" id="status">
+<select tabindex="17" class="label" size="1" name="status" id="status">
 	<option<?php echo iif(empty($last['auto_status']), ' value="0" selected="selected"', ' value="9"'); ?>><?php echo $lang->phrase('ats_choose'); ?></option>
 	<?php if (!empty($last['auto_status'])) { ?>
 	<option value="0" selected="selected"><?php echo $lang->phrase('ats_choose_standard_'.$last['auto_status']); ?></option>

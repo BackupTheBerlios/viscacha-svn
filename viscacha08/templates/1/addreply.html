@@ -78,10 +78,10 @@ if ($p_upload == 1) { ?>
 	<span class="stext"><?php echo $lang->phrase('max_uploads'); ?></span>
 </div>
 <br class="newinput" />
-<?php } if ($my->vlogin && $abox['id'] > 0) { ?>
+<?php } if ($my->vlogin) { ?>
 <hr class="formsep" />
-<label for="page"><?php echo $lang->phrase('topic_abo'); ?></label>
-<select class="label" name="digest" id="page" tabindex="10">
+<label for="digest"><?php echo $lang->phrase('topic_abo'); ?></label>
+<select class="label" name="digest" id="digest" tabindex="10">
 	<option value="0"<?php echo iif($data['digest'] == 0, ' selected="selected"'); ?>><?php echo $lang->phrase('digest_none'); ?></option>
 	<option value="1"<?php echo iif($data['digest'] == 1, ' selected="selected"'); ?>><?php echo $lang->phrase('digest_s'); ?></option>
 	<option value="2"<?php echo iif($data['digest'] == 2, ' selected="selected"'); ?>><?php echo $lang->phrase('digest_d'); ?></option>
