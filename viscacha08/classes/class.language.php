@@ -220,7 +220,7 @@ class lang {
 				return $GLOBALS[$key];
 			}
 		}
-		return '';
+		return "{{$type}{$key}}"; // Not found. Don't change anything!
 	}
 
 	function group($group) {

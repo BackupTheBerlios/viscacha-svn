@@ -15,13 +15,22 @@ if ($job == 'emailsearch') {
 
 	$result = $db->query("SELECT id, title, name FROM {$db->pre}groups WHERE guest = '0' ORDER BY admin DESC, guest ASC, core ASC");
 	?>
-<form name="form" method="post" action="admin.php?action=members&job=emailsearch2">
- <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
+<table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr>
    <td class="obox" colspan="3">
    	<span style="float: right;"><a class="button" href="admin.php?action=members&job=newsletter_archive"><?php echo $lang->phrase('admin_member_nl_archive'); ?></a></span>
     <?php echo $lang->phrase('admin_member_nl_mail_manager'); ?>
    </td>
+  </tr>
+  <tr>
+   <td class="mbox"><?php echo $lang->phrase('admin_member_mail_manager_instructions'); ?></td>
+  </tr>
+</table>
+<br class="minibr" />
+<form name="form" method="post" action="admin.php?action=members&job=emailsearch2">
+ <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
+  <tr>
+   <td class="obox" colspan="3"><?php echo $lang->phrase('admin_member_search_for_members'); ?></td>
   </tr>
   <tr>
 	<td class="mbox" width="50%" colspan="3">
