@@ -24,8 +24,6 @@ if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
-
 class PluginSystem {
 
 	var $cache;

@@ -276,7 +276,7 @@ SELECT
 	u.id as mid, u.name as uname, u.mail, u.regdate, u.posts, u.fullname, u.hp, u.signature, u.location, u.gender, u.birthday, u.pic, u.lastvisit, u.icq, u.yahoo, u.aol, u.msn, u.jabber, u.skype, u.groups,
 	f.* {$sql_select}
 FROM {$db->pre}replies AS r
-	LEFT JOIN {$db->pre}user AS u ON r.name=u.id
+	LEFT JOIN {$db->pre}user AS u ON r.name = u.id
 	LEFT JOIN {$db->pre}userfields AS f ON u.id = f.ufid
 	{$sql_join}
 WHERE r.topic_id = '{$info['id']}'
@@ -289,6 +289,10 @@ $firstnew_url = null;
 if ($info['last'] > $my->clv) {
 	$firstnew_url = 'showtopic.php?action=firstnew&amp;id='.$info['id'].SID2URL_x;
 }
+
+// Custom Profile Fields
+include_once('classes/class.profilefields.php');
+$pfields = new ProfileFieldViewer();
 
 while ($row = $gpc->prepare($db->fetch_object($result))) {
 	$inner['upload_box'] = '';
@@ -304,6 +308,10 @@ while ($row = $gpc->prepare($db->fetch_object($result))) {
 		$row->groups = GROUP_GUEST;
 		$row->mid = 0;
 	}
+
+	// Custom Profile Fields
+	$pfields->setUserId($row->mid);
+	$pfields->setUserData($row);
 
 	if ($firstnew > 0) {
 		$firstnew++;

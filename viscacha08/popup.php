@@ -158,6 +158,11 @@ elseif ($_GET['action'] == "showpost") {
 	}
 	$inner['upload_box'] = '';
 
+	// Custom Profile Fields
+	include_once('classes/class.profilefields.php');
+	$pfields = new ProfileFieldViewer($row->mid);
+	$pfields->setUserData($row);
+
 	if ($row->guest == 0) {
 		$row->mail = '';
 		$row->name = $row->uname;

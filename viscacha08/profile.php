@@ -215,13 +215,7 @@ elseif ($is_guest) {
 elseif ($is_member) {
 	($code = $plugins->load('profile_member_start')) ? eval($code) : null;
 
-	$result = $db->query("
-	SELECT u.*, f.*
-	FROM {$db->pre}user AS u
-		LEFT JOIN {$db->pre}userfields AS f ON u.id = f.ufid
-	WHERE id = {$_GET['id']}
-	LIMIT 1
-	",__LINE__,__FILE__);
+	$result = $db->query("SELECT * FROM {$db->pre}user AS u LEFT JOIN {$db->pre}userfields AS f ON u.id = f.ufid WHERE u.id = {$_GET['id']}",__LINE__,__FILE__);
 
 	$breadcrumb->resetUrl();
 	echo $tpl->parse("header");
@@ -306,90 +300,10 @@ elseif ($is_member) {
 		}
 
 		// Custom Profile Fields
-		$customfields = array('1' => array(), '2' => array(), '3' => array());
-		$query = $db->query("SELECT * FROM ".$db->pre."profilefields WHERE viewable != '0' ORDER BY disporder");
-		while($profilefield = $db->fetch_assoc($query)) {
-			$select = array();
-			$thing = explode("\n", $profilefield['type'], 2);
-			$type = $thing[0];
-			if (!isset($thing[1])) {
-				$options = '';
-			}
-			else {
-				$options = $thing[1];
-			}
-			$field = "fid{$profilefield['fid']}";
-			if($type == "multiselect") {
-				$useropts = @explode("\n", $row->$field);
-				while(list($key, $val) = each($useropts)) {
-					$seloptions[$val] = $val;
-				}
-				$expoptions = explode("\n", $options);
-				if(is_array($expoptions)) {
-					while(list($key, $val) = each($expoptions)) {
-						list($key, $val) = explode('=', $val, 2);
-						if(isset($seloptions[$key]) && $key == $seloptions[$key]) {
-							$select[] = trim($val);
-						}
-					}
-					$code = implode(', ', $select);
-				}
-			}
-			elseif($type == "select") {
-				$expoptions = explode("\n", $options);
-				if(is_array($expoptions)) {
-					while(list($key, $val) = each($expoptions)) {
-						list($key, $val) = explode('=', $val, 2);
-						if ($key == $row->$field) {
-							$code = trim($val);
-						}
-					}
-				}
-			}
-			elseif($type == "radio") {
-				$expoptions = explode("\n", $options);
-				if(is_array($expoptions)) {
-					while(list($key, $val) = each($expoptions)) {
-						list($key, $val) = explode('=', $val, 2);
-						if ($key == $row->$field) {
-							$code = trim($val);
-						}
-					}
-				}
-			}
-			elseif($type == "checkbox") {
-				$useropts = @explode("\n", $row->$field);
-				while(list($key, $val) = each($useropts)) {
-					$seloptions[$val] = $val;
-				}
-				$expoptions = explode("\n", $options);
-				if(is_array($expoptions)) {
-					while(list($key, $val) = each($expoptions)) {
-						list($key, $val) = explode('=', $val, 2);
-						if (isset($seloptions[$key]) && $key == $seloptions[$key]) {
-							$select[] = trim($val);
-						}
-					}
-					$code = implode(', ', $select);
-				}
-			}
-			elseif($type == "textarea") {
-				$code = nl2br($row->$field);
-			}
-			else {
-				$code = $row->$field;
-			}
-			if (empty($code)) {
-				$code = $lang->phrase('profile_na');
-			}
-			$customfields[$profilefield['viewable']][] = array(
-				'value' => $code,
-				'name' => $profilefield['name'],
-				'description' => $profilefield['description'],
-				'maxlength' => $profilefield['maxlength']
-			);
-			unset($code, $select, $val, $options, $expoptions, $useropts, $seloptions);
-		}
+		include_once('classes/class.profilefields.php');
+		$pfields = new ProfileFieldViewer($row->id);
+		$pfields->setUserData($row);
+		$customfields = $pfields->getAll();
 
 		if ($config['memberrating'] == 1) {
 			$result = $db->query("SELECT rating FROM {$db->pre}postratings WHERE aid = '{$row->id}'");
