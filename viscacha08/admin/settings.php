@@ -377,14 +377,6 @@ elseif ($job == 'profile') {
 	   <td class="mbox" width="50%"><input type="checkbox" name="osi_profile" value="1"<?php echo iif($config['osi_profile'] == 1,' checked="checked"'); ?>></td>
 	  </tr>
 	  <tr>
-	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_allow_vcard_dl'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_allow_vcard_dl_info'); ?></span></td>
-	   <td class="mbox" width="50%"><input type="checkbox" name="vcard_dl" value="1"<?php echo iif($config['vcard_dl'] == 1,' checked="checked"'); ?>></td>
-	  </tr>
-	  <tr>
-	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_allow_vcard_dl_guest'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_allow_vcard_dl_guest_info'); ?></span></td>
-	   <td class="mbox" width="50%"><input type="checkbox" name="vcard_dl_guests" value="1"<?php echo iif($config['vcard_dl_guests'] == 1,' checked="checked"'); ?>></td>
-	  </tr>
-	  <tr>
 	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_allow_change_name'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_allow_change_name_info'); ?></span></td>
 	   <td class="mbox" width="50%"><input type="checkbox" name="changename_allowed" value="1"<?php echo iif($config['changename_allowed'] == 1,' checked="checked"'); ?>></td>
 	  </tr>
@@ -426,8 +418,6 @@ elseif ($job == 'profile2') {
 	$c->getdata();
 	$c->updateconfig('osi_profile', int);
 	$c->updateconfig('changename_allowed', int);
-	$c->updateconfig('vcard_dl_guests', int);
-	$c->updateconfig('vcard_dl', int);
 	$c->updateconfig('showpostcounter', int);
 	$c->updateconfig('maxnamelength', int);
 	$c->updateconfig('minnamelength', int);
@@ -1202,50 +1192,6 @@ elseif ($job == 'register2') {
 	$c->updateconfig('register_notification', str, $register_notification);
 	$c->updateconfig('disableregistration', int);
 	$c->updateconfig('acceptrules', int);
-	$c->savedata();
-
-	ok('admin.php?action=settings&job=settings');
-}
-elseif ($job == 'jabber') {
-	$config = $gpc->prepare($config);
-	echo head();
-	?>
-	<form name="form" method="post" action="admin.php?action=settings&job=jabber2">
-	 <table class="border" border="0" cellspacing="0" cellpadding="4">
-	  <tr>
-	   <td class="obox" colspan="2"><b><?php echo $lang->phrase('admin_jabber_edit'); ?></b></td>
-	  </tr>
-	  <tr>
-	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_enable_jabber_support'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_enable_jabber_support_info'); ?></span></td>
-	   <td class="mbox" width="50%"><input type="checkbox" name="enable_jabber" value="1"<?php echo iif($config['enable_jabber'] == 1,' checked="checked"'); ?>></td>
-	  </tr>
-	  <tr>
-	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_jabber_server'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_jabber_server_info'); ?></span></td>
-	   <td class="mbox" width="50%"><input type="text" name="jabber_server" value="<?php echo $config['jabber_server']; ?>" size="50"></td>
-	  </tr>
-	  <tr>
-	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_jabber_username'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_jabber_username_info'); ?></span></td>
-	   <td class="mbox" width="50%"><input type="text" name="jabber_user" value="<?php echo $config['jabber_user']; ?>" size="50"></td>
-	  </tr>
-	  <tr>
-	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_jabber_password'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_jabber_password_info'); ?></span></td>
-	   <td class="mbox" width="50%"><input type="password" name="jabber_pass" value="<?php echo $config['jabber_pass']; ?>" size="50"></td>
-	  </tr>
-	   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="<?php echo $lang->phrase('admin_form_submit'); ?>"></td>
-	  </tr>
-	 </table>
-	</form>
-	<?php
-	echo foot();
-}
-elseif ($job == 'jabber2') {
-	echo head();
-
-	$c->getdata();
-	$c->updateconfig('enable_jabber',int);
-	$c->updateconfig('jabber_server',str);
-	$c->updateconfig('jabber_user',str);
-	$c->updateconfig('jabber_pass',str);
 	$c->savedata();
 
 	ok('admin.php?action=settings&job=settings');
@@ -2489,11 +2435,6 @@ else {
 	  <tr class="mbox">
 		<td nowrap="nowrap"><a href="admin.php?action=settings&amp;job=http"><?php echo $lang->phrase('admin_setting_http_cookie_compression'); ?></a></td>
 		<td class="stext"><?php echo $lang->phrase('admin_setting_http_cookie_compression_info'); ?></td>
-		<td><?php echo $lang->phrase('admin_setting_none'); ?></td>
-	  </tr>
-	  <tr class="mbox">
-		<td nowrap="nowrap"><a href="admin.php?action=settings&amp;job=jabber"><?php echo $lang->phrase('admin_setting_jabber'); ?></a></td>
-		<td class="stext"><?php echo $lang->phrase('admin_setting_jabber_info'); ?></td>
 		<td><?php echo $lang->phrase('admin_setting_none'); ?></td>
 	  </tr>
 	  <tr class="mbox">

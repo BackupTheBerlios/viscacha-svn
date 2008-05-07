@@ -75,66 +75,7 @@ if (isset($memberdata[$_GET['id']])) {
 $breadcrumb->Add($lang->phrase('members'), 'members.php'.SID2URL_1);
 $breadcrumb->Add($lang->phrase('profile_title'), 'profile.php?id='.$_GET['id'].$url_ext.SID2URL_x);
 
-if ($_GET['action'] == "vcard" && $is_member && $config['vcard_dl'] == 1 && ((!$my->vlogin && $config['vcard_dl_guests'] == 1) || $my->vlogin)) {
-	require ("classes/class.vCard.inc.php");
-
-	($code = $plugins->load('profile_vcard_start')) ? eval($code) : null;
-
-	$result = $db->query("
-	SELECT id, name, mail, hp, birthday, location, fullname, groups
-	FROM {$db->pre}user
-	WHERE id = '{$_GET['id']}'
-	",__LINE__,__FILE__);
-	$row = $gpc->prepare($db->fetch_object($result));
-	$row->level = $slog->getStatus($row->groups, ', ');
-
-	$vCard = new vCard('','');
-	$vCard->setNickname($row->name);
-	$vCard->setEMail($row->mail);
-	$vCard->setNote($lang->phrase('vcard_note'));
-	if (!empty($row->fullname)) {
-		$names = explode(' ', $row->fullname);
-		$anz = count($names);
-		$middle = '';
-		foreach ($names as $middlename) {
-			if ($middlename != $names[0] && $middlename != $names[$anz-1]) {
-				$middle .= $middlename;
-			}
-		}
-
-		$vCard->setFirstName($names[0]);
-		$vCard->setMiddleName($middle);
-		$vCard->setLastName($names[$anz-1]);
-	}
-	if (!empty($row->location)) {
-		$vCard->setHomeCity($row->location);
-		$vCard->setPostalCity($row->location);
-	}
-	if (!empty($row->hp)) {
-		$vCard->setURLWork($row->hp);
-	}
-	if ($row->birthday != '0000-00-00' && $row->birthday != '1000-00-00') {
-		$y = substr($row->birthday, 0, 4);
-		if ($y == '1000' || $y == '0000') {
-			$row->birthday = date("Y").substr($row->birthday, 4);
-		}
-		$bday = str_replace('-', '', $row->birthday);
-		$vCard->setBirthday($bday,1);
-	}
-
-	$filename = $row->id . '.vcf';
-
-	($code = $plugins->load('profile_vcard_prepared')) ? eval($code) : null;
-	$text = $vCard->getCardOutput();
-	viscacha_header("Content-Type: text/x-vcard");
-	viscacha_header("Content-Disposition: attachment; filename=\"{$filename}\"");
-	viscacha_header('Content-Length: '. strlen($text));
-	echo $text;
-	$slog->updatelogged();
-	$db->close();
-	exit();
-}
-elseif (($_GET['action'] == 'mail' || $_GET['action'] == 'sendmail') && $is_member) {
+if (($_GET['action'] == 'mail' || $_GET['action'] == 'sendmail') && $is_member) {
 	$result=$db->query('SELECT id, name, opt_hidemail, mail FROM '.$db->pre.'user WHERE id = '.$_GET['id'],__LINE__,__FILE__);
 	$row = $gpc->prepare($db->fetch_object($result));
 	$breadcrumb->Add($lang->phrase('profile_mail_2'));
@@ -202,39 +143,6 @@ elseif (($_GET['action'] == 'mail' || $_GET['action'] == 'sendmail') && $is_memb
 	}
 	else {
 		errorLogin();
-	}
-}
-elseif ($_GET['action'] == "sendjabber" && $is_member) {
-
-	$error = array();
-	if (flood_protect() == FALSE) {
-		$error[] = $lang->phrase('flood_control');
-	}
-	if (strxlen($_POST['comment']) > $config['maxpostlength']) {
-		$error[] = $lang->phrase('comment_too_long');
-	}
-	if (strxlen($_POST['comment']) < $config['minpostlength']) {
-		$error[] = $lang->phrase('comment_too_short');
-	}
-	if (count($error) > 0) {
-		error($error,"profile.php?action=ims&amp;type=jabber&amp;id=".$_GET['id'].SID2URL_x);
-	}
-	else {
-		set_flood();
-		$result = $db->query('SELECT jabber FROM '.$db->pre.'user WHERE id = "'.$_GET['id'].'"',__LINE__,__FILE__);
-		$row = $gpc->prepare($db->fetch_assoc($result));
-		include('classes/function.jabber.php');
-		$jabber = new Viscacha_Jabber();
-		$connid = $jabber->connect();
-		if ($connid != TRUE) {
-			error($connid,"profile.php?action=ims&amp;type=jabber&amp;id=".$_GET['id'].SID2URL_x);
-		}
-		$msgid = $jabber->send_message($row['jabber'], $gpc->unescape($_POST['comment']));
-		if ($msgid != TRUE) {
-			error($msgid,"profile.php?action=ims&amp;type=jabber&amp;id=".$_GET['id'].SID2URL_x);
-		}
-		$jabber->disconnect();
-		ok($lang->phrase('post_sent'), "profile.php?action=ims&amp;type=jabber&amp;id=".$_GET['id'].SID2URL_x);
 	}
 }
 elseif ($_GET['action'] == "ims" && $is_member) {
@@ -344,8 +252,6 @@ elseif ($is_member) {
 			$row->lastvisit = $lang->phrase('profile_never');
 		}
 
-		$vcard = ($config['vcard_dl'] == 1 && ((!$my->vlogin && $config['vcard_dl_guests'] == 1) || $my->vlogin));
-
 		BBProfile($bbcode);
 		$bbcode->setSmileys(1);
 		$bbcode->setReplace(0);
@@ -387,7 +293,6 @@ elseif ($is_member) {
 		}
 
 		$osi = '';
-		$vcarddl = '';
 		if ($config['osi_profile'] == 1) {
 			$result = $db->query('SELECT mid, active FROM '.$db->pre.'session WHERE mid = '.$_GET['id'],__LINE__,__FILE__);
 			$wwo = $db->fetch_num($result);

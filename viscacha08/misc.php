@@ -294,7 +294,7 @@ elseif ($_GET['action'] == "wwo") {
 			break;
 		case 'profile':
 			$id = $row->wiw_id;
-			if ($row->wiw_action == 'sendmail' || $row->wiw_action == 'mail' || $row->wiw_action == 'sendjabber') {
+			if ($row->wiw_action == 'sendmail' || $row->wiw_action == 'mail') {
 				$loc = $lang->phrase('wwo_profile_send');
 			}
 			else {

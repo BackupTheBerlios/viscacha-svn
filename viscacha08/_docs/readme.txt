@@ -1,5 +1,5 @@
 ########################################
-# Readme for Viscacha 0.8 RC 4 PL1     #
+# Readme for Viscacha 0.8 RC 5         #
 ########################################
 
 == Table of Contents ==
@@ -249,18 +249,18 @@ please check for Updates of your installed Packages!
 
 Minimum system requirements:
  - PHP Version: 4.3.0 and above
- - PHP-Extensions: mysql, pcre, gd, zlib
+ - PHP-Extensions: mysql or mysqli, pcre, gd, zlib
  - MySQL Version: 4.0 and above
 
 Normal system requirements:
  - PHP Version: 5.0.0 and above
- - PHP-Extensions: mysql, pcre, gd, zlib, xml
+ - PHP-Extensions: mysql or mysqli, pcre, gd, zlib, xml, mime_magic
  - MySQL Version: 4.1 and above
 
 Optimal system requirements:
  - PHP Version: 5.2.0 and above
- - PHP-Extensions: mysql, pcre, gd, zlib, xml, iconv, mbstring, mhash,
-                   sockets, mime_magic
+ - PHP-Extensions: mysql or mysqli, pcre, gd, zlib, xml, mime_magic, mbstring, 
+				   sockets, xdiff
  - MySQL Version: 5.0 and above (Strict mode off)
 
 If you are testing Viscacha, please give me some feedback how Viscacha worked,
@@ -270,9 +270,10 @@ Following information interest me:
 - Operating system (of the server)
 - Server software and version
 - E-mail-server (SMTP, Sendmail, PHP's mail() function)
-- MySQL version
+- MySQL version (strict mode enabled?)
 - PHP version
-- Status of the extensions: mysql, pcre, gd, zlib, xml, iconv, mbstring, mhash
+- Status of the extensions: mysql, mysqli, pcre, gd, zlib, xml, mime_magic, 
+							mbstring, sockets, xdiff
 - The following settings in the file php.ini:
   - safe_mode
   - magic_quotes_gpc
@@ -282,11 +283,5 @@ Following information interest me:
 
 == Contact ==
 
-E-mail: webmaster@mamo-net.de
-ICQ: 104458187
-AIM: mamonede8
-YIM: mamonede
-Jabber: MaMo@jabber.ccc.de
-MSN: ma_mo_web@hotmail.com
-
+Please contact us through our support forums on http://www.viscacha.org!
 Bugtracker: http://bugs.viscacha.org
