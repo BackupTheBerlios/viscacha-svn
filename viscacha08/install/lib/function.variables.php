@@ -1,12 +1,4 @@
 <?php
-function array_stripslashes($array) {
-	if(is_array($array)) {
-		return array_map('stripslashes', $array);
-	}
-	else {
-		return stripslashes($array);
-	}
-}
 function rmdirr($dirname) {
 	global $filesystem;
 	if (!file_exists($dirname)) {
@@ -152,6 +144,53 @@ function setPackagesInactive() {
 	}
 }
 
+
+function GPC_escape($var){
+	global $db, $config, $lang;
+	if (is_numeric($var) || empty($var)) {
+		// Do nothing to save time
+	}
+	elseif (is_array($var)) {
+		$cnt = count($var);
+		$keys = array_keys($var);
+		for ($i = 0; $i < $cnt; $i++){
+			$key = $keys[$i];
+			$var[$key] = $this->save_str($var[$key]);
+		}
+	}
+	elseif (is_string($var)){
+		$var = preg_replace('#(script|about|applet|activex|chrome|mocha):#is', "\\1&#058;", $var);
+		$var = str_replace("\0", '', $var);
+		if (version_compare(PHP_VERSION, '5.2.3', '>=')) {
+			$var = htmlentities($var, ENT_QUOTES, $lang->charset(), false);
+		}
+		else {
+			$var = htmlentities($var, ENT_QUOTES, $lang->charset());
+			$var = str_replace('&amp;#', '&#', $var);
+		}
+		$var = addslashes($var);
+	}
+	return $var;
+}
+
+function GPC_unescape($var){
+	if (is_numeric($var) || empty($var)) {
+		// Do nothing to save time
+	}
+	elseif (is_array($var)) {
+		$cnt = count($var);
+		$keys = array_keys($var);
+		for ($i = 0; $i < $cnt; $i++){
+			$key = $keys[$i];
+			$var[$key] = $this->save_str($var[$key]);
+		}
+	}
+	elseif (is_string($var)){
+		$var = stripslashes($var);
+	}
+	return $var;
+}
+
 // Variables
 @set_magic_quotes_runtime(0);
 @ini_set('magic_quotes_gpc',0);
@@ -191,18 +230,8 @@ if (@ini_get('register_globals') == '1' || strtolower(@ini_get('register_globals
 // End
 
 if (get_magic_quotes_gpc() == 1) {
-	while(list($key,$value)=each($_GET)) $_GET[$key]=array_stripslashes($value);
-	while(list($key,$value)=each($_POST)) $_POST[$key]=array_stripslashes($value);
-	while(list($key,$value)=each($_REQUEST)) $_REQUEST[$key]=array_stripslashes($value);
+	$_REQUEST = GPC_unescape($_REQUEST);
 }
 
-foreach ($_REQUEST as $key => $value) {
-	if (is_array($value)) {
-		$value = array_map('addslashes', $value);
-	}
-	else {
-		$value = addslashes($value);
-	}
-	$_REQUEST[$key] = $value;
-}
+$_REQUEST = GPC_escape($_REQUEST);
 ?>
