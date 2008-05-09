@@ -1266,7 +1266,7 @@ elseif ($job == 'doc') {
 	$language = $language_obj->get();
 
 	$result = $db->query("
-		SELECT d.id, d.author, d.update, c.lid, c.title, c.active
+		SELECT d.id, d.author, d.update, d.icomment, c.lid, c.title, c.active
 		FROM {$db->pre}documents AS d
 			LEFT JOIN {$db->pre}documents_content AS c ON d.id = c.did
 		ORDER BY c.title
@@ -1280,10 +1280,13 @@ elseif ($job == 'doc') {
 			$row['author'] = $lang->phrase('admin_cms_unknown');
 		}
 		if ($row['update'] > 0) {
-			$row['update'] = gmdate('d.m.Y H:i', times($row['update']));
+			$row['update'] = gmdate('d.m.Y', times($row['update'])).'<br />'.gmdate('H:i', times($row['update']));
 		}
 		else {
 			$row['update'] = $lang->phrase('admin_cms_unknown');
+		}
+		if (strlen($row['icomment']) > 100) {
+			$row['icomment'] = substr($row['icomment'], 0, 100).'...';
 		}
 		$newRow = array(
 			'title' => $row['title'],
@@ -1311,13 +1314,13 @@ elseif ($job == 'doc') {
   </tr>
   <tr>
    <td class="ubox" width="2%"><?php echo $lang->phrase('admin_cms_doc_delete'); ?><br /><span class="stext"><input type="checkbox" onclick="check_all('delete[]');" name="all" value="1" /> <?php echo $lang->phrase('admin_cms_doc_delete_all'); ?></span></td>
-   <td class="ubox" width="32%"><?php echo $lang->phrase('admin_cms_doc_title'); ?></td>
+   <td class="ubox" width="30%"><?php echo $lang->phrase('admin_cms_doc_title'); ?></td>
    <td class="ubox" width="14%"><?php echo $lang->phrase('admin_cms_doc_av_languages'); ?></td>
    <td class="ubox" width="3%"><?php echo $lang->phrase('admin_cms_doc_published'); ?></td>
-   <td class="ubox" width="16%"><?php echo $lang->phrase('admin_cms_doc_author'); ?></td>
-   <td class="ubox" width="12%"><?php echo $lang->phrase('admin_cms_doc_last_change'); ?></td>
-   <td class="ubox" width="3%"><?php echo $lang->phrase('admin_cms_doc_id'); ?></td>
-   <td class="ubox" width="18%"><?php echo $lang->phrase('admin_cms_doc_action'); ?></td>
+   <td class="ubox" width="12%"><?php echo $lang->phrase('admin_cms_doc_author'); ?></td>
+   <td class="ubox" width="8%"><?php echo $lang->phrase('admin_cms_doc_last_change'); ?></td>
+   <td class="ubox" width="14%"><?php echo $lang->phrase('admin_cms_doc_id'); ?></td>
+   <td class="ubox" width="14%"><?php echo $lang->phrase('admin_cms_doc_action'); ?></td>
   </tr>
 <?php
 	foreach ($data as $id => $row) {
@@ -1344,8 +1347,8 @@ elseif ($job == 'doc') {
   			 <td class="mbox center"><?php echo noki($row2['active'], ' onmouseover="HandCursor(this)" onclick="ajax_noki(this, \'action=cms&job=doc_ajax_active&id='.$id.'&lid='.$lid.'\')"'); ?></td>
 			<?php if ($i == 1) { ?>
   			 <td class="mbox" rowspan="<?php echo $rowspan; ?>"><?php echo $row['author']; ?></td>
-			 <td class="mbox" rowspan="<?php echo $rowspan; ?>"><?php echo $row['update']; ?></td>
-			 <td class="mbox" rowspan="<?php echo $rowspan; ?>"><?php echo $id; ?></td>
+			 <td class="mbox center" rowspan="<?php echo $rowspan; ?>"><?php echo $row['update']; ?></td>
+			 <td class="mbox stext" rowspan="<?php echo $rowspan; ?>"><?php echo nl2br($row['icomment']); ?></td>
 			 <td class="mbox" rowspan="<?php echo $rowspan; ?>">
 			  <a class="button" href="docs.php?id=<?php echo $id.SID2URL_x; ?>" target="_blank"><?php echo $lang->phrase('admin_cms_view'); ?></a>
 			  <a class="button" href="admin.php?action=cms&job=doc_edit&id=<?php echo $id; ?>"><?php echo $lang->phrase('admin_cms_edit'); ?></a>
@@ -1445,6 +1448,11 @@ elseif ($job == 'doc_add2') {
    <?php } ?>
    </td>
   </tr>
+  <tr>
+   <td class="mbox"><?php echo $lang->phrase('admin_cms_doc_internal_note'); ?><br />
+   <textarea name="icomment" class="texteditor" cols="80" rows="3"></textarea>
+   </td>
+  </tr>
 <?php foreach ($language as $lid => $data) { ?>
   <tr>
    <td class="ubox">
@@ -1505,6 +1513,7 @@ elseif ($job == 'doc_add3') {
 	echo head();
 
 	$type = $gpc->get('type', int);
+	$icomment = $gpc->get('icomment', str);
 	$title = $gpc->get('title', arr_str);
 	$active = $gpc->get('active', arr_int);
 	$use = $gpc->get('use', arr_int);
@@ -1538,7 +1547,7 @@ elseif ($job == 'doc_add3') {
 
 	$time = time();
 
-	$db->query("INSERT INTO {$db->pre}documents ( `author` , `date` , `update` , `type` , `groups` ) VALUES ('{$my->id}', '{$time}' , '{$time}' , '{$type}', '{$groups}')", __LINE__, __FILE__);
+	$db->query("INSERT INTO {$db->pre}documents (`author`, `date`, `update`, `type`, `groups`, `icomment`) VALUES ('{$my->id}', '{$time}' , '{$time}' , '{$type}', '{$groups}', '{$icomment}')", __LINE__, __FILE__);
 	$did = $db->insert_id();
 
 	foreach ($use as $lid => $usage) {
@@ -1555,8 +1564,15 @@ elseif ($job == 'doc_add3') {
 			if (empty($active[$lid])) {
 				$active[$lid] = 0;
 			}
+			if ($format['parser'] == 3) {
+				// Handle bb-code like in the forums (entites etc.)
+				$content[$lid] = $gpc->save_str($content[$lid]);
+			}
+			else {
+				$content[$lid] = $db->escape_string($content[$lid]);
+			}
 			$lid = $gpc->save_int($lid);
-			$db->query("INSERT INTO {$db->pre}documents_content ( `did` , `lid` , `title` , `content` , `active` ) VALUES ('{$did}', '{$lid}', '{$title[$lid]}', '".$db->escape_string($content[$lid])."', '{$active[$lid]}')", __LINE__, __FILE__);
+			$db->query("INSERT INTO {$db->pre}documents_content ( `did` , `lid` , `title` , `content` , `active` ) VALUES ('{$did}', '{$lid}', '{$title[$lid]}', '{$content[$lid]}', '{$active[$lid]}')", __LINE__, __FILE__);
 		}
 	}
 
@@ -1627,6 +1643,11 @@ elseif ($job == 'doc_edit') {
    <?php while ($g = $db->fetch_assoc($groups)) { ?>
 	<input type="checkbox" name="groups[]"<?php echo iif($row['groups'] == 0 || in_array($g['id'], $garr),'checked="checked"'); ?> value="<?php echo $g['id']; ?>"> <?php echo $g['name']; ?><br />
    <?php } ?>
+   </td>
+  </tr>
+  <tr>
+   <td class="mbox"><?php echo $lang->phrase('admin_cms_doc_internal_note'); ?><br />
+   <textarea name="icomment" class="texteditor" cols="80" rows="3"><?php echo $gpc->prepare($row['icomment']); ?></textarea>
    </td>
   </tr>
   <tr>
@@ -1711,6 +1732,7 @@ elseif ($job == 'doc_edit2') {
 	echo head();
 
 	$id = $gpc->get('id', int);
+	$icomment = $gpc->get('icomment', str);
 	$title = $gpc->get('title', arr_str);
 	$active = $gpc->get('active', arr_int);
 	$author = $gpc->get('author', int);
@@ -1750,7 +1772,7 @@ elseif ($job == 'doc_edit2') {
 
 	$time = time();
 
-	$db->query("UPDATE {$db->pre}documents SET `update` = '{$time}', `groups` = '{$groups}', `author` = '{$author}' WHERE id = '{$id}' LIMIT 1",__LINE__,__FILE__);
+	$db->query("UPDATE {$db->pre}documents SET `update` = '{$time}', `groups` = '{$groups}', `author` = '{$author}', `icomment` = '{$icomment}' WHERE id = '{$id}' LIMIT 1",__LINE__,__FILE__);
 
 	$language_obj = $scache->load('loadlanguage');
 	$language = $language_obj->get();
@@ -1777,11 +1799,18 @@ elseif ($job == 'doc_edit2') {
 				$active[$lid] = 0;
 			}
 			$result = $db->query("SELECT lid FROM v_documents_content WHERE did = '{$id}' AND lid = '{$lid}'");
-			if ($db->num_rows($result) == 1) {
-				$db->query("UPDATE {$db->pre}documents_content SET `title` = '{$title[$lid]}', `content` = '".$db->escape_string($content[$lid])."', `active` = '{$active[$lid]}' WHERE did = '{$id}' AND lid = '{$lid}'", __LINE__, __FILE__);
+			if ($format['parser'] == 3) {
+				// Handle bb-code like in the forums (entites etc.)
+				$content[$lid] = $gpc->save_str($content[$lid]);
 			}
 			else {
-				$db->query("INSERT INTO {$db->pre}documents_content ( `did` , `lid` , `title` , `content` , `active` ) VALUES ('{$id}', '{$lid}', '{$title[$lid]}', '".$db->escape_string($content[$lid])."', '{$active[$lid]}')", __LINE__, __FILE__);
+				$content[$lid] = $db->escape_string($content[$lid]);
+			}
+			if ($db->num_rows($result) == 1) {
+				$db->query("UPDATE {$db->pre}documents_content SET `title` = '{$title[$lid]}', `content` = '{$content[$lid]}', `active` = '{$active[$lid]}' WHERE did = '{$id}' AND lid = '{$lid}'", __LINE__, __FILE__);
+			}
+			else {
+				$db->query("INSERT INTO {$db->pre}documents_content ( `did` , `lid` , `title` , `content` , `active` ) VALUES ('{$id}', '{$lid}', '{$title[$lid]}', '{$content[$lid]}', '{$active[$lid]}')", __LINE__, __FILE__);
 			}
 		}
 	}

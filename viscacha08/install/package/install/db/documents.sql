@@ -5,6 +5,7 @@ CREATE TABLE `{:=DBPREFIX=:}documents` (
   `update` int(10) unsigned NOT NULL default '0',
   `type` tinyint(2) NOT NULL default '0',
   `groups` varchar(150) NOT NULL default '',
+  `icomment` text NOT NULL,
   PRIMARY KEY  (`id`)
 ) TYPE=MyISAM  AUTO_INCREMENT=2 ;
 

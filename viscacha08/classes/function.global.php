@@ -46,6 +46,8 @@ $db->setPersistence($config['pconnect']);
 // Construct base bb-code object
 $bbcode = new BBCode();
 
+define('URL_REGEXP', '/^(http:\/\/|www.)([\w‰ˆ¸ƒ÷‹@\-_\.]+)\:?([0-9]*)\/?(.*)$/i');
+
 define('REMOTE_INVALID_URL', 100);
 define('REMOTE_CLIENT_ERROR', 200);
 define('REMOTE_FILESIZE_ERROR', 300);
@@ -59,8 +61,12 @@ function get_remote($file) {
 		include('classes/class.snoopy.php');
 	}
 
-	if (!preg_match('/^(http:\/\/)([\w‰ˆ¸ƒ÷‹@\-_\.]+)\:?([0-9]*)\/(.*)$/', $file, $url_ary)) {
+	if (!preg_match(URL_REGEXP, $file, $url_ary)) {
 		return REMOTE_INVALID_URL;
+	}
+
+	if (strtolower($url_ary[1]) == 'www.') {
+		$file = 'http://'.$file;
 	}
 
 	$snoopy = new Snoopy;

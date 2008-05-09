@@ -263,8 +263,8 @@ elseif ($_GET['action'] == "wwo") {
 			break;
 		case 'docs':
 			$id = $row->wiw_id;
-			if (isset($wrap_cache[$id]) && $my->p['docs'] == 1 && GroupCheck($wrap_cache[$id]['groups'])) {
-				$lid = getDocLangID($wrap_cache[$id]);
+			if ($my->p['docs'] == 1 && isset($wrap_cache[$id]) && GroupCheck($wrap_cache[$id]['groups'])) {
+				$lid = getDocLangID($wrap_cache[$id]['titles']);
 				$title = $wrap_cache[$id]['titles'][$lid];
 				$loc = $lang->phrase('wwo_docs');
 			}
