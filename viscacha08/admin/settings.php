@@ -2246,7 +2246,7 @@ elseif ($job == 'new2') {
 		$typevalue = str_replace("\r\n", "\n", trim($typevalue));
 		$typevalue = str_replace("\r", "\n", $typevalue);
 		$arr_value = prepare_custom($typevalue);
-		if (empty($arr_value[$value])) {
+		if (!isset($arr_value[$value])) {
 			error('admin.php?action=settings&job=new', $lang->phrase('admin_value_not_in_setting_type_values'));
 		}
 	}

@@ -544,7 +544,6 @@ elseif ($job == 'newsletter3') {
 	$data = $cache->get();
 
 	require_once("classes/mail/class.phpmailer.php");
-	require_once('classes/mail/extended.phpmailer.php');
 	$mail = new PHPMailer();
 	$mail->From = $data['from_mail'];
 	$mail->FromName = $data['from_name'];
@@ -1196,32 +1195,37 @@ elseif ($job == 'register') {
 elseif ($job == 'register2') {
 	include_once ("classes/function.profilefields.php");
 
+	$name = $gpc->get('name', str);
+	$email = $gpc->get('email', str);
+	$pw = $gpc->get('pw', str);
+	$pwx = $gpc->get('pwx', str);
+
 	$error = array();
-	if (double_udata('name',$_POST['name']) == false) {
+	if (double_udata('name', $name) == false) {
 		$error[] = $lang->phrase('admin_member_username_already_in_use');
 	}
-	if (double_udata('mail',$_POST['email']) == false) {
+	if (double_udata('mail', $email) == false) {
 		$error[] = $lang->phrase('admin_member_mail_already_in_use');
 	}
-	if (strxlen($_POST['name']) > $config['maxnamelength']) {
+	if (strxlen($name) > $config['maxnamelength']) {
 		$error[] = $lang->phrase('admin_member_name_too_long');
 	}
-	if (strxlen($_POST['name']) < $config['minnamelength']) {
+	if (strxlen($name) < $config['minnamelength']) {
 		$error[] = $lang->phrase('admin_member_name_too_short');
 	}
-	if (strxlen($_POST['pw']) > $config['maxpwlength']) {
+	if (strxlen($pw) > $config['maxpwlength']) {
 		$error[] = $lang->phrase('admin_member_password_too_long');
 	}
-	if (strxlen($_POST['pw']) < $config['minpwlength']) {
+	if (strxlen($pw) < $config['minpwlength']) {
 		$error[] = $lang->phrase('admin_member_password_too_short');
 	}
-	if (strlen($_POST['email']) > 200) {
+	if (strlen($email) > 200) {
 		$error[] = $lang->phrase('admin_member_mail_too_long');
 	}
-	if (check_mail($_POST['email']) == false) {
+	if (check_mail($email) == false) {
 		$error[] = $lang->phrase('admin_member_mail_not_valid');
 	}
-	if ($_POST['pw'] != $_POST['pwx']) {
+	if ($pw != $pwx) {
 		$error[] = $lang->phrase('admin_member_passwords_different');
 	}
 
@@ -1262,9 +1266,9 @@ elseif ($job == 'register2') {
 	}
 	else {
 	    $reg = time();
-	    $pw_md5 = md5($_POST['pwx']);
+	    $pw_md5 = md5($pwx);
 
-		$db->query("INSERT INTO {$db->pre}user (name, pw, mail, regdate, confirm, groups, signature, about, notice) VALUES ('{$_POST['name']}', '{$pw_md5}', '{$_POST['email']}', '{$reg}', '11', '".GROUP_MEMBER."', '', '', '')",__LINE__,__FILE__);
+		$db->query("INSERT INTO {$db->pre}user (name, pw, mail, regdate, confirm, groups, signature, about, notice) VALUES ('{$name}', '{$pw_md5}', '{$email}', '{$reg}', '11', '".GROUP_MEMBER."', '', '', '')",__LINE__,__FILE__);
         $redirect = $db->insert_id();
 
 		if (count($upquery) > 0) {

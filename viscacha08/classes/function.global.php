@@ -1045,7 +1045,6 @@ function xmail ($to, $from = array(), $topic, $comment) {
 	global $config, $my, $lang, $bbcode;
 
 	require_once("classes/mail/class.phpmailer.php");
-	require_once('classes/mail/extended.phpmailer.php');
 
 	$mail = new PHPMailer();
 	$mail->CharSet = 'UTF-8';

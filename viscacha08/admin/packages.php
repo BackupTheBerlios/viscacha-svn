@@ -3222,7 +3222,7 @@ elseif ($job == 'plugins_template_edit') {
 		 <tr class="mbox" valign="top">
 		  <td rowspan="<?php echo count($tpldirs); ?>">
 			<?php echo $lang->phrase('admin_packages_template_edit_code'); ?><br /><br />
-			<ul><li><a href="admin.php?action=packages&amp;job=plugins_language&amp;id=<?php echo $data['id']; ?>" target="_blank"><?php echo $lang->phrase('admin_packages_template_edit_add_edit_phrase'); ?></a></li></ul>
+			<ul><li><a href="admin.php?action=packages&amp;job=plugins_language&amp;id=<?php echo $data['id']; ?>" target="_blank"><?php echo $lang->phrase('admin_packages_plugins_add_add_edit_phrase'); ?></a></li></ul>
 		  </td>
 		  <?php
 		  $first = true;
@@ -3240,8 +3240,8 @@ elseif ($job == 'plugins_template_edit') {
 		  		$first = false;
 		  	}
 		  	echo '<td>';
-		  	echo $lang->phrase('admin_packages_template_edit_template_groups').'<b>'.$tplid.'</b><br />';
-		  	echo $lang->phrase('admin_packages_template_edit_designs affected_by_changes').$affected.'<br />';
+		  	echo $lang->phrase('admin_packages_template_edit_template_groups').' <b>'.$tplid.'</b><br />';
+		  	echo $lang->phrase('admin_packages_template_edit_designs_affected_by_changes').$affected.'<br />';
 		  	echo '<textarea name="code['.$tplid.']" rows="8" cols="80" class="texteditor">'.$content.'</textarea>';
 		  	echo '</td></tr>';
 		  }
