@@ -152,7 +152,7 @@ if ($_GET['action'] == "save") {
 				}
 			}
 			$sqldata['ufid'] = "'{$redirect}'";
-			$fields = implode(', ', array_keys($fields));
+			$fields = implode(', ', $fields);
 			$sqldata = implode(', ', $sqldata);
 			$db->query("INSERT INTO {$db->pre}userfields ({$fields}) VALUES ({$sqldata})");
 		}

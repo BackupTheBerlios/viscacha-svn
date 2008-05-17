@@ -315,10 +315,19 @@ function get_mimetype($file) {
 }
 
 /**
-
-
-
-*/
+ * Gives out html formatted page numbers.
+ *
+ * It uses the set of templates specified in the last parameter.
+ * The template sets are in the directory "main" and are prefixed with "pages".
+ * Example: the last parameter is "small", the main template is "pagessmall.html" and the template for the current page is "pages_currentsmall".
+ *
+ * @param int $anzposts Number of entries
+ * @param int $epp Number of entries per page
+ * @param string $uri URL to the page with & or ? at the end (page=? will be appended)
+ * @param int $p The current page
+ * @param string $template Name of template set (see description)
+ * @return string HTML formatted page numbers and prefix
+ */
 function pages ($anzposts, $epp, $uri, $p = 0, $template = '') {
 	global $config, $tpl, $lang;
 

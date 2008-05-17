@@ -280,9 +280,9 @@ function editprofile_customsave($editable, $uid) {
 				}
 			}
 			$sqldata['ufid'] = "'{$uid}'";
-			$fields = implode(', ', array_keys($fields));
+			$fields = implode(', ', $fields);
 			$sqldata = implode(', ', $sqldata);
-			$db->query("INSERT INTO {$db->pre}userfields ({$fields}) VALUES ({$sqldata})");
+			$db->query("INSERT INTO {$db->pre}userfields ({$fields}) VALUES ({$sqldata})", __LINE__, __FILE__);
 		}
 		else {
 			$sqldata = array();
@@ -290,7 +290,7 @@ function editprofile_customsave($editable, $uid) {
 				$sqldata[] = "{$field} = '{$value}'";
 			}
 			$sqldata = implode(', ', $sqldata);
-			$db->query("UPDATE {$db->pre}userfields SET {$sqldata} WHERE ufid = '{$uid}' LIMIT 1");
+			$db->query("UPDATE {$db->pre}userfields SET {$sqldata} WHERE ufid = '{$uid}' LIMIT 1", __LINE__, __FILE__);
 		}
 	}
 

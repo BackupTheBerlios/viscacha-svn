@@ -183,7 +183,7 @@ if ($config['nocache'] == 1) {
 	<meta http-equiv="Cache-Control" content="no-cache" />
 	';
 }
-$grabrss_cache = array();
+
 if ($config['avwidth'] == 0) {
 	$config['avwidth'] = 2048;
 }

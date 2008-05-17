@@ -85,9 +85,11 @@ define('MAGPIE_VERSION', '0.72');
 
 $MAGPIE_ERROR = "";
 
-function get_mtime ($url) {
-
-	$cache = new RSSCache( MAGPIE_CACHE_DIR, 3600 );
+function get_mtime ($url, $age = null) {
+	if ($age == null) {
+		$age = 3600;
+	}
+	$cache = new RSSCache( MAGPIE_CACHE_DIR, $age );
 	return $cache->get_mtime($url);
 
 }

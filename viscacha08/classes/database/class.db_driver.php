@@ -250,8 +250,8 @@ class DB_Driver { // abstract class
 	function list_fields($table) {
 		$result = $this->query('SHOW COLUMNS FROM '.$table,__LINE__,__FILE__);
 		$columns = array();
-		while ($row = $this->fetch_num($result)) {
-			$columns[] = $row[0];
+		while ($row = $this->fetch_assoc($result)) {
+			$columns[] = $row['Field'];
 		}
 		return $columns;
 	}

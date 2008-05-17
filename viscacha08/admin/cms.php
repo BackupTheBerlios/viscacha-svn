@@ -1861,7 +1861,7 @@ elseif ($job == 'feed') {
 <?php
 	while ($row = $db->fetch_assoc($result)) {
 	if ($row['entries'] == 0) {
-		$row['entries'] = 'All';
+		$row['entries'] = $lang->phrase('admin_cms_news_delete_all');
 	}
 ?>
   <tr>
@@ -1901,6 +1901,10 @@ echo head();
    <td class="mbox"><input type="text" name="value" size="3"></td>
   </tr>
   <tr>
+   <td class="mbox"><?php echo $lang->phrase('admin_cms_news_max_age'); ?><br><span class="stext"><?php echo $lang->phrase('admin_cms_news_max_age_info'); ?></td>
+   <td class="mbox"><input type="text" name="max_age" size="8" value="720"></td>
+  </tr>
+  <tr>
    <td class="ubox" width="100%" colspan="2" align="center"><input type="submit" name="Submit" value="<?php echo $lang->phrase('admin_cms_form_add'); ?>"></td>
   </tr>
  </table>
@@ -1914,6 +1918,7 @@ elseif ($job == 'feed_add2') {
 	$title = $gpc->get('temp1', str);
 	$file = $gpc->get('temp2', str);
 	$entries = $gpc->get('value', int);
+	$max_age = $gpc->get('max_age', int);
 
 	if (empty($title)) {
 		error('admin.php?action=cms&job=feed_add', $lang->phrase('admin_cms_no_title_specified'));
@@ -1924,8 +1929,11 @@ elseif ($job == 'feed_add2') {
 	if (empty($entries)) {
 		$entries = 0;
 	}
+	if (empty($max_age)) {
+		$max_age = 60*12;
+	}
 
-	$db->query("INSERT INTO {$db->pre}grab (title, file, entries) VALUES ('{$title}','{$file}','{$entries}')", __LINE__, __FILE__);
+	$db->query("INSERT INTO {$db->pre}grab (title, file, entries, max_age) VALUES ('{$title}','{$file}','{$entries}','{$max_age}')", __LINE__, __FILE__);
 
 	$delobj = $scache->load('grabrss');
 	$delobj->delete();
@@ -1954,14 +1962,13 @@ elseif ($job == 'feed_delete') {
 	}
 }
 elseif ($job == 'feed_edit') {
-echo head();
-$id = $gpc->get('id', int);
-if (empty($id)) {
-	error('admin.php?action=cms&job=feed', 'Invalid ID given');
-}
-$result = $db->query('SELECT * FROM '.$db->pre.'grab WHERE id = '.$id, __LINE__, __FILE__);
-$row = $db->fetch_assoc($result);
-
+	echo head();
+	$id = $gpc->get('id', int);
+	if (empty($id)) {
+		error('admin.php?action=cms&job=feed', 'Invalid ID given');
+	}
+	$result = $db->query('SELECT * FROM '.$db->pre.'grab WHERE id = '.$id, __LINE__, __FILE__);
+	$row = $db->fetch_assoc($result);
 ?>
 <form name="form" method="post" action="admin.php?action=cms&job=feed_edit2&id=<?php echo $id; ?>">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
@@ -1981,6 +1988,10 @@ $row = $db->fetch_assoc($result);
    <td class="mbox"><input type="text" name="value" size="3" value="<?php echo $row['entries']; ?>"></td>
   </tr>
   <tr>
+   <td class="mbox"><?php echo $lang->phrase('admin_cms_news_max_age'); ?><br><span class="stext"><?php echo $lang->phrase('admin_cms_news_max_age_info'); ?></td>
+   <td class="mbox"><input type="text" name="max_age" size="8" value="<?php echo $row['max_age']; ?>"></td>
+  </tr>
+  <tr>
    <td class="ubox" width="100%" colspan=2 align="center"><input type="submit" name="Submit" value="<?php echo $lang->phrase('admin_cms_form_edit'); ?>"></td>
   </tr>
  </table>
@@ -1995,20 +2006,25 @@ elseif ($job == 'feed_edit2') {
 	$file = $gpc->get('temp2', str);
 	$entries = $gpc->get('value', int);
 	$id = $gpc->get('id', int);
+	$max_age = $gpc->get('max_age', int);
+
 	if (!is_id($id)) {
-		error('admin.php?action=cms&job=feed', 'Invalid ID given');
+		error('admin.php?action=cms&job=feed', $lang->phrase('admin_cms_invalid_id_given'));
 	}
 	if (empty($title)) {
-		error('admin.php?action=cms&job=feed_edit&id='.$id, 'No title specified');
+		error('admin.php?action=cms&job=feed_edit&id='.$id, $lang->phrase('admin_cms_no_title_specified'));
 	}
 	if (empty($file)) {
-		error('admin.php?action=cms&job=feed_edit&id='.$id, 'No URL specified');
+		error('admin.php?action=cms&job=feed_edit&id='.$id, $lang->phrase('admin_cms_no_url_specified'));
 	}
 	if (empty($entries)) {
 		$entries = 0;
 	}
+	if (empty($max_age)) {
+		$max_age = 60*12;
+	}
 
-	$db->query('UPDATE '.$db->pre.'grab SET file = "'.$file.'", title = "'.$title.'", entries = "'.$entries.'" WHERE id = "'.$id.'"', __LINE__, __FILE__);
+	$db->query("UPDATE {$db->pre}grab SET file = '{$file}', title = '{$title}', entries = '{$entries}', max_age = '{$max_age}' WHERE id = '{$id}'", __LINE__, __FILE__);
 
 	$delobj = $scache->load('grabrss');
 	$delobj->delete();

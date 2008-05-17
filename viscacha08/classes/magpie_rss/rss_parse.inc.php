@@ -382,7 +382,12 @@ class MagpieRSS {
     function normalize () {
         // if atom populate rss fields
         if ( $this->is_atom() ) {
-            $this->channel['description'] = $this->channel['tagline'];
+        	if (isset($this->channel['tagline'])) {
+            	$this->channel['description'] = $this->channel['tagline'];
+        	}
+        	else {
+        		$this->channel['description'] = $this->channel['tagline'] = '';
+        	}
             for ( $i = 0; $i < count($this->items); $i++) {
                 $item = $this->items[$i];
                 if ( isset($item['summary']) )
@@ -402,7 +407,12 @@ class MagpieRSS {
             }
         }
         elseif ( $this->is_rss() ) {
-            $this->channel['tagline'] = $this->channel['description'];
+        	if (isset($this->channel['description'])) {
+            	$this->channel['tagline'] = $this->channel['description'];
+        	}
+        	else {
+        		$this->channel['tagline'] = $this->channel['description'] = '';
+        	}
             for ( $i = 0; $i < count($this->items); $i++) {
                 $item = $this->items[$i];
                 if ( isset($item['description']))
@@ -463,7 +473,7 @@ class MagpieRSS {
             if ($this->encoding != 'UTF-8' && $this->encoding != 'US-ASCII' && $this->encoding != 'ISO-8859-1') {
             	$this->encoding = 'ISO-8859-1';
             }
-            xml_parser_set_option($parser, XML_OPTION_TARGET_ENCODING, $out_enc);
+            xml_parser_set_option($parser, XML_OPTION_TARGET_ENCODING, $this->encoding);
         }
 
         return array($parser, $source);
