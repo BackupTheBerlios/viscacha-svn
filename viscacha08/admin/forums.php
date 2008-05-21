@@ -115,7 +115,7 @@ elseif ($job == 'mods') {
     <tr class="ubox">
       <td width="5%" rowspan="2"><?php echo $lang->phrase('admin_forum_delete'); ?><br />
           <span class="stext">
-          <input type="checkbox" onClick="check_all('delete[]');" name="all" value="1" />
+          <input type="checkbox" onClick="check_all(this);" name="all" value="delete[]" />
           <?php echo $lang->phrase('admin_forum_all'); ?></span></td>
       <td width="30%" rowspan="2"><?php if ($bid == 0) { ?>
           <a<?php echo iif($orderby == 'member', ' style="font-weight: bold;"'); ?> href="admin.php?action=forums&job=mods&order=member"><?php echo $lang->phrase('admin_forum_order_by_name'); ?></a>
@@ -1046,7 +1046,7 @@ elseif ($job == 'rights') {
    <td class="obox" colspan="<?php echo $colspan; ?>"><span style="float: right;"><a class="button" href="admin.php?action=forums&job=rights_add&id=<?php echo $id; ?>"><?php echo $lang->phrase('admin_forum_add_usergroup'); ?></a></span><?php echo $lang->phrase('admin_forum_permission_manager'); ?></td>
   </tr>
   <tr>
-  	<td class="ubox" valign="bottom"><b><?php echo $lang->phrase('admin_forum_delete'); ?></b><br /><span class="stext"><input type="checkbox" onclick="check_all('delete[]');" name="all" value="1" /> <?php echo $lang->phrase('admin_forum_all'); ?></span></td>
+  	<td class="ubox" valign="bottom"><b><?php echo $lang->phrase('admin_forum_delete'); ?></b><br /><span class="stext"><input type="checkbox" onclick="check_all(this);" name="all" value="delete[]" /> <?php echo $lang->phrase('admin_forum_all'); ?></span></td>
     <td class="ubox" valign="bottom"><b><?php echo $lang->phrase('admin_forum_name_public_title'); ?></b></td>
     <?php foreach ($glk_forums as $key) { ?>
    	<td class="ubox" valign="bottom" align="center">
@@ -1464,7 +1464,7 @@ elseif ($job == 'prefix') {
    <td class="obox" colspan="3"><?php echo $lang->phrase('admin_forum_manage_prefixes'); ?></td>
   </tr>
   <tr>
-   <td class="ubox" width="10%"><?php echo $lang->phrase('admin_forum_delete'); ?><br /><span class="stext"><input type="checkbox" onclick="check_all('delete[]');" name="all" value="1" /> <?php echo $lang->phrase('admin_forum_all'); ?></span></td>
+   <td class="ubox" width="10%"><?php echo $lang->phrase('admin_forum_delete'); ?><br /><span class="stext"><input type="checkbox" onclick="check_all(this);" name="all" value="delete[]" /> <?php echo $lang->phrase('admin_forum_all'); ?></span></td>
    <td class="ubox" width="70%"><?php echo $lang->phrase('admin_forum_head_value'); ?></td>
    <td class="ubox" width="20%"><?php echo $lang->phrase('admin_forum_head_standard'); ?></td>
   </tr>

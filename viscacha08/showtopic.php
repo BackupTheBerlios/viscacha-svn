@@ -71,9 +71,9 @@ else {
 
 if ($_GET['action'] == 'firstnew') {
 	if ($info['last'] > $my->clv) {
-		$result = $db->query('SELECT COUNT(*) AS count FROM '.$db->pre.'replies WHERE topic_id = '.$info['id'].' AND date > '.$my->clv,__LINE__,__FILE__);
-		$new = $db->fetch_assoc($result);
-		$tp = ($info['posts']+1) - $new['count'];
+		$result = $db->query("SELECT COUNT(*) AS count FROM {$db->pre}replies WHERE topic_id = '{$info['id']}' AND date <= '{$my->clv}'",__LINE__,__FILE__);
+		$old = $db->fetch_assoc($result);
+		$tp = $old['count'] + 1; // Number of old post (with topic start post) + 1, to get the first new post, not the last old post
 		$pgs = ceil($tp/$last['topiczahl']);
 		if ($pgs < 1) {
 			$pgs = 1;

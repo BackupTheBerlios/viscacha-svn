@@ -646,7 +646,7 @@ elseif ($job == 'newsletter_archive') {
    <td class="obox" colspan="4"><?php echo $lang->phrase('admin_member_nl_archive'); ?></td>
   </tr>
   <tr>
-   <td class="ubox"><?php echo $lang->phrase('admin_member_delete'); ?><br /><span class="stext"><input type="checkbox" onclick="check_all('delete[]');" name="all" value="1" /> <?php echo $lang->phrase('admin_member_all'); ?></span></td>
+   <td class="ubox"><?php echo $lang->phrase('admin_member_delete'); ?><br /><span class="stext"><input type="checkbox" onclick="check_all(this);" name="all" value="delete[]" /> <?php echo $lang->phrase('admin_member_all'); ?></span></td>
    <td class="ubox"><?php echo $lang->phrase('admin_member_nl_subject'); ?></td>
    <td class="ubox"><?php echo $lang->phrase('admin_member_date_time'); ?></td>
    <td class="ubox"><?php echo $lang->phrase('admin_member_nl_recipients'); ?></td>
@@ -925,7 +925,7 @@ elseif ($job == 'manage') {
 		  <td class="ubox" colspan="8"><span style="float: right;"><?php echo $temp; ?></span><?php echo $count[0]; ?> <?php echo $lang->phrase('admin_member_members'); ?></td>
 		</tr>
 		<tr>
-		  <td class="obox"><?php echo $lang->phrase('admin_member_delete'); ?><br /><span class="stext"><input type="checkbox" onclick="check_all('delete[]');" name="all" value="1" /> <?php echo $lang->phrase('admin_member_all'); ?></span></td>
+		  <td class="obox"><?php echo $lang->phrase('admin_member_delete'); ?><br /><span class="stext"><input type="checkbox" onclick="check_all(this);" name="all" value="delete[]" /> <?php echo $lang->phrase('admin_member_all'); ?></span></td>
 		  <td class="obox"><?php echo $lang->phrase('admin_member_username'); ?>
 		  <a href="admin.php?action=members&amp;job=manage&amp;letter=<?php echo $letter; ?>&amp;page=<?php echo $page; ?>"><img src="admin/html/images/asc.gif" border="0" alt="<?php echo $lang->phrase('admin_member_asc'); ?>"></a>
 		  <a href="admin.php?action=members&amp;job=manage&amp;order=1&amp;page=<?php echo $page; ?>&amp;letter=<?php echo $letter; ?>"><img src="admin/html/images/desc.gif" border="0" alt="<?php echo $lang->phrase('admin_member_desc'); ?>"></a></td>
@@ -1019,7 +1019,7 @@ elseif ($job == 'memberrating') {
 		  <td class="ubox" colspan="6"><span style="float: right;"><?php echo $temp; ?></span><?php echo $count[0]; ?> <?php echo $lang->phrase('admin_member_rated_members'); ?></td>
 		</tr>
 		<tr>
-		  <td class="obox"><?php echo $lang->phrase('admin_member_delete'); ?><br /><span class="stext"><input type="checkbox" onclick="check_all('delete[]');" name="all" value="1" /> <?php echo $lang->phrase('admin_member_all'); ?></span></td>
+		  <td class="obox"><?php echo $lang->phrase('admin_member_delete'); ?><br /><span class="stext"><input type="checkbox" onclick="check_all(this);" name="all" value="delete[]" /> <?php echo $lang->phrase('admin_member_all'); ?></span></td>
 		  <td class="obox"><?php echo $lang->phrase('admin_member_username'); ?></td>
 		  <td class="obox"><?php echo $lang->phrase('admin_member_rating_amount'); ?></td>
 		  <td class="obox"><?php echo $lang->phrase('admin_member_mail'); ?></td>
@@ -2155,7 +2155,7 @@ elseif ($job == 'inactive2') {
 			  <td class="ubox" colspan="9"><?php echo $count; ?> <?php echo $lang->phrase('admin_member_inactive_found'); ?></td>
 			</tr>
 			<tr>
-			  <td class="obox center"><?php echo $lang->phrase('admin_member_select'); ?><br /><span class="stext"><input type="checkbox" onclick="check_all('delete[]');" name="all" value="1" /> <?php echo $lang->phrase('admin_member_all'); ?></span></td>
+			  <td class="obox center"><?php echo $lang->phrase('admin_member_select'); ?><br /><span class="stext"><input type="checkbox" onclick="check_all(this);" name="all" value="delete[]" /> <?php echo $lang->phrase('admin_member_all'); ?></span></td>
 			  <td class="obox center"><?php echo $lang->phrase('admin_member_edit'); ?></td>
 			  <?php foreach ($keys as $key) { ?>
 			  <td class="obox"><?php echo $fields[$key][0]; ?></td>
@@ -2673,7 +2673,7 @@ elseif ($job == 'search2') {
 			  <td class="ubox" colspan="<?php echo $colspan; ?>"><?php echo $count; ?> <?php echo $lang->phrase('admin_member_members_found'); ?></td>
 			</tr>
 			<tr>
-			  <td class="obox"><?php echo $lang->phrase('admin_member_select'); ?><br /><span class="stext"><input type="checkbox" onclick="check_all('delete[]');" name="all" value="1" /> <?php echo $lang->phrase('admin_member_all'); ?></span></td>
+			  <td class="obox"><?php echo $lang->phrase('admin_member_select'); ?><br /><span class="stext"><input type="checkbox" onclick="check_all(this);" name="all" value="delete[]" /> <?php echo $lang->phrase('admin_member_all'); ?></span></td>
 			  <?php foreach ($show as $key) { ?>
 			  <td class="obox"><?php echo $fields[$key][0]; ?></td>
 			  <?php } ?>
@@ -2776,7 +2776,7 @@ elseif ($job == 'activate') {
 		  <td class="ubox" width="30%"><?php echo $lang->phrase('admin_member_username'); ?></td>
 		  <td class="ubox" width="10%"><?php echo $lang->phrase('admin_member_mail'); ?></td>
 		  <td class="ubox" width="15%"><?php echo $lang->phrase('admin_member_registered'); ?></td>
-		  <td class="ubox" width="45%"><?php echo $lang->phrase('admin_member_status'); ?> (<input type="checkbox" onchange="check_all('delete[]')" /> <?php echo $lang->phrase('admin_member_all'); ?>`)</td>
+		  <td class="ubox" width="45%"><?php echo $lang->phrase('admin_member_status'); ?> (<input type="checkbox" onchange="check_all(this)" value="delete[]" /> <?php echo $lang->phrase('admin_member_all'); ?>`)</td>
 		</tr>
 	<?php
 	while ($row = $gpc->prepare($db->fetch_object($result))) {

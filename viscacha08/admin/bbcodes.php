@@ -356,7 +356,7 @@ elseif ($job == 'smileys') {
    </td>
   </tr>
   <tr class="ubox">
-   <td width="5%"><?php echo $lang->phrase('admin_bbc_choose_all'); ?><br /><span class="stext"><input type="checkbox" onclick="check_all('id[]');" name="all" value="1" /> <?php echo $lang->phrase('admin_bbc_choose_all2'); ?></span></td>
+   <td width="5%"><?php echo $lang->phrase('admin_bbc_choose_all'); ?><br /><span class="stext"><input type="checkbox" onclick="check_all(this);" name="all" value="id[]" /> <?php echo $lang->phrase('admin_bbc_choose_all2'); ?></span></td>
    <td width="10%"><?php echo $lang->phrase('admin_bbc_code'); ?></td>
    <td width="30%"><?php echo $lang->phrase('admin_bbc_url'); ?></td>
    <td width="15%"><?php echo $lang->phrase('admin_bbc_images'); ?></td>
@@ -502,7 +502,7 @@ elseif ($job == 'word') {
    <td class="obox" colspan="4"><?php echo $lang->phrase('admin_bbc_manage_glossary'); ?></b></td>
   </tr>
   <tr>
-   <td class="ubox" width="5%"><?php echo $lang->phrase('admin_bbc_delete_all'); ?><br /><span class="stext"><input type="checkbox" onclick="check_all('delete[]');" name="all" value="1" /> <?php echo $lang->phrase('admin_bbc_delete_all2'); ?></span></td>
+   <td class="ubox" width="5%"><?php echo $lang->phrase('admin_bbc_delete_all'); ?><br /><span class="stext"><input type="checkbox" onclick="check_all(this);" name="all" value="delete[]" /> <?php echo $lang->phrase('admin_bbc_delete_all2'); ?></span></td>
    <td class="ubox" width="15%"><?php echo $lang->phrase('admin_bbc_abbr'); ?></td>
    <td class="ubox" width="30%"><?php echo $lang->phrase('admin_bbc_phrase'); ?></td>
    <td class="ubox" width="50%"><?php echo $lang->phrase('admin_bbc_description'); ?></td>
@@ -791,7 +791,7 @@ elseif ($job == 'codefiles') {
    <td class="obox" colspan="3"><?php echo $lang->phrase('admin_bbc_syntax_highlighting_manager'); ?></b></td>
   </tr>
   <tr>
-   <td class="ubox" width="10%"><?php echo $lang->phrase('admin_bbc_delete_all'); ?><br /><span class="stext"><input type="checkbox" onclick="check_all('delete[]');" name="all" value="1" /> <?php echo $lang->phrase('admin_bbc_delete_all2'); ?></span></td>
+   <td class="ubox" width="10%"><?php echo $lang->phrase('admin_bbc_delete_all'); ?><br /><span class="stext"><input type="checkbox" onclick="check_all(this);" name="all" value="delete[]" /> <?php echo $lang->phrase('admin_bbc_delete_all2'); ?></span></td>
    <td class="ubox" width="45%"><?php echo $lang->phrase('admin_bbc_language'); ?></td>
    <td class="ubox" width="45%"><?php echo $lang->phrase('admin_bbc_file'); ?></td>
   </tr>

@@ -104,8 +104,8 @@ if ($job == 'optimize') {
    <td class="ubox" width="13%"><?php echo $lang->phrase('admin_db_overhead'); ?></td>
   </tr>
   <tr>
-   <td class="mbox"><input type="checkbox" onclick="check_all('repair[]')" name="repair_all"></td>
-   <td class="mbox"><input type="checkbox" onclick="check_all('optimize[]')" name="optimize_all"></td>
+   <td class="mbox"><input type="checkbox" onclick="check_all(this)" name="repair_all" value="repair[]" /></td>
+   <td class="mbox"><input type="checkbox" onclick="check_all(this)" name="optimize_all" value="optimize[]" /></td>
    <td class="mbox"><strong><?php echo $lang->phrase('admin_db_all'); ?></strong></td><?php
    	$data_length = formatFilesize($data_length);
    ?>
@@ -499,7 +499,7 @@ elseif ($job == 'restore') {
   </tr>
   <tr>
    <td class="ubox" width="5%"><?php echo $lang->phrase('admin_db_restore'); ?></td>
-   <td class="ubox" width="5%"><?php echo $lang->phrase('admin_db_delete'); ?><br /><span class="stext"><input type="checkbox" onclick="check_all('delete[]');" name="all" value="1" /> <?php echo $lang->phrase('admin_db_all'); ?></span></td>
+   <td class="ubox" width="5%"><?php echo $lang->phrase('admin_db_delete'); ?><br /><span class="stext"><input type="checkbox" onclick="check_all(this);" name="all" value="delete[]" /> <?php echo $lang->phrase('admin_db_all'); ?></span></td>
    <td class="ubox" width="80%"><?php echo $lang->phrase('admin_db_information'); ?></td>
    <td class="ubox" width="10%"><?php echo $lang->phrase('admin_db_file_size'); ?></td>
   </tr>

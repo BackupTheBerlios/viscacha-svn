@@ -38,12 +38,6 @@ function GetTop(l) {
 	else return (l.offsetTop);
 }
 function check_all(elem) {
-	if (elem.checked == true) {
-		elem.checked = false;
-	}
-	else {
-		elem.checked = true;
-	}
 	var all = document.getElementsByName(elem.value);
 	for(var i=0; i < all.length; i++) {
 		all[i].checked = elem.checked;

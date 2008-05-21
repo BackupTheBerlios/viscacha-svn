@@ -294,7 +294,7 @@ elseif ($job == 'feedcreator') {
    <td class="obox" colspan="5"><?php echo $lang->phrase('admin_misc_creation_export_of_feeds'); ?> (<?php echo count($data); ?>)</b></td>
   </tr>
   <tr>
-   <td class="ubox" width="10%"><?php echo $lang->phrase('admin_misc_delete'); ?><br /><span class="stext"><input type="checkbox" onclick="check_all('delete[]');" name="all" value="1" /> <?php echo $lang->phrase('admin_misc_all'); ?></span></td>
+   <td class="ubox" width="10%"><?php echo $lang->phrase('admin_misc_delete'); ?><br /><span class="stext"><input type="checkbox" onclick="check_all(this);" name="all" value="delete[]" /> <?php echo $lang->phrase('admin_misc_all'); ?></span></td>
    <td class="ubox" width="30%"><?php echo $lang->phrase('admin_misc_name'); ?></td>
    <td class="ubox" width="30%"><?php echo $lang->phrase('admin_misc_file_class'); ?></td>
    <td class="ubox" width="15%"><?php echo $lang->phrase('admin_misc_shown'); ?></td>
@@ -497,7 +497,7 @@ elseif ($job == "captcha_noises") {
    <td class="obox" colspan="3"><?php echo $lang->phrase('admin_misc_captcha_manager'); ?> &raquo; <?php echo $lang->phrase('admin_misc_bg_noises'); ?></td>
   </tr>
   <tr>
-   <td class="ubox" width="10%"><?php echo $lang->phrase('admin_misc_delete'); ?><br /><span class="stext"><input type="checkbox" onclick="check_all('delete[]');" name="all" value="1" /> <?php echo $lang->phrase('admin_misc_all'); ?></span></td>
+   <td class="ubox" width="10%"><?php echo $lang->phrase('admin_misc_delete'); ?><br /><span class="stext"><input type="checkbox" onclick="check_all(this);" name="all" value="delete[]" /> <?php echo $lang->phrase('admin_misc_all'); ?></span></td>
    <td class="ubox" width="90%"><?php echo $lang->phrase('admin_misc_bg_picture_preview'); ?></td>
   </tr>
   <?php foreach ($fonts as $path) { ?>
@@ -559,7 +559,7 @@ elseif ($job == "captcha_fonts") {
    <td class="obox" colspan="3"><?php echo $lang->phrase('admin_misc_captcha_manager_fonts'); ?></td>
   </tr>
   <tr>
-   <td class="ubox" width="10%"><?php echo $lang->phrase('admin_misc_delete'); ?><br /><span class="stext"><input type="checkbox" onclick="check_all('delete[]');" name="all" value="1" /> <?php echo $lang->phrase('admin_misc_all'); ?></span></td>
+   <td class="ubox" width="10%"><?php echo $lang->phrase('admin_misc_delete'); ?><br /><span class="stext"><input type="checkbox" onclick="check_all(this);" name="all" value="delete[]" /> <?php echo $lang->phrase('admin_misc_all'); ?></span></td>
    <td class="ubox" width="90%"><?php echo $lang->phrase('admin_misc_front_preview'); ?></td>
   </tr>
   <?php foreach ($fonts as $path) { ?>

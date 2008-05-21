@@ -482,7 +482,7 @@ elseif (empty($job) || $job == 'manage') {
 					<td class="ubox" nowrap="nowrap"><?php echo $lang->phrase('admin_spider_visits_title'); ?></td>
 					<td class="ubox" nowrap="nowrap"><?php echo $lang->phrase('admin_spider_last_visit_title'); ?></td>
 					<td class="ubox" nowrap="nowrap"><?php echo $lang->phrase('admin_spider_actions_title'); ?></td>
-					<td class="ubox" nowrap="nowrap"><?php echo $lang->phrase('admin_spider_mark_title'); ?><br /><span class="stext"><input type="checkbox" onclick="check_all('mark[]');" name="all" value="1" /> <?php echo $lang->phrase('admin_spider_all_title'); ?></span></td>
+					<td class="ubox" nowrap="nowrap"><?php echo $lang->phrase('admin_spider_mark_title'); ?><br /><span class="stext"><input type="checkbox" onclick="check_all(this);" name="all" value="mark[]" /> <?php echo $lang->phrase('admin_spider_all_title'); ?></span></td>
 				</tr>
 				<?php
 			}

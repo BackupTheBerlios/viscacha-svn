@@ -184,7 +184,7 @@ elseif ($job == 'manage') {
 	   </td>
 	  </tr>
 	  <tr>
-	   <td class="ubox" width="2%"><?php echo $lang->phrase('admin_th_delete'); ?><br /><span class="stext"><input type="checkbox" onclick="check_all('delete[]');" name="all" value="1" /> <?php echo $lang->phrase('admin_th_delete_all'); ?></span></td>
+	   <td class="ubox" width="2%"><?php echo $lang->phrase('admin_th_delete'); ?><br /><span class="stext"><input type="checkbox" onclick="check_all(this);" name="all" value="delete[]" /> <?php echo $lang->phrase('admin_th_delete_all'); ?></span></td>
 	   <td class="ubox" width="5%"><?php echo $lang->phrase('admin_th_icon'); ?></td>
 	   <td class="ubox" width="22%"><?php echo $lang->phrase('admin_th_filetype'); ?></td>
 	   <td class="ubox" width="3%" title="<?php echo $lang->phrase('admin_th_attach_title'); ?>"><?php echo $lang->phrase('admin_th_attach'); ?></td>

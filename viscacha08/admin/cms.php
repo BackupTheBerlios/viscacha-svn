@@ -1313,7 +1313,7 @@ elseif ($job == 'doc') {
    </td>
   </tr>
   <tr>
-   <td class="ubox" width="2%"><?php echo $lang->phrase('admin_cms_doc_delete'); ?><br /><span class="stext"><input type="checkbox" onclick="check_all('delete[]');" name="all" value="1" /> <?php echo $lang->phrase('admin_cms_doc_delete_all'); ?></span></td>
+   <td class="ubox" width="2%"><?php echo $lang->phrase('admin_cms_doc_delete'); ?><br /><span class="stext"><input type="checkbox" onclick="check_all(this);" name="all" value="delete[]" /> <?php echo $lang->phrase('admin_cms_doc_delete_all'); ?></span></td>
    <td class="ubox" width="30%"><?php echo $lang->phrase('admin_cms_doc_title'); ?></td>
    <td class="ubox" width="14%"><?php echo $lang->phrase('admin_cms_doc_av_languages'); ?></td>
    <td class="ubox" width="3%"><?php echo $lang->phrase('admin_cms_doc_published'); ?></td>
@@ -1852,7 +1852,7 @@ elseif ($job == 'feed') {
    <td class="obox" colspan="5"><span style="float: right;"><a class="button" href="admin.php?action=cms&job=feed_add"><?php echo $lang->phrase('admin_cms_add_newsfeed'); ?></a></span><?php echo $lang->phrase('admin_cms_impor_of_newsfeeds'); ?> (<?php echo $num; ?>)</td>
   </tr>
   <tr>
-   <td class="ubox" width="5%"><?php echo $lang->phrase('admin_cms_news_delete'); ?><br /><span class="stext"><input type="checkbox" onclick="check_all('delete[]');" name="all" value="1" /> <?php echo $lang->phrase('admin_cms_news_delete_all'); ?></span></td>
+   <td class="ubox" width="5%"><?php echo $lang->phrase('admin_cms_news_delete'); ?><br /><span class="stext"><input type="checkbox" onclick="check_all(this);" name="all" value="delete[]" /> <?php echo $lang->phrase('admin_cms_news_delete_all'); ?></span></td>
    <td class="ubox" width="5%"><?php echo $lang->phrase('admin_cms_news_id'); ?></td>
    <td class="ubox" width="35%"><?php echo $lang->phrase('admin_cms_news_title_head'); ?></td>
    <td class="ubox" width="45%"><?php echo $lang->phrase('admin_cms_news_file'); ?></td>

@@ -173,7 +173,7 @@ function InsertTagsNote(id, front, end) {
 }
 function InsertTagsURL(id, front, end) {
 	var selection = getSelection(id);
-	var search = selection.search( /^(http:|www\.)/i );
+	var search = selection.search( /^(http:|ftp:|www\.)/i );
 	if (search != -1) {
 		var input1 = window.prompt(lng['bbcodes_url_prompt1'], selection); // Addr.
 		var input2 = window.prompt(lng['bbcodes_url_prompt2'], ''); // Text
@@ -181,6 +181,9 @@ function InsertTagsURL(id, front, end) {
 	else {
 		var input1 = window.prompt(lng['bbcodes_url_prompt1'], '');
 		var input2 = window.prompt(lng['bbcodes_url_prompt2'], selection);
+	}
+	if (empty(input2)) {
+		input2 = input1;
 	}
 	search = input1.search( /^www./i );
 	if (search != -1) {

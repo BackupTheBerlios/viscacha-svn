@@ -801,7 +801,7 @@ elseif ($job == 'user') {
 	   <input type="checkbox" name="mlistfields[]" value="msn"<?php echo iif(in_array('msn', $mlistfields), ' checked="checked"'); ?> /> <?php echo $lang->phrase('admin_memberlist_msn'); ?><br />
 	   <input type="checkbox" name="mlistfields[]" value="jabber"<?php echo iif(in_array('jabber', $mlistfields), ' checked="checked"'); ?> /> <?php echo $lang->phrase('admin_memberlist_jabber'); ?><br />
 	   <input type="checkbox" name="mlistfields[]" value="skype"<?php echo iif(in_array('skype', $mlistfields), ' checked="checked"'); ?> /> <?php echo $lang->phrase('admin_memberlist_skype'); ?><br />
-	   <input type="checkbox" name="mlistfields[]" value="online"<?php echo iif(in_array('online', $mlistfields), ' checked="checked"'); ?> />$lang->phrase('admin_memberlist_online-status')
+	   <input type="checkbox" name="mlistfields[]" value="online"<?php echo iif(in_array('online', $mlistfields), ' checked="checked"'); ?> /> <?php echo $lang->phrase('admin_memberlist_online-status'); ?>
 	   </td>
 	  </tr>
 	  <tr>
