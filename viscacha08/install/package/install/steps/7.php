@@ -68,7 +68,7 @@ if ($prefix != $config['dbprefix']) {
 }
 else {
 require_once('../classes/database/'.$config['dbsystem'].'.inc.php');
-$db = new DB($config['host'], $config['dbuser'], $config['dbpw'], $config['database'], $config['dbprefix'], false);
+$db = new DB($config['host'], $config['dbuser'], $config['dbpw'], $config['database'], $config['dbprefix']);
 $db->setPersistence($config['pconnect']);
 $db->connect(false);
 if (!$db->hasConnection()) {

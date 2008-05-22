@@ -1916,7 +1916,7 @@ elseif ($job == 'feed_add2') {
 	echo head();
 
 	$title = $gpc->get('temp1', str);
-	$file = $gpc->get('temp2', str);
+	$file = $gpc->get('temp2', db_esc);
 	$entries = $gpc->get('value', int);
 	$max_age = $gpc->get('max_age', int);
 
@@ -2003,7 +2003,7 @@ elseif ($job == 'feed_edit2') {
 	echo head();
 
 	$title = $gpc->get('temp1', str);
-	$file = $gpc->get('temp2', str);
+	$file = $gpc->get('temp2', db_esc);
 	$entries = $gpc->get('value', int);
 	$id = $gpc->get('id', int);
 	$max_age = $gpc->get('max_age', int);

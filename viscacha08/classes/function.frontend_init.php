@@ -46,8 +46,15 @@ $lang = new lang();
 require_once("classes/class.filesystem.php");
 $filesystem = new filesystem($config['ftp_server'], $config['ftp_user'], $config['ftp_pw'], $config['ftp_port']);
 $filesystem->set_wd($config['ftp_path']);
+
+// Database functions
+require_once('classes/database/'.$config['dbsystem'].'.inc.php');
+$db = new DB($config['host'], $config['dbuser'], $config['dbpw'], $config['database'], $config['dbprefix']);
+$db->setPersistence($config['pconnect']);
+
 // Variables
 require_once ("classes/function.gpc.php");
+
 /* 	Handling of _GET, _POST, _REQUEST, _COOKIE, _SERVER, _ENV
  	_ENV, _SERVER: Won't be checked, but null-byte is deleted
  	_COOKIE: You can check them in the script ( getcookie() ), won't be checked
@@ -55,60 +62,60 @@ require_once ("classes/function.gpc.php");
  	_POST, _GET with keys specified in http_vars are checked and save
 */
 $http_vars = array(
-'action' => str,
-'job' => str,
-'search' => str,
-'name' => str,
-'email' => str,
-'topic' => str,
-'comment' => str,
-'error' => str,
-'pw' => str,
-'pwx' => str,
-'order' => str,
-'sort' => str,
-'letter' => str,
-'fullname' => str,
-'about' => str,
-'location' => str,
-'signature' => str,
-'hp' => str,
-'icq' => str,
-'pic' => str,
-'question' => str,
-'type' => str,
-'gender' => str,
-'aol' => str,
-'msn' => str,
-'skype' => str,
-'yahoo' => str,
-'jabber' => str,
-'fid' => str,
-'file' => str,
-'groups' => str,
-'captcha' => str,
-'board' => int,
-'topic_id' => int,
-'id' => int,
-'page' => int,
-'temp' => int,
-'temp2' => int,
-'dosmileys' => int,
-'dowords' => int,
-'birthday' => int,
-'birthmonth' => int,
-'birthyear' => int,
-'opt_0' => int,
-'opt_1' => int,
-'opt_2' => int,
-'opt_3' => int,
-'opt_4' => int,
-'opt_5' => int,
-'opt_6' => int,
-'opt_7' => int,
-'notice' => arr_str,
-'boards' => arr_int,
-'delete' => arr_int
+	'action' => str,
+	'job' => str,
+	'search' => str,
+	'name' => str,
+	'email' => db_esc,
+	'topic' => str,
+	'comment' => str,
+	'error' => str,
+	'pw' => str,
+	'pwx' => str,
+	'order' => str,
+	'sort' => str,
+	'letter' => str,
+	'fullname' => str,
+	'about' => str,
+	'location' => str,
+	'signature' => str,
+	'hp' => str,
+	'icq' => str,
+	'pic' => db_esc,
+	'question' => str,
+	'type' => str,
+	'gender' => str,
+	'aol' => db_esc,
+	'msn' => db_esc,
+	'skype' => db_esc,
+	'yahoo' => db_esc,
+	'jabber' => db_esc,
+	'fid' => str,
+	'file' => str,
+	'groups' => str,
+	'captcha' => str,
+	'board' => int,
+	'topic_id' => int,
+	'id' => int,
+	'page' => int,
+	'temp' => int,
+	'temp2' => int,
+	'dosmileys' => int,
+	'dowords' => int,
+	'birthday' => int,
+	'birthmonth' => int,
+	'birthyear' => int,
+	'opt_0' => int,
+	'opt_1' => int,
+	'opt_2' => int,
+	'opt_3' => int,
+	'opt_4' => int,
+	'opt_5' => int,
+	'opt_6' => int,
+	'opt_7' => int,
+	'notice' => arr_str,
+	'boards' => arr_int,
+	'delete' => arr_int
 );
 
 $http_all = array_merge(
@@ -118,14 +125,6 @@ $http_all = array_merge(
 );
 $http_all = array_unique($http_all);
 
-$http_std = array(
-int => 0,
-arr_int => array(),
-arr_str => array(),
-str => '',
-none => null
-);
-
 
 foreach ($http_all as $key) {
 	if (isset($http_vars[$key])) {
@@ -134,41 +133,12 @@ foreach ($http_all as $key) {
 	else {
 		$type = none;
 	}
-	if (isset($_POST[$key])) {
-        if ($type == int || $type == arr_int) {
-            $_POST[$key] = $gpc->save_int($_POST[$key]);
-        }
-        elseif ($type == str || $type == arr_str) {
-            $_POST[$key] = $gpc->save_str($_POST[$key]);
-        }
-        else {
-        	$_POST[$key] = $gpc->secure_null($_POST[$key]);
-        }
-	}
-	else {
-		$_POST[$key] = $http_std[$type];
-	}
-	if (isset($_GET[$key])) {
-        if ($type == int || $type == arr_int) {
-            $_GET[$key] = $gpc->save_int($_GET[$key]);
-        }
-        elseif ($type == str || $type == arr_str) {
-            $_GET[$key] = $gpc->save_str($_GET[$key]);
-        }
-        else {
-        	$_GET[$key] = $gpc->secure_null($_GET[$key]);
-        }
-	}
-	else {
-		$_GET[$key] = $http_std[$type];
-	}
+	$_POST[$key] = $_GET[$key] = $gpc->get($key, $type);
 }
 
-$_GET['page'] = !isset($_GET['page']) || $_GET['page'] < 1 ? 1 : $_GET['page'];
-$_POST['page'] = !isset($_POST['page']) || $_POST['page'] < 1 ? 1 : $_POST['page'];
-$_REQUEST['page'] = !isset($_REQUEST['page']) || $_REQUEST['page'] < 1 ? 1 : $_REQUEST['page'];
+$_GET['page'] = $_POST['page'] = $_GET['page'] < 1 ? 1 : $_GET['page'];
 
-unset($http_vars, $http_all, $http_std);
+unset($http_vars, $http_all);
 
 $inner = array();
 $htmlhead = '';

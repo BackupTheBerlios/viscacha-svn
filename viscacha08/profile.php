@@ -77,7 +77,7 @@ $breadcrumb->Add($lang->phrase('profile_title'), 'profile.php?id='.$_GET['id'].$
 
 if (($_GET['action'] == 'mail' || $_GET['action'] == 'sendmail') && $is_member) {
 	$result=$db->query('SELECT id, name, opt_hidemail, mail FROM '.$db->pre.'user WHERE id = '.$_GET['id'],__LINE__,__FILE__);
-	$row = $gpc->prepare($db->fetch_object($result));
+	$row = $slog->cleanUserData($db->fetch_object($result));
 	$breadcrumb->Add($lang->phrase('profile_mail_2'));
 
 	if ($my->vlogin && $row->opt_hidemail != 1) {
@@ -164,7 +164,7 @@ elseif ($_GET['action'] == "ims" && $is_member) {
 
 	$result = $db->query("SELECT id, name, icq, aol, yahoo, msn, jabber, skype {$sqlfields} FROM {$db->pre}user WHERE id = '{$_GET['id']}'",__LINE__,__FILE__);
 
-	$row = $gpc->prepare($db->fetch_assoc($result));
+	$row = $slog->cleanUserData($db->fetch_assoc($result));
 	if (empty($row[$_GET['type']])) {
 		$error[] = $lang->phrase('im_no_data');
 	}

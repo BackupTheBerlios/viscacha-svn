@@ -104,6 +104,21 @@ class MagpieRSS {
                            E_USER_ERROR );
         }
 
+        // Added this to repair invalid feeds (wrong charset/chars)
+        if (viscacha_function_exists('mb_check_encoding')) {
+        	if ($input_encoding == null) {
+        		$input_encoding2 = mb_detect_encoding($source);
+        	}
+        	else {
+        		$input_encoding2 = $input_encoding;
+        	}
+        	if (mb_check_encoding($source, $input_encoding2) == false) {
+        		mb_substitute_character("none");
+        		$source = mb_convert_encoding($source, 'UTF-8', $input_encoding2);
+        		$input_encoding = 'UTF-8';
+        	}
+        }
+
         list($parser, $source) = $this->create_parser($source,
                 $output_encoding, $input_encoding, $detect_encoding);
 

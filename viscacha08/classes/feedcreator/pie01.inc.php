@@ -14,16 +14,16 @@ class PIE01 extends FeedCreator {
 	}
 
 	function createFeed() {
-		$feed = "<?xml version=\"1.0\" encoding=\"".$this->encoding."\"?>\n";
+		$feed = "<?xml version=\"1.0\" encoding=\"{$this->encoding}\"?>\n";
 		$feed.= $this->_createStylesheetReferences();
 		$feed.= "<feed version=\"0.1\" xmlns=\"http://www.tbray.org/ongoing/pie/0.1/pie.rnc\">\n";
-		$feed.= "    <title>".FeedCreator::iTrunc($this->htmlspecialchars($this->title),100)."</title>\n";
+		$feed.= "    <title>".$this->htmlspecialchars(FeedCreator::iTrunc($this->title,100))."</title>\n";
 		$this->truncSize = 500;
 		$feed.= "    <subtitle>".$this->getDescription()."</subtitle>\n";
 		$feed.= "    <link>".$this->link."</link>\n";
 		for ($i=0;$i<count($this->items);$i++) {
 			$feed.= "    <entry>\n";
-			$feed.= "        <title>".FeedCreator::iTrunc($this->htmlspecialchars(strip_tags($this->items[$i]->title)),100)."</title>\n";
+			$feed.= "        <title>".$this->htmlspecialchars(FeedCreator::iTrunc($this->items[$i]->title,100))."</title>\n";
 			$feed.= "        <link>".$this->htmlspecialchars($this->items[$i]->link)."</link>\n";
 			$itemDate = new FeedDate($this->items[$i]->date);
 			$feed.= "        <created>".$this->htmlspecialchars($itemDate->iso8601())."</created>\n";

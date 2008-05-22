@@ -127,7 +127,7 @@ elseif ($_GET['action'] == "showpost") {
 
 	$found = $db->num_rows($result);
 	if ($found == 1) {
-		$row = $gpc->prepare($db->fetch_object($result));
+		$row = $slog->cleanUserData($db->fetch_object($result));
 
 		$my->p = $slog->Permissions($row->board);
 

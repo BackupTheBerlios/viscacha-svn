@@ -11,7 +11,7 @@ if (isset($_REQUEST['save']) && $_REQUEST['save'] == 1) {
 		$action = array();
 	}
 	require_once('../classes/database/'.$config['dbsystem'].'.inc.php');
-	$db = new DB($config['host'], $config['dbuser'], $config['dbpw'], $config['database'], $config['dbprefix'], false);
+	$db = new DB($config['host'], $config['dbuser'], $config['dbpw'], $config['database'], $config['dbprefix']);
 	$db->setPersistence($config['pconnect']);
 	$db->errlogfile = '../'.$db->errlogfile;
 	$db->connect(false);

@@ -69,7 +69,8 @@ class GPC {
 			}
 			elseif ($type == db_esc) {
 				global $db;
-				$var = $db->escape_string($_REQUEST[$index]);
+				$var = $this->secure_null($_REQUEST[$index]);
+				$var = $db->escape_string($var);
 			}
 			else {
 				$var = $this->secure_null($_REQUEST[$index]);

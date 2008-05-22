@@ -183,7 +183,7 @@ class FeedHtmlField {
 			$result = "<![CDATA[".$this->rawFieldContent."]]>";
 		} else {
 			if ($this->truncSize and is_int($this->truncSize)) {
-				$result = FeedCreator::iTrunc(FeedCreator::static_htmlspecialchars($this->rawFieldContent, $this->encoding), $this->truncSize);
+				$result = FeedCreator::static_htmlspecialchars(FeedCreator::iTrunc($this->rawFieldContent, $this->truncSize), $this->encoding);
 			} else {
 				$result = FeedCreator::static_htmlspecialchars($this->rawFieldContent, $this->encoding);
 			}
@@ -417,9 +417,8 @@ class FeedCreator extends HtmlDescribable {
 	}
 
 	function _htmlspecialchars($content, $enc) {
-		$content = html_entity_decode($content, ENT_QUOTES, $enc);
-		$content = str_replace(array('<', '>', '"', "'", '&'), array('&lt;', '&gt;', '&quot;', '&apos;', '&amp;'), $content);
-		$content = preg_replace('/[^!-%\x27-;&=?-~ ]/e', '"&#".ord("$0").chr(59)', $content);
+		global $gpc;
+		$content = $gpc->save_str($content);
 		return $content;
 	}
 

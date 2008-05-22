@@ -61,7 +61,7 @@ if ($_GET['action'] == 'show') {
 		error($lang->phrase('query_string_error'), 'pm.php'.SID2URL_1);
 	}
 
-	$row = $gpc->prepare($db->fetch_assoc($result));
+	$row = $slog->cleanUserData($db->fetch_assoc($result));
 
 	if ($row['status'] == '0') {
 		$db->query("UPDATE {$db->pre}pm SET status = '1' WHERE id = '{$row['id']}'",__LINE__,__FILE__);
@@ -278,7 +278,7 @@ elseif ($_GET['action'] == "save") {
 
 		$lang_dir = $lang->getdir(true);
 		$result = $db->query("SELECT name, mail, opt_pmnotify, language FROM {$db->pre}user WHERE id = '{$_POST['name']}'",__LINE__,__FILE__);
-		$row = $gpc->prepare($db->fetch_assoc($result));
+		$row = $slog->cleanUserData($db->fetch_assoc($result));
 		if ($row['opt_pmnotify'] == 1) {
 			$lang->setdir($row['language']);
 			$row = $gpc->plain_str($row);
@@ -401,7 +401,7 @@ elseif ($_GET['action'] == "browse") {
 	FROM {$db->pre}pm
 	WHERE pm_to = '{$my->id}' AND dir = '{$_GET['id']}'
 	ORDER BY date DESC
-	LIMIT $start, {$config['pmzahl']}
+	LIMIT {$start}, {$config['pmzahl']}
 	",__LINE__,__FILE__);
 
 	echo $tpl->parse("pm/menu");

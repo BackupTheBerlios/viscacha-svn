@@ -18,8 +18,8 @@ class KLIPFOLIO extends FeedCreator {
 		$feed .= '<klip>'."\n";
 
 		$feed .= '	<owner>'."\n";
-		$feed .= '		<author>'.FeedCreator::iTrunc($this->htmlspecialchars($this->editor),100).'</author>'."\n";
-		$feed .= '		<copyright>'.FeedCreator::iTrunc($this->htmlspecialchars($this->copyright),100).'</copyright>'."\n";
+		$feed .= '		<author>'.$this->htmlspecialchars(FeedCreator::iTrunc($this->editor,100)).'</author>'."\n";
+		$feed .= '		<copyright>'.$this->htmlspecialchars(FeedCreator::iTrunc($this->copyright,100)).'</copyright>'."\n";
 		if (!empty($this->editorEmail)) {
 			$feed .= '		<email>'.$this->editorEmail.'</email>'."\n";
 		}
@@ -27,7 +27,7 @@ class KLIPFOLIO extends FeedCreator {
 		$feed .= '	</owner>'."\n";
 
 		$feed .= '	<identity>'."\n";
-		$feed .= '		<title>'.FeedCreator::iTrunc($this->htmlspecialchars($this->title),100).'</title>'."\n";
+		$feed .= '		<title>'.$this->htmlspecialchars(FeedCreator::iTrunc($this->title,100)).'</title>'."\n";
 		$feed .= '		<uniqueid>'.md5($config['cryptkey']).'</uniqueid>'."\n";
 		$feed .= '		<version>1.0</version>'."\n";
 		$feed .= '		<lastmodified>'.$this->htmlspecialchars($now->v0001()).'</lastmodified>'."\n";

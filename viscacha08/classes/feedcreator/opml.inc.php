@@ -28,7 +28,7 @@ class OPML extends FeedCreator {
 			$feed.= "         <dateModified>".$date->rfc822()."</dateModified>\n";
 		}
 		if ($this->editor!="") {
-			$feed.= "         <ownerName>".$this->editor."</ownerName>\n";
+			$feed.= "         <ownerName>".$this->htmlspecialchars($this->editor)."</ownerName>\n";
 		}
 		if ($this->editorEmail!="") {
 			$feed.= "         <ownerEmail>".$this->editorEmail."</ownerEmail>\n";
@@ -37,7 +37,7 @@ class OPML extends FeedCreator {
 		$feed.= "    <body>\n";
 		for ($i=0;$i<count($this->items);$i++) {
 			$feed.= "    <outline type=\"link\" ";
-			$title = $this->htmlspecialchars(strip_tags(strtr($this->items[$i]->title,"\n\r","  ")));
+			$title = $this->htmlspecialchars(strtr($this->items[$i]->title,"\n\r","  "));
 			$feed.= " title=\"".$title."\"";
 			$feed.= " text=\"".$title."\"";
 			$feed.= " url=\"".$this->htmlspecialchars($this->items[$i]->link)."\"";

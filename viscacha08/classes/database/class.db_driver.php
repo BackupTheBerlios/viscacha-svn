@@ -43,7 +43,7 @@ class DB_Driver { // abstract class
 	var $std_limit;
 	var $persistence;
 
-	function DB_Driver($host="localhost", $user="root", $pwd="", $dbname="", $dbprefix='', $open = true) {
+	function DB_Driver($host="localhost", $user="root", $pwd="", $dbname="", $dbprefix='') {
 	    $this->host = $host;
 	    $this->user = $user;
 	    $this->pwd = $pwd;
@@ -58,13 +58,10 @@ class DB_Driver { // abstract class
         $this->commentdel = '-- ';
         $this->std_limit = 5000;
         $this->persistence = false;
-		if($open) {
-		   $this->open();
-		}
 	}
 
 	function quitOnError($die = true) {
-		if (!$this->hasConnection($this->conn)) {
+		if (!$this->hasConnection()) {
 			if ($die == true) {
 				trigger_error('Could not connect to database! Pleasy try again later or check the database settings: host, username and password!<br /><strong>Database returned</strong>: '.$this->errstr(), E_USER_ERROR);
 			}
@@ -186,21 +183,23 @@ class DB_Driver { // abstract class
 		}
 	}
 
-	function open($host="",$user="",$pwd="",$dbname="")  {
-		if(!empty($host)) {
-			$this->host=$host;
+	function open($host=null,$user=null,$pwd=null,$dbname=null)  {
+		if (!$this->hasConnection()) {
+			if($host != null) {
+				$this->host = $host;
+			}
+		 	if($user != null) {
+		    	$this->user = $user;
+		    }
+		 	if($pwd != null) {
+		    	$this->pwd = $pwd;
+		    }
+		 	if($dbname != null) {
+		    	$this->database = $dbname;
+		    }
+			$this->connect();
+			$this->select_db();
 		}
-	 	if(!empty($user)) {
-	    	$this->user=$user;
-	    }
-	 	if(!empty($pwd)) {
-	    	$this->pwd=$pwd;
-	    }
-	 	if(!empty($dbname)) {
-	    	$this->database=$dbname;
-	    }
-		$this->connect();
-		$this->select_db();
 	}
 
 	function error($errline, $errfile, $errcomment) {

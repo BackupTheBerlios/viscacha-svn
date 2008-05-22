@@ -45,6 +45,7 @@ class DB extends DB_Driver { // MySQL
 	}
 
 	function version () {
+		$this->open();
 		return @mysql_get_server_info();
 	}
 
@@ -60,15 +61,20 @@ class DB extends DB_Driver { // MySQL
 	    	return @mysql_free_result($result);
 	    }
 	    else {
-	    	return false;
+	    	return true;
 	    }
 	}
 
 	function close() {
-		if ($this->freeResult == true) {
-	    	$this->free_result();
-	    }
-		return mysql_close($this->conn);
+		if ($this->hasConnection()) {
+			if ($this->freeResult == true) {
+		    	$this->free_result();
+		    }
+			return mysql_close($this->conn);
+		}
+		else {
+			return true;
+		}
 	}
 
 	function connect($die = true) {
@@ -101,7 +107,8 @@ class DB extends DB_Driver { // MySQL
 		if(empty($dbname)) {
 			$dbname = $this->database;
 		}
-		return mysql_select_db($dbname,$this->conn);
+		$this->open();
+		return mysql_select_db($dbname, $this->conn);
 	}
 
 	function errno() {
@@ -113,6 +120,8 @@ class DB extends DB_Driver { // MySQL
 	}
 
 	function query($sql, $line = 0, $file = '', $die = true) {
+		$this->open();
+
 		$errfunc = ($die == true) ? E_USER_ERROR : E_USER_NOTICE;
 		$zm1 = $this->benchmarktime();
 
@@ -164,8 +173,8 @@ class DB extends DB_Driver { // MySQL
 	}
 
 	function escape_string($value) {
-		$func = $this->escaper;
-		return $func($value);
+		$this->open();
+		return call_user_func($this->escaper, $value);
 	}
 
 	function num_fields($result = null) {

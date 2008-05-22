@@ -38,7 +38,7 @@
 		$feed.= "    <updated>".$this->htmlspecialchars($now->iso8601())."</updated>\n";
 		if (!empty($this->editor)) {
 			$feed.= "    <author>\n";
-			$feed.= "        <name>".$this->editor."</name>\n";
+			$feed.= "        <name>".$this->htmlspecialchars($this->editor)."</name>\n";
 			if (!empty($this->editorEmail)) {
 				$feed.= "        <email>".$this->editorEmail."</email>\n";
 			}
@@ -49,7 +49,7 @@
 		$feed.= $this->_createAdditionalElements($this->additionalElements, "    ");
 		for ($i=0;$i<count($this->items);$i++) {
 			$feed.= "    <entry>\n";
-			$feed.= "        <title>".$this->htmlspecialchars(strip_tags($this->items[$i]->title))."</title>\n";
+			$feed.= "        <title>".$this->htmlspecialchars($this->items[$i]->title)."</title>\n";
 			$feed.= "        <link rel=\"alternate\" type=\"text/html\" href=\"".$this->htmlspecialchars($this->items[$i]->link)."\"/>\n";
 			if (empty($this->items[$i]->date)) {
 				$this->items[$i]->date = time();

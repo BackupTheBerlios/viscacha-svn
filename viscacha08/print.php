@@ -167,8 +167,10 @@ FROM {$db->pre}replies AS r
 WHERE r.topic_id = '{$_GET['id']}' {$searchsql}
 ",__LINE__,__FILE__);
 
-while ($row = $gpc->prepare($db->fetch_object($result))) {
+while ($row = $db->fetch_object($result)) {
 	$inner['upload_box'] = '';
+
+	$row = $slog->cleanUserData($row);
 
 	if ($row->guest == 0) {
 		$row->mail = '';

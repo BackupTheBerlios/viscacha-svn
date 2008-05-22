@@ -33,12 +33,12 @@ class RSS091 extends FeedCreator {
 	 * @return    string    the feed's complete text
 	 */
 	function createFeed() {
-		$feed = "<?xml version=\"1.0\" encoding=\"".$this->encoding."\"?>\n";
+		$feed = "<?xml version=\"1.0\" encoding=\"{$this->encoding}\"?>\n";
 		$feed.= $this->_createGeneratorComment();
 		$feed.= $this->_createStylesheetReferences();
 		$feed.= "<rss version=\"".$this->RSSVersion."\">\n";
 		$feed.= "    <channel>\n";
-		$feed.= "        <title>".FeedCreator::iTrunc($this->htmlspecialchars($this->title),100)."</title>\n";
+		$feed.= "        <title>".$this->htmlspecialchars(FeedCreator::iTrunc($this->title,100))."</title>\n";
 		$this->descriptionTruncSize = 500;
 		$feed.= "        <description>".$this->getDescription()."</description>\n";
 		$feed.= "        <link>".$this->link."</link>\n";
@@ -49,7 +49,7 @@ class RSS091 extends FeedCreator {
 		if ($this->image!=null) {
 			$feed.= "        <image>\n";
 			$feed.= "            <url>".$this->image->url."</url>\n";
-			$feed.= "            <title>".FeedCreator::iTrunc($this->htmlspecialchars($this->image->title),100)."</title>\n";
+			$feed.= "            <title>".$this->htmlspecialchars(FeedCreator::iTrunc($this->image->title,100))."</title>\n";
 			$feed.= "            <link>".$this->image->link."</link>\n";
 			if ($this->image->width!="") {
 				$feed.= "            <width>".$this->image->width."</width>\n";
@@ -66,13 +66,13 @@ class RSS091 extends FeedCreator {
 			$feed.= "        <language>".$this->language."</language>\n";
 		}
 		if ($this->copyright!="") {
-			$feed.= "        <copyright>".FeedCreator::iTrunc($this->htmlspecialchars($this->copyright),100)."</copyright>\n";
+			$feed.= "        <copyright>".$this->htmlspecialchars(FeedCreator::iTrunc($this->copyright,100))."</copyright>\n";
 		}
 		if (!empty($this->editorEmail) && !empty($this->editor)) {
-			$feed.= "        <managingEditor>".$this->htmlspecialchars($this->editorEmail)." (".FeedCreator::iTrunc($this->htmlspecialchars($this->editor),100).")</managingEditor>\n";
+			$feed.= "        <managingEditor>".$this->htmlspecialchars($this->editorEmail)." (".$this->htmlspecialchars(FeedCreator::iTrunc($this->editor,100)).")</managingEditor>\n";
 		}
 		if ($this->webmaster!="") {
-			$feed.= "        <webMaster>".FeedCreator::iTrunc($this->htmlspecialchars($this->webmaster),100)."</webMaster>\n";
+			$feed.= "        <webMaster>".$this->htmlspecialchars(FeedCreator::iTrunc($this->webmaster,100))."</webMaster>\n";
 		}
 		if ($this->pubDate!="") {
 			$pubDate = new FeedDate($this->pubDate);
@@ -82,13 +82,13 @@ class RSS091 extends FeedCreator {
 			$feed.= "        <category>".$this->htmlspecialchars($this->category)."</category>\n";
 		}
 		if ($this->docs!="") {
-			$feed.= "        <docs>".FeedCreator::iTrunc($this->htmlspecialchars($this->docs),500)."</docs>\n";
+			$feed.= "        <docs>".$this->htmlspecialchars(FeedCreator::iTrunc($this->docs,500))."</docs>\n";
 		}
 		if ($this->ttl!="") {
 			$feed.= "        <ttl>".$this->htmlspecialchars($this->ttl)."</ttl>\n";
 		}
 		if ($this->rating!="") {
-			$feed.= "        <rating>".FeedCreator::iTrunc($this->htmlspecialchars($this->rating),500)."</rating>\n";
+			$feed.= "        <rating>".$this->htmlspecialchars(FeedCreator::iTrunc($this->rating,500))."</rating>\n";
 		}
 		if ($this->skipHours!="") {
 			$feed.= "        <skipHours>".$this->htmlspecialchars($this->skipHours)."</skipHours>\n";
@@ -108,7 +108,7 @@ class RSS091 extends FeedCreator {
 				}
 			}
 
-			$feed.= "            <title>".FeedCreator::iTrunc($this->htmlspecialchars(strip_tags($this->items[$i]->title)),100)."</title>\n";
+			$feed.= "            <title>".$this->htmlspecialchars(FeedCreator::iTrunc($this->items[$i]->title,100))."</title>\n";
 			$feed.= "            <link>".$this->htmlspecialchars($this->items[$i]->link)."</link>\n";
 			$feed.= "            <description>".$this->items[$i]->getDescription()."</description>\n";
 

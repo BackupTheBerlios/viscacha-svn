@@ -31,10 +31,10 @@ class DB extends DB_Driver { // MySQLi
 	var $system;
 	var $fieldType;
 
-	function DB($host = 'localhost', $user = 'root', $pwd = '', $dbname = '', $dbprefix = '', $open = true) {
+	function DB($host = 'localhost', $user = 'root', $pwd = '', $dbname = '', $dbprefix = '') {
 	    $this->system = 'mysqli';
 		$this->errlogfile = 'data/errlog_'.$this->system.'.inc.php';
-		parent::DB_Driver($host, $user, $pwd, $dbname, $dbprefix, $open);
+		parent::DB_Driver($host, $user, $pwd, $dbname, $dbprefix);
 		$this->freeResult = false;
 		$this->fieldType = array(
 			0 => "decimal",
@@ -70,6 +70,7 @@ class DB extends DB_Driver { // MySQLi
 	}
 
 	function version () {
+		$this->open();
 		return @mysqli_get_server_info($this->conn);
 	}
 
@@ -90,10 +91,15 @@ class DB extends DB_Driver { // MySQLi
 	}
 
 	function close() {
-		if ($this->freeResult == true) {
-	    	$this->free_result();
-	    }
-		return mysqli_close($this->conn);
+		if ($this->hasConnection()) {
+			if ($this->freeResult == true) {
+		    	$this->free_result();
+		    }
+			return mysqli_close($this->conn);
+		}
+		else {
+			return true;
+		}
 	}
 
 	function connect($die = true) {
@@ -119,6 +125,7 @@ class DB extends DB_Driver { // MySQLi
 		if(empty($dbname)) {
 			$dbname = $this->database;
 		}
+		$this->open();
 		return mysqli_select_db($this->conn, $dbname);
 	}
 
@@ -131,6 +138,8 @@ class DB extends DB_Driver { // MySQLi
 	}
 
 	function query($sql, $line = 0, $file = '', $die = true) {
+		$this->open();
+
 		$errfunc = ($die == true) ? E_USER_ERROR : E_USER_NOTICE;
 		$zm1 = $this->benchmarktime();
 
@@ -183,6 +192,7 @@ class DB extends DB_Driver { // MySQLi
 	}
 
 	function escape_string($value) {
+		$this->open();
 		return mysqli_real_escape_string($this->conn, $value);
 	}
 

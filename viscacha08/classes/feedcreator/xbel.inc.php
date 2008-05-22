@@ -36,7 +36,7 @@ class XBEL extends FeedCreator {
 				$ocat = $this->items[$i]->category;
 				if ($ocat != '') {
 					$feed.= "    <folder>\n";
-					$feed.= "      <title>".$this->htmlspecialchars(strip_tags($ocat))."</title>\n";
+					$feed.= "      <title>".$this->htmlspecialchars($ocat)."</title>\n";
 				}
 			}
 			if (preg_match('/^-+$/', $this->items[$i]->title)) {
@@ -52,7 +52,7 @@ class XBEL extends FeedCreator {
 			}
 			$feed.= ' added="'.$this->htmlspecialchars($itemDate->iso8601()).'"';
 			$feed.= ">\n";
-			$feed.= "        <title>".$this->htmlspecialchars(strip_tags($this->items[$i]->title))."</title>\n";
+			$feed.= "        <title>".$this->htmlspecialchars($this->items[$i]->title)."</title>\n";
 			if ($this->items[$i]->description!="") {
 				$feed.= "        <desc>".$this->htmlspecialchars($this->items[$i]->description)."</desc>\n";
 			}

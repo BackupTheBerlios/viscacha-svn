@@ -280,8 +280,7 @@ function _fetch_remote_file ($url, $headers = "" ) {
     if (is_array($headers) ) {
         $client->rawheaders = $headers;
     }
-
-    @$client->fetch($url);
+    $client->fetch($url);
     return $client;
 
 }

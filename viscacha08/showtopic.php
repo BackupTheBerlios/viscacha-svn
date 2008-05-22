@@ -294,9 +294,11 @@ if ($info['last'] > $my->clv) {
 include_once('classes/class.profilefields.php');
 $pfields = new ProfileFieldViewer();
 
-while ($row = $gpc->prepare($db->fetch_object($result))) {
+while ($row = $db->fetch_object($result)) {
 	$inner['upload_box'] = '';
 	$inner['image_box'] = '';
+
+	$row = $slog->cleanUserData($row);
 
 	if ($row->guest == 0) {
 		$row->mail = '';

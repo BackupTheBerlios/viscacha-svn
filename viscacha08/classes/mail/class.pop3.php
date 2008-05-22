@@ -198,22 +198,9 @@ class POP3
       return true;
     }
 
-    /*
-      On Windows this will raise a PHP Warning error if the hostname doesn't exist.
-      Rather than supress it with @fsockopen, let's capture it cleanly instead
-    */
-
-    set_error_handler(array(&$this, 'catchWarning'));
-
+    // Mod: Added IDNA support
     //  Connect to the POP3 server
-    $this->pop_conn = fsockopen($host,    //  POP3 Host
-                  $port,    //  Port #
-                  $errno,   //  Error Number
-                  $errstr,  //  Error Message
-                  $tval);   //  Timeout (seconds)
-
-    //  Restore the error handler
-    restore_error_handler();
+    list($this->pop_conn, $errno, $errstr, $host) = fsockopen_idna($host, $port, $tval);
 
     //  Does the Error Log now contain anything?
     if ($this->error && $this->do_debug >= 1)

@@ -295,32 +295,6 @@ if (!defined('IMAGETYPE_XBM')) {
 
 /* Missing functions */
 
-/*
- * These functions can be used on WindowsNT to replace
- * their built-in counterparts that do not work as
- * expected.
- *
- * checkdnsrr() works just the same, returning true
- * or false
- *
- * getmxrr() returns true or false and provides a
- * list of MX hosts in order of preference.
- */
-if(!viscacha_function_exists('checkdnsrr')) {
-	function checkdnsrr($host, $type = 'MX') {
-	   if(!empty($host)) {
-	       @exec("nslookup -querytype=$type $host", $output);
-	       while(list($k, $line) = each($output)) {
-	           # Valid records begin with host name
-	           if(preg_match("~^".preg_quote($host)."~i", $line)) {
-	               return true;
-	           }
-	       }
-	       return false;
-	   }
-	}
-}
-
 /**
  * Replace image_type_to_extension()
  *

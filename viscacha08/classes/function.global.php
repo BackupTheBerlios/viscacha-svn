@@ -34,14 +34,11 @@ require_once("classes/class.plugins.php");
 require_once("classes/class.docoutput.php");
 // BB-Code Class
 include_once ("classes/class.bbcode.php");
+// IDNA Convert Class
+include_once ("classes/class.idna.php");
 
 $scache = new CacheServer();
 $plugins = new PluginSystem();
-
-// Database functions
-require_once('classes/database/'.$config['dbsystem'].'.inc.php');
-$db = new DB($config['host'], $config['dbuser'], $config['dbpw'], $config['database'], $config['dbprefix']);
-$db->setPersistence($config['pconnect']);
 
 // Construct base bb-code object
 $bbcode = new BBCode();
@@ -55,6 +52,50 @@ define('REMOTE_IMAGE_HEIGHT_ERROR', 400);
 define('REMOTE_IMAGE_WIDTH_ERROR', 500);
 define('REMOTE_EXTENSION_ERROR', 600);
 define('REMOTE_IMAGE_ERROR', 700);
+
+function convert_host_to_idna($host) {
+	$idna = new idna_convert();
+	if (viscacha_function_exists('mb_detect_encoding')) {
+		$host = mb_convert_encoding($host, 'UTF-8');
+	}
+	else {
+		$host = utf8_encode($host);
+	}
+	$host = $idna->encode($host);
+	return $host;
+}
+
+function fsockopen_idna($host, $port, $timeout) {
+	$host = convert_host_to_idna($host);
+	$fp = @fsockopen($host, $port, $errno, $errstr, $timeout);
+	return array($fp, $errno, $errstr, $host);
+}
+
+function checkmx_idna($host) {
+	if (empty($host)) {
+		return false;
+	}
+	$idna = new idna_convert();
+	$host_idna = $idna->encode($host);
+	if (viscacha_function_exists('checkdnsrr')) {
+		if (checkdnsrr($host_idna, 'MX') === false) {
+			return false;
+		}
+		else {
+			return true;
+		}
+	}
+	else {
+       @exec("nslookup -querytype=MX {$host_idna}", $output);
+       while(list($k, $line) = each($output)) {
+           # Valid records begin with host name
+           if(preg_match("~^(".preg_quote($host)."|".preg_quote($host_idna).")~i", $line)) {
+               return true;
+           }
+       }
+       return false;
+   }
+}
 
 function get_remote($file) {
 	if (!class_exists('Snoopy')) {
@@ -589,6 +630,7 @@ function check_hp($hp) {
 		return false;
 	}
 }
+
 function check_mail($email, $simple = false) {
 	global $config;
 	if(preg_match("/^([_a-zA-Zäöü0-9-]+(\.[_a-zA-Z0-9äöu-]+)*@[a-zA-Zäöu0-9-]+(\.[a-zA-Z0-9äöü-]+)*(\.[a-zA-Z]{2,}))/si", $email)) {
@@ -597,7 +639,7 @@ function check_mail($email, $simple = false) {
 		// Check MX record.
 	 	// The idea for this is from UseBB/phpBB
 	 	if ($config['email_check_mx'] && !$simple) {
-	 		if (checkdnsrr($domain, 'MX') === false) {
+	 		if (checkmx_idna($domain) === false) {
 	 			return false;
 	 		}
 	 	}

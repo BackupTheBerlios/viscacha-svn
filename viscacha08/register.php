@@ -309,6 +309,8 @@ else {
 	$customfields = addprofile_customfields();
 	$rules = $lang->get_words('rules');
 
+	$_GET['email'] = $gpc->prepare($_GET['email']);
+
 	($code = $plugins->load('register_form_prepared')) ? eval($code) : null;
 	echo $tpl->parse("register/register");
 	($code = $plugins->load('register_form_end')) ? eval($code) : null;

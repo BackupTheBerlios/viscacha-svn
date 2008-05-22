@@ -1196,7 +1196,7 @@ elseif ($job == 'register2') {
 	include_once ("classes/function.profilefields.php");
 
 	$name = $gpc->get('name', str);
-	$email = $gpc->get('email', str);
+	$email = $gpc->get('email', db_esc);
 	$pw = $gpc->get('pw', str);
 	$pwx = $gpc->get('pwx', str);
 

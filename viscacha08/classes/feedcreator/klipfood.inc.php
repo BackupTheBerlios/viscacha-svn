@@ -19,7 +19,7 @@ class KLIPFOOD extends FeedCreator {
 		$feed .= '<klipfood>'."\n";
 		for ($i=0;$i<count($this->items);$i++) {
 			$feed .= '	<item>'."\n";
-			$feed .= '		<title>'.FeedCreator::iTrunc($this->htmlspecialchars(strip_tags($this->items[$i]->title)),100).'</title>'."\n";
+			$feed .= '		<title>'.$this->htmlspecialchars(FeedCreator::iTrunc($this->items[$i]->title,100)).'</title>'."\n";
 			$feed .= '		<link>'.$this->htmlspecialchars($this->items[$i]->link).'</link>'."\n";
 			$feed .= '		<note>'.$this->items[$i]->getDescription().'</note>'."\n";
 			$feed .= '	</item>'."\n";

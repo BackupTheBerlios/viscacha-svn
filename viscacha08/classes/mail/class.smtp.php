@@ -114,12 +114,11 @@ class SMTP
       $port = $this->SMTP_PORT;
     }
 
+
+    // Mod: Added IDNA support
     #connect to the smtp server
-    $this->smtp_conn = fsockopen($host,    # the host of the server
-                                 $port,    # the port to use
-                                 $errno,   # error number if any
-                                 $errstr,  # error message if any
-                                 $tval);   # give up after ? secs
+	list($this->smtp_conn, $errno, $errstr, $host) = fsockopen_idna($host, $port, $tval);
+
     # verify we connected properly
     if(empty($this->smtp_conn)) {
       $this->error = array("error" => "Failed to connect to server",
