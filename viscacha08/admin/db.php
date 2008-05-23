@@ -16,6 +16,7 @@ function highlight_sql_query($sql) {
 	}
 	$geshi = new GeSHi($sql, $language, $path);
 	$geshi->enable_classes(false);
+	$geshi->set_header_type(GESHI_HEADER_DIV);
 	$geshi->enable_line_numbers(GESHI_FANCY_LINE_NUMBERS, 5);
 	return $geshi->parse_code();
 }

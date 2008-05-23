@@ -277,9 +277,6 @@ pm.php
 
 popup.php
 -popup_start
--popup_hlcode_start
--popup_hlcode_initialized
--popup_hlcode_end
 -popup_filetypes_query
 -popup_filetypes_prepared
 -popup_filetypes_end

@@ -776,9 +776,11 @@ elseif ($job == 'codefiles') {
 	while (false !== ($entry = $d->read())) {
 		if (get_extension($entry) == 'php' && !is_dir("classes/geshi/".$entry)) {
 			include_once("classes/geshi/".$entry);
-			$short = str_replace('.php','',$entry);
-			$clang[$short]['file'] = $entry;
-			$clang[$short]['name'] = $language_data['LANG_NAME'];
+			if (!isset($language_data['NO_INDEX'])) {
+				$short = str_replace('.php','',$entry);
+				$clang[$short]['file'] = $entry;
+				$clang[$short]['name'] = $language_data['LANG_NAME'];
+			}
 		}
 	}
 	$d->close();

@@ -47,8 +47,9 @@ $language_data = array (
     'LANG_NAME' => 'Delphi',
     'COMMENT_SINGLE' => array(1 => '//'),
     'COMMENT_MULTI' => array('(*' => '*)', '{' => '}'),
+    'COMMENT_REGEXP' => array(2 => '/{\\$.*?}|\\(\\*\\$.*?\\*\\)/U'),
     'CASE_KEYWORDS' => 0,
-    'QUOTEMARKS' => array("'", '"'),
+    'QUOTEMARKS' => array("'"),
     'ESCAPE_CHAR' => '',
     'KEYWORDS' => array(
         1 => array(
@@ -222,22 +223,23 @@ $language_data = array (
             1 => 'color: #000000; font-weight: bold;',
             2 => 'color: #000000; font-weight: bold;',
             3 => 'color: #000066;',
-            4 => 'color: #993333;'
+            4 => 'color: #000066; font-weight: bold;'
             ),
         'COMMENTS' => array(
             1 => 'color: #808080; font-style: italic;',
+            2 => 'color: #008000; font-style: italic;',
             'MULTI' => 'color: #808080; font-style: italic;'
             ),
         'ESCAPE_CHAR' => array(
             ),
         'BRACKETS' => array(
-            0 => 'color: #66cc66;'
+            0 => 'color: #000066;'
             ),
         'STRINGS' => array(
             0 => 'color: #ff0000;'
             ),
         'NUMBERS' => array(
-            0 => 'color: #cc66cc;'
+            0 => 'color: #0000ff;'
             ),
         'METHODS' => array(
             1 => 'color: #006600;'
@@ -247,10 +249,10 @@ $language_data = array (
             1 => 'color: #ff0000;'
             ),
         'SYMBOLS' => array(
-            0 => 'color: #66cc66;',
-            1 => 'color: #66cc66;',
-            2 => 'color: #66cc66;',
-            3 => 'color: #66cc66;'
+            0 => 'color: #000066;',
+            1 => 'color: #000066;',
+            2 => 'color: #000066;',
+            3 => 'color: #000066;'
             ),
         'SCRIPT' => array(
             )

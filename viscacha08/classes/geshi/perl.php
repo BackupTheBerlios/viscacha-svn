@@ -59,6 +59,11 @@ $language_data = array (
         '=encoding' => '=cut',
         '=pod' => '=cut'
     ),
+    'COMMENT_REGEXP' => array(
+        2 => "/(?<=[\\s^])(s|tr|y)\\/(?:\\\\.|[^\\/\\\\])+\\/(?:\\\\.|[^\\/\\\\])*\\/[msixpogcde]*(?=[\\s$\\.\\;])|(?<=[\\s^(=])(m|q[qrwx]?)?\\/(?:\\\\.|[^\\/\\\\])+\\/[msixpogc]*(?=[\\s$\\.\\,\\;\\)])/iU",
+        3 => '/\$\d+/',
+        4 => '/<<\s*?([\'"]?)([a-zA-Z0-9]+)\1;[^\n]*?\\n.*\\n\\2(?![a-zA-Z0-9])/siU'
+    ),
 	'CASE_KEYWORDS' => GESHI_CAPS_NO_CHANGE,
 	'QUOTEMARKS' => array('"'),
 	'HARDQUOTE' => array("'", "'"),		    // An optional 2-element array defining the beginning and end of a hard-quoted string
@@ -113,7 +118,10 @@ $language_data = array (
 			)
 		),
 	'SYMBOLS' => array(
-		'(', ')', '[', ']', '!', '@', '%', '&', '*', '|', '/', '<', '>'
+		'<', '>', '=',
+        '!', '@', '~', '&', '|',
+        '+','-', '*', '/', '%',
+        ',', ';', '?', ':'
 		),
 	'CASE_SENSITIVE' => array(
 		GESHI_COMMENTS => true,
@@ -128,14 +136,17 @@ $language_data = array (
 			3 => 'color: #000066;'
 			),
 		'COMMENTS' => array(
-			1 => 'color: #808080; font-style: italic;',
-			'MULTI' => 'color: #808080; font-style: italic;'
+			1 => 'color: #666666; font-style: italic;',
+			2 => 'color: #009966; font-style: italic;',
+			3 => 'color: #0000ff;',
+			4 => 'color: #cc0000; font-style: italic;',
+			'MULTI' => 'color: #666666; font-style: italic;'
 			),
 		'ESCAPE_CHAR' => array(
 			0 => 'color: #000099; font-weight: bold;'
 			),
 		'BRACKETS' => array(
-			0 => 'color: #66cc66;'
+			0 => 'color: #009900;'
 			),
 		'STRINGS' => array(
 			0 => 'color: #ff0000;'
@@ -148,7 +159,7 @@ $language_data = array (
 			2 => 'color: #006600;'
 			),
 		'SYMBOLS' => array(
-			0 => 'color: #66cc66;'
+			0 => 'color: #339933;'
 			),
 		'REGEXPS' => array(
 			0 => 'color: #0000ff;',

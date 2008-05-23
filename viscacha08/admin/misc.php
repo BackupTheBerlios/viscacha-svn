@@ -679,7 +679,7 @@ elseif ($job == "credits") {
 		<li><a href="http://sourceforge.net/projects/tcpdf/" target="_blank">TCPDF 1.53.0.TC034 by Nicola Asuni</a> (PDF Creation based on FPDF, LGPL)</li>
 		<li><a href="http://www.phpclasses.org/browse/author/152329.html" target="_blank">Roman Numeral Conversion by Huda M Elmatsani</a> (Roman Numeral Conversion; Freeware)</li>
 		<li><a href="http://www.phpconcept.net" target="_blank">PclZip Library 2.6 by Vincent Blavet</a> (Zip File Handling; LPGL)</li>
-		<li><a href="http://qbnz.com/highlighter" target="_blank">GeSHi 1.0.7.20 by Nigel McNie</a> (Syntax Highlighting; GPL)</li>
+		<li><a href="http://qbnz.com/highlighter" target="_blank">GeSHi 1.0.7.21 by Nigel McNie</a> (Syntax Highlighting; GPL)</li>
 		<li><a href="http://magpierss.sourceforge.net" target="_blank">MagPieRSS 0.72 by kellan</a> (Parsing Newsfeeds; GPL)</li>
 		<li><a href="http://phpmailer.sourceforge.net/" target="_blank">PHPMailer 2.0.0 (with POP3 and SMTP) by Andy Prevost</a> (Sending E-mails; LGPL)</li>
 		<li><a href="http://www.bitfolge.de" target="_blank">FeedCreator v1.7.x by Kai Blankenhorn</a> (Creating Newsfeeds; LGPL)</li>

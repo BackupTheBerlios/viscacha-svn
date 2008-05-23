@@ -32,57 +32,7 @@ include ("classes/function.viscacha_frontend.php");
 
 ($code = $plugins->load('popup_start')) ? eval($code) : null;
 
-if ($_GET['action'] == "hlcode") {
-	if (strlen($_GET['fid']) != 32) {
-		echo $tpl->parse("popup/header");
-		error($lang->phrase('query_string_error'), 'javascript:parent.close();');
-	}
-
-	$codeObj = new CacheItem($_GET['fid'], 'cache/geshicode/');
-	if (!$codeObj->import()) {
-		echo $tpl->parse("popup/header");
-		error($lang->phrase('query_string_error'), 'javascript:parent.close();');
-	}
-	$sourcecode = $codeObj->get();
-
-	$sourcecode['source'] = $gpc->plain_str($sourcecode['source'], false);
-
-	($code = $plugins->load('popup_hlcode_start')) ? eval($code) : null;
-
-	if ($_GET['temp'] == 1) {
-		viscacha_header('Content-Type: text/plain');
-		viscacha_header('Content-Length: '.strlen($sourcecode['source']));
-		viscacha_header('Content-Disposition: attachment; filename="'.gmdate('d-m-Y_H-i', times()).'.txt"');
-		echo $sourcecode['source'];
-		$slog->updatelogged();
-		$db->close();
-		exit;
-	}
-	else {
-		require_once('classes/class.geshi.php');
-		$geshi = new GeSHi($sourcecode['source'], strtolower($sourcecode['language']), 'classes/geshi');
-		$geshi->set_encoding($lang->charset());
-		// Use classes for colouring
-		$geshi->enable_classes();
-		// Output in a div instead in a pre-element
-		$geshi->set_header_type(GESHI_HEADER_DIV);
-		// Linenumbers on  - each 5th element is bold
-		$geshi->enable_line_numbers(GESHI_FANCY_LINE_NUMBERS, 5);
-		$lang_name = $geshi->get_language_name();
-
-		// Print Stylesheet
-		$htmlhead .= '<style type="text/css"><!-- '.$geshi->get_stylesheet().' --></style>';
-		echo $tpl->parse("popup/header");
-
-		($code = $plugins->load('popup_hlcode_initialized')) ? eval($code) : null;
-
-		$sourcecode['hl'] = $geshi->parse_code();
-		echo $tpl->parse("popup/hlcode");
-
-		($code = $plugins->load('popup_hlcode_end')) ? eval($code) : null;
-	}
-}
-elseif ($_GET['action'] == "filetypes") {
+if ($_GET['action'] == "filetypes") {
 
 	($code = $plugins->load('popup_filetypes_query')) ? eval($code) : null;
 

@@ -61,7 +61,7 @@ class BBCode {
 		$this->index = 0;
 
 		if (!class_exists('ConvertRoman')) {
-			include('classes/class.convertroman.php');
+			include_once('classes/class.convertroman.php');
 		}
 
 		$this->setProfile($profile, SP_NEW);
@@ -117,77 +117,40 @@ class BBCode {
 		$code = str_replace("[", "&#91;", $code);
 		$code = str_replace("\t", "&nbsp;&nbsp;&nbsp;&nbsp;", $code);
 		if ($inline == true) {
-			$code = str_replace("  ", "&nbsp;&nbsp;", $code);
+			$code = str_replace("  ", "&nbsp;&nbsp;", trim($code));
 		}
 		else {
 			$code = str_replace(" ", "&nbsp;", $code);
 		}
 		return $code;
 	}
-	function cb_code ($matches) {
-		global $lang;
-		$pid = $this->noparse_id();
-		list(,$code,$nl) = $matches;
-
-	    $rows = explode("\n",$code);
-	    $code = $this->code_prepare($code, (count($rows) <= 1));
-
-	    if (count($rows) > 1) {
-	    	$a = 0;
-	    	$aa = array();
-		    foreach ($rows as $row) {
-		        $a++;
-		        $aa[] = "$a:&nbsp;";
-		    }
-
-			$aa = implode("<br />",$aa);
-
-		    $this->noparse[$pid] = '<strong class="bb_blockcode_header">'.$lang->phrase('bb_sourcecode').'</strong><div class="bb_blockcode"><table><tr><td width="1%">'.$aa.'</td><td width="99%">'.$this->nl2br($code).'</td></tr></table></div>';
-		}
-		else {
-			$this->noparse[$pid] = '<code class="bb_inlinecode">'.$code.'</code>';
-			if (!empty($nl)) {
-				$this->noparse[$pid] .= '<br />';
-			}
-		}
-	    return '<!PID:'.$pid.'>';
-	}
 	function cb_hlcode ($matches) {
-		global $lang;
+		global $lang, $scache;
 		$pid = $this->noparse_id();
-		list(, $sclang, $code, $nl) = $matches;
+		list(,, $sclang, $code, $nl) = $matches;
 
-
-	    $rows = explode("\n",$code);
-
+		$code = trim($code);
+	    $rows = explode("\n", $code);
 	    if (count($rows) > 1) {
-	    	$code = $code2 = $this->code_prepare($code);
-		    $a = 0;
-		    $aa = array();
-			$unique = md5($code);
-
-			$cache = new CacheItem($unique, 'cache/geshicode/');
-			if ($cache->exists() == false) {
-				$export = array(
-				'language' => $sclang,
-				'source' => $code
-				);
-			    $cache->set($export);
-			    $cache->export();
+	    	$scache->loadClass('UniversalCodeCache');
+			$cache = new UniversalCodeCache();
+			$cache->setData($code, $sclang);
+			$data = $cache->get();
+			if ($cache->hasLanguage()) {
+				$lang->assign('lang_name', $data['language']);
+				$title = $lang->phrase('geshi_hlcode_title');
 			}
-
-		    foreach ($rows as $row) {
-		        $a++;
-		        $aa[] = "$a:&nbsp;";
-		    }
-
-			$aa = implode("<br />",$aa);
-
-		    $this->noparse[$pid] = '<strong class="bb_blockcode_header"><a target="_blank" href="popup.php?action=hlcode&amp;fid='.$unique.SID2URL_x.'">'.$lang->phrase('bb_ext_sourcecode').'</a></strong><div class="bb_blockcode"><table><tr><td width="1%">'.$aa.'</td><td width="99%">'.$this->nl2br($code2).'</td></tr></table></div>';
-		}
+			else {
+				$title = $lang->phrase('bb_sourcecode');
+			}
+		    $html = '<div class="highlightcode"><a class="bb_blockcode_options" href="misc.php?action=download_code&amp;fid='.$cache->getHash().'">'.$lang->phrase('geshi_hlcode_txtdownload').'</a>';
+		    $html .= '<strong>'.$title.'</strong>';
+		    $html .= '<div class="bb_blockcode">'.$data['parsed'].'</div></div>';
+			$this->noparse[$pid] = $html;
+	    }
 		else {
-			$code2 = $this->code_prepare($code, (count($rows) <= 1));
-			$this->noparse[$pid] = '<code class="bb_inlinecode">'.$code2.'</code>';
+			$code = $this->code_prepare($code, (count($rows) <= 1));
+			$this->noparse[$pid] = '<code class="bb_inlinecode">'.$code.'</code>';
 			if (!empty($nl)) {
 				$this->noparse[$pid] .= '<br />';
 			}
@@ -584,8 +547,7 @@ class BBCode {
 			$text = $this->parseSmileys($text);
 		}
 		else {
-			$text = empty($this->profile['disallow']['code']) ? preg_replace_callback('/\[code\](.+?)\[\/code\](\n?)/is', array(&$this, 'cb_code'), $text) : $text;
-			$text = empty($this->profile['disallow']['code']) ? preg_replace_callback('/\[code=(\w+?)\](.+?)\[\/code\](\n?)/is', array(&$this, 'cb_hlcode'), $text) : $text;
+			$text = empty($this->profile['disallow']['code']) ? preg_replace_callback('/\[code(=(\w+?))?\](.+?)\[\/code\](\n?)/is', array(&$this, 'cb_hlcode'), $text) : $text;
 
 			$text = $this->ListWorkAround($text);
 

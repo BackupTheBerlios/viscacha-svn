@@ -161,7 +161,7 @@ function DocCodePagination($cc) {
 }
 
 function DocCodeParser($syntax, $parser = 1) {
-	global $bbcode;
+	global $bbcode, $info;
 	if ($parser == 2) {
 		ob_start();
 		$code = str_replace('<'.'?php','<'.'?',$syntax);

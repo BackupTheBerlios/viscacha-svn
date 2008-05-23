@@ -59,6 +59,26 @@ if ($_GET['action'] == "boardin") {
 	}
 
 }
+elseif ($_GET['action'] == "download_code") {
+	if (strlen($_GET['fid']) != 32) {
+		error($lang->phrase('query_string_error'));
+	}
+	$scache->loadClass('UniversalCodeCache');
+	$cache = new UniversalCodeCache();
+	if (!$cache->setHash($_GET['fid'])) {
+		error($lang->phrase('no_upload_found'));
+	}
+	$sourcecode = $cache->get();
+
+	$slog->updatelogged();
+	$db->close();
+
+	viscacha_header('Content-Type: text/plain');
+	viscacha_header('Content-Length: '.strlen($sourcecode['source']));
+	viscacha_header('Content-Disposition: attachment; filename="'.gmdate('d-m-Y_H-i', times()).'.txt"');
+	echo $sourcecode['source'];
+	exit;
+}
 elseif ($_GET['action'] == "report_post" || $_GET['action'] == "report_post2") {
 	($code = $plugins->load('showtopic_topic_query')) ? eval($code) : null;
 	$result = $db->query("SELECT r.id, r.report, r.topic_id, r.tstart, r.topic AS title, t.topic, t.status, t.board, t.prefix FROM {$db->pre}replies AS r LEFT JOIN {$db->pre}topics AS t ON r.topic_id = t.id WHERE r.id = '{$_GET['id']}' LIMIT 1",__LINE__,__FILE__);
@@ -305,10 +325,7 @@ elseif ($_GET['action'] == "wwo") {
 			}
 			break;
 		case 'popup':
-			if ($row->wiw_action == 'hlcode') {
-				$loc = $lang->phrase('wwo_popup_hlcode');
-			}
-			elseif ($row->wiw_action == 'filetypes') {
+			if ($row->wiw_action == 'filetypes') {
 				$loc = $lang->phrase('wwo_popup_filetypes');
 			}
 			elseif ($row->wiw_action == 'showpost') {// Todo: Auf eine Query begrenzen (alle IDs auf einmal auslesen am Anfang)
