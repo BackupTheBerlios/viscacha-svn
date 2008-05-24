@@ -53,10 +53,12 @@ define('REMOTE_IMAGE_WIDTH_ERROR', 500);
 define('REMOTE_EXTENSION_ERROR', 600);
 define('REMOTE_IMAGE_ERROR', 700);
 
+define('ENCODING_LIST', 'ISO-8859-1, ISO-8859-15, UTF-8, ASCII, cp1252, cp1251, GB2312, SJIS, KOI8-R');
+
 function convert_host_to_idna($host) {
 	$idna = new idna_convert();
-	if (viscacha_function_exists('mb_detect_encoding')) {
-		$host = mb_convert_encoding($host, 'UTF-8');
+	if (viscacha_function_exists('mb_convert_encoding')) {
+		$host = mb_convert_encoding($host, 'UTF-8', ENCODING_LIST);
 	}
 	else {
 		$host = utf8_encode($host);

@@ -779,7 +779,7 @@ var WYSIWYG = {
 								else if (toolbar[i] == "viewSource"){
 								    editor += '<td style="width: 22px;">';
 									editor += '<span id="HTMLMode' + n + '"><img src="' + buttonImage +  '" border="0" unselectable="on" title="' + buttonTitle + '" id="' + buttonID + '" class="editor_toolbar_button" onmouseover="this.className=\'editor_toolbar_button_on\';" onmouseout="this.className=\'editor_toolbar_button\';" onclick="WYSIWYG.execCommand(\'' + n + '\', \'' + buttonID + '\');" unselectable="on" width="20" height="20"></span>';
-									editor += '<span id="textMode' + n + '"><img src="' + this.config[n].ImagesDir + 'view_text.gif" border="0" unselectable="on" title="viewText" id="ViewText" class="editor_toolbar_button" onmouseover="this.className=\'editor_toolbar_button_on\';" onmouseout="this.className=\'editor_toolbar_button\';" onclick="WYSIWYG.execCommand(\'' + n + '\',\'ViewText\');" unselectable="on"  width="20" height="20"></span>';
+									editor += '<span id="textMode' + n + '"><img src="' + this.config[n].ImagesDir + 'view_text.gif" border="0" unselectable="on" title="' + buttonTitle + '" id="ViewText" class="editor_toolbar_button" onmouseover="this.className=\'editor_toolbar_button_on\';" onmouseout="this.className=\'editor_toolbar_button\';" onclick="WYSIWYG.execCommand(\'' + n + '\',\'ViewText\');" unselectable="on"  width="20" height="20"></span>';
 							        editor += '</td>';
 						        }
 								else {
@@ -834,6 +834,11 @@ var WYSIWYG = {
 		// Write the textarea's content into the iframe
 	    doc.open();
 	    doc.write(content);
+
+		// Enable table highlighting
+		// Update this before closing!
+		WYSIWYG_Table.refreshHighlighting(n);
+
 	    doc.close();
 
 		// Make the iframe editable in both Mozilla and IE
@@ -847,9 +852,6 @@ var WYSIWYG = {
 
 		// Set default font style
 		WYSIWYG_Core.setAttribute(doc.body, "style", this.config[n].DefaultStyle);
-
-		// Enable table highlighting
-		WYSIWYG_Table.refreshHighlighting(n);
 
 	    // Event Handling
 	    // Update the textarea with content in WYSIWYG when user submits form
@@ -1685,6 +1687,8 @@ var WYSIWYG = {
 	updateTextArea: function(n) {
 		// on update switch editor back to html mode
 		if(this.viewTextMode[n]) { this.viewText(n); }
+		// Strip table highlighting
+		WYSIWYG_Table.disableHighlighting(n);
 		// get inner HTML
 		var content = this.getEditorWindow(n).document.body.innerHTML;
 		// strip off defined URLs on IE
@@ -2568,6 +2572,10 @@ var WYSIWYG_Table = {
 		for(var i=0;i<tds.length;i++) {
 			this._enableHighlighting(tds[i]);
 		}
+		var tds = doc.getElementsByTagName("th");
+		for(var i=0;i<tds.length;i++) {
+			this._enableHighlighting(tds[i]);
+		}
 	},
 
 	/**
@@ -2585,7 +2593,10 @@ var WYSIWYG_Table = {
 		for(var i=0;i<tds.length;i++) {
 			this._disableHighlighting(tds[i]);
 		}
-
+		var tds = doc.getElementsByTagName("th");
+		for(var i=0;i<tds.length;i++) {
+			this._disableHighlighting(tds[i]);
+		}
 	},
 
 	/**
@@ -2593,7 +2604,7 @@ var WYSIWYG_Table = {
 	 */
 	_enableHighlighting: function(node) {
 		var style = WYSIWYG_Core.getAttribute(node, "style");
-		if(style == null) style = " ";
+		if(!style) style = "";
 		//alert("ENABLE: ELM = " + node.tagName + "; STYLE = " + style);
 		WYSIWYG_Core.removeAttribute(node, "prevstyle");
 		WYSIWYG_Core.setAttribute(node, "prevstyle", style);

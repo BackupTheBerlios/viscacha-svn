@@ -107,7 +107,7 @@ class MagpieRSS {
         // Added this to repair invalid feeds (wrong charset/chars)
         if (viscacha_function_exists('mb_check_encoding')) {
         	if ($input_encoding == null) {
-        		$input_encoding2 = mb_detect_encoding($source);
+        		$input_encoding2 = mb_detect_encoding($source, ENCODING_LIST);
         	}
         	else {
         		$input_encoding2 = $input_encoding;
