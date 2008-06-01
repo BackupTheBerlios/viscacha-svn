@@ -349,6 +349,28 @@ label, .labeldiv {
 	clear: left;
 }
 
+/* Pagination */
+.pagination .page_number {
+	border: 1px solid #B6BCC1;
+	color: #24486C;
+	padding: 0px 2px;
+	margin: 0px 2px;
+	text-decoration: none;
+}
+.pagination .page_number_current, .pagination .page_number:hover {
+	border: 1px solid #336699;
+	background-color: #336699;
+	color: #FFFFFF;
+	padding: 0px 2px;
+	margin: 0px 2px;
+}
+.pagination .page_more {
+	margin: 0px 2px;
+}
+.pagination .page_separator {
+	display: none;
+}
+
 /* Bars / Charts */
 .votebar {
 	background-color: #BCCADA;

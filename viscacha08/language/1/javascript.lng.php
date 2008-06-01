@@ -18,6 +18,7 @@ $lang['js_confirm_ndelete'] = 'Möchten Sie diese Notiz wirklich löschen?';
 $lang['js_confirm_pdelete'] = 'Möchten Sie diesen Beitrag wirklich löschen?';
 $lang['js_listpompt1'] = 'Bitte geben Sie den ';
 $lang['js_listpompt2'] = '. Listenpunkt an.\\n"Abbrechen" klicken zum Beenden.';
+$lang['js_page_jumpto'] = 'Geben Sie die Seite ein, zu der Sie springen möchten:';
 $lang['js_quote_multi'] = 'Beitrag zum Zitieren merken (Multiquote)';
 $lang['js_quote_multi_2'] = 'Gemerktes Zitat entfernen (Multiquote)';
 $lang['js_ta_left'] = ' Zeichen übrig.';

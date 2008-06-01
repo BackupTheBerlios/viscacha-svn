@@ -111,7 +111,10 @@ if (!empty($marksql)) {
 if ($info['forumzahl'] < 1) {
 	$info['forumzahl'] = $config['forumzahl'];
 }
-$pages = pages($info['topics'], $info['forumzahl'], 'showforum.php?id='.$board.'sort='.$_GET['sort'].'&amp;', $_GET['page']);
+if (ceil($info['topics']/$info['forumzahl']) < $_GET['page']) {
+	$_GET['page'] = 1;
+}
+$pages = pages($info['topics'], $info['forumzahl'], 'showforum.php?id='.$board.'&amp;sort='.$_GET['sort'].'&amp;', $_GET['page']);
 
 $inner['index_bit'] = '';
 if ($info['topics'] > 0) {

@@ -18,6 +18,7 @@ $lang['js_confirm_ndelete'] = 'Do you really want to delete this note?';
 $lang['js_confirm_pdelete'] = 'Do you really want to delete this post?';
 $lang['js_listpompt1'] = 'please provide the ';
 $lang['js_listpompt2'] = '. listpoint on.\\nclick "cancel" to quit.';
+$lang['js_page_jumpto'] = 'Enter the page number you wish to go to:';
 $lang['js_quote_multi'] = 'Save post for quoting (Multiquote)';
 $lang['js_quote_multi_2'] = 'Removed saved post (Multiquote)';
 $lang['js_ta_left'] = ' characters left.';

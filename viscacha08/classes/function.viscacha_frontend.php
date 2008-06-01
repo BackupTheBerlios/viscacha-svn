@@ -314,55 +314,80 @@ function get_mimetype($file) {
 	}
 }
 
+define('PAGES_NUM', 1);
+define('PAGES_CURRENT', 2);
+define('PAGES_SEPARATOR', 4);
+
 /**
  * Gives out html formatted page numbers.
  *
  * It uses the set of templates specified in the last parameter.
  * The template sets are in the directory "main" and are prefixed with "pages".
- * Example: the last parameter is "small", the main template is "pagessmall.html" and the template for the current page is "pages_currentsmall".
+ * Example: the last parameter is "_small", the main template is "pages_small.html".
  *
  * @param int $anzposts Number of entries
- * @param int $epp Number of entries per page
- * @param string $uri URL to the page with & or ? at the end (page=? will be appended)
+ * @param int $perpage Number of entries per page
+ * @param string $uri URL to the page with & or ? at the end (page=X will be appended)
  * @param int $p The current page
  * @param string $template Name of template set (see description)
  * @return string HTML formatted page numbers and prefix
  */
-function pages ($anzposts, $epp, $uri, $p = 0, $template = '') {
+function pages ($anzposts, $perpage, $uri, $p = 1, $template = '') {
 	global $config, $tpl, $lang;
 
-	if ($anzposts < 1) {
+	if (!is_id($anzposts)) {
 		$anzposts = 1;
 	}
+	if (!is_id($perpage)) {
+		$perpage = 10;
+	}
 
-   	$anz = ceil($anzposts/$epp);
-    $sep = $lang->phrase('pages_sep');
+	// Last page / Number of pages
+	$anz = ceil($anzposts/$perpage);
+	// Array with all page numbers
+	$available_pages = range(1, $anz);
+	// Page data for template
     $pages = array();
+
 	if ($anz > 10) {
-		$pages[1] = 1;
-		$pages[2] = 2;
-		$pages[$anz-1] = $anz-1;
-		$pages[$anz] = $anz;
-		if ($p >= 2 && $p <= $anz-1) {
-		    $pages[$p-1] = $p-1;
-		    $pages[$p+1] = $p+1;
-		}
-		if (!isset($pages[$p+2]) && $p+2 <= $anz) {
-		    $pages[$p+2] = $sep;
-		}
-		if (!isset($pages[$p-2]) && $p-2 > 0) {
-			$pages[$p-2] = $sep;
+		// What we want to be shown if available
+		$show = array(
+			1,
+			2,
+			$p-2,
+			$p-1,
+			$p,
+			$p+1,
+			$p+2,
+			$anz-1,
+			$anz
+		);
+		$show = array_unique($show);
+		foreach ($show as $num) {
+			if (in_array($num, $available_pages) == true) {
+				if (in_array($num-1, $show) == false && $num > 1) { // Add separator when page numbers are missing
+					$pages[$num-1] = array(
+						'type' => PAGES_SEPARATOR,
+						'url' => null,
+						'separator' => false
+					);
+				}
+				$pages[$num] = array(
+					'type' => iif($num == $p, PAGES_CURRENT, PAGES_NUM),
+					'url' => $uri.'page='.$num.SID2URL_x,
+					'separator' => in_array($num+1, $show)
+				);
+			}
 		}
 	}
 	else {
-	    for($i=1; $i<=$anz; $i++) {
-	        $pages[$i] = $i;
-	    }
-	}
-
-	if ($p > 0) {
-		$tpl->globalvars(compact("p"));
-		$pages[$p] = $tpl->parse("main/pages_current".$template);
+		for ($i = 1; $i <= $anz; $i++) {
+			$pages[$i] = array(
+				'type' => iif($i == $p, PAGES_CURRENT, PAGES_NUM),
+				'url' => $uri.'page='.$i.SID2URL_x,
+				'separator' => ($i != $anz)
+			);
+		}
 	}
 
 	ksort($pages);
