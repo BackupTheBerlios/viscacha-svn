@@ -7,7 +7,110 @@ $lang->group("timezones");
 
 ($code = $plugins->load('admin_members_jobs')) ? eval($code) : null;
 
-if ($job == 'emailsearch') {
+if ($job == 'reserve') {
+	$olduserdata = file('data/deleteduser.php');
+	echo head();
+	?>
+<form name="form" method="post" action="admin.php?action=members&job=reserve_delete">
+<table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
+  <tr>
+   <td class="obox" colspan="3"><?php echo $lang->phrase('admin_member_reserve_names_title'); ?></td>
+  </tr>
+  <tr class="ubox">
+   <td width="10%" class="center"><?php echo $lang->phrase('admin_member_delete'); ?><br /><span class="stext"><input type="checkbox" onclick="check_all(this);" name="all" value="delete[]" /> <?php echo $lang->phrase('admin_member_all'); ?></span></td>
+   <td width="50%"><?php echo $lang->phrase('admin_member_user_name'); ?></td>
+   <td width="40%"><?php echo $lang->phrase('admin_member_name_connected_to_id'); ?></td>
+  </tr>
+	<?php
+	foreach ($olduserdata as $name) {
+		$name = trim($name);
+		if (empty($name)) {
+			continue;
+		}
+		list($id, $username) = explode("\t", $name);
+		?>
+  <tr class="mbox">
+   <td class="center"><input type="checkbox" name="delete[]" value="<?php echo $username; ?>" /></td>
+   <td><?php echo $username; ?></td>
+   <td><?php echo iif(is_id($id), $id, '<em>'.$lang->phrase('admin_member_name_not_connected').'</em>'); ?></td>
+  </tr>
+	<?php } ?>
+  <tr>
+   <td class="ubox center" colspan="3"><input type="submit" value="<?php echo $lang->phrase('admin_member_submit'); ?>" /></td>
+  </tr>
+</table>
+</form>
+<br />
+<form name="form" method="post" action="admin.php?action=members&job=reserve_add">
+<table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
+  <tr>
+   <td class="obox" colspan="3"><?php echo $lang->phrase('admin_member_reserve_names_add'); ?></td>
+  </tr>
+  <tr class="mbox">
+   <td><?php echo $lang->phrase('admin_member_user_name'); ?>:</td>
+   <td><input type="text" name="name" size="60" /></td>
+  </tr>
+  <tr>
+   <td class="ubox center" colspan="2"><input type="submit" value="<?php echo $lang->phrase('admin_member_submit'); ?>" /></td>
+  </tr>
+</table>
+</form>
+	<?php
+	echo foot();
+}
+elseif ($job == 'reserve_add') {
+	$name = $gpc->get('name', str);
+
+	$error = array();
+	if (double_udata('name', $name) == false) {
+		$error[] = $lang->phrase('admin_member_username_already_in_use');
+	}
+	if (strxlen($name) > $config['maxnamelength']) {
+		$error[] = $lang->phrase('admin_member_name_too_long');
+	}
+	if (strxlen($name) < $config['minnamelength']) {
+		$error[] = $lang->phrase('admin_member_name_too_short');
+	}
+	if (count($error) > 0) {
+		echo head();
+		error('admin.php?action=members&job=reserve', $error);
+	}
+	else {
+		$olduserdata = file_get_contents('data/deleteduser.php');
+		$olduserdata = trim($olduserdata);
+		$olduserdata .= "\n0\t".$name;
+		$filesystem->file_put_contents('data/deleteduser.php', $olduserdata);
+
+		echo head();
+		ok('admin.php?action=members&job=reserve', $lang->phrase('admin_member_username_successfully_reserved'));
+	}
+}
+elseif ($job == 'reserve_delete') {
+	$del = $gpc->get('delete', arr_none);
+	$olduserdata = file('data/deleteduser.php');
+	$rows = array();
+	foreach ($olduserdata as $name) {
+		$name = trim($name);
+		if (empty($name)) {
+			continue;
+		}
+		list($id, $username) = explode("\t", $name);
+		$save = true;
+		foreach ($del as $username2) {
+			if (strtolower($username2) == strtolower($username)) {
+				$save = false;
+			}
+		}
+		if ($save == true) {
+			$rows[] = $name;
+		}
+	}
+	$filesystem->file_put_contents('data/deleteduser.php', implode("\n", $rows));
+
+	echo head();
+	ok('admin.php?action=members&job=reserve', $lang->phrase('admin_member_selected_reserved_names_deleted'));
+}
+elseif ($job == 'emailsearch') {
 	echo head();
 
 	$loadlanguage_obj = $scache->load('loadlanguage');
@@ -907,19 +1010,26 @@ elseif ($job == 'manage') {
 
 	$result = $db->query('SELECT * FROM '.$db->pre.'user ORDER BY '.$sort.' '.$order.' LIMIT '.$start.',25');
 	?>
+	<table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
+	 <tr>
+	  <td class="obox button_multiline">
+	   <a class="button" href="admin.php?action=members&amp;job=register"><?php echo $lang->phrase('admin_member_add_new_member'); ?></a>
+	   <?php if ($my->settings['admin_interface'] == 0) { ?>
+	   <a class="button" href="admin.php?action=members&amp;job=search"><?php echo $lang->phrase('admin_member_search_members'); ?></a>
+	   <a class="button" href="admin.php?action=members&amp;job=inactive"><?php echo $lang->phrase('admin_member_inactive_members'); ?></a>
+	   <?php } ?>
+	   <a class="button" href="admin.php?action=members&amp;job=reserve"><?php echo $lang->phrase('admin_member_reserve_names_title'); ?></a>
+	   <a class="button" href="admin.php?action=members&amp;job=memberrating"><?php echo $lang->phrase('admin_member_memberratings'); ?></a>
+	   <a class="button" href="admin.php?action=members&amp;job=merge"><?php echo $lang->phrase('admin_member_merge_users'); ?></a>
+	   <a class="button" href="admin.php?action=members&amp;job=recount"><?php echo $lang->phrase('admin_member_recount_post_counts'); ?></a>
+	  </td>
+	 </tr>
+	</table>
+	<br class="minibr" />
 	<form name="form" action="admin.php?action=members&job=delete" method="post">
 	<table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
 		<tr>
-		  <td class="obox" colspan="8">
-		  <?php if ($my->settings['admin_interface'] == 1) { ?>
-		  <span style="float: right;">
-		  <a class="button" href="admin.php?action=members&amp;job=register"><?php echo $lang->phrase('admin_member_add_new_member'); ?></a>
-		  <a class="button" href="admin.php?action=members&amp;job=memberrating"><?php echo $lang->phrase('admin_member_memberratings'); ?></a>
-		  <a class="button" href="admin.php?action=members&amp;job=merge"><?php echo $lang->phrase('admin_member_merge_users'); ?></a>
-		  <a class="button" href="admin.php?action=members&amp;job=recount"><?php echo $lang->phrase('admin_member_recount_post_counts'); ?></a>
-		  </span>
-		  <?php } ?>
-		  <?php echo $lang->phrase('admin_member_member_list'); ?></td>
+		  <td class="obox" colspan="8"><?php echo $lang->phrase('admin_member_member_list'); ?></td>
 		</tr>
 		<tr>
 		  <td class="ubox" colspan="8"><span style="float: right;"><?php echo $temp; ?></span><?php echo $count[0]; ?> <?php echo $lang->phrase('admin_member_members'); ?></td>
@@ -970,21 +1080,6 @@ elseif ($job == 'manage') {
 		</tr>
 	</table>
 	</form>
-	 <?php if ($my->settings['admin_interface'] == 0) { ?>
-	 <br class="minibr" />
-	 <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
-	  <tr>
-	   <td class="obox center">
-		  <a class="button" href="admin.php?action=members&amp;job=register"><?php echo $lang->phrase('admin_member_add_new_member'); ?></a>
-		  <a class="button" href="admin.php?action=members&amp;job=search"><?php echo $lang->phrase('admin_member_search_members'); ?></a>
-		  <a class="button" href="admin.php?action=members&amp;job=inactive"><?php echo $lang->phrase('admin_member_inactive_members'); ?></a>
-		  <a class="button" href="admin.php?action=members&amp;job=memberrating"><?php echo $lang->phrase('admin_member_memberratings'); ?></a>
-		  <a class="button" href="admin.php?action=members&amp;job=merge"><?php echo $lang->phrase('admin_member_merge_users'); ?></a>
-		  <a class="button" href="admin.php?action=members&amp;job=recount"><?php echo $lang->phrase('admin_member_recount_post_counts'); ?></a>
-	   </td>
-	  </tr>
-	 </table>
-	 <?php } ?>
 	<?php
 	echo foot();
 }
