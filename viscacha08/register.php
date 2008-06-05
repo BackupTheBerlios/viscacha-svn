@@ -245,6 +245,7 @@ elseif ($_GET['action'] == 'resend2') {
 
 		($code = $plugins->load('register_resend2_check')) ? eval($code) : null;
 
+		$lang->assign('redirect', $row['id']);
 		$data = $lang->get_mail('register_'.$row['confirm']);
 		$to = array('0' => array('name' => $row['name'], 'mail' => $row['mail']));
 		$from = array();
