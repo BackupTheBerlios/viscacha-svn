@@ -43,7 +43,7 @@ if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
 //
 
 /** The version of this GeSHi file */
-define('GESHI_VERSION', '1.0.7.21 (SVN: 23-05-2008 15:00)');
+define('GESHI_VERSION', '1.0.7.21 (SVN: 06-06-2008 00:00)');
 
 // Define the root directory for the GeSHi code tree
 if (!defined('GESHI_ROOT')) {
@@ -1162,6 +1162,7 @@ class GeSHi {
                 'css' => array('css'),
                 'delphi' => array('dpk', 'dpr', 'pp', 'pas'),
                 'dos' => array('bat', 'cmd'),
+                'gettext' => array('po', 'pot'),
                 'html4strict' => array('html', 'htm'),
                 'java' => array('java'),
                 'javascript' => array('js'),
@@ -2314,7 +2315,7 @@ class GeSHi {
 
                             $stuff_to_parse .= ' ';
                             $stuff_to_parse = preg_replace(
-                                "/([^$disallowed_before])($keyword)(?=[^$disallowed_after])/$modifiers",
+                                "/([^$disallowed_before])($keyword)(?!\<DOT\>(?:htm|php))(?=[^$disallowed_after])/$modifiers",
                                 "'\\1' . $func2('\\2', '$k', 'BEGIN') . '<|$styles>' . $func('\\2') . '|>' . $func2('\\2', '$k', 'END')",
                                 $stuff_to_parse
                             );
@@ -2375,17 +2376,15 @@ class GeSHi {
         //
         if ($this->lexic_permissions['BRACKETS']) {
             $code_entities_match = array('[', ']', '(', ')', '{', '}');
-            if (!$this->use_classes) {
-            	if (isset($this->language_data['STYLES']['BRACKETS'][0])) {
-	                $code_entities_replace = array(
-	                    '<| style="' . $this->language_data['STYLES']['BRACKETS'][0] . '">&#91;|>',
-	                    '<| style="' . $this->language_data['STYLES']['BRACKETS'][0] . '">&#93;|>',
-	                    '<| style="' . $this->language_data['STYLES']['BRACKETS'][0] . '">&#40;|>',
-	                    '<| style="' . $this->language_data['STYLES']['BRACKETS'][0] . '">&#41;|>',
-	                    '<| style="' . $this->language_data['STYLES']['BRACKETS'][0] . '">&#123;|>',
-	                    '<| style="' . $this->language_data['STYLES']['BRACKETS'][0] . '">&#125;|>',
-	                );
-            	}
+            if (!$this->use_classes && isset($this->language_data['STYLES']['BRACKETS'][0])) {
+                $code_entities_replace = array(
+                    '<| style="' . $this->language_data['STYLES']['BRACKETS'][0] . '">&#91;|>',
+                    '<| style="' . $this->language_data['STYLES']['BRACKETS'][0] . '">&#93;|>',
+                    '<| style="' . $this->language_data['STYLES']['BRACKETS'][0] . '">&#40;|>',
+                    '<| style="' . $this->language_data['STYLES']['BRACKETS'][0] . '">&#41;|>',
+                    '<| style="' . $this->language_data['STYLES']['BRACKETS'][0] . '">&#123;|>',
+                    '<| style="' . $this->language_data['STYLES']['BRACKETS'][0] . '">&#125;|>',
+                );
             }
             else {
                 $code_entities_replace = array(
