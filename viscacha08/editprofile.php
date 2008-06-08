@@ -121,10 +121,6 @@ elseif ($_GET['action'] == "attachments" && $config['tpcallow'] == 1) {
 	($code = $plugins->load('editprofile_attachments_end')) ? eval($code) : null;
 }
 elseif ($_GET['action'] == "abos") {
-	$breadcrumb->Add($lang->phrase('editprofile_abos'));
-	echo $tpl->parse("header");
-	echo $tpl->parse("menu");
-
 	$p = $_GET['page']-1;
 
 	$sqlwhere = '';
@@ -192,7 +188,7 @@ elseif ($_GET['action'] == "abos") {
 
 
 		if ($row['posts'] > $info['topiczahl']) {
-			$row['topic_pages'] = pages($row['posts']+1, $info['topiczahl'], "showtopic.php?id=".$row['id']."&amp;", 0, '_small');
+			$row['topic_pages'] = pages($row['posts']+1, $info['topiczahl'], "showtopic.php?id=".$row['id']."&amp;", 0, '_small', false);
 		}
 		else {
 			$row['topic_pages'] = '';
@@ -208,6 +204,10 @@ elseif ($_GET['action'] == "abos") {
 	if (!isset($cache[$p])) {
 		$count = 0;
 	}
+
+	$breadcrumb->Add($lang->phrase('editprofile_abos'));
+	echo $tpl->parse("header");
+	echo $tpl->parse("menu");
 
 	($code = $plugins->load('editprofile_abos_prepared')) ? eval($code) : null;
 	echo $tpl->parse("editprofile/abos");
@@ -818,7 +818,7 @@ elseif ($_GET['action'] == "mylast") {
 			$row['pre'] = '';
 		}
 		if ($row['posts'] > $info['topiczahl']) {
-			$row['topic_pages'] = pages($row['posts']+1, $info['topiczahl'], "showtopic.php?id=".$row['id']."&amp;", 0, '_small');
+			$row['topic_pages'] = pages($row['posts']+1, $info['topiczahl'], "showtopic.php?id=".$row['id']."&amp;", 0, '_small', false);
 		}
 		else {
 			$row['topic_pages'] = '';

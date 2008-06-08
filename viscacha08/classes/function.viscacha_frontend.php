@@ -330,9 +330,10 @@ define('PAGES_SEPARATOR', 4);
  * @param string $uri URL to the page with & or ? at the end (page=X will be appended)
  * @param int $p The current page
  * @param string $template Name of template set (see description)
+ * @param boolean $linkrel Enable/Disable the browser based navigation (default: enabled)
  * @return string HTML formatted page numbers and prefix
  */
-function pages ($anzposts, $perpage, $uri, $p = 1, $template = '') {
+function pages ($anzposts, $perpage, $uri, $p = 1, $template = '', $linkrel = true) {
 	global $config, $tpl, $lang;
 
 	if (!is_id($anzposts)) {
@@ -387,6 +388,21 @@ function pages ($anzposts, $perpage, $uri, $p = 1, $template = '') {
 				'url' => $uri.'page='.$i.SID2URL_x,
 				'separator' => ($i != $anz)
 			);
+		}
+	}
+
+	if ($linkrel) {
+		if (!defined('LINK_FIRST_PAGE')) {
+			define('LINK_FIRST_PAGE', $pages[1]['url']);
+		}
+		if (!defined('LINK_PREVIOUS_PAGE') && isset($pages[$p-1])) {
+			define('LINK_PREVIOUS_PAGE', $pages[$p-1]['url']);
+		}
+		if (!defined('LINK_NEXT_PAGE') && isset($pages[$p+1])) {
+			define('LINK_NEXT_PAGE', $pages[$p+1]['url']);
+		}
+		if (!defined('LINK_LAST_PAGE') && isset($pages[$anz]) && $anz > 1) {
+			define('LINK_LAST_PAGE', $pages[$anz]['url']);
 		}
 	}
 

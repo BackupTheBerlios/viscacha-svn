@@ -73,6 +73,10 @@ class UniversalCodeCache extends CacheItem {
 		return false;
 	}
 
+	function administrable() {
+		return false;
+	}
+
 	function hasLanguage() {
 		return !empty($this->lng);
 	}

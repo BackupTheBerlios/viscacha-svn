@@ -373,8 +373,6 @@ elseif ($_GET['action'] == "browse") {
 		error($lang->phrase('query_string_error'), 'pm.php'.SID2URL_1);
 	}
 	$breadcrumb->Add($dir_name);
-	echo $tpl->parse("header");
-	echo $tpl->parse("menu");
 
 	$memberdata_obj = $scache->load('memberdata');
 	$memberdata = $memberdata_obj->get();
@@ -404,6 +402,8 @@ elseif ($_GET['action'] == "browse") {
 	LIMIT {$start}, {$config['pmzahl']}
 	",__LINE__,__FILE__);
 
+	echo $tpl->parse("header");
+	echo $tpl->parse("menu");
 	echo $tpl->parse("pm/menu");
 
 	while ($row = $db->fetch_assoc($result)) {

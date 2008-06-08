@@ -43,7 +43,7 @@ if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
 //
 
 /** The version of this GeSHi file */
-define('GESHI_VERSION', '1.0.7.21 (SVN: 06-06-2008 00:00)');
+define('GESHI_VERSION', '1.0.7.22');
 
 // Define the root directory for the GeSHi code tree
 if (!defined('GESHI_ROOT')) {
@@ -2400,7 +2400,7 @@ class GeSHi {
         }
 
         //FIX for symbol highlighting ...
-        if($this->lexic_permissions['SYMBOLS']) {
+        if($this->lexic_permissions['SYMBOLS'] && !empty($this->language_data['SYMBOLS'])) {
             //As this is a costy operation, we avoid doing it for multiple groups ...
             //Instead we perform it for all symbols at once.
             //

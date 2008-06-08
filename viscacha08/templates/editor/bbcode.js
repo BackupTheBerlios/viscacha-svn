@@ -159,7 +159,7 @@ function InsertTagsList(id, type) {
 		txt = window.prompt(lng['js_listpompt1']+a+lng['js_listpompt2'], '');
 	}
 	if (Elements.length > 0){
-		InsertTags(id, "[list"+type+"]"+Elements.join("\n"), '[/list]');
+		InsertTags(id, "[list"+type+"]"+Elements.join("\n"), '[/list]', 2);
 	}
 	else {
 		InsertTags(id, "[list"+type+"]", "[/list]");

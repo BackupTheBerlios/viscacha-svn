@@ -84,7 +84,7 @@ class BBCode {
 	}
 	function cb_list ($matches) {
 		list(, $type, $pattern) = $matches;
-	    $liarray = preg_split('/(\n\s?-\s|\[\*\])/',$pattern);
+	    $liarray = preg_split('/(\n\s?-\s|\[\*\])/', "\n".$pattern); // Add line break for the first "-", it will be trimmed in the next line.
 	    $liarray = array_map('trim', $liarray);
 	    $list = '';
 	    foreach ($liarray as $li) {

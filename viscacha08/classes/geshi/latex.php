@@ -4,7 +4,7 @@
  * -----
  * Author: efi, Matthias Pospiech (mail@matthiaspospiech.de)
  * Copyright: (c) 2006 efi, Matthias Pospiech (mail@matthiaspospiech.de), Nigel McNie (http://qbnz.com/highlighter)
- * Release Version: 1.0.7.21
+ * Release Version: 1.0.7.22
  * Date Started: 2006/09/23
  *
  * LaTeX language file for GeSHi.
@@ -69,10 +69,12 @@ $language_data = array (
             1 => 'color: #808080; font-style: italic;'
             ),
         'ESCAPE_CHAR' => array(
+            0 =>  'color: #000000; font-weight: bold;'
             ),
         'BRACKETS' => array(
             ),
         'STRINGS' => array(
+            0 =>  'color: #000000;'
             ),
         'NUMBERS' => array(
             ),

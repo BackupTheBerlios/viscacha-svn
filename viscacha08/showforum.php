@@ -55,15 +55,6 @@ $breadcrumb->Add($info['name']);
 
 forum_opt($info);
 
-echo $tpl->parse("header");
-echo $tpl->parse("menu");
-
-($code = $plugins->load('showforum_forums_start')) ? eval($code) : null;
-
-$subforums = BoardSelect($board);
-
-($code = $plugins->load('showforum_forums_end')) ? eval($code) : null;
-
 $filter = $gpc->get('sort', int);
 if ($filter == 2) {
 	$marksql = ' AND mark = "a" '.iif($info['auto_status'] == 'a', 'AND mark IS NULL ');
@@ -115,6 +106,15 @@ if (ceil($info['topics']/$info['forumzahl']) < $_GET['page']) {
 	$_GET['page'] = 1;
 }
 $pages = pages($info['topics'], $info['forumzahl'], 'showforum.php?id='.$board.'&amp;sort='.$_GET['sort'].'&amp;', $_GET['page']);
+
+echo $tpl->parse("header");
+echo $tpl->parse("menu");
+
+($code = $plugins->load('showforum_forums_start')) ? eval($code) : null;
+
+$subforums = BoardSelect($board);
+
+($code = $plugins->load('showforum_forums_end')) ? eval($code) : null;
 
 $inner['index_bit'] = '';
 if ($info['topics'] > 0) {
@@ -216,7 +216,7 @@ if ($info['topics'] > 0) {
 		}
 
 		if ($row->posts > $last['topiczahl']) {
-			$topic_pages = pages($row->posts+1, $last['topiczahl'], "showtopic.php?id=".$row->id."&amp;", 0, '_small');
+			$topic_pages = pages($row->posts+1, $last['topiczahl'], "showtopic.php?id=".$row->id."&amp;", 0, '_small', false);
 		}
 		else {
 			$topic_pages = '';

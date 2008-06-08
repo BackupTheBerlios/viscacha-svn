@@ -50,8 +50,6 @@ forum_opt($info);
 
 $breadcrumb->Add($lang->phrase('teamcp'));
 
-echo $tpl->parse("header");
-
 if ($my->vlogin && $my->mp[0] == 1) {
 
 	($code = $plugins->load('manageforum_start')) ? eval($code) : null;
@@ -154,6 +152,7 @@ if ($my->vlogin && $my->mp[0] == 1) {
 			$inner['index_bit'] .= $tpl->parse("admin/forum/index_bit_empty");
 		}
 
+		echo $tpl->parse("header");
 		echo $tpl->parse("menu");
 		($code = $plugins->load('manageforum_index_prepared')) ? eval($code) : null;
 		echo $tpl->parse("admin/forum/index");
@@ -216,6 +215,7 @@ if ($my->vlogin && $my->mp[0] == 1) {
 			errorLogin($lang->phrase('not_allowed'), 'showforum.php?id='.$board.SID2URL_x);
 		}
 		$forums = BoardSubs();
+		echo $tpl->parse("header");
 		echo $tpl->parse("menu");
 		echo $tpl->parse("admin/forum/move");
 	}

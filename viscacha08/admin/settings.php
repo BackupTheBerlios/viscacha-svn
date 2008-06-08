@@ -1459,26 +1459,26 @@ elseif ($job == 'general') {
 	<form name="form" method="post" action="admin.php?action=settings&job=general2">
 	 <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
 	  <tr>
-	   <td class="obox" colspan="2"><b><?php echo $lang->phrase('admin_general_forum_settings'); ?></b></td>
+	   <td class="obox" colspan="2"><?php echo $lang->phrase('admin_general_forum_settings'); ?></td>
 	  </tr>
 	  <tr>
-	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_page_name'); ?><br><font class="stext"><?php echo $lang->phrase('admin_page_name_info'); ?><font class="stext"><?php echo $furl; ?></font></font></td>
+	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_page_name'); ?><br><span class="stext"><?php echo $lang->phrase('admin_page_name_info'); ?><font class="stext"><?php echo $furl; ?></span></td>
 	   <td class="mbox" width="50%"><input type="text" name="fname" value="<?php echo $config['fname']; ?>" size="50"></td>
 	  </tr>
 	  <tr>
-	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_short_page_description'); ?><br><font class="stext"><?php echo $lang->phrase('admin_short_page_description_info'); ?></font></td>
+	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_short_page_description'); ?><br><span class="stext"><?php echo $lang->phrase('admin_short_page_description_info'); ?></span></td>
 	   <td class="mbox" width="50%"><input type="text" name="fdesc" value="<?php echo $config['fdesc']; ?>" size="50"></td>
 	  </tr>
 	  <tr>
-	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_page_url'); ?><br><font class="stext"><?php echo $lang->phrase('admin_page_url_info'); ?></font></td>
+	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_page_url'); ?><br><span class="stext"><?php echo $lang->phrase('admin_page_url_info'); ?></span></td>
 	   <td class="mbox" width="50%"><input type="text" name="furl" value="<?php echo $config['furl']; ?>" size="50"></td>
 	  </tr>
 	  <tr>
-	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_path_forum'); ?><br /><font class="stext"><?php echo $lang->phrase('admin_path_forum_info'); ?> <?php echo str_replace('\\', '/', realpath('./')); ?></font></td>
+	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_path_forum'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_path_forum_info'); ?> <?php echo str_replace('\\', '/', realpath('./')); ?></span></td>
 	   <td class="mbox" width="50%"><input type="text" name="fpath" value="<?php echo $config['fpath']; ?>" size="50"></td>
 	  </tr>
 	  <tr>
-	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_forum_email'); ?><br /><font class="stext"><?php echo $lang->phrase('admin_forum_email_info'); ?></font></td>
+	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_forum_email'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_forum_email_info'); ?></span></td>
 	   <td class="mbox" width="50%"><input type="text" name="forenmail" value="<?php echo $config['forenmail']; ?>" size="50"></td>
 	  </tr>
 	  <tr>
@@ -1486,7 +1486,7 @@ elseif ($job == 'general') {
 	   <td class="mbox" width="50%"><input type="checkbox" name="benchmarkresult" value="1"<?php echo iif($config['benchmarkresult'],' checked'); ?>></td>
 	  </tr>
 	  <tr>
-	   <td class="ubox" width="100%" colspan="2" align="center"><input type="submit" name="Submit" value="<?php echo $lang->phrase('admin_form_submit'); ?>"></td>
+	   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="<?php echo $lang->phrase('admin_form_submit'); ?>"></td>
 	  </tr>
 	 </table>
 	</form>
@@ -1705,7 +1705,7 @@ elseif ($job == 'textprocessing') {
 	   <td class="mbox" width="50%">
 	   <input type="radio" name="censorstatus" value="0"<?php echo iif($config['censorstatus'] == 0,' checked'); ?>> <?php echo $lang->phrase('admin_censor_no'); ?><br>
 	   <input type="radio" name="censorstatus" value="1"<?php echo iif($config['censorstatus'] == 1,' checked'); ?>> <?php echo $lang->phrase('admin_censor_normal'); ?><br>
-	   <input type="radio" name="censorstatus" value="2"<?php echo iif($config['censorstatus'] == 2,' checked'); ?>>$lang->phrase('admin_censor_extended')
+	   <input type="radio" name="censorstatus" value="2"<?php echo iif($config['censorstatus'] == 2,' checked'); ?>> <?php echo $lang->phrase('admin_censor_extended'); ?>
 	   </td>
 	  </tr>
 	  <tr>

@@ -46,9 +46,6 @@ else {
 	$breadcrumb->Add($lang->phrase('members'));
 }
 
-echo $tpl->parse("header");
-echo $tpl->parse("menu");
-
 if ($_GET['action'] == 'team') {
 
 	($code = $plugins->load('team_top')) ? eval($code) : null;
@@ -129,10 +126,11 @@ if ($_GET['action'] == 'team') {
 			}
 		}
 	}
+
+	echo $tpl->parse("header");
+	echo $tpl->parse("menu");
 	($code = $plugins->load('team_prepared')) ? eval($code) : null;
-
 	echo $tpl->parse("team/index");
-
 	($code = $plugins->load('team_end')) ? eval($code) : null;
 
 }
@@ -344,10 +342,10 @@ else {
 	}
 	ksort($letter);
 
+	echo $tpl->parse("header");
+	echo $tpl->parse("menu");
 	($code = $plugins->load('members_prepared')) ? eval($code) : null;
-
 	echo $tpl->parse("members/index");
-
 	($code = $plugins->load('members_end')) ? eval($code) : null;
 
 }

@@ -133,17 +133,18 @@ $breadcrumb->Add($prefix.$info['topic']);
 
 forum_opt($last);
 
-echo $tpl->parse("header");
-echo $tpl->parse("menu");
-
-($code = $plugins->load('showtopic_start')) ? eval($code) : null;
-
 // Some speed optimisation
 $speeder = $info['posts']+1;
 $start = $_GET['page']*$last['topiczahl'];
 $start = $start-$last['topiczahl'];
-
 $temp = pages($speeder, $last['topiczahl'], "showtopic.php?id=".$info['id']."&amp;", $_GET['page']);
+
+define('LINK_PRINT_PAGE', "print.php?id={$info['id']}&amp;page={$_GET['page']}".SID2URL_x);
+
+echo $tpl->parse("header");
+echo $tpl->parse("menu");
+
+($code = $plugins->load('showtopic_start')) ? eval($code) : null;
 
 $q = explode(' ', trim($q));
 
