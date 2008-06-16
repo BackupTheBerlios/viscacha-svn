@@ -151,7 +151,7 @@ $q = explode(' ', trim($q));
 $memberdata_obj = $scache->load('memberdata');
 $memberdata = $memberdata_obj->get();
 
-$inner['index_bit'] = '';
+$inner['index_bit'] = array();
 $inner['vote_result'] = '';
 $inner['related'] = '';
 
@@ -424,7 +424,8 @@ while ($row = $db->fetch_object($result)) {
 	}
 
 	($code = $plugins->load('showtopic_entry_prepared')) ? eval($code) : null;
-	$inner['index_bit'] .= $tpl->parse("showtopic/index_bit");
+	$inner['index_bit'][] = $tpl->parse("showtopic/index_bit");
+	($code = $plugins->load('showtopic_entry_added')) ? eval($code) : null;
 }
 
 if ($my->vlogin && is_id($info['id'])) {
@@ -434,6 +435,8 @@ if ($my->vlogin && is_id($info['id'])) {
 else {
 	$abox = array('id' => null);
 }
+
+$inner['index_bit'] = implode('', $inner['index_bit']);
 
 ($code = $plugins->load('showtopic_prepared')) ? eval($code) : null;
 echo $tpl->parse("showtopic/index");

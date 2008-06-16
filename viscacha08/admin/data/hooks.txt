@@ -380,6 +380,7 @@ showtopic.php
 -showtopic_vote_result_prepared
 -showtopic_query
 -showtopic_attachments_prepared
+-showtopic_entry_added
 -showtopic_entry_prepared
 -showtopic_prepared
 -showtopic_end
