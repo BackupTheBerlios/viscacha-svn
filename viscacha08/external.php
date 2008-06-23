@@ -121,8 +121,8 @@ $sqljoin = $sqlfields = '';
 $result = $db->query("
 SELECT r.dowords, r.comment, r.guest, f.name as forum, u.name as uname, u.mail as umail, r.name as gname, r.email as gmail, t.topic, t.id, t.board, t.date, t.status {$sqlfields}
 FROM {$db->pre}topics AS t LEFT JOIN {$db->pre}replies AS r ON t.id = r.topic_id
-	LEFT JOIN {$db->pre}user AS u ON r.name=u.id
-	LEFT JOIN {$db->pre}forums AS f ON t.board=f.id
+	LEFT JOIN {$db->pre}user AS u ON r.name = u.id AND r.guest = '0'
+	LEFT JOIN {$db->pre}forums AS f ON t.board = f.id
 	{$sqljoin}
 WHERE {$sqlwhere}
 ORDER BY {$sqlorder}

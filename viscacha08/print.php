@@ -163,7 +163,7 @@ if ($config['tpcallow'] == 1) {
 $result = $db->query("
 SELECT r.edit, r.dosmileys, r.dowords, r.id, r.topic, r.comment, r.date, u.name as uname, r.name as gname, u.id as mid, u.groups, u.fullname, r.email as gmail, r.guest
 FROM {$db->pre}replies AS r
-	LEFT JOIN {$db->pre}user AS u ON r.name=u.id
+	LEFT JOIN {$db->pre}user AS u ON r.name = u.id AND r.guest = '0'
 WHERE r.topic_id = '{$_GET['id']}' {$searchsql}
 ",__LINE__,__FILE__);
 

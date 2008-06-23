@@ -228,7 +228,7 @@ if ($my->vlogin && $my->mp[0] == 1) {
 			$result = $db->query("
 			SELECT r.date, r.topic, r.name, r.guest, r.email, u.name AS uname, u.mail AS uemail
 			FROM {$db->pre}replies AS r
-				LEFT JOIN {$db->pre}user AS u ON u.id = r.name
+				LEFT JOIN {$db->pre}user AS u ON u.id = r.name AND r.guest = '0'
 			WHERE topic_id = '{$id}' AND tstart = '1'
 			",__LINE__,__FILE__);
 			$old = $db->fetch_assoc($result);

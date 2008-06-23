@@ -116,8 +116,6 @@ a:hover {
 	letter-spacing: 1px;
 	font-weight: bold;
 	vertical-align: middle;
-}
-.obox {
 	line-height: expression('1.4em');
 }
 .button, .obox a.button {
@@ -136,9 +134,9 @@ a:hover {
 .obox a.button, .obox a.button:hover {
 	margin: 1px 0px 1px 5px;
 	color: #ffffff;
-	line-height: 1.1em;
+	line-height: 1.6em;
 }
-.button_multiline, .button_multiline a.button {
+.button_multiline, .button_multiline a.button, .button_multiline a.button:hover {
 	line-height: 175%;
 	text-align: center;
 }
@@ -165,6 +163,9 @@ a:hover {
 .stext {
 	font-size: 8pt;
 	color: #555753;
+}
+.obox .stext {
+	color: #eeeeee;
 }
 #copyright {
 	padding-top: 1em;

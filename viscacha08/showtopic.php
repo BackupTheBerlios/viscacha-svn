@@ -271,8 +271,8 @@ SELECT
 	u.id as mid, u.name as uname, u.mail, u.regdate, u.posts, u.fullname, u.hp, u.signature, u.location, u.gender, u.birthday, u.pic, u.lastvisit, u.icq, u.yahoo, u.aol, u.msn, u.jabber, u.skype, u.groups,
 	f.* {$sql_select}
 FROM {$db->pre}replies AS r
-	LEFT JOIN {$db->pre}user AS u ON r.name = u.id
-	LEFT JOIN {$db->pre}userfields AS f ON u.id = f.ufid
+	LEFT JOIN {$db->pre}user AS u ON r.name = u.id AND r.guest = '0'
+	LEFT JOIN {$db->pre}userfields AS f ON u.id = f.ufid AND r.guest = '0'
 	{$sql_join}
 WHERE r.topic_id = '{$info['id']}'
 ORDER BY date ASC
@@ -359,10 +359,10 @@ while ($row = $db->fetch_object($result)) {
 	}
 
 	if ((!empty($row->fullname) && $config['fullname_posts'] == 1) || (!empty($row->signature) && $my->opt_showsig == 1)) {
-		$bottom = TRUE;
+		$bottom = true;
 	}
 	else {
-		$bottom = FALSE;
+		$bottom = false;
 	}
 
 	if (isset($uploads[$row->id]) && $config['tpcallow'] == 1) {

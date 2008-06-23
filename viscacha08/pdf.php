@@ -160,12 +160,12 @@ if ($config['tpcallow'] == 1) {
 
 ($code = $plugins->load('pdf_query')) ? eval($code) : null;
 $result = $db->query("
-SELECT r.edit, r.dosmileys, r.dowords, r.id, r.topic, r.comment, r.date, u.name as uname, r.name as gname, u.id as mid, u.groups, u.fullname, r.email as gmail, r.guest
-FROM {$db->pre}replies AS r
-	LEFT JOIN {$db->pre}user AS u ON r.name=u.id
-WHERE r.topic_id = '{$info['id']}'
-ORDER BY r.date ASC
-{$searchsql}
+	SELECT r.edit, r.dosmileys, r.dowords, r.id, r.topic, r.comment, r.date, u.name as uname, r.name as gname, u.id as mid, u.groups, u.fullname, r.email as gmail, r.guest
+	FROM {$db->pre}replies AS r
+		LEFT JOIN {$db->pre}user AS u ON r.name = u.id  AND r.guest = '0'
+	WHERE r.topic_id = '{$info['id']}'
+	ORDER BY r.date ASC
+	{$searchsql}
 ",__LINE__,__FILE__);
 
 while ($row = $db->fetch_object($result)) {

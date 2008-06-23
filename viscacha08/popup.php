@@ -67,9 +67,9 @@ elseif ($_GET['action'] == "showpost") {
 		u.id as mid, u.name as uname, u.mail, u.regdate, u.fullname, u.hp, u.signature, u.location, u.gender, u.birthday, u.pic, u.lastvisit, u.icq, u.yahoo, u.aol, u.msn, u.jabber, u.skype, u.groups,
 		f.* {$sql_select}
 	FROM {$db->pre}replies AS r
-		LEFT JOIN {$db->pre}user AS u ON r.name=u.id
+		LEFT JOIN {$db->pre}user AS u ON r.name = u.id AND r.guest = '0'
 		LEFT JOIN {$db->pre}topics AS t ON t.id = r.topic_id
-		LEFT JOIN {$db->pre}userfields AS f ON u.id = f.ufid
+		LEFT JOIN {$db->pre}userfields AS f ON u.id = f.ufid AND r.guest = '0'
 		{$sql_join}
 	WHERE r.id = '{$_GET['id']}'
 	LIMIT 1
@@ -190,7 +190,7 @@ elseif ($_GET['action'] == "edithistory") {
 	$result = $db->query("
 	SELECT r.ip, r.topic_id, r.board, r.edit, r.id, r.topic, r.date, u.name as uname, r.name as gname, u.id as mid, u.groups, r.email as gmail, r.guest
 	FROM {$db->pre}replies AS r
-		LEFT JOIN {$db->pre}user AS u ON r.name=u.id
+		LEFT JOIN {$db->pre}user AS u ON r.name = u.id AND r.guest = '0'
 	WHERE r.id = '{$_GET['id']}'
 	LIMIT 1
 	",__LINE__,__FILE__);
