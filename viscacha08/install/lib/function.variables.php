@@ -178,11 +178,8 @@ function GPC_unescape($var){
 		// Do nothing to save time
 	}
 	elseif (is_array($var)) {
-		$cnt = count($var);
-		$keys = array_keys($var);
-		for ($i = 0; $i < $cnt; $i++){
-			$key = $keys[$i];
-			$var[$key] = $this->save_str($var[$key]);
+		foreach ($var as $key => $value) {
+			$var[$key] = GPC_unescape($value);
 		}
 	}
 	elseif (is_string($var)){
