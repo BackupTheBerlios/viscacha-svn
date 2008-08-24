@@ -146,26 +146,23 @@ function setPackagesInactive() {
 
 
 function GPC_escape($var){
-	global $db, $config, $lang;
+	global $config, $lang;
 	if (is_numeric($var) || empty($var)) {
 		// Do nothing to save time
 	}
 	elseif (is_array($var)) {
-		$cnt = count($var);
-		$keys = array_keys($var);
-		for ($i = 0; $i < $cnt; $i++){
-			$key = $keys[$i];
-			$var[$key] = $this->save_str($var[$key]);
+		foreach ($var as $key => $value) {
+			$var[$key] = GPC_escape($value);
 		}
 	}
 	elseif (is_string($var)){
 		$var = preg_replace('#(script|about|applet|activex|chrome|mocha):#is', "\\1&#058;", $var);
 		$var = str_replace("\0", '', $var);
 		if (version_compare(PHP_VERSION, '5.2.3', '>=')) {
-			$var = htmlentities($var, ENT_QUOTES, $lang->charset(), false);
+			$var = htmlentities($var, ENT_QUOTES, 'ISO-8859-1', false);
 		}
 		else {
-			$var = htmlentities($var, ENT_QUOTES, $lang->charset());
+			$var = htmlentities($var, ENT_QUOTES, 'ISO-8859-1');
 			$var = str_replace('&amp;#', '&#', $var);
 		}
 		$var = addslashes($var);

@@ -380,13 +380,6 @@ elseif ($_GET['action'] == "result") {
 }
 elseif ($_GET['action'] == "active") {
 
-	if ($config['floodsearch'] == 1) {
-		if (flood_protect(FLOOD_TYPE_ACTIVE) == FALSE) {
-			error($lang->phrase('flood_control'));
-		}
-		set_flood(FLOOD_TYPE_ACTIVE);
-	}
-
 	$breadcrumb->AddUrl('search.php'.SID2URL_1);
 	$breadcrumb->Add($lang->phrase('active_topics_title'));
 

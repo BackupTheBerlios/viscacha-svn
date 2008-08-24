@@ -17,7 +17,7 @@ if (!empty($config['error_reporting'])) {
 	error_reporting($bitmask);
 }
 if (isset($config['error_handler']) && $config['error_handler'] == 1) {
-	require_once(realpath(__FILE__).'/function.errorhandler.php');
+	require_once(dirname(__FILE__).'/function.errorhandler.php');
 	set_error_handler('msg_handler');
 }
 

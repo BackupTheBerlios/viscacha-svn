@@ -2,7 +2,7 @@
 /*~ class.smtp.php
 .---------------------------------------------------------------------------.
 |  Software: PHPMailer - PHP email class                                    |
-|   Version: 2.0.0 rc1                                                      |
+|   Version: 2.0.2                                                          |
 |   Contact: via sourceforge.net support pages (also www.codeworxtech.com)  |
 |      Info: http://phpmailer.sourceforge.net                               |
 |   Support: http://sourceforge.net/projects/phpmailer/                     |
@@ -113,7 +113,6 @@ class SMTP
     if(empty($port)) {
       $port = $this->SMTP_PORT;
     }
-
 
     // Mod: Added IDNA support
     #connect to the smtp server

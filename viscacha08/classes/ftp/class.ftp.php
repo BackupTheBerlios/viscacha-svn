@@ -581,7 +581,7 @@ class ftp_base {
 	}
 
 	function mdel($remote, $continious=false) {
-		$list=$this->rawlist($remote, "-lA");
+		$list=$this->rawlist($remote, "-la");
 		if($list===false) {
 			$this->PushError("mdel","can't read remote folder list", "Can't read remote folder \"".$remote."\" contents");
 			return false;
@@ -613,6 +613,15 @@ class ftp_base {
 			$ret=false;
 		}
 		return $ret;
+	}
+
+	function mmkdir($dir, $mode = 0777) {
+		if(empty($dir)) return FALSE;
+		if($this->is_exists($dir) or $dir == "/" ) return TRUE;
+		if(!$this->mmkdir(dirname($dir), $mode)) return false;
+		$r=$this->mkdir($dir, $mode);
+		$this->chmod($dir,$mode);
+		return $r;
 	}
 
 	function glob($pattern, $handle=NULL) {
@@ -666,7 +675,7 @@ class ftp_base {
 	}
 
 	function glob_regexp($pattern,$probe) {
-		return (isWindows() == true?
+		return (isWindows() != true ?
 			ereg($pattern,$probe):
 			eregi($pattern,$probe)
 		);

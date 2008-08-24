@@ -428,8 +428,7 @@ elseif ($job == 'forum_edit') {
    <td class="mbox"><?php echo $lang->phrase('admin_forum_parent_category'); ?></td>
    <td class="mbox">
    	<select name="parent" size="1">
-   	 <option value="0"<?php echo iif($row['parent'] == '0', ' selected="selected"'); ?>><?php echo $lang->phrase('admin_forum_no_one'); ?></option>
-   	 <?php echo SelectBoardStructure('parent', ADMIN_SELECT_CATEGORIES, $row['parent'], true); ?>
+   	 <?php echo SelectBoardStructure('parent', ADMIN_SELECT_CATEGORIES, $row['parent'], true, 'b_'.$id); ?>
    	</select>
    </td>
   </tr>
@@ -1372,7 +1371,7 @@ elseif ($job == 'cat_edit') {
    <td class="mbox" width="50%">
    	<select name="parent" size="1">
    	 <option value="0"<?php echo iif($row['parent'] == '0', ' selected="selected"'); ?>><?php echo $lang->phrase('admin_forum_no_one'); ?></option>
-   	 <?php echo SelectBoardStructure('parent', ADMIN_SELECT_FORUMS, $row['parent'], true); ?>
+   	 <?php echo SelectBoardStructure('parent', ADMIN_SELECT_FORUMS, $row['parent'], true, 'c_'.$id); ?>
    	</select>
    </td>
   </tr>

@@ -682,14 +682,14 @@ elseif ($job == "credits") {
 		<li><a href="http://sourceforge.net/projects/tcpdf/" target="_blank">TCPDF 1.53.0.TC034 by Nicola Asuni</a> (PDF Creation based on FPDF, LGPL)</li>
 		<li><a href="http://www.phpclasses.org/browse/author/152329.html" target="_blank">Roman Numeral Conversion by Huda M Elmatsani</a> (Roman Numeral Conversion; Freeware)</li>
 		<li><a href="http://www.phpconcept.net" target="_blank">PclZip Library 2.6 by Vincent Blavet</a> (Zip File Handling; LPGL)</li>
-		<li><a href="http://qbnz.com/highlighter" target="_blank">GeSHi 1.0.7.22 by Nigel McNie</a> (Syntax Highlighting; GPL)</li>
+		<li><a href="http://qbnz.com/highlighter" target="_blank">GeSHi 1.0.8 by Nigel McNie and Benny Baumann</a> (Syntax Highlighting; GPL)</li>
 		<li><a href="http://magpierss.sourceforge.net" target="_blank">MagPieRSS 0.72 by kellan</a> (Parsing Newsfeeds; GPL)</li>
-		<li><a href="http://phpmailer.sourceforge.net/" target="_blank">PHPMailer 2.0.0 (with POP3 and SMTP) by Andy Prevost</a> (Sending E-mails; LGPL)</li>
+		<li><a href="http://phpmailer.sourceforge.net/" target="_blank">PHPMailer 2.0.2 (with POP3 and SMTP) by Andy Prevost</a> (Sending E-mails; LGPL)</li>
 		<li><a href="http://www.bitfolge.de" target="_blank">FeedCreator v1.7.x by Kai Blankenhorn</a> (Creating Newsfeeds; LGPL)</li>
 		<li><a href="http://pear.php.net/package/PHP_Compat" target="_blank">PHP_Compat 1.5.0 by Aidan Lister, Stephan Schmidt</a> (PHP Core Functions; PHP)</li>
 		<li><a href="http://www.phpclasses.org/browse/author/169072.html" target="_blank">PowerGraphic 1.0 by Carlos Reche</a> (Charts &amp; Diagrams; GPL)</li>
 		<li><a href="http://www.invisionpower.com" target="_blank">PHP TAR by Matt Mecham</a> (TAR File Handling; GPL)</li>
-		<li><a href="http://www.phpclasses.org/browse/author/98157.html" target="_blank">Advanced FTP client class (Build 2007-07-17) by Alexey Dotsenko</a> (PHP FTP Client; Freely Distributable)</li>
+		<li><a href="http://www.phpclasses.org/browse/author/98157.html" target="_blank">Advanced FTP client class (Build 2007-12-08) by Alexey Dotsenko</a> (PHP FTP Client; Freely Distributable)</li>
 		<li>and many more code snippets, classes and functions...</li>
 		</ul>
 		<br class="minibr" />

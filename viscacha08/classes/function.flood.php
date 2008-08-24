@@ -30,7 +30,6 @@ define('FLOOD_TYPE_STANDARD', 'sta');
 define('FLOOD_TYPE_PWRENEW', 'pwr');
 define('FLOOD_TYPE_PWMAIL', 'pwm');
 define('FLOOD_TYPE_SEARCH', 'sea');
-define('FLOOD_TYPE_ACTIVE', 'act');
 define('FLOOD_TYPE_LOGIN', 'log');
 
 function flood_protect($type = FLOOD_TYPE_STANDARD) {
