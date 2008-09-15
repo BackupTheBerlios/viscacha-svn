@@ -1,6 +1,6 @@
 CREATE TABLE `{:=DBPREFIX=:}documents_content` (
-  `did` tinyint(3) unsigned NOT NULL default '0',
-  `lid` int(10) unsigned NOT NULL default '0',
+  `did` int(10) unsigned NOT NULL default '0',
+  `lid` smallint(4) unsigned NOT NULL default '0',
   `title` varchar(255) NOT NULL default '',
   `content` mediumtext NOT NULL,
   `active` enum('0','1') NOT NULL default '0',
