@@ -9,5 +9,5 @@ CREATE TABLE `{:=DBPREFIX=:}documents` (
   PRIMARY KEY  (`id`)
 ) TYPE=MyISAM  AUTO_INCREMENT=2 ;
 
-INSERT INTO `{:=DBPREFIX=:}documents` (`id`, `author`, `date`, `update`, `type`, `groups`) VALUES
-(1, 1, 1205883294, 1205883294, 5, '0');
+INSERT INTO `{:=DBPREFIX=:}documents` (`id`, `author`, `date`, `update`, `type`, `groups`, `icomment`) VALUES
+(1, 1, 1205883294, 1205883294, 5, '0', 'Please update your imprint after setup!');

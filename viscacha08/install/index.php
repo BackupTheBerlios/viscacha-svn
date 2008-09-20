@@ -1,10 +1,10 @@
 <?php
 error_reporting(E_ALL);
 
-define('VISCACHA_VERSION', '0.8 RC4 pl1');
+define('VISCACHA_VERSION', '0.8 RC5');
 $old_versions = array(
-	'update' => '0.8 RC3',
-	'update_pl' => '0.8 RC4'
+	'update' => '0.8 RC4 (NOT WORKING!)',
+	'update_pl' => '0.8 RC4 PL1 (NOT WORKING!)'
 );
 define('VISCACHA_CORE', '1');
 define('SCRIPTNAME', 'install');

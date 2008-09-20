@@ -123,7 +123,7 @@ else {
 			else {
 				$exists = '<span class="hl_true">No</span>';
 				$entries = '-';
-				$select[] = '<option value="0" selected="selected">Recreate table</option>';
+				$select[] = '<option value="0" selected="selected">Create table</option>';
 			}
 		?>
 	<tr>

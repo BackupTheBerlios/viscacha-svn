@@ -34,8 +34,6 @@ require_once("classes/class.plugins.php");
 require_once("classes/class.docoutput.php");
 // BB-Code Class
 include_once ("classes/class.bbcode.php");
-// IDNA Convert Class
-include_once ("classes/class.idna.php");
 
 $scache = new CacheServer();
 $plugins = new PluginSystem();
@@ -52,26 +50,6 @@ define('REMOTE_IMAGE_HEIGHT_ERROR', 400);
 define('REMOTE_IMAGE_WIDTH_ERROR', 500);
 define('REMOTE_EXTENSION_ERROR', 600);
 define('REMOTE_IMAGE_ERROR', 700);
-
-define('ENCODING_LIST', 'ISO-8859-1, ISO-8859-15, UTF-8, ASCII, cp1252, cp1251, GB2312, SJIS, KOI8-R');
-
-function convert_host_to_idna($host) {
-	$idna = new idna_convert();
-	if (viscacha_function_exists('mb_convert_encoding')) {
-		$host = mb_convert_encoding($host, 'UTF-8', ENCODING_LIST);
-	}
-	else {
-		$host = utf8_encode($host);
-	}
-	$host = $idna->encode($host);
-	return $host;
-}
-
-function fsockopen_idna($host, $port, $timeout) {
-	$host = convert_host_to_idna($host);
-	$fp = @fsockopen($host, $port, $errno, $errstr, $timeout);
-	return array($fp, $errno, $errstr, $host);
-}
 
 function checkmx_idna($host) {
 	if (empty($host)) {

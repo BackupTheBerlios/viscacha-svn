@@ -22,6 +22,29 @@ if (isset($config['error_handler']) && $config['error_handler'] == 1) {
 }
 
 /* Fixed php functions */
+
+define('ENCODING_LIST', 'ISO-8859-1, ISO-8859-15, UTF-8, ASCII, cp1252, cp1251, GB2312, SJIS, KOI8-R');
+// IDNA Convert Class
+include_once (dirname(__FILE__).'/class.idna.php');
+
+function convert_host_to_idna($host) {
+	$idna = new idna_convert();
+	if (viscacha_function_exists('mb_convert_encoding')) {
+		$host = mb_convert_encoding($host, 'UTF-8', ENCODING_LIST);
+	}
+	else {
+		$host = utf8_encode($host);
+	}
+	$host = $idna->encode($host);
+	return $host;
+}
+
+function fsockopen_idna($host, $port, $timeout) {
+	$host = convert_host_to_idna($host);
+	$fp = @fsockopen($host, $port, $errno, $errstr, $timeout);
+	return array($fp, $errno, $errstr, $host);
+}
+
 // You should use viscacha_dirname instead of dirname
 // Written by Manuel Lemos
 function viscacha_dirname($path) {

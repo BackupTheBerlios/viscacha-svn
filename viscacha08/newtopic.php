@@ -168,7 +168,7 @@ elseif ($_GET['action'] == "savevote") {
 		($code = $plugins->load('newtopic_savevote_queries')) ? eval($code) : null;
 
 		$db->query("UPDATE {$db->pre}topics SET vquestion = '{$_POST['question']}' WHERE id = '{$info['id']}'",__LINE__,__FILE__);
-		$db->query("INSERT INTO {$db->pre}vote (tid, answer) VALUES ({$sqlwhere})",__LINE__,__FILE__);
+		$db->query("INSERT INTO {$db->pre}vote (tid, answer) VALUES {$sqlwhere}",__LINE__,__FILE__);
 		$inserted = $db->affected_rows();
 		if ($inserted > 1) {
 			ok($lang->phrase('data_success'),"showtopic.php?id={$topic_id}".SID2URL_x);
