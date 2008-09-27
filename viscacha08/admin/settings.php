@@ -1448,7 +1448,7 @@ elseif ($job == 'general') {
 	echo head();
 
 	if (!empty($_SERVER['HTTP_HOST']) && !empty($_SERVER['PHP_SELF'])) {
-		$furl = "http://".$_SERVER['HTTP_HOST'].rtrim(viscacha_dirname($_SERVER['PHP_SELF']), '/\\');
+		$furl = "http://".$_SERVER['HTTP_HOST'].rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
 	}
 	else {
 		$furl = $lang->phrase('admin_unable_to_analyze_url');
@@ -1685,7 +1685,7 @@ elseif ($job == 'textprocessing') {
 	$config = $gpc->prepare($config);
 
 	if (!empty($_SERVER['HTTP_HOST']) && !empty($_SERVER['PHP_SELF'])) {
-		$surl = "http://".$_SERVER['HTTP_HOST'].rtrim(viscacha_dirname($_SERVER['PHP_SELF']), '/\\').'/images/smileys';
+		$surl = "http://".$_SERVER['HTTP_HOST'].rtrim(dirname($_SERVER['PHP_SELF']), '/\\').'/images/smileys';
 	}
 	else {
 		$surl = $lang->phrase('admin_unable_to_analyze_url');

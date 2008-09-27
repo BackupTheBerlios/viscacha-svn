@@ -369,6 +369,7 @@ $lang['listspacer'] = ', ';
 $lang['location_no_data'] = '-';
 $lang['logged_in_as'] = 'Angemeldet als:';
 $lang['login'] = 'Login';
+$lang['login_attempts_banned'] = 'Ihre IP-Adresse ({$ip}) wurde temporär gebannt, da Sie zu viele Anmeldeversuche mit falschen Benutzerdaten durchgeführt haben.';
 $lang['login_lost_password'] = 'Passwort vergessen?';
 $lang['login_name'] = 'Name:';
 $lang['login_password'] = 'Passwort:';

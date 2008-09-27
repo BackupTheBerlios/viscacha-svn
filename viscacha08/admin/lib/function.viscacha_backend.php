@@ -3,6 +3,8 @@ if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
 
 // Gets a file with php-functions
 @include_once("classes/function.phpcore.php");
+// Debugging / Error Handling things
+require_once("classes/function.errorhandler.php");
 // A class for Languages
 require_once("classes/class.language.php");
 $lang = new lang();

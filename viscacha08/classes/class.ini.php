@@ -70,7 +70,6 @@ class INI {
 	* @param	string	Array
 	*/
 	function _convert($array1) {
-		global $gpc;
 		$array2 = array();
 		$section = '';
 		foreach ($array1 as $filedata) {

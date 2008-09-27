@@ -1,5 +1,21 @@
 <?php
 if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
+
+/* Error Handling */
+if (!empty($config['error_reporting'])) {
+	$bitmask = 0;
+	if (is_numeric($config['error_reporting']) == false && $config['error_reporting'] > 0) {
+		$bitmask = $config['error_reporting'];
+	}
+	else if (defined($config['error_reporting']) == true) {
+		$bistmask = constant($config['error_reporting']);
+	}
+	error_reporting($bitmask);
+}
+if (isset($config['error_handler']) && $config['error_handler'] == 1) {
+	set_error_handler('msg_handler');
+}
+
 /**
 * Error and message handler, call with trigger_error if required
 */

@@ -5,22 +5,6 @@ if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
 @set_magic_quotes_runtime(0);
 @ini_set('magic_quotes_gpc',0);
 
-/* Error Handling */
-if (!empty($config['error_reporting'])) {
-	$bitmask = 0;
-	if (is_numeric($config['error_reporting']) == false && $config['error_reporting'] > 0) {
-		$bitmask = $config['error_reporting'];
-	}
-	else if (defined($config['error_reporting']) == true) {
-		$bistmask = constant($config['error_reporting']);
-	}
-	error_reporting($bitmask);
-}
-if (isset($config['error_handler']) && $config['error_handler'] == 1) {
-	require_once(dirname(__FILE__).'/function.errorhandler.php');
-	set_error_handler('msg_handler');
-}
-
 /* Fixed php functions */
 
 define('ENCODING_LIST', 'ISO-8859-1, ISO-8859-15, UTF-8, ASCII, cp1252, cp1251, GB2312, SJIS, KOI8-R');
@@ -45,12 +29,6 @@ function fsockopen_idna($host, $port, $timeout) {
 	return array($fp, $errno, $errstr, $host);
 }
 
-// You should use viscacha_dirname instead of dirname
-// Written by Manuel Lemos
-function viscacha_dirname($path) {
-	$end=strrpos($path,"/");
-	return((gettype($end)=="integer" && $end>1) ? substr($path,0,$end) : "");
-}
 // Fixes problems with suhosin blacklist
 function viscacha_function_exists($func) {
 	if (extension_loaded('suhosin')) {

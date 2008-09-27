@@ -244,7 +244,7 @@ elseif ($job == 'onlinestatus') {
    <p><strong><?php echo $lang->phrase('admin_misc_online_status_meaning_title'); ?></strong><br />
    <?php echo $lang->phrase('admin_misc_online_status_meaning'); ?></p>
    <p><strong><?php echo $lang->phrase('admin_misc_from_where_data_for_online_status'); ?></strong><br />
-  $lang->phrase('admin_misc_from_where_data_for_online_status_info').
+   <?php echo $lang->phrase('admin_misc_from_where_data_for_online_status_info'); ?>
    </p>
    </td>
   </tr>

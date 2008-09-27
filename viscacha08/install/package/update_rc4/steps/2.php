@@ -13,6 +13,6 @@ _docs/readme.txt
 <strong>Update instructions:</strong><br />
 <textarea class="codearea">First make a complete backup of your (old) data!
 
-TODO: INSERT DATA FROM README!</p>
+TODO: INSERT DATA FROM README (RC4 => RC5)!</p>
 </div>
 <div class="bfoot center"><input type="submit" value="Continue" /></div>

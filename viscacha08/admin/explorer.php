@@ -406,7 +406,6 @@ elseif ($job == "extract2") {
 	if (!preg_match('#\.(tar\.gz|tar|gz|zip)$#is', $file, $ext)) {
 		error($redirect, $lang->phrase('admin_explorer_archive_is_not_supported'));
 	}
-	unset($extension);
 	if (isset($ext[1])) {
 		$extension = $ext[1];
 		if ($extension == 'zip') {
@@ -422,20 +421,22 @@ elseif ($job == "extract2") {
 			$temp = realpath($temp);
 			include('classes/class.tar.php');
 			$tar = new tar();
-			$tar->new_tar(viscacha_dirname($temp), basename($temp));
+			$tar->new_tar(dirname($temp), basename($temp));
 			$tar->extract_files(realpath($dir));
-			$err = $tar->error;
 			$filesystem->unlink($temp);
-			if (!empty($err)) {
-				error($redirect, $err);
+			if (!empty($tar->error)) {
+				error($redirect, $tar->error);
 			}
 		}
 		elseif ($extension == 'tar') {
 			include('classes/class.tar.php');
 			$tar = new tar();
 			$file = realpath($file);
-			$tar->new_tar(viscacha_dirname($file), basename($file));
+			$tar->new_tar(dirname($file), basename($file));
 			$tar->extract_files($dir);
+			if (!empty($tar->error)) {
+				error($redirect, $tar->error);
+			}
 		}
 		elseif ($extension == 'gz') {
 			gzAbortNotLoaded();
@@ -443,12 +444,7 @@ elseif ($job == "extract2") {
 			$temp = gzTempfile($file, $new);
 		}
 	}
-	if (!isset($extension)) {
-		error($redirect, $lang->phrase('admin_explorer_file_is_not_supported2'));
-	}
-	else {
-		ok($redirect);
-	}
+	ok($redirect);
 }
 else {
 	$ServerNavigator->useImageIcons(true);

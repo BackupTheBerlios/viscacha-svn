@@ -369,6 +369,7 @@ $lang['listspacer'] = ', ';
 $lang['location_no_data'] = '-';
 $lang['logged_in_as'] = 'Logged in as:';
 $lang['login'] = 'Log in';
+$lang['login_attempts_banned'] = 'Your IP-Adress ({$ip}) has been banned temporarily because you have reached the maximum number of failed login attempts.';
 $lang['login_lost_password'] = 'Forgotten your password?';
 $lang['login_name'] = 'User Name:';
 $lang['login_password'] = 'Password:';

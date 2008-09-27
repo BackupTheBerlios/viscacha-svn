@@ -1,3 +1,8 @@
+<div class="bfoot">
+<?php
+// Extract files
+?>
+</div>
 <div class="bbody">
 <p>
 Before we start the automatic update, you have to read the manual update instructions.
@@ -13,7 +18,7 @@ _docs/readme.txt
 <strong>Update instructions:</strong><br />
 <textarea class="codearea">First make a complete backup of your (old) data!
 
-TODO: INSERT DATA FROM README!</textarea>
+TODO: INSERT DATA FROM README(RC4 PL1 => RC5)!</textarea>
 </p>
 </div>
 <div class="bfoot center"><input type="submit" value="Continue" /></div>

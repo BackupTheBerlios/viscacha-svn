@@ -38,6 +38,9 @@ if (empty($config['dbpw']) || empty($config['dbuser'])) {
 	trigger_error('You have specified database authentification data that is not safe. Please change your database user and the database password!', E_USER_ERROR);
 }
 
+// Debugging / Error Handling things
+require_once("classes/function.errorhandler.php");
+
 // A class for Languages
 require_once("classes/class.language.php");
 $lang = new lang();
@@ -163,6 +166,16 @@ if ($config['avheight'] == 0) {
 
 // Gets a file with php-functions
 @include_once("classes/function.chmod.php");
+if ($config['check_filesystem'] == 1) {
+	check_writable_r('data');
+	check_writable_r('feeds');
+	check_writable('.htaccess');
+	check_executable_r('cache');
+	check_executable_r('temp');
+	check_executable_r('uploads');
+	check_executable_r('data');
+	check_executable('feeds');
+}
 // Permission and Logging Class
 require_once ("classes/class.permissions.php");
 // A class for Templates

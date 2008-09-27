@@ -3,7 +3,7 @@ if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
 $lang = array();
 $lang['admin_explorer_action'] = 'Operationen';
 $lang['admin_explorer_append_the_extension'] = 'Dateierweiterung anhängen!';
-$lang['admin_explorer_archive_is_not_supported'] = 'Dieses Archiv wirde derzeit nicht unterstützt. (Fehler an der Position: preg_match)';
+$lang['admin_explorer_archive_is_not_supported'] = 'Dieses Archiv wird derzeit nicht unterstützt.';
 $lang['admin_explorer_chmod'] = 'CHMOD';
 $lang['admin_explorer_chmod_execute'] = 'Ausführen';
 $lang['admin_explorer_chmod_group'] = 'Gruppe';
@@ -37,7 +37,6 @@ $lang['admin_explorer_file_edit'] = 'Ändern';
 $lang['admin_explorer_file_extract'] = 'Entpacken';
 $lang['admin_explorer_file_format_is_not_supported'] = 'Das Dateiformat des Archivs wird nicht unterstützt.';
 $lang['admin_explorer_file_is_not_editable'] = 'Datei ist nicht editierbar.';
-$lang['admin_explorer_file_is_not_supported2'] = 'Dieses Archiv wirde derzeit nicht unterstützt. (Fehler an der Position: setting extension)';
 $lang['admin_explorer_file_rename'] = 'Umbenennen';
 $lang['admin_explorer_file_successfully_saved'] = 'Datei erfolgreich gespeichert';
 $lang['admin_explorer_form_create'] = 'Erstellen';

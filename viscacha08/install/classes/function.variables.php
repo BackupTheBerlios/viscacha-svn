@@ -39,7 +39,52 @@ function return_array($group, $id) {
 	}
 	return $lang;
 }
-
+function updateLanguageFiles($ini) {
+	$c = new manageconfig();
+	$codes = array();
+	$keys = array('language', 'language_de');
+	$codes = getLangCodesByKeys($keys);
+	$langcodes = getLangCodes();
+	foreach ($langcodes as $code => $lid) {
+		$ldat = explode('_', $code);
+		if (isset($codes[$ldat[0]])) {
+			$count = count($codes[$ldat[0]]);
+			if (in_array('', $codes[$ldat[0]])) {
+				$count--;
+			}
+		}
+		else {
+			$count = -1;
+		}
+		if (isset($codes[$ldat[0]]) && !empty($ldat[1]) && in_array($ldat[1], $codes[$ldat[0]])) { // Nehme Original
+			$src = 'language_'.$code;
+		}
+		elseif(isset($codes[$ldat[0]]) && in_array('', $codes[$ldat[0]])) { // Nehme gleichen Langcode, aber ohne Countrycode
+			$src = 'language_'.$ldat[0];
+		}
+		elseif(isset($codes[$ldat[0]]) && $count > 0) { // Nehme gleichen Langcode, aber falchen Countrycode
+			$src = 'language_'.$ldat[0].'_'.reset($codes[$ldat[0]]);
+		}
+		else { // Nehme Standard
+			$src = 'language';
+		}
+		foreach($ini as $file => $data){
+			if (!isset($data[$src])) {
+				continue;
+			}
+			$c->getdata("../language/{$lid}/{$file}.lng.php", 'lang');
+			foreach ($data[$src] as $varname => $text) {
+				if ($text === null) {
+					$c->delete($varname);
+				}
+				else {
+					$c->updateconfig($varname, str, $text);
+				}
+			}
+			$c->savedata();
+		}
+	}
+}
 function getLangCodes() {
 	global $db;
 	$l = array();
@@ -143,7 +188,51 @@ function setPackagesInactive() {
 		$db->query("UPDATE {$db->pre}packages SET active = '0' WHERE id IN ({$in})");
 	}
 }
+function removeHook(&$array, $value) {
+	foreach($array as $key => $val) {
+		if(strpos($val, $value) !== false) {
+			unset($array[$key]);
+		}
+	}
+}
+function insertHookAfter(&$array, $value, $after) {
+	$values = array();
+	if (is_array($value)) {
+		foreach ($value as $val) {
+			$values[] = "-{$val}";
+		}
+	}
+	else {
+		$values[] = "-{$value}";
+	}
 
+    if (is_array($array)) {
+		$offset = 0;
+		foreach($array as $key => $val) {
+			if(strpos($val, $after) !== false) {
+				break;
+			}
+    		$offset++;
+		}
+
+        $array  = array_values($array);
+        $offset = intval($offset);
+        if ($offset < 0 || $offset >= count($array)) {
+            array_push($array, $value);
+        }
+        elseif ($offset == 0) {
+            array_unshift($array, $value);
+        }
+        else {
+            $temp  = array_slice($array, 0, $offset);
+            $array = array_slice($array, $offset);
+            $array = array_merge($temp, $values, $array);
+        }
+    }
+    else {
+    	trigger_error('Empty hook array given', E_USER_NOTICE);
+    }
+}
 
 function GPC_escape($var){
 	global $config, $lang;

@@ -2,23 +2,21 @@
 error_reporting(E_ALL);
 
 define('VISCACHA_VERSION', '0.8 RC5');
-$old_versions = array(
-	'update' => '0.8 RC4 (NOT WORKING!)',
-	'update_pl' => '0.8 RC4 PL1 (NOT WORKING!)'
-);
 define('VISCACHA_CORE', '1');
 define('SCRIPTNAME', 'install');
+define('SCRIPT_LOCKED', file_exists('./locked.txt'));
+define('CLASS_PATH', dirname('../classes/').DIRECTORY_SEPARATOR);
 
-$locked = file_exists('./locked.txt');
-
-if (!$locked) {
-	if (!isset($_REQUEST) || !is_array($_REQUEST)) {
-		$_REQUEST = array_merge($_GET, $_POST, $_COOKIE);
-	}
+if (SCRIPT_LOCKED) {
 
 	$config = array();
-	require_once('../classes/function.phpcore.php');
-	require_once('lib/function.variables.php');
+	require_once(CLASS_PATH.'function.phpcore.php');
+	require_once('classes/function.variables.php');
+
+	$old_versions = array(
+		'update' => '0.8 RC4 PL1',
+		'update_rc4' => '0.8 RC4'
+	);
 
 	$packages = array(
 		'install' => array(
