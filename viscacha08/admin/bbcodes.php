@@ -177,7 +177,7 @@ elseif ($job == 'smileys_import2') {
 		if ($del > 0) {
 			$filesystem->unlink($file);
 		}
-		rmdirr($tempdir);
+		$filesystem->rmdirr($tempdir);
 		error('admin.php?action=bbcodes&job=smileys_import', $lang->phrase('admin_bbc_zip_invalid'));
 	}
 
@@ -278,7 +278,7 @@ elseif ($job == 'smileys_import2') {
 	if ($del > 0) {
 		$filesystem->unlink($file);
 	}
-	rmdirr($tempdir);
+	$filesystem->rmdirr($tempdir);
 
 	$delobj = $scache->load('smileys');
 	$delobj->delete();

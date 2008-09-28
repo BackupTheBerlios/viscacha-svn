@@ -164,18 +164,6 @@ if ($config['avheight'] == 0) {
 	$config['avheight'] = 2048;
 }
 
-// Gets a file with php-functions
-@include_once("classes/function.chmod.php");
-if ($config['check_filesystem'] == 1) {
-	check_writable_r('data');
-	check_writable_r('feeds');
-	check_writable('.htaccess');
-	check_executable_r('cache');
-	check_executable_r('temp');
-	check_executable_r('uploads');
-	check_executable_r('data');
-	check_executable('feeds');
-}
 // Permission and Logging Class
 require_once ("classes/class.permissions.php");
 // A class for Templates
@@ -191,7 +179,7 @@ if (!file_exists('.htaccess')) {
 $htaccess = '';
 
 	if ($config['hterrordocs'] == 1) {
-	    $htaccess = "
+	    $htaccess .= "
 	    ErrorDocument 400	{$config['furl']}/misc.php?action=error&id=400
 	    ErrorDocument 401	{$config['furl']}/misc.php?action=error&id=401
 	    ErrorDocument 403	{$config['furl']}/misc.php?action=error&id=403

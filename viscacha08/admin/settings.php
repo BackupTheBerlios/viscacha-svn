@@ -600,10 +600,6 @@ elseif ($job == 'server') {
 	   <td class="mbox" width="50%"><input type="checkbox" name="error_log" value="1"<?php echo iif($config['error_log'] == 1,' checked="checked"'); ?>></td>
 	  </tr>
 	  <tr>
-	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_test_filesystem_chmods'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_test_filesystem_chmods_info'); ?></span></td>
-	   <td class="mbox" width="50%"><input type="checkbox" name="check_filesystem" value="1"<?php echo iif($config['check_filesystem'] == 1,' checked="checked"'); ?>></td>
-	  </tr>
-	  <tr>
 	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_htaccess_top_domain'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_htaccess_top_domain_info'); ?></span></td>
 	   <td class="mbox" width="50%"><input type="checkbox" name="correctsubdomains" value="1"<?php echo iif($config['hterrordocs'] == 1,' checked="checked"'); ?>></td>
 	  </tr>
@@ -629,7 +625,6 @@ elseif ($job == 'server2') {
 	$c->updateconfig('error_reporting', int);
 	$c->updateconfig('correctsubdomains', int);
 	$c->updateconfig('hterrordocs', int);
-	$c->updateconfig('check_filesystem', int);
 	$c->savedata();
 
 	$filesystem->unlink('.htaccess');

@@ -190,7 +190,7 @@ elseif ($job == 'import2') {
 		if ($del == 1) {
 			$filesystem->unlink($file);
 		}
-		rmdirr($tempdir);
+		$filesystem->rmdirr($tempdir);
 		error('admin.php?action=language&job=import', $lang->phrase('admin_lang_zip_not_readable_or_empty'));
 	}
 
@@ -202,9 +202,9 @@ elseif ($job == 'import2') {
 	}
 	$newdir = "language/{$overwrite}/";
 
-	mover($tempdir, $newdir);
+	$filesystem->mover($tempdir, $newdir);
 	if (is_dir($tempdir)) {
-		rmdirr($tempdir);
+		$filesystem->rmdirr($tempdir);
 	}
 
 	$info = return_array('settings', $overwrite);
@@ -291,7 +291,7 @@ elseif ($job == 'lang_copy2') {
 	$db->query("INSERT INTO {$db->pre}language (language, detail) VALUES ('{$name}', '{$desc}')");
 	$newid = $db->insert_id();
 	$filesystem->mkdir("language/{$newid}/", 0777);
-	copyr("language/{$id}/", "language/{$newid}/");
+	$filesystem->copyr("language/{$id}/", "language/{$newid}/");
 	$delobj = $scache->load('loadlanguage');
 	$delobj->delete();
 	ok('admin.php?action=language&job=manage', $lang->phrase('admin_lang_langpack_copied'));
@@ -333,7 +333,7 @@ elseif ($job == 'lang_delete2') {
 	$db->query("DELETE FROM {$db->pre}language WHERE id = '{$id}' LIMIT 1");
 
 	if ($db->affected_rows() == 1) {
-		rmdirr("language/{$id}/");
+		$filesystem->rmdirr("language/{$id}/");
 		$delobj = $scache->load('loadlanguage');
 		$delobj->delete();
 		ok('admin.php?action=language&job=manage', $lang->phrase('admin_lang_langpack_deleted'));

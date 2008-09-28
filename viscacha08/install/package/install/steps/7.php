@@ -1,10 +1,10 @@
 <?php
 require('../data/config.inc.php');
-require_once('../classes/class.filesystem.php');
+require_once('classes/class.filesystem.php');
 $filesystem = new filesystem($config['ftp_server'], $config['ftp_user'], $config['ftp_pw'], $config['ftp_port']);
 $filesystem->set_wd($config['ftp_path']);
 if (isset($_REQUEST['save']) && $_REQUEST['save'] == 1) {
-	include('../classes/class.phpconfig.php');
+	include('classes/class.phpconfig.php');
 	if (isset($_REQUEST['host'])) {
 		$config['host'] = trim($_REQUEST['host']);
 	}
@@ -67,7 +67,7 @@ if ($prefix != $config['dbprefix']) {
 	<?php
 }
 else {
-require_once('../classes/database/'.$config['dbsystem'].'.inc.php');
+require_once('classes/database/'.$config['dbsystem'].'.inc.php');
 $db = new DB($config['host'], $config['dbuser'], $config['dbpw'], $config['database'], $config['dbprefix']);
 $db->setPersistence($config['pconnect']);
 $db->connect(false);

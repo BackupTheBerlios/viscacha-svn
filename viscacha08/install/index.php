@@ -5,13 +5,12 @@ define('VISCACHA_VERSION', '0.8 RC5');
 define('VISCACHA_CORE', '1');
 define('SCRIPTNAME', 'install');
 define('SCRIPT_LOCKED', file_exists('./locked.txt'));
-define('CLASS_PATH', dirname('../classes/').DIRECTORY_SEPARATOR);
 
-if (SCRIPT_LOCKED) {
+if (!SCRIPT_LOCKED) {
 
 	$config = array();
-	require_once(CLASS_PATH.'function.phpcore.php');
-	require_once('classes/function.variables.php');
+	require_once('classes/function.phpcore.php');
+	require_once('classes/function.tools.php');
 
 	$old_versions = array(
 		'update' => '0.8 RC4 PL1',
@@ -26,7 +25,7 @@ if (SCRIPT_LOCKED) {
 	);
 	foreach ($old_versions as $dir => $old_version) {
 		$packages[$dir] = array(
-			'title' => 'Update: '.$old_version.' => '.VISCACHA_VERSION,
+			'title' => 'Update '.$old_version.' to '.VISCACHA_VERSION,
 			'description' => 'Already running Viscacha? Then choose this option to update from '.$old_version.' to the new Version!'
 		);
 	}
@@ -69,23 +68,23 @@ if (SCRIPT_LOCKED) {
     <h1>&nbsp;</h1>
     <div class="breadcrumb">
     	<a href="index.php">Viscacha Setup</a> &raquo;
-    	<?php if (empty($package) && !$locked) { ?>
+    	<?php if (empty($package) && !SCRIPT_LOCKED) { ?>
     	Choose Package
-    	<?php } elseif (!$locked) { ?>
+    	<?php } elseif (!SCRIPT_LOCKED) { ?>
     	<?php echo $package_data['title']; ?> &raquo; Step <?php echo $step; ?>
     	<?php } else { ?>
     	Locked
     	<?php } ?>
     </div>
     <div id="navigation">
-    	<?php if (empty($package) && !$locked) { ?>
+    	<?php if (empty($package) && !SCRIPT_LOCKED) { ?>
 		<h3>Packages</h3>
 		<ul class="nav">
 		<?php foreach ($packages as $id => $data) { ?>
 			<li><a href="index.php?package=<?php echo $id; ?>"><?php echo $data['title']; ?></a></li>
 		<?php } ?>
 		</ul>
-    	<?php } elseif (!$locked) { ?>
+    	<?php } elseif (!SCRIPT_LOCKED) { ?>
 		<h3>Steps</h3>
 		<ul class="nav">
 		<?php
@@ -108,14 +107,14 @@ if (SCRIPT_LOCKED) {
 		<?php } ?>
 	</div>
 	<div id="content">
-		<?php if (!empty($package) && !$locked) { ?>
+		<?php if (!empty($package) && !SCRIPT_LOCKED) { ?>
 		<form method="post" action="index.php?package=<?php echo $package;?>&amp;step=<?php echo $nextstep; ?>">
 		<div class="border">
 			<h3><?php echo $steps[$step]; ?></h3>
 			<?php include(getFilePath($package, $step)); ?>
 		</div>
 		</form>
-		<?php } elseif (!$locked) { ?>
+		<?php } elseif (!SCRIPT_LOCKED) { ?>
 		<div class="border">
 		<h3>Viscacha Setup</h3>
 		<div class="bbody">

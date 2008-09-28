@@ -505,8 +505,6 @@ $lang['admin_sync_forumstatistic_info'] = 'Not recommended for big Forums! If th
 $lang['admin_task_log_file'] = 'Use Task-Log-File:';
 $lang['admin_task_log_file_info'] = 'The log file can be viewed <a href="admin.php?action=slog&job=l_cron" target="_blank">here</a>.';
 $lang['admin_teamlist_edit'] = 'Teamlist';
-$lang['admin_test_filesystem_chmods'] = 'Test the filesystem for correctly set CHMODS:';
-$lang['admin_test_filesystem_chmods_info'] = 'Activating this option will check at every call if CHMOD for files and folders are set correct. This option should be activated only if changes were made on the filesystem before, for example after installation or update.';
 $lang['admin_test_ftp_connection'] = 'Test FTP Connection';
 $lang['admin_thread_upload_edit'] = 'Post Uploads';
 $lang['admin_timelimit_post_delete'] = 'Time Limit on Deleting of Posts:';

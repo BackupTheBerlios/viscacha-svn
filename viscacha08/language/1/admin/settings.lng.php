@@ -505,8 +505,6 @@ $lang['admin_sync_forumstatistic_info'] = 'Nicht empfohlen für große Foren! Wenn
 $lang['admin_task_log_file'] = 'Protokollierung der geplante Aufgaben aktivieren:';
 $lang['admin_task_log_file_info'] = 'Die Protokolldatei kann <a href="admin.php?action=slog&job=l_cron" target="_blank">hier</a> eingesehen werden.';
 $lang['admin_teamlist_edit'] = 'Teamliste';
-$lang['admin_test_filesystem_chmods'] = 'Teste das Dateisystem auf korrekt gesetzte CHMODs (Zugriffsrechte):';
-$lang['admin_test_filesystem_chmods_info'] = 'Diese Option aktiviert die dauernd Überprüfung der korrekt gesetzten CHMODs (Zugriffsrecht). Diese Option sollte nur bei größeren Änderungen am Dateisystem aktiviert werden, zum Beispiel nach Updates oder Installationen.';
 $lang['admin_test_ftp_connection'] = 'FTP-Verbindung testen';
 $lang['admin_thread_upload_edit'] = 'Themen-Anhänge';
 $lang['admin_timelimit_post_delete'] = 'Zeitbegrenzung um Beiträge löschen zu können:';

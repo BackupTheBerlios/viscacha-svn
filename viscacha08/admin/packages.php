@@ -749,7 +749,7 @@ elseif ($job == 'package_update2') {
 		}
 		else { // Delete files
 			if (is_dir($tpldir)) {
-				rmdirr($tpldir);
+				$filesystem->rmdirr($tpldir);
 			}
 		}
 
@@ -771,7 +771,7 @@ elseif ($job == 'package_update2') {
 		$confirm = true;
 		($code = $plugins->update_finish($packageid)) ? eval($code) : null;
 
-		rmdirr($tdir);
+		$filesystem->rmdirr($tdir);
 
 		unset($archive);
 		if ($del > 0) {
@@ -922,7 +922,7 @@ elseif ($job == 'package_import2') {
 		$packageid = $db->insert_id();
 
 		$filesystem->mkdir("./modules/{$packageid}", 0777);
-		mover("{$tdir}modules", "./modules/{$packageid}");
+		$filesystem->mover("{$tdir}modules", "./modules/{$packageid}");
 		$moddir = "./modules/{$packageid}/";
 
 		if (!empty($package['config']['title'])) {
@@ -1113,14 +1113,14 @@ elseif ($job == 'package_import2') {
 				$filesystem->mkdir($tpldir, 0777);
 			}
 			$temptpldir = "{$tdir}templates/";
-			mover($temptpldir, $tpldir);
+			$filesystem->mover($temptpldir, $tpldir);
 		}
 
 		// Custom Installer
 		$confirm = true;
 		($code = $plugins->install($packageid)) ? eval($code) : null;
 
-		rmdirr($tdir);
+		$filesystem->rmdirr($tdir);
 
 		unset($archive);
 		if ($del > 0) {
@@ -1421,7 +1421,7 @@ elseif ($job == 'package_delete2') {
 		foreach ($cache as $row) {
 			$tpldir = "templates/{$row['template']}/modules/{$package['id']}/";
 			if (file_exists($tpldir)) {
-				rmdirr($tpldir);
+				$filesystem->rmdirr($tpldir);
 			}
 		}
 		// Delete phrases
@@ -1444,7 +1444,7 @@ elseif ($job == 'package_delete2') {
 		}
 		// Delete language files
 		foreach ($cache2 as $lid) {
-			rmdirr("./language/{$lid}/modules/{$package['id']}");
+			$filesystem->rmdirr("./language/{$lid}/modules/{$package['id']}");
 		}
 		// Delete images
 		if (isset($com['images']) && count($com['images']) > 0) {
@@ -1463,7 +1463,7 @@ elseif ($job == 'package_delete2') {
 		}
 		// Delete modules
 		if (file_exists($dir)) {
-			rmdirr($dir);
+			$filesystem->rmdirr($dir);
 		}
 
 		if ($confirm == true) {
@@ -2163,11 +2163,11 @@ elseif ($job == 'com_delete2') {
 		$languages = $db->fetch_assoc($result);
 
 		while ($lng = $db->fetch_assoc($languages)) {
-			rmdirr("./language/{$lng['id']}/modules/{$row['package']}");
+			$filesystem->rmdirr("./language/{$lng['id']}/modules/{$row['package']}");
 		}
 
 		foreach ($cache as $design) {
-			rmdirr("./templates/{$design['template']}/modules/{$row['package']}");
+			$filesystem->rmdirr("./templates/{$design['template']}/modules/{$row['package']}");
 		}
 		if (isset($cfg['images']) && count($cfg['images']) > 0) {
 			foreach ($cache as $design) {

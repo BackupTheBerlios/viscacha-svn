@@ -124,6 +124,7 @@ Note: This instructions are only for an update from Viscacha 0.8 RC4 PL1 to
  - admin/cms.php
  - admin/cron.php
  - admin/db.php
+ - admin/designs.php
  - admin/explorer.php
  - admin/filetypes.php
  - admin/forums.php
@@ -142,21 +143,27 @@ Note: This instructions are only for an update from Viscacha 0.8 RC4 PL1 to
  - admin/html/images/asc.gif
  - admin/html/images/desc.gif
 
+ - admin/lib/class.servernavigator.php
  - admin/lib/function.viscacha_backend.php
 
  - classes/class.bbcode.php
  - classes/class.cache.php
  - classes/class.convertroman.php
  - classes/class.feedcreator.php
+ - classes/class.filesystem.php
  - classes/class.geshi.php
  - classes/class.gpc.php
  - classes/class.idna.php
  - classes/class.imstatus.php
+ - classes/class.ini.php
  - classes/class.language.php
  - classes/class.permissions.php
  - classes/class.plugins.php
  - classes/class.profilefields.php
  - classes/class.snoopy.php
+ - classes/class.tar.php
+ - classes/function.chmod.php
+ - classes/function.errorhandler.php
  - classes/function.flood.php
  - classes/function.frontend_init.php
  - classes/function.global.php

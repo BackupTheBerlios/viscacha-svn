@@ -204,7 +204,7 @@ class ServerNavigator
 
 		$html = '	   <table cellpadding="4" cellspacing="0" class="border">';
 		$html .= "\n".'		 <tr>';
-		$html .= "\n".'		   <td class="obox">'.iif(count($dir_list) == 0, $newdir_html).$lang->phrase('admin_explorer_filemanager').'</td>';
+		$html .= "\n".'		   <td class="obox"><span style="float: right;"><a class="button" href="admin.php?action=explorer&amp;job=all_chmod">'.$lang->phrase('admin_explorer_check_chmod').'</a></span>'.iif(count($dir_list) == 0, $newdir_html).$lang->phrase('admin_explorer_filemanager').'</td>';
 		$html .= "\n".'		 </tr>';
 		$html .= "\n".'		 <tr>';
 		$html .= "\n".'		   <td class="ubox">'. $lang->phrase('admin_explorer_directory_x') . extract_dir($this->root) . $heading_path . '</td>';

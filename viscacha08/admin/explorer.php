@@ -2,6 +2,7 @@
 if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
 
 $uploadfields = 5;
+require_once("classes/function.chmod.php");
 require_once("admin/lib/class.servernavigator.php");
 $ServerNavigator = new ServerNavigator();
 
@@ -325,7 +326,7 @@ elseif ($job == "delete2") {
 	echo head();
 
 	$repath = urlencode(extract_dir($path, false));
-	if (@rmdirr($path)) {
+	if (@$filesystem->rmdirr($path)) {
 		$name = ucfirst($name);
 		ok('admin.php?action=explorer&path='.$repath, $lang->phrase('admin_explorer_x_successfully_deleted'));
 	}
@@ -445,6 +446,82 @@ elseif ($job == "extract2") {
 		}
 	}
 	ok($redirect);
+}
+elseif ($job == 'all_chmod') {
+	echo head();
+	$chmod = getViscachaCHMODs();
+	?>
+	<table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
+	<tr>
+		<td class="obox" colspan="4"><?php echo $lang->phrase('admin_explorer_check_chmod'); ?></td>
+	</tr>
+	<tr>
+  		<td class="mbox" colspan="4">
+			<?php echo $lang->phrase('admin_explorer_chmod_info1'); ?><br /><br />
+			<?php echo $lang->phrase('admin_explorer_chmod_info2'); ?><br />
+			<strong style="color: #008000;"><?php echo $lang->phrase('admin_explorer_chmod_status_ok'); ?></strong>: <?php echo $lang->phrase('admin_explorer_chmod_status_ok_info'); ?><br />
+			<strong style="color: #ffaa00;"><?php echo $lang->phrase('admin_explorer_chmod_status_failure_x'); ?></strong>: <?php echo $lang->phrase('admin_explorer_chmod_status_failure_x_info'); ?><br />
+			<strong style="color: #ff0000;"><?php echo $lang->phrase('admin_explorer_chmod_status_failure'); ?></strong>: <?php echo $lang->phrase('admin_explorer_chmod_status_failure_info'); ?>
+  		</td>
+	</tr>
+	<tr class="ubox">
+		<td width="60%"><strong><?php echo $lang->phrase('admin_explorer_chmod_file_dir'); ?></strong></td>
+		<td width="15%"><strong><?php echo $lang->phrase('admin_explorer_required_chmod'); ?></strong></td>
+		<td width="15%"><strong><?php echo $lang->phrase('admin_explorer_current_chmod'); ?></strong></td>
+		<td width="10%"><strong><?php echo $lang->phrase('admin_explorer_chmod_state'); ?></strong></td>
+	</tr>
+	<?php
+	error_reporting(E_ALL);
+	$files = array();
+	foreach ($chmod as $dat) {
+		if ($dat['recursive']) {
+			$filenames = array();
+			if ($dat['chmod'] == CHMOD_EX) {
+				$filenames = set_chmod_r($dat['path'], 0777, CHMOD_DIR);
+			}
+			elseif ($dat['chmod'] == CHMOD_WR) {
+				$filenames = set_chmod_r($dat['path'], 0666, CHMOD_FILE);
+			}
+			foreach ($filenames as $f) {
+				$files[] = array('path' => $f, 'chmod' => $dat['chmod'], 'recursive' => false, 'req' => $dat['req']);
+			}
+		}
+		else {
+			if ($dat['chmod'] == CHMOD_EX) {
+				set_chmod($dat['path'], 0777, CHMOD_DIR);
+			}
+			elseif ($dat['chmod'] == CHMOD_WR) {
+				set_chmod($dat['path'], 0666, CHMOD_FILE);
+			}
+			$files[] = $dat;
+		}
+	}
+	@clearstatcache();
+	sort($files);
+	foreach ($files as $arr) {
+		$chmod = get_chmod($arr['path']);
+		if (check_chmod($arr['chmod'], $chmod)) {
+			$status = '<strong style="color: #008000;">'.$lang->phrase('admin_explorer_chmod_status_ok').'</strong>';
+		}
+		elseif ($arr['req'] == false) {
+			$status = '<strong style="color: #ffaa00;">'.$lang->phrase('admin_explorer_chmod_status_failure_x').'</strong>';
+		}
+		else {
+			$status = '<strong style="color: #ff0000;">'.$lang->phrase('admin_explorer_chmod_status_failure').'</strong>';
+		}
+	?>
+	<tr class="mbox">
+		<td><?php echo $arr['path']; ?></td>
+		<td><?php echo $arr['chmod']; ?></td>
+		<td><?php echo $chmod; ?></td>
+		<td><?php echo $status; ?></td>
+	</tr>
+	<?php
+	}
+	?>
+	</table>
+	<?php
+	echo foot();
 }
 else {
 	$ServerNavigator->useImageIcons(true);

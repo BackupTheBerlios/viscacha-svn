@@ -1,8 +1,3 @@
-<div class="bfoot">
-<?php
-// Extract files
-?>
-</div>
 <div class="bbody">
 <p>
 Before we start the automatic update, you have to read the manual update instructions.

@@ -1,10 +1,10 @@
 <?php
 include('../data/config.inc.php');
 if (isset($_REQUEST['save']) && $_REQUEST['save'] == 1) {
-	require_once('../classes/class.filesystem.php');
+	require_once('classes/class.filesystem.php');
 	$filesystem = new filesystem($config['ftp_server'], $config['ftp_user'], $config['ftp_pw'], $config['ftp_port']);
 	$filesystem->set_wd($config['ftp_path']);
-	include('../classes/class.phpconfig.php');
+	include('classes/class.phpconfig.php');
 	$c = new manageconfig();
 	$c->getdata('../data/config.inc.php');
 	$c->updateconfig('fname',str);

@@ -12,26 +12,6 @@ $lang = new lang();
 require_once("classes/class.filesystem.php");
 $filesystem = new filesystem($config['ftp_server'], $config['ftp_user'], $config['ftp_pw'], $config['ftp_port']);
 $filesystem->set_wd($config['ftp_path']);
-@include_once("classes/function.chmod.php");
-if ($config['check_filesystem'] == 1) {
-	check_writable_r('admin/data');
-	check_writable_r('docs');
-	check_writable_r('language');
-	check_executable_r('admin/backup');
-	check_executable_r('admin/data');
-	check_executable_r('designs');
-	check_executable_r('docs');
-	check_executable_r('images');
-	check_executable_r('templates');
-	check_executable_r('modules');
-	check_executable_r('language');
-	check_executable('classes/cron/jobs');
-	check_executable('classes/feedcreator');
-	check_executable('classes/fonts');
-	check_executable('classes/geshi');
-	check_executable('classes/graphic/noises');
-	check_writable_r('templates');
-}
 
 @ini_set('default_charset', '');
 header('Content-type: text/html; charset=iso-8859-1');
