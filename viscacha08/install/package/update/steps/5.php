@@ -220,13 +220,20 @@ echo "- Updated filesystem.<br />";
 
 // Languages
 $ini = array (
-  'language_de' =>
+  'admin/bbcodes' =>
   array (
-    'admin/bbcodes' =>
+    'language_de' =>
     array (
       'admin_bbc_button_image_desc' => 'Optional - Wenn Sie diesen BB-Code als klickbaren Button angezeigt haben möchten, so geben Sie hier die Adresse zu einem 20 x 20 Pixel großen Bild an. Dieser Button wird dann zum Einfügen des BB-Codes benutzt. Sie können entweder eine absolute URL (http://...) benutzen oder eine relative URL, ausgehend vom Verzeichnis {@config->furl}/templates/editor/images/',
     ),
-    'admin/cms' =>
+    'language' =>
+    array (
+      'admin_bbc_button_image_desc' => 'Optional - If you would like this bbcode to appear as a clickable button on the message editor toolbar, enter the adress of an image 20 x 20 pixels in size that will act as the button to insert this bbcode. You can use either an absolute URL (http://...) or a relative URL, basing on the directory {@config->furl}/templates/editor/images/.',
+    ),
+  ),
+  'admin/cms' =>
+  array (
+    'language_de' =>
     array (
       'admin_cms_big_font' => NULL,
       'admin_cms_center' => NULL,
@@ -286,250 +293,7 @@ $ini = array (
       'admin_cms_news_max_age_info' => 'Zeit in Minuten, nach der der Cache geelert wird.',
       'bbcode_help' => 'Hilfe',
     ),
-    'admin/db' =>
-    array (
-      'admin_db_file_no_comments' => 'In der Datei wurden keine Backup-Informationen gefunden.',
-      'admin_db_unknown_file_format' => 'Unbekanntes Dateiformat angegeben.',
-    ),
-    'admin/explorer' =>
-    array (
-      'admin_explorer_archive_is_not_supported' => 'Dieses Archiv wird derzeit nicht unterstützt.',
-      'admin_explorer_file_is_not_supported2' => NULL,
-      'admin_explorer_check_chmod' => 'Alle CHMOD prüfen',
-      'admin_explorer_chmod_file_dir' => 'Datei oder Verzeichnis',
-      'admin_explorer_chmod_info1' => 'Einige Verzeichnisse und Dateien benötigen spezielle Zugriffsrechte (CHMODs) um beschreibbar und ausführbar zu sein. Diese Rechte werden hier geprüft (und ggf. geändert) und das Resultat wird weiter unten angezeigt.',
-      'admin_explorer_chmod_info2' => 'Die folgenen Status können auftreten:',
-      'admin_explorer_chmod_state' => 'Status',
-      'admin_explorer_chmod_status_failure' => 'Fehler',
-      'admin_explorer_chmod_status_failure_info' => 'Die Rechte sind nicht korrekt gesetzt und müssen manuell (per FTP) korrigiert werden. Sie können die grundlegenden Funktionen von Viscacha nicht nutzen bis die Rechte korrekt gesetzt sind.',
-      'admin_explorer_chmod_status_failure_x' => 'Fehler*',
-      'admin_explorer_chmod_status_failure_x_info' => 'Die Rechte sind nicht korrekt gesetzt, aber diese Dateien sind nur für Arbeiten im Administrationsbereich relevant, daher müssen die Rechte erst dann vorher korrekt gesetzt werden wenn Sie diese Dateien bearbeiten wollen.',
-      'admin_explorer_chmod_status_ok' => 'OK',
-      'admin_explorer_chmod_status_ok_info' => 'Die Rechte sind korrekt gesetzt.',
-      'admin_explorer_current_chmod' => 'Derzeitiger CHMOD',
-      'admin_explorer_required_chmod' => 'Benötigter CHMOD',
-    ),
-    'admin/forums' =>
-    array (
-      'admin_forum_bbcode_html' => 'BB-Code ist erlaubt, HTML ist nicht erlaubt!',
-    ),
-    'admin/frames' =>
-    array (
-      'admin_spellcheck_manager' => NULL,
-    ),
-    'admin/javascript' =>
-    array (
-      'bbcodes_note_prompt1' => 'Bitte Erklärung für ein Wort eingeben',
-      'bbcodes_note_prompt2' => 'Bitte das zu erklärende Wort eingeben',
-      'bbcodes_url_prompt1' => 'Bitte geben Sie die URL (mit http://) an',
-      'bbcodes_url_prompt2' => 'Bitte geben Sie den Linktext an',
-      'confirmNotUsed' => 'Wollen Sie die eingegebenen Daten der ausgewählten Sprache beim Speichern wirklich nicht übernehmen?',
-      'js_listpompt1' => 'Bitte geben Sie den ',
-      'js_listpompt2' => '. Listenpunkt an.\\n"Abbrechen" klicken zum Beenden.',
-    ),
-    'admin/language' =>
-    array (
-      'admin_lang_ignored_search_keys_desc' => 'Hier sind die Wörter aufgelistet, die während einer Suchanfrage ignoriert werden sollen, um einerseits die Suchergebnisse gering zu halten und andererseits die Suchgeschwindigkeit zu verbessern.<br /><br />Nur ein Wort pro Zeile. Bitte tippen Sie die Wörter komplett in Kleinbuchstaben. Sonderzeichen sollten in zwei Formen auftauchen. Beispiele:<br />&Auml; = ae und &auml;,<br />&szlig; = ss und &szlig;,<br />&eacute; = e und &eacute;,<br />&Ccedil; = c und &ccedil;',
-      'admin_lang_used_as_original' => 'Sprache die als Original verwendet werden soll:',
-      'admin_lang_used_as_original_info' => 'Ggeben Sie das Verzeichnis/die Sprache an, aus der die Phrase/der Ausdruck kopiert werden soll.',
-    ),
-    'admin/members' =>
-    array (
-      'admin_member_merge_help' => 'Hier können Sie zewi Benutzeraccounts in einem zusammenführen. Das "Basis-Mitglied" belibt bestehen und die Daten des Accounts bleiben als Standard-Werte bestehen. Die Beiträge, privaten Nachrichten etc. werden vom "Überflüssigen Mitglied" zum "Basis-Mitglied" übernommen. Wenn bei dem "Basis-Mitglied" Daten fehlen, werden diese vom "Überflüssigen Mitglied" übernommen. Anschließend wird das "Überflüssigen Mitglied" gelöscht.',
-      'admin_member_nl_mail_manager' => 'Newsletter und E-Mail-Verwaltung',
-      'admin_member_send_nl' => 'Newsletter verfassen',
-      'admin_member_mail_manager_instructions' => 'Hier können Sie die E-Mail-Adressen von Mitgliedern exportieren oder an diese E-Mail-Adressen einen Newsletter schicken. Geben Sie unten bei der Mitgliedersuche die Parameter ein, nach denen die Mitglieder gesucht werden sollen. Auf der darauf folgenden Seite kann man die Mitglieder dann, anhand der Einstellungen zum E-Mail-Empfang in den Profileinstellungen, noch einmal eingrenzen und abschließend auswählen, ob man an die gefundenen Mitglieder einen Newsletter verschicken will oder ob lediglich deren E-Mail-Adressen exportiert werden sollen. Danach ist es dann möglich in der jeweiligen Oberfläche die Export-Optionen anzugeben bzw. einen Newsletter zu verfassen.',
-      'admin_member_name_connected_to_id' => 'Benutzername verknüpft an gelöschte ID',
-      'admin_member_name_not_connected' => 'Nicht verknüpft',
-      'admin_member_reserve_names_add' => 'Benutzernamen reservieren',
-      'admin_member_reserve_names_title' => 'Reservierte Benutzernamen',
-      'admin_member_selected_reserved_names_deleted' => 'Die Reservierung der markierten Benutzernamen wurde aufgehoben.',
-      'admin_member_username_successfully_reserved' => 'Benutzername wurde erfolgreich reserviert.',
-    ),
-    'admin/misc' =>
-    array (
-      'admin_misc_spellcheck_add_to_list' => NULL,
-      'admin_misc_spellcheck_add_to_list_info' => NULL,
-      'admin_misc_spellcheck_disabled' => NULL,
-    ),
-    'admin/packages' =>
-    array (
-      'admin_packages_head_delete_plugin' => 'Plugin löschen',
-    ),
-    'admin/profilefield' =>
-    array (
-      'admin_editable_change_settings' => '"Optionen ändern"',
-      'admin_editable_change_user_data' => '"Daten ändern"',
-    ),
-    'admin/settings' =>
-    array (
-      'admin_allow_vcard_dl' => NULL,
-      'admin_allow_vcard_dl_guest' => NULL,
-      'admin_allow_vcard_dl_guest_info' => NULL,
-      'admin_allow_vcard_dl_info' => NULL,
-      'admin_disable_registration_info' => 'Aktivieren Sie diese Option, wenn Sie die Registration neuer Mitglieder (temporär) verbieten möchten. Jeder der versucht sich zu registrieren bekommt die Meldung angezeigt, dass derzeit keine Registrierungen angenommen werden.',
-      'admin_enable_jabber_support' => NULL,
-      'admin_enable_jabber_support_info' => NULL,
-      'admin_enable_spellchecker' => NULL,
-      'admin_enable_spellchecker_info' => NULL,
-      'admin_e_parse' => NULL,
-      'admin_jabber_edit' => NULL,
-      'admin_jabber_password' => NULL,
-      'admin_jabber_password_info' => NULL,
-      'admin_jabber_server' => NULL,
-      'admin_jabber_server_info' => NULL,
-      'admin_jabber_username' => NULL,
-      'admin_jabber_username_info' => NULL,
-      'admin_number_of_smileys' => NULL,
-      'admin_number_of_smileys_info' => NULL,
-      'admin_php_standard' => 'Keine PHP-Fehlermeldungen anzeigen',
-      'admin_profil_avatar_edit' => 'Profilbilder &amp; Avatare',
-      'admin_pspell_available' => NULL,
-      'admin_pspell_not_available' => NULL,
-      'admin_select_spell_check' => NULL,
-      'admin_setting_jabber' => NULL,
-      'admin_setting_jabber_info' => NULL,
-      'admin_setting_profile_edit_info' => 'Profileinstellungen, Feldlängen und mehr.',
-      'admin_setting_spell_check' => NULL,
-      'admin_setting_spell_check_info' => NULL,
-      'admin_spellcheck_edit' => NULL,
-      'admin_spellcheck_mysql_php' => NULL,
-      'admin_spellcheck_pspell_aspell' => NULL,
-      'admin_spellcheck_system' => NULL,
-      'admin_spellcheck_system_info' => NULL,
-      'admin_spellcheck_textfile_php' => NULL,
-      'admin_switch_cms_portal' => 'Welche Datei/Seite soll als Startseite der Homepage benutzt werden:',
-      'admin_test_filesystem_chmods' => NULL,
-      'admin_test_filesystem_chmods_info' => NULL,
-      'admin_doclang_desc' => 'Die Dokumente, die in der vom Mitglied gewählten Sprache nicht zur Verfügung stehen, werden in der hier angegebenen Sprache als Ersatz angezeigt. Hinweis: Wenn von dieser Sprache ebenfalls kein Dokument existiert, so wird das Dokument in der Standard-Foren-Sprache verwendet. Wenn diese Sprache ebenfalls nicht zur Verfügung steht, dann wird ein beliebiges ausgewählt.',
-      'admin_doclang_title' => 'Standard Rückfall-Sprache für Dokumente:',
-      'admin_login_attempts' => 'Anmeldeversuche beschränken',
-      'admin_login_attempts_blocktime' => 'Zeit, die ein Benutzer aus dem Forum ausgeschlossen wird',
-      'admin_login_attempts_blocktime_info' => 'Zeit in Minuten, die ein Benutzer vom Forum ausgesperrt wird, nach dem die oben angegebene Anzahl an Fehlversuchen sich einzuloggen erreicht wird. Die Sperrungen werden in der Übersicht der gesperrten IPs (auch später noch) angezeigt.',
-      'admin_login_attempts_max' => 'Maximale Anzahl der Anmeldeversuche',
-      'admin_login_attempts_max_info' => 'Geben Sie die Anzahl Versuche an, die ein Benutzer ein falsches Passwort angeben kann. Wird dieses Limit überschritten, wird der Benutzer temporär gebannt. Setzen Sie dies auf 0, um das Feature zu deaktivieren.',
-      'admin_login_attempts_time' => 'Zeit bevor die falsch eingegebenen Passwörter zurückgesetzt werden',
-      'admin_login_attempts_time_info' => 'Zeit in Minuten nach denen die falsch eingegebenen Passwörter gelöscht werden. Bitte beachten Sie, dass sobald sich der Nutzer mit korrekten Daten angemeldet hat, die vorherigen vergeblichen Anmeldeversuche gelöscht werden.',
-    ),
-    'admin/spider' =>
-    array (
-      'admin_spider_no_pending_bots' => 'Es sind derzeit leider keine neu erkannten Spider vorhanden.',
-      'admin_spider_bots' => 'Bots',
-    ),
-    'bbcodes' =>
-    array (
-      'bbcodes_help' => NULL,
-      'bbcodes_note_prompt1' => NULL,
-      'bbcodes_note_prompt2' => NULL,
-      'bbcodes_url_prompt1' => NULL,
-      'bbcodes_url_promtp2' => NULL,
-      'bbcodes_code_short' => 'Code',
-      'bbcodes_create_table' => 'Neue Tabelle erstellen',
-      'bbcodes_table_cols' => 'Spalten',
-      'bbcodes_table_insert_table' => 'Tabelle einfügen',
-      'bbcodes_table_rows' => 'Zeilen',
-      'bbcodes_table_show_head' => 'Erste Zeile als Titelzeile benutzen',
-      'geshi_bbcode_nohighlighting' => 'Kein Highlighting',
-      'more_smileys' => 'mehr Smileys',
-      'textarea_check_length' => 'Überprüfe Textlänge',
-      'textarea_decrease_size' => 'Verkleinern',
-      'textarea_increase_size' => 'Vergrößern',
-    ),
-    'global' =>
-    array (
-      'bb_ext_sourcecode' => NULL,
-      'geshi_bbcode_desc' => NULL,
-      'geshi_bbcode_nohighlighting' => NULL,
-      'geshi_bbcode_title' => NULL,
-      'geshi_hlcode_options' => NULL,
-      'geshi_hlcode_title' => '{$lang_name}-Quelltext:',
-      'im_yahoo_2' => NULL,
-      'log_wrong_data' => 'Sie haben falsche Benutzerdaten angegeben oder Sie sind noch nicht freigeschaltet. {$can_try}<br />Benutzen Sie die <a href="log.php?action=pwremind">Passwort vergessen</a>-Funktion wenn Sie Ihr Passwort nicht mehr wissen. Falls Sie keine Freischalt-E-Mail bekommen haben, klicken Sie <a href="register.php?action=resend">hier</a>.',
-      'more_smileys' => NULL,
-      'pages_sep' => '...',
-      'pm_index_old' => 'Gelesene Nachrichten dieser Woche',
-      'post_copy' => NULL,
-      'post_copy_desc' => NULL,
-      'profile_vcard' => NULL,
-      'spellcheck' => NULL,
-      'spellcheck_changeto' => NULL,
-      'spellcheck_close' => NULL,
-      'spellcheck_disabled' => NULL,
-      'spellcheck_ignore' => NULL,
-      'spellcheck_ignore_all' => NULL,
-      'spellcheck_in_progress' => NULL,
-      'spellcheck_notfound' => NULL,
-      'spellcheck_options' => NULL,
-      'spellcheck_replace' => NULL,
-      'spellcheck_replace_all' => NULL,
-      'spellcheck_undo' => NULL,
-      'textarea_check_length' => NULL,
-      'textarea_decrease_size' => NULL,
-      'textarea_increase_size' => NULL,
-      'upload_intro1' => 'Um an diesen Beitrag eine Datei anzufügen, klicken Sie auf die "Durchsuchen" Schaltfläche und wählen Sie eine Datei aus. Klicken Sie dann auf "Senden", um den Vorgang abzuschließen.<br /><br />Erlaubte Dateitypen: {$filetypes}<br />Maximale Dateigröße: {$filesize}',
-      'vcard_note' => NULL,
-      'bbcode_help' => 'Hilfe',
-      'doc_wrong_language_shown' => 'Leider ist kein Dokument in der von Ihnen gewählten Sprache vorhanden, daher wird das Dokument in einer anderen Sprache angezeigt!',
-      'general_notice_title' => 'Hinweis!',
-      'link_rel_atom' => 'Atom Newsfeed',
-      'link_rel_opml' => 'OPML Newsfeed',
-      'link_rel_print' => 'Druckversion',
-      'link_rel_rss' => 'RSS Newsfeed',
-      'login_attempts_banned' => 'Ihre IP-Adresse ({$ip}) wurde temporär gebannt, da Sie zu viele Anmeldeversuche mit falschen Benutzerdaten durchgeführt haben.',
-      'log_wrong_data_block' => 'Sie wurden temporär gebannt, da Sie die maximale Anzahl an Anmeldeversuchen in einer bestimmten Zeit überschritten haben. Mehr Informationen erhalten Sie auf der nächsten Seite...',
-      'log_x_attempts' => 'Sie haben noch {$attempts} Versuche sich anzumelden!',
-      'pages_sep2' => ', ',
-      'upload_intro1b' => 'Maxmimale Bildabmessungen: {@config->tpcwidth} x {@config->tpcheight} Pixel',
-    ),
-    'javascript' =>
-    array (
-      'js_no_changed' => NULL,
-      'js_no_found' => NULL,
-      'js_no_sug' => NULL,
-      'js_one_changed' => NULL,
-      'js_sc_complete' => NULL,
-      'js_submitted' => NULL,
-      'js_x_changed' => NULL,
-      'bbcodes_note_prompt1' => 'Bitte Erklärung für ein Wort eingeben',
-      'bbcodes_note_prompt2' => 'Bitte das zu erklärende Wort eingeben',
-      'bbcodes_url_prompt1' => 'Bitte geben Sie die URL (mit http://) an',
-      'bbcodes_url_prompt2' => 'Bitte geben Sie den Linktext an',
-      'js_page_jumpto' => 'Geben Sie die Seite ein, zu der Sie springen möchten:',
-    ),
-    'modules' =>
-    array (
-      'last_posts_info_reply' => 'Dieses Thema enthält mehr als {$num} Beiträge. Klicken Sie <a href=\'showtopic.php?id={@info->id}\' target=\'_blank\'>hier</a>, um das ganze Thema zu lesen.',
-    ),
-    'settings' =>
-    array (
-      'compatible_version' => '0.8 RC5',
-    ),
-    'wwo' =>
-    array (
-      'wwo_fallback' => NULL,
-      'wwo_misc_board_rules' => 'liest die Forenregln eines Forums',
-      'wwo_pdf' => 'Betrachtet die PDF-Version eines Themas: <a href="pdf.php?id={$id}">{$title}</a>',
-      'wwo_popup_hlcode' => NULL,
-      'wwo_profile' => 'Betrachtet ein Profil',
-      'wwo_profile_send' => 'Verschickt über das Profil eine Nachricht',
-      'wwo_showtopic' => 'Liest ein Thema: <a href="showtopic.php?id={$id}">{$title}</a>',
-      'wwo_spellcheck' => NULL,
-      'wwo_addreply_fallback' => 'Schreibt eine Antwort zu einem Thema',
-      'wwo_docs_fallback' => 'Betrachtet eine Seite',
-      'wwo_pdf_fallback' => 'Betrachtet die PDF-Version eines Themas',
-      'wwo_popup_showpost_fallback' => 'Betrachtet einen einzelnen Beitrag',
-      'wwo_print_fallback' => 'Druckt ein Thema',
-      'wwo_showforum_fallback' => 'Betrachtet ein Forum',
-      'wwo_showtopic_fallback' => 'Liest ein Thema',
-    ),
-  ),
-  'language' =>
-  array (
-    'admin/bbcodes' =>
-    array (
-      'admin_bbc_button_image_desc' => 'Optional - If you would like this bbcode to appear as a clickable button on the message editor toolbar, enter the adress of an image 20 x 20 pixels in size that will act as the button to insert this bbcode. You can use either an absolute URL (http://...) or a relative URL, basing on the directory {@config->furl}/templates/editor/images/.',
-    ),
-    'admin/cms' =>
+    'language' =>
     array (
       'admin_cms_big_font' => NULL,
       'admin_cms_center' => NULL,
@@ -588,12 +352,41 @@ $ini = array (
       'admin_cms_news_max_age_info' => 'Time in minutes after that the cache will be cleared.',
       'bbcode_help' => 'Hilfe',
     ),
-    'admin/db' =>
+  ),
+  'admin/db' =>
+  array (
+    'language_de' =>
+    array (
+      'admin_db_file_no_comments' => 'In der Datei wurden keine Backup-Informationen gefunden.',
+      'admin_db_unknown_file_format' => 'Unbekanntes Dateiformat angegeben.',
+    ),
+    'language' =>
     array (
       'admin_db_file_no_comments' => 'The file does not contain backup information.',
       'admin_db_unknown_file_format' => 'Unknown file format.',
     ),
-    'admin/explorer' =>
+  ),
+  'admin/explorer' =>
+  array (
+    'language_de' =>
+    array (
+      'admin_explorer_archive_is_not_supported' => 'Dieses Archiv wird derzeit nicht unterstützt.',
+      'admin_explorer_file_is_not_supported2' => NULL,
+      'admin_explorer_check_chmod' => 'Alle CHMOD prüfen',
+      'admin_explorer_chmod_file_dir' => 'Datei oder Verzeichnis',
+      'admin_explorer_chmod_info1' => 'Einige Verzeichnisse und Dateien benötigen spezielle Zugriffsrechte (CHMODs) um beschreibbar und ausführbar zu sein. Diese Rechte werden hier geprüft (und ggf. geändert) und das Resultat wird weiter unten angezeigt.',
+      'admin_explorer_chmod_info2' => 'Die folgenen Status können auftreten:',
+      'admin_explorer_chmod_state' => 'Status',
+      'admin_explorer_chmod_status_failure' => 'Fehler',
+      'admin_explorer_chmod_status_failure_info' => 'Die Rechte sind nicht korrekt gesetzt und müssen manuell (per FTP) korrigiert werden. Sie können die grundlegenden Funktionen von Viscacha nicht nutzen bis die Rechte korrekt gesetzt sind.',
+      'admin_explorer_chmod_status_failure_x' => 'Fehler*',
+      'admin_explorer_chmod_status_failure_x_info' => 'Die Rechte sind nicht korrekt gesetzt, aber diese Dateien sind nur für Arbeiten im Administrationsbereich relevant, daher müssen die Rechte erst dann vorher korrekt gesetzt werden wenn Sie diese Dateien bearbeiten wollen.',
+      'admin_explorer_chmod_status_ok' => 'OK',
+      'admin_explorer_chmod_status_ok_info' => 'Die Rechte sind korrekt gesetzt.',
+      'admin_explorer_current_chmod' => 'Derzeitiger CHMOD',
+      'admin_explorer_required_chmod' => 'Benötigter CHMOD',
+    ),
+    'language' =>
     array (
       'admin_explorer_archive_is_not_supported' => 'The archive is currently not supported.',
       'admin_explorer_file_is_not_supported2' => NULL,
@@ -611,15 +404,42 @@ $ini = array (
       'admin_explorer_current_chmod' => 'Current CHMOD',
       'admin_explorer_required_chmod' => 'Required CHMOD',
     ),
-    'admin/forums' =>
+  ),
+  'admin/forums' =>
+  array (
+    'language_de' =>
+    array (
+      'admin_forum_bbcode_html' => 'BB-Code ist erlaubt, HTML ist nicht erlaubt!',
+    ),
+    'language' =>
     array (
       'admin_forum_bbcode_html' => 'BB-Code is allowed; HTML is not allowed!',
     ),
-    'admin/frames' =>
+  ),
+  'admin/frames' =>
+  array (
+    'language_de' =>
     array (
       'admin_spellcheck_manager' => NULL,
     ),
-    'admin/javascript' =>
+    'language' =>
+    array (
+      'admin_spellcheck_manager' => NULL,
+    ),
+  ),
+  'admin/javascript' =>
+  array (
+    'language_de' =>
+    array (
+      'bbcodes_note_prompt1' => 'Bitte Erklärung für ein Wort eingeben',
+      'bbcodes_note_prompt2' => 'Bitte das zu erklärende Wort eingeben',
+      'bbcodes_url_prompt1' => 'Bitte geben Sie die URL (mit http://) an',
+      'bbcodes_url_prompt2' => 'Bitte geben Sie den Linktext an',
+      'confirmNotUsed' => 'Wollen Sie die eingegebenen Daten der ausgewählten Sprache beim Speichern wirklich nicht übernehmen?',
+      'js_listpompt1' => 'Bitte geben Sie den ',
+      'js_listpompt2' => '. Listenpunkt an.\\n"Abbrechen" klicken zum Beenden.',
+    ),
+    'language' =>
     array (
       'bbcodes_note_prompt1' => 'Please enter the definition of the word',
       'bbcodes_note_prompt2' => 'Please enter the word to be defined',
@@ -629,13 +449,38 @@ $ini = array (
       'js_listpompt1' => 'please provide the ',
       'js_listpompt2' => '. listpoint on.\\nclick "cancel" to quit.',
     ),
-    'admin/language' =>
+  ),
+  'admin/language' =>
+  array (
+    'language_de' =>
+    array (
+      'admin_lang_ignored_search_keys_desc' => 'Hier sind die Wörter aufgelistet, die während einer Suchanfrage ignoriert werden sollen, um einerseits die Suchergebnisse gering zu halten und andererseits die Suchgeschwindigkeit zu verbessern.<br /><br />Nur ein Wort pro Zeile. Bitte tippen Sie die Wörter komplett in Kleinbuchstaben. Sonderzeichen sollten in zwei Formen auftauchen. Beispiele:<br />&Auml; = ae und &auml;,<br />&szlig; = ss und &szlig;,<br />&eacute; = e und &eacute;,<br />&Ccedil; = c und &ccedil;',
+      'admin_lang_used_as_original' => 'Sprache die als Original verwendet werden soll:',
+      'admin_lang_used_as_original_info' => 'Ggeben Sie das Verzeichnis/die Sprache an, aus der die Phrase/der Ausdruck kopiert werden soll.',
+    ),
+    'language' =>
     array (
       'admin_lang_ignored_search_keys_desc' => '<br /><br />Only one word in each line. Please type the words completly in lower case letters. Special symbols should occur in two forms. Examples: <br />&Auml; = ae and &auml;,<br />&szlig; = ss and &szlig;,<br />&eacute; = e and &eacute;,<br />&Ccedil; = c and &ccedil;',
       'admin_lang_used_as_original' => 'Language which should be used as original:',
       'admin_lang_used_as_original_info' => 'Specify the directory/language wherefrom the phrase should be copied.',
     ),
-    'admin/members' =>
+  ),
+  'admin/members' =>
+  array (
+    'language_de' =>
+    array (
+      'admin_member_merge_help' => 'Hier können Sie zewi Benutzeraccounts in einem zusammenführen. Das "Basis-Mitglied" belibt bestehen und die Daten des Accounts bleiben als Standard-Werte bestehen. Die Beiträge, privaten Nachrichten etc. werden vom "Überflüssigen Mitglied" zum "Basis-Mitglied" übernommen. Wenn bei dem "Basis-Mitglied" Daten fehlen, werden diese vom "Überflüssigen Mitglied" übernommen. Anschließend wird das "Überflüssigen Mitglied" gelöscht.',
+      'admin_member_nl_mail_manager' => 'Newsletter und E-Mail-Verwaltung',
+      'admin_member_send_nl' => 'Newsletter verfassen',
+      'admin_member_mail_manager_instructions' => 'Hier können Sie die E-Mail-Adressen von Mitgliedern exportieren oder an diese E-Mail-Adressen einen Newsletter schicken. Geben Sie unten bei der Mitgliedersuche die Parameter ein, nach denen die Mitglieder gesucht werden sollen. Auf der darauf folgenden Seite kann man die Mitglieder dann, anhand der Einstellungen zum E-Mail-Empfang in den Profileinstellungen, noch einmal eingrenzen und abschließend auswählen, ob man an die gefundenen Mitglieder einen Newsletter verschicken will oder ob lediglich deren E-Mail-Adressen exportiert werden sollen. Danach ist es dann möglich in der jeweiligen Oberfläche die Export-Optionen anzugeben bzw. einen Newsletter zu verfassen.',
+      'admin_member_name_connected_to_id' => 'Benutzername verknüpft an gelöschte ID',
+      'admin_member_name_not_connected' => 'Nicht verknüpft',
+      'admin_member_reserve_names_add' => 'Benutzernamen reservieren',
+      'admin_member_reserve_names_title' => 'Reservierte Benutzernamen',
+      'admin_member_selected_reserved_names_deleted' => 'Die Reservierung der markierten Benutzernamen wurde aufgehoben.',
+      'admin_member_username_successfully_reserved' => 'Benutzername wurde erfolgreich reserviert.',
+    ),
+    'language' =>
     array (
       'admin_member_send_nl' => 'Compose Newsletter',
       'admin_member_mail_manager_instructions' => 'On this page you can export members\' e-mail addresses or send them a newsletter. Please feed your parameters you want to use to narrow down the results into the member search below. On the following page you are able to narrow down the results again according to the profile settings of the e-mail reception and you can choose whether you want to send out a newsletter to the members found or just export their e-mail adresses.  Once done searching it is possible compose a newsletter or to specify the options for the export of the e-mail adresses in their particular interfaces.',
@@ -646,17 +491,94 @@ $ini = array (
       'admin_member_selected_reserved_names_deleted' => 'The reservation of the selected user names has been deleted.',
       'admin_member_username_successfully_reserved' => 'User name has been reserved successfully.',
     ),
-    'admin/misc' =>
+  ),
+  'admin/misc' =>
+  array (
+    'language_de' =>
     array (
       'admin_misc_spellcheck_add_to_list' => NULL,
       'admin_misc_spellcheck_add_to_list_info' => NULL,
       'admin_misc_spellcheck_disabled' => NULL,
     ),
-    'admin/packages' =>
+    'language' =>
+    array (
+      'admin_misc_spellcheck_add_to_list' => NULL,
+      'admin_misc_spellcheck_add_to_list_info' => NULL,
+      'admin_misc_spellcheck_disabled' => NULL,
+    ),
+  ),
+  'admin/packages' =>
+  array (
+    'language_de' =>
+    array (
+      'admin_packages_head_delete_plugin' => 'Plugin löschen',
+    ),
+    'language' =>
     array (
       'admin_packages_head_delete_plugin' => 'Delete plugin',
     ),
-    'admin/settings' =>
+  ),
+  'admin/profilefield' =>
+  array (
+    'language_de' =>
+    array (
+      'admin_editable_change_settings' => '"Optionen ändern"',
+      'admin_editable_change_user_data' => '"Daten ändern"',
+    ),
+  ),
+  'admin/settings' =>
+  array (
+    'language_de' =>
+    array (
+      'admin_allow_vcard_dl' => NULL,
+      'admin_allow_vcard_dl_guest' => NULL,
+      'admin_allow_vcard_dl_guest_info' => NULL,
+      'admin_allow_vcard_dl_info' => NULL,
+      'admin_disable_registration_info' => 'Aktivieren Sie diese Option, wenn Sie die Registration neuer Mitglieder (temporär) verbieten möchten. Jeder der versucht sich zu registrieren bekommt die Meldung angezeigt, dass derzeit keine Registrierungen angenommen werden.',
+      'admin_enable_jabber_support' => NULL,
+      'admin_enable_jabber_support_info' => NULL,
+      'admin_enable_spellchecker' => NULL,
+      'admin_enable_spellchecker_info' => NULL,
+      'admin_e_parse' => NULL,
+      'admin_jabber_edit' => NULL,
+      'admin_jabber_password' => NULL,
+      'admin_jabber_password_info' => NULL,
+      'admin_jabber_server' => NULL,
+      'admin_jabber_server_info' => NULL,
+      'admin_jabber_username' => NULL,
+      'admin_jabber_username_info' => NULL,
+      'admin_number_of_smileys' => NULL,
+      'admin_number_of_smileys_info' => NULL,
+      'admin_php_standard' => 'Keine PHP-Fehlermeldungen anzeigen',
+      'admin_profil_avatar_edit' => 'Profilbilder &amp; Avatare',
+      'admin_pspell_available' => NULL,
+      'admin_pspell_not_available' => NULL,
+      'admin_select_spell_check' => NULL,
+      'admin_setting_jabber' => NULL,
+      'admin_setting_jabber_info' => NULL,
+      'admin_setting_profile_edit_info' => 'Profileinstellungen, Feldlängen und mehr.',
+      'admin_setting_spell_check' => NULL,
+      'admin_setting_spell_check_info' => NULL,
+      'admin_spellcheck_edit' => NULL,
+      'admin_spellcheck_mysql_php' => NULL,
+      'admin_spellcheck_pspell_aspell' => NULL,
+      'admin_spellcheck_system' => NULL,
+      'admin_spellcheck_system_info' => NULL,
+      'admin_spellcheck_textfile_php' => NULL,
+      'admin_switch_cms_portal' => 'Welche Datei/Seite soll als Startseite der Homepage benutzt werden:',
+      'admin_test_filesystem_chmods' => NULL,
+      'admin_test_filesystem_chmods_info' => NULL,
+      'admin_doclang_desc' => 'Die Dokumente, die in der vom Mitglied gewählten Sprache nicht zur Verfügung stehen, werden in der hier angegebenen Sprache als Ersatz angezeigt. Hinweis: Wenn von dieser Sprache ebenfalls kein Dokument existiert, so wird das Dokument in der Standard-Foren-Sprache verwendet. Wenn diese Sprache ebenfalls nicht zur Verfügung steht, dann wird ein beliebiges ausgewählt.',
+      'admin_doclang_title' => 'Standard Rückfall-Sprache für Dokumente:',
+      'admin_login_attempts' => 'Anmeldeversuche beschränken',
+      'admin_login_attempts_blocktime' => 'Zeit, die ein Benutzer aus dem Forum ausgeschlossen wird',
+      'admin_login_attempts_blocktime_info' => 'Zeit in Minuten, die ein Benutzer vom Forum ausgesperrt wird, nach dem die oben angegebene Anzahl an Fehlversuchen sich einzuloggen erreicht wird. Die Sperrungen werden in der Übersicht der gesperrten IPs (auch später noch) angezeigt.',
+      'admin_login_attempts_max' => 'Maximale Anzahl der Anmeldeversuche',
+      'admin_login_attempts_max_info' => 'Geben Sie die Anzahl Versuche an, die ein Benutzer ein falsches Passwort angeben kann. Wird dieses Limit überschritten, wird der Benutzer temporär gebannt. Setzen Sie dies auf 0, um das Feature zu deaktivieren.',
+      'admin_login_attempts_time' => 'Zeit bevor die falsch eingegebenen Passwörter zurückgesetzt werden',
+      'admin_login_attempts_time_info' => 'Zeit in Minuten nach denen die falsch eingegebenen Passwörter gelöscht werden. Bitte beachten Sie, dass sobald sich der Nutzer mit korrekten Daten angemeldet hat, die vorherigen vergeblichen Anmeldeversuche gelöscht werden.',
+    ),
+    'language' =>
     array (
       'admin_allow_vcard_dl' => NULL,
       'admin_allow_vcard_dl_guest' => NULL,
@@ -703,11 +625,41 @@ $ini = array (
       'admin_login_attempts_time' => 'Time before number of wrong passwords is reset',
       'admin_login_attempts_time_info' => 'Enter in minutes the time before any wrong passwords submitted by a user is reset to 0. Please note also that once a user has successfully logged in, the data is deleted for that person.',
     ),
-    'admin/spider' =>
+  ),
+  'admin/spider' =>
+  array (
+    'language_de' =>
+    array (
+      'admin_spider_no_pending_bots' => 'Es sind derzeit leider keine neu erkannten Spider vorhanden.',
+      'admin_spider_bots' => 'Bots',
+    ),
+    'language' =>
     array (
       'admin_spider_bots' => 'Bots',
     ),
-    'bbcodes' =>
+  ),
+  'bbcodes' =>
+  array (
+    'language_de' =>
+    array (
+      'bbcodes_help' => NULL,
+      'bbcodes_note_prompt1' => NULL,
+      'bbcodes_note_prompt2' => NULL,
+      'bbcodes_url_prompt1' => NULL,
+      'bbcodes_url_promtp2' => NULL,
+      'bbcodes_code_short' => 'Code',
+      'bbcodes_create_table' => 'Neue Tabelle erstellen',
+      'bbcodes_table_cols' => 'Spalten',
+      'bbcodes_table_insert_table' => 'Tabelle einfügen',
+      'bbcodes_table_rows' => 'Zeilen',
+      'bbcodes_table_show_head' => 'Erste Zeile als Titelzeile benutzen',
+      'geshi_bbcode_nohighlighting' => 'Kein Highlighting',
+      'more_smileys' => 'mehr Smileys',
+      'textarea_check_length' => 'Überprüfe Textlänge',
+      'textarea_decrease_size' => 'Verkleinern',
+      'textarea_increase_size' => 'Vergrößern',
+    ),
+    'language' =>
     array (
       'bbcodes_help' => NULL,
       'bbcodes_note_prompt1' => NULL,
@@ -726,7 +678,56 @@ $ini = array (
       'textarea_decrease_size' => 'Decrease Size',
       'textarea_increase_size' => 'Increase Size',
     ),
-    'global' =>
+  ),
+  'global' =>
+  array (
+    'language_de' =>
+    array (
+      'bb_ext_sourcecode' => NULL,
+      'geshi_bbcode_desc' => NULL,
+      'geshi_bbcode_nohighlighting' => NULL,
+      'geshi_bbcode_title' => NULL,
+      'geshi_hlcode_options' => NULL,
+      'geshi_hlcode_title' => '{$lang_name}-Quelltext:',
+      'im_yahoo_2' => NULL,
+      'log_wrong_data' => 'Sie haben falsche Benutzerdaten angegeben oder Sie sind noch nicht freigeschaltet. {$can_try}<br />Benutzen Sie die <a href="log.php?action=pwremind">Passwort vergessen</a>-Funktion wenn Sie Ihr Passwort nicht mehr wissen. Falls Sie keine Freischalt-E-Mail bekommen haben, klicken Sie <a href="register.php?action=resend">hier</a>.',
+      'more_smileys' => NULL,
+      'pages_sep' => '...',
+      'pm_index_old' => 'Gelesene Nachrichten dieser Woche',
+      'post_copy' => NULL,
+      'post_copy_desc' => NULL,
+      'profile_vcard' => NULL,
+      'spellcheck' => NULL,
+      'spellcheck_changeto' => NULL,
+      'spellcheck_close' => NULL,
+      'spellcheck_disabled' => NULL,
+      'spellcheck_ignore' => NULL,
+      'spellcheck_ignore_all' => NULL,
+      'spellcheck_in_progress' => NULL,
+      'spellcheck_notfound' => NULL,
+      'spellcheck_options' => NULL,
+      'spellcheck_replace' => NULL,
+      'spellcheck_replace_all' => NULL,
+      'spellcheck_undo' => NULL,
+      'textarea_check_length' => NULL,
+      'textarea_decrease_size' => NULL,
+      'textarea_increase_size' => NULL,
+      'upload_intro1' => 'Um an diesen Beitrag eine Datei anzufügen, klicken Sie auf die "Durchsuchen" Schaltfläche und wählen Sie eine Datei aus. Klicken Sie dann auf "Senden", um den Vorgang abzuschließen.<br /><br />Erlaubte Dateitypen: {$filetypes}<br />Maximale Dateigröße: {$filesize}',
+      'vcard_note' => NULL,
+      'bbcode_help' => 'Hilfe',
+      'doc_wrong_language_shown' => 'Leider ist kein Dokument in der von Ihnen gewählten Sprache vorhanden, daher wird das Dokument in einer anderen Sprache angezeigt!',
+      'general_notice_title' => 'Hinweis!',
+      'link_rel_atom' => 'Atom Newsfeed',
+      'link_rel_opml' => 'OPML Newsfeed',
+      'link_rel_print' => 'Druckversion',
+      'link_rel_rss' => 'RSS Newsfeed',
+      'login_attempts_banned' => 'Ihre IP-Adresse ({$ip}) wurde temporär gebannt, da Sie zu viele Anmeldeversuche mit falschen Benutzerdaten durchgeführt haben.',
+      'log_wrong_data_block' => 'Sie wurden temporär gebannt, da Sie die maximale Anzahl an Anmeldeversuchen in einer bestimmten Zeit überschritten haben. Mehr Informationen erhalten Sie auf der nächsten Seite...',
+      'log_x_attempts' => 'Sie haben noch {$attempts} Versuche sich anzumelden!',
+      'pages_sep2' => ', ',
+      'upload_intro1b' => 'Maxmimale Bildabmessungen: {@config->tpcwidth} x {@config->tpcheight} Pixel',
+    ),
+    'language' =>
     array (
       'bb_ext_sourcecode' => NULL,
       'geshi_bbcode_desc' => NULL,
@@ -772,7 +773,25 @@ $ini = array (
       'pages_sep2' => ', ',
       'upload_intro1b' => 'Max. image size: {@config->tpcwidth} x {@config->tpcheight} px',
     ),
-    'javascript' =>
+  ),
+  'javascript' =>
+  array (
+    'language_de' =>
+    array (
+      'js_no_changed' => NULL,
+      'js_no_found' => NULL,
+      'js_no_sug' => NULL,
+      'js_one_changed' => NULL,
+      'js_sc_complete' => NULL,
+      'js_submitted' => NULL,
+      'js_x_changed' => NULL,
+      'bbcodes_note_prompt1' => 'Bitte Erklärung für ein Wort eingeben',
+      'bbcodes_note_prompt2' => 'Bitte das zu erklärende Wort eingeben',
+      'bbcodes_url_prompt1' => 'Bitte geben Sie die URL (mit http://) an',
+      'bbcodes_url_prompt2' => 'Bitte geben Sie den Linktext an',
+      'js_page_jumpto' => 'Geben Sie die Seite ein, zu der Sie springen möchten:',
+    ),
+    'language' =>
     array (
       'js_no_changed' => NULL,
       'js_no_found' => NULL,
@@ -787,15 +806,50 @@ $ini = array (
       'bbcodes_url_prompt2' => 'Please provide text for the link',
       'js_page_jumpto' => 'Enter the page number you wish to go to:',
     ),
-    'modules' =>
+  ),
+  'modules' =>
+  array (
+    'language_de' =>
+    array (
+      'last_posts_info_reply' => 'Dieses Thema enthält mehr als {$num} Beiträge. Klicken Sie <a href=\'showtopic.php?id={@info->id}\' target=\'_blank\'>hier</a>, um das ganze Thema zu lesen.',
+    ),
+    'language' =>
     array (
       'last_posts_info_reply' => 'This topic contains more than {$num} posts. Click <a href="showtopic.php?id={@info->id}" target="_blank">here</a>, to view the complete topic.',
     ),
-    'settings' =>
+  ),
+  'settings' =>
+  array (
+    'language_de' =>
     array (
       'compatible_version' => '0.8 RC5',
     ),
-    'wwo' =>
+    'language' =>
+    array (
+      'compatible_version' => '0.8 RC5',
+    ),
+  ),
+  'wwo' =>
+  array (
+    'language_de' =>
+    array (
+      'wwo_fallback' => NULL,
+      'wwo_misc_board_rules' => 'liest die Forenregln eines Forums',
+      'wwo_pdf' => 'Betrachtet die PDF-Version eines Themas: <a href="pdf.php?id={$id}">{$title}</a>',
+      'wwo_popup_hlcode' => NULL,
+      'wwo_profile' => 'Betrachtet ein Profil',
+      'wwo_profile_send' => 'Verschickt über das Profil eine Nachricht',
+      'wwo_showtopic' => 'Liest ein Thema: <a href="showtopic.php?id={$id}">{$title}</a>',
+      'wwo_spellcheck' => NULL,
+      'wwo_addreply_fallback' => 'Schreibt eine Antwort zu einem Thema',
+      'wwo_docs_fallback' => 'Betrachtet eine Seite',
+      'wwo_pdf_fallback' => 'Betrachtet die PDF-Version eines Themas',
+      'wwo_popup_showpost_fallback' => 'Betrachtet einen einzelnen Beitrag',
+      'wwo_print_fallback' => 'Druckt ein Thema',
+      'wwo_showforum_fallback' => 'Betrachtet ein Forum',
+      'wwo_showtopic_fallback' => 'Liest ein Thema',
+    ),
+    'language' =>
     array (
       'wwo_addreply' => 'is writing a reply to the topic <a href="showtopic.php?id={$id}">{$title}</a>',
       'wwo_fallback' => NULL,

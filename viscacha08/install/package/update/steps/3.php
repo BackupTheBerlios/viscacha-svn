@@ -1,23 +1,18 @@
 <?php
 require('classes/class.tar.php');
-
+$tar = new tar();
+$tar->new_tar('/path', 'file.tar');
+$tar->ignore_chmod();
+$tar->over_write_existing();
+$error = $tar->extract_files('../');
 ?>
 <div class="bbody">
 <p>
-Before we start the automatic update, you have to read the manual update instructions.
-Please follow the steps and do the tasks.
-More Information:
-<?php if (file_exists('../_docs/readme.txt')) { ?>
-<a href="../_docs/readme.txt" target="_blank">_docs/readme.txt</a>
-<?php } else { ?>
-_docs/readme.txt
-<?php } ?>
+The updater tried to update the Viscacha source files. The following files could not be updated and must be updated manually.
 </p>
 <p>
 <strong>Update instructions:</strong><br />
-<textarea class="codearea">First make a complete backup of your (old) data!
-
-TODO: INSERT DATA FROM README(RC4 PL1 => RC5)!</textarea>
+<textarea class="codearea"><?php echo implode("\r\n", $error); ?></textarea>
 </p>
 </div>
 <div class="bfoot center"><input type="submit" value="Continue" /></div>

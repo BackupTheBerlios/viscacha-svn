@@ -1,27 +1,4 @@
 <?php
-function rmdirr($dirname) {
-	global $filesystem;
-	if (!file_exists($dirname)) {
-		return false;
-	}
-	if (is_file($dirname)) {
-		return $filesystem->unlink($dirname);
-	}
-	$dir = dir($dirname);
-	while (false !== $entry = $dir->read()) {
-		if ($entry == '.' || $entry == '..') {
-			continue;
-		}
-		if (is_dir("$dirname/$entry")) {
-			rmdirr("$dirname/$entry");
-		}
-		else {
-			$filesystem->unlink("$dirname/$entry");
-		}
-	}
-	$dir->close();
-	return $filesystem->rmdir($dirname);
-}
 function getFilePath($package, $step) {
 	$package2 = explode('_', $package, 2);
 	if (!empty($package2[1]) && !file_exists('package/'.$package.'/steps/'.$step.'.php')) {
@@ -119,7 +96,7 @@ function getLangCodesByKeys($keys) {
 }
 function setPackagesInactive() {
 	global $db;
-	require_once('../classes/class.ini.php');
+	require_once('classes/class.ini.php');
 	$myini = new INI();
 	$result = $db->query("SELECT id, internal FROM {$db->pre}packages");
 	$data = array();
