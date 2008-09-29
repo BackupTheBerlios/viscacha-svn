@@ -64,7 +64,8 @@ while($row = $db->fetch_assoc($result)) {
 }
 
 // Start: Update Tables
-$file = 'package/'.$package.'/db/db_changes.sql';
+$file = 'package/update/db/db_changes.sql';
+//$file = 'package/'.$package.'/db/db_changes.sql';
 $sql = file_get_contents($file);
 $sql = str_ireplace('{:=DBPREFIX=:}', $pre, $sql);
 $db->multi_query($sql);

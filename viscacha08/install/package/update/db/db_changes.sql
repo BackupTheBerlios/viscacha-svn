@@ -1,13 +1,13 @@
 ALTER TABLE `{:=DBPREFIX=:}component` MODIFY COLUMN `package` mediumint(7) UNSIGNED NOT NULL default '0';
 
-CREATE TABLE `{:=DBPREFIX=:}flood` (
+CREATE TABLE IF NOT EXISTS `{:=DBPREFIX=:}flood` (
   `ip` varchar(16) NOT NULL default '',
   `mid` mediumint(7) unsigned NOT NULL default '0',
   `time` int(10) unsigned NOT NULL,
   `type` varchar(3) NOT NULL default 'sta'
 ) TYPE=MyISAM;
 
-CREATE TABLE `{:=DBPREFIX=:}documents_content` (
+CREATE TABLE IF NOT EXISTS `{:=DBPREFIX=:}documents_content` (
   `did` int(10) unsigned NOT NULL default '0',
   `lid` smallint(4) unsigned NOT NULL default '0',
   `title` varchar(255) NOT NULL default '',
@@ -36,4 +36,4 @@ ALTER TABLE `{:=DBPREFIX=:}grab` MODIFY COLUMN `max_age` mediumint(6) unsigned N
 
 ALTER TABLE `{:=DBPREFIX=:}language` MODIFY COLUMN `id` smallint(4) unsigned NOT NULL auto_increment;
 
-DROP TABLE `{:=DBPREFIX=:}spellcheck`;
+DROP TABLE IF EXISTS `{:=DBPREFIX=:}spellcheck`;
