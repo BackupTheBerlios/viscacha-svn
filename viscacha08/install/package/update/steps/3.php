@@ -17,6 +17,7 @@ if (empty($_REQUEST['sub']) || !isset($tar_packs[$_REQUEST['sub']])) {
 else {
 	$sub = $_REQUEST['sub'];
 }
+require('classes/function.chmod.php');
 require('classes/class.tar.php');
 $tar = new tar(realpath('files/'), $tar_packs[$sub]);
 $tar->ignore_chmod();

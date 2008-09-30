@@ -13,7 +13,7 @@ if (!SCRIPT_LOCKED) {
 	require_once('classes/function.tools.php');
 
 	$old_versions = array(
-		'update' => '0.8 RC4 PL1',
+		'update' => '0.8 RC4 pl1',
 		'update_rc4' => '0.8 RC4'
 	);
 

@@ -96,6 +96,9 @@ foreach ($documents as $doc) {
 			{$doc['id']} , '{$doc['author']}', '{$doc['date']}', '{$doc['update']}', '{$doc['type']}', '{$doc['groups']}', ''
 		)
 	");
+	$content = $db->escape_string($content);
+	$doc['title'] = $db->escape_string($doc['title']);
+	$doc['author'] = $db->escape_string($doc['author']);
 	$db->query("
 		INSERT INTO `v_documents_content` ( `did` , `lid` , `title` , `content` , `active` )
 		VALUES (

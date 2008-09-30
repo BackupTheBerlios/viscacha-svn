@@ -41,10 +41,10 @@ foreach ($chmod as $dat) {
 	}
 	else {
 		if ($dat['chmod'] == CHMOD_EX) {
-			set_chmod($path, 0777, CHMOD_DIR);
+			set_chmod($dat['path'], 0777, CHMOD_DIR);
 		}
 		elseif ($dat['chmod'] == CHMOD_WR) {
-			set_chmod($path, 0666, CHMOD_FILE);
+			set_chmod($dat['path'], 0666, CHMOD_FILE);
 		}
 		$files[] = $dat;
 	}
@@ -57,7 +57,7 @@ foreach ($files as $arr) {
 	if (empty($path)) {
 		$path = $arr['path'];
 	}
-	$chmod = get_chmod($filesys_path);
+	$chmod = get_chmod($path);
 	if (check_chmod($arr['chmod'], $chmod)) {
 		$status = '<strong class="hl_true">OK</strong>';
 		$int_status = true;
