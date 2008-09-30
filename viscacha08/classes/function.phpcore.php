@@ -29,6 +29,10 @@ function fsockopen_idna($host, $port, $timeout) {
 	return array($fp, $errno, $errstr, $host);
 }
 
+function is_id ($x) {
+   return (is_numeric($x) && $x >= 1 ? intval($x) == $x : false);
+}
+
 // Fixes problems with suhosin blacklist
 function viscacha_function_exists($func) {
 	if (extension_loaded('suhosin')) {

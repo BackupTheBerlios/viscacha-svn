@@ -11,7 +11,7 @@ $lang = new lang();
 // Filesystem
 require_once("classes/class.filesystem.php");
 $filesystem = new filesystem($config['ftp_server'], $config['ftp_user'], $config['ftp_pw'], $config['ftp_port']);
-$filesystem->set_wd($config['ftp_path']);
+$filesystem->set_wd($config['ftp_path'], $config['fpath']);
 
 @ini_set('default_charset', '');
 header('Content-type: text/html; charset=iso-8859-1');

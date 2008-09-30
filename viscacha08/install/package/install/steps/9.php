@@ -4,7 +4,7 @@ include('../data/config.inc.php');
 require_once('classes/class.filesystem.php');
 $filesystem = new filesystem($config['ftp_server'], $config['ftp_user'], $config['ftp_pw'], $config['ftp_port']);
 $config['ftp_path'] = $config['ftp_path'].'/install';
-$filesystem->set_wd($config['ftp_path']);
+$filesystem->set_wd($config['ftp_path'], $config['fpath']);
 if (isset($_REQUEST['save']) && $_REQUEST['save'] == 1) {
 	require_once('classes/database/'.$config['dbsystem'].'.inc.php');
 	$db = new DB($config['host'], $config['dbuser'], $config['dbpw'], $config['database'], $config['dbprefix']);

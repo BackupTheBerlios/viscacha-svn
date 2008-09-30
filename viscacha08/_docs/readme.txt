@@ -13,22 +13,24 @@
 == 1 == Installation ==
 
 1. Upload all files per ftp onto your server.
-2. Call the "install/" directory in the Viscacha-root-directory and 
+   Note: You do not need to upload the folder install/files/ for the
+         installation! The folder is only required for the update.
+2. Call the "install/" directory in the Viscacha-root-directory and
    follow the steps.
 3. You have a "fresh" Viscacha-Installation on your server.
 
-Note: More information on how to set up the CHMODs you can get while 
-      installing the application. In the ACP you can also see a more 
+Note: More information on how to set up the CHMODs you can get while
+      installing the application. In the ACP you can also see a more
       detailed list of the required CHMODs.
 
 
 == 2 == Update ==
 
 1. Make a complete backup of your data (FTP + MySQL)!
-2. Upload the install/ directory 
+2. Upload the install/ directory
 3. Call / Execute the update script (Call the "install/" directory).
 4. Follow all the steps while the update script is running.
-5. After the update is ready and you are back in your Admin Control 
+5. After the update is ready and you are back in your Admin Control
    Panel, please check for Updates of your installed Packages!
 
 Note: You can only update the versions 0.8 RC4 and 0.8 RC4 PL1.
@@ -466,11 +468,11 @@ Normal system requirements:
 
 Optimal system requirements:
  - PHP Version: 5.2.0 and above
- - PHP-Extensions: mysql or mysqli, pcre, gd, zlib, xml, mime_magic, 
+ - PHP-Extensions: mysql or mysqli, pcre, gd, zlib, xml, mime_magic,
                    mbstring, sockets, xdiff
  - MySQL Version: 5.0 and above (Strict mode off)
 
-If you are testing Viscacha, please give me some feedback how Viscacha 
+If you are testing Viscacha, please give me some feedback how Viscacha
 worked, which errors occurred and which server configuration was used.
 
 Following information are useful for me:
@@ -479,7 +481,7 @@ Following information are useful for me:
 - E-mail-server (SMTP, Sendmail, PHP's mail() function)
 - MySQL version (strict mode enabled?)
 - PHP version
-- Status of the extensions: mysql, mysqli, pcre, gd, zlib, xml, 
+- Status of the extensions: mysql, mysqli, pcre, gd, zlib, xml,
                             mime_magic, mbstring, sockets, xdiff
 - The following settings in the file php.ini:
   - safe_mode
@@ -490,7 +492,7 @@ Following information are useful for me:
 
 == Contact ==
 
-Please contact us only through our support forums on 
+Please contact us only through our support forums on
 http://www.viscacha.org!
 
 Bugtracker and ToDo List: http://bugs.viscacha.org

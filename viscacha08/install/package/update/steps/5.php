@@ -10,7 +10,7 @@ echo "- Source files loaded<br />";
 if (!class_exists('filesystem')) {
 	require_once('classes/class.filesystem.php');
 	$filesystem = new filesystem($config['ftp_server'], $config['ftp_user'], $config['ftp_pw'], $config['ftp_port']);
-	$filesystem->set_wd($config['ftp_path']);
+	$filesystem->set_wd($config['ftp_path'], $config['fpath']);
 }
 if (!class_exists('DB')) {
 	require_once('classes/database/'.$config['dbsystem'].'.inc.php');
@@ -188,7 +188,7 @@ $filesystem->rmdirr('../docs/');
 $dir = dir('../images');
 while (false !== ($entry = $dir->read())) {
 	$path = "{$dir->path}/{$entry}";
-	if (is_dir($path) && is_numeric($entry) && $entry > 0) {
+	if (is_dir($path) && is_id($entry)) {
 		$filesystem->rmdirr("{$path}/bbcodes/");
 		$filesystem->unlink("{$path}/copy.gif");
 	}
@@ -196,14 +196,14 @@ while (false !== ($entry = $dir->read())) {
 $dir = dir('../language');
 while (false !== ($entry = $dir->read())) {
 	$path = "{$dir->path}/{$entry}";
-	if (is_dir($path) && is_numeric($entry) && $entry > 0) {
+	if (is_dir($path) && is_id($entry)) {
 		$filesystem->unlink("{$path}/texts/notice.php");
 	}
 }
 $dir = dir('../templates');
 while (false !== ($entry = $dir->read())) {
 	$path = "{$dir->path}/{$entry}";
-	if (is_dir($path) && is_numeric($entry) && $entry > 0) {
+	if (is_dir($path) && is_id($entry)) {
 		$filesystem->unlink("{$path}/main/pages_current.html");
 		$filesystem->unlink("{$path}/main/pages_current_small.html");
 		$filesystem->unlink("{$path}/main/smileys.html");

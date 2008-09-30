@@ -468,10 +468,6 @@ function convert2adress($url) {
    return $url;
 }
 
-function is_id ($x) {
-   return (is_numeric($x) && $x >= 1 ? intval($x) == $x : false);
-}
-
 function removeOldImages ($dir, $name) {
 	global $filesystem;
     $dir = realpath($dir);

@@ -17,6 +17,7 @@ class filesystem {
 	var $ftp;
 	var $connected;
 	var $installed_path;
+	var $root_path;
 
 	function filesystem($server, $user, $pw, $port = 21) {
 		$this->server = $server;
@@ -25,10 +26,17 @@ class filesystem {
 		$this->pw = $pw;
 		$this->installed_path = DIRECTORY_SEPARATOR;
 		$this->connected = false;
+		$this->root_path = DIRECTORY_SEPARATOR;
 	}
 
-	function set_wd($path) {
-		$this->installed_path = $path;
+	function _ftpize_path($path) {
+		$path = str_ireplace($this->root_path, '', $path);
+		return $path;
+	}
+
+	function set_wd($ftp_root, $web_root) {
+		$this->installed_path = $ftp_root;
+		$this->root_path = $web_root.DIRECTORY_SEPARATOR;
 	}
 
 	function init() {
@@ -70,6 +78,7 @@ class filesystem {
 		}
 		if (@unlink($file) == false) {
 			if ($this->init()) {
+				$file = $this->_ftpize_path($file);
 				return $this->ftp->delete($file);
 			}
 			else {
@@ -94,6 +103,7 @@ class filesystem {
 				if ($this->init()) {
 					fwrite($fp, $data);
 					fseek($fp, 0);
+					$file = $this->_ftpize_path($file);
 					$this->chmod(dirname($file), 0777);
 					$ret = $this->ftp->put($fp, $file);
 				}
@@ -125,6 +135,7 @@ class filesystem {
             $fp = @fopen($file, "r");
             if (is_resource($fp)) {
             	if ($this->init()) {
+            		$file = $this->_ftpize_path($file);
 					$this->chmod(dirname($file), 0777);
             		$ret = $this->ftp->put($fp, str_replace(' ', '_', $dest));
             	}
@@ -151,6 +162,7 @@ class filesystem {
 		}
 		if (!@mkdir($file, $chmod)) {
 			if ($this->init()) {
+				$file = $this->_ftpize_path($file);
 				$success = $this->ftp->mkdir($file);
 				$this->ftp->chmod($file, $chmod);
 				return $success;
@@ -172,6 +184,8 @@ class filesystem {
 		if (!@rename($old, $new)) {
 			$ret = false;
 			if ($this->init()) {
+				$old = $this->_ftpize_path($old);
+				$new = $this->_ftpize_path($new);
 				$ret = $this->ftp->rename($old, $new);
 			}
 			if ($ret == false) {
@@ -193,6 +207,7 @@ class filesystem {
 		}
 		if (!@chmod($file, $chmod)) {
 			if ($this->init()) {
+				$file = $this->_ftpize_path($file);
 				return $this->ftp->chmod($file, $chmod);
 			}
 			else {
@@ -210,6 +225,7 @@ class filesystem {
 		}
 		if (!@rmdir($file)) {
 			if ($this->init()) {
+				$file = $this->_ftpize_path($file);
 				return $this->ftp->rmdir($file);
 			}
 			else {

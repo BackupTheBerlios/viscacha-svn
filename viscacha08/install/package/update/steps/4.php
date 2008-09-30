@@ -3,10 +3,10 @@ include('../data/config.inc.php');
 if (!class_exists('filesystem')) {
 	require_once('classes/class.filesystem.php');
 	$filesystem = new filesystem($config['ftp_server'], $config['ftp_user'], $config['ftp_pw'], $config['ftp_port']);
-	$filesystem->set_wd($config['ftp_path']);
+	$filesystem->set_wd($config['ftp_path'], $config['fpath']);
 }
 
-require('lib/function.chmod.php');
+require('classes/function.chmod.php');
 $chmod = getViscachaCHMODs();
 ?>
 <div class="bbody">
@@ -27,17 +27,15 @@ This permissions will be checked and the result will be shown below.</p>
 <?php
 $files = array();
 foreach ($chmod as $dat) {
-	$path = '../'.$dat['path'];
 	if ($dat['recursive']) {
 		$filenames = array();
 		if ($dat['chmod'] == CHMOD_EX) {
-			$filenames = set_chmod_r($path, 0777, CHMOD_DIR);
+			$filenames = set_chmod_r($dat['path'], 0777, CHMOD_DIR);
 		}
 		elseif ($dat['chmod'] == CHMOD_WR) {
-			$filenames = set_chmod_r($path, 0666, CHMOD_FILE);
+			$filenames = set_chmod_r($dat['path'], 0666, CHMOD_FILE);
 		}
 		foreach ($filenames as $f) {
-			$f = str_replace('../', '', $f);
 			$files[] = array('path' => $f, 'chmod' => $dat['chmod'], 'recursive' => false, 'req' => $dat['req']);
 		}
 	}
@@ -55,8 +53,7 @@ foreach ($chmod as $dat) {
 sort($files);
 $failure = false;
 foreach ($files as $arr) {
-	$filesys_path = '../'.$arr['path'];
-	$path = realpath($filesys_path);
+	$path = realpath($arr['path']);
 	if (empty($path)) {
 		$path = $arr['path'];
 	}
@@ -77,7 +74,7 @@ foreach ($files as $arr) {
 	if ($arr['req'] == true || $int_status != true) {
 ?>
 <tr>
-	<td><?php echo $arr['path']; ?></td>
+	<td><?php echo str_replace('../', '', $arr['path']); ?></td>
 	<td><?php echo $arr['chmod']; ?></td>
 	<td><?php echo $chmod; ?></td>
 	<td><?php echo $status; ?></td>

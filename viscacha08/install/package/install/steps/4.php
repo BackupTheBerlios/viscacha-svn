@@ -62,7 +62,7 @@ if (isset($_REQUEST['save']) && $_REQUEST['save'] == 1 && !empty($_REQUEST['ftp_
 					$ftp->quit();
 					require_once('classes/class.filesystem.php');
 					$filesystem = new filesystem($config['ftp_server'], $config['ftp_user'], $config['ftp_pw'], $config['ftp_port']);
-					$filesystem->set_wd($config['ftp_path']);
+					$filesystem->set_wd($config['ftp_path'], $config['fpath']);
 					include('classes/class.phpconfig.php');
 					$c = new manageconfig();
 					$c->getdata('../data/config.inc.php');
@@ -86,9 +86,9 @@ if (!isset($filesystem)) {
 	$filesystem = new filesystem($config['ftp_server'], $config['ftp_user'], $config['ftp_pw'], $config['ftp_port']);
 }
 $config['ftp_path'] = $config['ftp_path'].'/install';
-$filesystem->set_wd($config['ftp_path']);
+$filesystem->set_wd($config['ftp_path'], $config['fpath']);
 
-require('lib/function.chmod.php');
+require('classes/function.chmod.php');
 $chmod = getViscachaCHMODs();
 ?>
 <div class="bbody">

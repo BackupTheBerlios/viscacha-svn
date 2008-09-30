@@ -48,7 +48,7 @@ $lang = new lang();
 // Filesystem
 require_once("classes/class.filesystem.php");
 $filesystem = new filesystem($config['ftp_server'], $config['ftp_user'], $config['ftp_pw'], $config['ftp_port']);
-$filesystem->set_wd($config['ftp_path']);
+$filesystem->set_wd($config['ftp_path'], $config['fpath']);
 
 // Database functions
 require_once('classes/database/'.$config['dbsystem'].'.inc.php');

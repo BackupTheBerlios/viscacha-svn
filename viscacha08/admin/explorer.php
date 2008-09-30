@@ -421,8 +421,7 @@ elseif ($job == "extract2") {
 			$temp = gzTempfile($file);
 			$temp = realpath($temp);
 			include('classes/class.tar.php');
-			$tar = new tar();
-			$tar->new_tar(dirname($temp), basename($temp));
+			$tar = new tar(dirname($temp), basename($temp));
 			$tar->extract_files(realpath($dir));
 			$filesystem->unlink($temp);
 			if (!empty($tar->error)) {
@@ -430,10 +429,9 @@ elseif ($job == "extract2") {
 			}
 		}
 		elseif ($extension == 'tar') {
-			include('classes/class.tar.php');
-			$tar = new tar();
 			$file = realpath($file);
-			$tar->new_tar(dirname($file), basename($file));
+			include('classes/class.tar.php');
+			$tar = new tar(dirname($file), basename($file));
 			$tar->extract_files($dir);
 			if (!empty($tar->error)) {
 				error($redirect, $tar->error);
