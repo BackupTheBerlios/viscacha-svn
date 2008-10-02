@@ -112,10 +112,12 @@ echo "- Database tables updated and documents converted.<br />";
 
 // Update crontab file
 $cron = file_get_contents('../data/cron/crontab.inc.php');
-$cron = trim($cron);
-$cron .= "\r\n0\t5\t*\t*\t*\texportBoardStats.php\t#Daily: Export forum statistics to an ini-file (optional)";
-$filesystem->file_put_contents('../data/cron/crontab.inc.php', $cron);
-echo "- Crontab updated.<br />";
+if (strpos($cron, 'exportBoardStats.php') === false) {
+	$cron = trim($cron);
+	$cron .= "\r\n0\t5\t*\t*\t*\texportBoardStats.php\t#Daily: Export forum statistics to an ini-file (optional)";
+	$filesystem->file_put_contents('../data/cron/crontab.inc.php', $cron);
+	echo "- Crontab updated.<br />";
+}
 
 // Old files
 $filesystem->unlink('../admin/html/menu.js');
@@ -219,7 +221,7 @@ while (false !== ($entry = $dir->read())) {
 echo "- Old files deleted.<br />";
 
 $filesystem->mkdir('../uploads/images/', 0777);
-$filesystem->file_put_contents('../uploads/images/index.htm', '');
+$filesystem->file_put_contents('../uploads/images/index.htm', '', true);
 echo "- Updated filesystem.<br />";
 
 // Languages

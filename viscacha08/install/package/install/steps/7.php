@@ -51,7 +51,7 @@ if (isset($_REQUEST['save']) && $_REQUEST['save'] == 1) {
 
 	$errlog = '../data/errlog_'.$config['dbsystem'].'.inc.php';
 	if (!file_exists($errlog)) {
-		$filesystem->file_put_contents($errlog, '');
+		$filesystem->file_put_contents($errlog, '', true);
 		$filesystem->chmod($errlog, 0666);
 	}
 ?>

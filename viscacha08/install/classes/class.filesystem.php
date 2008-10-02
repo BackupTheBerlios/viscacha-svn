@@ -90,7 +90,7 @@ class filesystem {
 		}
 	}
 
-	function file_put_contents($file, $data) {
+	function file_put_contents($file, $data, $no_error = false) {
 		if (is_array($data)) {
 			$data = implode("\n", $data);
 		}
@@ -111,7 +111,7 @@ class filesystem {
 					fclose($fp);
 				}
 			}
-			if ($ret === false) {
+			if ($ret === false && $no_error == false) {
 				trigger_error("filesystem::file_put_contents({$file}): failed to open stream: Permission denied", E_USER_WARNING);
 			}
 			return $ret;

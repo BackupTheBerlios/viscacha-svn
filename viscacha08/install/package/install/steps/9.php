@@ -103,7 +103,7 @@ if ($dh = @opendir($dir)) {
 
 if (count($error) == 0) {
 	$lf = './locked.txt';
-	$filesystem->file_put_contents($lf, '');
+	$filesystem->file_put_contents($lf, '', true);
 ?>
 <div class="bbody">
 <p>The installation is completed. You can access the Admin Control Panel with your username and password.

@@ -1024,7 +1024,7 @@ elseif ($job == 'custombb_add') {
 		<td class="mbox"><?php echo $lang->phrase('admin_bbc_use_option'); ?><br />
 		<span class="stext"><?php echo $lang->phrase('admin_bbc_use_option_desc'); ?></span></td>
 		<td class="mbox">
-			<input type="radio" name="twoparams" value="1" /><?php echo $lang->phrase('admin_bbc_yes'); ?><br />
+			<input type="radio" name="twoparams" value="1" /> <?php echo $lang->phrase('admin_bbc_yes'); ?><br />
 			<input type="radio" name="twoparams" value="0" checked="checked" /> <?php echo $lang->phrase('admin_bbc_no'); ?>
 		</td>
 	</tr>
@@ -1121,8 +1121,8 @@ elseif ($job == 'custombb_edit') {
 		<td class="mbox"><?php echo $lang->phrase('admin_bbc_use_option'); ?><br />
 		<span class="stext"><?php echo $lang->phrase('admin_bbc_use_option_desc'); ?></span></td>
 		<td class="mbox">
-			<input type="radio" name="twoparams" value="1"<?php echo iif($bbcode['twoparams'], ' checked="checked"'); ?> />Yes<br />
-			<input type="radio" name="twoparams" value="0"<?php echo iif(!$bbcode['twoparams'], ' checked="checked"'); ?> />No
+			<input type="radio" name="twoparams" value="1"<?php echo iif($bbcode['twoparams'], ' checked="checked"'); ?> /> <?php echo $lang->phrase('admin_bbc_yes'); ?><br />
+			<input type="radio" name="twoparams" value="0"<?php echo iif(!$bbcode['twoparams'], ' checked="checked"'); ?> /> <?php echo $lang->phrase('admin_bbc_no'); ?>
 		</td>
 	</tr>
 	<tr>

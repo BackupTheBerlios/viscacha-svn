@@ -3812,7 +3812,7 @@ elseif ($job == 'browser_list') {
    	<span class="stext"><?php echo $row['summary']; ?></span>
    </td>
    <?php if (is_array($installed)) { ?>
-   <td align="center"><?php echo iif($install, 'Yes'.iif($update, '<br /><span class="stext" style="font-color: darkred;">'.$lang->phrase('admin_packages_browser_update_available').'</span>'), $lang->phrase('admin_packages_no')); ?></td>
+   <td align="center"><?php echo iif($install, $lang->phrase('admin_packages_yes').iif($update, '<br /><span class="stext" style="color: darkred;">'.$lang->phrase('admin_packages_browser_update_available').'</span>'), $lang->phrase('admin_packages_no')); ?></td>
    <?php } ?>
    <td align="center"><?php echo noki($compatible); ?></td>
    <td valign="top">

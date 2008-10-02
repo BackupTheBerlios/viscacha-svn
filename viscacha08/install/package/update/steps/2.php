@@ -1,6 +1,6 @@
 <div class="bbody">
 <p>
-Before we start the automatic update, you have to read the manual update instructions.
+Before we start the automatic update (file updates, updating CHMODs), you have to read the manual update instructions.
 Please follow the steps and do the tasks.
 More Information:
 <?php if (file_exists('../_docs/readme.txt')) { ?>
@@ -13,8 +13,9 @@ _docs/readme.txt
 <strong>Update instructions:</strong><br />
 <ol class="upd_instr">
 <li>Make sure you have a <b>complete backup of your data</b> (FTP + MySQL)!</li>
+<li>You should have specified the ftp data in your Admin Control Panel</b> otherwise CHMODs can't be set correctly!</li>
 <li>Open the file <b>designs/*/ie.css</b>:<br />
-<em>You have to apply the following changes (for all CSS files) to all your installed designs. "*" is a placeholder for a Design-ID (1,2,3,...).</em>
+<em>You have to apply the following changes (for all CSS files) to all your installed designs. * is a placeholder for a Design-ID (1,2,3,...). The CSS definitions can vary depending on your modifications to the styles.</em>
 <ol>
 <li>
 Search and delete:<br />
@@ -45,12 +46,6 @@ Add at the end of the file:<br />
 </li>
 <li>Open the file <b>designs/*/print.css</b>:
 <ol>
-<li>
-Search:<br />
-<code>.bb_blockcode_header {
-	display: block;
-}</code>
-</li>
 <li>
 Search:<br />
 <code>.bb_blockcode_header {
@@ -342,6 +337,8 @@ Add at the end of the file:<br />
 	border-width: 0px;
 	width: 100%;
 	overflow: auto;
+	margin: -4px;
+	padding: 4px;
 }
 .editor_statusbar {
 	font-size: 8pt;
@@ -359,6 +356,10 @@ Add at the end of the file:<br />
 .editor_textarea_outer .popup {
 	border: 1px solid #888888;
 	max-height: 250px;
+	width: 200px;
+}
+.editor_textarea_outer .popup ul {
+	list-style-type: none;
 }
 .editor_textarea_outer .popup strong {
 	text-align: center;
@@ -366,19 +367,26 @@ Add at the end of the file:<br />
 	background-color: #eeeeee;
 	border-width: 0px;
 	border-bottom: 1px solid #888888;
+	padding: 2px;
+	font-size: 9pt;
 }
 .editor_textarea_outer .popup li {
 	border-width: 0px;
 	padding: 2px 3px 1px 3px;
+	background-color: #ffffff;
+	font-size: 9pt;
 }
 .editor_textarea_outer .popup li a, .editor_textarea_outer .popup_line {
 	color: #000000;
 	text-decoration: none;
 	border: 1px solid #ffffff;
+	background-color: #ffffff;
+	padding: 2px;
 }
 .editor_textarea_outer .popup li a:hover, .editor_textarea_outer .popup_line:hover {
 	background-color: #eeeeee;
 	border: 1px solid #cccccc;
+	color: #000000;
 }
 .bbcolor {
 	padding: 10px;

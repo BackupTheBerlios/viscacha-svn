@@ -719,6 +719,8 @@ label, .labeldiv {
 	border-width: 0px;
 	width: 100%;
 	overflow: auto;
+	margin: -4px;
+	padding: 4px;
 }
 .editor_statusbar {
 	font-size: 8pt;
@@ -736,6 +738,10 @@ label, .labeldiv {
 .editor_textarea_outer .popup {
 	border: 1px solid #888888;
 	max-height: 250px;
+	width: 200px;
+}
+.editor_textarea_outer .popup ul {
+	list-style-type: none;
 }
 .editor_textarea_outer .popup strong {
 	text-align: center;
@@ -743,19 +749,26 @@ label, .labeldiv {
 	background-color: #eeeeee;
 	border-width: 0px;
 	border-bottom: 1px solid #888888;
+	padding: 2px;
+	font-size: 9pt;
 }
 .editor_textarea_outer .popup li {
 	border-width: 0px;
 	padding: 2px 3px 1px 3px;
+	background-color: #ffffff;
+	font-size: 9pt;
 }
 .editor_textarea_outer .popup li a, .editor_textarea_outer .popup_line {
 	color: #000000;
 	text-decoration: none;
 	border: 1px solid #ffffff;
+	background-color: #ffffff;
+	padding: 2px;
 }
 .editor_textarea_outer .popup li a:hover, .editor_textarea_outer .popup_line:hover {
 	background-color: #eeeeee;
 	border: 1px solid #cccccc;
+	color: #000000;
 }
 
 .bbcolor {

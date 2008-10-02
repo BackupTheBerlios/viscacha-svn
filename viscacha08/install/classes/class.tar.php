@@ -338,7 +338,7 @@ class tar {
 					$filesystem->chmod($cur_dir.$file_name, 0666);
 					$chmod_changed = true;
 				}
-				if ($filesystem->file_put_contents($cur_dir.$file_name, $file['data'])) {
+				if ($filesystem->file_put_contents($cur_dir.$file_name, $file['data'], true)) {
 					unset($error_files[$k]);
 				}
 				else {
@@ -488,7 +488,7 @@ class tar {
 		$tardata .= pack("a512", "");
 
 		// print it to the tar file
-		if ($filesystem->file_put_contents($this->tarfile_path_name, $tardata)) {
+		if ($filesystem->file_put_contents($this->tarfile_path_name, $tardata, true)) {
 			return true;
 		}
 		else {

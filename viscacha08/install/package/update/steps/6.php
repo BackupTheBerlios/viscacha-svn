@@ -6,7 +6,7 @@ if (!class_exists('filesystem')) {
 	$filesystem->set_wd($config['ftp_path'], $config['fpath']);
 }
 $lf = './locked.txt';
-$filesystem->file_put_contents($lf, '');
+$filesystem->file_put_contents($lf, '', true);
 ?>
 <div class="bbody">
 <p>The update is completed. You can visit the Admin Control Panel with your username ans password.
