@@ -70,7 +70,7 @@ $breadcrumb->Add($lang->phrase('edit'));
 echo $tpl->parse("header");
 
 if ($info['status'] != 0) {
-	error($lang->phrase('topic_closed'), 'showtopic.php?action=jumpto&id='.$info['topic_id'].'&topic_id='.$info['id']);
+	error($lang->phrase('topic_closed'), 'showtopic.php?action=jumpto&id='.$info['topic_id'].'&topic_id='.$info['id'].SID2URL_x);
 }
 
 $diff = time()-$info['date'];
@@ -136,7 +136,7 @@ if ($allowed == true) {
 				ok($lang->phrase('edit_postdeleted'),iif($info['tstart'] == 1, "showforum.php?id=".$info['board'], "showtopic.php?action=last&id=".$info['topic_id']).SID2URL_x);
 			}
 			else {
-				error($lang->phrase('threadstarts_no_delete'),"edit.php?id=".$info['id']);
+				error($lang->phrase('threadstarts_no_delete'),"edit.php?id=".$info['id'].SID2URL_x);
 			}
 		}
 		else {
@@ -207,7 +207,7 @@ if ($allowed == true) {
 					",__LINE__,__FILE__);
 
 				}
-				ok($lang->phrase('data_success'),'showtopic.php?action=jumpto&id='.$info['topic_id'].'&topic_id='.$info['id']);
+				ok($lang->phrase('data_success'),'showtopic.php?action=jumpto&id='.$info['topic_id'].'&topic_id='.$info['id'].SID2URL_x);
 			}
 		}
 	}
