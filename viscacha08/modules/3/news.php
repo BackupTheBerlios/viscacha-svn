@@ -30,7 +30,7 @@ while ($row = $gpc->prepare($db->fetch_assoc($result))) {
 	$row['read_more'] = false;
 	$pos = stripos($row['comment'], $cutat);
 	if ($pos !== false) {
-		$row['comment'] = subxstr($row['comment'], 0, $pos);
+		$row['comment'] = substr($row['comment'], 0, $pos);
 		$row['comment'] = rtrim($row['comment'], "\r\n").$lang->phrase('dot_more');
 		$row['read_more'] = true;
 	}

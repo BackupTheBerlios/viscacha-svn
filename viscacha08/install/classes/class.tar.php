@@ -307,9 +307,8 @@ class tar {
 			//---------------------------------------------
 			// If we have a path, then we must build the directory tree
 			//---------------------------------------------
-			$cur_dir = '';
+			$cur_dir = $to_dir;
 			if (count($path_info) > 0) {
-				$cur_dir = $to_dir;
 				foreach($path_info as $dir_component) {
 					if (empty($dir_component)) {
 						continue;
