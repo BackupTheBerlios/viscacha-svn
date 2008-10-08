@@ -1,12 +1,12 @@
 <?php
 error_reporting(E_ALL);
 
+chdir('../');
+
 define('VISCACHA_VERSION', '0.8 RC5');
 define('VISCACHA_CORE', '1');
 define('SCRIPTNAME', 'install');
 define('SCRIPT_LOCKED', file_exists('./install/locked.txt'));
-
-chdir('../');
 
 if (!SCRIPT_LOCKED) {
 
