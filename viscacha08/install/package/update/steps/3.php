@@ -1,7 +1,7 @@
 <?php
-include('../data/config.inc.php');
+include('data/config.inc.php');
 if (!class_exists('filesystem')) {
-	require_once('classes/class.filesystem.php');
+	require_once('install/classes/class.filesystem.php');
 	$filesystem = new filesystem($config['ftp_server'], $config['ftp_user'], $config['ftp_pw'], $config['ftp_port']);
 	$filesystem->set_wd($config['ftp_path'], $config['fpath']);
 }
@@ -17,11 +17,11 @@ if (empty($_REQUEST['sub']) || !isset($tar_packs[$_REQUEST['sub']])) {
 else {
 	$sub = $_REQUEST['sub'];
 }
-require('classes/function.chmod.php');
-require('classes/class.tar.php');
-$tar = new tar(realpath('files/'), $tar_packs[$sub]);
+require('install/classes/function.chmod.php');
+require('install/classes/class.tar.php');
+$tar = new tar(realpath('install/files/'), $tar_packs[$sub]);
 $tar->ignore_chmod();
-$error = $tar->extract_files('../');
+$error = $tar->extract_files('./');
 ?>
 <div class="bfoot">Source file updater - Step <?php echo $sub; ?> of <?php echo count($tar_packs); ?> - Currently extracting: <?php echo $tar_packs[$sub]; ?></div>
 <?php if ($error === false) { ?>
@@ -40,10 +40,11 @@ The updater tried to update the Viscacha source files.<br />
 All files updated succesfully!
 <?php } ?>
 </p>
-<?php if ($sub < count($tar_packs)) { ?>
-<p class="center"><b><a href="index.php?package=<?php echo $package;?>&amp;step=<?php echo $step; ?>&amp;sub=<?php echo $sub+1; ?>">Click here to extract the next file...</a></b></p>
-<?php } ?>
 </div>
-<?php if ($sub == count($tar_packs)) { ?>
-<div class="bfoot center"><input type="submit" value="Continue" /></div>
+<div class="bfoot center">
+<?php if ($sub < count($tar_packs)) { ?>
+<a class="submit" href="index.php?package=<?php echo $package;?>&amp;step=<?php echo $step; ?>&amp;sub=<?php echo $sub+1; ?>">Click here to extract the next file...</a>
+<?php } elseif ($sub == count($tar_packs)) { ?>
+<input type="submit" value="Continue" />
 <?php } } ?>
+</div>

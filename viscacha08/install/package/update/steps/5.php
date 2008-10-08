@@ -2,37 +2,36 @@
 <?php
 echo "<strong>Starting Update:</strong><br />";
 
-require('../data/config.inc.php');
-require_once('classes/class.phpconfig.php');
+require('data/config.inc.php');
+require_once('install/classes/class.phpconfig.php');
 
 echo "- Source files loaded<br />";
 
 if (!class_exists('filesystem')) {
-	require_once('classes/class.filesystem.php');
+	require_once('install/classes/class.filesystem.php');
 	$filesystem = new filesystem($config['ftp_server'], $config['ftp_user'], $config['ftp_pw'], $config['ftp_port']);
 	$filesystem->set_wd($config['ftp_path'], $config['fpath']);
 }
 if (!class_exists('DB')) {
-	require_once('classes/database/'.$config['dbsystem'].'.inc.php');
+	require_once('install/classes/database/'.$config['dbsystem'].'.inc.php');
 	$db = new DB($config['host'], $config['dbuser'], $config['dbpw'], $config['database'], $config['dbprefix']);
 	$db->setPersistence($config['pconnect']);
-	$db->errlogfile = '../'.$db->errlogfile;
 }
 
 echo "- FTP class loaded, Database connection started.<br />";
 
 // Hooks
-$hooks = array_map('trim', file('../admin/data/hooks.txt'));
+$hooks = array_map('trim', file('admin/data/hooks.txt'));
 removeHook($hooks, 'editprofile_copy_');
 removeHook($hooks, 'popup_hlcode_');
 removeHook($hooks, 'popup_code_');
 insertHookAfter($hooks, 'showtopic_entry_added', 'showtopic_attachments_prepared');
-$filesystem->file_put_contents('../admin/data/hooks.txt', implode("\r\n", $hooks));
+$filesystem->file_put_contents('admin/data/hooks.txt', implode("\r\n", $hooks));
 echo "- Hooks updated.<br />";
 
 // Config
 $c = new manageconfig();
-$c->getdata('../data/config.inc.php');
+$c->getdata('data/config.inc.php');
 $c->updateconfig('version', str, VISCACHA_VERSION);
 $c->updateconfig('doclang', int, $config['langdir']);
 $c->updateconfig('error_reporting', str, 'E_ALL');
@@ -64,7 +63,7 @@ while($row = $db->fetch_assoc($result)) {
 }
 
 // Start: Update Tables
-$file = 'package/update/db/db_changes.sql';
+$file = 'install/package/update/db/db_changes.sql';
 //$file = 'package/'.$package.'/db/db_changes.sql';
 $sql = file_get_contents($file);
 $sql = str_ireplace('{:=DBPREFIX=:}', $pre, $sql);
@@ -80,7 +79,7 @@ foreach ($documents as $doc) {
 			$content = $doc['file'];
 		}
 		else {
-			$base = realpath("../{$doc['file']}");
+			$base = realpath($doc['file']);
 			if (!empty($base) && file_exists($base)) {
 				$content = file_get_contents($base);
 			}
@@ -111,86 +110,86 @@ foreach ($documents as $doc) {
 echo "- Database tables updated and documents converted.<br />";
 
 // Update crontab file
-$cron = file_get_contents('../data/cron/crontab.inc.php');
+$cron = file_get_contents('data/cron/crontab.inc.php');
 if (strpos($cron, 'exportBoardStats.php') === false) {
 	$cron = trim($cron);
 	$cron .= "\r\n0\t5\t*\t*\t*\texportBoardStats.php\t#Daily: Export forum statistics to an ini-file (optional)";
-	$filesystem->file_put_contents('../data/cron/crontab.inc.php', $cron);
+	$filesystem->file_put_contents('data/cron/crontab.inc.php', $cron);
 	echo "- Crontab updated.<br />";
 }
 
 // Old files
-$filesystem->unlink('../admin/html/menu.js');
-$filesystem->unlink('../admin/html/editor.js');
-$filesystem->unlink('../classes/function.jabber.php');
-$filesystem->unlink('../classes/class.vCard.inc.php');
-$filesystem->unlink('../classes/class.jabber.php');
-$filesystem->unlink('../classes/geshi/asp.php');
-$filesystem->unlink('../classes/geshi/c.php');
-$filesystem->unlink('../classes/geshi/dos.php');
-$filesystem->unlink('../classes/geshi/eiffel.php');
-$filesystem->unlink('../classes/geshi/fortran.php');
-$filesystem->unlink('../classes/geshi/oobas.php');
-$filesystem->unlink('../classes/geshi/pascal.php');
-$filesystem->unlink('../classes/geshi/qbasic.php');
-$filesystem->unlink('../classes/geshi/rails.php');
-$filesystem->unlink('../classes/geshi/reg.php');
-$filesystem->unlink('../classes/geshi/visualfoxpro.php');
-$filesystem->unlink('../classes/geshi/winbatch.php');
-$filesystem->unlink('../classes/mail/extended.phpmailer.php');
-$filesystem->unlink('../data/g_flood.php');
-$filesystem->unlink('../data/m_flood.php');
-$filesystem->unlink('../templates/editor/images/bar.gif');
-$filesystem->unlink('../templates/editor/images/blackdot.gif');
-$filesystem->unlink('../templates/editor/images/centre.gif');
-$filesystem->unlink('../templates/editor/images/code.gif');
-$filesystem->unlink('../templates/editor/images/copy.gif');
-$filesystem->unlink('../templates/editor/images/cut.gif');
-$filesystem->unlink('../templates/editor/images/design.gif');
-$filesystem->unlink('../templates/editor/images/hyperlink.gif');
-$filesystem->unlink('../templates/editor/images/image.gif');
-$filesystem->unlink('../templates/editor/images/indent.gif');
-$filesystem->unlink('../templates/editor/images/insert_table.gif');
-$filesystem->unlink('../templates/editor/images/justifyfull.gif');
-$filesystem->unlink('../templates/editor/images/left_just.gif');
-$filesystem->unlink('../templates/editor/images/list.gif');
-$filesystem->unlink('../templates/editor/images/numbered_list.gif');
-$filesystem->unlink('../templates/editor/images/outdent.gif');
-$filesystem->unlink('../templates/editor/images/paste.gif');
-$filesystem->unlink('../templates/editor/images/pastetext.gif');
-$filesystem->unlink('../templates/editor/images/pasteword.gif');
-$filesystem->unlink('../templates/editor/images/preview.gif');
-$filesystem->unlink('../templates/editor/images/redo.gif');
-$filesystem->unlink('../templates/editor/images/replace.gif');
-$filesystem->unlink('../templates/editor/images/right_just.gif');
-$filesystem->unlink('../templates/editor/images/selectall.gif');
-$filesystem->unlink('../templates/editor/images/special_char.gif');
-$filesystem->unlink('../templates/editor/images/spellcheck.gif');
-$filesystem->unlink('../templates/editor/images/textcolor.gif');
-$filesystem->unlink('../templates/editor/images/undo.gif');
-$filesystem->unlink('../templates/editor/images/unformat.gif');
-$filesystem->unlink('../templates/editor/images/word_count.gif');
-$filesystem->unlink('../templates/editor/blank.htm');
-$filesystem->unlink('../templates/editor/html2xhtml.js');
-$filesystem->unlink('../templates/editor/insert_char.htm');
-$filesystem->unlink('../templates/editor/insert_img.htm');
-$filesystem->unlink('../templates/editor/insert_link.htm');
-$filesystem->unlink('../templates/editor/insert_table.htm');
-$filesystem->unlink('../templates/editor/palette.htm');
-$filesystem->unlink('../templates/editor/paste_text.htm');
-$filesystem->unlink('../templates/editor/paste_word.htm');
-$filesystem->unlink('../templates/editor/replace.htm');
-$filesystem->unlink('../templates/editor/richtext.js');
-$filesystem->unlink('../templates/editor/rte.css');
-$filesystem->unlink('../templates/controlWindow.js');
-$filesystem->unlink('../templates/editor.js');
-$filesystem->unlink('../templates/menu.js');
-$filesystem->unlink('../templates/spellChecker.js');
-$filesystem->unlink('../templates/wordWindow.js');
-$filesystem->rmdirr('../templates/editor/lang/');
-$filesystem->rmdirr('../classes/spellchecker/');
-$filesystem->rmdirr('../docs/');
-$dir = dir('../images');
+$filesystem->unlink('admin/html/menu.js');
+$filesystem->unlink('admin/html/editor.js');
+$filesystem->unlink('classes/function.jabber.php');
+$filesystem->unlink('classes/class.vCard.inc.php');
+$filesystem->unlink('classes/class.jabber.php');
+$filesystem->unlink('classes/geshi/asp.php');
+$filesystem->unlink('classes/geshi/c.php');
+$filesystem->unlink('classes/geshi/dos.php');
+$filesystem->unlink('classes/geshi/eiffel.php');
+$filesystem->unlink('classes/geshi/fortran.php');
+$filesystem->unlink('classes/geshi/oobas.php');
+$filesystem->unlink('classes/geshi/pascal.php');
+$filesystem->unlink('classes/geshi/qbasic.php');
+$filesystem->unlink('classes/geshi/rails.php');
+$filesystem->unlink('classes/geshi/reg.php');
+$filesystem->unlink('classes/geshi/visualfoxpro.php');
+$filesystem->unlink('classes/geshi/winbatch.php');
+$filesystem->unlink('classes/mail/extended.phpmailer.php');
+$filesystem->unlink('data/g_flood.php');
+$filesystem->unlink('data/m_flood.php');
+$filesystem->unlink('templates/editor/images/bar.gif');
+$filesystem->unlink('templates/editor/images/blackdot.gif');
+$filesystem->unlink('templates/editor/images/centre.gif');
+$filesystem->unlink('templates/editor/images/code.gif');
+$filesystem->unlink('templates/editor/images/copy.gif');
+$filesystem->unlink('templates/editor/images/cut.gif');
+$filesystem->unlink('templates/editor/images/design.gif');
+$filesystem->unlink('templates/editor/images/hyperlink.gif');
+$filesystem->unlink('templates/editor/images/image.gif');
+$filesystem->unlink('templates/editor/images/indent.gif');
+$filesystem->unlink('templates/editor/images/insert_table.gif');
+$filesystem->unlink('templates/editor/images/justifyfull.gif');
+$filesystem->unlink('templates/editor/images/left_just.gif');
+$filesystem->unlink('templates/editor/images/list.gif');
+$filesystem->unlink('templates/editor/images/numbered_list.gif');
+$filesystem->unlink('templates/editor/images/outdent.gif');
+$filesystem->unlink('templates/editor/images/paste.gif');
+$filesystem->unlink('templates/editor/images/pastetext.gif');
+$filesystem->unlink('templates/editor/images/pasteword.gif');
+$filesystem->unlink('templates/editor/images/preview.gif');
+$filesystem->unlink('templates/editor/images/redo.gif');
+$filesystem->unlink('templates/editor/images/replace.gif');
+$filesystem->unlink('templates/editor/images/right_just.gif');
+$filesystem->unlink('templates/editor/images/selectall.gif');
+$filesystem->unlink('templates/editor/images/special_char.gif');
+$filesystem->unlink('templates/editor/images/spellcheck.gif');
+$filesystem->unlink('templates/editor/images/textcolor.gif');
+$filesystem->unlink('templates/editor/images/undo.gif');
+$filesystem->unlink('templates/editor/images/unformat.gif');
+$filesystem->unlink('templates/editor/images/word_count.gif');
+$filesystem->unlink('templates/editor/blank.htm');
+$filesystem->unlink('templates/editor/html2xhtml.js');
+$filesystem->unlink('templates/editor/insert_char.htm');
+$filesystem->unlink('templates/editor/insert_img.htm');
+$filesystem->unlink('templates/editor/insert_link.htm');
+$filesystem->unlink('templates/editor/insert_table.htm');
+$filesystem->unlink('templates/editor/palette.htm');
+$filesystem->unlink('templates/editor/paste_text.htm');
+$filesystem->unlink('templates/editor/paste_word.htm');
+$filesystem->unlink('templates/editor/replace.htm');
+$filesystem->unlink('templates/editor/richtext.js');
+$filesystem->unlink('templates/editor/rte.css');
+$filesystem->unlink('templates/controlWindow.js');
+$filesystem->unlink('templates/editor.js');
+$filesystem->unlink('templates/menu.js');
+$filesystem->unlink('templates/spellChecker.js');
+$filesystem->unlink('templates/wordWindow.js');
+$filesystem->rmdirr('templates/editor/lang/');
+$filesystem->rmdirr('classes/spellchecker/');
+$filesystem->rmdirr('docs/');
+$dir = dir('images');
 while (false !== ($entry = $dir->read())) {
 	$path = "{$dir->path}/{$entry}";
 	if (is_dir($path) && is_id($entry)) {
@@ -198,14 +197,14 @@ while (false !== ($entry = $dir->read())) {
 		$filesystem->unlink("{$path}/copy.gif");
 	}
 }
-$dir = dir('../language');
+$dir = dir('language');
 while (false !== ($entry = $dir->read())) {
 	$path = "{$dir->path}/{$entry}";
 	if (is_dir($path) && is_id($entry)) {
 		$filesystem->unlink("{$path}/texts/notice.php");
 	}
 }
-$dir = dir('../templates');
+$dir = dir('templates');
 while (false !== ($entry = $dir->read())) {
 	$path = "{$dir->path}/{$entry}";
 	if (is_dir($path) && is_id($entry)) {
@@ -220,8 +219,8 @@ while (false !== ($entry = $dir->read())) {
 }
 echo "- Old files deleted.<br />";
 
-$filesystem->mkdir('../uploads/images/', 0777);
-$filesystem->file_put_contents('../uploads/images/index.htm', '', true);
+$filesystem->mkdir('uploads/images/', 0777);
+$filesystem->file_put_contents('uploads/images/index.htm', '', true);
 echo "- Updated filesystem.<br />";
 
 // Languages
@@ -887,7 +886,7 @@ setPackagesInactive();
 echo "- Incompatible Packages set as 'inactive'.<br />";
 
 // Refresh Cache
-$dirs = array('../cache/', '../cache/modules/');
+$dirs = array('cache/', 'cache/modules/');
 foreach ($dirs as $dir) {
 	if ($dh = @opendir($dir)) {
 		while (($file = readdir($dh)) !== false) {

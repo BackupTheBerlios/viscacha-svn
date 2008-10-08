@@ -1,5 +1,5 @@
 <?php
-include('../data/config.inc.php');
+include('data/config.inc.php');
 
 function getLangNameByPath ($dir) {
 	$file = realpath($dir).DIRECTORY_SEPARATOR.'settings.lng.php';
@@ -41,10 +41,10 @@ elseif (isset($_SERVER['SERVER_ADMIN'])) {
 else {
 	$email = '';
 }
-$fpath = !empty($config['fpath']) ? $config['fpath'] : str_replace('\\', '/', realpath('../'));
+$fpath = !empty($config['fpath']) ? $config['fpath'] : str_replace('\\', '/', realpath('./'));
 
 $langarr = array();
-$d = dir('../language/');
+$d = dir('language/');
 while (false !== ($entry = $d->read())) {
 	$dir = $d->path.DIRECTORY_SEPARATOR.$entry;
 	if (is_id($entry)  && is_dir($dir)) {

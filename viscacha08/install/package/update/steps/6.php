@@ -1,11 +1,11 @@
 <?php
-require('../data/config.inc.php');
+require('data/config.inc.php');
 if (!class_exists('filesystem')) {
-	require_once('classes/class.filesystem.php');
+	require_once('install/classes/class.filesystem.php');
 	$filesystem = new filesystem($config['ftp_server'], $config['ftp_user'], $config['ftp_pw'], $config['ftp_port']);
 	$filesystem->set_wd($config['ftp_path'], $config['fpath']);
 }
-$lf = './locked.txt';
+$lf = './install/locked.txt';
 $filesystem->file_put_contents($lf, '', true);
 ?>
 <div class="bbody">
@@ -14,10 +14,10 @@ Please go through the settings, templates, language packs ... and change all thi
 After doing this, you can switch your board "online".
 If you have problems, visit <a href="http://docs.viscacha.org" target="_blank">Viscacha.org</a>.</p>
 <p class="hl_false">
-For your security please completely remove the installation directory (<addr><?php echo realpath('./'); ?></addr>) including all files and sub-directory!
+For your security please completely remove the installation directory (<addr><?php echo realpath('./install/'); ?></addr>) including all files and sub-directory!
 <?php if (file_exists($lf)) { ?>
 It is locked at the moment, but we highly recommend to remove the directory.
 <?php } ?>
 </p>
 </div>
-<div class="bfoot center"><a class="submit" href="../admin/">Go to Admin Control Panel</a></div>
+<div class="bfoot center"><a class="submit" href="admin/">Go to Admin Control Panel</a></div>

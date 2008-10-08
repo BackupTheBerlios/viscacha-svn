@@ -1,15 +1,13 @@
 <?php
 $error = array();
-include('../data/config.inc.php');
-require_once('classes/class.filesystem.php');
+include('data/config.inc.php');
+require_once('install/classes/class.filesystem.php');
 $filesystem = new filesystem($config['ftp_server'], $config['ftp_user'], $config['ftp_pw'], $config['ftp_port']);
-$config['ftp_path'] = $config['ftp_path'].'/install';
 $filesystem->set_wd($config['ftp_path'], $config['fpath']);
 if (isset($_REQUEST['save']) && $_REQUEST['save'] == 1) {
-	require_once('classes/database/'.$config['dbsystem'].'.inc.php');
+	require_once('install/classes/database/'.$config['dbsystem'].'.inc.php');
 	$db = new DB($config['host'], $config['dbuser'], $config['dbpw'], $config['database'], $config['dbprefix']);
 	$db->setPersistence($config['pconnect']);
-	$db->errlogfile = '../'.$db->errlogfile;
 	$db->connect(false);
 	if (!$db->hasConnection()) {
 		?>
@@ -102,7 +100,7 @@ if ($dh = @opendir($dir)) {
 }
 
 if (count($error) == 0) {
-	$lf = './locked.txt';
+	$lf = './install/locked.txt';
 	$filesystem->file_put_contents($lf, '', true);
 ?>
 <div class="bbody">
@@ -111,7 +109,7 @@ Please go through the settings and change everything to fit your needs.
 After doing this, you can switch your board "online". By default it is switched "offline".
 If you have problems, visit <a href="http://docs.viscacha.org" target="_blank">Viscacha.org</a>.</p>
 <p class="hl_false">
-For your server security please completely remove the installation directory (<addr><?php echo realpath('./'); ?></addr>) including all files and sub-folders!
+For your server security please completely remove the installation directory (<addr><?php echo realpath('./install/'); ?></addr>) including all files and sub-folders!
 <?php if (file_exists($lf)) { ?>
 It is locked at the moment, but we highly recommend to remove the directory.
 <?php } ?>

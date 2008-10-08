@@ -79,40 +79,40 @@ function get_chmod($file, $octal = false) {
 
 function getViscachaCHMODs() {
 	$chmod = array(
-		array('path' => '../.htaccess', 'chmod' => CHMOD_WR, 'recursive' => false, 'req' => false),
+		array('path' => '.htaccess', 'chmod' => CHMOD_WR, 'recursive' => false, 'req' => false),
 
-		array('path' => '../admin/backup', 'chmod' => CHMOD_EX, 'recursive' => false, 'req' => false),
-		array('path' => '../admin/data/bbcode_test.php', 'chmod' => CHMOD_WR, 'recursive' => false, 'req' => false),
-		array('path' => '../admin/data/config.inc.php', 'chmod' => CHMOD_WR, 'recursive' => false, 'req' => false),
-		array('path' => '../admin/data/hooks.txt', 'chmod' => CHMOD_WR, 'recursive' => false, 'req' => false),
+		array('path' => 'admin/backup', 'chmod' => CHMOD_EX, 'recursive' => false, 'req' => false),
+		array('path' => 'admin/data/bbcode_test.php', 'chmod' => CHMOD_WR, 'recursive' => false, 'req' => false),
+		array('path' => 'admin/data/config.inc.php', 'chmod' => CHMOD_WR, 'recursive' => false, 'req' => false),
+		array('path' => 'admin/data/hooks.txt', 'chmod' => CHMOD_WR, 'recursive' => false, 'req' => false),
 
-		array('path' => '../data', 'chmod' => CHMOD_EX, 'recursive' => false, 'req' => true),
-		array('path' => '../data/cron', 'chmod' => CHMOD_EX, 'recursive' => false, 'req' => true),
-		array('path' => '../data', 'chmod' => CHMOD_WR, 'recursive' => true, 'req' => true),
+		array('path' => 'data', 'chmod' => CHMOD_EX, 'recursive' => false, 'req' => true),
+		array('path' => 'data/cron', 'chmod' => CHMOD_EX, 'recursive' => false, 'req' => true),
+		array('path' => 'data', 'chmod' => CHMOD_WR, 'recursive' => true, 'req' => true),
 
-		array('path' => '../cache', 'chmod' => CHMOD_EX, 'recursive' => true, 'req' => true),
-//		array('path' => '../cache', 'chmod' => CHMOD_WR, 'recursive' => true, 'req' => false),
+		array('path' => 'cache', 'chmod' => CHMOD_EX, 'recursive' => true, 'req' => true),
+//		array('path' => 'cache', 'chmod' => CHMOD_WR, 'recursive' => true, 'req' => false),
 
-		array('path' => '../classes/cron/jobs', 'chmod' => CHMOD_EX, 'recursive' => false, 'req' => false),
-		array('path' => '../classes/feedcreator', 'chmod' => CHMOD_EX, 'recursive' => false, 'req' => false),
-		array('path' => '../classes/fonts', 'chmod' => CHMOD_EX, 'recursive' => false, 'req' => false),
-		array('path' => '../classes/geshi', 'chmod' => CHMOD_EX, 'recursive' => false, 'req' => false),
-		array('path' => '../classes/graphic/noises', 'chmod' => CHMOD_EX, 'recursive' => false, 'req' => false),
+		array('path' => 'classes/cron/jobs', 'chmod' => CHMOD_EX, 'recursive' => false, 'req' => false),
+		array('path' => 'classes/feedcreator', 'chmod' => CHMOD_EX, 'recursive' => false, 'req' => false),
+		array('path' => 'classes/fonts', 'chmod' => CHMOD_EX, 'recursive' => false, 'req' => false),
+		array('path' => 'classes/geshi', 'chmod' => CHMOD_EX, 'recursive' => false, 'req' => false),
+		array('path' => 'classes/graphic/noises', 'chmod' => CHMOD_EX, 'recursive' => false, 'req' => false),
 
-		array('path' => '../feeds', 'chmod' => CHMOD_EX, 'recursive' => false, 'req' => true),
-//		array('path' => '../feeds', 'chmod' => CHMOD_WR, 'recursive' => true, 'req' => true),
+		array('path' => 'feeds', 'chmod' => CHMOD_EX, 'recursive' => false, 'req' => true),
+//		array('path' => 'feeds', 'chmod' => CHMOD_WR, 'recursive' => true, 'req' => true),
 
-		array('path' => '../images', 'chmod' => CHMOD_EX, 'recursive' => true, 'req' => false),
+		array('path' => 'images', 'chmod' => CHMOD_EX, 'recursive' => true, 'req' => false),
 
-		array('path' => '../modules', 'chmod' => CHMOD_EX, 'recursive' => true, 'req' => false),
-		array('path' => '../modules', 'chmod' => CHMOD_WR, 'recursive' => true, 'req' => false),
+		array('path' => 'modules', 'chmod' => CHMOD_EX, 'recursive' => true, 'req' => false),
+		array('path' => 'modules', 'chmod' => CHMOD_WR, 'recursive' => true, 'req' => false),
 
-		array('path' => '../temp', 'chmod' => CHMOD_EX, 'recursive' => true, 'req' => true),
-		array('path' => '../uploads', 'chmod' => CHMOD_EX, 'recursive' => true, 'req' => true)
+		array('path' => 'temp', 'chmod' => CHMOD_EX, 'recursive' => true, 'req' => true),
+		array('path' => 'uploads', 'chmod' => CHMOD_EX, 'recursive' => true, 'req' => true)
 
 	);
 
-	$path = '../language';
+	$path = 'language';
 	$dh = opendir($path);
 	while ($file = readdir($dh)) {
 		$fullpath = $path.'/'.$file;
@@ -123,7 +123,7 @@ function getViscachaCHMODs() {
 	}
 	closedir($dh);
 
-	$path = '../templates';
+	$path = 'templates';
 	$dh = opendir($path);
 	while ($file = readdir($dh)) {
 		$fullpath = $path.'/'.$file;
@@ -135,7 +135,7 @@ function getViscachaCHMODs() {
 	}
 	closedir($dh);
 
-	$path = '../designs';
+	$path = 'designs';
 	$dh = opendir($path);
 	while ($file = readdir($dh)) {
 		$fullpath = $path.'/'.$file;

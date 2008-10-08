@@ -1,12 +1,12 @@
 <?php
-include('../data/config.inc.php');
+include('data/config.inc.php');
 if (!class_exists('filesystem')) {
-	require_once('classes/class.filesystem.php');
+	require_once('install/classes/class.filesystem.php');
 	$filesystem = new filesystem($config['ftp_server'], $config['ftp_user'], $config['ftp_pw'], $config['ftp_port']);
 	$filesystem->set_wd($config['ftp_path'], $config['fpath']);
 }
 
-require('classes/function.chmod.php');
+require('install/classes/function.chmod.php');
 $chmod = getViscachaCHMODs();
 ?>
 <div class="bbody">
@@ -74,7 +74,7 @@ foreach ($files as $arr) {
 	if ($arr['req'] == true || $int_status != true) {
 ?>
 <tr>
-	<td><?php echo str_replace('../', '', $arr['path']); ?></td>
+	<td><?php echo $arr['path']; ?></td>
 	<td><?php echo $arr['chmod']; ?></td>
 	<td><?php echo $chmod; ?></td>
 	<td><?php echo $status; ?></td>
@@ -89,6 +89,6 @@ foreach ($files as $arr) {
 <?php if (!$failure) { ?>
 <input type="submit" value="Continue" />
 <?php } else { ?>
-<a class="submit" href="index.php?step=<?php echo $step; ?>">Reload page</a>
+<a class="submit" href="index.php?package=<?php echo $package;?>&amp;step=<?php echo $step; ?>">Reload page</a>
 <?php } ?>
 </div>

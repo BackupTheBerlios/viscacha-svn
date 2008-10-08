@@ -2,12 +2,12 @@
 function getFilePath($package, $step) {
 	$package2 = explode('_', $package, 2);
 	if (!empty($package2[1]) && !file_exists('package/'.$package.'/steps/'.$step.'.php')) {
-		return 'package/'.$package2[0].'/steps/'.$step.'.php';
+		return 'install/package/'.$package2[0].'/steps/'.$step.'.php';
 	}
-	return 'package/'.$package.'/steps/'.$step.'.php';
+	return 'install/package/'.$package.'/steps/'.$step.'.php';
 }
 function return_array($group, $id) {
-	$file = "../language/{$id}/{$group}.lng.php";
+	$file = "language/{$id}/{$group}.lng.php";
 	if (file_exists($file)) {
 		include($file);
 	}
@@ -49,7 +49,7 @@ function updateLanguageFiles($ini) {
 			if (!isset($data[$src])) {
 				continue;
 			}
-			$c->getdata("../language/{$lid}/{$file}.lng.php", 'lang');
+			$c->getdata("language/{$lid}/{$file}.lng.php", 'lang');
 			foreach ($data[$src] as $varname => $text) {
 				if ($text === null) {
 					$c->delete($varname);
@@ -96,7 +96,7 @@ function getLangCodesByKeys($keys) {
 }
 function setPackagesInactive() {
 	global $db;
-	require_once('classes/class.ini.php');
+	require_once('install/classes/class.ini.php');
 	$myini = new INI();
 	$result = $db->query("SELECT id, internal FROM {$db->pre}packages");
 	$data = array();
@@ -104,7 +104,7 @@ function setPackagesInactive() {
 	$dependencies = array();
 	$assoc = array();
 	while ($row = $db->fetch_assoc($result)) {
-		$ini = $myini->read("../modules/{$row['id']}/package.ini");
+		$ini = $myini->read("modules/{$row['id']}/package.ini");
 
 		if (!isset($ini['dependency']) || !is_array($ini['dependency'])) {
 			$ini['dependency'] = array();

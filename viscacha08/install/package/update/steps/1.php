@@ -1,5 +1,5 @@
 <?php
-include('../data/config.inc.php');
+include('data/config.inc.php');
 $ignore = isset($_REQUEST['ignore']) ? $_REQUEST['ignore'] : null;
 if ($config['version'] != $old_versions[$package] && empty($ignore)) { ?>
 <div class="bbody">

@@ -4,13 +4,15 @@ error_reporting(E_ALL);
 define('VISCACHA_VERSION', '0.8 RC5');
 define('VISCACHA_CORE', '1');
 define('SCRIPTNAME', 'install');
-define('SCRIPT_LOCKED', file_exists('./locked.txt'));
+define('SCRIPT_LOCKED', file_exists('./install/locked.txt'));
+
+chdir('../');
 
 if (!SCRIPT_LOCKED) {
 
 	$config = array();
-	require_once('classes/function.phpcore.php');
-	require_once('classes/function.tools.php');
+	require_once('install/classes/function.phpcore.php');
+	require_once('install/classes/function.tools.php');
 
 	$old_versions = array(
 		'update' => '0.8 RC4 pl1',
@@ -36,7 +38,7 @@ if (!SCRIPT_LOCKED) {
 		$package_data = $packages[$_REQUEST['package']];
 	}
 	if (!empty($package)) {
-		require_once('package/'.$package.'/steps.inc.php');
+		require_once('install/package/'.$package.'/steps.inc.php');
 		if (isset($_REQUEST['step'])) {
 			$step = intval(trim($_REQUEST['step']));
 			if (!isset($steps[$step])) {
