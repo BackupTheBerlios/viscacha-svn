@@ -8,6 +8,16 @@ $ServerNavigator = new ServerNavigator();
 
 ($code = $plugins->load('admin_explorer_jobs')) ? eval($code) : null;
 
+if ($job == 'delete_install') {
+	$path = './install/';
+	if (is_dir($path) && $filesystem->rmdirr($path)) {
+		$name = '"./install/"';
+		ok('admin.php?action=start', $lang->phrase('admin_explorer_x_successfully_deleted'));
+	}
+	else {
+		error('admin.php?action=start');
+	}
+}
 if ($job == 'upload') {
 
 	$cfg = $gpc->get('cfg', str);

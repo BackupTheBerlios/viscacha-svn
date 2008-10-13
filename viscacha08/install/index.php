@@ -6,7 +6,7 @@ chdir('../');
 define('VISCACHA_VERSION', '0.8 RC5');
 define('VISCACHA_CORE', '1');
 define('SCRIPTNAME', 'install');
-define('SCRIPT_LOCKED', file_exists('./install/locked.txt'));
+define('SCRIPT_LOCKED', file_exists('./locked.txt'));
 
 if (!SCRIPT_LOCKED) {
 
@@ -136,7 +136,7 @@ if (!SCRIPT_LOCKED) {
 			<h3>Viscacha is currently locked</h3>
 			<div class="bbody">
 			<p><strong>This part of Viscacha is currently locked.</strong></p>
-			<p>To unlock the installation/update remove the file &quot;locked.txt&quot; in your &quot;install&quot;-folder.</p>
+			<p>To unlock the installation/update remove the file &quot;locked.txt&quot; in your Viscacha main folder.</p>
 			</div>
 		</div>
 		<?php } ?>

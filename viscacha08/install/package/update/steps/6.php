@@ -5,7 +5,7 @@ if (!class_exists('filesystem')) {
 	$filesystem = new filesystem($config['ftp_server'], $config['ftp_user'], $config['ftp_pw'], $config['ftp_port']);
 	$filesystem->set_wd($config['ftp_path'], $config['fpath']);
 }
-$lf = './install/locked.txt';
+$lf = './locked.txt';
 $filesystem->file_put_contents($lf, '', true);
 ?>
 <div class="bbody">

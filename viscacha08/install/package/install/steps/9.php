@@ -100,7 +100,7 @@ if ($dh = @opendir($dir)) {
 }
 
 if (count($error) == 0) {
-	$lf = './install/locked.txt';
+	$lf = './locked.txt';
 	$filesystem->file_put_contents($lf, '', true);
 ?>
 <div class="bbody">
