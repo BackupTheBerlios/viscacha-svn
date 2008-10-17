@@ -20,4 +20,4 @@ It is locked at the moment, but we highly recommend to remove the directory.
 <?php } ?>
 </p>
 </div>
-<div class="bfoot center"><a class="submit" href="admin/">Go to Admin Control Panel</a></div>
+<div class="bfoot center"><a class="submit" href="../admin/">Go to Admin Control Panel</a></div>

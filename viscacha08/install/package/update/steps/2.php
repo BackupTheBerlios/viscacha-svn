@@ -19,27 +19,27 @@ _docs/readme.txt
 <ol>
 <li>
 Search and delete:<br />
-<code>#popup_bbsmileys {
-	overflow: scroll;
+<code>#popup_bbsmileys {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;overflow: scroll;<br />
 }</code>
 </li>
 <li>
 Search and delete:<br />
-<code>* html #popup_bbsmileys {
-	height: 200px;
+<code>* html #popup_bbsmileys {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;height: 200px;<br />
 }</code>
 </li>
 <li>
 Add at the end of the file:<br />
-<code>* html .editor_textarea_outer .popup {
-	border-top-width: 0px;
-}
-* html .editor_textarea_outer .popup strong {
-	border-width: 0px;
-	border-top: 1px solid #888888;
-}
-* html .editor_textarea_outer .popup li {
-	border-top: 1px solid #c4c4c4;
+<code>* html .editor_textarea_outer .popup {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;border-top-width: 0px;<br />
+}<br />
+* html .editor_textarea_outer .popup strong {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;border-width: 0px;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;border-top: 1px solid #888888;<br />
+}<br />
+* html .editor_textarea_outer .popup li {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;border-top: 1px solid #c4c4c4;<br />
 }</code>
 </li>
 </ol>
@@ -48,22 +48,22 @@ Add at the end of the file:<br />
 <ol>
 <li>
 Search:<br />
-<code>.bb_blockcode_header {
-	display: block;
+<code>.bb_blockcode_header {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;display: block;<br />
 }</code>
 Replace with:<br />
-<code>.bb_blockcode_options {
-	display: none;
+<code>.bb_blockcode_options {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;display: none;<br />
 }</code>
 </li>
 <li>
 Search and delete:<br />
-<code>.bb_blockcode td {
-	font-family: Courier New, monospace;
-	font-size: 11px;
-	line-Height: 13px;
-	white-space: nowrap;
-	vertical-align: top;
+<code>.bb_blockcode td {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;font-family: Courier New, monospace;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;font-size: 11px;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;line-Height: 13px;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;white-space: nowrap;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;vertical-align: top;<br />
 }</code>
 </li>
 </ol>
@@ -72,359 +72,671 @@ Search and delete:<br />
 <ol>
 <li>
 Search:<br />
-<code>	padding: auto 2px auto 2px;</code>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;padding: auto 2px auto 2px;</code>
 Replace with:<br />
-<code>	padding: 1px 2px 1px 2px;</code>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;padding: 1px 2px 1px 2px;</code>
 </li>
 <li>
 Search:<br />
-<code>.bb_blockcode_header {
-	display: block;
-}
-.bb_blockcode {
-	border: 1px solid #839FBC;
-	background-color: #F5F8FA;
-	padding: 2px;
-	margin: 0px;
-	margin-left: 10px;
-	overflow: auto;
-	max-height: 400px;
-	min-height: 50px;
-	width: 550px;
-}
-.bb_blockcode td {
-	font-family: "Courier New", monospace;
-	font-size: 11px;
-	line-Height: 13px;
-	white-space: nowrap;
-	vertical-align: top;
+<code>.bb_blockcode_header {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;display: block;<br />
+}<br />
+.bb_blockcode {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;border: 1px solid #839FBC;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;background-color: #F5F8FA;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;padding: 2px;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;margin: 0px;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;margin-left: 10px;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;overflow: auto;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;max-height: 400px;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;min-height: 50px;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;width: 550px;<br />
+}<br />
+.bb_blockcode td {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;font-family: "Courier New", monospace;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;font-size: 11px;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;line-Height: 13px;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;white-space: nowrap;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;vertical-align: top;<br />
 }</code>
 Replace with:<br />
-<code>.bb_blockcode {
-	border: 1px solid #839FBC;
-	background-color: #F5F8FA;
-	padding: 4px;
-	margin-left: 15px;
-	overflow: auto;
-	max-height: 400px;
-	min-height: 50px;
-	width: 560px;
-}
-.bb_blockcode li {
-	white-space: pre;
-	font-family: 'Courier New', monospace;
-	font-weight: normal;
-	font-style: normal;
-	margin-left: 4px;
-}
-.bb_blockcode a {
-	border-bottom: 1px dotted #000000;
-}
-.bb_blockcode a:hover {
-	border-bottom: 1px solid #000000;
-}
-.bb_blockcode_options {
-	float: right;
-	margin: 0px 40px -1px 0px;
-	border: 1px solid #839FBC;
-	border-bottom: 0px;
-	background-color: #F5F8FA;
-	padding: 1px 5px 1px 5px;
-	font-size: 8pt;
-}
-.bb_blockcode_options:hover, .bb_blockcode_options:focus {
-	background-color: #E1E8EF;
-}</code>
-</li>
-<li>
-Search and delete:<br />
-<code>/* Smiley Interface */
-#menu_bbsmileys {
-	display: block;
-	text-align: center;
-	width: 140px;
-}
-#popup_bbsmileys {
-	max-height: 200px;
-	width: 255px;
-}
-.tables_bbsmileys {
-	width: 100%;
-	border-collapse: collapse;
-	margin-bottom: 0px;
-}
-.tables_bbsmileys td {
-	border: 1px solid #839FBC;
-	border-width: 1px 0px 0px 1px;
-	padding: 3px;
-}
-.bbsmileys {
-	margin-bottom: 5px;
-	width: 140px
-}
-.bbsmileys td {
-	padding: 3px;
-}
-/* BB-Code Interface */
-#menu_bbcolor, #menu_bbsize, #menu_bbhx, #menu_help, #menu_bbalign {
-	font-size: 9pt;
-	font-weight: bold;
-}
-#codebuttons a, #menu_bbcolor, #menu_bbsize, #menu_bbhx, #menu_help, #menu_bbalign {
-	border: 1px solid #336699;
-	background-color: #F5F8FA;
-}
-#codebuttons br {
-	clear: left;
-}
-#codebuttons a {
-	height: 18px;
-	float: left;
-	display: block;
-	padding: 2px;
-	margin: 1px;
-	vertical-align: middle;
-}
-#codebuttons a:hover {
-	background-color: #BCCADA;
-}
-#codebuttons img {
-	vertical-align: middle;
-}
-.bbcolor {
-	line-height: 10px;
-	font-size: 10px;
-}
-.bbcolor span {
-	width: 10px;
-	height: 10px;
-	display: block;
-	float: left;
-	cursor: pointer;
-}
+<code>.bb_blockcode {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;border: 1px solid #839FBC;<br />
 
-/* BB-Code Ausgabe */
-.highlightcode a {
-	border-bottom: 1px dotted #336699;
-	/* target-new: tab; */
-}
-.highlightcode a:hover {
-	border-bottom: 1px solid #336699;
+&nbsp;&nbsp;&nbsp;&nbsp;background-color: #F5F8FA;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;padding: 4px;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;margin-left: 15px;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;overflow: auto;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;max-height: 400px;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;min-height: 50px;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;width: 560px;<br />
+
+}<br />
+
+.bb_blockcode li {<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;white-space: pre;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;font-family: 'Courier New', monospace;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;font-weight: normal;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;font-style: normal;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;margin-left: 4px;<br />
+
+}<br />
+
+.bb_blockcode a {<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;border-bottom: 1px dotted #000000;<br />
+
+}<br />
+
+.bb_blockcode a:hover {<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;border-bottom: 1px solid #000000;<br />
+
+}<br />
+
+.bb_blockcode_options {<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;float: right;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;margin: 0px 40px -1px 0px;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;border: 1px solid #839FBC;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;border-bottom: 0px;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;background-color: #F5F8FA;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;padding: 1px 5px 1px 5px;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;font-size: 8pt;<br />
+
+}<br />
+
+.bb_blockcode_options:hover, .bb_blockcode_options:focus {<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;background-color: #E1E8EF;<br />
+
 }</code>
 </li>
 <li>
 Search and delete:<br />
-<code>/* Spellchecker */
-.disabled {
-	font-size: 11px;
-	background-color: #F5F8FA;
-	border: 1px solid #336699;
-	color: #cccccc;
-}
-.spellcheckbutton {
-	width: 90px;
-}
-.spellcheckinput {
-	width: 180px;
-}
-/* Higlighting for bad spelled words */
-.mistake {
-	border: 0;
-	border-bottom: 1px dotted red;
-	background-color: #E1CCCD;
-	text-align: center;
-	font-family: monospace;
-	font-size: 10pt;
-}
-.transparent {
-	border: 0;
-	background-color: #ffffff;
-	text-align: center;
-	font-family: monospace;
-	font-size: 10pt;
-	border-bottom: 1px dotted red
-}
-.spellchecktext {
-	font-family: monospace;
-	font-size: 10pt;
+<code>/* Smiley Interface */<br />
+
+#menu_bbsmileys {<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;display: block;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;text-align: center;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;width: 140px;<br />
+
+}<br />
+
+#popup_bbsmileys {<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;max-height: 200px;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;width: 255px;<br />
+
+}<br />
+
+.tables_bbsmileys {<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;width: 100%;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;border-collapse: collapse;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;margin-bottom: 0px;<br />
+
+}<br />
+
+.tables_bbsmileys td {<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;border: 1px solid #839FBC;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;border-width: 1px 0px 0px 1px;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;padding: 3px;<br />
+
+}<br />
+
+.bbsmileys {<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;margin-bottom: 5px;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;width: 140px<br />
+
+}<br />
+
+.bbsmileys td {<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;padding: 3px;<br />
+
+}<br />
+
+/* BB-Code Interface */<br />
+
+#menu_bbcolor, #menu_bbsize, #menu_bbhx, #menu_help, #menu_bbalign {<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;font-size: 9pt;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;font-weight: bold;<br />
+
+}<br />
+
+#codebuttons a, #menu_bbcolor, #menu_bbsize, #menu_bbhx, #menu_help, #menu_bbalign {<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;border: 1px solid #336699;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;background-color: #F5F8FA;<br />
+
+}<br />
+
+#codebuttons br {<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;clear: left;<br />
+
+}<br />
+
+#codebuttons a {<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;height: 18px;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;float: left;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;display: block;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;padding: 2px;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;margin: 1px;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;vertical-align: middle;<br />
+
+}<br />
+
+#codebuttons a:hover {<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;background-color: #BCCADA;<br />
+
+}<br />
+
+#codebuttons img {<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;vertical-align: middle;<br />
+
+}<br />
+
+.bbcolor {<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;line-height: 10px;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;font-size: 10px;<br />
+
+}<br />
+
+.bbcolor span {<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;width: 10px;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;height: 10px;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;display: block;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;float: left;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;cursor: pointer;<br />
+
+}<br />
+
+<br />
+
+/* BB-Code Ausgabe */<br />
+
+.highlightcode a {<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;border-bottom: 1px dotted #336699;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;/* target-new: tab; */<br />
+
+}<br />
+
+.highlightcode a:hover {<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;border-bottom: 1px solid #336699;<br />
+
+}</code>
+</li>
+<li>
+Search and delete:<br />
+<code>/* Spellchecker */<br />
+
+.disabled {<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;font-size: 11px;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;background-color: #F5F8FA;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;border: 1px solid #336699;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;color: #cccccc;<br />
+
+}<br />
+
+.spellcheckbutton {<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;width: 90px;<br />
+
+}<br />
+
+.spellcheckinput {<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;width: 180px;<br />
+
+}<br />
+
+/* Higlighting for bad spelled words */<br />
+
+.mistake {<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;border: 0;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;border-bottom: 1px dotted red;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;background-color: #E1CCCD;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;text-align: center;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;font-family: monospace;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;font-size: 10pt;<br />
+
+}<br />
+
+.transparent {<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;border: 0;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;background-color: #ffffff;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;text-align: center;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;font-family: monospace;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;font-size: 10pt;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;border-bottom: 1px dotted red<br />
+
+}<br />
+
+.spellchecktext {<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;font-family: monospace;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;font-size: 10pt;<br />
+
 }</code>
 </li>
 <li>
 Add at the end of the file:<br />
-<code>/* Document Missing Language Notice Box */
-.notice_box {
-	border: 1px solid #839FBC;
-	background-color: #ffffff;
-	padding: 4px;
-	font-size: 8pt;
-}
-.notice_box strong {
-	float: left;
-	display: block;
-	width: 70px;
-	text-align: center;
-	color: maroon;
-}
-.notice_box span {
-	margin-left: 75px;
-	display: block;
-}
-/* Pagination */
-.pagination .page_number {
-	border: 1px solid #B6BCC1;
-	color: #24486C;
-	padding: 0px 2px;
-	margin: 0px 2px;
-	text-decoration: none;
-}
-.pagination .page_number_current, .pagination .page_number:hover {
-	border: 1px solid #336699;
-	background-color: #336699;
-	color: #FFFFFF;
-	padding: 0px 2px;
-	margin: 0px 2px;
-}
-.pagination .page_more {
-	margin: 0px 2px;
-}
-.pagination .page_separator {
-	display: none;
-}
-/* BB-Code-Editor */
-.editor_textarea_outer {
-	border: 1px solid #888888;
-	width: 100%;
-	border-collapse: collapse;
-}
-.editor_textarea_outer td {
-	padding: 4px;
-}
-.editor_toolbar {
-	border-bottom: 1px solid #C9C9C9;
-	background-color: #F4F4F4;
-	height: 28px;
-}
-.editor_toolbar_dropdown {
-	border: 1px solid #F4F4F4;
-	padding: 2px;
-	color: #000000;
-	font-size: 9pt;
-}
-.editor_toolbar_dropdown:hover {
-	border: 1px solid #999999;
-}
-.editor_toolbar_smiley {
-	border: 1px solid #F4F4F4;
-	padding: 2px;
-}
-.editor_toolbar_smiley_on {
-	border: 1px solid #999999;
-	padding: 2px;
-}
-.editor_toolbar_button {
-	width: 20px;
-	height: 20px;
-	border: 1px solid #F4F4F4;
-}
-.editor_toolbar_button_on {
-	width: 20px;
-	height: 20px;
-	border: 1px solid #999999;
-}
-.editor_textarea_inner {
-	background-color: #FFFFFF;
-	font-size: 9pt;
-	border-width: 0px;
-	width: 100%;
-	overflow: auto;
-	margin: -4px;
-	padding: 4px;
-}
-.editor_statusbar {
-	font-size: 8pt;
-	background-color: #F4F4F4;
-	border-top: 1px solid #C9C9C9;
-}
-.editor_statusbar a {
-	color: #000000;
-	text-decoration: none;
-}
-.editor_statusbar a:hover {
-	text-decoration: underline;
-}
+<code>/* Document Missing Language Notice Box */<br />
 
-.editor_textarea_outer .popup {
-	border: 1px solid #888888;
-	max-height: 250px;
-	width: 200px;
-}
-.editor_textarea_outer .popup ul {
-	list-style-type: none;
-}
-.editor_textarea_outer .popup strong {
-	text-align: center;
-	color: #000000;
-	background-color: #eeeeee;
-	border-width: 0px;
-	border-bottom: 1px solid #888888;
-	padding: 2px;
-	font-size: 9pt;
-}
-.editor_textarea_outer .popup li {
-	border-width: 0px;
-	padding: 2px 3px 1px 3px;
-	background-color: #ffffff;
-	font-size: 9pt;
-}
-.editor_textarea_outer .popup li a, .editor_textarea_outer .popup_line {
-	color: #000000;
-	text-decoration: none;
-	border: 1px solid #ffffff;
-	background-color: #ffffff;
-	padding: 2px;
-}
-.editor_textarea_outer .popup li a:hover, .editor_textarea_outer .popup_line:hover {
-	background-color: #eeeeee;
-	border: 1px solid #cccccc;
-	color: #000000;
-}
-.bbcolor {
-	padding: 10px;
-	background-color: #ffffff;
-	line-height: 13px;
-	font-size: 13px;
-}
-.bbcolor span {
-	width: 10px;
-	height: 13px;
-	display: block;
-	float: left;
-	cursor: pointer;
-}
-.bbcolor img {
-	width: 10px;
-	height: 13px;
-	border-width: 0px;
-}
-.bbcolor img:hover {
-	width: 8px;
-	height: 11px;
-	border: 1px solid #ffffff;
-}
-.bbtable {
-	background-color: #ffffff;
-	padding: 4px;
-}
-.bbtable input {
-	width: 35px;
-	float: left;
-	background-color: #ffffff;
-	border: 1px solid #888888;
-	text-align: center;
-	margin-right: 5px;
-}
-.bbsmileys img {
-	margin: 2px 8px 2px 4px;
+.notice_box {<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;border: 1px solid #839FBC;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;background-color: #ffffff;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;padding: 4px;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;font-size: 8pt;<br />
+
+}<br />
+
+.notice_box strong {<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;float: left;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;display: block;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;width: 70px;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;text-align: center;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;color: maroon;<br />
+
+}<br />
+
+.notice_box span {<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;margin-left: 75px;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;display: block;<br />
+
+}<br />
+
+/* Pagination */<br />
+
+.pagination .page_number {<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;border: 1px solid #B6BCC1;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;color: #24486C;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;padding: 0px 2px;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;margin: 0px 2px;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;text-decoration: none;<br />
+
+}<br />
+
+.pagination .page_number_current, .pagination .page_number:hover {<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;border: 1px solid #336699;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;background-color: #336699;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;color: #FFFFFF;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;padding: 0px 2px;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;margin: 0px 2px;<br />
+
+}<br />
+
+.pagination .page_more {<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;margin: 0px 2px;<br />
+
+}<br />
+
+.pagination .page_separator {<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;display: none;<br />
+
+}<br />
+
+/* BB-Code-Editor */<br />
+
+.editor_textarea_outer {<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;border: 1px solid #888888;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;width: 100%;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;border-collapse: collapse;<br />
+
+}<br />
+
+.editor_textarea_outer td {<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;padding: 4px;<br />
+
+}<br />
+
+.editor_toolbar {<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;border-bottom: 1px solid #C9C9C9;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;background-color: #F4F4F4;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;height: 28px;<br />
+
+}<br />
+
+.editor_toolbar_dropdown {<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;border: 1px solid #F4F4F4;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;padding: 2px;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;color: #000000;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;font-size: 9pt;<br />
+
+}<br />
+
+.editor_toolbar_dropdown:hover {<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;border: 1px solid #999999;<br />
+
+}<br />
+
+.editor_toolbar_smiley {<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;border: 1px solid #F4F4F4;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;padding: 2px;<br />
+
+}<br />
+
+.editor_toolbar_smiley_on {<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;border: 1px solid #999999;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;padding: 2px;<br />
+
+}<br />
+
+.editor_toolbar_button {<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;width: 20px;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;height: 20px;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;border: 1px solid #F4F4F4;<br />
+
+}<br />
+
+.editor_toolbar_button_on {<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;width: 20px;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;height: 20px;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;border: 1px solid #999999;<br />
+
+}<br />
+
+.editor_textarea_inner {<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;background-color: #FFFFFF;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;font-size: 9pt;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;border-width: 0px;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;width: 100%;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;overflow: auto;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;margin: -4px;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;padding: 4px;<br />
+
+}<br />
+
+.editor_statusbar {<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;font-size: 8pt;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;background-color: #F4F4F4;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;border-top: 1px solid #C9C9C9;<br />
+
+}<br />
+
+.editor_statusbar a {<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;color: #000000;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;text-decoration: none;<br />
+
+}<br />
+
+.editor_statusbar a:hover {<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;text-decoration: underline;<br />
+
+}<br />
+
+<br />
+
+.editor_textarea_outer .popup {<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;border: 1px solid #888888;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;max-height: 250px;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;width: 200px;<br />
+
+}<br />
+
+.editor_textarea_outer .popup ul {<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;list-style-type: none;<br />
+
+}<br />
+
+.editor_textarea_outer .popup strong {<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;text-align: center;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;color: #000000;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;background-color: #eeeeee;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;border-width: 0px;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;border-bottom: 1px solid #888888;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;padding: 2px;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;font-size: 9pt;<br />
+
+}<br />
+
+.editor_textarea_outer .popup li {<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;border-width: 0px;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;padding: 2px 3px 1px 3px;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;background-color: #ffffff;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;font-size: 9pt;<br />
+
+}<br />
+
+.editor_textarea_outer .popup li a, .editor_textarea_outer .popup_line {<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;color: #000000;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;text-decoration: none;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;border: 1px solid #ffffff;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;background-color: #ffffff;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;padding: 2px;<br />
+
+}<br />
+
+.editor_textarea_outer .popup li a:hover, .editor_textarea_outer .popup_line:hover {<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;background-color: #eeeeee;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;border: 1px solid #cccccc;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;color: #000000;<br />
+
+}<br />
+
+.bbcolor {<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;padding: 10px;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;background-color: #ffffff;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;line-height: 13px;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;font-size: 13px;<br />
+
+}<br />
+
+.bbcolor span {<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;width: 10px;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;height: 13px;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;display: block;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;float: left;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;cursor: pointer;<br />
+
+}<br />
+
+.bbcolor img {<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;width: 10px;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;height: 13px;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;border-width: 0px;<br />
+
+}<br />
+
+.bbcolor img:hover {<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;width: 8px;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;height: 11px;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;border: 1px solid #ffffff;<br />
+
+}<br />
+
+.bbtable {<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;background-color: #ffffff;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;padding: 4px;<br />
+
+}<br />
+
+.bbtable input {<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;width: 35px;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;float: left;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;background-color: #ffffff;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;border: 1px solid #888888;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;text-align: center;<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;margin-right: 5px;<br />
+
+}<br />
+
+.bbsmileys img {<br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;margin: 2px 8px 2px 4px;<br />
+
 }</code>
 </li>
 </ol>

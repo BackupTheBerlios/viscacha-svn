@@ -258,7 +258,6 @@ label, .labeldiv {
 
 code {
 	display: block;
-	white-space: pre;
 	font-size: 0.9em;
 	border-style: solid;
 	border-color: #E7EECD;
