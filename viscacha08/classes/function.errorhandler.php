@@ -20,6 +20,11 @@ if (isset($config['error_handler']) && $config['error_handler'] == 1) {
 * Error and message handler, call with trigger_error if required
 */
 function msg_handler($errno, $errtext, $errfile, $errline) {
+	// If the @ error suppression operator was used, error_reporting is temporarily set to 0
+	if (error_reporting() == 0) {
+		return;
+	}
+
 	global $db, $config;
 
 	$errdate = date("Y-m-d H:i:s (T)");
@@ -40,7 +45,6 @@ function msg_handler($errno, $errtext, $errfile, $errline) {
 			case E_USER_WARNING:
 			case E_USER_NOTICE:
 			case E_USER_ERROR:
-			case E_ERROR:
 				$errlogfile = 'data/errlog_php.inc.php';
 				if (file_exists($errlogfile) == false) {
 					$errlogfile = $config['fpath'].'/data/errlog_php.inc.php';
@@ -74,8 +78,7 @@ function msg_handler($errno, $errtext, $errfile, $errline) {
 			echo "<br /><strong>".$errortype[$errno]."</strong>: ".$errtext." (File: <tt>".$errfile."</tt> on line <tt>".$errline."</tt>)";
 		break;
 		case E_USER_ERROR:
-		case E_ERROR:
-			if (isset($db)) {
+			if (isset($db) && is_a($db, 'DB_Driver')) {
 				$db->close();
 			}
 			if (viscacha_function_exists('ob_clean')) {

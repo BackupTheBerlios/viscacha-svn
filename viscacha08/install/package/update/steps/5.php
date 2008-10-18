@@ -51,6 +51,11 @@ $c->delete('spellcheck_mode');
 $c->delete('vcard_dl');
 $c->delete('vcard_dl_guests');
 $c->savedata();
+
+$c = new manageconfig();
+$c->getdata('admin/data/config.inc.php', 'admconfig');
+$c->updateconfig('checked_package_updates', int, 0);
+$c->savedata();
 echo "- Configuration updated.<br />";
 
 // MySQL & Documents

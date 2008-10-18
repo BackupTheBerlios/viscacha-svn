@@ -19,7 +19,7 @@ This permissions will be checked and the result will be shown below.</p>
 </p>
 <table class="tables">
 <tr>
-	<td width="70%"><strong>File / Directory (<?php echo realpath('../'); ?>)</strong></td>
+	<td width="70%"><strong>File / Directory (<?php echo realpath('./'); ?>)</strong></td>
 	<td width="10%"><strong>Required</strong></td>
 	<td width="10%"><strong>Given</strong></td>
 	<td width="10%"><strong>State</strong></td>

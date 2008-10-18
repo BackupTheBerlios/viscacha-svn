@@ -1,5 +1,5 @@
 <?php
-include('../data/config.inc.php');
+include('data/config.inc.php');
 if (!class_exists('filesystem')) {
 	require_once('install/classes/class.filesystem.php');
 	$filesystem = new filesystem($config['ftp_server'], $config['ftp_user'], $config['ftp_pw'], $config['ftp_port']);

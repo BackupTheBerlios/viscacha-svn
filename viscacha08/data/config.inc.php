@@ -24,7 +24,6 @@ $config['botgfxtest_text_verification'] = 0;
 $config['botgfxtest_width'] = 175;
 $config['censorstatus'] = 2;
 $config['changename_allowed'] = 0;
-$config['check_filesystem'] = 0;
 $config['confirm_registration'] = '11';
 $config['cookie_prefix'] = 'vc';
 $config['correctsubdomains'] = 0;

@@ -54,6 +54,10 @@ function check_chmod($min, $given) {
 	$min = explode("\r\n", chunk_split($min, 1));
 	$given = explode("\r\n", chunk_split($given, 1));
 
+	if (count($given) < 3 || count($min) < 3) {
+		return false;
+	}
+
 	if ($given[0] >= $min[0] && $given[1] >= $min[1] && $given[2] >= $min[2]) {
 		return true;
 	}

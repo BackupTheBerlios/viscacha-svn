@@ -9,13 +9,14 @@ $ServerNavigator = new ServerNavigator();
 ($code = $plugins->load('admin_explorer_jobs')) ? eval($code) : null;
 
 if ($job == 'delete_install') {
+	echo head();
 	$path = './install/';
 	if (is_dir($path) && $filesystem->rmdirr($path)) {
 		$name = '"./install/"';
-		ok('admin.php?action=start', $lang->phrase('admin_explorer_x_successfully_deleted'));
+		ok('admin.php?action=index', $lang->phrase('admin_explorer_x_successfully_deleted'));
 	}
 	else {
-		error('admin.php?action=start');
+		error('admin.php?action=index');
 	}
 }
 if ($job == 'upload') {
@@ -347,8 +348,11 @@ elseif ($job == "delete2") {
 elseif ($job == "edit") {
 	echo head();
 	$file = urldecode($gpc->get('path', none));
-	check_writable($file);
-	if (!$ServerNavigator->checkEdit($file)) {
+
+	set_chmod($file, 0666, CHMOD_FILE);
+	@clearstatcache();
+	$given = get_chmod($file);
+	if (!$ServerNavigator->checkEdit($file) || !check_chmod(CHMOD_WR, $given)) {
 		error('admin.php?action=explorer&path='.urlencode(extract_dir($file, false)), $lang->phrase('admin_explorer_file_is_not_editable'));
 	}
 	$content = file_get_contents($file);
@@ -412,7 +416,8 @@ elseif ($job == "extract2") {
 	echo head();
 	$file = $gpc->get('path', none);
 	$dir = $gpc->get('to', none);
-	check_executable($dir);
+
+	set_chmod($dir, 0777, CHMOD_EX);
 	$redirect = 'admin.php?action=explorer&path='.urlencode(extract_dir($file, false));
 	if (!preg_match('#\.(tar\.gz|tar|gz|zip)$#is', $file, $ext)) {
 		error($redirect, $lang->phrase('admin_explorer_archive_is_not_supported'));
@@ -479,7 +484,6 @@ elseif ($job == 'all_chmod') {
 		<td width="10%"><strong><?php echo $lang->phrase('admin_explorer_chmod_state'); ?></strong></td>
 	</tr>
 	<?php
-	error_reporting(E_ALL);
 	$files = array();
 	foreach ($chmod as $dat) {
 		if ($dat['recursive']) {

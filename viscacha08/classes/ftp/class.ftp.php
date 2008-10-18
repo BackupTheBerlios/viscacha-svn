@@ -713,7 +713,6 @@ class ftp_base {
 // <!-- --------------------------------------------------------------------------------------- -->
 // <!-- Partie : gestion des erreurs                                                            -->
 // <!-- --------------------------------------------------------------------------------------- -->
-// Génère une erreur pour traitement externe à la classe
 	function PushError($fctname,$msg,$desc=false){
 		$error=array();
 		$error['time']=time();
@@ -725,7 +724,6 @@ class ftp_base {
 		return(array_push($this->_error_array,$error));
 	}
 
-// Récupère une erreur externe
 	function PopError(){
 		if(count($this->_error_array)) return(array_pop($this->_error_array));
 			else return(false);
@@ -733,11 +731,18 @@ class ftp_base {
 }
 
 function pemftp_class_module() {
-	$mod_sockets=TRUE;
+	$mod_sockets = true;
 	if (!extension_loaded('sockets')) {
-	    $prefix = (PHP_SHLIB_SUFFIX == 'dll') ? 'php_' : '';
-	    if(!@dl($prefix . 'sockets.' . PHP_SHLIB_SUFFIX)) $mod_sockets=FALSE;
+		if (!viscacha_function_exists('dl')) {
+			$mod_sockets = false;
+		}
+		else {
+		    $prefix = (PHP_SHLIB_SUFFIX == 'dll') ? 'php_' : '';
+		    if(!@dl($prefix . 'sockets.' . PHP_SHLIB_SUFFIX)) {
+		    	$mod_sockets = false;
+		    }
+		}
 	}
-	return ($mod_sockets?"sockets":"pure");
+	return ($mod_sockets ? "sockets" : "pure");
 }
 ?>
