@@ -2238,7 +2238,7 @@ elseif ($job == 'inactive2') {
 		<span style="float: right;">
 		  <a class="button" href="admin.php?action=members&amp;job=search"><?php echo $lang->phrase('admin_member_search_members'); ?></a>
 		</span>
-		  <?php $lang->phrase('admin_member_search_inactive'); ?>
+		  <?php echo $lang->phrase('admin_member_search_inactive'); ?>
 		  </td>
 		</tr>
 		<?php if ($count == 0) { ?>

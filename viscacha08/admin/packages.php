@@ -1545,7 +1545,7 @@ elseif ($job == 'package_edit') {
 	  <td><input type="text" name="copyright" size="60" value="<?php echo $ini['info']['copyright']; ?>" /></td>
 	 </tr>
 	 <tr class="mbox">
-	  <td><?php echo $lang->phrase('admin_packages_einfo_license'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_packages_edit_optional'); ?></span></td>
+	  <td><?php echo $lang->phrase('admin_packages_info_license'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_packages_edit_optional'); ?></span></td>
 	  <td><input type="text" name="license" size="60" value="<?php echo $ini['info']['license']; ?>" /></td>
 	 </tr>
 	 <tr class="mbox">

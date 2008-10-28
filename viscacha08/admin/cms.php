@@ -1789,7 +1789,7 @@ elseif ($job == 'doc_edit2') {
 			$content[$lid] = trim(strip_tags($content[$lid]));
 		}
 		if (empty($content[$lid]) || $usage != 1) {
-			$db->query("DELETE FROM v_documents_content WHERE did = '{$id}' AND lid = '{$lid}'");
+			$db->query("DELETE FROM {$db->pre}documents_content WHERE did = '{$id}' AND lid = '{$lid}'");
 		}
 		elseif ($usage == 1) {
 			if (empty($title[$lid])) {
@@ -1798,7 +1798,7 @@ elseif ($job == 'doc_edit2') {
 			if (empty($active[$lid])) {
 				$active[$lid] = 0;
 			}
-			$result = $db->query("SELECT lid FROM v_documents_content WHERE did = '{$id}' AND lid = '{$lid}'");
+			$result = $db->query("SELECT lid FROM {$db->pre}documents_content WHERE did = '{$id}' AND lid = '{$lid}'");
 			if ($format['parser'] == 3) {
 				// Handle bb-code like in the forums (entites etc.)
 				$content[$lid] = $gpc->save_str($content[$lid]);

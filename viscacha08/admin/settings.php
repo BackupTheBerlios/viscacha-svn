@@ -564,6 +564,7 @@ elseif ($job == 'server') {
         	}
     	}
 	}
+
 	echo head();
 	?>
 	<form name="form" method="post" action="admin.php?action=settings&job=server2">
@@ -581,13 +582,13 @@ elseif ($job == 'server') {
 	  <tr>
 	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_php_error_report'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_php_error_report_info'); ?></span></td>
 	   <td class="mbox" width="50%"><select name="error_reporting">
-	   <option value="-1"<?php echo iif($config['error_reporting'] == -1, ' selected="selected"'); ?>><?php echo $lang->phrase('admin_php_standard'); ?></option>
-	   <option value="E_ERROR"<?php echo iif($config['error_reporting'] == 1 || $config['error_reporting'] == 'E_ERROR', ' selected="selected"'); ?>><?php echo $lang->phrase('admin_e_error'); ?></option>
-	   <option value="E_WARNING"<?php echo iif($config['error_reporting'] == 2 || $config['error_reporting'] == 'E_WARNING', ' selected="selected"'); ?>><?php echo $lang->phrase('admin_e_warning'); ?> </option>
-	   <option value="E_NOTICE"<?php echo iif($config['error_reporting'] == 8 || $config['error_reporting'] == 'E_NOTICE', ' selected="selected"'); ?>><?php echo $lang->phrase('admin_e_notice'); ?></option>
-	   <option value="E_ALL"<?php echo iif($config['error_reporting'] == 2047 || $config['error_reporting'] == 'E_ALL', ' selected="selected"'); ?>><?php echo $lang->phrase('admin_e_all'); ?></option>
+	   <option value="-1"<?php echo iif(($config['error_reporting'] == -1 || empty($config['error_reporting'])), ' selected="selected"'); ?>><?php echo $lang->phrase('admin_php_standard'); ?></option>
+	   <option value="E_ERROR"<?php echo iif(($config['error_reporting'] == 1 || $config['error_reporting'] == 'E_ERROR'), ' selected="selected"'); ?>><?php echo $lang->phrase('admin_e_error'); ?></option>
+	   <option value="E_WARNING"<?php echo iif(($config['error_reporting'] == 2 || $config['error_reporting'] == 'E_WARNING'), ' selected="selected"'); ?>><?php echo $lang->phrase('admin_e_warning'); ?> </option>
+	   <option value="E_NOTICE"<?php echo iif(($config['error_reporting'] == 8 || $config['error_reporting'] == 'E_NOTICE'), ' selected="selected"'); ?>><?php echo $lang->phrase('admin_e_notice'); ?></option>
+	   <option value="E_ALL"<?php echo iif(($config['error_reporting'] == 2047 || $config['error_reporting'] == 'E_ALL'), ' selected="selected"'); ?>><?php echo $lang->phrase('admin_e_all'); ?></option>
 	   <?php if (version_compare(PHP_VERSION, '5.0.0', '>=')) { ?>
-	   <option value="E_STRICT"<?php echo iif($config['error_reporting'] == 2048 || $config['error_reporting'] == 'E_STRICT', ' selected="selected"'); ?>><?php echo $lang->phrase('admin_e_strict'); ?></option>
+	   <option value="E_STRICT"<?php echo iif(($config['error_reporting'] == 2048 || $config['error_reporting'] == 'E_STRICT'), ' selected="selected"'); ?>><?php echo $lang->phrase('admin_e_strict'); ?></option>
 	   <?php } ?>
 	   </select></td>
 	  </tr>
@@ -622,7 +623,7 @@ elseif ($job == 'server2') {
 	$c->updateconfig('gdversion', int);
 	$c->updateconfig('error_handler', int);
 	$c->updateconfig('error_log', int);
-	$c->updateconfig('error_reporting', int);
+	$c->updateconfig('error_reporting', str);
 	$c->updateconfig('correctsubdomains', int);
 	$c->updateconfig('hterrordocs', int);
 	$c->savedata();

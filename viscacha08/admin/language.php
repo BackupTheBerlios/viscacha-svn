@@ -93,7 +93,7 @@ elseif ($job == 'ajax_publicuse') {
 		if ($id == $config['langdir']) {
 			die($lang->phrase('admin_lang_cannot_unpublish_until_defined_other_lang'));
 		}
-		$db->query("SELECT * FROM {$db->pre}language WHERE publicuse = '1'");
+		$result = $db->query("SELECT * FROM {$db->pre}language WHERE publicuse = '1'");
 		if ($db->num_rows($result) == 1) {
 			die($lang->phrase('admin_lang_cannot_unpublish_because_no_other_lang'));
 		}
@@ -516,7 +516,7 @@ elseif ($job == 'lang_settings2') {
 			$error .= $lang->phrase('admin_lang_but_cannot_unpublish_until_defined_another_lang');
 			$use = 1;
 		}
-		$db->query("SELECT * FROM {$db->pre}language WHERE publicuse = '1'");
+		$result = $db->query("SELECT * FROM {$db->pre}language WHERE publicuse = '1'");
 		if ($db->num_rows($result) == 1) {
 			$error .= $lang->phrase('admin_lang_but_cannot_unpublish_because_no_other_lang_published');
 			$use = 1;
