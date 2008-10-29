@@ -728,30 +728,39 @@ function get_extension($url, $include_dot = false) {
 		return '.'.strtolower($path_parts["extension"]);
 	}
 }
-function UpdateBoardStats ($board) {
-	global $config, $db, $scache;
-	if ($config['updateboardstats'] == '1') {
-		$result = $db->query("SELECT COUNT(*) FROM {$db->pre}replies WHERE board='{$board}'",__LINE__,__FILE__);
-		$count = $db->fetch_num ($result);
 
-		$result = $db->query("SELECT COUNT(*) FROM {$db->pre}topics WHERE board='{$board}'",__LINE__,__FILE__);
-		$count2 = $db->fetch_num($result);
+function UpdateBoardStats($board) {
+	global $db, $scache;
+	$result = $db->query("SELECT COUNT(*) FROM {$db->pre}replies WHERE board='{$board}'",__LINE__,__FILE__);
+	$count = $db->fetch_num ($result);
 
-		$replies = $count[0]-$count2[0];
-		$topics = $count2[0];
+	$result = $db->query("SELECT COUNT(*) FROM {$db->pre}topics WHERE board='{$board}'",__LINE__,__FILE__);
+	$count2 = $db->fetch_num($result);
 
-		$result = $db->query("SELECT id FROM {$db->pre}topics WHERE board = '{$board}' ORDER BY last DESC LIMIT 1",__LINE__,__FILE__);
-	    $last = $db->fetch_num($result);
-	    if (empty($last[0])) {
-			$last[0] = 0;
-		}
-		$db->query("
-		UPDATE {$db->pre}forums SET topics = '{$topics}', replies = '{$replies}', last_topic = '{$last[0]}'
-		WHERE id = '{$board}'
-		",__LINE__,__FILE__);
-		$delobj = $scache->load('cat_bid');
-		$delobj->delete();
+	$replies = $count[0]-$count2[0];
+	$topics = $count2[0];
+
+	$result = $db->query("SELECT id FROM {$db->pre}topics WHERE board = '{$board}' ORDER BY last DESC LIMIT 1",__LINE__,__FILE__);
+    $last = $db->fetch_num($result);
+    if (empty($last[0])) {
+		$last[0] = 0;
 	}
+	$db->query("
+	UPDATE {$db->pre}forums SET topics = '{$topics}', replies = '{$replies}', last_topic = '{$last[0]}'
+	WHERE id = '{$board}'
+	",__LINE__,__FILE__);
+	$delobj = $scache->load('cat_bid');
+	$delobj->delete();
+}
+
+function UpdateBoardLastStats($board) {
+	global $db;
+	$result = $db->query("SELECT id FROM {$db->pre}topics WHERE board = '{$board}' ORDER BY last DESC LIMIT 1",__LINE__,__FILE__);
+    $last = $db->fetch_num($result);
+    if (empty($last[0])) {
+		$last[0] = 0;
+	}
+	$db->query("UPDATE {$db->pre}forums SET last_topic = '{$last[0]}' WHERE id = '{$board}'",__LINE__,__FILE__);
 }
 
 function UpdateMemberStats($id) {

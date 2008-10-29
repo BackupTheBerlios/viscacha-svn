@@ -124,7 +124,12 @@ if ($my->vlogin && $my->mp[0] == 1) {
 
 		($code = $plugins->load('managetopic_delete2_end')) ? eval($code) : null;
 
-		UpdateBoardStats($info['board']);
+		if ($config['updateboardstats'] == 1) {
+			UpdateBoardStats($info['board']);
+		}
+		else {
+			UpdateBoardLastStats($info['board']);
+		}
 		ok($lang->phrase('x_entries_deleted'),"showforum.php?id=".$info['board'].SID2URL_x);
 	}
 	elseif ($action == "move") {
@@ -172,8 +177,16 @@ if ($my->vlogin && $my->mp[0] == 1) {
 			$from = array();
 			xmail($to, $from, $data['title'], $data['comment']);
 		}
-		UpdateBoardStats($info['board']);
-		UpdateBoardStats($board);
+
+		if ($config['updateboardstats'] == 1) {
+			UpdateBoardStats($info['board']);
+			UpdateBoardStats($board);
+		}
+		else {
+			UpdateBoardLastStats($info['board']);
+			UpdateBoardLastStats($board);
+		}
+
 		ok($lang->phrase('x_entries_moved'),'showtopic.php?id='.$info['id']);
 	}
 	elseif ($action == "reports") {
@@ -456,7 +469,13 @@ if ($my->vlogin && $my->mp[0] == 1) {
 
 		($code = $plugins->load('managetopic_pdelete_end')) ? eval($code) : null;
 
-		UpdateBoardStats($info['board']);
+		if ($config['updateboardstats'] == 1) {
+			UpdateBoardStats($info['board']);
+		}
+		else {
+			UpdateBoardLastStats($info['board']);
+		}
+
 		ok($lang->phrase('x_entries_deleted'),$redirect);
 	}
 
@@ -595,7 +614,12 @@ if ($my->vlogin && $my->mp[0] == 1) {
 			($code = $plugins->load('managetopic_pmerge_end')) ? eval($code) : null;
 
 			UpdateTopicStats($info['id']);
-			UpdateBoardStats($info['board']);
+			if ($config['updateboardstats'] == 1) {
+				UpdateBoardStats($info['board']);
+			}
+			else {
+				UpdateBoardLastStats($info['board']);
+			}
 
 			$anz = count($ids);
 			ok($lang->phrase('x_entries_merged'),"showtopic.php?topic_id=".$base['id']."&action=jumpto&id=".$base['topic_id'].SID2URL_x);

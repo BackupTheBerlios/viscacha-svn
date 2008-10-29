@@ -255,8 +255,15 @@ if ($my->vlogin && $my->mp[0] == 1) {
 				xmail($to, $from, $data['title'], $data['comment']);
 			}
 		}
-		UpdateBoardStats($board);
-		UpdateBoardStats($_POST['opt_0']);
+		if ($config['updateboardstats'] == 1) {
+			UpdateBoardStats($board);
+			UpdateBoardStats($_POST['opt_0']);
+		}
+		else {
+			UpdateBoardLastStats($board);
+			UpdateBoardLastStats($_POST['opt_0']);
+		}
+
 		ok($lang->phrase('x_entries_moved'),'showforum.php?id='.$board.SID2URL_x);
 	}
 	elseif ($_GET['action'] == "delete") {
@@ -313,7 +320,13 @@ if ($my->vlogin && $my->mp[0] == 1) {
 		$anz += $db->affected_rows();
 		($code = $plugins->load('manageforum_delete_end')) ? eval($code) : null;
 
-		UpdateBoardStats($board);
+		if ($config['updateboardstats'] == 1) {
+			UpdateBoardStats($board);
+		}
+		else {
+			UpdateBoardLastStats($board);
+		}
+
 		ok($lang->phrase('x_entries_deleted'),"showforum.php?id=".$board.SID2URL_x);
 	}
 	elseif ($_GET['action'] == "stat") {

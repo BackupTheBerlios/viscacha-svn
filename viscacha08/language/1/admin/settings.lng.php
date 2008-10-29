@@ -8,7 +8,7 @@ $lang['admin_activate_flodblocking'] = 'Aktiviere Flood-Check für die Suche:';
 $lang['admin_activate_flodblocking_info'] = 'Der Flood-Check verhindert, das Suchformular sehr oft und sehr schnell hintereinander abzusenden. Da die Suche ein sehr rechenintensiver Prozess ist, würde das Szenario also auftreten, so würde der Server unter Umständen langsamer oder temporär nicht mehr nutzbar sein.';
 $lang['admin_activate_gzip_compression'] = 'Aktiviere GZip-Komprimierung:';
 $lang['admin_activate_gzip_compression_info'] = 'Wenn diese Option aktiviert ist, werden die gesendeten Seiten mit GZIP komprimiert um die benötigte Bandbreite ("Traffic") zu reduzieren. Die Komprimierung ist jedoch logischerwise rechenintensiver, daher sollte diese Option nur genutzt werden, wenn der Server nicht sowieso schon überlastet ist. Diese Funktion benötigz die Zlib-Erweiterung von PHP (Status: {$gzip})! Wenn Sie auf Ihrem Server bereits mod_gzip (oder eine ähnliche Funktion) benutzen, sollte diese Einstellung nicht aktiviert werden.';
-$lang['admin_activate_logging_missing_ip'] = 'Aktiviert die Protokollierung von IPs und User-Agends:';
+$lang['admin_activate_logging_missing_ip'] = 'Aktiviert die Protokollierung von IPs und User-Agents:';
 $lang['admin_activate_logging_missing_ip_info'] = 'Die protokollierten und neu erkannten IP-Adressen und User-Agents der Spider können <a href="admin.php?action=spider&amp;job=pending">hier</a> verwaltet werden.';
 $lang['admin_activate_logging_visits'] = 'Aktiviere Protokollierung von (letzten) Besuchen:';
 $lang['admin_activate_logging_visits_info'] = 'Die Spider können <a href="admin.php?action=spider&amp;job=manage">hier</a> verwaltet werden.';

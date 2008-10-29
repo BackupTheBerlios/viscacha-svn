@@ -130,7 +130,12 @@ if ($allowed == true) {
 					$db->query ("DELETE FROM {$db->pre}vote WHERE tid = '{$info['id']}'",__LINE__,__FILE__);
 				}
 				($code = $plugins->load('edit_save_delete')) ? eval($code) : null;
-				UpdateBoardStats($info['board']);
+				if ($config['updateboardstats'] == 1) {
+					UpdateBoardStats($info['board']);
+				}
+				else {
+					UpdateBoardLastStats($info['board']);
+				}
 				UpdateTopicStats($info['topic_id']);
 
 				ok($lang->phrase('edit_postdeleted'),iif($info['tstart'] == 1, "showforum.php?id=".$info['board'], "showtopic.php?action=last&id=".$info['topic_id']).SID2URL_x);

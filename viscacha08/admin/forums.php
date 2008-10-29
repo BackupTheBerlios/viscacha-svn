@@ -528,7 +528,7 @@ elseif ($job == 'forum_edit2') {
 
 	$id = $gpc->get('id', int);
 	$name = $gpc->get('name', str);
-	$description = $gpc->get('description', str);
+	$description = $gpc->get('description', db_esc);
 	$parent = $gpc->get('parent', int);
 	$opt_re = $gpc->get('link', str);
 	$topiczahl = $gpc->get('topiczahl', int);
@@ -655,7 +655,6 @@ elseif ($job == 'forum_edit2') {
 		  `message_title` = '{$message_title}',
 		  `message_text` = '{$message_text}'
 		WHERE id = '{$id}'
-		LIMIT 1;
 		", __LINE__, __FILE__);
 
 		$delobj = $scache->load('cat_bid');
@@ -813,7 +812,7 @@ elseif ($job == 'forum_add2') {
 	echo head();
 
 	$name = $gpc->get('name', str);
-	$description = $gpc->get('description', str);
+	$description = $gpc->get('description', db_esc);
 	$sortx = $gpc->get('sort_where', int);
 	$sort = $gpc->get('sort', int);
 	$parent = $gpc->get('parent', int);
