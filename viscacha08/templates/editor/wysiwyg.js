@@ -44,7 +44,7 @@ var WYSIWYG = {
 		this.DefaultStyle = "font-family: \"Trebuchet MS\", Verdana, Arial, Helvetica, sans-serif; font-size: 9pt; background-color: #FFFFFF; white-space: normal;";
 
 		// Stylesheet if editor is disabled
-		this.DisabledStyle = "";
+		this.DisabledStyle = "font-family: \"Trebuchet MS\", Verdana, Arial, Helvetica, sans-serif; font-size: 9pt; background-color: #eeeeee; white-space: normal; color: #555555;";
 
 		// Confirmation message if you strip any HTML added by word
 		this.RemoveFormatConfMessage = "Clean HTML inserted by MS Word?";
@@ -274,8 +274,13 @@ var WYSIWYG = {
 	 * @param {Selection} sel Selection object
 	 * @return {Range} Range object
 	 */
-	getRange: function(sel) {
-		return sel.createRange ? sel.createRange() : sel.getRangeAt(0);
+	getRange: function(sel, n) {
+		var w = this.getEditorWindow(n);
+		var range = sel.rangeCount > 0 ? sel.getRangeAt(0) : sel.createRange ? sel.createRange() : w.document.createRange();
+		if (!range) {
+			range = document.body && document.body.createTextRange ? w.document.body.createTextRange() : w.document.createRange();
+		}
+		return range;
 	},
 
 	/**
@@ -315,7 +320,8 @@ var WYSIWYG = {
 	 * @return {HtmlWindowElement} Html window object
 	 */
 	getEditorWindow: function(n) {
-		return this.getEditor(n).contentWindow;
+		var ed = this.getEditor(n);
+		return ed.contentWindow ? ed.contentWindow: ed.contentDocument;
 	},
 
 	/**
@@ -327,7 +333,6 @@ var WYSIWYG = {
 	attach: function(id, settings) {
 		if(id != "all") {
 			this.setSettings(id, settings);
-			//WYSIWYG_Core.includeCSS(this.config[id].CSSFile);
 			WYSIWYG_Core.addEvent(window, "load", function generateEditor() {WYSIWYG._generate(id, settings);});
 		}
 		else {
@@ -346,7 +351,6 @@ var WYSIWYG = {
 			var id = areas[i].getAttribute("id");
 			if(id == null || id == "") continue;
 			this.setSettings(id, settings);
-			//WYSIWYG_Core.includeCSS(this.config[id].CSSFile);
 			WYSIWYG._generate(id, settings);
 		}
 	},
@@ -361,7 +365,6 @@ var WYSIWYG = {
 	display: function(id, settings) {
 		if(id != "all") {
 			this.setSettings(id, settings);
-			//WYSIWYG_Core.includeCSS(this.config[id].CSSFile);
 			WYSIWYG_Core.addEvent(window, "load", function displayIframe() {WYSIWYG._display(id, settings);});
 		}
 		else {
@@ -381,7 +384,6 @@ var WYSIWYG = {
 			var id = areas[i].getAttribute("id");
 			if(id == null || id == "") continue;
 			this.setSettings(id, settings);
-			//WYSIWYG_Core.includeCSS(this.config[id].CSSFile);
 			WYSIWYG._display(id, settings);
 		}
 	},
@@ -420,7 +422,7 @@ var WYSIWYG = {
 		var doc = this.getEditorWindow(n).document;
 		// get selection and range
 		var sel = this.getSelection(n);
-		var range = this.getRange(sel);
+		var range = this.getRange(sel, n);
 
 		// the current tag of range
 		var img = this.findParent("img", range);
@@ -488,7 +490,7 @@ var WYSIWYG = {
 		var doc = this.getEditorWindow(n).document;
 		// get selection and range
 		var sel = this.getSelection(n);
-		var range = this.getRange(sel);
+		var range = this.getRange(sel, n);
 		var lin = null;
 
 		// get element from selection
@@ -956,11 +958,24 @@ var WYSIWYG = {
 	getNodeTree: function(n) {
 
 		var sel = this.getSelection(n);
-		var range = this.getRange(sel);
-
+		if (sel === null) {
+			return null;
+		}
+		
+		var range = this.getRange(sel, n);
+		
 		// get element of range
 		var tag = this.getTag(range);
+		
 		if(tag == null) { return; }
+		
+		// Fix for blank window with nothing selected - Safari
+		if (tag.nodeName === "HTML") {
+			nodeTree = [tag];
+			nodeTree[1] = tag.childNodes[0];
+			return nodeTree;
+		}
+		
 		// get parent of element
 		var node = this.getParent(tag);
 		// init the tree as array with the current selected element
@@ -985,7 +1000,7 @@ var WYSIWYG = {
 	removeNode: function(n) {
 		// get selection and range
 		var sel = this.getSelection(n);
-		var range = this.getRange(sel);
+		var range = this.getRange(sel, n);
 		// the current tag of range
 		var tag = this.getTag(range);
 		var parent = tag.parentNode;
@@ -1016,19 +1031,8 @@ var WYSIWYG = {
 	 * @param {String} n The editor identifier (the textarea's ID)
 	 */
 	getSelection: function(n) {
-		var ifrm = this.getEditorWindow(n);
-		var doc = ifrm.document;
-		var sel = null;
-		if(ifrm.getSelection){
-			sel = ifrm.getSelection();
-		}
-		else if (doc.getSelection) {
-			sel = doc.getSelection();
-		}
-		else if (doc.selection) {
-			sel = doc.selection;
-		}
-		return sel;
+		var w = this.getEditorWindow(n);
+		return w.getSelection ? w.getSelection() : w.document.selection;
 	},
 
 	/**
@@ -1092,12 +1096,16 @@ var WYSIWYG = {
 		var toHexColor = WYSIWYG_Core.isMSIE ? WYSIWYG_Core._dec_to_rgb : WYSIWYG_Core.toHexColor;
 
 		// popup screen positions
-		var popupPosition = {left: parseInt(window.screen.availWidth / 3), top: parseInt(window.screen.availHeight / 3)};
+		var popupPosition = {
+			left: parseInt(window.screen.availWidth / 3, 10),
+			top: parseInt(window.screen.availHeight / 3, 10)
+		};
 
 		// Check the insert image popup implementation
 		var imagePopupFile = this.config[n].PopupsDir + 'insert_image.html';
 		var imagePopupWidth = 400;
 		var imagePopupHeight = 210;
+		var currentColor, rgb, form;
 		if(typeof this.config[n].ImagePopupFile != "undefined" && this.config[n].ImagePopupFile != "") {
 			imagePopupFile = this.config[n].ImagePopupFile;
 		}
@@ -1302,7 +1310,8 @@ var WYSIWYG = {
 
 		// get the first range of the selection
 		// (there's almost always only one range)
-		var range = sel.getRangeAt(0);
+		//var range = sel.getRangeAt(0);
+		var range = this.getRange(sel, n);
 
 		// deselect everything
 		sel.removeAllRanges();
@@ -1355,7 +1364,13 @@ var WYSIWYG = {
 			else {
 				// else simply insert the node
 				afterNode = container.childNodes[pos];
-				container.insertBefore(insertNode, afterNode);
+				if (afterNode.nodeName === "HTML") {
+					// Wasn't working in Safari. Wouldn't insert BEFORE the HTML node, so I'm appending to the BODY node.
+					afterNode = afterNode.childNodes[0];
+					afterNode.appendChild(insertNode);
+				} else {
+					container.insertBefore(insertNode, afterNode);
+				}
 			}
 
 			try {
@@ -1363,7 +1378,7 @@ var WYSIWYG = {
 				range.setStart(afterNode, 0);
 			}
 			catch(e) {
-				// alert(e);
+				alert(e);
 			}
 		}
 
@@ -1416,11 +1431,13 @@ var WYSIWYG = {
 		if(typeof(exid) == "undefined") exid = "";
 		var dropdowns = this.config[n].DropDowns;
 		for(var id in dropdowns) {
+		    if (dropdowns[id] !== "undefined") {
 			var dropdown = dropdowns[id];
 			if(dropdown.id != exid) {
 				var divId = "elm_" + dropdown.id + "_" + n;
 				if($(divId)) $(divId).style.display = 'none';
 			}
+		    }
 		}
 	},
 
@@ -1462,6 +1479,8 @@ var WYSIWYG = {
 			iHTML = this.stripURLPath(n, iHTML);
 			// replace all decimal color strings with hex decimal color strings
 			iHTML = WYSIWYG_Core.replaceRGBWithHexColor(iHTML);
+	    	WYSIWYG_Beautifier.Init();
+	    	iHTML = WYSIWYG_Beautifier.Format(iHTML);
 			doc.body.innerText = iHTML;
 		}
 	  	// View Source for Mozilla/Netscape
@@ -1493,7 +1512,7 @@ var WYSIWYG = {
 	},
 
 	/**
-	 * Shows the HTML Design generated by the WYSIWYG editor
+	 * Shows the HTML source code generated by the WYSIWYG editor
 	 *
 	 * @param {String} n The editor identifier (textarea ID)
 	 */
@@ -1582,12 +1601,12 @@ var WYSIWYG = {
 
 			// exact replacing of url. regex: src="<url>"
 			if(exact) {
-				regex = eval("/(src=\")(" + url + ")([^\"]*)/gi");
+				regex = new RegExp('(src=")(' + url + ')([^"]*)', 'gi');
 				content = content.replace(regex, "$1$3");
 			}
 			// not exect replacing of url. regex: <url>
 			else {
-				regex = eval("/(" + url + ")(.+)/gi");
+				regex = new RegExp('(' + url + ')(.+)', 'gi');
 				content = content.replace(regex, "$2");
 			}
 
@@ -1598,12 +1617,12 @@ var WYSIWYG = {
 
 				// exact replacing of url. regex: src="<url>"
 				if(exact) {
-					regex = eval("/(src=\")(" + url + ")([^\"]*)/gi");
+					regex = new RegExp('(src="' + url + ')([^"]*)', 'gi');
 					content = content.replace(regex, "$1$3");
 				}
 				// not exect replacing of url. regex: <url>
 				else {
-					regex = eval("/(" + url + ")(.+)/gi");
+					regex = new RegExp('(' + url + ')(.+)', 'gi');
 					content = content.replace(regex, "$2");
 				}
 			}
@@ -1617,12 +1636,12 @@ var WYSIWYG = {
 			// strip absolute urls with a heading slash ("/product/index.html")
 			// exact replacing of url. regex: src="<url>"
 			if(exact) {
-				regex = eval("/(href=\")(" + url + ")([^\"]*)/gi");
+				regex = new RegExp('(href="' + url + ')([^"]*)', 'gi');
 				content = content.replace(regex, "$1$3");
 			}
 			// not exect replacing of url. regex: <url>
 			else {
-				regex = eval("/(" + url + ")(.+)/gi");
+				regex = new RegExp('(' + url + ')(.+)', 'gi');
 				content = content.replace(regex, "$2");
 			}
 
@@ -1632,12 +1651,12 @@ var WYSIWYG = {
 				url = WYSIWYG_Core.stringToRegex(result[0]);
 				// exact replacing of url. regex: src="<url>"
 				if(exact) {
-					regex = eval("/(href=\")(" + url + ")([^\"]*)/gi");
+					regex = new RegExp('(href="' + url + ')([^"]*)', 'gi');
 					content = content.replace(regex, "$1$3");
 				}
 				// not exect replacing of url. regex: <url>
 				else {
-					regex = eval("/(" + url + ")(.+)/gi");
+					regex = new RegExp('(' + url + ')(.+)', 'gi');
 					content = content.replace(regex, "$2");
 				}
 
@@ -1647,12 +1666,12 @@ var WYSIWYG = {
 			url = WYSIWYG_Core.stringToRegex(stripAnchorUrl);
 			// exact replacing of url. regex: src="<url>"
 			if(exact) {
-				regex = eval("/(href=\")(" + url + ")(#[^\"]*)/gi");
+				regex = new RegExp('(href="' + url + ')(#[^"]*)', 'gi');
 				content = content.replace(regex, "$1$3");
 			}
 			// not exect replacing of url. regex: <url>
 			else {
-				regex = eval("/(" + url + ")(.+)/gi");
+				regex = new RegExp('(' + url + ')(.+)', 'gi');
 				content = content.replace(regex, "$2");
 			}
 
@@ -1665,12 +1684,12 @@ var WYSIWYG = {
 				url = WYSIWYG_Core.stringToRegex(url);
 				// exact replacing of url. regex: src="<url>"
 				if(exact) {
-					regex = eval("/(href=\")(" + url + ")(#[^\"]*)/gi");
+					regex = new RegExp('(href="' + url + ')(#[^"]*)', 'gi');
 					content = content.replace(regex, "$1$3");
 				}
 				// not exect replacing of url. regex: <url>
 				else {
-					regex = eval("/(" + url + ")(.+)/gi");
+					regex = new RegExp('(' + url + ')(.+)', 'gi');
 					content = content.replace(regex, "$2");
 				}
 			}
@@ -1865,7 +1884,7 @@ var WYSIWYG = {
 		// validate if the press key is the carriage return key
 		if (editor.event.keyCode==13) {
 	    	if (!editor.event.shiftKey) {
-				sel = this.getRange(this.getSelection(n));
+		    sel = this.getRange(this.getSelection(n), n);
 	            sel.pasteHTML("<br>");
 	            editor.event.cancelBubble = true;
 	            editor.event.returnValue = false;
@@ -1876,7 +1895,7 @@ var WYSIWYG = {
 	            return false;
 			}
 	        else {
-	            sel = this.getRange(this.getSelection(n));
+		    sel = this.getRange(this.getSelection(n), n);
 	            sel.pasteHTML("<p>");
 	            editor.event.cancelBubble = true;
 	            editor.event.returnValue = false;
@@ -1899,7 +1918,7 @@ var WYSIWYG = {
 	selectNode: function(n, level) {
 
 		var sel = this.getSelection(n);
-		var range = this.getRange(sel);
+		var range = this.getRange(sel, n);
 		var parentnode = this.getTag(range);
 		var i = 0;
 
@@ -1924,7 +1943,7 @@ var WYSIWYG = {
 
 		var doc = this.getEditorWindow(n).document;
 		var sel = this.getSelection(n);
-		var range = this.getRange(sel);
+		var range = this.getRange(sel, n);
 
 		if(!WYSIWYG_Core.isMSIE) {
 			if (node.nodeName == "BODY") {
@@ -2039,7 +2058,7 @@ var WYSIWYG_Core = {
 	 */
 	isBrowserCompatible: function() {
 		// Validate browser and compatiblity
-		if ((navigator.userAgent.indexOf('Safari') != -1 ) || !document.getElementById || !document.designMode){
+		if (!document.getElementById || !document.designMode || (!document.selection && typeof document.createRange === "undefined")) {
 			//no designMode (Safari lies)
 	   		return false;
 		}
@@ -2192,12 +2211,12 @@ var WYSIWYG_Core = {
 	 */
 	cancelEvent: function(e) {
 		if (!e) return false;
-		if (this.isMSIE) {
-			e.returnValue = false;
-			e.cancelBubble = true;
-		} else {
+		if (window.event) {
+			window.event.returnValue = false;
+			window.event.cancelBubble = true;
+		} else if (e && e.stopPropagation && e.preventDefault) {
 			e.preventDefault();
-			e.stopPropagation && e.stopPropagation();
+			e.stopPropagation();
 		}
 		return false;
 	},
@@ -2254,7 +2273,7 @@ var WYSIWYG_Core = {
 		var matcher = str.match(/rgb\([0-9 ]+,[0-9 ]+,[0-9 ]+\)/gi);
 		if(matcher) {
 			for(var j=0; j<matcher.length;j++) {
-				var regex = eval("/" + WYSIWYG_Core.stringToRegex(matcher[j]) + "/gi");
+				var regex = new RegExp(WYSIWYG_Core.stringToRegex(matcher[j]), "gi");
 				// replace the decimal color strings with hex color strings
 				str = str.replace(regex, "#" + this.toHexColor(matcher[j]));
 			}
@@ -2280,9 +2299,7 @@ var WYSIWYG_Core = {
 				WYSIWYG.getEditorWindow(n).document.execCommand(cmd, false, value);
 			}
 			catch(e) {
-				if(confirm("Copy/Cut/Paste is not available in Mozilla and Firefox\nDo you want more information about this issue?")) {
-					window.open('http://www.mozilla.org/editor/midasdemo/securityprefs.html');
-				}
+				alert("Copy, Cut and Paste is not available in this browser.");
 			}
 		}
 
@@ -2520,9 +2537,11 @@ var WYSIWYG_Table = {
 	create: function(n, table, cols, rows, td_style) {
 		// get editor
 		var doc = WYSIWYG.getEditorWindow(n).document;
-		// get selection and range
+
+		// get selection and range ( +'' forces the object to a string object for Safari )
+		// IE's selection and range objects do not conform to the W3C
 		var sel = WYSIWYG.getSelection(n);
-		var range = WYSIWYG.getRange(sel);
+		var range = WYSIWYG.getRange(sel, n);
 		var td;
 
 		// get element from selection
@@ -2565,16 +2584,17 @@ var WYSIWYG_Table = {
 	refreshHighlighting: function(n) {
 		var doc = WYSIWYG.getEditorWindow(n).document;
 		var tables = doc.getElementsByTagName("table");
-		for(var i=0;i<tables.length;i++) {
-			this._enableHighlighting(tables[i]);
-		}
-		var tds = doc.getElementsByTagName("td");
-		for(var i=0;i<tds.length;i++) {
-			this._enableHighlighting(tds[i]);
-		}
-		var tds = doc.getElementsByTagName("th");
-		for(var i=0;i<tds.length;i++) {
-			this._enableHighlighting(tds[i]);
+		var tds,j,i;
+		for(i=0; i<tables.length; i++) {
+			this._enableHighlighting(tables[i], tables[i]);
+			tds = tables[i].getElementsByTagName("td");
+			for(j=0; j<tds.length; j++) {
+				this._enableHighlighting(tds[j], tables[i]);
+			}
+			tds = tables[i].getElementsByTagName("th");
+			for(j=0; j<tds.length; j++) {
+				this._enableHighlighting(tds[j], tables[i]);
+			}
 		}
 	},
 
@@ -2586,29 +2606,63 @@ var WYSIWYG_Table = {
 	disableHighlighting: function(n) {
 		var doc = WYSIWYG.getEditorWindow(n).document;
 		var tables = doc.getElementsByTagName("table");
-		for(var i=0;i<tables.length;i++) {
+		var tds,j,i;
+		for(i=0; i<tables.length; i++) {
 			this._disableHighlighting(tables[i]);
+			tds = tables[i].getElementsByTagName("td");
+			for(j=0; j<tds.length; j++) {
+				this._disableHighlighting(tds[j]);
+			}
+			tds = tables[i].getElementsByTagName("th");
+			for(j=0; j<tds.length; j++) {
+				this._disableHighlighting(tds[j]);
+			}
 		}
-		var tds = doc.getElementsByTagName("td");
-		for(var i=0;i<tds.length;i++) {
-			this._disableHighlighting(tds[i]);
+
+	},
+
+	_hasTableBorder: function(style, border) {
+		var hasBorder = false;
+		var hasStyle = false;
+		if (typeof style == 'string') {
+			var style_borders = style.match(/(border(-(top|left|right|bottom))?:[^;]+|border-((top|left|right|bottom)-)?width:[^;]+)/ig);
+			if (style_borders) {
+				hasStyle = true;
+				for (var i = 0; i < style_borders.length; i++) {
+					widths = style_borders[i].match(/(\d+(px|pc|pt)|\d+(.\d+)?(ex|em|cm|in|mm|%))/ig);
+					if (widths) {
+						for (var j = 0; j < widths.length; j++) {
+							number = widths[j].replace(/(px|pc|pt|ex|em|cm|in|mm|%)/ig, '');
+							number = parseFloat(number);
+							if (number > 0) {
+								hasBorder = true;
+								break;
+							}
+						}
+					}
+				}
+			}
 		}
-		var tds = doc.getElementsByTagName("th");
-		for(var i=0;i<tds.length;i++) {
-			this._disableHighlighting(tds[i]);
+		if (hasStyle == false && border > 0) {
+			hasBorder = true;
 		}
+		return hasBorder;
 	},
 
 	/**
 	 * @private
 	 */
-	_enableHighlighting: function(node) {
+	_enableHighlighting: function(node, table) {
 		var style = WYSIWYG_Core.getAttribute(node, "style");
-		if(!style) style = "";
-		//alert("ENABLE: ELM = " + node.tagName + "; STYLE = " + style);
+		var border = WYSIWYG_Core.getAttribute(table, "border");
+		if(!style) {
+			style = "";
+		}
 		WYSIWYG_Core.removeAttribute(node, "prevstyle");
-		WYSIWYG_Core.setAttribute(node, "prevstyle", style);
-		WYSIWYG_Core.setAttribute(node, "style", "border:1px dashed #AAAAAA;");
+		if (this._hasTableBorder(style, border) == false && node != table) {
+			WYSIWYG_Core.setAttribute(node, "prevstyle", style);
+			WYSIWYG_Core.setAttribute(node, "style", "border:1px dashed #AAAAAA;");
+		}
 	},
 
 	/**
@@ -2616,11 +2670,12 @@ var WYSIWYG_Table = {
 	 */
 	_disableHighlighting: function(node) {
 		var style = WYSIWYG_Core.getAttribute(node, "prevstyle");
-		//alert("DISABLE: ELM = " + node.tagName + "; STYLE = " + style);
 		// if no prevstyle is defined, the table is not in highlighting mode
-		WYSIWYG_Core.removeAttribute(node, "prevstyle");
-		WYSIWYG_Core.removeAttribute(node, "style");
-		WYSIWYG_Core.setAttribute(node, "style", style);
+		if(style) {
+			WYSIWYG_Core.removeAttribute(node, "prevstyle");
+			WYSIWYG_Core.removeAttribute(node, "style");
+			WYSIWYG_Core.setAttribute(node, "style", style);
+		}
 	}
 }
 
@@ -2635,45 +2690,53 @@ function $(id) {
 }
 
 /**
- * Emulates insertAdjacentHTML(), insertAdjacentText() and
- * insertAdjacentElement() three functions so they work with Netscape 6/Mozilla
- * by Thor Larholm me@jscript.dk
- */
-if(typeof HTMLElement!="undefined" && !HTMLElement.prototype.insertAdjacentElement){
-	HTMLElement.prototype.insertAdjacentElement = function (where,parsedNode) {
-	  switch (where){
-		case 'beforeBegin':
-			this.parentNode.insertBefore(parsedNode,this);
-			break;
-		case 'afterBegin':
-			this.insertBefore(parsedNode,this.firstChild);
-			break;
-		case 'beforeEnd':
-			this.appendChild(parsedNode);
-			break;
-		case 'afterEnd':
-			if (this.nextSibling) {
-				this.parentNode.insertBefore(parsedNode,this.nextSibling);
+* Emulates insertAdjacentHTML(), insertAdjacentText() and 
+* insertAdjacentElement() three functions so they work with Netscape 6/Mozilla/Safari
+* by Thor Larholm me@jscript.dk
+*
+* Modified: 6/11/2008 By CJBoCo
+*  - Instead of testing for browser type, we test if the object is undefined
+*/
+if (typeof HTMLElement !== "undefined") {
+
+	if (typeof HTMLElement.insertAdjacentHTML === "undefined") {
+		HTMLElement.prototype.insertAdjacentElement = function(where, parsedNode) {
+			switch (where) {
+			case 'beforeBegin':
+				this.parentNode.insertBefore(parsedNode, this);
+				break;
+			case 'afterBegin':
+				this.insertBefore(parsedNode, this.firstChild);
+				break;
+			case 'beforeEnd':
+				this.appendChild(parsedNode);
+				break;
+			case 'afterEnd':
+				if (this.nextSibling) {
+					this.parentNode.insertBefore(parsedNode, this.nextSibling);
+				} else {
+					this.parentNode.appendChild(parsedNode);
+				}
+				break;
 			}
-			else {
-				this.parentNode.appendChild(parsedNode);
-			}
-			break;
-	  }
-	};
+		};
+	}
 
-	HTMLElement.prototype.insertAdjacentHTML = function (where,htmlStr) {
-		var r = this.ownerDocument.createRange();
-		r.setStartBefore(this);
-		var parsedHTML = r.createContextualFragment(htmlStr);
-		this.insertAdjacentElement(where,parsedHTML);
-	};
+	if (typeof HTMLElement.insertAdjacentHTML === "undefined") {
+		HTMLElement.prototype.insertAdjacentHTML = function(where, htmlStr) {
+			var r = this.ownerDocument.createRange();
+			r.setStartBefore(this);
+			var parsedHTML = r.createContextualFragment(htmlStr);
+			this.insertAdjacentElement(where, parsedHTML);
+		};
+	}
 
-
-	HTMLElement.prototype.insertAdjacentText = function (where,txtStr) {
-		var parsedText = document.createTextNode(txtStr);
-		this.insertAdjacentElement(where,parsedText);
-	};
+	if (typeof HTMLElement.insertAdjacentText === "undefined") {
+		HTMLElement.prototype.insertAdjacentText = function(where, txtStr) {
+			var parsedText = document.createTextNode(txtStr);
+			this.insertAdjacentElement(where, parsedText);
+		};
+	}
 }
 
 // Config

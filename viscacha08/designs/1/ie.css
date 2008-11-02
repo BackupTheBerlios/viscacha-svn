@@ -36,6 +36,8 @@
 }
 * html .editor_textarea_outer .popup {
 	border-top-width: 0px;
+	height: expression( this.scrollHeight > 249 ? "250px" : "auto" );
+	overflow-y: auto;
 }
 * html .editor_textarea_outer .popup strong {
 	border-width: 0px;
