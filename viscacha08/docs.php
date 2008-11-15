@@ -125,7 +125,12 @@ if ($my->p['docs'] == 1 && GroupCheck($info['groups'])) {
 	}
 
 	if ($typedata['inline'] == 0) {
-		$info['content'] = DocCodeParser($info['content'], $typedata['parser']);
+		if ($typedata['remote'] == 0) {
+			$info['content'] = DocCodeParser($info['content'], $typedata['parser']);
+		}
+		else { // Only for backward compatibility of templates
+			$info['file'] = $info['content'];
+		}
 		$breadcrumb->Add($info['title']);
 		echo $tpl->parse("header");
 		($code = $plugins->load('docs_body_start')) ? eval($code) : null;

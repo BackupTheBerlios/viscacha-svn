@@ -1525,9 +1525,6 @@ elseif ($job == 'doc_add3') {
 
 	$i = 0;
 	foreach ($use as $lid => $usage) {
-		if ($format['remote'] == 1) {
-			$content[$lid] = '';
-		}
 		if ($usage == 1) {
 			$i++;
 		}
@@ -1555,7 +1552,7 @@ elseif ($job == 'doc_add3') {
 			if (strlen($content[$lid]) < 20) {
 				$content[$lid] = trim(strip_tags($content[$lid]));
 			}
-			if (empty($content[$lid])) {
+			if (empty($content[$lid]) && $format['remote'] != 1) {
 				continue;
 			}
 			if (empty($title[$lid])) {
@@ -1564,11 +1561,11 @@ elseif ($job == 'doc_add3') {
 			if (empty($active[$lid])) {
 				$active[$lid] = 0;
 			}
-			if ($format['parser'] == 3) {
+			if ($format['parser'] == 3) { // bb code page
 				// Handle bb-code like in the forums (entites etc.)
 				$content[$lid] = $gpc->save_str($content[$lid]);
 			}
-			else {
+			else { // html page or inline frame
 				$content[$lid] = $db->escape_string($content[$lid]);
 			}
 			$lid = $gpc->save_int($lid);
@@ -1750,9 +1747,6 @@ elseif ($job == 'doc_edit2') {
 
 	$i = 0;
 	foreach ($use as $lid => $usage) {
-		if ($format['remote'] == 1) {
-			$content[$lid] = '';
-		}
 		if ($usage == 1) {
 			$i++;
 		}
@@ -1799,11 +1793,11 @@ elseif ($job == 'doc_edit2') {
 				$active[$lid] = 0;
 			}
 			$result = $db->query("SELECT lid FROM {$db->pre}documents_content WHERE did = '{$id}' AND lid = '{$lid}'");
-			if ($format['parser'] == 3) {
+			if ($format['parser'] == 3) { // bb code page
 				// Handle bb-code like in the forums (entites etc.)
 				$content[$lid] = $gpc->save_str($content[$lid]);
 			}
-			else {
+			else { // html page or inline frame
 				$content[$lid] = $db->escape_string($content[$lid]);
 			}
 			if ($db->num_rows($result) == 1) {
