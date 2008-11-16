@@ -427,8 +427,7 @@ function httpAuth($name = null) {
 		global $config;
 		$name = $config['fname'];
 	}
-	header('WWW-Authenticate: Basic Realm="'.addslashes($name).'"');
-	header('HTTP/1.0 401 Unauthorized');
+	sendStatusCode(401, addslashes($name));
 	die("Authorization Required.");
 }
 

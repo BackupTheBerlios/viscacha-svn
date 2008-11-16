@@ -332,7 +332,7 @@ elseif ($is_member) {
 }
 else {
 	$db->close();
-	viscacha_header('Location: members.php');
+	sendStatusCode(301, 'members.php')
 	exit;
 }
 

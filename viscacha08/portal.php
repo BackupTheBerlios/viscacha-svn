@@ -32,8 +32,7 @@ if (!defined('VISCACHA_CORE')) {
 require_once("data/config.inc.php");
 
 if ($config['indexpage'] == SCRIPTNAME && !defined('IS_INCLUDED')) {
-	header("HTTP/1.0 301 Moved Permanently");
-    header('Location: index.php');
+	sendStatusCode(301, 'index.php');
     exit;
 }
 
@@ -46,8 +45,7 @@ if ($plugins->countPlugins('portal') == 0) {
 	else {
 		$slog->updatelogged();
 		$db->close();
-		header("HTTP/1.0 301 Moved Permanently");
-	    header('Location: forum.php');
+		sendStatusCode(301, 'index.php');
 	    exit;
 	}
 }

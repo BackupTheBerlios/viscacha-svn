@@ -230,6 +230,7 @@ if ($config['foffline'] && defined('TEMPSHOWLOG') == false) {
 
 	if ($my->p['admin'] != 1) {
 		$offline = file_get_contents('data/offline.php');
+		sendStatusCode(503, 3600);
         ($code = $plugins->load('frontend_init_offline')) ? eval($code) : null;
 		echo $tpl->parse("offline");
 

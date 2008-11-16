@@ -773,11 +773,12 @@ elseif ($_GET['action'] == "board_rules") {
 elseif ($_GET['action'] == "error") {
 	$my->p = $slog->Permissions();
 	$errid = $gpc->get('id', int);
-	if ($errid != 400 && $errid != 404 && $errid != 401 && $errid != 403  && $errid != 500) {
-		$errid = 0;
+	if ($errid != 400 && $errid != 404 && $errid != 401 && $errid != 403) {
+		$errid = 500; // internal server error
 	}
+	sendStatusCode($errid);
 	($code = $plugins->load('misc_error_prepared')) ? eval($code) : null;
-	$breadcrumb->Add($lang->phrase('htaccess_error_'.$_GET['id']));
+	$breadcrumb->Add($lang->phrase('htaccess_error_'.$errid));
 	echo $tpl->parse("header");
 	echo $tpl->parse("misc/error");
 }
