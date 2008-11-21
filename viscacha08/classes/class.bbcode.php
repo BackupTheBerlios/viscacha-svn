@@ -816,15 +816,22 @@ class BBCode {
 	    return substr($this->benchmark[$type], 0, 7);
 	}
 	function parseSmileys ($text, $type = 'html') {
-	    $thiszm1 = benchmarktime();
-	    $this->cache_smileys();
+	    $start = benchmarktime();
 		if ($type != 'plain') {
+			$this->cache_smileys();
 			foreach ($this->smileys as $smiley) {
-				$text = str_replace(' '.$smiley['search'], ' <img src="'.$smiley['replace'].'" border="0" alt="'.$smiley['desc'].'" />', $text);
+				// Old way to replace smileys - use this when you have problems with smileys
+				// $text = str_replace(' '.$smiley['search'], ' <img src="'.$smiley['replace'].'" border="0" alt="'.$smiley['desc'].'" />', $text);
+				if (strpos($text, $smiley['search']) !== false) {
+					$text = preg_replace(
+						'~(\r|\n|\t|\s|\>|\<|^)'.preg_quote($smiley['search'], '~').'(\r|\n|\t|\s|\>|\<|$)~s',
+						'\1<img src="'.$smiley['replace'].'" border="0" alt="'.$smiley['desc'].'" />\2',
+						$text
+					);
+				}
 			}
 		}
-		$thiszm2 = benchmarktime();
-		$this->benchmark['smileys'] += $thiszm2-$thiszm1;
+		$this->benchmark['smileys'] += benchmarktime() - $start;
 		return $text;
 	}
 	function getSmileys () {

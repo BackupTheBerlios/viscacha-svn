@@ -137,6 +137,11 @@ function sendStatusCode($code, $additional = null) {
 	}
 }
 
+function splitWords($text) {
+	$word_seperator = "\\.\\,;:\\+!\\?\\_\\|\s\"'\\#\\[\\]\\%\\{\\}\\(\\)\\/\\\\";
+	return preg_split('/['.$word_seperator.']+?/', $text, -1, PREG_SPLIT_NO_EMPTY);
+}
+
 function checkmx_idna($host) {
 	if (empty($host)) {
 		return false;

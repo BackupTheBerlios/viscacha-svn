@@ -257,6 +257,7 @@ $lang['error'] = 'Fehlermeldung:';
 $lang['error_customfieldtoolong'] = 'Ihre Eingabe bei einem ben&ouml;tigten zus&auml;tzlichen Feld ist zu lang.';
 $lang['error_missingrequiredfield'] = 'Sie haben ein ben&ouml;tigtes zus&auml;tzliches Feld nicht ausgef&uuml;llt.';
 $lang['error_no_forums_found'] = 'Es wurde keine anzuzeigenden Foren gefunden. Sie können in der <a href="admin.php">Administration</a> neue Foren erstellen.';
+$lang['error_no_forum_permissions'] = 'Sie haben leider keine Berechtigung die versteckten Foren anzusehen. Bitte melden Sie sich mit den nötigen Rechten an!';
 $lang['existing_notices'] = 'Vorhandene Notizen ({$used_chars} Zeichen):';
 $lang['extended_bbcodes'] = 'Erweiterte BB-Codes';
 $lang['fallback_no_username'] = 'Gast';

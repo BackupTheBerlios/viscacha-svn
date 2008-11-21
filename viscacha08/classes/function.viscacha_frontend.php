@@ -514,6 +514,7 @@ function BoardSelect($board = 0) {
 	}
 
 	$cats = array();
+	$hidden = 0;
 	// Work with the chached data!
     foreach ($cat_cache as $cat) {
     	$cat['forums'] = array();
@@ -639,15 +640,21 @@ function BoardSelect($board = 0) {
 			if ($forum['show'] == true) {
             	$cat['forums'][] = $forum;
             }
+            elseif ($forum['invisible'] != 2) {
+            	$hidden++;
+            }
         }
         if (count($cat['forums']) > 0) {
         	$cats[] = $cat;
         }
     }
 
-    $tpl->globalvars(compact("cats", "board"));
     ($code = $plugins->load('forums_prepared')) ? eval($code) : null;
-    echo $tpl->parse("categories");
+    $error_state = (count($cats) == 0 && $board == 0);
+    if (count($cats) > 0 || $error_state) {
+    	$tpl->globalvars(compact("cats", "board", "hidden", "error_state"));
+    	echo $tpl->parse("categories");
+    } // Else: This is a forum without sub forums (that should be displayed)
 
     return $found;
 }

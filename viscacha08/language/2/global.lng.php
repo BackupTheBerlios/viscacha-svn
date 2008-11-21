@@ -257,6 +257,7 @@ $lang['error'] = 'Error:';
 $lang['error_customfieldtoolong'] = 'You entered too many chars for one of the required additional fields.';
 $lang['error_missingrequiredfield'] = 'You did not insert a value for a required additional field.';
 $lang['error_no_forums_found'] = 'There are currently no forums to show. Please visit the <a href="admin.php">Admin Control Panel</a> to create forums.';
+$lang['error_no_forum_permissions'] = 'Sorry, you haven\'t got the permission to view the hidden forums. Please log in with the necessary permissions!';
 $lang['existing_notices'] = 'Available notes ({$used_chars} characters):';
 $lang['extended_bbcodes'] = 'Extended BB Codes';
 $lang['fallback_no_username'] = 'Guest';

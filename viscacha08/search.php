@@ -49,25 +49,15 @@ if ($_GET['action'] == "search") {
 		}
 		set_flood(FLOOD_TYPE_SEARCH);
 	}
-	$boards = array();
-	if (isset($_POST['boards']) && is_array($_POST['boards'])) {
-		$_POST['boards'] = array_map('trim', $_POST['boards']);
-		foreach ($_POST['boards'] as $b) {
-			if (is_id($b) == true) {
-				$boards[] = $b;
-			}
-		}
-	}
-	$search = preg_replace("/(\s){1,}/is"," ",$_POST['search']);
-    $search = preg_replace("/\*{1,}/is",'*',$search);
+	$boards = $gpc->get('boards', arr_int);
+	$search = preg_replace("/(\s){1,}/is", " ", $gpc->get('search', str));
+    $search = preg_replace("/\*{1,}/is", '*', $search);
+    $searchwords = splitWords($search);
 	$ignorewords = $lang->get_words();
-	$word_seperator = "\\.\\,;:\\+!\\?\\_\\|\s\"'\\#\\[\\]\\%\\{\\}\\(\\)\\/\\\\";
-	$searchwords = preg_split('/['.$word_seperator.']+?/', $search, -1, PREG_SPLIT_NO_EMPTY);
 
 	$ignored = array();
 	$used = array();
 	foreach ($searchwords as $sw) {
-		$sw = trim($sw);
 		if ($sw{0} == '-') {
 			$sw2 = substr($sw, 1);
 		}
@@ -83,14 +73,14 @@ if ($_GET['action'] == "search") {
 		}
 	}
 
-	if (strxlen($_POST['name']) >= $config['searchminlength']) {
-		$result = $db->query('SELECT id FROM '.$db->pre.'user WHERE name="'.$_POST['name'].'"');
+	$name = $gpc->get('name', str);
+	if (strxlen($name) >= $config['searchminlength']) {
+		$result = $db->query("SELECT id FROM {$db->pre}user WHERE name = '{$name}' LIMIT 1");
 		if ($db->num_rows($result) == 1) {
-			$name = $db->fetch_assoc($result);
-			$rname = $name['id'];
+			list($rname) = $db->fetch_num($result);
 		}
 		else {
-			$rname = $_POST['name'];
+			$rname = $name;
 		}
 	}
 
@@ -100,13 +90,13 @@ if ($_GET['action'] == "search") {
 
 	$sql_where_like = '';
 
-	if ($_POST['opt_2'] == 1) {
+	if ($gpc->get('opt_2', int) == 1) {
 		$op = 'OR ';
 	}
 	else {
 		$op = 'AND ';
 	}
-	if ($_POST['opt_1'] == 1) {
+	if ($gpc->get('opt_1', int) == 1) {
 		$binary = ' BINARY';
 	}
 	else {
@@ -126,7 +116,7 @@ if ($_GET['action'] == "search") {
 		if ($i > 0) {
 			$sql_where_like .= $op.$not;
 		}
-		if ($_POST['opt_0'] == 0) {
+		if ($gpc->get('opt_0', int) == 0) {
 			$sql_where_like .= "(r.topic LIKE{$binary} '%{$str}%' OR r.comment LIKE{$binary} '%{$str}%') ";
 		}
 		else {
@@ -140,30 +130,32 @@ if ($_GET['action'] == "search") {
 		$sql_where .= "({$sql_where_like}) ";
 	}
 
-	if (isset($rname)) {
+	if (empty($rname) == false) {
 		if (count($used) > 0) {
 			$sql_where .= "AND ";
 		}
 		$sql_where .= "r.name = '{$rname}' ";
 	}
 
-	if (strxlen($_POST['name']) >= $config['searchminlength']) {
-		$used[] = $_POST['name'];
+	if (strxlen($name) >= $config['searchminlength']) {
+		$used[] = $name;
 	}
 	else {
-		$ignored[] = $_POST['name'];
+		$ignored[] = $name;
 	}
 
 	$having = '';
-	if ($_POST['temp'] > 0 && $_POST['temp'] < 366) {
+	$temp = $gpc->get('temp', int);
+	$temp2 = $gpc->get('temp2', int);
+	if ($temp > 0 && $temp < 366) {
 		$sql_where .= "AND t.last ";
-		if ($_POST['temp2'] == 1) {
+		if ($temp2 == 1) {
 			$sql_where .= '<=';
 		}
 		else {
 			$sql_where .= '>=';
 		}
-		$timestamp = time()-60*60*24*$_POST['temp'];
+		$timestamp = time()-60*60*24*$temp;
 		$sql_where .= " '{$timestamp}' ";
 		$having = " LEFT JOIN {$db->pre}topics AS t ON t.id = r.topic_id";
 	}
@@ -186,14 +178,20 @@ if ($_GET['action'] == "search") {
 
 	if (count($searchresult) > 0) {
 		$data = array(
-		'ids' => $searchresult,
-		'ignored' => $ignored,
-		'used' => $used
+			'ids' => $searchresult,
+			'ignored' => $ignored,
+			'used' => $used,
+			'search' => $gpc->get('search', str),
+			'name' => $gpc->get('name', str),
+			'boards' => $gpc->get('boards', arr_int),
+			'opt_0' => $gpc->get('opt_0', int),
+			'opt_1' => $gpc->get('opt_1', int),
+			'opt_2' => $gpc->get('opt_2', int),
+			'temp' => $gpc->get('temp', int),
+			'temp2' => $gpc->get('temp2', int),
+			'sort' => $gpc->get('sort', str),
+			'order' => $gpc->get('order', str)
 		);
-		$vals = array('search','name','boards','opt_0','opt_1','opt_2','temp','temp2','sort','order');
-		foreach ($vals as $v) {
-			$data[$v] = $_POST[$v];
-		}
 		$fid = md5(microtime());
 		file_put_contents('cache/search/'.$fid.'.inc.php', serialize($data));
 		$slog->updatelogged();

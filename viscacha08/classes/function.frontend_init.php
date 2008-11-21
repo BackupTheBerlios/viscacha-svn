@@ -67,12 +67,10 @@ require_once ("classes/function.gpc.php");
 $http_vars = array(
 	'action' => str,
 	'job' => str,
-	'search' => str,
 	'name' => str,
 	'email' => db_esc,
 	'topic' => str,
 	'comment' => str,
-	'error' => str,
 	'pw' => str,
 	'pwx' => str,
 	'order' => str,
@@ -94,8 +92,6 @@ $http_vars = array(
 	'yahoo' => db_esc,
 	'jabber' => db_esc,
 	'fid' => str,
-	'file' => str,
-	'groups' => str,
 	'captcha' => str,
 	'board' => int,
 	'topic_id' => int,
@@ -117,7 +113,6 @@ $http_vars = array(
 	'opt_6' => int,
 	'opt_7' => int,
 	'notice' => arr_str,
-	'boards' => arr_int,
 	'delete' => arr_int
 );
 

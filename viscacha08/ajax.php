@@ -112,13 +112,13 @@ elseif ($action == 'searchmember') {
 	}
 }
 elseif ($action == 'search') {
-	if (strlen($_GET['search']) > 2) {
-		$search = urldecode($_GET['search']);
+	$search = $gpc->get('search', str);
+	if (strlen($search) > 2) {
+		$search = urldecode($search);
 		$search = preg_replace("/(\s){1,}/is"," ",$search);
 	    $search = preg_replace("/\*{1,}/is",'*',$search);
 		$ignorewords = $lang->get_words();
-		$word_seperator = "\\.\\,;:\\+!\\?\\_\\|\s\"'\\#\\[\\]\\%\\{\\}\\(\\)\\/\\\\";
-		$searchwords = preg_split('/['.$word_seperator.']+?/', $search, -1, PREG_SPLIT_NO_EMPTY);
+		$searchwords = splitWords($search);
 		$ignored = array();
 		foreach ($searchwords as $sw) {
 			$sw = trim($sw);
