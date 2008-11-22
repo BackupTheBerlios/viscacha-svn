@@ -21,7 +21,6 @@ CREATE TABLE `{:=DBPREFIX=:}groups` (
   `attachments` enum('0','1') NOT NULL default '0',
   `edit` enum('0','1') NOT NULL default '0',
   `voting` enum('0','1') NOT NULL default '0',
-  `docs` enum('0','1') NOT NULL default '0',
   `flood` smallint(5) unsigned NOT NULL default '15',
   `title` varchar(255) NOT NULL default '',
   `name` varchar(255) NOT NULL default '',

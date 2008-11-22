@@ -76,7 +76,7 @@ Inline:
  0 = Template hinzufügen, 1 = Template in der Datei
 */
 
-if ($my->p['docs'] == 1 && GroupCheck($info['groups'])) {
+if (GroupCheck($info['groups'])) {
 	$memberdata_obj = $scache->load('memberdata');
 	$memberdata = $memberdata_obj->get();
 

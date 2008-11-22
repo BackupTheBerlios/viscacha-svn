@@ -88,8 +88,7 @@ $gls = array(
 	'addvotes' => $lang->phrase('admin_gls_addvotes'),
 	'attachments' => $lang->phrase('admin_gls_attachments'),
 	'edit' => $lang->phrase('admin_gls_edit'),
-	'voting' => $lang->phrase('admin_gls_voting'),
-	'docs' => $lang->phrase('admin_gls_docs')
+	'voting' => $lang->phrase('admin_gls_voting')
 );
 $gll = array(
 	'admin' => $lang->phrase('admin_gll_admin'),
@@ -112,8 +111,7 @@ $gll = array(
 	'addvotes' => $lang->phrase('admin_gll_addvotes'),
 	'attachments' => $lang->phrase('admin_gll_attachments'),
 	'edit' => $lang->phrase('admin_gll_edit'),
-	'voting' => $lang->phrase('admin_gll_voting'),
-	'docs' => $lang->phrase('admin_gll_docs')
+	'voting' => $lang->phrase('admin_gll_voting')
 );
 
 $glk = array_keys($gls);
