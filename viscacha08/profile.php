@@ -277,6 +277,10 @@ elseif ($is_member) {
 			if ($bday[0] > 1000) {
 				$bday_age = getAge($bday);
 			}
+			else {
+				$bday_age = null;
+				$bday[0] = 0;
+			}
 			$show_bday = true;
 		}
 		else {
@@ -332,7 +336,7 @@ elseif ($is_member) {
 }
 else {
 	$db->close();
-	sendStatusCode(301, 'members.php')
+	sendStatusCode(301, 'members.php');
 	exit;
 }
 

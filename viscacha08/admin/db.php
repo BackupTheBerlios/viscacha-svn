@@ -205,6 +205,9 @@ elseif ($job == 'backup2') {
 	}
 	$structure = $gpc->get('structure', int);
 	$data = $gpc->get('data', int);
+	if (empty($structure) && empty($data)) {
+		error('admin.php?action=db&job=backup', $lang->phrase('admin_db_backup_options_invalid'));
+	}
 	$drop = $gpc->get('drop', int);
 	$zip = $gpc->get('zip', int);
 	$name = gmdate('d_m_Y-H_i_s');
