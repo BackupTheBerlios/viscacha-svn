@@ -52,7 +52,11 @@ function BBCodeToolBox($id, $content = '', $taAttr = '') {
 			<a id="menu_bbcolor_<?php echo $id; ?>" href="#" onmouseover="RegisterMenu('bbcolor_<?php echo $id; ?>');" class="editor_toolbar_dropdown"><img src="<?php echo $tpl->img('desc'); ?>" alt="<?php echo $lang->phrase('bbcodes_expand'); ?>" /> <?php echo $lang->phrase('bbcodes_color'); ?></a>
 			<div class="popup" id="popup_bbcolor_<?php echo $id; ?>">
 			<strong><?php echo $lang->phrase('bbcodes_color_title'); ?></strong>
-			<div class="bbcolor"><script type="text/javascript">document.write(writeRow('<?php echo $id; ?>'));</script></div>
+			<div class="bbcolor">
+				<script type="text/javascript">
+					document.write(generateColorPicker("InsertTagsMenu('<?php echo $id; ?>', '[color=<color>]', '[/color]', 'bbcolor_<?php echo $id; ?>')"));
+				</script>
+			</div>
 			</div>
 			<img src="templates/editor/images/seperator.gif" alt="" />
 			<a id="menu_bbsize" href="#" onmouseover="RegisterMenu('bbsize');" class="editor_toolbar_dropdown"><img src="<?php echo $tpl->img('desc'); ?>" alt="<?php echo $lang->phrase('bbcodes_expand'); ?>" /> <?php echo $lang->phrase('bbcodes_size'); ?></a>
@@ -1181,9 +1185,7 @@ elseif ($job == 'doc_insert_image') {
 		}
     }
     $htmlhead .= '<script type="text/javascript" src="templates/editor/wysiwyg-popup.js"></script>';
-    $htmlhead .= '<script type="text/javascript" src="templates/editor/wysiwyg-color.js"></script>';
-    $htmlhead .= '<script type="text/javascript"> function onloader() { WYSIWYG_ColorInst.init(); loadImage(); } </script>';
-    echo head(' onLoad="onloader();"');
+    echo head(' onLoad="loadImage();"');
 	?>
 <form method="post" action="admin.php?action=cms&amp;job=doc_insert_image&amp;wysiwyg=<?php echo $wysiwyg; ?>" enctype="multipart/form-data">
 <input type="hidden" id="dir" name="dir" value="">
@@ -1244,7 +1246,7 @@ elseif ($job == 'doc_insert_image') {
 	  <td>Border-Color:</td>
 	  <td colspan="3">
 	  	<input type="text" name="bordercolor" id="bordercolor" value="none" size="10" />
-	  	<input type="button" value="Choose" onClick="WYSIWYG_ColorInst.choose('bordercolor');" />
+	  	<input type="button" value="Choose" onClick="WYSIWYG_ColorInst.choose('bordercolor', 1);" />
 	  </td>
 	</tr>
 	<tr class="mbox">

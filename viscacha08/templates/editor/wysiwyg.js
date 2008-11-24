@@ -961,21 +961,21 @@ var WYSIWYG = {
 		if (sel === null) {
 			return null;
 		}
-		
+
 		var range = this.getRange(sel, n);
-		
+
 		// get element of range
 		var tag = this.getTag(range);
-		
+
 		if(tag == null) { return; }
-		
+
 		// Fix for blank window with nothing selected - Safari
 		if (tag.nodeName === "HTML") {
 			nodeTree = [tag];
 			nodeTree[1] = tag.childNodes[0];
 			return nodeTree;
 		}
-		
+
 		// get parent of element
 		var node = this.getParent(tag);
 		// init the tree as array with the current selected element
@@ -1128,13 +1128,13 @@ var WYSIWYG = {
 			case "ForeColor":
 				var rgb = this.getEditorWindow(n).document.queryCommandValue(cmd);
 		      	var currentColor = rgb != '' ? toHexColor(this.getEditorWindow(n).document.queryCommandValue(cmd)) : "000000";
-			  	window.open(this.config[n].PopupsDir + 'select_color.html?color=' + currentColor + '&command=' + cmd + '&wysiwyg=' + n, 'popup', 'location=0,status=0,scrollbars=0,width=275,height=215,top=' + popupPosition.top + ',left=' + popupPosition.left).focus();
+			  	window.open(this.config[n].PopupsDir + 'select_color.html?color=' + currentColor + '&command=' + cmd + '&wysiwyg=' + n, 'popup', 'location=0,status=0,scrollbars=0,width=275,height=335,top=' + popupPosition.top + ',left=' + popupPosition.left).focus();
 			break;
 
 			// BackColor
 			case "BackColor":
 				var currentColor = toHexColor(this.getEditorWindow(n).document.queryCommandValue(cmd));
-			  	window.open(this.config[n].PopupsDir + 'select_color.html?color=' + currentColor + '&command=' + cmd + '&wysiwyg=' + n, 'popup', 'location=0,status=0,scrollbars=0,width=275,height=215,top=' + popupPosition.top + ',left=' + popupPosition.left).focus();
+			  	window.open(this.config[n].PopupsDir + 'select_color.html?color=' + currentColor + '&command=' + cmd + '&wysiwyg=' + n, 'popup', 'location=0,status=0,scrollbars=0,width=275,height=335,top=' + popupPosition.top + ',left=' + popupPosition.left).focus();
 			break;
 
 			// InsertImage
@@ -2690,7 +2690,7 @@ function $(id) {
 }
 
 /**
-* Emulates insertAdjacentHTML(), insertAdjacentText() and 
+* Emulates insertAdjacentHTML(), insertAdjacentText() and
 * insertAdjacentElement() three functions so they work with Netscape 6/Mozilla/Safari
 * by Thor Larholm me@jscript.dk
 *

@@ -9,7 +9,7 @@ var WYSIWYG_Popup = {
 
 	/**
 	* Return the value of an given URL parameter.
-	* 
+	*
 	* @param param Parameter
 	* @return Value of the given parameter
 	*/
@@ -30,30 +30,22 @@ var WYSIWYG_Popup = {
 	}
 };
 
+var WYSIWYG_ColorInst = new WYSIWYG_Color();
+
 // close the popup if the opener does not hold the WYSIWYG object
 if(!window.opener) { window.close(); }
 
 // bind objects on local vars
 if (window.opener !== null && typeof window.opener.WYSIWYG !== "undefined") {
-	
-	var WYSIWYG = window.opener.WYSIWYG;	
+
+	var WYSIWYG = window.opener.WYSIWYG;
 	var WYSIWYG_Core = window.opener.WYSIWYG_Core;
 	var WYSIWYG_Table = window.opener.WYSIWYG_Table;
 
 } else {
 
 	alert("Problems encountered loading the popup window.");
-	
-}
 
-/**
- * Inverts a given hex color.
- */
-function invert(color) {
-	var t1 = '0123456789abcdef#'
-	var t2 = 'fedcba9876543210#'
-	color = color.replace( /./gi, function (s) { return t2.charAt(t1.indexOf(s)); });
-	return color;
 }
 
 /**
@@ -86,7 +78,7 @@ function selectColor(color) {
 function previewColor(color) {
 	document.getElementById('enterColor').value = color;
 	document.getElementById('PreviewColor').style.backgroundColor = color;
-	document.getElementById('PreviewColor').style.color = this.invert(color);
+	document.getElementById('PreviewColor').style.color = invert(color);
 }
 
 /* ---------------------------------------------------------------------- *\
@@ -355,4 +347,124 @@ function buildTable(n) {
 	// Inserts the table code into the WYSIWYG editor
 	WYSIWYG_Table.create(n, table, document.getElementById("cols").value, document.getElementById("rows").value, td_style);
 	window.close();
+}
+/********************************************************************
+ * openWYSIWYG color chooser Copyright (c) 2006 openWebWare.com
+ * Contact us at devs@openwebware.com
+ * This copyright notice MUST stay intact for use.
+ *
+ * $Id: wysiwyg-color.js,v 1.1 2007/01/29 19:19:49 xhaggi Exp $
+ ********************************************************************/
+function WYSIWYG_Color() {
+
+	// div id of the color table
+	var CHOOSER_DIV_ID = "colorpicker-div";
+
+	/**
+	 * Init the color picker
+	 */
+	this.init = function(element) {
+		var div = document.createElement("DIV");
+		div.className = CHOOSER_DIV_ID;
+		CHOOSER_DIV_ID = CHOOSER_DIV_ID + '-' + element;
+		div.id = CHOOSER_DIV_ID;
+		div.style.position = "absolute";
+		div.style.visibility = "hidden";
+		document.body.appendChild(div);
+		return div;
+	};
+
+	/**
+	 * Open the color chooser to choose a color.
+	 *
+	 * @param {String} element Element identifier
+	 */
+	this.choose = function(element, inAdmin) {
+		var div = FetchElement(CHOOSER_DIV_ID);
+		if (!div) {
+			div = this.init(element);
+		}
+		if(!div) {
+			alert("Initialisation of color picker failed.");
+			return;
+		}
+
+		if (inAdmin == 1) {
+			var url = false;
+		}
+		else {
+			var url = '../../../images/empty.gif';
+		}
+
+		// write to div element
+		div.innerHTML = generateColorPicker("WYSIWYG_ColorInst.select('"+element+"', '<color>')", url);
+
+		// Display color picker
+		var x = window.event.clientX + document.body.scrollLeft;
+		var y = window.event.clientY + document.body.scrollTop;
+		var winsize = windowSize();
+		if(x + div.offsetWidth > winsize.width) x = winsize.width - div.offsetWidth - 5;
+		if(y + div.offsetHeight > winsize.height) y = winsize.height - div.offsetHeight - 5;
+		div.style.left = x + "px";
+		div.style.top = y + "px";
+		var IE6 = false /*@cc_on || @_jscript_version < 5.7 @*/;
+		if (IE6) {
+			div.style.width = '180px';
+		}
+		else {
+			div.style.minWidth = '180px';
+		}
+		div.style.visibility = "visible";
+	};
+
+	/**
+	 * Set the color in the given field
+	 *
+	 * @param {String} n Element identifier
+	 * @param {String} color HexColor String
+	 */
+	this.select = function(n, color) {
+		var div = document.getElementById(CHOOSER_DIV_ID);
+		var elm = document.getElementById(n);
+		elm.value = color;
+		elm.style.color = invert(color);
+		elm.style.backgroundColor = color;
+		div.style.visibility = "hidden";
+	}
+
+	this.hoverColor = function(elem, state) {
+		if (state == 1) {
+			elem.style.borderColor = invert(elem.style.backgroundColor);
+		}
+		else {
+			elem.style.borderColor = elem.style.backgroundColor;
+		}
+	}
+
+	/**
+	 * Set the window.event on Mozilla Browser
+	 * @private
+	 */
+	function _event_tracker(event) {
+		if (!document.all && document.getElementById) {
+			window.event = event;
+		}
+	}
+	document.onmousedown = _event_tracker;
+
+	/**
+	 * Get the window size
+	 * @private
+	 */
+	function windowSize() {
+		if (window.innerWidth) {
+	  		return {width: window.innerWidth, height: window.innerHeight};
+	  	}
+		else if (document.body && document.body.offsetWidth) {
+	  		return {width: document.body.offsetWidth, height: document.body.offsetHeight};
+	  	}
+		else {
+	  		return {width: 0, height: 0};
+	  	}
+	}
 }

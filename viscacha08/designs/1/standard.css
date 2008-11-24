@@ -774,27 +774,18 @@ label, .labeldiv {
 .bbcolor {
 	padding: 10px;
 	background-color: #ffffff;
-	line-height: 13px;
-	font-size: 13px;
+	line-height: 12px;
+	font-size: 12px;
 }
-.bbcolor span {
-	width: 10px;
-	height: 13px;
+.bbcolor img {
+	width: 8px;
+	height: 10px;
 	display: block;
 	float: left;
 	cursor: pointer;
+	border-width: 1px;
+	border-style: solid;
 }
-.bbcolor img {
-	width: 10px;
-	height: 13px;
-	border-width: 0px;
-}
-.bbcolor img:hover {
-	width: 8px;
-	height: 11px;
-	border: 1px solid #ffffff;
-}
-
 .bbtable {
 	background-color: #ffffff;
 	padding: 4px;
