@@ -76,7 +76,7 @@ $breadcrumb->Add($lang->phrase('members'), 'members.php'.SID2URL_1);
 $breadcrumb->Add($lang->phrase('profile_title'), 'profile.php?id='.$_GET['id'].$url_ext.SID2URL_x);
 
 if (($_GET['action'] == 'mail' || $_GET['action'] == 'sendmail') && $is_member) {
-	$result=$db->query('SELECT id, name, opt_hidemail, mail FROM '.$db->pre.'user WHERE id = '.$_GET['id'],__LINE__,__FILE__);
+	$result=$db->query('SELECT id, name, opt_hidemail, mail FROM '.$db->pre.'user WHERE id = '.$_GET['id']);
 	$row = $slog->cleanUserData($db->fetch_object($result));
 	$breadcrumb->Add($lang->phrase('profile_mail_2'));
 
@@ -162,7 +162,7 @@ elseif ($_GET['action'] == "ims" && $is_member) {
 		$error[] = $lang->phrase('query_string_error');
 	}
 
-	$result = $db->query("SELECT id, name, icq, aol, yahoo, msn, jabber, skype {$sqlfields} FROM {$db->pre}user WHERE id = '{$_GET['id']}'",__LINE__,__FILE__);
+	$result = $db->query("SELECT id, name, icq, aol, yahoo, msn, jabber, skype {$sqlfields} FROM {$db->pre}user WHERE id = '{$_GET['id']}'");
 
 	$row = $slog->cleanUserData($db->fetch_assoc($result));
 	if (empty($row[$_GET['type']])) {
@@ -215,7 +215,7 @@ elseif ($is_guest) {
 elseif ($is_member) {
 	($code = $plugins->load('profile_member_start')) ? eval($code) : null;
 
-	$result = $db->query("SELECT * FROM {$db->pre}user AS u LEFT JOIN {$db->pre}userfields AS f ON u.id = f.ufid WHERE u.id = {$_GET['id']}",__LINE__,__FILE__);
+	$result = $db->query("SELECT * FROM {$db->pre}user AS u LEFT JOIN {$db->pre}userfields AS f ON u.id = f.ufid WHERE u.id = {$_GET['id']}");
 
 	$breadcrumb->resetUrl();
 	echo $tpl->parse("header");
@@ -292,7 +292,7 @@ elseif ($is_member) {
 
 		$osi = '';
 		if ($config['osi_profile'] == 1) {
-			$result = $db->query('SELECT mid, active FROM '.$db->pre.'session WHERE mid = '.$_GET['id'],__LINE__,__FILE__);
+			$result = $db->query('SELECT mid, active FROM '.$db->pre.'session WHERE mid = '.$_GET['id']);
 			$wwo = $db->fetch_num($result);
 			if ($wwo[0] > 0) {
 				$wwo[1] = gmdate($lang->phrase('dformat3'),times($wwo[1]));

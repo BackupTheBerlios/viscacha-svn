@@ -78,7 +78,7 @@ class DB_Driver { // abstract class
 
     function getStructure($table, $drop = 1) {
     	// Activate Quotes in sql names
-    	$this->query('SET SQL_QUOTE_SHOW_CREATE = 1',__LINE__,__FILE__);
+    	$this->query('SET SQL_QUOTE_SHOW_CREATE = 1');
 
     	$table_data = '';
         if ($drop == 1) {
@@ -87,7 +87,7 @@ class DB_Driver { // abstract class
 	    }
 	    $table_data .= $this->new_line. $this->commentdel.' Create: ' .$table . $this->new_line;
 
-	    $result = $this->query('SHOW CREATE TABLE '.chr(96).$table.chr(96), __LINE__, __FILE__);
+	    $result = $this->query('SHOW CREATE TABLE '.chr(96).$table.chr(96));
 	    $show_results = $this->fetch_num($result);
 	    if (!$show_results) {
 		    return false;
@@ -102,7 +102,7 @@ class DB_Driver { // abstract class
     function getData($table, $offset = -1) {
 	    $table_data = $this->new_line. $this->commentdel.' Data: ' .$table . iif ($offset != -1, ' {'.$offset.', '.($offset+$this->std_limit).'}' ). $this->new_line;
      	// Datensaetze vorhanden?
-     	$result = $this->query('SELECT * FROM '.chr(96).$table.chr(96).iif($offset >= 0, " LIMIT {$offset},{$this->std_limit}"), __LINE__, __FILE__);
+     	$result = $this->query('SELECT * FROM '.chr(96).$table.chr(96).iif($offset >= 0, " LIMIT {$offset},{$this->std_limit}"));
   	    while ($select_result = $this->fetch_assoc($result)) {
       		// Result-Keys
       		$select_result_keys = array_keys($select_result);
@@ -142,7 +142,7 @@ class DB_Driver { // abstract class
 		foreach ($lines as $h) {
 			if (strlen($h) > 10) {
 				unset($result);
-				$result = $this->query($h, __LINE__, __FILE__, $die);
+				$result = $this->query($h, $die);
 				if ($this->isResultSet($result)) {
 					if ($this->num_rows($result) > 0) {
 						$x = array();
@@ -238,7 +238,7 @@ class DB_Driver { // abstract class
 		if ($db == null) {
 			$db = $this->database;
 		}
-		$result = $this->query('SHOW TABLES FROM `'.$db.'`',__LINE__,__FILE__);
+		$result = $this->query('SHOW TABLES FROM `'.$db.'`');
 		$tables = array();
 		while ($row = $this->fetch_num($result)) {
 			$tables[] = $row[0];
@@ -247,7 +247,7 @@ class DB_Driver { // abstract class
 	}
 
 	function list_fields($table) {
-		$result = $this->query('SHOW COLUMNS FROM '.$table,__LINE__,__FILE__);
+		$result = $this->query('SHOW COLUMNS FROM '.$table);
 		$columns = array();
 		while ($row = $this->fetch_assoc($result)) {
 			$columns[] = $row['Field'];

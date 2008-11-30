@@ -29,7 +29,7 @@ if (count($sqltopic) > 0) {
 	WHERE {$boardsql} id != '{$_GET['id']}' AND status != '2' AND MATCH (topic) AGAINST ('$matchsql') > 0.6
 	ORDER BY af DESC
 	LIMIT {$config['viscacha_related_topics']['relatednum']}"
-	,__LINE__,__FILE__);
+	);
 
 	if ($db->num_rows($result) > 0) {
 		while ($line = $db->fetch_assoc($result)) {

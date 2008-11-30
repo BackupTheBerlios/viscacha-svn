@@ -145,11 +145,11 @@ elseif ($job == 'optimize2') {
 
     $rep = $gpc->get('repair', arr_str);
 	if (count($rep) > 0) {
-		$db->query("REPAIR TABLE ".implode(', ',$rep),__LINE__,__FILE__);
+		$db->query("REPAIR TABLE ".implode(', ',$rep));
 	}
 	$opt = $gpc->get('optimize', arr_str);
 	if (count($opt) > 0) {
-		$db->query("OPTIMIZE TABLE ".implode(', ', $opt),__LINE__,__FILE__);
+		$db->query("OPTIMIZE TABLE ".implode(', ', $opt));
 	}
 
 	ok('admin.php?action=db&job=optimize', $lang->phrase('admin_db_tables_repaired_optimized'));
@@ -637,7 +637,7 @@ elseif ($job == 'status') {
 	$result = $db->list_tables();
 
 	if (!empty($table)) {
-		$result11 = $db->query('SHOW TABLE STATUS FROM '.$db->database.' LIKE "'.$table.'"',__LINE__,__FILE__);
+		$result11 = $db->query('SHOW TABLE STATUS FROM '.$db->database.' LIKE "'.$table.'"');
 		$result12 = $db->query('DESCRIBE '.$table);
 ?>
   <table class="border">
@@ -682,8 +682,8 @@ elseif ($job == 'status') {
  <?php
 	}
 	elseif ($status == 1) {
-		$result1 = $db->query('SHOW STATUS',__LINE__,__FILE__);
-		$result2 = $db->query('SHOW VARIABLES',__LINE__,__FILE__);
+		$result1 = $db->query('SHOW STATUS');
+		$result2 = $db->query('SHOW VARIABLES');
  ?>
  <table class="border">
   <tr>

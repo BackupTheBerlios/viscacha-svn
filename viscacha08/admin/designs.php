@@ -376,7 +376,7 @@ elseif ($job == 'design_add2') {
 
 	$delobj = $scache->load('loaddesign');
 	$delobj->delete();
-	$db->query("INSERT INTO {$db->pre}designs SET template = '{$template}', stylesheet = '{$stylesheet}', images = '{$images}', publicuse = '{$use}', name = '{$name}'", __LINE__, __FILE__);
+	$db->query("INSERT INTO {$db->pre}designs SET template = '{$template}', stylesheet = '{$stylesheet}', images = '{$images}', publicuse = '{$use}', name = '{$name}'");
 
 	ok('admin.php?action=designs&job=design', $lang->phrase('admin_design_design_successfully_added'));
 }

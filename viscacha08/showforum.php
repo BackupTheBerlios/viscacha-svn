@@ -94,7 +94,7 @@ else {
 ($code = $plugins->load('showforum_filer_query')) ? eval($code) : null;
 
 if (!empty($marksql)) {
-	$result = $db->query("SELECT COUNT(*) FROM {$db->pre}topics WHERE board = '{$board}' {$marksql}",__LINE__,__FILE__);
+	$result = $db->query("SELECT COUNT(*) FROM {$db->pre}topics WHERE board = '{$board}' {$marksql}");
 	$vlasttopics = $db->fetch_num($result);
 	$info['topics'] = $vlasttopics[0];
 }
@@ -128,7 +128,7 @@ if ($info['topics'] > 0) {
 	WHERE board = '{$board}' {$marksql}
 	ORDER BY sticky DESC, last DESC
 	LIMIT {$start}, {$info['forumzahl']}
-	",__LINE__,__FILE__);
+	");
 
 	$prefix_obj = $scache->load('prefix');
 	$prefix_arr = $prefix_obj->get($board);

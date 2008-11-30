@@ -40,7 +40,7 @@ $result = $db->query("
 	FROM {$db->pre}documents AS d
 		LEFT JOIN {$db->pre}documents_content AS c ON d.id = c.did
 	WHERE d.id = '{$id}' ".iif($my->p['admin'] == 1, 'AND c.active = "1"')
-, __LINE__, __FILE__);
+);
 if ($db->num_rows($result) == 0) {
 	error($lang->phrase('docs_not_found'));
 }

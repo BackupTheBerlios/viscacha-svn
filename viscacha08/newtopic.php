@@ -57,7 +57,7 @@ $breadcrumb->Add($lang->phrase('newtopic_title'));
 
 if ($_GET['action'] == "startvote") {
 
-	$result = $db->query("SELECT id, vquestion, name, board FROM {$db->pre}topics WHERE id = '{$_GET['topic_id']}' LIMIT 1", __LINE__, __FILE__);
+	$result = $db->query("SELECT id, vquestion, name, board FROM {$db->pre}topics WHERE id = '{$_GET['topic_id']}' LIMIT 1");
 	$info = $db->fetch_assoc($result);
 
 	$my->mp = $slog->ModPermissions($info['board']);
@@ -123,7 +123,7 @@ elseif ($_GET['action'] == "savevote") {
 		errorLogin($lang->phrase('not_allowed'),"showforum.php?id=".$info['board'].SID2URL_x);
 	}
 
-	$result = $db->query('SELECT id, vquestion, board FROM '.$db->pre.'topics WHERE id = "'.$topic_id.'" LIMIT 1', __LINE__, __FILE__);
+	$result = $db->query('SELECT id, vquestion, board FROM '.$db->pre.'topics WHERE id = "'.$topic_id.'" LIMIT 1');
 	$info = $db->fetch_assoc($result);
 
 	$error = $sqlwhere = array();
@@ -167,14 +167,14 @@ elseif ($_GET['action'] == "savevote") {
 
 		($code = $plugins->load('newtopic_savevote_queries')) ? eval($code) : null;
 
-		$db->query("UPDATE {$db->pre}topics SET vquestion = '{$_POST['question']}' WHERE id = '{$info['id']}'",__LINE__,__FILE__);
-		$db->query("INSERT INTO {$db->pre}vote (tid, answer) VALUES {$sqlwhere}",__LINE__,__FILE__);
+		$db->query("UPDATE {$db->pre}topics SET vquestion = '{$_POST['question']}' WHERE id = '{$info['id']}'");
+		$db->query("INSERT INTO {$db->pre}vote (tid, answer) VALUES {$sqlwhere}");
 		$inserted = $db->affected_rows();
 		if ($inserted > 1) {
 			ok($lang->phrase('data_success'),"showtopic.php?id={$topic_id}".SID2URL_x);
 		}
 		else {
-			$db->query("UPDATE {$db->pre}topics SET vquestion = '' WHERE id = '{$topic_id}'",__LINE__,__FILE__);
+			$db->query("UPDATE {$db->pre}topics SET vquestion = '' WHERE id = '{$topic_id}'");
 			error($lang->phrase('add_vote_failed'),"showtopic.php?id={$topic_id}".SID2URL_x);
 		}
 	}
@@ -311,16 +311,16 @@ elseif ($_GET['action'] == "save") {
 		$db->query("
 		INSERT INTO {$db->pre}topics (board,topic,name,date,last,last_name,prefix,vquestion)
 		VALUES ('{$board}','{$_POST['topic']}','{$pnameid}','{$date}','{$date}','{$pnameid}','{$_POST['opt_0']}','')
-		",__LINE__,__FILE__);
+		");
 		$tredirect = $db->insert_id();
 
 		$db->query("
 		INSERT INTO {$db->pre}replies (board,topic,topic_id,name,comment,dosmileys,dowords,email,date,tstart,ip,guest,edit,report)
 		VALUES ('{$board}','{$_POST['topic']}','{$tredirect}','{$pnameid}','{$_POST['comment']}','{$_POST['dosmileys']}','{$_POST['dowords']}','{$_POST['email']}','{$date}','1','{$my->ip}','{$guest}','','')
-		",__LINE__,__FILE__);
+		");
 		$rredirect = $db->insert_id();
 
-		$db->query("UPDATE {$db->pre}uploads SET topic_id = '{$tredirect}', tid = '{$rredirect}' WHERE mid = '{$pid}' AND topic_id = '0' AND tid = '0'",__LINE__,__FILE__);
+		$db->query("UPDATE {$db->pre}uploads SET topic_id = '{$tredirect}', tid = '{$rredirect}' WHERE mid = '{$pid}' AND topic_id = '0' AND tid = '0'");
 
 		// Insert notifications
 		if ($my->vlogin && $type != 0) {
@@ -329,7 +329,7 @@ elseif ($_GET['action'] == "save") {
 				case 3:  $type = 'w'; break;
 				default: $type = '';  break;
 			}
-			$db->query("INSERT INTO {$db->pre}abos (mid, tid, type) VALUES ('{$my->id}', '{$tredirect}', '{$type}')",__LINE__,__FILE__);
+			$db->query("INSERT INTO {$db->pre}abos (mid, tid, type) VALUES ('{$my->id}', '{$tredirect}', '{$type}')");
 		}
 
 
@@ -340,10 +340,10 @@ elseif ($_GET['action'] == "save") {
 		$stat = $gpc->get('status', int);
 		if (($close == 1 || $pin == 1) && $my->vlogin) {
 			if ($close == 1 && $my->mp[0] == 1) {
-				$db->query("UPDATE {$db->pre}topics SET status = '1' WHERE id = '{$tredirect}'",__LINE__,__FILE__);
+				$db->query("UPDATE {$db->pre}topics SET status = '1' WHERE id = '{$tredirect}'");
 			}
 			if ($pin == 1 && $my->mp[0] == 1) {
-				$db->query("UPDATE {$db->pre}topics SET sticky = '1' WHERE id = '{$tredirect}'",__LINE__,__FILE__);
+				$db->query("UPDATE {$db->pre}topics SET sticky = '1' WHERE id = '{$tredirect}'");
 			}
 		}
 		if ((($stat == 1 && $my->mp[3] == 1) || ($stat == 2 && $my->mp[2] == 1) || $stat == 9) && $my->vlogin) { // null (Kein Status) ist standard und muss nicht geändert werden
@@ -356,14 +356,14 @@ elseif ($_GET['action'] == "save") {
 			elseif ($stat == 9) {
 				$input = '';
 			}
-			$db->query("UPDATE {$db->pre}topics SET mark = '{$input}' WHERE id = '{$tredirect}'",__LINE__,__FILE__);
+			$db->query("UPDATE {$db->pre}topics SET mark = '{$input}' WHERE id = '{$tredirect}'");
 		}
 
 		if ($config['updatepostcounter'] == 1 && $last['count_posts'] == 1) {
-			$db->query ("UPDATE {$db->pre}user SET posts = posts+1 WHERE id = '{$my->id}'",__LINE__,__FILE__);
+			$db->query ("UPDATE {$db->pre}user SET posts = posts+1 WHERE id = '{$my->id}'");
 		}
 
-		$db->query ("UPDATE {$db->pre}forums SET topics = topics+1, last_topic = '{$tredirect}' WHERE id = '{$board}'",__LINE__,__FILE__);
+		$db->query ("UPDATE {$db->pre}forums SET topics = topics+1, last_topic = '{$tredirect}' WHERE id = '{$board}'");
 		$catobj = $scache->load('cat_bid');
 		$catobj->delete();
 

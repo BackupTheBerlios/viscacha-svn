@@ -127,7 +127,7 @@ FROM {$db->pre}topics AS t LEFT JOIN {$db->pre}replies AS r ON t.id = r.topic_id
 WHERE {$sqlwhere}
 ORDER BY {$sqlorder}
 LIMIT {$sqllimit}
-",__LINE__,__FILE__);
+");
 
 // Loop through them if the site is not offline
 if ($config['foffline'] == 0) {

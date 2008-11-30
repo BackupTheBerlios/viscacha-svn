@@ -44,7 +44,7 @@ if ($_GET['action'] == 'vote') {
 	FROM '.$db->pre.'topics
 	WHERE id = '.$_GET['id'].'
 	LIMIT 1
-	',__LINE__,__FILE__);
+	');
 	$info = $db->fetch_assoc($result);
 
 	require_once('classes/class.charts.php');
@@ -62,7 +62,7 @@ if ($_GET['action'] == 'vote') {
 
 	$votes = 0;
 	$i = 0;
-	$result = $db->query("SELECT COUNT(r.id) as votes, v.id, v.answer FROM {$db->pre}vote AS v LEFT JOIN {$db->pre}votes AS r ON r.aid=v.id WHERE v.tid = '{$info['id']}' GROUP BY v.id ORDER BY v.id",__LINE__,__FILE__);
+	$result = $db->query("SELECT COUNT(r.id) as votes, v.id, v.answer FROM {$db->pre}vote AS v LEFT JOIN {$db->pre}votes AS r ON r.aid=v.id WHERE v.tid = '{$info['id']}' GROUP BY v.id ORDER BY v.id");
 	while ($row = $db->fetch_assoc($result)) {
 		$votes += $row['votes'];
 

@@ -136,7 +136,7 @@ if ($_GET['action'] == "save") {
 	    $pw_md5 = md5($_POST['pwx']);
 
 	    ($code = $plugins->load('register_save_queries')) ? eval($code) : null;
-		$db->query("INSERT INTO {$db->pre}user (name, pw, mail, regdate, confirm, groups, signature, about, notice) VALUES ('{$_POST['name']}', '{$pw_md5}', '{$_POST['email']}', '{$reg}', '{$config['confirm_registration']}', '".GROUP_MEMBER."', '', '', '')",__LINE__,__FILE__);
+		$db->query("INSERT INTO {$db->pre}user (name, pw, mail, regdate, confirm, groups, signature, about, notice) VALUES ('{$_POST['name']}', '{$pw_md5}', '{$_POST['email']}', '{$reg}', '{$config['confirm_registration']}', '".GROUP_MEMBER."', '', '', '')");
         $redirect = $db->insert_id();
 
 		// Custom profile fields
@@ -214,7 +214,7 @@ elseif ($_GET['action'] == 'resend2') {
 	($code = $plugins->load('register_resend2_start')) ? eval($code) : null;
 
 	$error = array();
-	$result = $db->query("SELECT id, name, mail, regdate, confirm FROM {$db->pre}user WHERE name = '{$_POST['name']}' AND (confirm = '10' OR confirm = '00') LIMIT 1",__LINE__,__FILE__);
+	$result = $db->query("SELECT id, name, mail, regdate, confirm FROM {$db->pre}user WHERE name = '{$_POST['name']}' AND (confirm = '10' OR confirm = '00') LIMIT 1");
 	if ($db->num_rows($result) != 1) {
 		$error[] = $lang->phrase('register_resend_no_user');
 	}
@@ -260,7 +260,7 @@ elseif ($_GET['action'] == 'confirm') {
 
 	($code = $plugins->load('register_confirm_start')) ? eval($code) : null;
 
-	$result = $db->query("SELECT id, name, regdate, confirm FROM {$db->pre}user WHERE id = '{$_GET['id']}' AND confirm != '01' AND confirm != '11' LIMIT 1",__LINE__,__FILE__);
+	$result = $db->query("SELECT id, name, regdate, confirm FROM {$db->pre}user WHERE id = '{$_GET['id']}' AND confirm != '01' AND confirm != '11' LIMIT 1");
 	if ($db->num_rows($result) != 1) {
 		error($lang->phrase('register_code_no_user'), "log.php?action=login".SID2URL_x);
 	}
@@ -279,7 +279,7 @@ elseif ($_GET['action'] == 'confirm') {
 			$cn = '11';
 		}
 		($code = $plugins->load('register_confirm_query')) ? eval($code) : null;
-		$result = $db->query("UPDATE {$db->pre}user SET confirm = '{$cn}' WHERE id = '{$_GET['id']}' LIMIT 1",__LINE__,__FILE__);
+		$result = $db->query("UPDATE {$db->pre}user SET confirm = '{$cn}' WHERE id = '{$_GET['id']}' LIMIT 1");
 		ok($lang->phrase('register_code_validated'), "log.php?action=login".SID2URL_x);
 	}
 	else {

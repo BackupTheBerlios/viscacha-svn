@@ -32,6 +32,7 @@ if (!defined('VISCACHA_CORE')) {
 require_once("data/config.inc.php");
 
 if ($config['indexpage'] == SCRIPTNAME && !defined('IS_INCLUDED')) {
+	require_once("classes/function.phpcore.php");
 	sendStatusCode(301, 'index.php');
     exit;
 }

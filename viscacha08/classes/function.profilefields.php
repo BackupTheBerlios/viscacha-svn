@@ -45,14 +45,14 @@ function admin_customsave($uid) {
 	}
 
 	if (count($upquery) > 0) {
-		$query = $db->query("SELECT * FROM {$db->pre}userfields WHERE ufid = '{$uid}'", __LINE__, __FILE__);
+		$query = $db->query("SELECT * FROM {$db->pre}userfields WHERE ufid = '{$uid}'");
 		$upquery['ufid'] = "ufid = '{$uid}'";
 		$sqldata = implode(', ', $upquery);
 		if($db->num_rows($query) == 0) {
-			$db->query("INSERT INTO {$db->pre}userfields SET {$sqldata}", __LINE__, __FILE__);
+			$db->query("INSERT INTO {$db->pre}userfields SET {$sqldata}");
 		}
 		else {
-			$db->query("UPDATE {$db->pre}userfields SET {$sqldata} WHERE ufid = '{$uid}' LIMIT 1", __LINE__, __FILE__);
+			$db->query("UPDATE {$db->pre}userfields SET {$sqldata} WHERE ufid = '{$uid}' LIMIT 1");
 		}
 	}
 }
@@ -267,7 +267,7 @@ function editprofile_customsave($editable, $uid) {
 	}
 
 	if (count($error) == 0 && count($upquery) > 0) {
-		$query = $db->query("SELECT * FROM {$db->pre}userfields WHERE ufid='{$uid}'", __LINE__, __FILE__);
+		$query = $db->query("SELECT * FROM {$db->pre}userfields WHERE ufid='{$uid}'");
 		if($db->num_rows($query) == 0) {
 			$fields = $db->list_fields("{$db->pre}userfields");
 			$sqldata = array();
@@ -282,7 +282,7 @@ function editprofile_customsave($editable, $uid) {
 			$sqldata['ufid'] = "'{$uid}'";
 			$fields = implode(', ', $fields);
 			$sqldata = implode(', ', $sqldata);
-			$db->query("INSERT INTO {$db->pre}userfields ({$fields}) VALUES ({$sqldata})", __LINE__, __FILE__);
+			$db->query("INSERT INTO {$db->pre}userfields ({$fields}) VALUES ({$sqldata})");
 		}
 		else {
 			$sqldata = array();
@@ -290,7 +290,7 @@ function editprofile_customsave($editable, $uid) {
 				$sqldata[] = "{$field} = '{$value}'";
 			}
 			$sqldata = implode(', ', $sqldata);
-			$db->query("UPDATE {$db->pre}userfields SET {$sqldata} WHERE ufid = '{$uid}' LIMIT 1", __LINE__, __FILE__);
+			$db->query("UPDATE {$db->pre}userfields SET {$sqldata} WHERE ufid = '{$uid}' LIMIT 1");
 		}
 	}
 

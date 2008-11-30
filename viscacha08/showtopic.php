@@ -31,7 +31,7 @@ include ("data/config.inc.php");
 include ("classes/function.viscacha_frontend.php");
 
 ($code = $plugins->load('showtopic_topic_query')) ? eval($code) : null;
-$result = $db->query("SELECT id, topic, posts, sticky, status, last, board, vquestion, prefix FROM {$db->pre}topics WHERE id = '{$_GET['id']}' LIMIT 1",__LINE__,__FILE__);
+$result = $db->query("SELECT id, topic, posts, sticky, status, last, board, vquestion, prefix FROM {$db->pre}topics WHERE id = '{$_GET['id']}' LIMIT 1");
 $info = $gpc->prepare($db->fetch_assoc($result));
 
 $my->p = $slog->Permissions($info['board']);
@@ -65,7 +65,7 @@ else {
 
 if ($_GET['action'] == 'firstnew') {
 	if ($info['last'] > $my->clv) {
-		$result = $db->query("SELECT COUNT(*) AS count FROM {$db->pre}replies WHERE topic_id = '{$info['id']}' AND date <= '{$my->clv}'",__LINE__,__FILE__);
+		$result = $db->query("SELECT COUNT(*) AS count FROM {$db->pre}replies WHERE topic_id = '{$info['id']}' AND date <= '{$my->clv}'");
 		$old = $db->fetch_assoc($result);
 		$tp = $old['count'] + 1; // Number of old post (with topic start post) + 1, to get the first new post, not the last old post
 		$pgs = ceil($tp/$last['topiczahl']);
@@ -79,7 +79,7 @@ if ($_GET['action'] == 'firstnew') {
 }
 elseif ($_GET['action'] == 'last') {
 	// Todo: Resourcen sparender wäre es in der Themenansicht einen Anker "last" zu setzen und diesen anzuspringen... damit wäre diese Query gespart
-	$result = $db->query('SELECT id FROM '.$db->pre.'replies WHERE topic_id = '.$info['id'].' ORDER BY date DESC LIMIT 1',__LINE__,__FILE__);
+	$result = $db->query('SELECT id FROM '.$db->pre.'replies WHERE topic_id = '.$info['id'].' ORDER BY date DESC LIMIT 1');
 	$new = $db->fetch_num($result);
 	$pgs = ceil(($info['posts']+1)/$last['topiczahl']);
 	$db->close();
@@ -89,7 +89,7 @@ elseif ($_GET['action'] == 'last') {
 elseif ($_GET['action'] == 'mylast') {
 	$result = $db->query('SELECT date, id FROM '.$db->pre.'replies WHERE topic_id = '.$info['id'].' AND name="'.$my->id.'" ORDER BY date DESC LIMIT 1');
 	$mylast =$db->fetch_num($result);
-	$result = $db->query('SELECT COUNT(*) AS count FROM '.$db->pre.'replies WHERE topic_id = '.$info['id'].' AND date > '.$mylast[0],__LINE__,__FILE__);
+	$result = $db->query('SELECT COUNT(*) AS count FROM '.$db->pre.'replies WHERE topic_id = '.$info['id'].' AND date > '.$mylast[0]);
 	$new = $db->fetch_assoc($result);
 	$tp = ($info['posts']+1) - $new['count'];
 	$pgs = ceil($tp/$last['topiczahl']);
@@ -103,7 +103,7 @@ elseif ($_GET['action'] == 'mylast') {
 elseif ($_GET['action'] == 'jumpto') {
 	$result = $db->query('SELECT date, id FROM '.$db->pre.'replies WHERE topic_id = "'.$info['id'].'" AND id="'.$gpc->get('topic_id', int).'" ORDER BY date DESC LIMIT 1');
 	$mylast =$db->fetch_num($result);
-	$result = $db->query('SELECT COUNT(*) AS count FROM '.$db->pre.'replies WHERE topic_id = "'.$info['id'].'" AND date > "'.$mylast[0].'"',__LINE__,__FILE__);
+	$result = $db->query('SELECT COUNT(*) AS count FROM '.$db->pre.'replies WHERE topic_id = "'.$info['id'].'" AND date > "'.$mylast[0].'"');
 	$new = $db->fetch_assoc($result);
 	$tp = ($info['posts']+1) - $new['count'];
 	$pgs = ceil($tp/$last['topiczahl']);
@@ -174,7 +174,7 @@ if (!empty($info['vquestion'])) {
 	WHERE v.tid = '{$info['id']}'
 	GROUP BY v.id
 	ORDER BY v.id
-	",__LINE__,__FILE__);
+	");
 
 	while ($row = $db->fetch_assoc($vresult)) {
 		$row['answer'] = $gpc->prepare($row['answer']);
@@ -187,7 +187,7 @@ if (!empty($info['vquestion'])) {
 	if (count($aids) > 0) {
 		$voter = array();
 		$tids = implode(',', $aids);
-		$rresult = $db->query("SELECT mid, aid FROM {$db->pre}votes WHERE aid IN({$tids})",__LINE__,__FILE__);
+		$rresult = $db->query("SELECT mid, aid FROM {$db->pre}votes WHERE aid IN({$tids})");
 		while ($row = $db->fetch_assoc($rresult)) {
 			if ($row['mid'] == $my->id) {
 				$showresults = TRUE;
@@ -233,7 +233,7 @@ if (!empty($info['vquestion'])) {
 }
 
 if ($config['tpcallow'] == 1) {
-	$result = $db->query("SELECT id, tid, mid, file, source, hits FROM {$db->pre}uploads WHERE topic_id = '{$info['id']}'",__LINE__,__FILE__);
+	$result = $db->query("SELECT id, tid, mid, file, source, hits FROM {$db->pre}uploads WHERE topic_id = '{$info['id']}'");
 	$uploads = array();
 	while ($row = $db->fetch_assoc($result)) {
 		$uploads[$row['tid']][] = $row;
@@ -277,7 +277,7 @@ FROM {$db->pre}replies AS r
 WHERE r.topic_id = '{$info['id']}'
 ORDER BY date ASC
 {$sql_limit}
-",__LINE__,__FILE__);
+");
 
 $firstnew = 0;
 $firstnew_url = null;
@@ -430,7 +430,7 @@ while ($row = $db->fetch_object($result)) {
 }
 
 if ($my->vlogin && is_id($info['id'])) {
-	$result = $db->query("SELECT id FROM {$db->pre}abos WHERE mid = '{$my->id}' AND tid = '{$info['id']}'",__LINE__,__FILE__);
+	$result = $db->query("SELECT id FROM {$db->pre}abos WHERE mid = '{$my->id}' AND tid = '{$info['id']}'");
 	$abox = $db->fetch_assoc($result);
 }
 else {

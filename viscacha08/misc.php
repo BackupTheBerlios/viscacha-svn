@@ -81,7 +81,7 @@ elseif ($_GET['action'] == "download_code") {
 }
 elseif ($_GET['action'] == "report_post" || $_GET['action'] == "report_post2") {
 	($code = $plugins->load('showtopic_topic_query')) ? eval($code) : null;
-	$result = $db->query("SELECT r.id, r.report, r.topic_id, r.tstart, r.topic AS title, t.topic, t.status, t.board, t.prefix FROM {$db->pre}replies AS r LEFT JOIN {$db->pre}topics AS t ON r.topic_id = t.id WHERE r.id = '{$_GET['id']}' LIMIT 1",__LINE__,__FILE__);
+	$result = $db->query("SELECT r.id, r.report, r.topic_id, r.tstart, r.topic AS title, t.topic, t.status, t.board, t.prefix FROM {$db->pre}replies AS r LEFT JOIN {$db->pre}topics AS t ON r.topic_id = t.id WHERE r.id = '{$_GET['id']}' LIMIT 1");
 	$info = $gpc->prepare($db->fetch_assoc($result));
 
 	$my->p = $slog->Permissions($info['board']);
@@ -140,7 +140,7 @@ elseif ($_GET['action'] == "report_post" || $_GET['action'] == "report_post2") {
 			set_flood();
 			$message = $_POST['comment'];
 			// Update the report
-			$db->query("UPDATE {$db->pre}replies SET report = '{$message}' WHERE id = '{$info['id']}' LIMIT 1", __LINE__, __FILE__);
+			$db->query("UPDATE {$db->pre}replies SET report = '{$message}' WHERE id = '{$info['id']}' LIMIT 1");
 			// Get administrators and global moderators
 			$groups = $scache->load('groups');
 			$team = $groups->team();
@@ -150,13 +150,13 @@ elseif ($_GET['action'] == "report_post" || $_GET['action'] == "report_post2") {
 				$cache[] = "FIND_IN_SET($row,groups)";
 			}
 			$cache = implode(' OR ',$cache);
-			$result = $db->query("SELECT id, name, mail, language FROM {$db->pre}user WHERE {$cache}",__LINE__,__FILE__);
+			$result = $db->query("SELECT id, name, mail, language FROM {$db->pre}user WHERE {$cache}");
 			$cache = array();
 			while ($row = $db->fetch_assoc($result)) {
 				$cache[$row['id']] = $row;
 			}
 			// Get moderators
-			$result = $db->query("SELECT u.id, u.name, u.mail, u.language FROM {$db->pre}moderators AS m LEFT JOIN {$db->pre}user AS u ON u.id = m.mid WHERE m.bid = '{$info['board']}'", __LINE__, __FILE__);
+			$result = $db->query("SELECT u.id, u.name, u.mail, u.language FROM {$db->pre}moderators AS m LEFT JOIN {$db->pre}user AS u ON u.id = m.mid WHERE m.bid = '{$info['board']}'");
 			while ($row = $db->fetch_assoc($result)) {
 				// If ID exists already in array then overwrite it
 				$cache[$row['id']] = $row;
@@ -226,7 +226,7 @@ elseif ($_GET['action'] == "wwo") {
 	SELECT ip, mid, active, wiw_script, wiw_action, wiw_id, user_agent, is_bot
 	FROM {$db->pre}session
 	ORDER BY active DESC
-	",__LINE__,__FILE__);
+	");
 
 	while ($row = $db->fetch_object($result)) {
 		$row->user_agent = strip_tags($row->user_agent);
@@ -338,7 +338,7 @@ elseif ($_GET['action'] == "wwo") {
 							LEFT JOIN {$db->pre}topics AS t ON r.topic_id = t.id
 						WHERE r.id = '{$id}'
 						LIMIT 1
-					", __LINE__, __FILE__);
+					");
 					if ($db->num_rows($result2) == 1) {
 						$nfo = $db->fetch_assoc($result2);
 						$cache['p'.$id] = $nfo;
@@ -384,7 +384,7 @@ elseif ($_GET['action'] == "wwo") {
 		case 'pdf': // Todo: Auf eine Query begrenzen (alle IDs auf einmal auslesen am Anfang)
 			$id = $row->wiw_id;
 			if (!isset($cache['t'.$id])) {
-				$result2 = $db->query("SELECT topic, board FROM {$db->pre}topics WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
+				$result2 = $db->query("SELECT topic, board FROM {$db->pre}topics WHERE id = '{$id}' LIMIT 1");
 				if ($db->num_rows($result2) == 1) {
 					$nfo = $db->fetch_assoc($result2);
 					$cache['t'.$id] = $nfo;
@@ -456,12 +456,12 @@ elseif ($_GET['action'] == "vote") {
 		LEFT JOIN {$db->pre}votes AS r ON v.id=r.aid
 	WHERE v.tid = '{$_GET['id']}' AND r.mid = '".$my->id."'
 	LIMIT 1
-	",__LINE__,__FILE__);
+	");
 
 	if ($db->num_rows($result) > 0) {
 		$allow = FALSE;
 	}
-	$result = $db->query("SELECT board FROM {$db->pre}topics WHERE id = '{$_GET['id']}' LIMIT 1",__LINE__,__FILE__);
+	$result = $db->query("SELECT board FROM {$db->pre}topics WHERE id = '{$_GET['id']}' LIMIT 1");
 	$info = $db->fetch_assoc($result);
 
 	$my->p = $slog->Permissions($info['board']);
@@ -485,7 +485,7 @@ elseif ($_GET['action'] == "vote") {
 	}
 	else {
 		($code = $plugins->load('misc_vote_savedata')) ? eval($code) : null;
-		$db->query("INSERT INTO {$db->pre}votes (mid, aid) VALUES ('{$my->id}','{$_POST['temp']}')",__LINE__,__FILE__);
+		$db->query("INSERT INTO {$db->pre}votes (mid, aid) VALUES ('{$my->id}','{$_POST['temp']}')");
 		ok($lang->phrase('data_success'), 'showtopic.php?id='.$_GET['id'].SID2URL_x);
 	}
 }

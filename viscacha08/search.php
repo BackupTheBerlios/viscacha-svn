@@ -169,7 +169,7 @@ if ($_GET['action'] == "search") {
 	WHERE {$sql_where}
 	GROUP BY r.topic_id
 	LIMIT {$config['maxsearchresults']}
-	",__LINE__,__FILE__);
+	");
 
 	$searchresult = array();
 	while ($row = $db->fetch_assoc($result)) {
@@ -252,7 +252,7 @@ elseif ($_GET['action'] == "result") {
 	FROM {$db->pre}topics
 	WHERE id IN (".implode(',', $data['ids']).") ".$slog->sqlinboards('board')."
 	ORDER BY {$order}"
-	,__LINE__,__FILE__);
+	);
 
 	$cache = array();
 	while ($row = $gpc->prepare($db->fetch_object($result))) {
@@ -390,7 +390,7 @@ elseif ($_GET['action'] == "active") {
 	    }
 		$timestamp = $my->clv;
 		$ids = array();
-   		$result = $db->query("SELECT tid FROM {$db->pre}abos WHERE mid = '{$my->id}' AND type ".iif($_GET['type'] == 'fav', '=', '!=')." 'f'",__LINE__,__FILE__);
+   		$result = $db->query("SELECT tid FROM {$db->pre}abos WHERE mid = '{$my->id}' AND type ".iif($_GET['type'] == 'fav', '=', '!=')." 'f'");
    		if ($db->num_rows($result) > 0) {
        		while ($row = $db->fetch_assoc($result)) {
        			$ids[] = $row['tid'];
@@ -435,7 +435,7 @@ elseif ($_GET['action'] == "active") {
     	FROM {$db->pre}topics AS t
     		LEFT JOIN {$db->pre}forums AS f ON f.id = t.board
     	WHERE f.invisible != '2' AND f.active_topic = '1' AND {$sqlwhere} ".$slog->sqlinboards('t.board')
-    	,__LINE__,__FILE__);
+    	);
     	list($count) = $db->fetch_num($result);
 
     	$result = $db->query("
@@ -445,7 +445,7 @@ elseif ($_GET['action'] == "active") {
     	WHERE f.invisible != '2' AND f.active_topic = '1' AND {$sqlwhere} ".$slog->sqlinboards('t.board')."
     	ORDER BY t.last DESC
     	LIMIT {$start}, {$config['activezahl']}"
-    	,__LINE__,__FILE__);
+    	);
 
     	if ($count > 0) {
     		$temp = pages($count, $config['activezahl'], "search.php?action=active&amp;type=".$_GET['type'].SID2URL_x."&amp;", $_GET['page']);

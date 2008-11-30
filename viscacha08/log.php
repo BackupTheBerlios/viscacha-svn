@@ -111,7 +111,7 @@ elseif ($_GET['action'] == "pwremind2") {
 
 	($code = $plugins->load('log_pwremind2_start')) ? eval($code) : null;
 
-	$result = $db->query("SELECT id, name, mail, pw FROM {$db->pre}user WHERE mail = '{$_POST['email']}' LIMIT 1",__LINE__,__FILE__);
+	$result = $db->query("SELECT id, name, mail, pw FROM {$db->pre}user WHERE mail = '{$_POST['email']}' LIMIT 1");
 
 	$user = $db->fetch_assoc($result);
 	if ($db->num_rows($result) != 1) {
@@ -143,7 +143,7 @@ elseif ($_GET['action'] == "pwremind3") {
 
 	($code = $plugins->load('log_pwremind3_start')) ? eval($code) : null;
 
-	$result = $db->query("SELECT id, pw, mail, name FROM {$db->pre}user WHERE id = '{$_GET['id']}' LIMIT 1",__LINE__,__FILE__);
+	$result = $db->query("SELECT id, pw, mail, name FROM {$db->pre}user WHERE id = '{$_GET['id']}' LIMIT 1");
 	$user = $db->fetch_assoc($result);
 
 	$confirmcode = md5($config['cryptkey'].$user['pw']);
@@ -151,7 +151,7 @@ elseif ($_GET['action'] == "pwremind3") {
 
 		$pw = random_word();
 		$md5 = md5($pw);
-		$db->query("UPDATE {$db->pre}user SET pw = '{$md5}' WHERE id = '{$user['id']}' LIMIT 1",__LINE__,__FILE__);
+		$db->query("UPDATE {$db->pre}user SET pw = '{$md5}' WHERE id = '{$user['id']}' LIMIT 1");
 
 		$user = $gpc->plain_str($user);
 		$data = $lang->get_mail('pwremind2');

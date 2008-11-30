@@ -22,7 +22,7 @@ WHERE
 	a.type = "d" AND
 	t.last > "'.$lastdate.'" AND
 	t.last_name != u.id
-',__LINE__,__FILE__);
+');
 
 $lang_dir = $lang->getdir(true);
 

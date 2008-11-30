@@ -51,92 +51,6 @@ define('REMOTE_IMAGE_WIDTH_ERROR', 500);
 define('REMOTE_EXTENSION_ERROR', 600);
 define('REMOTE_IMAGE_ERROR', 700);
 
-/**
- * Sends a http status code to the client.
- *
- * Aditional header data can be send depending on the code number given in the first parameter.
- * Only some error codes support this and each error code has its own additional header data.
- * Supported additional headers:
- * - 301/302/307 => Location: Specify a new location (url)
- * - 401 => WWW-Authenticate: Specify a page name
- * - 503 => Retry-after: Specify the time the page is unavailable
- *
- * @param int $code Error Code Number
- * @param mixed $additional Additional Header data (depends in error code number)
- * @return boolean
- */
-function sendStatusCode($code, $additional = null) {
-	$status = array(
-		100 => 'Continue',
-		101 => 'Switching Protocols',
-		200 => 'OK',
-		201 => 'Created',
-		202 => 'Accepted',
-		203 => 'Non-Authoritative Information',
-		204 => 'No Content',
-		205 => 'Reset Content',
-		206 => 'Partial Content',
-		300 => 'Multiple Choices',
-		301 => 'Moved Permanently',
-		302 => 'Moved Temporarily', // Found
-		303 => 'See Other',
-		304 => 'Not Modified',
-		305 => 'Use Proxy',
-		307 => 'Temporary Redirect',
-		400 => 'Bad Request',
-		401 => 'Authorization Required', // Unauthorized
-		402 => 'Payment Required',
-		403 => 'Forbidden',
-		404 => 'Not Found',
-		405 => 'Method Not Allowed',
-		406 => 'Not Acceptable',
-		407 => 'Proxy Authentication Required',
-		408 => 'Request Time-Out',
-		409 => 'Conflict',
-		410 => 'Gone',
-		411 => 'Length Required',
-		412 => 'Precondition Failed',
-		413 => 'Request Entity Too Large',
-		414 => 'Request-URI Too Large',
-		415 => 'Unsupported Media Type',
-		416 => 'Request Rang Not Satisfiable',
-		417 => 'Expectation Failed',
-		500 => 'Internal Server Error',
-		501 => 'Not Implemented',
-		502 => 'Bad Gateway',
-		503 => 'Service Temporarily Unavailable', // Service Unavailable
-		504 => 'Gateway Time-Out',
-		505 => 'HTTP Version not supported'
-	);
-
-	if (isset($status[$code])) {
-		viscacha_header("HTTP 1.1 {$code} {$status[$code]}");
-		viscacha_header("Status: {$code} {$status[$code]}");
-
-		// Additional headers
-		if ($additional != null) {
-			switch ($code) {
-				case '301':
-				case '302':
-				case '307':
-					viscacha_header("Location: {$additional}");
-				break;
-				case '401':
-					viscacha_header('WWW-Authenticate: Basic Realm="'.$additional.'"');
-				break;
-				case '503':
-					viscacha_header("Retry-After: {$additional}");
-				break;
-			}
-		}
-
-		return true;
-	}
-	else {
-		return false;
-	}
-}
-
 function splitWords($text) {
 	$word_seperator = "\\.\\,;:\\+!\\?\\_\\|\s\"'\\#\\[\\]\\%\\{\\}\\(\\)\\/\\\\";
 	return preg_split('/['.$word_seperator.']+?/', $text, -1, PREG_SPLIT_NO_EMPTY);
@@ -340,7 +254,7 @@ function array_empty_trim($arr) {
 
 function double_udata ($opt,$val) {
 	global $db;
-	$result = $db->query('SELECT id FROM '.$db->pre.'user WHERE '.$opt.' = "'.$val.'" LIMIT 1',__LINE__,__FILE__);
+	$result = $db->query('SELECT id FROM '.$db->pre.'user WHERE '.$opt.' = "'.$val.'" LIMIT 1');
 	if ($db->num_rows($result) == 0) {
 		if ($opt == 'name') {
 			$olduserdata = file('data/deleteduser.php');
@@ -822,16 +736,16 @@ function get_extension($url, $include_dot = false) {
 
 function UpdateBoardStats($board) {
 	global $db, $scache;
-	$result = $db->query("SELECT COUNT(*) FROM {$db->pre}replies WHERE board='{$board}'",__LINE__,__FILE__);
+	$result = $db->query("SELECT COUNT(*) FROM {$db->pre}replies WHERE board='{$board}'");
 	$count = $db->fetch_num ($result);
 
-	$result = $db->query("SELECT COUNT(*) FROM {$db->pre}topics WHERE board='{$board}'",__LINE__,__FILE__);
+	$result = $db->query("SELECT COUNT(*) FROM {$db->pre}topics WHERE board='{$board}'");
 	$count2 = $db->fetch_num($result);
 
 	$replies = $count[0]-$count2[0];
 	$topics = $count2[0];
 
-	$result = $db->query("SELECT id FROM {$db->pre}topics WHERE board = '{$board}' ORDER BY last DESC LIMIT 1",__LINE__,__FILE__);
+	$result = $db->query("SELECT id FROM {$db->pre}topics WHERE board = '{$board}' ORDER BY last DESC LIMIT 1");
     $last = $db->fetch_num($result);
     if (empty($last[0])) {
 		$last[0] = 0;
@@ -839,26 +753,26 @@ function UpdateBoardStats($board) {
 	$db->query("
 	UPDATE {$db->pre}forums SET topics = '{$topics}', replies = '{$replies}', last_topic = '{$last[0]}'
 	WHERE id = '{$board}'
-	",__LINE__,__FILE__);
+	");
 	$delobj = $scache->load('cat_bid');
 	$delobj->delete();
 }
 
 function UpdateBoardLastStats($board) {
 	global $db;
-	$result = $db->query("SELECT id FROM {$db->pre}topics WHERE board = '{$board}' ORDER BY last DESC LIMIT 1",__LINE__,__FILE__);
+	$result = $db->query("SELECT id FROM {$db->pre}topics WHERE board = '{$board}' ORDER BY last DESC LIMIT 1");
     $last = $db->fetch_num($result);
     if (empty($last[0])) {
 		$last[0] = 0;
 	}
-	$db->query("UPDATE {$db->pre}forums SET last_topic = '{$last[0]}' WHERE id = '{$board}'",__LINE__,__FILE__);
+	$db->query("UPDATE {$db->pre}forums SET last_topic = '{$last[0]}' WHERE id = '{$board}'");
 }
 
 function UpdateMemberStats($id) {
 	global $db;
-	$result = $db->query("SELECT COUNT(*) FROM {$db->pre}replies WHERE name = '{$id}' AND guest = '0'",__LINE__,__FILE__);
+	$result = $db->query("SELECT COUNT(*) FROM {$db->pre}replies WHERE name = '{$id}' AND guest = '0'");
 	$count = $db->fetch_num ($result);
-	$db->query("UPDATE {$db->pre}user SET posts = '{$count[0]}' WHERE id = '{$id}'",__LINE__,__FILE__);
+	$db->query("UPDATE {$db->pre}user SET posts = '{$count[0]}' WHERE id = '{$id}'");
 	return $count[0];
 }
 

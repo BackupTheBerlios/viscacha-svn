@@ -42,7 +42,7 @@ send_nocache_header();
 
 // Schliesst oder oeffnet einen Beitrag mittels AJAX
 if ($action == 'openclosethread') {
-    $result = $db->query("SELECT status, board FROM {$db->pre}topics WHERE id = '{$_GET['id']}'",__LINE__,__FILE__);
+    $result = $db->query("SELECT status, board FROM {$db->pre}topics WHERE id = '{$_GET['id']}'");
     $row = $db->fetch_assoc($result);
     $my->p = $slog->Permissions($row['board']);
     $my->mp = $slog->ModPermissions($row['board']);
@@ -51,13 +51,13 @@ if ($action == 'openclosethread') {
 
     if ($my->p['admin'] == 1 || $my->p['gmod'] == 1 || $my->mp[0] == 1) {
 	    if ($row['status'] == 0) {
-	    	$db->query("UPDATE {$db->pre}topics SET status = '1' WHERE id = '{$_GET['id']}'",__LINE__,__FILE__);
+	    	$db->query("UPDATE {$db->pre}topics SET status = '1' WHERE id = '{$_GET['id']}'");
 			if ($db->affected_rows() == 1) {
 	        	$request = 3;
 	    	}
 	    }
 	    else {
-	    	$db->query("UPDATE {$db->pre}topics SET status = '0' WHERE id = '{$_GET['id']}'",__LINE__,__FILE__);
+	    	$db->query("UPDATE {$db->pre}topics SET status = '0' WHERE id = '{$_GET['id']}'");
 			if ($db->affected_rows() == 1) {
 	        	$request = 4;
 	    	}

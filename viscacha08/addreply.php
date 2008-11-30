@@ -34,7 +34,7 @@ include ("classes/function.viscacha_frontend.php");
 
 $id = $gpc->get('id', int);
 
-$result = $db->query("SELECT id, prefix, topic, board, posts, status FROM {$db->pre}topics WHERE id = '{$id}'",__LINE__,__FILE__);
+$result = $db->query("SELECT id, prefix, topic, board, posts, status FROM {$db->pre}topics WHERE id = '{$id}'");
 
 $info = $db->fetch_assoc($result);
 if ($db->num_rows($result) == 0) {
@@ -198,20 +198,20 @@ if ($_GET['action'] == "save") {
 		UPDATE {$db->pre}topics
 		SET last_name = '{$pnameid}', last = '{$date}', posts = posts+1
 		WHERE id = '{$id}'
-		",__LINE__,__FILE__);
+		");
 
 		$db->query("
 		INSERT INTO {$db->pre}replies (board,topic,topic_id,name,comment,dosmileys,dowords,email,date,ip,guest,edit,report)
 		VALUES ('{$info['board']}','{$_POST['topic']}','{$id}','{$pnameid}','{$_POST['comment']}','{$_POST['dosmileys']}','{$_POST['dowords']}','{$_POST['email']}','{$date}','{$my->ip}','{$guest}','','')
-		",__LINE__,__FILE__);
+		");
 		$redirect = $db->insert_id();
 
 		// Set uploads to correct reply
-		$db->query("UPDATE {$db->pre}uploads SET tid = '{$redirect}' WHERE mid = '{$pid}' AND topic_id = '{$id}' AND tid = '0'",__LINE__,__FILE__);
+		$db->query("UPDATE {$db->pre}uploads SET tid = '{$redirect}' WHERE mid = '{$pid}' AND topic_id = '{$id}' AND tid = '0'");
 
 		// Update, insert, delete notifications
 		if ($my->vlogin) {
-			$result = $db->query("SELECT id, type FROM {$db->pre}abos WHERE mid = '{$my->id}' AND tid = '{$id}'", __LINE__, __FILE__);
+			$result = $db->query("SELECT id, type FROM {$db->pre}abos WHERE mid = '{$my->id}' AND tid = '{$id}'");
 			switch ($digest) {
 				case 1:  $type = '';  break;
 				case 2:  $type = 'd'; break;
@@ -222,24 +222,24 @@ if ($_GET['action'] == "save") {
 			if ($db->num_rows($result) > 0) {
 				$row = $db->fetch_assoc($result);
 				if ($type === null) { // Lösche Abo
-					$db->query("DELETE FROM {$db->pre}abos WHERE id = '{$row['id']}'", __LINE__, __FILE__);
+					$db->query("DELETE FROM {$db->pre}abos WHERE id = '{$row['id']}'");
 				}
 				elseif ($row['type'] != $type) { // Aktualisiere Abo, wenn veränderter Typ
-					$db->query("UPDATE {$db->pre}abos SET type = '{$type}' WHERE id = '{$row['id']}'", __LINE__, __FILE__);
+					$db->query("UPDATE {$db->pre}abos SET type = '{$type}' WHERE id = '{$row['id']}'");
 				}
 			}
 			else {
 				if ($type !== null) { // Füge Abo hinzu
-					$db->query("INSERT INTO {$db->pre}abos (mid, tid, type) VALUES ('{$my->id}', '{$id}', '{$type}')",__LINE__,__FILE__);
+					$db->query("INSERT INTO {$db->pre}abos (mid, tid, type) VALUES ('{$my->id}', '{$id}', '{$type}')");
 				}
 			}
 		}
 
 		if ($config['updatepostcounter'] == 1 && $last['count_posts'] == 1) {
-			$db->query ("UPDATE {$db->pre}user SET posts = posts+1 WHERE id = '{$my->id}'",__LINE__,__FILE__);
+			$db->query ("UPDATE {$db->pre}user SET posts = posts+1 WHERE id = '{$my->id}'");
 		}
 
-		$db->query ("UPDATE {$db->pre}forums SET replies = replies+1, last_topic = '{$id}' WHERE id = '{$info['board']}'",__LINE__,__FILE__);
+		$db->query ("UPDATE {$db->pre}forums SET replies = replies+1, last_topic = '{$id}' WHERE id = '{$info['board']}'");
 
 		$lang_dir = $lang->getdir(true);
 		// ToDo: Send only one notification on more than one answer
@@ -249,7 +249,7 @@ if ($_GET['action'] == "save") {
 			LEFT JOIN {$db->pre}user AS u ON u.id = a.mid
 			LEFT JOIN {$db->pre}topics AS t ON t.id = a.tid
 		WHERE a.type = '' AND a.tid = '{$id}' AND a.mid != '{$my->id}'
-		",__LINE__,__FILE__);
+		");
 		while ($row = $db->fetch_assoc($result)) {
 			$lang->setdir($row['language']);
 			$row = $gpc->plain_str($row);
@@ -274,7 +274,7 @@ if ($_GET['action'] == "save") {
 		if ($close == 1 && $my->vlogin) {
 			$my->mp = $slog->ModPermissions($info['board']);
 			if ($my->mp[0] == 1) {
-				$db->query("UPDATE {$db->pre}topics SET status = '1' WHERE id = '".$info['id']."'",__LINE__,__FILE__);
+				$db->query("UPDATE {$db->pre}topics SET status = '1' WHERE id = '".$info['id']."'");
 			}
 		}
 
@@ -340,7 +340,7 @@ else {
 			FROM '.$db->pre.'replies
 			WHERE id IN('.implode(',',$qids).')
 			LIMIT '.$config['maxmultiquote']
-			,__LINE__,__FILE__);
+			);
 
 			while($row = $gpc->prepare($db->fetch_assoc($result))) {
 				if ($row['guest'] == 0) {
@@ -371,7 +371,7 @@ else {
 	}
 
 	if ($my->vlogin && $data['digest'] == -1) {
-		$result = $db->query("SELECT type FROM {$db->pre}abos WHERE mid = '{$my->id}' AND tid = '{$id}'",__LINE__,__FILE__);
+		$result = $db->query("SELECT type FROM {$db->pre}abos WHERE mid = '{$my->id}' AND tid = '{$id}'");
 		if ($db->num_rows($result) > 0) {
 			$temp = $db->fetch_assoc($result);
 			switch ($temp['type']) {

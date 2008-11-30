@@ -1962,7 +1962,7 @@ elseif ($job == 'custom') {
 		LEFT JOIN {$db->pre}packages AS p ON p.internal = g.name
 	WHERE s.sgroup = '{$id}'
 	ORDER BY s.name
-	", __LINE__, __FILE__);
+	");
 	?>
 	<form name="form" method="post" action="admin.php?action=settings&job=custom2&id=<?php echo $id; ?>&package=<?php echo $package; ?>">
 	 <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
@@ -2013,7 +2013,7 @@ elseif ($job == 'custom2') {
 		LEFT JOIN {$db->pre}settings_groups AS g ON s.sgroup = g.id
 	WHERE s.sgroup = '{$id}'
 	ORDER BY s.name
-	", __LINE__, __FILE__);
+	");
 	while ($row = $db->fetch_assoc($result)) {
 		$c->updateconfig(array($row['groupname'], $row['name']), none);
 	}
@@ -2161,10 +2161,10 @@ elseif ($job == 'new') {
 			FROM {$db->pre}settings_groups AS g
 				LEFT JOIN {$db->pre}packages AS p ON p.internal = g.name
 			WHERE p.id = '{$package}'
-		", __LINE__, __FILE__);
+		");
 	}
 	else {
-		$result = $db->query("SELECT id, title FROM {$db->pre}settings_groups ORDER BY title", __LINE__, __FILE__);
+		$result = $db->query("SELECT id, title FROM {$db->pre}settings_groups ORDER BY title");
 	}
 	?>
 <form action="admin.php?action=settings&amp;job=new2&amp;package=<?php echo $package; ?>" method="post">

@@ -224,7 +224,7 @@ if ($job == 'nav') {
  </table>
  <br />
 <?php
-	$result = $db->query("SELECT * FROM {$db->pre}menu ORDER BY position, ordering, id", __LINE__, __FILE__);
+	$result = $db->query("SELECT * FROM {$db->pre}menu ORDER BY position, ordering, id");
 	$sqlcache = array();
 	$cat = array();
 	$sub = array();
@@ -372,15 +372,15 @@ if ($job == 'nav') {
 elseif ($job == 'nav_edit') {
 	echo head();
 	$id = $gpc->get('id', int);
-	$result = $db->query("SELECT * FROM {$db->pre}menu WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
+	$result = $db->query("SELECT * FROM {$db->pre}menu WHERE id = '{$id}' LIMIT 1");
 	$data = $db->fetch_assoc($result);
 	$data['group_array'] = explode(',', $data['groups']);
 	$pos = parseNavPosSetting();
 
-	$groups = $db->query("SELECT id, name FROM {$db->pre}groups", __LINE__, __FILE__);
+	$groups = $db->query("SELECT id, name FROM {$db->pre}groups");
 
 	if ($data['sub'] > 0) {
-		$result = $db->query("SELECT id, name, sub, position FROM {$db->pre}menu WHERE module = '0' ORDER BY position, ordering, id", __LINE__, __FILE__);
+		$result = $db->query("SELECT id, name, sub, position FROM {$db->pre}menu WHERE module = '0' ORDER BY position, ordering, id");
 		$cache = array(0 => array());
 		while ($row = $db->fetch_assoc($result)) {
 			if (!isset($cache[$row['sub']]) || !is_array($cache[$row['sub']])) {
@@ -391,7 +391,7 @@ elseif ($job == 'nav_edit') {
 	}
 
 	if ($data['module'] > 0) {
-		$plugs = $db->query("SELECT * FROM {$db->pre}plugins WHERE position = 'navigation' ORDER BY ordering", __LINE__, __FILE__);
+		$plugs = $db->query("SELECT * FROM {$db->pre}plugins WHERE position = 'navigation' ORDER BY ordering");
 	}
 
 	$last = null;
@@ -481,7 +481,7 @@ elseif ($job == 'nav_edit2') {
 	echo head();
 
 	$id = $gpc->get('id', int);
-	$result = $db->query("SELECT * FROM {$db->pre}menu WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
+	$result = $db->query("SELECT * FROM {$db->pre}menu WHERE id = '{$id}' LIMIT 1");
 	$data = $db->fetch_assoc($result);
 
 	$title = getNavTitle();
@@ -491,7 +491,7 @@ elseif ($job == 'nav_edit2') {
 
 	$active = $gpc->get('active', int);
 	$groups = $gpc->get('groups', arr_int);
-	$result = $db->query('SELECT COUNT(*) FROM '.$db->pre.'groups', __LINE__, __FILE__);
+	$result = $db->query('SELECT COUNT(*) FROM '.$db->pre.'groups');
 	$count = $db->fetch_num($result);
 	if (count($groups) == $count[0]) {
 		$groups = 0;
@@ -505,23 +505,23 @@ elseif ($job == 'nav_edit2') {
 		$sub = $gpc->get('sub', int);
 		$result = $db->query("SELECT position FROM {$db->pre}menu WHERE id = '{$sub}'");
 		$pos = $gpc->save_str($db->fetch_assoc($result));
-		$db->query("UPDATE {$db->pre}menu SET name = '{$title}', link = '{$url}', param = '{$target}', groups = '{$groups}', sub = '{$sub}', active = '{$active}', position = '{$pos['position']}' WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
+		$db->query("UPDATE {$db->pre}menu SET name = '{$title}', link = '{$url}', param = '{$target}', groups = '{$groups}', sub = '{$sub}', active = '{$active}', position = '{$pos['position']}' WHERE id = '{$id}' LIMIT 1");
 	}
 	else {
 		if ($data['module'] > 0) {
 			$plug = $gpc->get('plugin', int);
-			$result = $db->query("SELECT position FROM {$db->pre}plugins WHERE id = '{$plug}'", __LINE__, __FILE__);
+			$result = $db->query("SELECT position FROM {$db->pre}plugins WHERE id = '{$plug}'");
 			if ($db->num_rows($result) > 0) {
 				$module_sql = ", module = '{$plug}'";
 				$row = $db->fetch_assoc($result);
 				$filesystem->unlink('cache/modules/'.$plugins->_group($row['position']).'.php');
 				// Do not do that anymore, because it may be required
-				// $db->query("UPDATE {$db->pre}plugins SET active = '{$active}' WHERE id = '{$plug}' LIMIT 1", __LINE__, __FILE__);
+				// $db->query("UPDATE {$db->pre}plugins SET active = '{$active}' WHERE id = '{$plug}' LIMIT 1");
 			}
-			$db->query("UPDATE {$db->pre}menu SET name = '{$title}', groups = '{$groups}', active = '{$active}'{$module_sql} WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
+			$db->query("UPDATE {$db->pre}menu SET name = '{$title}', groups = '{$groups}', active = '{$active}'{$module_sql} WHERE id = '{$id}' LIMIT 1");
 		}
 		else {
-			$db->query("UPDATE {$db->pre}menu SET name = '{$title}', groups = '{$groups}', active = '{$active}' WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
+			$db->query("UPDATE {$db->pre}menu SET name = '{$title}', groups = '{$groups}', active = '{$active}' WHERE id = '{$id}' LIMIT 1");
 		}
 	}
 	$delobj = $scache->load('modules_navigation');
@@ -551,10 +551,10 @@ elseif ($job == 'nav_delete2') {
 	$id = $gpc->get('id', int);
 	$delete = array($id);
 
-	$result = $db->query("SELECT id, sub FROM {$db->pre}menu WHERE sub = '{$id}'", __LINE__, __FILE__);
+	$result = $db->query("SELECT id, sub FROM {$db->pre}menu WHERE sub = '{$id}'");
 	while($row = $db->fetch_assoc($result)) {
 		$delete[] = $row['id'];
-		$result2 = $db->query("SELECT id FROM {$db->pre}menu WHERE sub = '{$row['id']}'", __LINE__, __FILE__);
+		$result2 = $db->query("SELECT id FROM {$db->pre}menu WHERE sub = '{$row['id']}'");
 		while($row2 = $db->fetch_assoc($result2)) {
 			$delete[] = $row2['id'];
 		}
@@ -562,7 +562,7 @@ elseif ($job == 'nav_delete2') {
 
 	$count = count($delete);
 	$ids = implode(',', $delete);
-	$db->query("DELETE FROM {$db->pre}menu WHERE id IN ({$ids}) LIMIT {$count}", __LINE__, __FILE__);
+	$db->query("DELETE FROM {$db->pre}menu WHERE id IN ({$ids}) LIMIT {$count}");
 	$anz = $db->affected_rows();
 
 	$delobj = $scache->load('modules_navigation');
@@ -577,10 +577,10 @@ elseif ($job == 'nav_move') {
 		error('admin.php?action=cms&job=nav', $lang->phrase('admin_cms_invalid_id_given'));
 	}
 	if ($pos < 0) {
-		$db->query('UPDATE '.$db->pre.'menu SET ordering = ordering-1 WHERE id = '.$id, __LINE__, __FILE__);
+		$db->query('UPDATE '.$db->pre.'menu SET ordering = ordering-1 WHERE id = '.$id);
 	}
 	elseif ($pos > 0) {
-		$db->query('UPDATE '.$db->pre.'menu SET ordering = ordering+1 WHERE id = '.$id, __LINE__, __FILE__);
+		$db->query('UPDATE '.$db->pre.'menu SET ordering = ordering+1 WHERE id = '.$id);
 	}
 
 	$delobj = $scache->load('modules_navigation');
@@ -597,17 +597,17 @@ elseif ($job == 'nav_active') {
 	if ($pos != 0 && $pos != 1) {
 		error('admin.php?action=cms&job=nav', $lang->phrase('admin_cms_invalid_status_specified'));
 	}
-	$db->query('UPDATE '.$db->pre.'menu SET active = "'.$pos.'" WHERE id = '.$id, __LINE__, __FILE__);
+	$db->query('UPDATE '.$db->pre.'menu SET active = "'.$pos.'" WHERE id = '.$id);
 
 	$plug = $gpc->get('plug', int);
 	if ($plug > 0) {
-		$result = $db->query("SELECT position FROM {$db->pre}plugins WHERE id = '{$plug}'", __LINE__, __FILE__);
+		$result = $db->query("SELECT position FROM {$db->pre}plugins WHERE id = '{$plug}'");
 		if ($db->num_rows($result) > 0) {
 			$module_sql = ", module = '{$plug}'";
 			$row = $db->fetch_assoc($result);
 			$filesystem->unlink('cache/modules/'.$plugins->_group($row['position']).'.php');
 			// Do not do that anymore, because it may be required
-			// $db->query("UPDATE {$db->pre}plugins SET active = '{$pos}' WHERE id = '{$plug}' LIMIT 1", __LINE__, __FILE__);
+			// $db->query("UPDATE {$db->pre}plugins SET active = '{$pos}' WHERE id = '{$plug}' LIMIT 1");
 		}
 	}
 
@@ -618,9 +618,9 @@ elseif ($job == 'nav_active') {
 elseif ($job == 'nav_addplugin') {
 	echo head();
 	$id = $gpc->get('id', int);
-	$sort = $db->query("SELECT id, name, position FROM {$db->pre}menu WHERE sub = '0' ORDER BY position, ordering, id", __LINE__, __FILE__);
-	$plugs = $db->query("SELECT id, name FROM {$db->pre}plugins WHERE position = 'navigation' ORDER BY ordering", __LINE__, __FILE__);
-	$groups = $db->query("SELECT id, name FROM {$db->pre}groups", __LINE__, __FILE__);
+	$sort = $db->query("SELECT id, name, position FROM {$db->pre}menu WHERE sub = '0' ORDER BY position, ordering, id");
+	$plugs = $db->query("SELECT id, name FROM {$db->pre}plugins WHERE position = 'navigation' ORDER BY ordering");
+	$groups = $db->query("SELECT id, name FROM {$db->pre}groups");
 	$pos = parseNavPosSetting();
 	?>
 <form name="form" method="post" action="admin.php?action=cms&job=nav_addplugin2">
@@ -694,7 +694,7 @@ elseif ($job == 'nav_addplugin') {
 elseif ($job == 'nav_addplugin2') {
 	echo head();
 	$plug = $gpc->get('plugin', int);
-	$result = $db->query("SELECT id, name, active FROM {$db->pre}plugins WHERE id = '{$plug}' AND position = 'navigation'", __LINE__, __FILE__);
+	$result = $db->query("SELECT id, name, active FROM {$db->pre}plugins WHERE id = '{$plug}' AND position = 'navigation'");
 	$data = $db->fetch_assoc();
 	$title = getNavTitle();
 	if (empty($title)) {
@@ -712,7 +712,7 @@ elseif ($job == 'nav_addplugin2') {
 		$sort = $db->fetch_assoc($result);
 	}
 	$groups = $gpc->get('groups', arr_int);
-	$result = $db->query('SELECT COUNT(*) FROM '.$db->pre.'groups', __LINE__, __FILE__);
+	$result = $db->query('SELECT COUNT(*) FROM '.$db->pre.'groups');
 	$count = $db->fetch_num($result);
 	if (count($groups) == $count[0]) {
 		$groups = 0;
@@ -720,15 +720,15 @@ elseif ($job == 'nav_addplugin2') {
 	else {
 		$groups = implode(',', $groups);
 	}
-	$db->query("INSERT INTO {$db->pre}menu (name, groups, ordering, active, module, position) VALUES ('{$title}','{$groups}','{$sort['ordering']}','{$data['active']}','{$data['id']}','{$sort['position']}')", __LINE__, __FILE__);
+	$db->query("INSERT INTO {$db->pre}menu (name, groups, ordering, active, module, position) VALUES ('{$title}','{$groups}','{$sort['ordering']}','{$data['active']}','{$data['id']}','{$sort['position']}')");
 	$delobj = $scache->load('modules_navigation');
 	$delobj->delete();
 	ok('admin.php?action=cms&job=nav', $lang->phrase('admin_cms_plugins_successfully_added'));
 }
 elseif ($job == 'nav_add') {
 	echo head();
-	$groups = $db->query("SELECT id, name FROM {$db->pre}groups", __LINE__, __FILE__);
-	$result = $db->query("SELECT id, name, sub, position FROM {$db->pre}menu WHERE module = '0' ORDER BY position, ordering, id", __LINE__, __FILE__);
+	$groups = $db->query("SELECT id, name FROM {$db->pre}groups");
+	$result = $db->query("SELECT id, name, sub, position FROM {$db->pre}menu WHERE module = '0' ORDER BY position, ordering, id");
 	$cache = array(0 => array());
 	while ($row = $db->fetch_assoc($result)) {
 		if (!isset($cache[$row['sub']]) || !is_array($cache[$row['sub']])) {
@@ -822,24 +822,24 @@ elseif ($job == 'nav_add2') {
 		error('admin.php?action=cms&job=nav_addbox', $lang->phrase('admin_cms_err_no_title'));
 	}
 
-	$pos = $db->fetch_num($db->query("SELECT position FROM {$db->pre}menu WHERE id = '{$sub}' LIMIT 1", __LINE__, __FILE__));
+	$pos = $db->fetch_num($db->query("SELECT position FROM {$db->pre}menu WHERE id = '{$sub}' LIMIT 1"));
 	if (empty($pos[0])) {
 		$pos = array('left');
 	}
 
 	if ($sort == 1) {
-		$sort = $db->fetch_num($db->query("SELECT MAX(ordering) FROM {$db->pre}menu WHERE sub = '{$sub}' LIMIT 1", __LINE__, __FILE__));
+		$sort = $db->fetch_num($db->query("SELECT MAX(ordering) FROM {$db->pre}menu WHERE sub = '{$sub}' LIMIT 1"));
 		$sort = $sort[0]+1;
 	}
 	elseif ($sort == 0) {
-		$sort = $db->fetch_num($db->query("SELECT MIN(ordering) FROM {$db->pre}menu WHERE sub = '{$sub}' LIMIT 1", __LINE__, __FILE__));
+		$sort = $db->fetch_num($db->query("SELECT MIN(ordering) FROM {$db->pre}menu WHERE sub = '{$sub}' LIMIT 1"));
 		$sort = $sort[0]-1;
 	}
 	else {
 		$sort = 0;
 	}
 
-	$result = $db->query('SELECT COUNT(*) FROM '.$db->pre.'groups', __LINE__, __FILE__);
+	$result = $db->query('SELECT COUNT(*) FROM '.$db->pre.'groups');
 	$count = $db->fetch_num($result);
 	if (count($groups) == $count[0]) {
 		$groups = 0;
@@ -847,15 +847,15 @@ elseif ($job == 'nav_add2') {
 	else {
 		$groups = implode(',', $groups);
 	}
-	$db->query("INSERT INTO {$db->pre}menu (name, groups, ordering, link, param, sub, position) VALUES ('{$title}','{$groups}','{$sort}','{$url}','{$target}','{$sub}','{$pos[0]}')", __LINE__, __FILE__);
+	$db->query("INSERT INTO {$db->pre}menu (name, groups, ordering, link, param, sub, position) VALUES ('{$title}','{$groups}','{$sort}','{$url}','{$target}','{$sub}','{$pos[0]}')");
 	$delobj = $scache->load('modules_navigation');
 	$delobj->delete();
 	ok('admin.php?action=cms&job=nav', $lang->phrase('admin_cms_link_successfully_added'));
 }
 elseif ($job == 'nav_addbox') {
 	echo head();
-	$sort = $db->query("SELECT id, name, position FROM {$db->pre}menu WHERE sub = '0' ORDER BY position, ordering, id", __LINE__, __FILE__);
-	$groups = $db->query("SELECT id, name FROM {$db->pre}groups", __LINE__, __FILE__);
+	$sort = $db->query("SELECT id, name, position FROM {$db->pre}menu WHERE sub = '0' ORDER BY position, ordering, id");
+	$groups = $db->query("SELECT id, name FROM {$db->pre}groups");
 	$pos = parseNavPosSetting();
 	?>
 <form name="form" method="post" action="admin.php?action=cms&job=nav_addbox2">
@@ -931,7 +931,7 @@ elseif ($job == 'nav_addbox2') {
 		$sort = $db->fetch_assoc($result);
 	}
 	$groups = $gpc->get('groups', arr_int);
-	$result = $db->query('SELECT COUNT(*) FROM '.$db->pre.'groups', __LINE__, __FILE__);
+	$result = $db->query('SELECT COUNT(*) FROM '.$db->pre.'groups');
 	$count = $db->fetch_num($result);
 	if (count($groups) == $count[0]) {
 		$groups = 0;
@@ -939,7 +939,7 @@ elseif ($job == 'nav_addbox2') {
 	else {
 		$groups = implode(',', $groups);
 	}
-	$db->query("INSERT INTO {$db->pre}menu (name, groups, ordering, position) VALUES ('{$title}','{$groups}','{$sort['ordering']}','{$sort['position']}')", __LINE__, __FILE__);
+	$db->query("INSERT INTO {$db->pre}menu (name, groups, ordering, position) VALUES ('{$title}','{$groups}','{$sort['ordering']}','{$sort['position']}')");
 	$delobj = $scache->load('modules_navigation');
 	$delobj->delete();
 	ok('admin.php?action=cms&job=nav', $lang->phrase('admin_cms_box_successfully_added'));
@@ -970,7 +970,7 @@ elseif ($job == 'nav_comslist') {
 		FROM {$db->pre}component AS c
 			LEFT JOIN {$db->pre}packages AS p ON c.package = p.id
 		WHERE p.active = '1' AND c.active = '1'
-	", __LINE__, __FILE__);
+	");
 	?>
 	 <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
 	  <tr>
@@ -1272,7 +1272,7 @@ elseif ($job == 'doc') {
 		FROM {$db->pre}documents AS d
 			LEFT JOIN {$db->pre}documents_content AS c ON d.id = c.did
 		ORDER BY c.title
-	", __LINE__, __FILE__);
+	");
 	$data = array();
 	while ($row = $db->fetch_assoc($result)) {
 		if(is_id($row['author']) && isset($memberdata[$row['author']])) {
@@ -1372,10 +1372,10 @@ elseif ($job == 'doc') {
 elseif ($job == 'doc_ajax_active') {
 	$id = $gpc->get('id', int);
 	$lid = $gpc->get('lid', int);
-	$result = $db->query("SELECT active FROM {$db->pre}documents_content WHERE did = '{$id}' AND lid = '{$lid}' LIMIT 1", __LINE__, __FILE__);
+	$result = $db->query("SELECT active FROM {$db->pre}documents_content WHERE did = '{$id}' AND lid = '{$lid}' LIMIT 1");
 	$use = $db->fetch_assoc($result);
 	$use = invert($use['active']);
-	$db->query("UPDATE {$db->pre}documents_content SET active = '{$use}' WHERE did = '{$id}' AND lid = '{$lid}' LIMIT 1", __LINE__, __FILE__);
+	$db->query("UPDATE {$db->pre}documents_content SET active = '{$use}' WHERE did = '{$id}' AND lid = '{$lid}' LIMIT 1");
 	$delobj = $scache->load('wraps');
 	$delobj->delete();
 	die(strval($use));
@@ -1433,7 +1433,7 @@ elseif ($job == 'doc_add2') {
 		$htmlhead .= attachWYSIWYG();
 	}
 	echo head(' onload="hideLanguageBoxes()"');
-  	$groups = $db->query("SELECT id, name FROM {$db->pre}groups", __LINE__, __FILE__);
+  	$groups = $db->query("SELECT id, name FROM {$db->pre}groups");
 ?>
 <form id="form" method="post" action="admin.php?action=cms&job=doc_add3&type=<?php echo $type; ?>">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
@@ -1535,7 +1535,7 @@ elseif ($job == 'doc_add3') {
 		error('javascript:history.back(-1);', $lang->phrase('admin_cms_havent_checked_box'));
 	}
 
-	$result = $db->query('SELECT COUNT(*) FROM '.$db->pre.'groups', __LINE__, __FILE__);
+	$result = $db->query('SELECT COUNT(*) FROM '.$db->pre.'groups');
 	$count = $db->fetch_num($result);
 	if (count($groups) == $count[0]) {
 		$groups = 0;
@@ -1546,7 +1546,7 @@ elseif ($job == 'doc_add3') {
 
 	$time = time();
 
-	$db->query("INSERT INTO {$db->pre}documents (`author`, `date`, `update`, `type`, `groups`, `icomment`) VALUES ('{$my->id}', '{$time}' , '{$time}' , '{$type}', '{$groups}', '{$icomment}')", __LINE__, __FILE__);
+	$db->query("INSERT INTO {$db->pre}documents (`author`, `date`, `update`, `type`, `groups`, `icomment`) VALUES ('{$my->id}', '{$time}' , '{$time}' , '{$type}', '{$groups}', '{$icomment}')");
 	$did = $db->insert_id();
 
 	foreach ($use as $lid => $usage) {
@@ -1571,7 +1571,7 @@ elseif ($job == 'doc_add3') {
 				$content[$lid] = $db->escape_string($content[$lid]);
 			}
 			$lid = $gpc->save_int($lid);
-			$db->query("INSERT INTO {$db->pre}documents_content ( `did` , `lid` , `title` , `content` , `active` ) VALUES ('{$did}', '{$lid}', '{$title[$lid]}', '{$content[$lid]}', '{$active[$lid]}')", __LINE__, __FILE__);
+			$db->query("INSERT INTO {$db->pre}documents_content ( `did` , `lid` , `title` , `content` , `active` ) VALUES ('{$did}', '{$lid}', '{$title[$lid]}', '{$content[$lid]}', '{$active[$lid]}')");
 		}
 	}
 
@@ -1585,9 +1585,9 @@ elseif ($job == 'doc_delete') {
 	$delete = $gpc->get('delete', arr_int);
 	if (count($delete) > 0) {
 		$deleteids = implode(',', $delete);
-		$db->query("DELETE FROM {$db->pre}documents WHERE id IN ({$deleteids})", __LINE__, __FILE__);
+		$db->query("DELETE FROM {$db->pre}documents WHERE id IN ({$deleteids})");
 		$anz = $db->affected_rows();
-		$db->query("DELETE FROM {$db->pre}documents_content WHERE did IN ({$deleteids})", __LINE__, __FILE__);
+		$db->query("DELETE FROM {$db->pre}documents_content WHERE did IN ({$deleteids})");
 
 		$delobj = $scache->load('wraps');
 		$delobj->delete();
@@ -1602,20 +1602,20 @@ elseif ($job == 'doc_edit') {
 	$id = $gpc->get('id', int);
 	$types = doctypes();
 
-	$result = $db->query("SELECT * FROM {$db->pre}documents WHERE id = '{$id}'", __LINE__, __FILE__);
+	$result = $db->query("SELECT * FROM {$db->pre}documents WHERE id = '{$id}'");
 	if ($db->num_rows($result) == 0) {
 		error('admin.php?action=cms&job=doc', $lang->phrase('admin_cms_invalid_id_given'));
 	}
 	$row = $db->fetch_assoc($result);
 
-	$result = $db->query("SELECT content, active, title, lid FROM {$db->pre}documents_content WHERE did = '{$id}'", __LINE__, __FILE__);
+	$result = $db->query("SELECT content, active, title, lid FROM {$db->pre}documents_content WHERE did = '{$id}'");
 	$content = array();
 	while ($row2 = $db->fetch_assoc($result)) {
 		$content[$row2['lid']] = $row2;
 	}
 
 	$format = $types[$row['type']];
-	$groups = $db->query("SELECT id, name FROM {$db->pre}groups", __LINE__, __FILE__);
+	$groups = $db->query("SELECT id, name FROM {$db->pre}groups");
 	$garr = explode(',', $row['groups']);
 
 	$memberdata_obj = $scache->load('memberdata');
@@ -1739,7 +1739,7 @@ elseif ($job == 'doc_edit2') {
   	$groups = $gpc->get('groups', arr_int);
   	$content = $gpc->get('template', arr_none);
 
-	$result = $db->query("SELECT type FROM {$db->pre}documents WHERE id = '{$id}' LIMIT 1", __LINE__, __FILE__);
+	$result = $db->query("SELECT type FROM {$db->pre}documents WHERE id = '{$id}' LIMIT 1");
 	if ($db->num_rows($result) == 0) {
 		error('admin.php?action=cms&job=doc', $lang->phrase('admin_cms_document_doesnt_exist'));
 	}
@@ -1768,7 +1768,7 @@ elseif ($job == 'doc_edit2') {
 
 	$time = time();
 
-	$db->query("UPDATE {$db->pre}documents SET `update` = '{$time}', `groups` = '{$groups}', `author` = '{$author}', `icomment` = '{$icomment}' WHERE id = '{$id}' LIMIT 1",__LINE__,__FILE__);
+	$db->query("UPDATE {$db->pre}documents SET `update` = '{$time}', `groups` = '{$groups}', `author` = '{$author}', `icomment` = '{$icomment}' WHERE id = '{$id}' LIMIT 1");
 
 	$language_obj = $scache->load('loadlanguage');
 	$language = $language_obj->get();
@@ -1803,10 +1803,10 @@ elseif ($job == 'doc_edit2') {
 				$content[$lid] = $db->escape_string($content[$lid]);
 			}
 			if ($db->num_rows($result) == 1) {
-				$db->query("UPDATE {$db->pre}documents_content SET `title` = '{$title[$lid]}', `content` = '{$content[$lid]}', `active` = '{$active[$lid]}' WHERE did = '{$id}' AND lid = '{$lid}'", __LINE__, __FILE__);
+				$db->query("UPDATE {$db->pre}documents_content SET `title` = '{$title[$lid]}', `content` = '{$content[$lid]}', `active` = '{$active[$lid]}' WHERE did = '{$id}' AND lid = '{$lid}'");
 			}
 			else {
-				$db->query("INSERT INTO {$db->pre}documents_content ( `did` , `lid` , `title` , `content` , `active` ) VALUES ('{$id}', '{$lid}', '{$title[$lid]}', '{$content[$lid]}', '{$active[$lid]}')", __LINE__, __FILE__);
+				$db->query("INSERT INTO {$db->pre}documents_content ( `did` , `lid` , `title` , `content` , `active` ) VALUES ('{$id}', '{$lid}', '{$title[$lid]}', '{$content[$lid]}', '{$active[$lid]}')");
 			}
 		}
 	}
@@ -1838,7 +1838,7 @@ elseif ($job == 'doc_code') {
 	echo foot();
 }
 elseif ($job == 'feed') {
-	$result = $db->query("SELECT * FROM {$db->pre}grab ORDER BY title", __LINE__, __FILE__);
+	$result = $db->query("SELECT * FROM {$db->pre}grab ORDER BY title");
 	$num = $db->num_rows($result);
 	echo head();
 ?>
@@ -1929,7 +1929,7 @@ elseif ($job == 'feed_add2') {
 		$max_age = 60*12;
 	}
 
-	$db->query("INSERT INTO {$db->pre}grab (title, file, entries, max_age) VALUES ('{$title}','{$file}','{$entries}','{$max_age}')", __LINE__, __FILE__);
+	$db->query("INSERT INTO {$db->pre}grab (title, file, entries, max_age) VALUES ('{$title}','{$file}','{$entries}','{$max_age}')");
 
 	$delobj = $scache->load('grabrss');
 	$delobj->delete();
@@ -1945,7 +1945,7 @@ elseif ($job == 'feed_delete') {
 			$deleteids[] = 'id = '.$did;
 		}
 
-		$db->query('DELETE FROM '.$db->pre.'grab WHERE '.implode(' OR ',$deleteids), __LINE__, __FILE__);
+		$db->query('DELETE FROM '.$db->pre.'grab WHERE '.implode(' OR ',$deleteids));
 		$anz = $db->affected_rows();
 
 		$delobj = $scache->load('grabrss');
@@ -1963,7 +1963,7 @@ elseif ($job == 'feed_edit') {
 	if (empty($id)) {
 		error('admin.php?action=cms&job=feed', 'Invalid ID given');
 	}
-	$result = $db->query('SELECT * FROM '.$db->pre.'grab WHERE id = '.$id, __LINE__, __FILE__);
+	$result = $db->query('SELECT * FROM '.$db->pre.'grab WHERE id = '.$id);
 	$row = $db->fetch_assoc($result);
 ?>
 <form name="form" method="post" action="admin.php?action=cms&job=feed_edit2&id=<?php echo $id; ?>">
@@ -2020,7 +2020,7 @@ elseif ($job == 'feed_edit2') {
 		$max_age = 60*12;
 	}
 
-	$db->query("UPDATE {$db->pre}grab SET file = '{$file}', title = '{$title}', entries = '{$entries}', max_age = '{$max_age}' WHERE id = '{$id}'", __LINE__, __FILE__);
+	$db->query("UPDATE {$db->pre}grab SET file = '{$file}', title = '{$title}', entries = '{$entries}', max_age = '{$max_age}' WHERE id = '{$id}'");
 
 	$delobj = $scache->load('grabrss');
 	$delobj->delete();

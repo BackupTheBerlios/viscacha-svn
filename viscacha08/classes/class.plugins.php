@@ -113,7 +113,7 @@ class PluginSystem {
     	FROM {$db->pre}plugins AS m
     		LEFT JOIN {$db->pre}packages AS p ON m.module = p.id
     	WHERE m.position = '{$pos}' AND p.active = '1' AND m.active = '1'
-    	", __LINE__, __FILE__);
+    	");
 		$info = $db->fetch_assoc($result);
 		return $info['num'];
 	}
@@ -212,7 +212,7 @@ class PluginSystem {
 	        		LEFT JOIN {$db->pre}packages AS p ON m.module = p.id
 	        	WHERE p.active = '1' AND m.active = '1'
 	        	ORDER BY m.ordering
-	        ",__LINE__,__FILE__);
+	        ");
 	        while ($row = $db->fetch_assoc($result)) {
 	        	$row['group'] = $this->_group($row['position']);
 	            $this->sqlcache[$row['group']][$row['position']][$row['id']] = $row['module'];

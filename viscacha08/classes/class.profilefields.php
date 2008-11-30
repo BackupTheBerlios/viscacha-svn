@@ -59,7 +59,7 @@ class ProfileFieldViewer {
 		if ($this->settings == null) {
 			global $db;
 			$this->settings = array();
-			$query = $db->query("SELECT * FROM {$db->pre}profilefields ORDER BY disporder", __LINE__, __FILE__);
+			$query = $db->query("SELECT * FROM {$db->pre}profilefields ORDER BY disporder");
 			while($row = $db->fetch_assoc($query)) {
 				$thing = explode("\n", $row['type'], 2);
 				$row['type'] = $thing[0];
@@ -97,7 +97,7 @@ class ProfileFieldViewer {
 			global $db, $gpc;
 			$this->cache[$this->uid] = array();
 			$this->data[$this->uid] = array();
-			$result = $db->query("SELECT * FROM {$db->pre}userfields WHERE ufid = '{$this->uid}'", __LINE__, __FILE__);
+			$result = $db->query("SELECT * FROM {$db->pre}userfields WHERE ufid = '{$this->uid}'");
 			$row = $db->fetch_assoc($result);
 			unset($row['ufid']);
 			$row = $gpc->prepare($row);

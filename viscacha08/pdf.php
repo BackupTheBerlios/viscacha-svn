@@ -40,7 +40,7 @@ SELECT id, topic, posts, sticky, status, last, board, vquestion, prefix
 FROM '.$db->pre.'topics
 WHERE id = "'.$_GET['id'].'"
 LIMIT 1
-',__LINE__,__FILE__);
+');
 $info = $gpc->prepare($db->fetch_assoc($result));
 
 $my->p = $slog->Permissions($info['board']);
@@ -115,7 +115,7 @@ if (!empty($info['vquestion']) && $_GET['page'] == 1) {
 	$vresult = $db->query("
 	SELECT COUNT(r.id) as votes, v.id, v.answer
 	FROM {$db->pre}vote AS v LEFT JOIN {$db->pre}votes AS r ON r.aid=v.id
-	WHERE v.tid = '{$info['id']}' GROUP BY v.id ORDER BY v.id",__LINE__,__FILE__);
+	WHERE v.tid = '{$info['id']}' GROUP BY v.id ORDER BY v.id");
 	while ($row = $db->fetch_assoc($vresult)) {
 		$cachev[] = $row;
 		$votes += $row['votes'];
@@ -125,7 +125,7 @@ if (!empty($info['vquestion']) && $_GET['page'] == 1) {
 	}
 	$voter = array();
 	$tids = implode(',', $aids);
-	$rresult = $db->query("SELECT mid, aid FROM {$db->pre}votes WHERE aid IN({$tids})",__LINE__,__FILE__);
+	$rresult = $db->query("SELECT mid, aid FROM {$db->pre}votes WHERE aid IN({$tids})");
 	while ($row = $db->fetch_assoc($rresult)) {
 		if (!isset($voter[$row['aid']]) || ! is_array($voter[$row['aid']])) {
 			$voter[$row['aid']] = array();
@@ -151,7 +151,7 @@ if (!empty($info['vquestion']) && $_GET['page'] == 1) {
 }
 
 if ($config['tpcallow'] == 1) {
-	$result = $db->query("SELECT id, tid, mid, file, source, hits FROM {$db->pre}uploads WHERE topic_id = ".$info['id'],__LINE__,__FILE__);
+	$result = $db->query("SELECT id, tid, mid, file, source, hits FROM {$db->pre}uploads WHERE topic_id = ".$info['id']);
 	$uploads = array();
 	while ($row = $db->fetch_assoc($result)) {
 		$uploads[$row['tid']][] = $row;
@@ -166,7 +166,7 @@ $result = $db->query("
 	WHERE r.topic_id = '{$info['id']}'
 	ORDER BY r.date ASC
 	{$searchsql}
-",__LINE__,__FILE__);
+");
 
 while ($row = $db->fetch_object($result)) {
 	$inner['upload_box'] = '';

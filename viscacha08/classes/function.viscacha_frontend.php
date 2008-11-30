@@ -435,14 +435,14 @@ function t2 ($time = NULL) {
 
 function UpdateTopicStats($topic) {
 	global $db;
-	$resultc = $db->query("SELECT COUNT(*) as posts FROM {$db->pre}replies WHERE topic_id = '{$topic}' AND tstart = '0'",__LINE__,__FILE__);
+	$resultc = $db->query("SELECT COUNT(*) as posts FROM {$db->pre}replies WHERE topic_id = '{$topic}' AND tstart = '0'");
 	$count = $db->fetch_assoc($resultc);
-	$result = $db->query("SELECT date, name FROM {$db->pre}replies WHERE topic_id = '{$topic}' ORDER BY date DESC LIMIT 1",__LINE__,__FILE__);
+	$result = $db->query("SELECT date, name FROM {$db->pre}replies WHERE topic_id = '{$topic}' ORDER BY date DESC LIMIT 1");
 	$last = $db->fetch_assoc($result);
-	$result = $db->query("SELECT id, date, name FROM {$db->pre}replies WHERE topic_id = '{$topic}' ORDER BY date ASC LIMIT 1",__LINE__,__FILE__);
+	$result = $db->query("SELECT id, date, name FROM {$db->pre}replies WHERE topic_id = '{$topic}' ORDER BY date ASC LIMIT 1");
 	$start = $db->fetch_assoc($result);
-	$db->query("UPDATE {$db->pre}topics SET posts = '{$count['posts']}', last = '{$last['date']}', last_name = '{$last['name']}', date = '{$start['date']}', name = '{$start['name']}' WHERE id = '{$topic}'",__LINE__,__FILE__);
-	$db->query("UPDATE {$db->pre}replies SET tstart = '1' WHERE id = '{$start['id']}'",__LINE__,__FILE__);
+	$db->query("UPDATE {$db->pre}topics SET posts = '{$count['posts']}', last = '{$last['date']}', last_name = '{$last['name']}', date = '{$start['date']}', name = '{$start['name']}' WHERE id = '{$topic}'");
+	$db->query("UPDATE {$db->pre}replies SET tstart = '1' WHERE id = '{$start['id']}'");
 	return $count['posts'];
 }
 
@@ -492,7 +492,7 @@ function BoardSelect($board = 0) {
         LEFT JOIN {$db->pre}topics AS t ON f.last_topic=t.id
         LEFT JOIN {$db->pre}user AS u ON t.last_name=u.id
     ORDER BY f.parent, f.position
-	",__LINE__,__FILE__);
+	");
 
 	$keys = array('l_topic' => null, 'l_tid' => null, 'l_date' => null, 'l_uname' => null, 'l_name' => null, 'l_bid' => null);
 
