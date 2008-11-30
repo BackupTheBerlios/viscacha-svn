@@ -591,12 +591,12 @@ label, .labeldiv {
 	min-height: 50px;
 	width: 560px;
 }
-.bb_blockcode li {
-	white-space: pre;
+.bb_blockcode * {
 	font-family: 'Courier New', monospace;
-	font-weight: normal;
-	font-style: normal;
-	margin-left: 4px;
+}
+.bb_blockcode li {
+	margin-left: 12px;
+	white-space: pre;
 }
 .bb_blockcode a {
 	border-bottom: 1px dotted #000000;

@@ -411,13 +411,13 @@ class GeSHi {
      * The overall style for this code block
      * @var string
      */
-    var $overall_style = 'font-family:monospace;';
+    var $overall_style = '';
 
     /**
      *  The style for the actual code
      * @var string
      */
-    var $code_style = 'font-family: monospace; font-weight: normal; font-style: normal; margin:0; padding:0; background:inherit;';
+    var $code_style = 'font-weight: normal;';
 
     /**
      * The overall class for this code block

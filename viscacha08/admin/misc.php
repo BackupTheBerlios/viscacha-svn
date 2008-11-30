@@ -665,14 +665,13 @@ elseif ($job == "credits") {
 <tr><td class="obox">Credits</td></tr>
 <tr><td class="mbox">
 	<p class="center">
-	    <small><a href="http://www.mamo-net.de" target="_blank">MaMo Net</a> proudly presents...</small><br />
+	    <small><a href="http://www.viscacha.org" target="_blank">The Viscacha Project</a> proudly presents...</small><br />
 	    <big style="font-weight: bold; color: #336699;">Viscacha <?php echo $config['version'];?></big>
 	</p>
 	<br class="minibr" />
 	<p>
 		<strong>Crew</strong>:<br />
-		Software engineer: <a href="http://www.mamo-net.de" target="_blank">Matthias Mohr</a><br />
-		Translations: et al. <a href="http://www.diaznet.de" target="_blank">DiazNet</a><br />
+		Software engineer: <a href="http://www.mamo-net.de" target="_blank">Matthias Mohr</a> et al.<br />
 		<em>Thanks to all testers and users who reported bugs and helped while development.</em>
 	</p>
 	<br class="minibr" />
@@ -682,7 +681,7 @@ elseif ($job == "credits") {
 		<li><a href="http://sourceforge.net/projects/tcpdf/" target="_blank">TCPDF 1.53.0.TC034 by Nicola Asuni</a> (PDF Creation based on FPDF, LGPL)</li>
 		<li><a href="http://www.phpclasses.org/browse/author/152329.html" target="_blank">Roman Numeral Conversion by Huda M Elmatsani</a> (Roman Numeral Conversion; Freeware)</li>
 		<li><a href="http://www.phpconcept.net" target="_blank">PclZip Library 2.6 by Vincent Blavet</a> (Zip File Handling; LPGL)</li>
-		<li><a href="http://qbnz.com/highlighter" target="_blank">GeSHi 1.0.8 by Nigel McNie and Benny Baumann</a> (Syntax Highlighting; GPL)</li>
+		<li><a href="http://qbnz.com/highlighter" target="_blank">GeSHi 1.0.8.1 by Nigel McNie and Benny Baumann</a> (Syntax Highlighting; GPL)</li>
 		<li><a href="http://magpierss.sourceforge.net" target="_blank">MagPieRSS 0.72 by kellan</a> (Parsing Newsfeeds; GPL)</li>
 		<li><a href="http://phpmailer.sourceforge.net/" target="_blank">PHPMailer 2.0.2 (with POP3 and SMTP) by Andy Prevost</a> (Sending E-mails; LGPL)</li>
 		<li><a href="http://www.bitfolge.de" target="_blank">FeedCreator v1.7.x by Kai Blankenhorn</a> (Creating Newsfeeds; LGPL)</li>

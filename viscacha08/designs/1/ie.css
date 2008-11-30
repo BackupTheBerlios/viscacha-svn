@@ -46,3 +46,6 @@
 * html .editor_textarea_outer .popup li {
 	border-top: 1px solid #c4c4c4;
 }
+.bb_blockcode li {
+	white-space: normal;
+}
