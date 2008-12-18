@@ -43,6 +43,7 @@ class BBCode {
 	var $benchmark;
 	var $author;
 	var $index;
+	var $url_regex;
 
 	function BBCode ($profile = 'viscacha') {
 	    $this->benchmark = array(
@@ -59,6 +60,8 @@ class BBCode {
 		$this->pid = 0;
 		$this->author = -1;
 		$this->index = 0;
+		// URL RegExp - First match is whole url, two matches predefined
+		$this->url_regex = "((svn://|telnet://|callto://|irc://|teamspeak://|http://|https://|ftp://|www.|ed2k://)?[a-z\d\-\.@]{2,}\.[a-z]{2,7}[\w\d;\/\?:@=\&\$\-\.\+\!\*'\(\),\~%#]+?)";
 
 		if (!class_exists('ConvertRoman')) {
 			include_once('classes/class.convertroman.php');
@@ -383,7 +386,7 @@ class BBCode {
 		$this->cache_bbcode();
 		$text = preg_replace('/(\r\n|\r|\n)/', "\n", $text);
 		$text = preg_replace('/\[hide\](.+?)\[\/hide\]/is', '', $text);
-		$text = preg_replace("~\[url=((telnet://|callto://|irc://|teamspeak://|http://|https://|ftp://|www.|mailto:|ed2k://|\w+?.\w{2,7})[a-z0-9;\/\?:@=\&\$\-_\.\+!\*'\(\),\~%#]+?)\](.+?)\[\/url\]~is", "\\3", $text);
+		$text = preg_replace("~\[url={$this->url_regex}\](.+?)\[\/url\]~is", "\\3 (\\1)", $text);
 
 		$search = array(
 			'[sub]','[/sub]',
@@ -451,7 +454,7 @@ class BBCode {
 		    $text = preg_replace('/\[hide\](.+?)\[\/hide\]/is', '', $text);
 		}
 		if ($type == 'plain') {
-			$text = preg_replace("~\[url=((telnet://|callto://|irc://|teamspeak://|http://|https://|ftp://|www.|mailto:|ed2k://|\w+?.\w{2,7})[a-z0-9;\/\?:@=\&\$\-_\.\+!\*'\(\),\~%#]+?)\](.+?)\[\/url\]~is", "\\3 (\\1)", $text);
+			$text = preg_replace("~\[url={$this->url_regex}\](.+?)\[\/url\]~is", "\\3 (\\1)", $text);
 
 			$search = array(
 			'[sub]','[/sub]',
@@ -503,8 +506,8 @@ class BBCode {
 			$text = $this->ListWorkAround($text);
 			$text = preg_replace('/\[note=([^\]]+?)\](.+?)\[\/note\]/is', "\\1 (<i>\\2</i>)", $text);
 
-			$text = preg_replace("~\[url\]((telnet://|callto://|irc://|teamspeak://|http://|https://|ftp://|www.|mailto:|ed2k://|\w+?.\w{2,7})+:\/\/[a-z0-9;\/\?:@=\&\$\-_\.\+!\*'\(\),\~%#]+?)\[\/url\]~is", "<a href=\"\\1\">\\1</a>", $text);
-			$text = preg_replace("~\[url=((telnet://|callto://|irc://|teamspeak://|http://|https://|ftp://|www.|mailto:|ed2k://|\w+?.\w{2,7})[a-z0-9;\/\?:@=\&\$\-_\.\+!\*'\(\),\~%#]+?)\](.+?)\[\/url\]~is", "<a href=\"\\1\">\\3</a>", $text);
+			$text = preg_replace("~\[url\]{$this->url_regex}\[\/url\]~is", "<a href=\"\\1\">\\1</a>", $text);
+			$text = preg_replace("~\[url={$this->url_regex}\](.+?)\[\/url\]~is", "<a href=\"\\1\">\\3</a>", $text);
 			$text = empty($this->profile['disallow']['img']) ? preg_replace("/\[img\](([^?&=\[\]]+?)\.(png|gif|bmp|jpg|jpe|jpeg))\[\/img\]/is", "<img src=\"\\1\">", $text) : $text;
 			$text = preg_replace("/\[img\](.+?)\[\/img\]/is", "<a href=\"\\1\">\\1</a>", $text); // Correct incorrect urls
 
@@ -549,13 +552,24 @@ class BBCode {
 		else {
 			$text = empty($this->profile['disallow']['code']) ? preg_replace_callback('/\[code(=(\w+?))?\](.+?)\[\/code\](\n?)/is', array(&$this, 'cb_hlcode'), $text) : $text;
 
+			while (preg_match('/\[quote=(.+?)\](.+?)\[\/quote\]/is',$text, $values)) {
+				$pid = $this->noparse_id();
+				if (check_hp($values[1])) {
+					$this->noparse[$pid] = '<a href="'.$values[1].'" target="_blank">'.$values[1].'</a>';
+				}
+				else {
+					$this->noparse[$pid] = $values[1]; //"\\1";
+				}
+				$text = preg_replace('/\[quote=(.+?)\](.+?)\[\/quote\]\n?/is', "<div class='bb_quote'><strong>".$lang->phrase('bb_quote_by')." <!PID:{$pid}>:</strong><br /><blockquote>\\2</blockquote></div>", $text, 1);
+			}
+
 			$text = $this->ListWorkAround($text);
 
-			$text = preg_replace_callback('/\[note=([^\]]+?)\](.+?)\[\/note\]/is', array(&$this, 'cb_note'), $text);
+			$text = preg_replace_callback("~\[url\]{$this->url_regex}\[\/url\]~is", array(&$this, 'cb_url'), $text);
+			$text = preg_replace_callback("~\[url={$this->url_regex}\](.+?)\[\/url\]~is", array(&$this, 'cb_title_url'), $text);
+			$text = preg_replace_callback("~((svn://|telnet://|callto://|irc://|teamspeak://|http://|https://|ftp://|www.|ed2k://)[a-z\d\-\.@]{2,}\.[a-z]{2,7}(:\d+)?/?([a-zA-Z0-9\-\.:;_\?\,/\\\+&%\$#\=\~]*)?([a-zA-Z0-9/\\\+\=\?]{1}))([^\'\"\<\>\s\r\n\t]{0,8})~is", array(&$this, 'cb_auto_url'), $text);
 
-			$text = preg_replace_callback("~\[url\]((telnet://|callto://|irc://|teamspeak://|http://|https://|ftp://|www.|mailto:|ed2k://|\w+?.\w{2,7})+:\/\/[a-z0-9;\/\?:@=\&\$\-_\.\+!\*'\(\),\~%#]+?)\[\/url\]~is", array(&$this, 'cb_url'), $text);
-			$text = preg_replace_callback("~\[url=((telnet://|callto://|irc://|teamspeak://|http://|https://|ftp://|www.|mailto:|ed2k://|\w+?.\w{2,7})[a-z0-9;\/\?:@=\&\$\-_\.\+!\*'\(\),\~%#]+?)\](.+?)\[\/url\]~is", array(&$this, 'cb_title_url'), $text);
-			$text = preg_replace_callback("~((et://|svn://|telnet://|callto://|irc://|teamspeak://|http://|https://|ftp://|ed2k://|www.)[a-zA-Z0-9\-\.@]+\.[a-zA-Z0-9]{1,7}(:\d*)?/?([a-zA-Z0-9\-\.:;_\?\,/\\\+&%\$#\=\~]*)?([a-zA-Z0-9/\\\+\=\?]{1}))([^\'\"\<\>\s\r\n\t]{0,8})~is", array(&$this, 'cb_auto_url'), $text);
+			$text = preg_replace_callback('/\[note=([^\]]+?)\](.+?)\[\/note\]/is', array(&$this, 'cb_note'), $text);
 
 			$text = empty($this->profile['disallow']['img']) ? preg_replace("/\[img\](([^?&=\[\]]+?)\.(png|gif|bmp|jpg|jpe|jpeg))\[\/img\]/is", '<img src="\1" alt=""'.iif($this->profile['resizeImg'] > 0, ' name="resize"').' />', $text) : $text;
 			$text = preg_replace("/\[img\](.+?)\[\/img\]/is", '<a href="\1" target="_blank">\1</a>', $text); // Correct incorrect urls
@@ -567,15 +581,6 @@ class BBCode {
 			$text = empty($this->profile['disallow']['h']) ? preg_replace_callback('/\n?\[h=(middle|small|large)\](.+?)\[\/h\]\n?/is', array(&$this, 'cb_header'), $text) : $text;
 			$text = preg_replace_callback('/\[size=(small|extended|large)\](.+?)\[\/size\]/is', array(&$this, 'cb_size'), $text);
 
-			while (preg_match('/\[quote=(.+?)\](.+?)\[\/quote\]/is',$text, $values)) {
-				if (isset($values[1]) && check_hp($values[1])) {
-					$quote_html = '<a href="\1" target="_blank">\1</a>';
-				}
-				else {
-					$quote_html = "\\1";
-				}
-				$text = preg_replace('/\[quote=(.+?)\](.+?)\[\/quote\]\n?/is', "<div class='bb_quote'><strong>".$lang->phrase('bb_quote_by')." {$quote_html}:</strong><br /><blockquote>\\2</blockquote></div>", $text);
-			}
 			while (preg_match('/\[quote](.+?)\[\/quote\]/is',$text)) {
 				$text = preg_replace('/\[quote](.+?)\[\/quote\]\n?/is', "<div class='bb_quote'><strong>".$lang->phrase('bb_quote')."</strong><br /><blockquote>\\1</blockquote></div>", $text);
 			}
@@ -813,7 +818,7 @@ class BBCode {
 		return str_replace($char, '&nbsp;', implode("\n", $result));
 	}
 	function getBenchmark($type='bbcode') {
-	    return substr($this->benchmark[$type], 0, 7);
+	    return round($this->benchmark[$type], 5);
 	}
 	function parseSmileys ($text, $type = 'html') {
 	    $start = benchmarktime();

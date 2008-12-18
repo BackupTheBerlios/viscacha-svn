@@ -247,30 +247,19 @@ function extract_dir($source, $realpath = true) {
 
 /* Missing constants from PHP-Compat */
 
-/**
- * Replace constant E_STRICT
- *
- * @category    PHP
- * @package     PHP_Compat
- * @link        http://php.net/ref.errorfunc
- * @author      Aidan Lister <aidan@php.net>
- * @version     $Revision: 1.11 $
- * @since       PHP 5
- */
 if (!defined('E_STRICT')) {
     define('E_STRICT', 2048);
 }
+if (!defined('E_RECOVERABLE_ERROR')) {
+    define('E_RECOVERABLE_ERROR', 4096);
+}
+if (!defined('E_DEPRECATED')) {
+    define('E_DEPRECATED', 8192);
+}
+if (!defined('E_USER_DEPRECATED')) {
+    define('E_USER_DEPRECATED', 16384);
+}
 
-/**
- * Replace PHP_EOL constant
- *
- * @category    PHP
- * @package     PHP_Compat
- * @link        http://php.net/reserved.constants.core
- * @author      Aidan Lister <aidan@php.net>
- * @version     $Revision: 1.2 $
- * @since       PHP 5.0.2
- */
 if (!defined('PHP_EOL')) {
 	if (isWindows() == true) {
 		define('PHP_EOL', "\r\n");
@@ -283,16 +272,6 @@ if (!defined('PHP_EOL')) {
 	}
 }
 
-/**
- * Replace filesystem constants
- *
- * @category    PHP
- * @package     PHP_Compat
- * @link        http://php.net/ref.filesystem
- * @author      Aidan Lister <aidan@php.net>
- * @version     $Revision: 1.8 $
- * @since       PHP 5
- */
 if (!defined('FILE_USE_INCLUDE_PATH')) {
     define('FILE_USE_INCLUDE_PATH', 1);
 }
@@ -317,7 +296,6 @@ if (!defined('FILE_NO_DEFAULT_CONTEXT')) {
     define('FILE_NO_DEFAULT_CONTEXT', 16);
 }
 
-// html_entity_decode()
 if (!defined('ENT_NOQUOTES')) {
     define('ENT_NOQUOTES', 0);
 }
@@ -338,8 +316,6 @@ if (!defined('CASE_LOWER')) {
 if (!defined('CASE_UPPER')) {
     define('CASE_UPPER', 1);
 }
-
-// image_type_to_*()
 
 $imagetype_extension = array('gif', 'jpg', 'png', 'swf', 'psd', 'bmp', 'tiff', 'jpc', 'jp2', 'jpf', 'jb2', 'swc', 'aiff', 'wbmp', 'xbm');
 

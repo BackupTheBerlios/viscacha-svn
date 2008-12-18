@@ -413,23 +413,13 @@ function pages ($anzposts, $perpage, $uri, $p = 1, $template = '', $linkrel = tr
     return $tpl->parse("main/pages".$template);
 }
 
-function t1 () {
-	return benchmarktime();
-}
-
-function t2 ($time = NULL) {
-	if ($time == NULL) {
-		global $zeitmessung1;
+function t2 ($start = null) {
+	if ($start === null) {
+		$start = SCRIPT_START_TIME;
 	}
-	else {
-		$zeitmessung1 = $time;
-	}
-	$zeitmessung2=benchmarktime();
-
-	$zeitmessung=$zeitmessung2-$zeitmessung1;
-	$zeitmessung=substr($zeitmessung,0,7);
-
-	return $zeitmessung;
+	$duration = benchmarktime() - $start;
+	$duration = round($duration, 5);
+	return $duration;
 }
 
 

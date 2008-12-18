@@ -212,7 +212,7 @@ else {
 
 // Global and important functions (not for cron and external)
 if (defined('TEMPNOFUNCINIT') == false || ($config['foffline'] && defined('TEMPSHOWLOG') == false)) {
-	$zeitmessung1 = t1();
+	define('SCRIPT_START_TIME', benchmarktime());
 	$slog = new slog();
 	$my = $slog->logged();
 	$lang->init($my->language);

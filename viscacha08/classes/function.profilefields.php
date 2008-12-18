@@ -154,7 +154,7 @@ function admin_customfields($uid) {
 function addprofile_customfields() {
 	global $db, $gpc;
 	$customfields = array();
-	$query = $db->query("SELECT * FROM ".$db->pre."profilefields WHERE required = '1' AND editable != '0' ORDER BY disporder");
+	$query = $db->query("SELECT * FROM {$db->pre}profilefields WHERE required = '1' AND editable != '0' ORDER BY disporder");
 	while($profilefield = $db->fetch_assoc($query)) {
 		$select = '';
 		$profilefield['type'] = $gpc->prepare($profilefield['type']);

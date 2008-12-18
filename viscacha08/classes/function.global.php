@@ -236,16 +236,15 @@ function array_empty($array) {
 	}
 }
 
-function array_empty_trim($arr) {
-	$array = array();
-	if (!is_array($arr)) {
+function array_empty_trim($array) {
+	if (!is_array($array)) {
 		trigger_error('array_empty_trim() expected argument to be an array!', E_USER_NOTICE);
 	}
 	else {
-		foreach($arr as $key => $val) {
-			$trimmed = trim($val);
-			if (!empty($trimmed)) {
-				$array[$key] = $val;
+		foreach($array as $key => $value) {
+			$value = trim($value);
+			if (empty($value)) {
+				unset($array[$key]);
 			}
 		}
 	}
@@ -515,7 +514,7 @@ function secure_path($path) {
 }
 
 function check_hp($hp) {
-	if (preg_match("~^https?://[a-zA-Z0-9\-\.@]+(\.[a-zA-Z0-9]{1,7})?(:[A-Za-z0-9]*)?/?([a-zA-Z0-9\-\.:_\?\,;/\\\+&%\$#\=\~]*)?$~i", $hp)) {
+	if (preg_match("~^https?://[a-z\d\-\.@]+(\.[a-z]{2,7})?(:\d+)?/?([a-zA-Z0-9\-\.:_\?\,;/\\\+&%\$#\=\~\[\]]*)?$~i", $hp)) {
 		return true;
 	}
 	else {

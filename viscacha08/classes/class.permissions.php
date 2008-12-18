@@ -1159,10 +1159,10 @@ function Permissions ($board = 0, $groups = null, $member = null) {
 		}
 		foreach ($permissions as $key => $value) {
 			if (in_array($key, $this->minFields)) {
-				$permissions[$key] = min($value);
+				$permissions[$key] = (int) @min($value);
 			}
 			else {
-				$permissions[$key] = max($value);
+				$permissions[$key] = (int) @max($value); // Do the max more elegant
 			}
 		}
 	}

@@ -202,28 +202,27 @@ class DB_Driver { // abstract class
 		}
 	}
 
-	function error($errline, $errfile, $errcomment) {
+	function error($errcomment) {
 		if ($this->logerrors) {
-			$new = array();
+			$logs = array();
 			if (file_exists($this->errlogfile)) {
-				$lines = file($this->errlogfile);
-				foreach ($lines as $row) {
-					$row = trim($row);
-					if (!empty($row)) {
-						$new[] = $row;
-					}
-				}
+				$logs = file($this->errlogfile);
+				$logs = array_empty_trim($logs);
 			}
-			else {
-				$new = array();
-			}
-			$errno = $this->errno();
-			$errmsg = $this->errstr();
-			$errcomment = str_replace(array("\r\n","\n","\r","\t"), " ", $errcomment);
-			$errmsg = str_replace(array("\r\n","\n","\r","\t"), " ", $errmsg);
-			$sru = str_replace(array("\r\n","\n","\r","\t"), " ", $_SERVER['REQUEST_URI']);
-			$new[] = $errno."\t".$errmsg."\t".$errfile."\t".$errline."\t".$errcomment."\t".$sru."\t".time()."\t".PHP_VERSION." (".PHP_OS.")";
-			@file_put_contents($this->errlogfile, implode("\n", $new));
+			$row = array(
+				$this->errno(),
+				$this->errstr(),
+				$errfile,
+				$errline,
+				$errcomment,
+				$errmsg,
+				$_SERVER['REQUEST_URI'],
+				time(),
+				PHP_VERSION." (".PHP_OS.")"
+			);
+			$row = array_map('makeOneLine', $row);
+			$logs[] = implode("\t", $row);
+			@file_put_contents($this->errlogfile, implode("\n", $row));
 		}
 		$errcomment = nl2br($errcomment);
 	    return "Database error {$errno}: {$errmsg}<br />File: {$errfile} on line {$errline}<br />Query: <code>{$errcomment}</code>";

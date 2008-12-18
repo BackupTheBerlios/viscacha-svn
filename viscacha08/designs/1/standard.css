@@ -285,6 +285,7 @@ h1 a, h1 a:hover {
 	font-weight: bold;
 	padding-right: 0.5em;
 	padding-left: 0.5em;
+	white-space: nowrap;
 }
 
 /* Footer */
@@ -523,6 +524,7 @@ label, .labeldiv {
 	border-top: 1px solid #336699;
 	padding: 0px;
 	display: block;
+	white-space: normal;
 }
 .popup li form, .popup li p {
 	padding: 2px;
