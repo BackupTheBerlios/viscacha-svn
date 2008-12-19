@@ -445,15 +445,6 @@ function deleteOldSessions () {
 	}
 }
 
-function httpAuth($name = null) {
-	if ($name == null) {
-		global $config;
-		$name = $config['fname'];
-	}
-	sendStatusCode(401, addslashes($name));
-	die("Authorization Required.");
-}
-
 /**
  * This script gets and prepares userdata, checks login data, sets cookies and manages sessions.
  *
@@ -472,23 +463,7 @@ function logged () {
 
     $vdata = $gpc->save_str(getcookie('vdata'));
     $vhash = $gpc->save_str(getcookie('vhash'));
-    if ($config['allow_http_auth'] == 1) {
-		if (!empty($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_PW'])) {
-			$http_user = $gpc->save_str($_SERVER['PHP_AUTH_USER']);
-			$http_pw = $gpc->save_str($_SERVER['PHP_AUTH_PW']);
-			$result = $db->query("SELECT id, pw FROM {$db->pre}user WHERE name = '{$http_user}' AND MD5('{$http_pw}') = pw LIMIT 1");
-			if ($db->num_rows($result) == 1) {
-				$this->cookiedata = $db->fetch_num($result);
-			}
-			else {
-				$this->httpAuth();
-			}
-		}
-		else {
-			$this->httpAuth();
-		}
-    }
-	elseif (!empty($vdata)) {
+    if (!empty($vdata)) {
 		$this->cookies = true;
 		$this->cookiedata = explode("|", $vdata);
 	}
@@ -1443,8 +1418,7 @@ function sqlinboards($spalte, $r_and = 0, $boards = null) {
 		// Negative
 		$all = $this->getBoards();
 		$temp = array_diff($all, $boards);
-		$negative = array_merge($temp, $negative);
-
+		$negative = array_merge($negative, $temp);
 	}
 
 	if ($this->permissions['forum'] == 1 && count($negative) > 1) {

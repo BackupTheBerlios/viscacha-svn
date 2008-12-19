@@ -24,6 +24,7 @@
 
 if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
 
+/* This is the version only for the installer (without GPC class) */
 class manageconfig {
 
 	var $file;
@@ -32,14 +33,12 @@ class manageconfig {
 	var $varname;
 
 	function manageconfig() {
-
 		if (!defined('str')) {
 			define('str', 2);
 		}
 		if (!defined('int')) {
 			define('int', 1);
 		}
-
 	}
 
 	function getdata($file='data/config.inc.php', $varname = 'config') {
@@ -134,28 +133,22 @@ class manageconfig {
 			$key = trim($key);
 		}
 		if ($val == null) {
-			global $gpc;
-			if (isset($gpc)) {
-				$val = $gpc->get($key, none);
-			}
-			else {
-		        if (isset($_REQUEST[$key])) {
-		            if ($type == int) {
-		                $val = intval(trim($_REQUEST[$key]));
-		            }
-		            else {
-		                $val = $_REQUEST[$key];
-		            }
-		        }
-		        else {
-		            if ($type == str) {
-		                $val = '';
-		            }
-		            elseif ($type == int) {
-		                $val = 0;
-		            }
-		        }
-			}
+	        if (isset($_REQUEST[$key])) {
+	            if ($type == int) {
+	                $val = intval(trim($_REQUEST[$key]));
+	            }
+	            else {
+	                $val = $_REQUEST[$key];
+	            }
+	        }
+	        else {
+	            if ($type == str) {
+	                $val = '';
+	            }
+	            elseif ($type == int) {
+	                $val = 0;
+	            }
+	        }
 		}
 
 		if (isset($group)) {

@@ -621,7 +621,7 @@ elseif ($job == 'newsletter2') {
 	$data = array(
 		'users' => $gpc->get('users', none),
 		'from_mail' => $gpc->get('from_mail', none, $config['forenmail']),
-		'from_name' => $gpc->get('from_name', none, $config['fname']),
+		'from_name' => $gpc->get('from_name', none, $gpc->plain_str($config['fname'])),
 		'title' => $gpc->get('title', none),
 		'message' => $gpc->get('message', none),
 		'batch' => $gpc->get('batch', int, 20),
@@ -2939,7 +2939,6 @@ elseif ($job == 'confirm') {
 	$db->query('UPDATE '.$db->pre.'user SET confirm = "'.$confirm.'" WHERE id = "'.$row['id'].'" LIMIT 1');
 
 	// Send Mail
-	$row = $gpc->plain_str($row);
 	$content = $lang->get_mail('admin_confirmed');
 	xmail(array('0' => array('mail' => $row['mail'])), array(), $content['title'], $content['comment']);
 
@@ -2954,7 +2953,6 @@ elseif ($job == 'confirm2') {
 
 	$db->query("UPDATE {$db->pre}user SET confirm = '11' WHERE id = '{$id}' LIMIT 1");
 
-	$row = $gpc->plain_str($row);
 	$content = $lang->get_mail('admin_confirmed');
 	xmail(array('0' => array('mail' => $row['mail'])), array(), $content['title'], $content['comment']);
 

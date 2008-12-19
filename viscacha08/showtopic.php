@@ -58,9 +58,10 @@ if ($last['topiczahl'] < 1) {
 $q = urldecode($gpc->get('q', str));
 if (strxlen($q) > 2) {
 	$qUrl = '&q='.urlencode($q);
+	$qUrl2 = '&amp;q='.urlencode($q);
 }
 else {
-	$qUrl = '';
+	$qUrl = $qUrl2 = '';
 }
 
 if ($_GET['action'] == 'firstnew') {
@@ -137,7 +138,7 @@ forum_opt($last);
 $speeder = $info['posts']+1;
 $start = $_GET['page']*$last['topiczahl'];
 $start = $start-$last['topiczahl'];
-$temp = pages($speeder, $last['topiczahl'], "showtopic.php?id=".$info['id']."&amp;", $_GET['page']);
+$temp = pages($speeder, $last['topiczahl'], "showtopic.php?id=".$info['id'].$qUrl2."&amp;", $_GET['page']);
 
 define('LINK_PRINT_PAGE', "print.php?id={$info['id']}&amp;page={$_GET['page']}".SID2URL_x);
 
@@ -282,7 +283,7 @@ ORDER BY date ASC
 $firstnew = 0;
 $firstnew_url = null;
 if ($info['last'] > $my->clv) {
-	$firstnew_url = 'showtopic.php?action=firstnew&amp;id='.$info['id'].SID2URL_x;
+	$firstnew_url = 'showtopic.php?action=firstnew&amp;id='.$info['id'].$qUrl2.SID2URL_x;
 }
 
 // Custom Profile Fields

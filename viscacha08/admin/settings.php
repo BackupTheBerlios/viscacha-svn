@@ -1450,7 +1450,6 @@ elseif ($job == 'general') {
 		$furl = $lang->phrase('admin_unable_to_analyze_url');
 	}
 
-	$config = $gpc->prepare($config);
 	?>
 	<form name="form" method="post" action="admin.php?action=settings&job=general2">
 	 <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
@@ -1467,19 +1466,19 @@ elseif ($job == 'general') {
 	  </tr>
 	  <tr>
 	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_page_url'); ?><br><span class="stext"><?php echo $lang->phrase('admin_page_url_info'); ?></span></td>
-	   <td class="mbox" width="50%"><input type="text" name="furl" value="<?php echo $config['furl']; ?>" size="50"></td>
+	   <td class="mbox" width="50%"><input type="text" name="furl" value="<?php echo $gpc->prepare($config['furl']); ?>" size="50"></td>
 	  </tr>
 	  <tr>
 	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_path_forum'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_path_forum_info'); ?> <?php echo str_replace('\\', '/', realpath('./')); ?></span></td>
-	   <td class="mbox" width="50%"><input type="text" name="fpath" value="<?php echo $config['fpath']; ?>" size="50"></td>
+	   <td class="mbox" width="50%"><input type="text" name="fpath" value="<?php echo $gpc->prepare($config['fpath']); ?>" size="50"></td>
 	  </tr>
 	  <tr>
 	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_forum_email'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_forum_email_info'); ?></span></td>
-	   <td class="mbox" width="50%"><input type="text" name="forenmail" value="<?php echo $config['forenmail']; ?>" size="50"></td>
+	   <td class="mbox" width="50%"><input type="text" name="forenmail" value="<?php echo $gpc->prepare($config['forenmail']); ?>" size="50"></td>
 	  </tr>
 	  <tr>
 	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_output_benchmark'); ?></td>
-	   <td class="mbox" width="50%"><input type="checkbox" name="benchmarkresult" value="1"<?php echo iif($config['benchmarkresult'],' checked'); ?>></td>
+	   <td class="mbox" width="50%"><input type="checkbox" name="benchmarkresult" value="1"<?php echo iif($config['benchmarkresult'],' checked="checked"'); ?>></td>
 	  </tr>
 	  <tr>
 	   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="<?php echo $lang->phrase('admin_form_submit'); ?>"></td>
@@ -1493,12 +1492,12 @@ elseif ($job == 'general2') {
 	echo head();
 
 	$c->getdata();
-	$c->updateconfig('fname',str);
-	$c->updateconfig('fdesc',str);
-	$c->updateconfig('furl',str);
-	$c->updateconfig('fpath',str);
-	$c->updateconfig('forenmail',str);
-	$c->updateconfig('benchmarkresult',int);
+	$c->updateconfig('fname', html_enc);
+	$c->updateconfig('fdesc', html_enc);
+	$c->updateconfig('furl', str);
+	$c->updateconfig('fpath', str);
+	$c->updateconfig('forenmail', str);
+	$c->updateconfig('benchmarkresult', int);
 	$c->savedata();
 
 	ok('admin.php?action=settings&job=settings');

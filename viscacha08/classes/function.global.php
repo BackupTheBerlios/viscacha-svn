@@ -970,21 +970,21 @@ function check_forumperm($forum) {
 }
 
 /*
-Sends a plain-text E-Mail.
+Sends a plain text e-mail in UTF-8.
 
 Params:
-	(array/string)	$to		= Absender
-					$to[]['name'] = Empfängername (opt)
-					$to[]['mail'] = Empfängeremail
-	(array/string)	$from		= Absender (opt)
-					$from['name'] = Absendername (opt)
-					$from['mail'] = Absenderemail (opt)
-	(string)		$topic 		= Titel
-	(string)		$comment 	= Inhalt
+	(array/string)	$to		= Recipient
+					$to[]['name'] = Name of Recipient (opt)
+					$to[]['mail'] = Mail of Recipient
+	(array/string)	$from		= Sender (opt)
+					$from['name'] = Name of Sender (opt)
+					$from['mail'] = Mail of Sender (opt)
+	(string)		$topic 		= Title
+	(string)		$comment 	= Content
 */
 
 function xmail ($to, $from = array(), $topic, $comment) {
-	global $config, $my, $lang, $bbcode;
+	global $config, $my, $lang, $bbcode, $gpc;
 
 	require_once("classes/mail/class.phpmailer.php");
 
@@ -997,13 +997,13 @@ function xmail ($to, $from = array(), $topic, $comment) {
 		$mail->From = $config['forenmail'];
 	}
 	else {
-		$mail->From = $from['mail'];
+		$mail->From = $gpc->plain_str($from['mail']);
 	}
 	if (!isset($from['name'])) {
-		$mail->FromName = $config['fname'];
+		$mail->FromName = $gpc->plain_str($config['fname']);
 	}
 	else {
-		$mail->FromName = $from['name'];
+		$mail->FromName = $gpc->plain_str($from['name']);
 	}
 	if ($config['smtp'] == 1) {
 		$mail->Mailer   = "smtp";
@@ -1024,20 +1024,20 @@ function xmail ($to, $from = array(), $topic, $comment) {
 		$mail->IsMail();
 	}
 
-	$mail->Subject = $topic;
+	$mail->Subject = $gpc->plain_str($topic);
 	if (!is_array($to)) {
 		$to = array('0' => array('mail' => $to));
 	}
 	$i = 0;
 	foreach ($to as $email) {
 		$mail->IsHTML(false);
-	    $mail->Body = $comment;
+	    $mail->Body = $gpc->plain_str($comment);
 
 	    if (isset($email['name'])) {
-	    	$mail->AddAddress($email['mail'], $email['name']);
+	    	$mail->AddAddress($gpc->plain_str($email['mail']), $gpc->plain_str($email['name']));
 	    }
 	    else {
-	    	$mail->AddAddress($email['mail']);
+	    	$mail->AddAddress($gpc->plain_str($email['mail']));
 	    }
 
 		if ($mail->Send()) {

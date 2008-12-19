@@ -124,6 +124,9 @@ if ($_GET['action'] == "search") {
 		}
 	}
 
+	if (array_empty($boards)) {
+		$boards = $slog->getBoards();
+	}
 	$sql_where = $slog->sqlinboards('r.board', 1, $boards)." ";
 
 	if (count($used) > 0) {

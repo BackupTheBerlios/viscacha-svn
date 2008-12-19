@@ -167,7 +167,6 @@ if ($my->vlogin && $my->mp[0] == 1) {
 			$db->query("INSERT INTO {$db->pre}replies SET tstart = '1', topic_id = '{$tid}', comment = '{$info['id']}', topic = '".$gpc->save_str($old['topic'])."', board='{$info['board']}', name = '".$gpc->save_str($old['name'])."', email = '{$old['email']}', date = '{$old['date']}', guest = '{$old['guest']}', edit = '', report = ''");
 		}
 		if ($_POST['temp2'] == 1) {
-			$old = $gpc->plain_str($old);
 			if ($old['guest'] == 0) {
 				$old['email'] = $old['uemail'];
 				$old['name'] = $old['uname'];

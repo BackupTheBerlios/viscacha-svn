@@ -635,20 +635,13 @@ class PHPMailer {
   }
 
   /**
-   * Sets the language for all class error messages.  Returns false
-   * if it cannot load the language file.  The default language type
-   * is English.
-   * @param string $lang_type Type of language (e.g. Portuguese: "br")
-   * @param string $lang_path Path to the language file directory
+   * Sets the language for all class error messages.
    * @access public
    * @modified for Viscacha
-   * @return bool
    */
     function SetLanguage() {
     	global $lang;
-    	$lang->group("classes");
-        $this->language = $lang->return_array();
-        return true;
+        $this->language = $lang->return_array("classes");
     }
 
   /////////////////////////////////////////////////

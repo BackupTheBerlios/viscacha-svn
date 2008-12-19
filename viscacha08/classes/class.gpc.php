@@ -51,6 +51,9 @@ class GPC {
 		if (!defined('db_esc')) {
 			define('db_esc', 6);
 		}
+		if (!defined('html_enc')) {
+			define('html_enc', 7);
+		}
 		$this->prepare_original = array('"', "'", '<', '>');
 		$this->prepare_entity = array('&quot;', '&#039;', '&lt;', '&gt;');
 		$this->php523 = version_compare(PHP_VERSION, '5.2.3', '>=');
@@ -72,13 +75,19 @@ class GPC {
 				$var = $this->secure_null($_REQUEST[$index]);
 				$var = $db->escape_string($var);
 			}
+			elseif ($type == html_enc) {
+				if ($type == str) {
+					$_REQUEST[$index] = trim($_REQUEST[$index]);
+				}
+				$var = $this->save_str($_REQUEST[$index], false);
+			}
 			else {
 				$var = $this->secure_null($_REQUEST[$index]);
 			}
 		}
 		else {
 			if ($standard === null) {
-				if ($type == str || $type == db_esc) {
+				if ($type == str || $type == db_esc || $type == html_enc) {
 					$var = '';
 				}
 				elseif ($type == int) {
@@ -129,7 +138,7 @@ class GPC {
 		return $var;
 	}
 
-	function save_str($var){
+	function save_str($var, $db_esc = true){
 		global $db, $config, $lang;
 		if (is_numeric($var) || empty($var)) {
 			// Do nothing to save time
@@ -140,7 +149,7 @@ class GPC {
 
 			for ($i = 0; $i < $cnt; $i++){
 				$key = $keys[$i];
-				$var[$key] = $this->save_str($var[$key]);
+				$var[$key] = $this->save_str($var[$key], $db_esc);
 			}
 		}
 		elseif (is_string($var)){
@@ -153,10 +162,10 @@ class GPC {
 				$var = htmlentities($var, ENT_QUOTES, $lang->charset());
 				$var = str_replace('&amp;#', '&#', $var);
 			}
-			if (is_object($db)) {
+			if ($db_esc == true && is_object($db)) {
 				$var = $db->escape_string($var);
 			}
-			else {
+			elseif ($db_esc == true) {
 				$var = addslashes($var);
 			}
 		}

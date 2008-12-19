@@ -252,7 +252,6 @@ if ($_GET['action'] == "save") {
 		");
 		while ($row = $db->fetch_assoc($result)) {
 			$lang->setdir($row['language']);
-			$row = $gpc->plain_str($row);
 			$data = $lang->get_mail('digest_s');
 			$to = array('0' => array('name' => $row['name'], 'mail' => $row['mail']));
 			$from = array();

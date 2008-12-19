@@ -50,8 +50,7 @@ class VeriWord {
 		ImageTypes();
 
 		$lang = new lang();
-		$lang->group("classes");
-		$this->lang = $lang->return_array();
+		$this->lang = $lang->return_array("classes");
 
 		if (viscacha_function_exists('imagejpeg') && IMG_JPEG) {
 			define('IMAGEJPEG', true);

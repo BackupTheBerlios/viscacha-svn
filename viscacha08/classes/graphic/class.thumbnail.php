@@ -33,8 +33,7 @@ function thumbnail () {
     ImageTypes();
 
 	$lang = new lang();
-    $lang->group("classes");
-    $this->lang = $lang->return_array();
+    $this->lang = $lang->return_array("classes");
 
     $this->path = '';
 	$this->mime = array();

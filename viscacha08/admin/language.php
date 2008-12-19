@@ -997,10 +997,7 @@ elseif ($job == 'lang_default') {
 	$c = new manageconfig();
 	$c->getdata();
 	$c->updateconfig('langdir', int, $id);
-	$current = $lang->getdir();
-	$lang->setdir($id);
-	$data = $lang->return_array('settings');
-	$lang->setdir($current);
+	$data = return_array('settings', $id);
 	$c->updateconfig('asia_charset', str, $data['charset']);
 	$c->savedata();
 

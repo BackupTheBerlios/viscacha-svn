@@ -123,7 +123,6 @@ elseif ($_GET['action'] == "pwremind2") {
 
 		($code = $plugins->load('log_pwremind2_prepare')) ? eval($code) : null;
 
-		$user = $gpc->plain_str($user);
 		$data = $lang->get_mail('pwremind');
 		$to = array('0' => array('name' => $user['name'], 'mail' => $user['mail']));
 		$from = array();
@@ -153,7 +152,6 @@ elseif ($_GET['action'] == "pwremind3") {
 		$md5 = md5($pw);
 		$db->query("UPDATE {$db->pre}user SET pw = '{$md5}' WHERE id = '{$user['id']}' LIMIT 1");
 
-		$user = $gpc->plain_str($user);
 		$data = $lang->get_mail('pwremind2');
 		$to = array('0' => array('name' => $user['name'], 'mail' => $user['mail']));
 		$from = array();
