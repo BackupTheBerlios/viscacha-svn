@@ -38,6 +38,7 @@ function ImageHexColorAllocate(&$image, $string) {
 
 ($code = $plugins->load('images_start')) ? eval($code) : null;
 
+// Change $gpc->plain_str(..., false) to true when Charts-lib can use utf-8
 if ($_GET['action'] == 'vote') {
 	$result = $db->query('
 	SELECT id, topic, posts, sticky, status, last, board, vquestion, prefix
@@ -53,8 +54,8 @@ if ($_GET['action'] == 'vote') {
 	$skin = $gpc->get('skin', int, 1);
 	$modus = $gpc->get('modus', int, 1);
 
-	$PG->title     = $info['vquestion'];
-	$PG->axis_y    = $lang->phrase('vote_export_votes');
+	$PG->title     = $gpc->plain_str($info['vquestion'], false);
+	$PG->axis_y    = $gpc->plain_str($lang->phrase('vote_export_votes'), false);
 	$PG->type      = $modus;
 	$PG->skin      = $skin;
 	$PG->dp 	   = $lang->phrase('decpoint');
@@ -72,7 +73,7 @@ if ($_GET['action'] == 'vote') {
 		$i++;
 	}
 
-	$PG->credits   = $lang->phrase('vote_counter').$votes;
+	$PG->credits   = $gpc->plain_str($lang->phrase('vote_counter').$votes, false);
 
 	$PG->start();
 }

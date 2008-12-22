@@ -24,6 +24,7 @@ function highlight_sql_query($sql) {
 function exec_query_form ($query = '') {
 	global $db, $lang;
 	$tables = $db->list_tables();
+	$lang->assign('maxfilesize', formatFilesize(ini_maxupload()));
 ?>
 <script type="text/javascript" src="templates/editor/bbcode.js"></script>
 <form name="form" method="post" action="admin.php?action=db&job=query2">
@@ -51,7 +52,7 @@ function exec_query_form ($query = '') {
  </table>
 </form>
 <br />
-<?php if (empty($query)) { $maxfilesize = formatFilesize(ini_maxupload()); ?>
+<?php if (empty($query)) { ?>
 <form name="form" method="post" action="admin.php?action=db&amp;job=query2&amp;type=1" enctype="multipart/form-data">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr>
@@ -210,7 +211,7 @@ elseif ($job == 'backup2') {
 	}
 	$drop = $gpc->get('drop', int);
 	$zip = $gpc->get('zip', int);
-	$name = gmdate('d_m_Y-H_i_s');
+	$name = $db->database.'-'.gmdate('Ymd-His');
 
 	$temp = array('zip' => $zip, 'drop' => $drop, 'steps' => 0);
 	foreach ($tables as $table) {
@@ -473,23 +474,23 @@ elseif ($job == 'restore') {
 	$result = array();
 	$dir = "./admin/backup/";
 
+	// Old names: DD_MM_YYYY-HH_MM_SS
+	// New names: DBNAME-YYYYMMDD-HHMMSS
+
 	$handle = opendir($dir);
 	while ($file = readdir($handle)) {
 		if ($file != "." && $file != ".." && !is_dir($dir.$file)) {
 			$nfo = pathinfo($dir.$file);
 			if ($nfo['extension'] == 'zip' || $nfo['extension'] == 'sql') {
-
-				$date = str_replace('.zip', '', $nfo['basename']);
-				$date = str_replace('.sql', '', $date);
-
 				$result[] = array(
 					'file' => $nfo['basename'],
-					'size' => filesize($dir.$file),
-					'date' => $date
+					'size' => filesize($dir.$file)
 				);
 			}
 		}
 	}
+
+	$maxfilesize = formatFilesize(ini_maxupload());
 ?>
 <form name="form" method="post" action="admin.php?action=db&job=restore2">
  <table class="border">
@@ -534,7 +535,7 @@ elseif ($job == 'restore') {
   </tr>
   <tr>
    <td class="mbox" width="50%">
-    <?php echo $lang->phrase('admin_db_upload_backup'); ?><br /><?php $maxfilesize = formatFilesize(ini_maxupload()); ?>
+    <?php echo $lang->phrase('admin_db_upload_backup'); ?><br />
     <span class="stext"><?php echo $lang->phrase('admin_db_allowed_filetypes_max_filesize'); ?></span>
    </td>
    <td class="mbox" width="50%"><input type="file" name="upload_0" size="40" /></td>

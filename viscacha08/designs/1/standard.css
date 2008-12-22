@@ -720,7 +720,6 @@ label, .labeldiv {
 	font-size: 9pt;
 	border-width: 0px;
 	width: 100%;
-	overflow: auto;
 	margin: -4px;
 	padding: 4px;
 }
@@ -736,11 +735,11 @@ label, .labeldiv {
 .editor_statusbar a:hover {
 	text-decoration: underline;
 }
-
 .editor_textarea_outer .popup {
 	border: 1px solid #888888;
 	max-height: 250px;
 	width: 200px;
+	overflow: auto;
 }
 .editor_textarea_outer .popup ul {
 	list-style-type: none;
@@ -756,7 +755,7 @@ label, .labeldiv {
 }
 .editor_textarea_outer .popup li {
 	border-width: 0px;
-	padding: 2px 3px 1px 3px;
+	padding: 2px 3px 2px 3px;
 	background-color: #ffffff;
 	font-size: 9pt;
 }

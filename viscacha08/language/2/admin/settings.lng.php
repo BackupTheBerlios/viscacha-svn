@@ -115,6 +115,8 @@ $lang['admin_email_for_reports'] = 'E-mail-address for reports:';
 $lang['admin_email_notify_new_member'] = 'Email addresses to notify when there is a new member:';
 $lang['admin_email_notify_new_member_info'] = 'Separate each address with a Newline/Carriage Return => Each address in an own row.';
 $lang['admin_enabled'] = 'enabled';
+$lang['admin_enable_change_vote'] = 'Allow to change one\'s mind of a survey';
+$lang['admin_enable_change_vote_info'] = 'This option allows members to change their vote in surveys again.';
 $lang['admin_enable_postrating'] = 'Enable and show Postrating:';
 $lang['admin_error_handler'] = 'Use own Error-Handler:';
 $lang['admin_error_handler_info'] = 'Activate this option to use custom error handler (see: <a href="http://www.php.net/manual/function.set-error-handler.php" target="_blank">set_error_handler</a>).';

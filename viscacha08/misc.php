@@ -445,47 +445,50 @@ elseif ($_GET['action'] == "wwo") {
     ($code = $plugins->load('misc_wwo_end')) ? eval($code) : null;
 }
 elseif ($_GET['action'] == "vote") {
-	$allow = TRUE;
+	$voted = 0;
 
 	($code = $plugins->load('misc_vote_start')) ? eval($code) : null;
 
-	$result = $db->query("
-	SELECT v.id
-	FROM {$db->pre}vote AS v
-		LEFT JOIN {$db->pre}votes AS r ON v.id=r.aid
-	WHERE v.tid = '{$_GET['id']}' AND r.mid = '".$my->id."'
-	LIMIT 1
-	");
-
-	if ($db->num_rows($result) > 0) {
-		$allow = FALSE;
-	}
 	$result = $db->query("SELECT board FROM {$db->pre}topics WHERE id = '{$_GET['id']}' LIMIT 1");
 	$info = $db->fetch_assoc($result);
-
 	$my->p = $slog->Permissions($info['board']);
 
-    $error = array();
-	if (!is_id($_GET['id'])) {
-		$error[] = $lang->phrase('query_string_error');
+	if (!$my->vlogin || $my->p['forum'] == 0 || $my->p['voting'] == 0) {
+		errorLogin($lang->phrase('not_allowed'));
 	}
-	if (!is_id($_POST['temp'])) {
+
+	$answers = array();
+	$result = $db->query("
+		SELECT r.mid
+		FROM {$db->pre}vote AS v
+			LEFT JOIN {$db->pre}votes AS r ON v.id = r.aid
+		WHERE v.tid = '{$_GET['id']}' AND r.mid = '{$my->id}'
+	");
+	if ($db->num_rows($result) > 0) {
+		list($voted) = $db->fetch_num($result);
+	}
+
+	$error = array();
+	$result = $db->query("SELECT id FROM {$db->pre}vote WHERE tid = '{$_GET['id']}' AND id = '{$_POST['temp']}'");
+	if ($db->num_rows($result) == 0) {
 		$error[] = $lang->phrase('vote_no_value_checked');
 	}
-	if (!$allow) {
+	if ($voted > 0 && $config['vote_change'] != 1) {
 		$error[] = $lang->phrase('already_voted');
-	}
-	if ($my->p['forum'] == 0 || $my->p['voting'] == 0 || !$my->vlogin) {
-		$error[] = $lang->phrase('not_allowed');
 	}
 	($code = $plugins->load('misc_vote_errorhandling')) ? eval($code) : null;
 	if (count($error) > 0) {
-		errorLogin($error);
+		error($error, 'showtopic.php?id='.$_GET['id'].'&page='.$_POST['page'].SID2URL_x);
 	}
 	else {
 		($code = $plugins->load('misc_vote_savedata')) ? eval($code) : null;
-		$db->query("INSERT INTO {$db->pre}votes (mid, aid) VALUES ('{$my->id}','{$_POST['temp']}')");
-		ok($lang->phrase('data_success'), 'showtopic.php?id='.$_GET['id'].SID2URL_x);
+		if ($voted) {
+			$db->query("UPDATE {$db->pre}votes SET aid = '{$_POST['temp']}' WHERE id = '{$voted}'");
+		}
+		else {
+			$db->query("INSERT INTO {$db->pre}votes (mid, aid) VALUES ('{$my->id}','{$_POST['temp']}')");
+		}
+		ok($lang->phrase('data_success'), 'showtopic.php?id='.$_GET['id'].'&page='.$_POST['page'].SID2URL_x);
 	}
 }
 elseif ($_GET['action'] == "bbhelp") {

@@ -266,6 +266,10 @@ elseif ($job == 'posts') {
 	   <td class="mbox" width="50%"><input type="checkbox" name="post_user_status" value="1"<?php echo iif($config['post_user_status'] == 1, ' checked="checked"'); ?> /></td>
 	  </tr>
 	  <tr>
+	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_enable_change_vote'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_enable_change_vote_info'); ?></span></td>
+	   <td class="mbox" width="50%"><input type="checkbox" name="vote_change" value="1"<?php echo iif($config['vote_change'] == 1, ' checked="checked"'); ?> /></td>
+	  </tr>
+	  <tr>
 	   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="<?php echo $lang->phrase('admin_form_submit'); ?>"></td>
 	  </tr>
 	 </table>
@@ -331,6 +335,7 @@ elseif ($job == 'posts2') {
 	$c->updateconfig('abozahl', int);
 	$c->updateconfig('fullname_posts', int);
 	$c->updateconfig('post_user_status', int);
+	$c->updateconfig('vote_change', int);
 	$c->savedata();
 
 	ok('admin.php?action=settings&job=settings');

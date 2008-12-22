@@ -26,6 +26,11 @@ if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
 
 require_once("classes/function.frontend_init.php");
 
+define('BOARD_STATE_OLD', 0);
+define('BOARD_STATE_NEW', 1);
+define('BOARD_STATE_LOCKED', 2);
+define('BOARD_STATE_WWW', 3);
+
 function getRedirectURL($standard = true) {
 	global $gpc;
 	$loc = strip_tags($gpc->get('redirect', none));
@@ -549,6 +554,7 @@ function BoardSelect($board = 0) {
     					$forum['show'] = false;
     				}
 					$forum['foldimg'] = $tpl->img('cat_locked');
+					$forum['state'] = BOARD_STATE_LOCKED;
     				$forum['topics'] = '-';
     				$forum['replies'] = '-';
     				$forum['l_topic'] = false;
@@ -556,9 +562,11 @@ function BoardSelect($board = 0) {
     			else {
     				if ($slog->isForumRead($forum['id'], $forum['l_date']) || $forum['topics'] < 1) {
     					$forum['foldimg'] = $tpl->img('cat_open');
+    					$forum['state'] = BOARD_STATE_OLD;
     				}
     				else {
     				   	$forum['foldimg'] = $tpl->img('cat_red');
+    				   	$forum['state'] = BOARD_STATE_NEW;
     				   	$forum['new'] = true;
     				}
 		    		if (!empty($forum['l_topic'])) {
@@ -605,20 +613,24 @@ function BoardSelect($board = 0) {
 			    				}
 			    				else {
 									$sub_cache[$forum['id']][$i]['foldimg'] = $tpl->img('subcat_locked');
+									$sub_cache[$forum['id']][$i]['state'] = BOARD_STATE_LOCKED;
 								}
 			    			}
 			    			else {
 			    				if ($slog->isForumRead($sub_cache[$forum['id']][$i]['id'], $sub_cache[$forum['id']][$i]['l_date']) || $sub_cache[$forum['id']][$i]['topics'] < 1) {
 			    					$sub_cache[$forum['id']][$i]['foldimg'] = $tpl->img('subcat_open');
+			    					$sub_cache[$forum['id']][$i]['state'] = BOARD_STATE_OLD;
 			    				}
 			    				else {
 			    				   	$sub_cache[$forum['id']][$i]['foldimg'] = $tpl->img('subcat_red');
+			    				   	$sub_cache[$forum['id']][$i]['state'] = BOARD_STATE_NEW;
 			    				   	$sub_cache[$forum['id']][$i]['new'] = true;
 			    				}
 			    		    }
 			    	    }
 			    	    else {
 			    	    	$sub_cache[$forum['id']][$i]['foldimg'] = $tpl->img('subcat_redirect');
+			    	    	$sub_cache[$forum['id']][$i]['state'] = BOARD_STATE_WWW;
 			    	    }
 			    	    if ($show == true) {
 							$forum['sub'][] = $sub_cache[$forum['id']][$i];

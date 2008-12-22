@@ -156,77 +156,84 @@ $inner['index_bit'] = array();
 $inner['vote_result'] = '';
 $inner['related'] = '';
 
-// prepare for vote
+// Do we have a vote?
 if (!empty($info['vquestion'])) {
-	$votes = 0;
+	// Yeah, we have - Create an empty array for the data
+	$vote = array(
+		'count' => 0, // Number of all votes
+		'question' => $info['vquestion'], // The question of the vote
+		'entries' => array(), // Each option (with title of the option, ...)
+		'voted' => 0, // The option (answer id) the requesting user has chosen (0 = no vote yet)
+		'results' => false, // Show the result page (true) or the form to chose the options (false)
+		'voter' => array(), // The voter for each option
+		'phrase' => null // Phrase to switch to the survey form (change/add)
+	);
+
 	if (!$my->vlogin || $my->p['voting'] == 0 || $_GET['temp'] == 1) {
-		$showresults = TRUE;
-	}
-	else {
-		$showresults = FALSE;
+		$vote['results'] = true;
 	}
 
-	$cachev = array();
-	$aids = array();
+	// Get data: count of votes per option, option id, option text
 	$vresult = $db->query("
-	SELECT COUNT(r.id) as votes, v.id, v.answer
-	FROM {$db->pre}vote AS v
-		LEFT JOIN {$db->pre}votes AS r ON r.aid=v.id
-	WHERE v.tid = '{$info['id']}'
-	GROUP BY v.id
-	ORDER BY v.id
+		SELECT COUNT(r.id) as votes, v.id, v.answer
+		FROM {$db->pre}vote AS v
+			LEFT JOIN {$db->pre}votes AS r ON r.aid = v.id
+		WHERE v.tid = '{$info['id']}'
+		GROUP BY v.id
+		ORDER BY v.id
 	");
-
-	while ($row = $db->fetch_assoc($vresult)) {
-		$row['answer'] = $gpc->prepare($row['answer']);
-		$cachev[] = $row;
-		$votes += $row['votes'];
-		if (!isset($aids[$row['id']])) {
-			$aids[$row['id']] = $row['id'];
+	if ($db->num_rows($vresult) > 0) {
+		// Collect and cache data for a single query instead of multiple
+		while ($row = $db->fetch_assoc($vresult)) {
+			$vote['entries'][$row['id']] = $row;
+			$vote['voter'][$row['id']] = array();
+			$vote['count'] += $row['votes'];
 		}
-	}
-	if (count($aids) > 0) {
-		$voter = array();
-		$tids = implode(',', $aids);
-		$rresult = $db->query("SELECT mid, aid FROM {$db->pre}votes WHERE aid IN({$tids})");
-		while ($row = $db->fetch_assoc($rresult)) {
+
+		// Now get more data (for what the users voted exactly)
+		$sql_aid_in = implode(',', array_keys($vote['entries']));
+		$vresult = $db->query("SELECT mid, aid FROM {$db->pre}votes WHERE aid IN({$sql_aid_in})");
+		while ($row = $db->fetch_assoc($vresult)) {
+			// Save the data for the member who is calling this page
 			if ($row['mid'] == $my->id) {
-				$showresults = TRUE;
+				if ($config['vote_change'] != 1 || ($config['vote_change'] == 1 && $_GET['temp'] != 2)) {
+					$vote['results'] = true;
+				}
+				$vote['voted'] = $row['aid'];
 			}
-			if (!isset($voter[$row['aid']]) || ! is_array($voter[$row['aid']])) {
-				$voter[$row['aid']] = array();
-			}
-			$voter[$row['aid']][$row['mid']] = $memberdata[$row['mid']]; // Array mit den Namen der Leute und deren Antwort
+			// Create element in array with name (+ member id as key) at the selected answer
+			$vote['voter'][$row['aid']][$row['mid']] = $memberdata[$row['mid']];
 		}
 
-		if (!$showresults) {
+		if ($vote['results'] == false) {
+			// When we only show the form to submit/change a vote
 		    ($code = $plugins->load('showtopic_vote_prepared')) ? eval($code) : null;
 			$inner['vote_result'] = $tpl->parse("showtopic/vote");
 		}
 		else {
-			foreach ($cachev as $key => $row) {
-				if ($votes > 0) {
-					$row['percent2'] = ceil($row['votes'] / $votes * 200);
-					$row['percent'] = $row['votes'] / $votes * 100;
+			// Show the results
+			foreach ($vote['entries'] as $key => $row) {
+				if ($row['votes'] > 0) {
+					$row['percent'] = $row['votes'] / $vote['count'] * 100;
 					if (strstr($row['percent'], '.') > 0) {
-						$row['percent'] = sprintf("%01.1f", $row['percent']);
+						$row['percent'] = numbers($row['percent'], 1);
 					}
 				}
 				else {
 					$row['percent'] = 0;
-					$row['percent2'] = 0;
 				}
-				$cachev[$key] = $row;
-				if (!isset($voter[$row['id']])) {
-					$voter[$row['id']] = array();
-				}
-				if (count($voter[$row['id']]) > 0) {
-				    $voter[$row['id']][0] = implode(', ', $voter[$row['id']]);
+				$vote['entries'][$key] = $row;
+
+				// Make comma separated string from array of users
+				// Keys: (0 = Voter separated by comma, 1,2,3,... = Voter name with id as key)
+				if (count($vote['voter'][$row['id']]) > 0) {
+				    $vote['voter'][$row['id']][0] = implode(', ', $vote['voter'][$row['id']]);
 				}
 				else {
-				    $voter[$row['id']][0] = '-';
+				    $vote['voter'][$row['id']][0] = '-';
 				}
 			}
+			$vote['phrase'] = iif($vote['voted'] > 0, 'vote_change_option', 'vote_go_form');
 			($code = $plugins->load('showtopic_vote_result_prepared')) ? eval($code) : null;
 			$inner['vote_result'] = $tpl->parse("showtopic/vote_result");
 		}

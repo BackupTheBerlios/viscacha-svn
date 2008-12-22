@@ -115,6 +115,8 @@ $lang['admin_email_for_reports'] = 'E-Mail-Adresse für Berichte:';
 $lang['admin_email_notify_new_member'] = 'E-Mails für die Benachrichtigung bei einem neuen Mitglied:';
 $lang['admin_email_notify_new_member_info'] = 'Jede Adresse in eine eigene Zeile eintragen!';
 $lang['admin_enabled'] = 'aktiviert';
+$lang['admin_enable_change_vote'] = 'Erlaubt sich bei einer Umfrage umzuentscheiden';
+$lang['admin_enable_change_vote_info'] = 'Diese Option ermöglicht es Mitgliedern, sich, nach ihrer Stimmabgabe, bei einer Umfrage nochmal umzuentscheiden.';
 $lang['admin_enable_postrating'] = 'Aktiviere und zeige Beitragsbewertung:';
 $lang['admin_error_handler'] = 'Eigenen Error-Handler benutzen:';
 $lang['admin_error_handler_info'] = 'Aktivieren Sie diese Option um die evtl.- auftretenden Fehler mit einer eigenen Fehlerbehandlung aufzufangen. Nähere Informationen: <a href="http://www.php.net/manual/function.set-error-handler.php" target="_blank">set_error_handler</a>';
