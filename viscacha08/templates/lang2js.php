@@ -34,13 +34,32 @@ include('../classes/class.language.php');
 header('Content-type: text/javascript');
 
 if (!empty($_REQUEST['id'])) {
-	$id = intval(trim($_REQUEST['id']+0));
+	// prepare the data
+	$id = intval($_REQUEST['id']);
 	$lang = new lang($id);
 	$file = !empty($_REQUEST['admin']) ? 'admin/javascript' : 'javascript';
-	echo $lang->javascript($file);
-	echo "var cookieprefix = '{$config['cookie_prefix']}';";
+
+	// Send the cache header (or not)
+	$modified = @filemtime($lang->file);
+	$time = gmdate('D, d M Y H:i:s', $modified);
+	viscacha_header("Last-Modified: {$time} GMT");
+	viscacha_header('Cache-Control: must-revalidate');
+	if (!empty($_SERVER['HTTP_IF_MODIFIED_SINCE']) && strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) >= $modified) {
+		sendStatusCode(304, $modified);
+	}
+	else {
+		sendStatusCode(200, $modified);
+		echo "var cookieprefix = '{$config['cookie_prefix']}';";
+		$code = $lang->javascript($file);
+		if ($code !== false) {
+			echo $code;
+		}
+		else {
+			echo 'alert("Could not load or parse language file (JS)!");';
+		}
+	}
 }
 else {
-	echo 'alert("Could not load language file for javascript without id!");';
+	echo 'alert("Could not find language file (JS) without id!");';
 }
 ?>

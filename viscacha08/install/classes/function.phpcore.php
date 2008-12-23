@@ -155,6 +155,10 @@ function sendStatusCode($code, $additional = null) {
 				case '503':
 					viscacha_header("Retry-After: {$additional}");
 				break;
+				case '403':
+					$time = gmdate('D, d M Y H:i:s', $additional);
+					viscacha_header("Last-Modified: {$time} GMT");
+				break;
 			}
 		}
 

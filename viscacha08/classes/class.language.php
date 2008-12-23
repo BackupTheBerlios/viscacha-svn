@@ -110,25 +110,29 @@ class lang {
 	}
 
 	function javascript($file = 'javascript') {
-		$file = $this->dir.DIRECTORY_SEPARATOR.$file.'.lng.php';
-		require($file);
-		$str = 'var lng = new Array();'."\n";
-		foreach ($lang as $k => $l) {
-			$l = str_replace("'", "\\'", $l);
-			$str .= "lng['{$k}'] = '{$l}';\n";
+		@require($this->get_path($file));
+		if (isset($lang) && is_array($lang)) {
+			$str = 'var lng = new Array();'."\n";
+			foreach ($lang as $k => $l) {
+				$l = str_replace("'", "\\'", $l);
+				$str .= "lng['{$k}'] = '{$l}';\n";
+			}
+			return $str;
 		}
-		return $str;
+		else {
+			return false;
+		}
 	}
 
 	function return_array($group = '') {
 		if (!empty($group)) {
-			$file = $this->dir.DIRECTORY_SEPARATOR.$group.'.lng.php';
-			@require($file);
-			return $lang;
+			@require($this->get_path($group));
+			if (isset($lang) && is_array($lang)) {
+				return $lang;
+			}
 		}
-		else {
-			return $this->lngarray;
-		}
+		trigger_error('Array from language file can\'t be returned.', E_USER_NOTICE);
+		return false;
 	}
 
 	function charset() {
@@ -141,13 +145,13 @@ class lang {
 		}
 	}
 
-	function get_mail($file,$ext='php') {
+	function get_mail($file) {
 		global $gpc;
 		$this->benchmark['all']++;
-		$this->file = $this->dir.DIRECTORY_SEPARATOR.'mails/'.$file.'.'.$ext;
+		$this->file = $this->get_path(array('mails', $file));
 		if (file_exists($this->file) == false) {
 		    $this->benchmark['error']++;
-			return FALSE;
+			return false;
 		}
         $this->benchmark['ok']++;
         $content = file_get_contents($this->file);
@@ -155,24 +159,26 @@ class lang {
 		$matches[1] = $this->parse_pvar($matches[1]);
 		$matches[2] = $this->parse_pvar($matches[2]);
         return array(
-        		'title' => $gpc->plain_str($matches[1]),
-        		'comment' => $gpc->plain_str($matches[2])
-        	   );
+        	'title' => $gpc->plain_str($matches[1]),
+        	'comment' => $gpc->plain_str($matches[2])
+        );
 	}
-	function get_text($file,$ext='php') {
+
+	function get_text($file) {
 		$this->benchmark['all']++;
-		$this->file = $this->dir.DIRECTORY_SEPARATOR.'texts/'.$file.'.'.$ext;
+		$this->file = $this->get_path(array('texts', $file));
 		if (file_exists($this->file) == false) {
 		    $this->benchmark['error']++;
-			return FALSE;
+			return false;
 		}
         $this->benchmark['ok']++;
         $content = file_get_contents($this->file);
 		$content = $this->parse_pvar($content);
         return $content;
 	}
+
 	function get_words($file = 'search') {
-		$this->file = $this->dir.DIRECTORY_SEPARATOR.'words'.DIRECTORY_SEPARATOR.$file.'.inc.php';
+		$this->file = $this->get_path(array('words', $file));
 		if (file_exists($this->file) == false) {
 			return array();
 		}
@@ -181,8 +187,21 @@ class lang {
         return $arr;
 	}
 
-	function parse_pvar($content) {
-		return preg_replace('#\{(\$|\%|\@)(.+?)\}#ie', "\$this->parse_variable('\\2','\\1')", $content);
+	function group($group) {
+		$this->file = $this->get_path($group);
+		if (file_exists($this->file) && !isset($this->cache[$this->file])) {
+			@include($this->file);
+			if (isset($lang) && is_array($lang)) {
+				$this->lngarray += $lang;
+				$this->cache[$group] = true;
+			}
+			else {
+				echo "<!-- Could not parse language-file {$file} -->";
+			}
+		}
+		else {
+			echo "<!-- Could not load language-file {$file} -->";
+		}
 	}
 
 	function phrase($phrase) {
@@ -200,6 +219,10 @@ class lang {
 
 	function assign($key, $val) {
 		$this->assign[$key] = $val;
+	}
+
+	function parse_pvar($content) {
+		return preg_replace('#\{(\$|\%|\@)(.+?)\}#ie', "\$this->parse_variable('\\2','\\1')", $content);
 	}
 
 	function parse_variable($key, $type) {
@@ -246,24 +269,6 @@ class lang {
 		return "{{$type}{$key}}"; // Not found. Don't change anything!
 	}
 
-	function group($group) {
-		$file = $this->dir.DIRECTORY_SEPARATOR.$group.'.lng.php';
-		if (file_exists($file) && !isset($this->cache[$file])) {
-			@include($file);
-			if (isset($lang) && is_array($lang)) {
-				$this->lngarray += $lang;
-				$this->cache[$group] = true;
-			}
-			else {
-				echo "<!-- Could not parse language-file {$file} -->";
-			}
-		}
-		else {
-			echo "<!-- Could not load language-file {$file} -->";
-		}
-	}
-
-
 	function setdir($dirId) {
 		global $config;
 		if ($dirId < 1) {
@@ -298,6 +303,18 @@ class lang {
 		else {
 			return $this->dir;
 		}
+	}
+
+	function get_path($name, $ext = 'php') {
+		if (is_array($name)) {
+			$name = implode(DIRECTORY_SEPARATOR, $name);
+			$ext = 'php';
+		}
+		else {
+			$ext = 'lng.php';
+		}
+		$this->file = $this->dir.DIRECTORY_SEPARATOR.$name.'.'.$ext;
+		return $this->dir.DIRECTORY_SEPARATOR.$name.'.'.$ext;
 	}
 
 	function group_is_loaded($group) {
