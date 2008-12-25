@@ -42,6 +42,7 @@ class DB_Driver { // abstract class
 	var $errlogfile;
 	var $std_limit;
 	var $persistence;
+	var $all_results;
 
 	function DB_Driver($host="localhost", $user="root", $pwd="", $dbname="", $dbprefix='') {
 	    $this->host = $host;
@@ -58,6 +59,7 @@ class DB_Driver { // abstract class
         $this->commentdel = '-- ';
         $this->std_limit = 5000;
         $this->persistence = false;
+        $this->all_results = array();
 	}
 
 	function quitOnError($die = true) {
@@ -203,6 +205,16 @@ class DB_Driver { // abstract class
 	}
 
 	function error($errcomment) {
+		// Try to get better results for line and file.
+		if (viscacha_function_exists('debug_backtrace') == true) {
+			$backtraceInfo = debug_backtrace();
+			// 0 is class.mysql.php, 1 is the calling code...
+			if (isset($backtraceInfo[1]) == true) {
+				$errline = $backtraceInfo[1]['line'];
+				$errfile = $backtraceInfo[1]['file'];
+			}
+		}
+
 		if ($this->logerrors) {
 			$logs = array();
 			if (file_exists($this->errlogfile)) {
@@ -215,17 +227,17 @@ class DB_Driver { // abstract class
 				$errfile,
 				$errline,
 				$errcomment,
-				$errmsg,
 				$_SERVER['REQUEST_URI'],
 				time(),
 				PHP_VERSION." (".PHP_OS.")"
 			);
 			$row = array_map('makeOneLine', $row);
+
 			$logs[] = implode("\t", $row);
-			@file_put_contents($this->errlogfile, implode("\n", $row));
+			@file_put_contents($this->errlogfile, implode("\n", $logs));
 		}
 		$errcomment = nl2br($errcomment);
-	    return "Database error {$errno}: {$errmsg}<br />File: {$errfile} on line {$errline}<br />Query: <code>{$errcomment}</code>";
+	    return "Database error ".$this->errno().": ".$this->errstr()."<br />File: {$errfile} on line {$errline}<br />Query: <code>{$errcomment}</code>";
 	}
 
 	function benchmarktime() {
