@@ -273,50 +273,6 @@ class BBCode {
 
 	    return $ahref.$chop;
 	}
-	function cb_pdf_code ($matches) {
-		global $lang;
-		$pid = $this->noparse_id();
-
-		list(,,$code,$nl) = $matches;
-	    $rows = explode("\n",$code);
-		$code = $this->code_prepare($code);
-
-	    if (count($rows) > 1) {
-	    	$a = 0;
-	    	$code = '';
-	    	$lines = strlen(count($rows));
-		    foreach ($rows as $row) {
-		        $a++;
-		        $code .= "<tt>".leading_zero($a, $lines)."</tt>: <code>{$row}</code><br>";
-		    }
-
-		    $this->noparse[$pid] = '<br><b>'.$lang->phrase('bb_sourcecode').'</b><br>'.htmlentities($code);
-		}
-		else {
-			$this->noparse[$pid] = '<code>'.htmlentities($code).'</code>';
-			if (!empty($nl)) {
-				$this->noparse[$pid] .= '<br>';
-			}
-		}
-	    return '<!PID:'.$pid.'>';
-	}
-	function cb_pdf_size ($matches) {
-		list(,$size,$content) = $matches;
-		if ($size != 'extended') {
-			if ($size == 'small') {
-				$fontsize = 7;
-			}
-			elseif ($size == 'large') {
-				$fontsize = 9;
-			}
-			else {
-				$fontsize = 8;
-			}
-			$content = "<font size=\"{$fontsize}\">{$content}</font>";
-		}
-
-		return $content;
-	}
 	function cb_plain_list ($matches) {
 		list(, $type, $pattern) = $matches;
 	    $liarray = preg_split('/(\n\s?-\s|\[\*\])/',$pattern);
@@ -437,16 +393,13 @@ class BBCode {
 		return $text;
 	}
 
-	// Possible values for $type: html, pdf, plain (with linebreaks)
+	// Possible values for $type: html, plain (with linebreaks)
 	function parse ($text, $type = 'html') {
 		global $lang, $my;
 		$thiszm1=benchmarktime();
 		$this->cache_bbcode();
 		$this->noparse = array();
 		$text = preg_replace('/(\r\n|\r|\n)/', "\n", $text);
-		if ($type != 'pdf') {
-			$text = str_replace('$', '&#36;', $text);
-		}
 		if($type == 'html' && (!empty($my->p['admin']) || ($my->id > 0 && $my->id == $this->author))) {
 		    $text = preg_replace('/\n?\[hide\](.+?)\[\/hide\]/is', '<br /><div class="bb_hide"><strong>'.$lang->phrase('bb_hidden_content').'</strong><span>\1</span></div>', $text);
 		}
@@ -500,54 +453,6 @@ class BBCode {
 
 			$text = preg_replace('/(\[hr\]){1,}/is', "\n-------------------\n", $text);
 			$text = str_ireplace('[tab]', "    ", $text);
-		}
-		elseif ($type == 'pdf') {
-			$text = empty($this->profile['disallow']['code']) ? preg_replace_callback('/\[code(=\w+?)?\](.+?)\[\/code\](\n?)/is', array(&$this, 'cb_pdf_code'), $text) : $text;
-			$text = $this->ListWorkAround($text);
-			$text = preg_replace('/\[note=([^\]]+?)\](.+?)\[\/note\]/is', "\\1 (<i>\\2</i>)", $text);
-
-			$text = preg_replace("~\[url\]{$this->url_regex}\[\/url\]~is", "<a href=\"\\1\">\\1</a>", $text);
-			$text = preg_replace("~\[url={$this->url_regex}\](.+?)\[\/url\]~is", "<a href=\"\\1\">\\3</a>", $text);
-			$text = empty($this->profile['disallow']['img']) ? preg_replace("/\[img\](([^?&=\[\]]+?)\.(png|gif|bmp|jpg|jpe|jpeg))\[\/img\]/is", "<img src=\"\\1\">", $text) : $text;
-			$text = preg_replace("/\[img\](.+?)\[\/img\]/is", "<a href=\"\\1\">\\1</a>", $text); // Correct incorrect urls
-
-			$text = preg_replace('/\[color=\#?([0-9A-F]{3,6})\](.+?)\[\/color\]/is', "<font color=\"#\\1\">\\2</font>", $text);
-			$text = preg_replace('/\[align=(left|center|right|justify)\](.+?)\[\/align\]/is', "<p align=\"\\1\">\\2</p>", $text);
-
-			$text = preg_replace("/\[email\]([a-z0-9\-_\.\+]+@[a-z0-9\-]+\.[a-z0-9\-\.]+?)\[\/email\]/is", "<a href=\"mailto:\\1\">\\1</a>", $text);
-			$text = empty($this->profile['disallow']['h']) ? preg_replace_callback('/\n?\[h=(middle|small|large)\](.+?)\[\/h\]\n?/is', array(&$this, 'cb_header'), $text) : $text;
-			$text = preg_replace_callback('/\[size=(small|extended|large)\](.+?)\[\/size\]/is', array(&$this, 'cb_pdf_size'), $text);
-
-			while (preg_match('/\[quote=(.+?)\](.+?)\[\/quote\]/is',$text)) {
-				$text = preg_replace('/\[quote=(.+?)\](.+?)\[\/quote\]\n?/is', "<br><b>".$lang->phrase('bb_quote_by')." \\1:</b><hr><i>\\2</i><hr>", $text);
-			}
-			while (preg_match('/\[quote](.+?)\[\/quote\]/is',$text)) {
-				$text = preg_replace('/\[quote](.+?)\[\/quote\]\n?/is', "<br><b>".$lang->phrase('bb_quote')."</b><hr><i>\\1</cite></i><hr>", $text);
-			}
-			while (empty($this->profile['disallow']['edit']) && preg_match('/\[edit\](.+?)\[\/edit\]/is',$text)) {
-				$text = preg_replace('/\[edit\](.+?)\[\/edit\]\n?/is', "<br><b>".$lang->phrase('bb_edit_author')."</b><hr>\\1<hr>", $text);
-			}
-			while (empty($this->profile['disallow']['edit']) && preg_match('/\[edit=(.+?)\](.+?)\[\/edit\]/is',$text)) {
-				$text = preg_replace('/\[edit=(.+?)\](.+?)\[\/edit\]\n?/is', "<br><b>".$lang->phrase('bb_edit_mod')." \\1:</b><hr>\\2<hr>", $text);
-			}
-			while (empty($this->profile['disallow']['ot']) && preg_match('/\[ot\](.+?)\[\/ot\]/is',$text)) {
-				$text = preg_replace('/\[ot\](.+?)\[\/ot\]\n?/is', "<br><b>".$lang->phrase('bb_offtopic')."</b><hr><span style=\"color: #999999\" size=\"7\">\\1</span><hr>", $text);
-			}
-
-			$text = preg_replace('/\[b\](.+?)\[\/b\]/is', "<b>\\1</b>", $text);
-			$text = preg_replace('/\[i\](.+?)\[\/i\]/is', "<i>\\1</i>", $text);
-			$text = preg_replace('/\[u\](.+?)\[\/u\]/is', "<u>\\1</u>", $text);
-			$text = preg_replace('/\[tt\](.+?)\[\/tt\]/is', "<tt>\\1</tt>", $text);
-			$text = preg_replace('/\n?(\[hr\]){1,}\n?/is', "<hr>", $text);
-
-			$text = preg_replace('/\[sub\](.+?)\[\/sub\]/is', "<sub>\\1</sub>", $text);
-			$text = preg_replace('/\[sup\](.+?)\[\/sup\]/is', "<sup>\\1</sup>", $text);
-
-			$text = preg_replace_callback('/\[table(=(\d+\%;head|head;\d+\%|\d+\%|head))?\]\n*(.+?)\n*\[\/table\]\n?/is', array(&$this, 'cb_pdf_table'), $text);
-			$text = str_ireplace('[tab]', "\t", $text);
-
-			$text = $this->tab2space($text);
-			$text = $this->parseSmileys($text);
 		}
 		else {
 			$text = empty($this->profile['disallow']['code']) ? preg_replace_callback('/\[code(=(\w+?))?\](.+?)\[\/code\](\n?)/is', array(&$this, 'cb_hlcode'), $text) : $text;
@@ -640,9 +545,6 @@ class BBCode {
 		if ($type == 'plain') {
 			$text = str_replace("\n", " \n", $text); // Evtl. Leerzeichen oder nur Zeilenumbruch...
 		}
-		elseif ($type == 'pdf') {
-			$text = str_replace("\n", "<br>\n", $text);
-		}
 		else {
 			$text = str_replace("\n", "<br />\n", $text);
 		}
@@ -670,10 +572,6 @@ class BBCode {
 		else {
 			return $topic;
 		}
-	}
-
-	function cb_pdf_table($data) {
-		return $this->cb_table($data, 'pdf');
 	}
 
 	function cb_table($data, $type = 'html') {
@@ -750,46 +648,26 @@ class BBCode {
 			}
 		}
 
-		if ($type == 'pdf') {
-			$width = floor(100/$bbcode_table['table']['cols']);
+		$style = ' style="width:'.floor(100/$bbcode_table['table']['cols']).'%;"';
 
-			if($bbcode_table['head']['enabled'] == true){
-				$table_head = '<tr><th bgcolor="#dddddd">'.implode('</th><th bgcolor="#dddddd">',$table_head).'</th></tr>';
-			}
-			else{
-				$table_head = '';
-			}
-
-			for($i=0;$i<$bbcode_table['table']['rows'];$i++){
-				$table_rows[$i] = '<td>'.implode('</td><td>', $table_rows[$i]).'</td>';
-				$table_rows[$i] = '<tr>'.$table_rows[$i].'</tr>';
-			}
-
-			$table_rows = implode('',$table_rows);
-			$table_html = '<table border="1">'.$table_head.$table_rows.'</table>';
+		if($bbcode_table['head']['enabled'] == true){
+			$table_head = '<tr><th'.$style.'>'.implode('</th><th'.$style.'>',$table_head).'</th></tr>';
 		}
-		else {
-			$style = ' style="width:'.floor(100/$bbcode_table['table']['cols']).'%;"';
-
-			if($bbcode_table['head']['enabled'] == true){
-				$table_head = '<tr><th'.$style.'>'.implode('</th><th'.$style.'>',$table_head).'</th></tr>';
-			}
-			else{
-				$table_head = '';
-			}
-
-			for($i=0;$i<$bbcode_table['table']['rows'];$i++){
-				$table_rows[$i] = '<td'.iif($bbcode_table['head']['enabled'], $style).'>'.implode('</td><td'.iif($bbcode_table['head']['enabled'], $style).'>', $table_rows[$i]).'</td>';
-				$table_rows[$i] = '<tr>'.$table_rows[$i].'</tr>';
-			}
-
-			$table_rows = implode('',$table_rows);
-			$table_html = '<table class="bb_table"';
-			if ($bbcode_table['width'] != null){
-				$table_html .= ' style="width:'.$bbcode_table['width'].';"';
-			}
-			$table_html .= '>'.$table_head.$table_rows.'</table>';
+		else{
+			$table_head = '';
 		}
+
+		for($i=0;$i<$bbcode_table['table']['rows'];$i++){
+			$table_rows[$i] = '<td'.iif($bbcode_table['head']['enabled'], $style).'>'.implode('</td><td'.iif($bbcode_table['head']['enabled'], $style).'>', $table_rows[$i]).'</td>';
+			$table_rows[$i] = '<tr>'.$table_rows[$i].'</tr>';
+		}
+
+		$table_rows = implode('',$table_rows);
+		$table_html = '<table class="bb_table"';
+		if ($bbcode_table['width'] != null){
+			$table_html .= ' style="width:'.$bbcode_table['width'].';"';
+		}
+		$table_html .= '>'.$table_head.$table_rows.'</table>';
 		return $table_html;
 	}
 
@@ -964,7 +842,7 @@ class BBCode {
 			foreach ($this->bbcodes['word'] as $word) {
 				$this->index++;
 				$word['search'] = trim($word['search']);
-			    if ($type == 'pdf' || $type == 'plain') {
+			    if ($type == 'plain') {
 			    	$text = str_replace(
 			    		'\"',
 			    		'"',

@@ -276,23 +276,6 @@ elseif ($job == 'posts') {
 	 <br class="minibr" />
 	 <table class="border" border="0" cellspacing="0" cellpadding="4">
 	  <tr>
-	   <td class="obox" colspan="2"><?php echo $lang->phrase('admin_topics_posts_pdf'); ?></td>
-	  </tr>
-	  <tr>
-	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_activate_pdf_topics'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_activate_pdf_topics_info'); ?></span></td>
-	   <td class="mbox" width="50%"><input type="checkbox" name="pdfdownload" value="1"<?php echo iif($config['pdfdownload'] == 1,' checked="checked"'); ?>></td>
-	  </tr>
-	  <tr>
-	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_compress_pdf'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_compress_pdf_info'); ?></span></td>
-	   <td class="mbox" width="50%"><input type="checkbox" name="pdfcompress" value="1"<?php echo iif($config['pdfcompress'] == 1,' checked="checked"'); ?>></td>
-	  </tr>
-	  <tr>
-	   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="<?php echo $lang->phrase('admin_form_submit'); ?>"></td>
-	  </tr>
-	 </table>
-	 <br class="minibr" />
-	 <table class="border" border="0" cellspacing="0" cellpadding="4">
-	  <tr>
 	   <td class="obox" colspan="2"><?php echo $lang->phrase('admin_topics_posts_rating'); ?></td>
 	  </tr>
 	  <tr>
@@ -317,8 +300,6 @@ elseif ($job == 'posts2') {
 	$c->getdata();
 	$c->updateconfig('maxeditlength', int);
 	$c->updateconfig('mineditlength', int);
-	$c->updateconfig('pdfdownload', int);
-	$c->updateconfig('pdfcompress', int);
 	$c->updateconfig('resizebigimg', int);
 	$c->updateconfig('resizebigimgwidth', int);
 	$c->updateconfig('maxpostlength', int);
