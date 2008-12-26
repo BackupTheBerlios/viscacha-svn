@@ -13,7 +13,7 @@ _docs/readme.txt
 <strong>Update instructions:</strong><br />
 <ol class="upd_instr">
 <li>Make sure you have a <b>complete backup of your data</b> (FTP + MySQL)!</li>
-<li>You should have specified the ftp data in your Admin Control Panel</b> otherwise CHMODs can't be set correctly!</li>
+<li><b>You need to specified the ftp data in your Admin Control Panel</b> before you continue with the next step or the CHMODs can't be set correctly!</li>
 <li>Open the file <b>designs/*/ie.css</b>:<br />
 <em>You have to apply the following changes (for all CSS files) to all your installed designs. * is a placeholder for a Design-ID (1,2,3,...). The CSS definitions can vary depending on your modifications to the styles.</em>
 <ol>
@@ -745,4 +745,5 @@ Add at the end of the file:<br />
 </ol>
 </p>
 </div>
+<?php if (!empty($code['ftp_server']) && !empty($code['ftp_port']) && !empty($code['ftp_path']) && !empty($code['ftp_pw']) && !empty($code['ftp_user'])) { // ToDo: Do a really strict check (validate with ftp connection) ?>
 <div class="bfoot center"><input type="submit" value="Continue" /></div>

@@ -148,7 +148,7 @@ class lang {
 	function get_mail($file) {
 		global $gpc;
 		$this->benchmark['all']++;
-		$this->file = $this->get_path(array('mails', $file));
+		$this->file = $this->get_path(array('mails', $file), 'php');
 		if (file_exists($this->file) == false) {
 		    $this->benchmark['error']++;
 			return false;
@@ -166,7 +166,7 @@ class lang {
 
 	function get_text($file) {
 		$this->benchmark['all']++;
-		$this->file = $this->get_path(array('texts', $file));
+		$this->file = $this->get_path(array('texts', $file), 'php');
 		if (file_exists($this->file) == false) {
 		    $this->benchmark['error']++;
 			return false;
@@ -178,7 +178,7 @@ class lang {
 	}
 
 	function get_words($file = 'search') {
-		$this->file = $this->get_path(array('words', $file));
+		$this->file = $this->get_path(array('words', $file), 'inc.php');
 		if (file_exists($this->file) == false) {
 			return array();
 		}
@@ -305,13 +305,9 @@ class lang {
 		}
 	}
 
-	function get_path($name, $ext = 'php') {
+	function get_path($name, $ext = 'lng.php') {
 		if (is_array($name)) {
 			$name = implode(DIRECTORY_SEPARATOR, $name);
-			$ext = 'php';
-		}
-		else {
-			$ext = 'lng.php';
 		}
 		$this->file = $this->dir.DIRECTORY_SEPARATOR.$name.'.'.$ext;
 		return $this->dir.DIRECTORY_SEPARATOR.$name.'.'.$ext;

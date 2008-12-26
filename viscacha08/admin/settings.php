@@ -98,11 +98,20 @@ elseif ($job == 'admin2') {
 	ok('admin.php?action=settings&job=settings');
 }
 elseif ($job == 'ftp') {
-	$config = $gpc->prepare($config);
+	$temp = $config;
+	if ($gpc->get('change', int) == 1) {
+		$temp['ftp_server'] = $gpc->get('ftp_server', none);
+		$temp['ftp_port'] = $gpc->get('ftp_port', int);
+		$temp['ftp_user'] = $gpc->get('ftp_user', none);
+		$temp['ftp_pw'] = $gpc->get('ftp_pw', none);
+		$temp['ftp_path'] = $gpc->get('ftp_path', none, DIRECTORY_SEPARATOR);
+	}
+	$temp = $gpc->prepare($temp);
 
-	$path = 'N/A';
-	if (isset($_SERVER['DOCUMENT_ROOT'])) {
-		$path = str_replace(realpath($_SERVER['DOCUMENT_ROOT']).DIRECTORY_SEPARATOR, '', realpath('./'));
+	$path = '-';
+	$doc = realpath(getDocumentRoot());
+	if (!empty($doc)) {
+		$path = str_replace($doc.DIRECTORY_SEPARATOR, '', realpath('./'));
 	}
 
 	echo head();
@@ -110,30 +119,30 @@ elseif ($job == 'ftp') {
 	<form name="form" method="post" action="admin.php?action=settings&job=ftp2">
 	<table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
 	 <tr>
-	  <td class="obox" colspan="2"><span class="right"><a class="button" href="admin.php?action=settings&amp;job=ftptest"><?php echo $lang->phrase('admin_test_ftp_connection'); ?></a></span><?php echo $lang->phrase('admin_ftp_settings'); ?></b></td>
+	  <td class="obox" colspan="2"><?php echo $lang->phrase('admin_ftp_settings'); ?></td>
 	 </tr>
 	 <tr>
 	  <td class="mbox" width="50%"><?php echo $lang->phrase('admin_ftp_server'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_ftp_server_info'); ?></span></td>
-	  <td class="mbox" width="50%"><input type="text" name="ftp_server" size="50" value="<?php echo $config['ftp_server']; ?>"></td>
+	  <td class="mbox" width="50%"><input type="text" name="ftp_server" size="50" value="<?php echo $temp['ftp_server']; ?>"></td>
 	 </tr>
 	 <tr>
 	  <td class="mbox" width="50%"><?php echo $lang->phrase('admin_ftp_port'); ?></td>
-	  <td class="mbox" width="50%"><input type="text" name="ftp_port" value="21" size="4" value="<?php echo $config['ftp_port']; ?>"></td>
+	  <td class="mbox" width="50%"><input type="text" name="ftp_port" value="21" size="4" value="<?php echo $temp['ftp_port']; ?>"></td>
 	 </tr>
 	 <tr>
 	  <td class="mbox" width="50%"><?php echo $lang->phrase('admin_ftp_startpath'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_ftp_startpath_info'); ?></span></td>
-	  <td class="mbox" width="50%"><input type="text" name="ftp_path" value="<?php echo $config['ftp_path']; ?>" size="50"></td>
+	  <td class="mbox" width="50%"><input type="text" name="ftp_path" value="<?php echo $temp['ftp_path']; ?>" size="50"></td>
 	 </tr>
 	 <tr>
 	  <td class="mbox" width="50%"><?php echo $lang->phrase('admin_ftp_username'); ?></td>
-	  <td class="mbox" width="50%"><input type="text" name="ftp_user" value="<?php echo $config['ftp_user']; ?>" size="50"></td>
+	  <td class="mbox" width="50%"><input type="text" name="ftp_user" value="<?php echo $temp['ftp_user']; ?>" size="50"></td>
 	 </tr>
 	 <tr>
 	  <td class="mbox" width="50%"><?php echo $lang->phrase('admin_ftp_password'); ?></td>
-	  <td class="mbox" width="50%"><input type="password" name="ftp_pw" value="<?php echo $config['ftp_pw']; ?>" size="50"></td>
+	  <td class="mbox" width="50%"><input type="password" name="ftp_pw" value="<?php echo $temp['ftp_pw']; ?>" size="50"></td>
 	 </tr>
 	 </tr>
-	  <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="<?php echo $lang->phrase('admin_form_submit'); ?>"></td>
+	  <td class="ubox" colspan="2" align="center"><input type="submit" value="<?php echo $lang->phrase('admin_test_ftp_connection'); ?>" /></td>
 	 </tr>
 	</table>
 	</form>
@@ -141,58 +150,87 @@ elseif ($job == 'ftp') {
 	echo foot();
 }
 elseif ($job == 'ftp2') {
-	echo head();
-
-	$c->getdata();
-	$c->updateconfig('ftp_server', str);
-	$c->updateconfig('ftp_user', str);
-	$c->updateconfig('ftp_pw', str);
-	$c->updateconfig('ftp_path', str);
-	$c->updateconfig('ftp_port', int);
-	$c->savedata();
-
-	ok('admin.php?action=settings&job=settings');
-}
-elseif ($job == 'ftptest') {
-	echo head();
 	require_once("classes/ftp/class.ftp.php");
 	require_once("classes/ftp/class.ftp_".pemftp_class_module().".php");
 
-	?>
-	<table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
-	 <tr>
-	  <td class="obox" colspan="2"><span class="right"><a class="button" href="admin.php?action=settings&amp;job=ftp"><?php echo $lang->phrase('admin_configure_ftp_connection'); ?></a></span><?php echo $lang->phrase('admin_ftp_connection_test'); ?></td>
-	 </tr>
-	 <tr>
-	  <td class="mbox" width="100%"><strong><?php echo $lang->phrase('admin_ftp_command_log'); ?></strong><br /><pre><?php
-	$ftp = new ftp(true, true);
-	if(!$ftp->SetServer($config['ftp_server'], $config['ftp_port'])) {
-		?></pre><?php echo $lang->phrase('admin_server_port_invalid'); ?><?php
-	}
-	else {
-		if (!$ftp->connect()) {
-			?></pre><?php echo $lang->phrase('admin_cannot_connect_to_ftp_server'); ?><?php
+	$temp = array(
+		'ftp_server' => $gpc->get('ftp_server', none),
+		'ftp_port' => $gpc->get('ftp_port', int),
+		'ftp_user' => $gpc->get('ftp_user', none),
+		'ftp_pw' => $gpc->get('ftp_pw', none),
+		'ftp_path' => $gpc->get('ftp_path', none, DIRECTORY_SEPARATOR)
+	);
+
+	$error = false;
+	$dataGiven = count(array_unique($temp)) == 5;
+	if ($dataGiven) {
+		ob_start();
+		$ftp = new ftp(true, true);
+		if(!$ftp->SetServer($temp['ftp_server'], $temp['ftp_port'])) {
+			$error = 'admin_server_port_invalid';
 		}
 		else {
-			if (!$ftp->login($config['ftp_user'], $config['ftp_pw'])) {
-				$ftp->quit();
-				?></pre><?php echo $lang->phrase('admin_cannot_authenticate_at_ftp_server'); ?><?php
+			if (!$ftp->connect()) {
+				$error = 'admin_cannot_connect_to_ftp_server';
 			}
 			else {
-				if (!$ftp->chdir($config['ftp_path'])) {
+				if (!$ftp->login($temp['ftp_user'], $temp['ftp_pw'])) {
 					$ftp->quit();
-					?></pre><?php echo $lang->phrase('admin_ftp_directory_does_not_exist'); ?><?php
+					$error = 'admin_cannot_authenticate_at_ftp_server';
 				}
 				else {
-					?></pre><?php echo $lang->phrase('admin_connection_is_ok'); ?><?php
+
+					if (!$ftp->chdir($temp['ftp_path']) || !$ftp->file_exists('data/config.inc.php')) {
+						$ftp->quit();
+						$lang->assign('ftp_path', $temp['ftp_path']);
+						$error = 'admin_ftp_directory_does_not_exist';
+					}
 				}
 			}
 		}
+		$log = ob_get_contents();
+		ob_end_clean();
 	}
-	?>
-	</td></tr></table>
-	<?php
-	echo foot();
+
+	echo head();
+	if ($error === false) {
+		$c->getdata();
+		$c->updateconfig('ftp_server', str, $temp['ftp_server']);
+		$c->updateconfig('ftp_user', str, $temp['ftp_user']);
+		$c->updateconfig('ftp_pw', str, $temp['ftp_pw']);
+		$c->updateconfig('ftp_path', str, $temp['ftp_path']);
+		$c->updateconfig('ftp_port', int, $temp['ftp_port']);
+		$c->savedata();
+
+		$msg = $dataGiven ? $lang->phrase('admin_connection_is_ok') : null;
+
+		ok('admin.php?action=settings&job=settings', $msg);
+	}
+	else {
+		?>
+		<form name="form" method="post" action="admin.php?action=settings&amp;job=ftp&amp;change=1">
+		<?php foreach ($temp as $key => $value) { ?>
+		<input type="hidden" name="<?php echo $key; ?>" value="<?php echo $gpc->prepare($value); ?>" />
+		<?php } ?>
+		<table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
+		 <tr>
+		  <td class="obox" colspan="2"><?php echo $lang->phrase('admin_ftp_connection_test'); ?></td>
+		 </tr>
+		 <tr>
+		  <td class="mbox" width="100%">
+		   <strong><?php echo $lang->phrase($error); ?></strong><br /><br />
+		   <strong><?php echo $lang->phrase('admin_ftp_command_log'); ?></strong><br />
+		   <pre><?php echo $log; ?></pre>
+		  </td>
+		 </tr>
+		 <tr>
+		  <td class="ubox center"><input type="submit" value="<?php echo $lang->phrase('admin_configure_ftp_connection'); ?>" /></td>
+		 </tr>
+		</table>
+		</form>
+		<?php
+		echo foot();
+	}
 }
 elseif ($job == 'posts') {
 	$config = $gpc->prepare($config);

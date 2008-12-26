@@ -121,6 +121,7 @@ var WYSIWYG = {
 			"copy",
 			"paste",
 			"removeformat",
+			"removenode",
 			"seperator",
 			"undo",
 			"redo",
@@ -255,6 +256,7 @@ var WYSIWYG = {
 	"fonts":		['Fonts',				'Font face',			'select_font.gif',		'select_font.gif'],
 	"fontsizes":	['Fontsizes',			'Font Size',			'select_size.gif',		'select_size.gif'],
 	"headings":		['Headings',			'Headings',				'select_heading.gif',	'select_heading.gif'],
+	"removenode":	['RemoveNode',			'Remove Formatting',	'remove_node.gif', 		'remove_node.gif'],
 	"removeformat":	['RemoveFormat',		'Strip Word HTML',		'remove_format.gif',	'remove_format.gif'],
 	"maximize":		['Maximize',			'Maximize the editor',	'maximize.gif',			'maximize.gif']
 	},
@@ -1014,24 +1016,75 @@ var WYSIWYG = {
 		var range = this.getRange(sel, n);
 		// the current tag of range
 		var tag = this.getTag(range);
+		if(tag == null) { return; }
 		var parent = tag.parentNode;
-		if(tag == null || parent == null) { return; }
-		if(tag.nodeName == "HTML" || tag.nodeName == "BODY") { return; }
+		if(parent == null) { return; }
 
-		// copy child elements of the node to the parent element before remove the node
-		var childNodes = new Array();
-		for(var i=0; i < tag.childNodes.length;i++)
-			childNodes[i] = tag.childNodes[i];
-		for(var i=0; i < childNodes.length;i++)
-			parent.insertBefore(childNodes[i], tag);
-
-		// remove node
-		parent.removeChild(tag);
-		// validate if parent is a link and the node is only
-		// surrounded by the link, then remove the link too
-		if(parent.nodeName == "A" && !parent.hasChildNodes()) {
-			if(parent.parentNode) { parent.parentNode.removeChild(parent); }
+		switch(tag.nodeName) {
+			case "APPLET":
+			case "AREA":
+			case "BODY":
+			case "BUTTON":
+			case "CAPTION":
+			case "COL":
+			case "COLGROUP":
+			case "DIR":
+			case "HR":
+			case "HTML":
+			case "IFRAME":
+			case "INPUT":
+			case "LEGEND":
+			case "LI":
+			case "MAP":
+			case "MENU":
+			case "OBJECT":
+			case "OL":
+			case "OPTGROUP":
+			case "OPTION":
+			case "PARAM":
+			case "SCRIPT":
+			case "SELECT":
+			case "STYLE":
+			case "TABLE":
+			case "TBODY":
+			case "TD":
+			case "TEXTAREA":
+			case "TFOOT":
+			case "TH":
+			case "THEAD":
+			case "TR":
+			case "UL":
+		  		return;
+			break;
 		}
+
+		// Remove links from images
+		if (tag.nodeName == "IMG") {
+			if (parent.nodeName == "A" && parent.parentNode) {
+				for(var i=0; i < parent.childNodes.length;i++) {
+					var cloned = parent.childNodes[i].cloneNode(true);
+					parent.parentNode.insertBefore(cloned, parent);
+				}
+
+				parent.parentNode.removeChild(parent);
+			}
+		}
+		else {
+			// copy child elements of the node to the parent element before remove the node
+			for(var i=0; i < tag.childNodes.length;i++) {
+				var cloned = tag.childNodes[i].cloneNode(true);
+				parent.insertBefore(cloned, tag);
+			}
+
+			// Remove Node
+			parent.removeChild(tag);
+
+			// validate if parent is a link and the node is only surrounded by the link, then remove the link too
+			if(parent.nodeName == "A" && !parent.hasChildNodes() && parent.parentNode) {
+				parent.parentNode.removeChild(parent);
+			}
+		}
+
 		// update the status bar
 		this.updateStatusBar(n);
 	},

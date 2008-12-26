@@ -45,10 +45,14 @@ if (!empty($_REQUEST['id'])) {
 	viscacha_header("Last-Modified: {$time} GMT");
 	viscacha_header('Cache-Control: must-revalidate');
 	if (!empty($_SERVER['HTTP_IF_MODIFIED_SINCE']) && strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) >= $modified) {
-		sendStatusCode(304, $modified);
+		$status = 304;
 	}
 	else {
-		sendStatusCode(200, $modified);
+		$status = 200;
+	}
+	sendStatusCode($status, $modified);
+	// Send JS
+	if ($config['always_send_js'] == 1 || $status == 200) {
 		echo "var cookieprefix = '{$config['cookie_prefix']}';";
 		$code = $lang->javascript($file);
 		if ($code !== false) {
