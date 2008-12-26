@@ -80,7 +80,7 @@ var WYSIWYG = {
 		// Insert image implementation
 		this.ImagePopupFile = "admin.php?action=cms&job=doc_insert_image&";
 		this.ImagePopupWidth = 730;
-		this.ImagePopupHeight = 350;
+		this.ImagePopupHeight = 410;
 
 		// Holds the available buttons displayed
 		// on the toolbar of the editor
@@ -125,8 +125,8 @@ var WYSIWYG = {
 			"undo",
 			"redo",
 			"seperator",
-			"viewSource",
-			"maximize"
+			"viewSource"/*,
+			"maximize" */
 		);
 
 		// DropDowns
@@ -534,17 +534,27 @@ var WYSIWYG = {
 		// Check if IE or Mozilla (other)
 		if (WYSIWYG_Core.isMSIE) {
 			range.select();
-			lin.innerHTML = range.htmlText;
+			txt = (range.htmlText) ? range.htmlText : href;
+			lin.innerHTML = txt;
 			range.pasteHTML(lin.outerHTML);
 		}
 		else {
 			var node = range.startContainer;
 			var pos = range.startOffset;
-			if(node.nodeType != 3) { node = node.childNodes[pos]; }
-			if(node.tagName)
-				lin.appendChild(node);
-			else
+			if(node.nodeType != 3) {
+				node = node.childNodes[pos];
+			}
+			if (node.tagName) {
+				if (node.tagName == 'BR') {
+					lin.innerHTML = href
+				}
+				else {
+					lin.appendChild(node)
+				}
+			}
+			else {
 				lin.innerHTML = sel;
+			}
 			this.insertNodeAtSelection(lin, n);
 		}
 	},
@@ -552,7 +562,7 @@ var WYSIWYG = {
 	/**
 	 * Strips any HTML added by word
 	 *
-     * @param {String} n The editor identifier (the textarea's ID)
+	 * @param {String} n The editor identifier (the textarea's ID)
 	 */
 	removeFormat: function(n) {
 
@@ -561,14 +571,14 @@ var WYSIWYG = {
 		var str = doc.body.innerHTML;
 
 		str = str.replace(/<span([^>])*>(&nbsp;)*\s*<\/span>/gi, '');
-	    str = str.replace(/<span[^>]*>/gi, '');
-	    str = str.replace(/<\/span[^>]*>/gi, '');
-	    str = str.replace(/<p([^>])*>(&nbsp;)*\s*<\/p>/gi, '');
-	    str = str.replace(/<p[^>]*>/gi, '');
-	    str = str.replace(/<\/p[^>]*>/gi, '');
-	    str = str.replace(/<h([^>])[0-9]>(&nbsp;)*\s*<\/h>/gi, '');
-	    str = str.replace(/<h[^>][0-9]>/gi, '');
-	    str = str.replace(/<\/h[^>][0-9]>/gi, '');
+		str = str.replace(/<span[^>]*>/gi, '');
+		str = str.replace(/<\/span[^>]*>/gi, '');
+		str = str.replace(/<p([^>])*>(&nbsp;)*\s*<\/p>/gi, '');
+		str = str.replace(/<p[^>]*>/gi, '');
+		str = str.replace(/<\/p[^>]*>/gi, '');
+		str = str.replace(/<h([^>])[0-9]>(&nbsp;)*\s*<\/h>/gi, '');
+		str = str.replace(/<h[^>][0-9]>/gi, '');
+		str = str.replace(/<\/h[^>][0-9]>/gi, '');
 		str = str.replace (/<B [^>]*>/ig, '<b>');
 
 		// var repl_i1 = /<I[^>]*>/ig;
@@ -586,17 +596,17 @@ var WYSIWYG = {
 		str = str.replace (/<\/FONT>/ig, '');
 		str = str.replace (/STYLE=\"[^\"]*\"/ig, '');
 		str = str.replace(/<([\w]+) class=([^ |>]*)([^>]*)/gi, '<$1$3');
-  	    str = str.replace(/<([\w]+) style="([^"]*)"([^>]*)/gi, '<$1$3');
+  		str = str.replace(/<([\w]+) style="([^"]*)"([^>]*)/gi, '<$1$3');
 		str = str.replace(/width=([^ |>]*)([^>]*)/gi, '');
-	    str = str.replace(/classname=([^ |>]*)([^>]*)/gi, '');
-	    str = str.replace(/align=([^ |>]*)([^>]*)/gi, '');
-	    str = str.replace(/valign=([^ |>]*)([^>]*)/gi, '');
-	    str = str.replace(/<\\?\??xml[^>]>/gi, '');
-	    str = str.replace(/<\/?\w+:[^>]*>/gi, '');
-	    str = str.replace(/<st1:.*?>/gi, '');
-	    str = str.replace(/o:/gi, '');
+		str = str.replace(/classname=([^ |>]*)([^>]*)/gi, '');
+		str = str.replace(/align=([^ |>]*)([^>]*)/gi, '');
+		str = str.replace(/valign=([^ |>]*)([^>]*)/gi, '');
+		str = str.replace(/<\\?\??xml[^>]>/gi, '');
+		str = str.replace(/<\/?\w+:[^>]*>/gi, '');
+		str = str.replace(/<st1:.*?>/gi, '');
+		str = str.replace(/o:/gi, '');
 
-	    str = str.replace(/<!--([^>])*>(&nbsp;)*\s*<\/-->/gi, '');
+		str = str.replace(/<!--([^>])*>(&nbsp;)*\s*<\/-->/gi, '');
    		str = str.replace(/<!--[^>]*>/gi, '');
    		str = str.replace(/<\/--[^>]*>/gi, '');
 
@@ -627,7 +637,7 @@ var WYSIWYG = {
 			return;
 		}
 
-	    // Load settings in config array, use the textarea id as identifier
+		// Load settings in config array, use the textarea id as identifier
 		if(typeof(settings) != "object") {
 			this.config[n] = new this.Settings();
 		}
@@ -644,10 +654,10 @@ var WYSIWYG = {
 			this.config[n].Width = textarea.style.width;
 		}
 		if(textarea.style.height) {
-			this.config[n].Height = textarea.style.height
+			this.config[n].Height = textarea.style.height;
 		}
 
-	    // determine the width + height
+		// determine the width + height
 		var currentWidth = this.config[n].Width;
 		var currentHeight = this.config[n].Height;
 
@@ -661,14 +671,14 @@ var WYSIWYG = {
 
 		// Create iframe which will be used for rich text editing
 		var iframe = '<table cellpadding="0" cellspacing="0" border="0" style="width:' + currentWidth + '; height:' + currentHeight + ';" class="editor_textarea_outer"><tr><td valign="top">\n'
-	    + '<iframe frameborder="0" id="wysiwyg' + n + '" class="editor_textarea_inner" style="width:' + ifrmWidth + ';height:' + ifrmHeight + ';"></iframe>\n'
-	    + '</td></tr></table>\n';
+		+ '<iframe frameborder="0" id="wysiwyg' + n + '" class="editor_textarea_inner" style="width:' + ifrmWidth + ';height:' + ifrmHeight + ';"></iframe>\n'
+		+ '</td></tr></table>\n';
 
-	    // Insert after the textArea both toolbar one and two
+		// Insert after the textArea both toolbar one and two
 		textarea.insertAdjacentHTML("afterEnd", iframe);
 
 		// Pass the textarea's existing text over to the content variable
-	    var content = textarea.value;
+		var content = textarea.value;
 		var doc = this.getEditorWindow(n).document;
 
 		// Replace all \n with <br>
@@ -677,11 +687,11 @@ var WYSIWYG = {
 		}
 
 		// Write the textarea's content into the iframe
-	    doc.open();
-	    doc.write(content);
-	    doc.close();
+		doc.open();
+		doc.write(content);
+		doc.close();
 
-	    // Set default style of the editor window
+		// Set default style of the editor window
 		WYSIWYG_Core.setAttribute(doc.body, "style", this.config[n].DefaultStyle);
 	},
 
@@ -720,7 +730,7 @@ var WYSIWYG = {
 			this.config[n].Height = textarea.style.height
 		}
 
-	    // determine the width + height
+		// determine the width + height
 		var currentWidth = this.config[n].Width;
 		var currentHeight = this.config[n].Height;
 
@@ -735,12 +745,12 @@ var WYSIWYG = {
 			ifrmHeight = currentHeight;
 		}
 
-	    // Generate the WYSIWYG Table
-	    // This table holds the toolbars and the iframe as the editor
-	    var editor = "";
-	    editor += '<div id="wysiwyg_div_' + n + '" style="width:' + currentWidth  +';">';
-	    editor += '<table border="0" cellpadding="0" cellspacing="0" class="editor_textarea_outer" id="wysiwyg_table_' + n + '" style="width:' + currentWidth  + '; height:' + currentHeight + ';">';
-	    editor += '<tr><td style="height:22px;vertical-align:top;padding:0px;">';
+		// Generate the WYSIWYG Table
+		// This table holds the toolbars and the iframe as the editor
+		var editor = "";
+		editor += '<div id="wysiwyg_div_' + n + '" style="width:' + currentWidth  +';">';
+		editor += '<table border="0" cellpadding="0" cellspacing="0" class="editor_textarea_outer" id="wysiwyg_table_' + n + '" style="width:' + currentWidth  + '; height:' + currentHeight + ';">';
+		editor += '<tr><td style="height:22px;vertical-align:top;padding:0px;">';
 
 		// Output all command buttons that belong to toolbar one
 		for (var j = 0; j < this.config[n].Toolbar.length;j++) {
@@ -748,23 +758,23 @@ var WYSIWYG = {
 				var toolbar = this.config[n].Toolbar[j];
 
 				// Generate WYSIWYG toolbar one
-			    editor += '<table border="0" cellpadding="0" cellspacing="0" class="editor_toolbar" style="width:100%;" id="toolbar' + j + '_' + n + '">';
-	    		editor += '<tr>';
+				editor += '<table border="0" cellpadding="0" cellspacing="0" class="editor_toolbar" style="width:100%;" id="toolbar' + j + '_' + n + '">';
+				editor += '<tr>';
 
 				// Interate over the toolbar element
 				for (var i = 0; i < toolbar.length;i++) {
 					var id = toolbar[i];
-				    if (toolbar[i]) {
-				    	if(typeof (this.config[n].DropDowns[id]) != "undefined") {
-				    		var dropdown = this.config[n].DropDowns[id];
-				    		editor += '<td style="width: ' + dropdown.width + ';">';
-				    		// write the drop down content
-				    		editor += this.writeDropDown(n, id);
-				    		editor += '</td>';
-				    	}
-				    	else {
+					if (toolbar[i]) {
+						if(typeof (this.config[n].DropDowns[id]) != "undefined") {
+							var dropdown = this.config[n].DropDowns[id];
+							editor += '<td style="width: ' + dropdown.width + ';">';
+							// write the drop down content
+							editor += this.writeDropDown(n, id);
+							editor += '</td>';
+						}
+						else {
 
-				    		// Get the values of the Button from the global ToolbarList object
+							// Get the values of the Button from the global ToolbarList object
 							var buttonObj = this.ToolbarList[toolbar[i]];
 							if(buttonObj) {
 								var buttonID = buttonObj[0];
@@ -779,11 +789,11 @@ var WYSIWYG = {
 								}
 								// View Source button
 								else if (toolbar[i] == "viewSource"){
-								    editor += '<td style="width: 22px;">';
+									editor += '<td style="width: 22px;">';
 									editor += '<span id="HTMLMode' + n + '"><img src="' + buttonImage +  '" border="0" unselectable="on" title="' + buttonTitle + '" id="' + buttonID + '" class="editor_toolbar_button" onmouseover="this.className=\'editor_toolbar_button_on\';" onmouseout="this.className=\'editor_toolbar_button\';" onclick="WYSIWYG.execCommand(\'' + n + '\', \'' + buttonID + '\');" unselectable="on" width="20" height="20"></span>';
 									editor += '<span id="textMode' + n + '"><img src="' + this.config[n].ImagesDir + 'view_text.gif" border="0" unselectable="on" title="' + buttonTitle + '" id="ViewText" class="editor_toolbar_button" onmouseover="this.className=\'editor_toolbar_button_on\';" onmouseout="this.className=\'editor_toolbar_button\';" onclick="WYSIWYG.execCommand(\'' + n + '\',\'ViewText\');" unselectable="on"  width="20" height="20"></span>';
-							        editor += '</td>';
-						        }
+									editor += '</td>';
+								}
 								else {
 									editor += '<td style="width: 22px;">';
 									if (buttonObj[2] == buttonObj[3]) {
@@ -806,16 +816,16 @@ var WYSIWYG = {
 	 	editor += '</td></tr><tr><td valign="top" class="editor_textarea_td">\n';
 		// Create iframe which will be used for rich text editing
 		editor += '<iframe frameborder="0" id="wysiwyg' + n + '" class="editor_textarea_inner" style="width:100%;height:' + currentHeight + ';"></iframe>\n'
-	    + '</td></tr>';
-	    // Status bar HTML code
-	    if(this.config[n].StatusBarEnabled) {
-		    editor += '<tr><td class="editor_statusbar" id="wysiwyg_statusbar_' + n + '">&nbsp;</td></tr>';
+		+ '</td></tr>';
+		// Status bar HTML code
+		if(this.config[n].StatusBarEnabled) {
+			editor += '<tr><td class="editor_statusbar" id="wysiwyg_statusbar_' + n + '">&nbsp;</td></tr>';
 		}
-	    editor += '</table>';
-	    editor += '</div>';
+		editor += '</table>';
+		editor += '</div>';
 
-	    // Insert the editor after the textarea
-	    textarea.insertAdjacentHTML("afterEnd", editor);
+		// Insert the editor after the textarea
+		textarea.insertAdjacentHTML("afterEnd", editor);
 
 		// Hide the "Text Mode" button
 		// Validate if textMode Elements are prensent
@@ -824,7 +834,7 @@ var WYSIWYG = {
 		}
 
 		// Pass the textarea's existing text over to the content variable
-	    var content = textarea.value;
+		var content = textarea.value;
 		var doc = this.getEditorWindow(n).document;
 
 
@@ -834,14 +844,14 @@ var WYSIWYG = {
 		}
 
 		// Write the textarea's content into the iframe
-	    doc.open();
-	    doc.write(content);
+		doc.open();
+		doc.write(content);
 
 		// Enable table highlighting
 		// Update this before closing!
 		WYSIWYG_Table.refreshHighlighting(n);
 
-	    doc.close();
+		doc.close();
 
 		// Make the iframe editable in both Mozilla and IE
 		// Improve compatiblity for IE + Mozilla
@@ -855,16 +865,16 @@ var WYSIWYG = {
 		// Set default font style
 		WYSIWYG_Core.setAttribute(doc.body, "style", this.config[n].DefaultStyle);
 
-	    // Event Handling
-	    // Update the textarea with content in WYSIWYG when user submits form
-	    for (var idx=0; idx < document.forms.length; idx++) {
-	    	WYSIWYG_Core.addEvent(document.forms[idx], "submit", function xxx_aa() { WYSIWYG.updateTextArea(n); });
-	    }
+		// Event Handling
+		// Update the textarea with content in WYSIWYG when user submits form
+		for (var idx=0; idx < document.forms.length; idx++) {
+			WYSIWYG_Core.addEvent(document.forms[idx], "submit", function xxx_aa() { WYSIWYG.updateTextArea(n); });
+		}
 
-	    // close font selection if mouse moves over the editor window
-	    WYSIWYG_Core.addEvent(doc, "mouseover", function xxx_bb() { WYSIWYG.closeDropDowns(n);});
+		// close font selection if mouse moves over the editor window
+		WYSIWYG_Core.addEvent(doc, "mouseover", function xxx_bb() { WYSIWYG.closeDropDowns(n); });
 
-	    // If it's true invert the line break capability of IE
+		// If it's true invert the line break capability of IE
 		if(this.config[n].InvertIELineBreaks) {
 			WYSIWYG_Core.addEvent(doc, "keypress", function xxx_cc() { WYSIWYG.invertIELineBreakCapability(n); });
 		}
@@ -872,10 +882,11 @@ var WYSIWYG = {
 		// status bar update
 		if(this.config[n].StatusBarEnabled) {
 			WYSIWYG_Core.addEvent(doc, "mouseup", function xxx_dd() { WYSIWYG.updateStatusBar(n); });
+			WYSIWYG_Core.addEvent(doc, "keyup", function xxx_ee() { WYSIWYG.updateStatusBar(n); });
 		}
 
 		// init viewTextMode var
-	    this.viewTextMode[n] = false;
+		this.viewTextMode[n] = false;
 	},
 
 	/**
@@ -1127,7 +1138,7 @@ var WYSIWYG = {
 			// ForeColor and
 			case "ForeColor":
 				var rgb = this.getEditorWindow(n).document.queryCommandValue(cmd);
-		      	var currentColor = rgb != '' ? toHexColor(this.getEditorWindow(n).document.queryCommandValue(cmd)) : "000000";
+			  	var currentColor = rgb != '' ? toHexColor(this.getEditorWindow(n).document.queryCommandValue(cmd)) : "000000";
 			  	window.open(this.config[n].PopupsDir + 'select_color.html?color=' + currentColor + '&command=' + cmd + '&wysiwyg=' + n, 'popup', 'location=0,status=0,scrollbars=0,width=275,height=335,top=' + popupPosition.top + ',left=' + popupPosition.left).focus();
 			break;
 
@@ -1197,33 +1208,57 @@ var WYSIWYG = {
 	},
 
 	/**
+	* Find how far the page has scrolled
+	*
+	*/
+	getYOffset: function(n) {
+		var e = window, a = 'pageYOffset', d = document;
+		if (! (a in e)) {
+			e = (d.documentElement[a]) ? d.documentElement : d.body;
+		}
+		return e[a];
+	},
+
+	/**
+	* Calculate how many toolbars, adding the heights of each one as we go
+	*
+	*/
+	calculateToolbarHeight: function(n) {
+		var a = 0, t = this.config[n].Toolbar, l = 'length';
+		for (var j = 0; j < t[l]; j++) {
+			if (t[j] && t[j][l] > 0) {
+				var h = $('toolbar' + j + '_' + n); a += h.offsetHeight;
+			}
+		}
+		return a;
+	},
+
+	/**
 	 * Maximize the editor instance
 	 *
 	 * @param {String} n The editor identifier
 	 */
 	maximize: function(n) {
-		if (window.clipboardData && !window.XMLHttpRequest) {
-			alert(this.config[n].NoValidBrowserMessage);
-		}
-		else {
-			var divElm = this.getEditorDiv(n);
-			var tableElm = this.getEditorTable(n);
-			var editor = this.getEditor(n);
-			var setting = this.config[n];
-			var size = WYSIWYG_Core.windowSize();
-			size.width -= 5;
-			if(this.maximized[n]) {
-				WYSIWYG_Core.setAttribute(divElm, "style", "position:static;z-index:9998;top:0px;left:0px;width:" + setting.Width + ";height:100%;background-color:transparent;border-width: 0px;");
-				WYSIWYG_Core.setAttribute(tableElm, "style", "width:" + setting.Width + ";height:" + setting.Height + ";");
-				WYSIWYG_Core.setAttribute(editor, "style", "width:100%;height:" + setting.Height + ";");
-				this.maximized[n] = false;
-			}
-			else {
-				WYSIWYG_Core.setAttribute(divElm, "style", "position:absolute;z-index:9998;top:10px;left:10px;width:" + ( size.width - 50) + "px;height:" + ( size.height - 50) + "px;background-color:#ffffff;border:1px solid #000000;");
-				WYSIWYG_Core.setAttribute(tableElm, "style", "width:100%;height:100%;");
-				WYSIWYG_Core.setAttribute(editor, "style", "width:100%;height:100%;");
-				this.maximized[n] = true;
-			}
+		var divElm = this.getEditorDiv(n);
+		var tableElm = this.getEditorTable(n);
+		var editor = this.getEditor(n);
+		var setting = this.config[n];
+		var size = WYSIWYG_Core.windowSize();
+		var doc = document.documentElement || document.body;
+		if (this.maximized[n]) {
+			WYSIWYG_Core.setAttribute(doc, 'style', 'overflow:');
+			WYSIWYG_Core.setAttribute(divElm, 'style', 'position:static;z-index:9998;top:0;left:0;width:' + setting.Width + ';height:100%');
+			WYSIWYG_Core.setAttribute(tableElm, 'style', 'width:' + setting.Width + ';height:' + setting.Height);
+			WYSIWYG_Core.setAttribute(editor, 'style', 'width:100%;height:' + setting.Height);
+			this.maximized[n] = false;
+		} else {
+			var YOffset = (this.isOpera) ? 0 : this.getYOffset(n);
+			var iFrameMaxHeight = size.height - this.calculateToolbarHeight(n) - ($('wysiwyg_statusbar_' + n).offsetHeight * 2);
+			WYSIWYG_Core.setAttribute(doc, 'style', 'overflow:hidden');
+			WYSIWYG_Core.setAttribute(divElm, 'style', 'position:absolute;z-index:9998;top:' + YOffset + 'px;left:0;width:' + size.width + 'px;height:' + size.height + 'px');
+			WYSIWYG_Core.setAttribute(tableElm, 'style', 'width:100%;height:100%');
+			WYSIWYG_Core.setAttribute(editor, 'style', 'width:100%;height:' + iFrameMaxHeight + 'px');
+			this.maximized[n] = true;
 		}
 	},
 
@@ -1239,12 +1274,12 @@ var WYSIWYG = {
 				var varHeight = ' size="' + height + '"';
 			} else {
 				var varHeight = '';
-	        }
+			}
 			if (width > 0) {
 				var varWidth = ' width="' + width + '"';
 			} else {
 				var varWidth = '';
-	        }
+			}
 			if (shade == true) {
 				var varShade = ' noshade=\"noshade\"';
 			} else if (shade == false) {
@@ -1254,7 +1289,7 @@ var WYSIWYG = {
 	   			var varAlign = ' align="'+align+'"';
 	   		}
 	   		else {
-	     		var varAlign = '';
+		 		var varAlign = '';
 	   		}
 
 			this.getEditorWindow(n).document.selection.createRange().pasteHTML('<hr ' + varWidth + varHeight + varShade + varAlign + '/>');
@@ -1295,11 +1330,11 @@ var WYSIWYG = {
 	},
 
 	/* ---------------------------------------------------------------------- *\
-	  Function    : insertNodeAtSelection()
+	  Function	: insertNodeAtSelection()
 	  Description : insert HTML into WYSIWYG in rich text (mozilla)
-	  Usage       : WYSIWYG.insertNodeAtSelection(insertNode, n)
+	  Usage	   : WYSIWYG.insertNodeAtSelection(insertNode, n)
 	  Arguments   : insertNode - The HTML being inserted (must be innerHTML inserted within a div element)
-	                n          - The editor identifier that the HTML will be inserted into (the textarea's ID)
+					n		  - The editor identifier that the HTML will be inserted into (the textarea's ID)
 	\* ---------------------------------------------------------------------- */
 	insertNodeAtSelection: function(insertNode, n) {
 
@@ -1425,26 +1460,26 @@ var WYSIWYG = {
 	 * Close all drop downs. You can define a exclude dropdown id
 	 *
 	 * @param {String} n The editor identifier (textarea ID)
-     * @param {String} exid Excluded drop down identifier
+	 * @param {String} exid Excluded drop down identifier
 	 */
 	closeDropDowns: function(n, exid) {
 		if(typeof(exid) == "undefined") exid = "";
 		var dropdowns = this.config[n].DropDowns;
 		for(var id in dropdowns) {
-		    if (dropdowns[id] !== "undefined") {
-			var dropdown = dropdowns[id];
-			if(dropdown.id != exid) {
-				var divId = "elm_" + dropdown.id + "_" + n;
-				if($(divId)) $(divId).style.display = 'none';
+			if (dropdowns[id] !== "undefined") {
+				var dropdown = dropdowns[id];
+				if(dropdown.id != exid) {
+					var divId = "elm_" + dropdown.id + "_" + n;
+					if($(divId)) $(divId).style.display = 'none';
+				}
 			}
-		    }
 		}
 	},
 
 	/**
 	 * Open a defined drop down
 	 *
-     * @param {String} n The editor identifier (textarea ID)
+	 * @param {String} n The editor identifier (textarea ID)
 	 * @param {String} id Drop down identifier
 	 */
 	openDropDown: function(n, id) {
@@ -1479,28 +1514,28 @@ var WYSIWYG = {
 			iHTML = this.stripURLPath(n, iHTML);
 			// replace all decimal color strings with hex decimal color strings
 			iHTML = WYSIWYG_Core.replaceRGBWithHexColor(iHTML);
-	    	WYSIWYG_Beautifier.Init();
-	    	iHTML = WYSIWYG_Beautifier.Format(iHTML);
+			WYSIWYG_Beautifier.Init();
+			iHTML = WYSIWYG_Beautifier.Format(iHTML);
 			doc.body.innerText = iHTML;
 		}
 	  	// View Source for Mozilla/Netscape
 	  	else {
 	  		// replace all decimal color strings with hex decimal color strings
 			var html = WYSIWYG_Core.replaceRGBWithHexColor(doc.body.innerHTML);
-	    	WYSIWYG_Beautifier.Init();
-	    	html = WYSIWYG_Beautifier.Format(html);
-	    	html = document.createTextNode(html);
-	    	doc.body.innerHTML = "";
-	    	doc.body.appendChild(html);
+			WYSIWYG_Beautifier.Init();
+			html = WYSIWYG_Beautifier.Format(html);
+			html = document.createTextNode(html);
+			doc.body.innerHTML = "";
+			doc.body.appendChild(html);
 	  	}
 
 		// Hide the HTML Mode button and show the Text Mode button
 		// Validate if Elements are present
 		if($('HTMLMode' + n)) {
-		    $('HTMLMode' + n).style.display = 'none';
+			$('HTMLMode' + n).style.display = 'none';
 		}
-	    if($('textMode' + n)) {
-		    $('textMode' + n).style.display = 'block';
+		if($('textMode' + n)) {
+			$('textMode' + n).style.display = 'block';
 		}
 
 		// set the font values for displaying HTML source
@@ -1523,21 +1558,21 @@ var WYSIWYG = {
 
 		// View Text for IE
 		if (WYSIWYG_Core.isMSIE) {
-	    	var iText = doc.body.innerText;
-	    	// strip off the absolute urls
+			var iText = doc.body.innerText;
+			// strip off the absolute urls
 			iText = this.stripURLPath(n, iText);
 			// replace all decimal color strings with hex decimal color strings
 			iText = WYSIWYG_Core.replaceRGBWithHexColor(iText);
-	    	doc.body.innerHTML = iText;
+			doc.body.innerHTML = iText;
 		}
 
 		// View Text for Mozilla/Netscape
 	  	else {
-	    	var html = doc.body.ownerDocument.createRange();
-	    	html.selectNodeContents(doc.body);
-	    	// replace all decimal color strings with hex decimal color strings
+			var html = doc.body.ownerDocument.createRange();
+			html.selectNodeContents(doc.body);
+			// replace all decimal color strings with hex decimal color strings
 			html = WYSIWYG_Core.replaceRGBWithHexColor(html.toString());
-	    	doc.body.innerHTML = html;
+			doc.body.innerHTML = html;
 		}
 
 		// Enable table highlighting
@@ -1559,10 +1594,10 @@ var WYSIWYG = {
 	},
 
 	/* ---------------------------------------------------------------------- *\
-	  Function    : stripURLPath()
+	  Function	: stripURLPath()
 	  Description : Strips off the defined image and the anchor urls of the given content.
 	  				It also can strip the document URL automatically if you define auto.
-	  Usage       : WYSIWYG.stripURLPath(content)
+	  Usage	   : WYSIWYG.stripURLPath(content)
 	  Arguments   : content  - Content on which the stripping applies
 	\* ---------------------------------------------------------------------- */
 	stripURLPath: function(n, content, exact) {
@@ -1579,6 +1614,9 @@ var WYSIWYG = {
 		if(this.config[n].AnchorPathToStrip == "auto") {
 			stripAnchorUrl = WYSIWYG_Core.getDocumentUrl(document);
 		}
+		else if(this.config[n].AnchorPathToStrip == "absolute") {
+			stripAnchorUrl = false;
+		}
 		else if(this.config[n].AnchorPathToStrip != "") {
 			stripAnchorUrl = this.config[n].AnchorPathToStrip;
 		}
@@ -1586,6 +1624,9 @@ var WYSIWYG = {
 		// add strip url of images to array
 		if(this.config[n].ImagePathToStrip == "auto") {
 			stripImgageUrl = WYSIWYG_Core.getDocumentUrl(document);
+		}
+		else if(this.config[n].ImagePathToStrip == "absolute") {
+			stripImgageUrl = false;
 		}
 		else if(this.config[n].ImagePathToStrip != "") {
 			stripImgageUrl = this.config[n].ImagePathToStrip;
@@ -1628,7 +1669,7 @@ var WYSIWYG = {
 			}
 		}
 
-		// strip url of image path
+		// strip url of anchor path
 		if(stripAnchorUrl) {
 			// escape reserved characters to be a valid regex
 			url = WYSIWYG_Core.stringToRegex(WYSIWYG_Core.getDocumentPathOfUrl(stripAnchorUrl));
@@ -1699,7 +1740,7 @@ var WYSIWYG = {
 	},
 
 	/* ---------------------------------------------------------------------- *\
-	  Function    : updateTextArea()
+	  Function	: updateTextArea()
 	  Description : Updates the text area value with the HTML source of the WYSIWYG
 	  Arguments   : n   - The editor identifier (the textarea's ID)
 	\* ---------------------------------------------------------------------- */
@@ -1715,15 +1756,15 @@ var WYSIWYG = {
 		// replace all decimal color strings with hex color strings
 		content = WYSIWYG_Core.replaceRGBWithHexColor(content);
 		// remove line breaks before content will be updated
-		if(this.config[n].ReplaceLineBreaks) { content = content.replace(/(\r\n)|(\n)/ig, ""); }
+		if(this.config[n].ReplaceLineBreaks) { content = content.replace(/(\r\n)|(\n)/ig, " "); }
 		// set content back in textarea
 		$(n).value = content;
 	},
 
 	/* ---------------------------------------------------------------------- *\
-	  Function    : hideToolbars()
+	  Function	: hideToolbars()
 	  Description : Hide all toolbars
-	  Usage       : WYSIWYG.hideToolbars(n)
+	  Usage	   : WYSIWYG.hideToolbars(n)
 	  Arguments   : n - The editor identifier (the textarea's ID)
 	\* ---------------------------------------------------------------------- */
 	hideToolbars: function(n) {
@@ -1734,9 +1775,9 @@ var WYSIWYG = {
 	},
 
 	/* ---------------------------------------------------------------------- *\
-	  Function    : showToolbars()
+	  Function	: showToolbars()
 	  Description : Display all toolbars
-	  Usage       : WYSIWYG.showToolbars(n)
+	  Usage	   : WYSIWYG.showToolbars(n)
 	  Arguments   : n - The editor identifier (the textarea's ID)
 	\* ---------------------------------------------------------------------- */
 	showToolbars: function(n) {
@@ -1747,9 +1788,9 @@ var WYSIWYG = {
 	},
 
 	/* ---------------------------------------------------------------------- *\
-	  Function    : hideStatusBar()
+	  Function	: hideStatusBar()
 	  Description : Hide the status bar
-	  Usage       : WYSIWYG.hideStatusBar(n)
+	  Usage	   : WYSIWYG.hideStatusBar(n)
 	  Arguments   : n - The editor identifier (the textarea's ID)
 	\* ---------------------------------------------------------------------- */
 	hideStatusBar: function(n) {
@@ -1760,9 +1801,9 @@ var WYSIWYG = {
 	},
 
 	/* ---------------------------------------------------------------------- *\
-	  Function    : showStatusBar()
+	  Function	: showStatusBar()
 	  Description : Display the status bar
-	  Usage       : WYSIWYG.showStatusBar(n)
+	  Usage	   : WYSIWYG.showStatusBar(n)
 	  Arguments   : n - The editor identifier (the textarea's ID)
 	\* ---------------------------------------------------------------------- */
 	showStatusBar: function(n) {
@@ -1820,7 +1861,7 @@ var WYSIWYG = {
 	 */
 	getTag: function(range) {
 		try {
-		    if(!WYSIWYG_Core.isMSIE) {
+			if(!WYSIWYG_Core.isMSIE) {
 				var node = range.startContainer;
 				var pos = range.startOffset;
 				if(node.nodeType != 3) { node = node.childNodes[pos]; }
@@ -1858,9 +1899,9 @@ var WYSIWYG = {
 	},
 
 	/* ---------------------------------------------------------------------- *\
-	  Function    : getTextRange()
+	  Function	: getTextRange()
 	  Description : Get the text range object of the given element
-	  Usage       : WYSIWYG.getTextRange(element)
+	  Usage	   : WYSIWYG.getTextRange(element)
 	  Arguments   : element - An element of which you get the text range object
 	\* ---------------------------------------------------------------------- */
 	getTextRange: function(element){
@@ -1870,11 +1911,11 @@ var WYSIWYG = {
 	},
 
 	/* ---------------------------------------------------------------------- *\
-	  Function    : invertIELineBreakCapability()
+	  Function	: invertIELineBreakCapability()
 	  Description : Inverts the line break capability of IE (Thx to richyrich)
 	  				Normal: ENTER = <p> , SHIFT + ENTER = <br>
 	  				Inverted: ENTER = <br>, SHIFT + ENTER = <p>
-	  Usage       : WYSIWYG.invertIELineBreakCapability(n)
+	  Usage	   : WYSIWYG.invertIELineBreakCapability(n)
 	  Arguments   : n   - The editor identifier (the textarea's ID)
 	\* ---------------------------------------------------------------------- */
 	invertIELineBreakCapability: function(n) {
@@ -1883,35 +1924,35 @@ var WYSIWYG = {
 		var sel;
 		// validate if the press key is the carriage return key
 		if (editor.event.keyCode==13) {
-	    	if (!editor.event.shiftKey) {
-		    sel = this.getRange(this.getSelection(n), n);
-	            sel.pasteHTML("<br>");
-	            editor.event.cancelBubble = true;
-	            editor.event.returnValue = false;
-	            sel.select();
-	            sel.moveEnd("character", 1);
-	            sel.moveStart("character", 1);
-	            sel.collapse(false);
-	            return false;
+			if (!editor.event.shiftKey) {
+				sel = this.getRange(this.getSelection(n), n);
+				sel.pasteHTML("<br>");
+				editor.event.cancelBubble = true;
+				editor.event.returnValue = false;
+				sel.select();
+				sel.moveEnd("character", 1);
+				sel.moveStart("character", 1);
+				sel.collapse(false);
+				return false;
 			}
-	        else {
-		    sel = this.getRange(this.getSelection(n), n);
-	            sel.pasteHTML("<p>");
-	            editor.event.cancelBubble = true;
-	            editor.event.returnValue = false;
-	            sel.select();
-	            sel.moveEnd("character", 1);
-	            sel.moveStart("character", 1);
-	            sel.collapse(false);
-	            return false;
-	    	}
+			else {
+				sel = this.getRange(this.getSelection(n), n);
+				sel.pasteHTML("<p>");
+				editor.event.cancelBubble = true;
+				editor.event.returnValue = false;
+				sel.select();
+				sel.moveEnd("character", 1);
+				sel.moveStart("character", 1);
+				sel.collapse(false);
+				return false;
+			}
 		}
 	},
 
 	/* ---------------------------------------------------------------------- *\
-	  Function    : selectNode()
+	  Function	: selectNode()
 	  Description : Select a node within the current editor
-	  Usage       : WYSIWYG.selectNode(n, level)
+	  Usage	   : WYSIWYG.selectNode(n, level)
 	  Arguments   : n   - The editor identifier (the textarea's ID)
 	  				level - identifies the level of the element which will be selected
 	\* ---------------------------------------------------------------------- */
@@ -1933,9 +1974,9 @@ var WYSIWYG = {
 	},
 
 	/* ---------------------------------------------------------------------- *\
-	  Function    : nodeSelection()
+	  Function	: nodeSelection()
 	  Description : Do the node selection
-	  Usage       : WYSIWYG.nodeSelection(n, node)
+	  Usage	   : WYSIWYG.nodeSelection(n, node)
 	  Arguments   : n   - The editor identifier (the textarea's ID)
 	  				node - The node which will be selected
 	\* ---------------------------------------------------------------------- */
@@ -2251,9 +2292,9 @@ var WYSIWYG_Core = {
 	_dec_to_rgb: function(value) {
 		var hex_string = "";
 		for (var hexpair = 0; hexpair < 3; hexpair++) {
-			var myByte = value & 0xFF;            // get low byte
-			value >>= 8;                          // drop low byte
-			var nybble2 = myByte & 0x0F;          // get low nybble (4 bits)
+			var myByte = value & 0xFF;			// get low byte
+			value >>= 8;						  // drop low byte
+			var nybble2 = myByte & 0x0F;		  // get low nybble (4 bits)
 			var nybble1 = (myByte >> 4) & 0x0F;   // get high nybble
 			hex_string += nybble1.toString(16);   // convert nybble to hex
 			hex_string += nybble2.toString(16);   // convert nybble to hex
@@ -2425,22 +2466,14 @@ var WYSIWYG_Core = {
 	 * @private
 	 */
 	windowSize: function() {
-		if (window.innerWidth) {
-	  		return {width: window.innerWidth, height: window.innerHeight};
-	  	}
-		else if (document.body && document.body.offsetWidth) {
-	  		return {width: document.body.offsetWidth, height: document.body.offsetHeight};
-	  	}
-		else if (document.body && document.body.clientWidth) {
-	  		return {width: document.body.clientWidth, height: document.body.clientHeight};
-	  	}
-		else if (document.documentElement && document.documentElement.clientWidth) {
-	  		return {width: documentElement.clientWidth, height: documentElement.clientHeight};
-	  	}
-		else {
-	  		return {width: 0, height: 0};
-	  	}
+		var e = window, a = 'inner', w = 'Width', d = document;
+		if (! (a + w in e)) {
+			a = 'client';
+			e = (d.documentElement[a+w]) ? d.documentElement : d.body;
+		}
+		return {width: e[a + w], height: e[a + 'Height']};
 	}
+
 }
 
 /*
@@ -2451,11 +2484,11 @@ var WYSIWYG_Core = {
  * Licensed under the terms of any of the following licenses at your
  * choice:
  *  - GNU General Public License Version 2 or later (the "GPL")
- *    http://www.gnu.org/licenses/gpl.html
+ *	http://www.gnu.org/licenses/gpl.html
  *  - GNU Lesser General Public License Version 2.1 or later (the "LGPL")
- *    http://www.gnu.org/licenses/lgpl.html
+ *	http://www.gnu.org/licenses/lgpl.html
  *  - Mozilla Public License Version 1.1 or later (the "MPL")
- *    http://www.mozilla.org/MPL/MPL-1.1.html
+ *	http://www.mozilla.org/MPL/MPL-1.1.html
  * == END LICENSE ==
  *
  * Format the HTML.
@@ -2679,14 +2712,13 @@ var WYSIWYG_Table = {
 	}
 }
 
-
 /**
  * Get an element by it's identifier
  *
  * @param id Element identifier
  */
 function $(id) {
-	return document.getElementById(id);
+	return FetchElement(id);
 }
 
 /**

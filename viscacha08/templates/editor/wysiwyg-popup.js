@@ -52,7 +52,7 @@ if (window.opener !== null && typeof window.opener.WYSIWYG !== "undefined") {
  * Loads the color in the form field
  */
 function loadColor() {
-	document.getElementById('enterColor').value = "#" + WYSIWYG_Popup.getParam('color');
+	FetchElement('enterColor').value = "#" + WYSIWYG_Popup.getParam('color');
 }
 
 /* ---------------------------------------------------------------------- *\
@@ -76,9 +76,9 @@ function selectColor(color) {
   Description : Updates the preview pane as the user mouses over different colors
 \* ---------------------------------------------------------------------- */
 function previewColor(color) {
-	document.getElementById('enterColor').value = color;
-	document.getElementById('PreviewColor').style.backgroundColor = color;
-	document.getElementById('PreviewColor').style.color = invert(color);
+	FetchElement('enterColor').value = color;
+	FetchElement('PreviewColor').style.backgroundColor = color;
+	FetchElement('PreviewColor').style.color = invert(color);
 }
 
 /* ---------------------------------------------------------------------- *\
@@ -89,15 +89,15 @@ function insertImage() {
 	var n = WYSIWYG_Popup.getParam('wysiwyg');
 
 	// get values from form fields
-	var src = document.getElementById('src').value;
-	var alt = document.getElementById('alt').value;
-	var width = document.getElementById('width').value
-	var height = document.getElementById('height').value
-	var border = document.getElementById('border').value
-	var align = document.getElementById('align').value
-	var vspace = document.getElementById('vspace').value
-	var hspace = document.getElementById('hspace').value
-	var bordercolor = document.getElementById('bordercolor').value
+	var src = FetchElement('src').value;
+	var alt = FetchElement('alt').value;
+	var width = FetchElement('width').value
+	var height = FetchElement('height').value
+	var border = FetchElement('border').value
+	var align = FetchElement('align').value
+	var vspace = FetchElement('vspace').value
+	var hspace = FetchElement('hspace').value
+	var bordercolor = FetchElement('bordercolor').value
 
 	// insert image
 	WYSIWYG.insertImage(src, width, height, align, border, alt, hspace, vspace, bordercolor, n);
@@ -131,43 +131,43 @@ function loadImage() {
 				case "src":
 					// strip off urls on IE
 					if(WYSIWYG_Core.isMSIE) value = WYSIWYG.stripURLPath(n, value, false);
-					document.getElementById('src').value = value;
+					FetchElement('src').value = value;
 				break;
 				case "alt":
-					document.getElementById('alt').value = value;
+					FetchElement('alt').value = value;
 				break;
 				case "align":
-					selectItemByValue(document.getElementById('align'), value);
+					selectItemByValue(FetchElement('align'), value);
 				break;
 				case "border":
-					document.getElementById('border').value = value;
+					FetchElement('border').value = value;
 				break;
 				case "hspace":
-					document.getElementById('hspace').value = value;
+					FetchElement('hspace').value = value;
 				break;
 				case "vspace":
-					document.getElementById('vspace').value = value;
+					FetchElement('vspace').value = value;
 				break;
 				case "width":
-					document.getElementById('width').value = value;
+					FetchElement('width').value = value;
 				break;
 				case "height":
-					document.getElementById('height').value = value;
+					FetchElement('height').value = value;
 				break;
 			}
 		}
 	}
 
 	// get width and height from style attribute in none IE browsers
-	if(!WYSIWYG_Core.isMSIE && document.getElementById('width').value == "" && document.getElementById('height').value == "") {
-		document.getElementById('width').value = img.style.width.replace(/px/i, "");
-		document.getElementById('height').value = img.style.height.replace(/px/i, "");
+	if(!WYSIWYG_Core.isMSIE && FetchElement('width').value == "" && FetchElement('height').value == "") {
+		FetchElement('width').value = img.style.width.replace(/px/i, "");
+		FetchElement('height').value = img.style.height.replace(/px/i, "");
 	}
 
-	if(!WYSIWYG_Core.isMSIE && document.getElementById('border').value == "") {
-		document.getElementById('border').value = img.style.borderWidth.replace(/px/i, "");
+	if(!WYSIWYG_Core.isMSIE && FetchElement('border').value == "") {
+		FetchElement('border').value = img.style.borderWidth.replace(/px/i, "");
 	}
-	document.getElementById('bordercolor').value = img.style.borderColor;
+	FetchElement('bordercolor').value = img.style.borderColor;
 }
 
 /* ---------------------------------------------------------------------- *\
@@ -215,9 +215,9 @@ function createHR(n) {
 \* ---------------------------------------------------------------------- */
 function insertHyperLink(n) {
 	// get values from form fields
-	var href = document.getElementById('linkUrl').value;
-	var target = document.getElementById('linkTarget').value;
-	var name = document.getElementById('linkName').value;
+	var href = FetchElement('linkUrl').value;
+	var target = FetchElement('linkTarget').value;
+	var name = FetchElement('linkName').value;
 
   	// insert link
 	WYSIWYG.insertLink(href, target, '', '', name, n);
@@ -265,14 +265,14 @@ function loadLink() {
 				case "href":
 					// strip off urls on IE
 					if(WYSIWYG_Core.isMSIE) value = WYSIWYG.stripURLPath(n, value, false);
-					document.getElementById('linkUrl').value = value;
+					FetchElement('linkUrl').value = value;
 				break;
 				case "target":
-					document.getElementById('linkTarget').value = value;
-					selectItemByValue(document.getElementById('linkTargetChooser'), value);
+					FetchElement('linkTarget').value = value;
+					selectItemByValue(FetchElement('linkTargetChooser'), value);
 				break;
 				case "name":
-					document.getElementById('linkName').value = value;
+					FetchElement('linkName').value = value;
 				break;
 			}
 		}
@@ -285,7 +285,7 @@ function loadLink() {
   Arguments   : value - Value to be set
 \* ---------------------------------------------------------------------- */
 function updateTarget(value) {
-	document.getElementById('linkTarget').value = value;
+	FetchElement('linkTarget').value = value;
 }
 
 /* ---------------------------------------------------------------------- *\
@@ -304,24 +304,34 @@ function selectItemByValue(element, value) {
 	}
 }
 
+function dirSelect(elem) {
+	var field = FetchElement('newdir');
+	if (elem.value == '#') {
+		field.style.display = 'inline';
+	}
+	else {
+		field.style.display = 'none';
+	}
+}
+
 /* ---------------------------------------------------------------------- *\
   Function    : buildTable()
   Description : Builds a table and inserts it into the WYSIWYG.
 \* ---------------------------------------------------------------------- */
 function buildTable(n) {
 	// Get all information
-	var collapse = document.getElementById("bordercollapse").checked ? "collapse" : "separate";
-	var width = document.getElementById("width").value;
-	var bgc = document.getElementById("backgroundcolor").value;
-	var align = document.getElementById("alignment").value;
-	var bWidth = document.getElementById('borderwidth').value;
-	var bStyle = document.getElementById('borderstyle').value;
-	var bColor = document.getElementById('bordercolor').value;
-	var padding = document.getElementById('padding').value;
+	var collapse = FetchElement("bordercollapse").checked ? "collapse" : "separate";
+	var width = FetchElement("width").value;
+	var bgc = FetchElement("backgroundcolor").value;
+	var align = FetchElement("alignment").value;
+	var bWidth = FetchElement('borderwidth').value;
+	var bStyle = FetchElement('borderstyle').value;
+	var bColor = FetchElement('bordercolor').value;
+	var padding = FetchElement('padding').value;
 	// Construct table style
 	var style = 'border-collapse:' + collapse + ';';
 	if (width > 0) {
-		style += "width:" + width + document.getElementById("widthType").value + ";";
+		style += "width:" + width + FetchElement("widthType").value + ";";
 	}
 	if(bgc != "none" && bgc != '') {
 		style += "background-color:" + bgc + ";";
@@ -345,7 +355,7 @@ function buildTable(n) {
 	}
 
 	// Inserts the table code into the WYSIWYG editor
-	WYSIWYG_Table.create(n, table, document.getElementById("cols").value, document.getElementById("rows").value, td_style);
+	WYSIWYG_Table.create(n, table, FetchElement("cols").value, FetchElement("rows").value, td_style);
 	window.close();
 }
 /********************************************************************
@@ -424,8 +434,8 @@ function WYSIWYG_Color() {
 	 * @param {String} color HexColor String
 	 */
 	this.select = function(n, color) {
-		var div = document.getElementById(CHOOSER_DIV_ID);
-		var elm = document.getElementById(n);
+		var div = FetchElement(CHOOSER_DIV_ID);
+		var elm = FetchElement(n);
 		elm.value = color;
 		elm.style.color = invert(color);
 		elm.style.backgroundColor = color;

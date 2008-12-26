@@ -176,8 +176,7 @@ function parseNavPosSetting() {
 	return $arr;
 }
 function attachWYSIWYG() {
-	$r = '<link rel="stylesheet" type="text/css" href="admin/html/wysiwyg.css" />';
-	$r .= '<script type="text/javascript" src="templates/editor/wysiwyg.js"></script>';
+	$r = '<script type="text/javascript" src="templates/editor/wysiwyg.js"></script>';
 	$r .= '<script type="text/javascript"> WYSIWYG.attach("all", full); </script>';
 	return $r;
 }
@@ -1018,60 +1017,31 @@ elseif ($job == 'doc_select_image') {
 		$leadon = str_replace('\\', '/', $leadon);
 	}
 
-	$sort = $gpc->get('sort', none);
-
 	clearstatcache();
 	$n = 0;
+	$dirs = array();
+	$files = array();
 	if ($handle = opendir($leadon)) {
 		while (false !== ($file = readdir($handle))) {
 			//first see if this file is required in the listing
-			if ($file == "." || $file == "..")  continue;
-			if (@filetype($leadon.$file) == "dir") {
-
-				$n++;
-				if($sort=="date") {
-					$key = @filemtime($leadon.$file) . ".$n";
-				}
-				else {
-					$key = $n;
-				}
-				$dirs[$key] = $file . "/";
+			if ($file == "." || $file == "..") {
+				continue;
 			}
-			else {
-				$n++;
-				if($sort=="date") {
-					$key = @filemtime($leadon.$file) . ".$n";
+			if (is_dir($leadon.$file) == true) {
+				$dirs[] = $file;
+			}
+			else if (is_file($leadon.$file) == true) {
+				$ext = strtolower(get_extension($file));
+				if(in_array($ext, $supportedextentions)) {
+					$files[] = $file;
 				}
-				elseif($sort=="size") {
-					$key = @filesize($leadon.$file) . ".$n";
-				}
-				else {
-					$key = $n;
-				}
-				$files[$key] = $file;
 			}
 		}
 		closedir($handle);
 	}
 
-	if($sort=="date") {
-		@ksort($dirs, SORT_NUMERIC);
-		@ksort($files, SORT_NUMERIC);
-	}
-	elseif($sort=="size") {
-		@natcasesort($dirs);
-		@ksort($files, SORT_NUMERIC);
-	}
-	else {
-		@natcasesort($dirs);
-		@natcasesort($files);
-	}
-
-	$order = $gpc->get('order', none);
-
-	if($order=="desc" && $sort!="size") {$dirs = @array_reverse($dirs);}
-	if($order=="desc") {$files = @array_reverse($files);}
-	$dirs = @array_values($dirs); $files = @array_values($files);
+	natcasesort($dirs);
+	natcasesort($files);
 
 	$fileicons_obj = $scache->load('fileicons');
 	$fileicons = $fileicons_obj->get();
@@ -1086,7 +1056,7 @@ elseif ($job == 'doc_select_image') {
 		}
 
 		if(parent) {
-			parent.document.getElementById("dir").value = '<?php echo iif($dotdotdir, $dir); ?>';
+			parent.document.getElementById("framedir").value = '<?php echo iif($dotdotdir, $dir); ?>';
 		}
 
 	</script>
@@ -1096,36 +1066,31 @@ elseif ($job == 'doc_select_image') {
 			  <?php
 				if($dotdotdir) {
 					?>
-					<a href="admin.php?action=cms&job=doc_select_image&dir=<?php echo extract_dir($dir); ?>"><img src="<?php echo $tpl->img('filetypes/folder'); ?>" alt="" border="0" />&nbsp;<em>Previous Directory</em></a><br>
+					<a href="admin.php?action=cms&job=doc_select_image&dir=<?php echo extract_dir($dir); ?>"><img src="<?php echo $tpl->img('filetypes/folder'); ?>" alt="" border="0" />&nbsp;<em><?php echo $lang->phrase('admin_wysiwyg_prev_dir'); ?></em></a><br>
 					<?php
 				}
-				$arsize = count($dirs);
-				for($i=0;$i<$arsize;$i++) {
-					$dir = substr($dirs[$i], 0, strlen($dirs[$i]) - 1);
+				$i = -1;
+				foreach ($dirs as $i => $dirname) {
 					?>
-					<a href="admin.php?action=cms&job=doc_select_image&dir=<?php echo urlencode($dirs[$i]); ?>"><img src="<?php echo $tpl->img('filetypes/folder'); ?>" alt="" border="0" />&nbsp;<?php echo $dir; ?></a><br>
+					<a href="admin.php?action=cms&job=doc_select_image&dir=<?php echo urlencode($dirname); ?>">
+					<img src="<?php echo $tpl->img('filetypes/folder'); ?>" alt="" border="0" />&nbsp;<?php echo $dirname; ?>
+					</a><br />
 					<?php
 				}
-				if ($arsize > 0 || $dotdotdir) {
+				if ($i >= 0 || $dotdotdir) {
 					echo "</td></tr><tr><td>";
 				}
-				$arsize = count($files);
-				for($i=0;$i<$arsize;$i++) {
-					$ext = strtolower(substr($files[$i], strrpos($files[$i], '.')+1));
-					if(in_array($ext, $supportedextentions)) {
-						$filename = $files[$i];
-						if (!isset($fileicons[$ext])) {
-							$icon = 'unknown';
-						}
-						else {
-							$icon = $fileicons[$ext];
-						}
+				foreach ($files as $filename) {
+					$ext = strtolower(get_extension($filename));
+					$icon = isset($fileicons[$ext]) ? $fileicons[$ext] : 'unknown';
 					?>
-					<a href="javascript:void(0)" onclick="selectImage('<?php echo EDITOR_IMAGEDIR.$filename; ?>');">
-					<img src="<?php echo $tpl->img('filetypes/'.$icon); ?>" alt="" border="0" />&nbsp;<?php echo $filename; ?>
-					</a><br>
+					<a href="javascript:selectImage('<?php echo EDITOR_IMAGEDIR.$filename; ?>');">
+					  <img src="<?php echo $tpl->img("filetypes/{$icon}"); ?>" alt="<?php echo strtoupper($ext); ?>" border="0" />&nbsp;<?php echo $filename; ?>
+					</a><br />
 					<?php
-					}
+				}
+				if (count($files) == 0) {
+					echo $lang->phrase('admin_wysiwyg_no_files_found');
 				}
 				?>
 			</td>
@@ -1137,129 +1102,156 @@ elseif ($job == 'doc_select_image') {
 elseif ($job == 'doc_insert_image') {
 	$wysiwyg = $gpc->get('wysiwyg', str);
 	$leadon = realpath(EDITOR_IMAGEDIR).DIRECTORY_SEPARATOR;
-	$leadon = str_replace('\\', '/', $leadon);
-	$dir = $gpc->get('dir', none);
-	if(!empty($dir)) {
-		if(substr($dir, -1, 1)!='/') {
-			$dir = $dir . '/';
-		}
-		$dirok = true;
-		$dirnames = split('/', $dir);
-		$count = count($dirnames);
-		for($di=0; $di < $count; $di++) {
-			if($di<(sizeof($dirnames)-2)) {
-				$dotdotdir = $dotdotdir . $dirnames[$di] . '/';
-			}
-		}
-		if(substr($dir, 0, 1)=='/') {
-			$dirok = false;
-		}
-		if($dir == $leadon) {
-			$dirok = false;
-		}
-		if($dirok) {
-			$leadon .= $dir;
-		}
-		else {
-			$dir = '';
+	$image_file = null;
+
+	$dirhandler = opendir($leadon);
+	$dirlist = array();
+	while ($dir = readdir ($dirhandler)) {
+		if ($dir != '.' && $dir != '..' && is_dir($dir)) {
+			$dirlist[] = $dir;
 		}
 	}
+	closedir($dirhandler);
+	natcasesort($dirlist);
 
 	// upload file
 	$error = null;
     if (!empty($_FILES['file']['name'])) {
-    	require("classes/class.upload.php");
-		$my_uploader = new uploader();
-		$my_uploader->max_filesize(ini_maxupload());
-		$my_uploader->file_types($supportedextentions);
-		$my_uploader->set_path($leadon);
-		if ($my_uploader->upload('file')) {
-			$my_uploader->save_file();
+		$path = $leadon;
+
+		$qdir = $gpc->get('dir', none);
+		$ndir = $gpc->get('newdir', none);
+		if($qdir == '#') {
+			if (!preg_match('/[^\w\d\-\.]/i', $qdir) || empty($ndir)) {
+				$error = $lang->phrase('admin_wysiwyg_folder_restrictions');
+			}
+			else {
+				if ($filesystem->mkdir($leadon.$ndir, 0777)) {
+					$path = $leadon.$ndir;
+				}
+			}
 		}
-		if ($my_uploader->upload_failed()) {
-			$error = $my_uploader->get_error();
-		}
-		$file = $leadon.$my_uploader->fileinfo('filename');
-		if (!file_exists($file)) {
-		    $error = $lang->phrase('admin_cms_file_does_not_exist');
+
+		if ($error === null) {
+	    	require("classes/class.upload.php");
+			$my_uploader = new uploader();
+			$my_uploader->max_filesize(ini_maxupload());
+			$my_uploader->file_types($supportedextentions);
+			$my_uploader->set_path($path);
+			if ($my_uploader->upload('file')) {
+				$my_uploader->save_file();
+			}
+			if ($my_uploader->upload_failed()) {
+				$error = $my_uploader->get_error();
+			}
+			$image_file = $path.$my_uploader->fileinfo('filename');
+			if (!file_exists($image_file)) {
+			    $error = $lang->phrase('admin_cms_file_does_not_exist');
+			}
+			$image_file = str_replace(realpath($config['fpath']).DIRECTORY_SEPARATOR, '', $image_file);
+			$image_file = str_replace(DIRECTORY_SEPARATOR, '/', $image_file);
 		}
     }
+
+    $filesize = formatFilesize(ini_maxupload());
+
     $htmlhead .= '<script type="text/javascript" src="templates/editor/wysiwyg-popup.js"></script>';
     echo head(' onLoad="loadImage();"');
 	?>
 <form method="post" action="admin.php?action=cms&amp;job=doc_insert_image&amp;wysiwyg=<?php echo $wysiwyg; ?>" enctype="multipart/form-data">
-<input type="hidden" id="dir" name="dir" value="">
 <table class="border" border="0" cellspacing="0" cellpadding="4" align="center" style="width: 700px;">
 	<tr>
-		<td class="obox" colspan="4">Insert Image</td>
-		<td class="obox">Select Image</td>
+		<td class="obox" colspan="3"><?php echo $lang->phrase('admin_wysiwyg_upload_x'); ?></td>
 	</tr>
 	<tr class="mbox">
-		<td width="120">Upload:<br /><span class="stext">Max Filesize: <?php echo formatFilesize(ini_maxupload()); ?></span></td>
-		<td colspan="3" width="330">
-			<input type="file" name="file" size="30" />
-			<?php
-			if ($error !== null) {
-				echo '<br /><span class="stext">'.$error.'</span>';
-			}
-			?>
+		<td><?php echo $lang->phrase('admin_wysiwyg_folder'); ?></td>
+		<td>
+			<select name="dir" onchange="dirSelect(this)">
+				<option value=""<?php echo iif(empty($dir), ' selected="selected"'); ?>>Hauptverzeichnis</option>
+				<?php if (count($dirlist) > 0) { ?>
+				<optgroup label="Existierende Verzeichnisse">
+					<?php foreach ($dirlist as $dir) { ?>
+					<option value="<?php echo $dir; ?>"<?php echo iif($dir == $qdir, ' selected="selected"'); ?>><?php echo $dir; ?></option>
+					<?php } ?>
+				</optgroup>
+				<?php } ?>
+				<option value="#"<?php echo iif($dir == '#', ' selected="selected"'); ?>>Neues Verzeichnis erstellen:</option>
+			</select>
+			<input type="text" name="newdir" id="newdir" style="display: none;" size="30" />
 		</td>
+		<td rowspan="2" valign="middle" align="center" class="ubox"><input type="submit" value="<?php echo $lang->phrase('admin_wysiwyg_form_upload'); ?>"></td>
+	</tr>
+	<tr class="mbox">
+		<td><?php echo $lang->phrase('admin_wysiwyg_file'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_wysiwyg_max_filesize'); ?></span></td>
+		<td>
+			<input type="file" name="file" size="50" />
+			<?php if ($error !== null) { ?><br /><span class="stext"><?php echo $error; ?></span><?php } ?>
+		</td>
+	</tr>
+</table>
+<input type="hidden" name="framedir" id="framedir" value="" />
+</form>
+<br class="minibr" />
+<table class="border" border="0" cellspacing="0" cellpadding="4" align="center" style="width: 700px;">
+	<tr>
+		<td class="obox" colspan="4"><?php echo $lang->phrase('admin_wysiwyg_insert_img'); ?></td>
+		<td class="obox"><?php echo $lang->phrase('admin_wysiwyg_select_img'); ?></td>
+	</tr>
+	<tr class="mbox">
+		<td><?php echo $lang->phrase('admin_wysiwyg_image_url'); ?></td>
+		<td colspan="3"><input type="text" name="src" id="src" value="<?php echo iif(!empty($image_file), $image_file); ?>" size="50" /></td>
 		<td rowspan="8" width="250">
 			<iframe id="chooser" height="260" width="250" frameborder="0" src="admin.php?action=cms&amp;job=doc_select_image&amp;dir=<?php echo urlencode($dir); ?>"></iframe>
 		</td>
 	</tr><tr class="mbox">
-		<td>Image URL:</td>
-		<td colspan="3"><input type="text" name="src" id="src" value="" size="50" /></td>
-	</tr><tr class="mbox">
-		<td>Alternate Text:</td>
+		<td><?php echo $lang->phrase('admin_wysiwyg_alt_text'); ?></td>
 		<td colspan="3"><input type="text" name="alt" id="alt" value="" size="50" /></td>
 	</tr>
-	<tr><td class="obox" colspan="4">Layout</td></tr>
+	<tr><td class="obox" colspan="4"><?php echo $lang->phrase('admin_wysiwyg_layout'); ?></td></tr>
 	<tr class="mbox">
-	  <td width="120">Width:</td>
+	  <td width="120"><?php echo $lang->phrase('admin_wysiwyg_width'); ?></td>
 	  <td width="105"><input type="text" name="width" id="width" value="" size="10" />px</td>
-	  <td width="120">Height:</td>
+	  <td width="120"><?php echo $lang->phrase('admin_wysiwyg_height'); ?></td>
 	  <td width="105"><input type="text" name="height" id="height" value="" size="10" />px</td>
 	</tr>
 	<tr class="mbox">
-	  <td>Horizontal Space:</td>
+	  <td><?php echo $lang->phrase('admin_wysiwyg_hspace'); ?></td>
 	  <td><input type="text" name="hspace" id="hspace" value="" size="10" /></td>
-	  <td>Vertical Space:</td>
+	  <td><?php echo $lang->phrase('admin_wysiwyg_vspace'); ?></td>
 	  <td><input type="text" name="vspace" id="vspace" value="" size="10" /></td>
 	</tr>
 	<tr class="mbox">
-	  <td>Border-Width:</td>
+	  <td><?php echo $lang->phrase('admin_wysiwyg_border_width'); ?></td>
 	  <td><input type="text" name="border" id="border" value="0" size="10" />px</td>
-	  <td>Alignment:</td>
+	  <td><?php echo $lang->phrase('admin_wysiwyg_alignment'); ?></td>
 	  <td>
 		<select name="align" id="align">
-		 <option value="">Not Set</option>
-		 <option value="left">Left</option>
-		 <option value="right">Right</option>
-		 <option value="bottom">Bottom</option>
-		 <option value="middle">Middle</option>
-		 <option value="top">Top</option>
+		 <option value=""><?php echo $lang->phrase('admin_wysiwyg_alignment_not_set'); ?></option>
+		 <option value="left"><?php echo $lang->phrase('admin_wysiwyg_alignment_left'); ?></option>
+		 <option value="right"><?php echo $lang->phrase('admin_wysiwyg_alignment_right'); ?></option>
+		 <option value="bottom"><?php echo $lang->phrase('admin_wysiwyg_alignment_bottom'); ?></option>
+		 <option value="middle"><?php echo $lang->phrase('admin_wysiwyg_alignment_middle'); ?></option>
+		 <option value="top"><?php echo $lang->phrase('admin_wysiwyg_alignment_top'); ?></option>
 		</select>
 	  </td>
 	</tr>
 	<tr class="mbox">
-	  <td>Border-Color:</td>
+	  <td><?php echo $lang->phrase('admin_wysiwyg_border_color'); ?></td>
 	  <td colspan="3">
 	  	<input type="text" name="bordercolor" id="bordercolor" value="none" size="10" />
-	  	<input type="button" value="Choose" onClick="WYSIWYG_ColorInst.choose('bordercolor', 1);" />
+	  	<input type="button" value="<?php echo $lang->phrase('admin_wysiwyg_choose'); ?>" onClick="WYSIWYG_ColorInst.choose('bordercolor', 1);" />
 	  </td>
 	</tr>
 	<tr class="mbox">
-	  <td colspan="5" class="ubox" align="center">
-		<input type="submit" value="Submit" onclick="insertImage();return false;">
-		<input type="submit" value="Upload">
-		<input type="button" value="Cancel" onclick="window.close();">
+	  <td colspan="4" class="ubox" align="center">
+		<input type="submit" value="<?php echo $lang->phrase('admin_wysiwyg_form_submit'); ?>" onclick="insertImage();return false;">
+		<input type="button" value="<?php echo $lang->phrase('admin_wysiwyg_form_cancel'); ?>" onclick="window.close();">
 	  </td>
 	</tr>
 	</table>
 	</form>
 	<?php
-	echo foot();
+	echo foot(true);
 }
 elseif ($job == 'doc') {
 	$memberdata_obj = $scache->load('memberdata');

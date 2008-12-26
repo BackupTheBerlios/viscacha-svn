@@ -689,6 +689,7 @@ elseif ($job == "credits") {
 		<li><a href="http://www.invisionpower.com" target="_blank">PHP TAR by Matt Mecham</a> (TAR File Handling; GPL)</li>
 		<li><a href="http://www.phpclasses.org/browse/author/98157.html" target="_blank">Advanced FTP client class (Build 2008-09-17) by Alexey Dotsenko</a> (PHP FTP Client; Freely Distributable)</li>
 		<li><a href="http://phlymail.com/en/downloads/idna/" target="_blank">Net_IDNA 0.6.0 by phlyLabs</a> (Punycode Converter; LGPL)</li>
+		<li><a href="http://www.openwebware.com" target="_blank">openWYSIWYG 1.4.7 by openwebware.com</a> (WYSIWYG Editor; LGPL)</li>
 		<li>and many more code snippets, classes and functions...</li>
 		</ul>
 		<br class="minibr" />
