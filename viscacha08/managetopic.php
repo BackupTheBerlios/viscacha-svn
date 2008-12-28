@@ -326,8 +326,9 @@ if ($my->vlogin && $my->mp[0] == 1) {
 		$result = $db->query('SELECT id, topic, posts, sticky, status, last, board, vquestion, prefix FROM '.$db->pre.'topics WHERE id = '.$_GET['id'].' LIMIT 1');
 		$info = $gpc->prepare($db->fetch_assoc($result));
 
-		if (strlen($_GET['fid']) == 32) {
-			$data = $gpc->prepare(import_error_data($_GET['fid']));
+		$fid = $gpc->get('fid', str);
+		if (is_hash($fid)) {
+			$data = $gpc->unescape(import_error_data($fid));
 			$data[0] = $data['answer'][0];
 			unset($data['answer'][0]);
 			$result = $db->query("SELECT id, answer FROM {$db->pre}vote WHERE tid = '{$info['id']}' ORDER BY id");

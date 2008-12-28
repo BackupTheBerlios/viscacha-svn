@@ -60,12 +60,13 @@ if ($_GET['action'] == "boardin") {
 
 }
 elseif ($_GET['action'] == "download_code") {
-	if (strlen($_GET['fid']) != 32) {
+	$fid = $gpc->get('fid', str);
+	if (!is_hash($fid)) {
 		error($lang->phrase('query_string_error'));
 	}
 	$scache->loadClass('UniversalCodeCache');
 	$cache = new UniversalCodeCache();
-	if (!$cache->setHash($_GET['fid'])) {
+	if (!$cache->setHash($fid)) {
 		error($lang->phrase('no_upload_found'));
 	}
 	$sourcecode = $cache->get();

@@ -831,15 +831,14 @@ function import_error_data($fid) {
 	$data = $cache->get();
 	return $data;
 }
-function save_error_data($fc) {
+function save_error_data($fc, $fid = '') {
 	global $gpc;
-	$fid = md5(microtime());
+	if (!is_hash($fid)) {
+		$fid = md5(microtime());
+	}
 
 	$cache = new CacheItem($fid, 'temp/errordata/');
 	if ($cache->exists() == false) {
-		foreach ($fc as $key => $row) {
-			$fc[$key] = $gpc->unescape($row);
-		}
 	    $cache->set($fc);
 	    $cache->export();
 	}

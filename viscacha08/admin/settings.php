@@ -1051,8 +1051,45 @@ elseif ($job == 'captcha') {
 	   <td class="obox" colspan="2"><b><?php echo $lang->phrase('admin_spambot_edit'); ?></b></td>
 	  </tr>
 	  <tr>
-	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_show_text_captcha'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_show_text_captcha_info'); ?></span></td>
-	   <td class="mbox" width="50%"><input type="checkbox" name="botgfxtest_text_verification" value="1"<?php echo iif($config['botgfxtest_text_verification'] == 1,' checked="checked"'); ?>></td>
+	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_activate_spambot_registration'); ?></td>
+	   <td class="mbox" width="50%">
+	    <select name="botgfxtest">
+	     <?php for($i = 0; $i <= 2; $i++) { ?>
+	     <option value="<?php echo $i; ?>"<?php echo iif($config['botgfxtest'] == $i, ' selected="selected"'); ?>><?php echo $lang->phrase('admin_captcha_type'.$i); ?></option>
+	     <?php } ?>
+	    </select>
+	   </td>
+	  </tr>
+	  <tr>
+	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_activate_spambot_at_guests'); ?></td>
+	   <td class="mbox" width="50%">
+	    <select name="botgfxtest_posts">
+	     <?php for($i = 0; $i <= 2; $i++) { ?>
+	     <option value="<?php echo $i; ?>"<?php echo iif($config['botgfxtest_posts'] == $i, ' selected="selected"'); ?>><?php echo $lang->phrase('admin_captcha_type'.$i); ?></option>
+	     <?php } ?>
+	    </select>
+	   </td>
+	  </tr>
+	  <tr>
+	   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="<?php echo $lang->phrase('admin_form_submit'); ?>"></td>
+	  </tr>
+	 </table>
+	 <?php if ($config['botgfxtest'] == 1 || $config['botgfxtest_posts'] == 1) { ?>
+	<br class="minibr" />
+	 <table class="border" border="0" cellspacing="0" cellpadding="4">
+	  <tr>
+	   <td class="obox" colspan="2"><b><?php echo $lang->phrase('admin_spambot_veriword'); ?></b></td>
+	  </tr>
+	  <tr>
+	   <td class="ubox" colspan="2"><?php echo $lang->phrase('admin_spambot_veriword_info'); ?></td>
+	  </tr>
+	  <tr>
+	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_image_width_captcha'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_image_width_captcha_info'); ?></span></td>
+	   <td class="mbox" width="50%"><input type="text" name="botgfxtest_width" value="<?php echo $config['botgfxtest_width']; ?>" size="5">px</td>
+	  </tr>
+	  <tr>
+	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_image_height_captcha'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_image_height_captcha_info'); ?></span></td>
+	   <td class="mbox" width="50%"><input type="text" name="botgfxtest_height" value="<?php echo $config['botgfxtest_height']; ?>" size="5">px</td>
 	  </tr>
 	  <tr>
 	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_wave_filter_captcha'); ?></td>
@@ -1074,87 +1111,63 @@ elseif ($job == 'captcha') {
 	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_pic_quality_captcha'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_pic_quality_captcha_info'); ?></span></td>
 	   <td class="mbox" width="50%"><input type="text" name="botgfxtest_quality" value="<?php echo $config['botgfxtest_quality']; ?>" size="5">%</td>
 	  </tr>
-	  <tr>
 	   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="<?php echo $lang->phrase('admin_form_submit'); ?>"></td>
 	  </tr>
 	 </table>
+	<?php
+	}
+	if ($config['botgfxtest'] == 2 || $config['botgfxtest_posts'] == 2) {
+		$re_link = '<a href="http://recaptcha.net/api/getkey?app=Viscacha" target="_blank">reCaptcha</a>';
+		?>
 	<br class="minibr" />
 	 <table class="border" border="0" cellspacing="0" cellpadding="4">
 	  <tr>
-	   <td class="obox" colspan="2"><b><?php echo $lang->phrase('admin_spambot_registration'); ?></b></td>
+	   <td class="obox" colspan="2"><b><?php echo $lang->phrase('admin_spambot_recaptcha'); ?></b></td>
+	  </tr>
+	   <tr>
+	   <td class="ubox" colspan="2"><?php echo $lang->phrase('admin_spambot_recaptcha_info'); ?></td>
 	  </tr>
 	  <tr>
-	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_activate_spambot_registration'); ?></td>
-	   <td class="mbox" width="50%"><input type="checkbox" name="botgfxtest" value="1"<?php echo iif($config['botgfxtest'] == 1,' checked="checked"'); ?>></td>
+	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_recaptcha_public_key'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_recaptcha_public_key_info'); ?></span></td>
+	   <td class="mbox" width="50%"><input type="text" name="botgfxtest_recaptcha_public" value="<?php echo $config['botgfxtest_recaptcha_public']; ?>" size="55"></td>
 	  </tr>
 	  <tr>
-	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_image_width_captcha'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_image_width_captcha_info'); ?></span></td>
-	   <td class="mbox" width="50%"><input type="text" name="botgfxtest_width" value="<?php echo $config['botgfxtest_width']; ?>" size="5">px</td>
-	  </tr>
-	  <tr>
-	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_image_height_captcha'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_image_height_captcha_info'); ?></span></td>
-	   <td class="mbox" width="50%"><input type="text" name="botgfxtest_height" value="<?php echo $config['botgfxtest_height']; ?>" size="5">px</td>
+	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_recaptcha_private_key'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_recaptcha_private_key_info'); ?></span></td>
+	   <td class="mbox" width="50%"><input type="text" name="botgfxtest_recaptcha_private" value="<?php echo $config['botgfxtest_recaptcha_private']; ?>" size="55"></td>
 	  </tr>
 	   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="<?php echo $lang->phrase('admin_form_submit'); ?>"></td>
 	  </tr>
 	 </table>
-	<br class="minibr" />
-	 <table class="border" border="0" cellspacing="0" cellpadding="4">
-	  <tr>
-	   <td class="obox" colspan="2"><b><?php echo $lang->phrase('admin_spambot_posting'); ?></b></td>
-	  </tr>
-	  <tr>
-	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_activate_spambot_at_guests'); ?></td>
-	   <td class="mbox" width="50%"><input type="checkbox" name="botgfxtest_posts" value="1"<?php echo iif($config['botgfxtest_posts'] == 1,' checked="checked"'); ?>></td>
-	  </tr>
-	  <tr>
-	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_image_width_captcha'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_image_width_captcha_info'); ?></span></td>
-	   <td class="mbox" width="50%"><input type="text" name="botgfxtest_posts_width" value="<?php echo $config['botgfxtest_posts_width']; ?>" size="5">px</td>
-	  </tr>
-	  <tr>
-	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_image_height_captcha'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_image_height_captcha_info'); ?></span></td>
-	   <td class="mbox" width="50%"><input type="text" name="botgfxtest_posts_height" value="<?php echo $config['botgfxtest_posts_height']; ?>" size="5">px</td>
-	  </tr>
-	   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="<?php echo $lang->phrase('admin_form_submit'); ?>"></td>
-	  </tr>
-	 </table>
-	</form><br />
-	 <table class="border" border="0" cellspacing="0" cellpadding="4">
-	  <tr>
-	   <td class="obox" colspan="4"><b><?php echo $lang->phrase('admin_examples_captchaimg_textcodes'); ?></b></td>
-	  </tr>
-	  <tr>
-	   <td class="ubox" width="50%" colspan="2" align="center"><?php echo $lang->phrase('admin_examples_captcha'); ?></td>
-	   <td class="ubox" width="50%" colspan="2" align="center"><?php echo $lang->phrase('admin_examples_textcodes'); ?></td>
-	  </tr>
-	  <tr>
-	   <td class="mbox" width="25%" align="center"><img src="admin/html/images/captcha.jpg" border="0" /></td>
-	   <td class="mbox" width="25%" align="center"><img src="admin/html/images/captcha2.jpg" border="0" /></td>
-	   <td class="mbox" width="25%"><div class="center" style="padding: 2px; font-size: 7px; line-height:7px; font-family: Courier New, monospace">&nbsp;########&nbsp;&nbsp;&nbsp;######&nbsp;&nbsp;&nbsp;&nbsp;########&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;########&nbsp;&nbsp;<br>&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;<br>&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;<br>&nbsp;########&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;######&nbsp;&nbsp;&nbsp;&nbsp;#####&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;########&nbsp;&nbsp;<br>&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;<br>&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;<br>&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;######&nbsp;&nbsp;&nbsp;&nbsp;########&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;########&nbsp;&nbsp;</div></td>
-	   <td class="mbox" width="25%"><div class="center" style="padding: 2px; font-size: 7px; line-height:7px; font-family: Courier New, monospace">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;######&nbsp;&nbsp;########&nbsp;&nbsp;#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;###&nbsp;&nbsp;&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;##&nbsp;&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;#####&nbsp;&nbsp;&nbsp;######&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;<br>&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;&nbsp;&nbsp;#&nbsp;&nbsp;&nbsp;#########&nbsp;<br>&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;#&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;<br>&nbsp;&nbsp;######&nbsp;&nbsp;&nbsp;#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;##&nbsp;</div></td>
-	  </tr>
-	 </table>
+	 <?php } ?>
+	</form>
 	<?php
 	echo foot();
 }
 elseif ($job == 'captcha2') {
 	echo head();
 
+	$register = $gpc->get('botgfxtest', int);
+	$posts = $gpc->get('botgfxtest_posts', int);
+
 	$c->getdata();
 	$c->updateconfig('botgfxtest', int);
 	$c->updateconfig('botgfxtest_posts', int);
-	$c->updateconfig('botgfxtest_filter', int);
-	$c->updateconfig('botgfxtest_colortext', int);
-	$c->updateconfig('botgfxtest_width', int);
-	$c->updateconfig('botgfxtest_height', int);
-	$c->updateconfig('botgfxtest_posts_width', int);
-	$c->updateconfig('botgfxtest_posts_height', int);
-	$c->updateconfig('botgfxtest_format', str);
-	$c->updateconfig('botgfxtest_quality', int);
-	$c->updateconfig('botgfxtest_text_verification', int);
+	if ($config['botgfxtest'] == 1 || $config['botgfxtest_posts'] == 1) {
+		$c->updateconfig('botgfxtest_filter', int);
+		$c->updateconfig('botgfxtest_colortext', int);
+		$c->updateconfig('botgfxtest_width', int);
+		$c->updateconfig('botgfxtest_height', int);
+		$c->updateconfig('botgfxtest_format', str);
+		$c->updateconfig('botgfxtest_quality', int);
+	}
+	if ($config['botgfxtest'] == 2 || $config['botgfxtest_posts'] == 2) {
+		$c->updateconfig('botgfxtest_recaptcha_public', str);
+		$c->updateconfig('botgfxtest_recaptcha_private', str);
+	}
+
 	$c->savedata();
 
-	ok('admin.php?action=settings&job=settings');
+	ok('admin.php?action=settings&job=captcha');
 }
 elseif ($job == 'register') {
 	$config = $gpc->prepare($config);

@@ -223,8 +223,9 @@ if ($allowed == true) {
 
 		($code = $plugins->load('edit_form_start')) ? eval($code) : null;
 
-		if (strlen($_GET['fid']) == 32) {
-			$data = $gpc->prepare(import_error_data($_GET['fid']));
+		$fid = $gpc->get('fid', str);
+		if (is_hash($fid)) {
+			$data = $gpc->unescape(import_error_data($fid));
 			if ($_GET['action'] == 'preview') {
 				$bbcode->setSmileys($data['dosmileys']);
 				if ($config['wordstatus'] == 0) {

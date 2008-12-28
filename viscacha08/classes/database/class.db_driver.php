@@ -43,6 +43,7 @@ class DB_Driver { // abstract class
 	var $std_limit;
 	var $persistence;
 	var $all_results;
+	var $escape;
 
 	function DB_Driver($host="localhost", $user="root", $pwd="", $dbname="", $dbprefix='') {
 	    $this->host = $host;
@@ -60,6 +61,11 @@ class DB_Driver { // abstract class
         $this->std_limit = 5000;
         $this->persistence = false;
         $this->all_results = array();
+        // mysql(i)_real_escape_string() prepends backslashes to: \x00, \n, \r, \, ', " and \x1a.
+        $this->escape = array(
+        	'original' => array("\n", '\\', "'", '"', "\r", "\Z", "\0"),
+        	'secured' => array('\\n', '\\\\', "\\'", '\\"', '\\r', '\\Z', '\\0')
+        );
 	}
 
 	function quitOnError($die = true) {
@@ -264,6 +270,10 @@ class DB_Driver { // abstract class
 			$columns[] = $row['Field'];
 		}
 		return $columns;
+	}
+
+	function unescape_string($value) {
+		return str_replace($this->escape['secured'], $this->escape['original'], $value);
 	}
 
 }

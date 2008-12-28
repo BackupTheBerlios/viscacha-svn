@@ -51,6 +51,26 @@ define('REMOTE_IMAGE_WIDTH_ERROR', 500);
 define('REMOTE_EXTENSION_ERROR', 600);
 define('REMOTE_IMAGE_ERROR', 700);
 
+define('CAPTCHA_FAILURE', 0);
+define('CAPTCHA_OK', 1);
+define('CAPTCHA_MISTAKE', 2);
+define('CAPTCHA_TYPE_2', 'ReCaptcha');
+define('CAPTCHA_TYPE_1', 'VeriWord');
+
+function is_hash($string) {
+	return (bool) preg_match("/^[a-f\d]{32}$/i", $string);
+}
+
+function newCAPTCHA($place = null) {
+	global $config;
+	$place = 'botgfxtest'.iif(!empty($place), '_'.$place);
+	$type = constant('CAPTCHA_TYPE_'.$config[$place]);
+	$filename = strtolower($type);
+	require_once("classes/graphic/class.{$filename}.php");
+	$obj = new $type();
+	return $obj;
+}
+
 function splitWords($text) {
 	$word_seperator = "\\.\\,;:\\+!\\?\\_\\|\s\"'\\#\\[\\]\\%\\{\\}\\(\\)\\/\\\\";
 	return preg_split('/['.$word_seperator.']+?/', $text, -1, PREG_SPLIT_NO_EMPTY);
@@ -613,8 +633,7 @@ function subxstr($str, $start, $length = null) {
 
 function random_word($laenge=8) {
     $newpass = "";
-    $string="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    mt_srand((double)microtime()*1000000);
+    $string="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-_?!.";
 
     for ($i=1; $i <= $laenge; $i++) {
         $newpass .= substr($string, mt_rand(0,strlen($string)-1), 1);

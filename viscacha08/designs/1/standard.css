@@ -162,9 +162,6 @@ h1 a, h1 a:hover {
 #blank h3 img, #content h3 img, #window h3 img, .tables th img, .h3 img {
 	vertical-align: middle;
 }
-.inlineheader {
-	border-top: 1px solid #839FBC;
-}
 .topfooter {
 	border-top: 0px solid;
 }
@@ -259,16 +256,18 @@ h1 a, h1 a:hover {
 	border-bottom: 1px solid #839FBC;
 }
 
-#blank h3, #content h3, .outline {
+#blank h3, #content h3, #window h3, #blank h3, .h3 {
 	border: 1px solid #839FBC;
 }
-#blank .border h3, #content .border h3 {
+#blank .border h3, #content .border h3, #window .border h3, .border .h3 {
 	border-width: 0px;
 }
 .h3 {
 	font-weight: bold;
 }
-
+.inlineheader, #blank .border .inlineheader, #content .border .inlineheader, #window .border .inlineheader {
+	border-top: 1px solid #839FBC;
+}
 
 /* Oberes Menü im Forum */
 .topmenu {

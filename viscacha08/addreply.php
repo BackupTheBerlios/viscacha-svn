@@ -33,6 +33,7 @@ include ("classes/function.viscacha_frontend.php");
 ($code = $plugins->load('addreply_topic_query')) ? eval($code) : null;
 
 $id = $gpc->get('id', int);
+$fid = $gpc->get('fid', str);
 
 $result = $db->query("SELECT id, prefix, topic, board, posts, status FROM {$db->pre}topics WHERE id = '{$id}'");
 
@@ -78,24 +79,22 @@ if ($config['tpcallow'] == 1 && $my->p['attachments'] == 1) {
 if ($_GET['action'] == "save") {
 	$digest = $gpc->get('digest', int);
 	$error = array();
-	$human = null;
+	if (is_hash($fid)) {
+		$error_data = import_error_data($fid);
+	}
+	$human = empty($error_data['human']) ? false : $error_data['human'];
 	if (!$my->vlogin) {
-		if ($config['botgfxtest_posts'] == 1) {
-			include("classes/graphic/class.veriword.php");
-			$vword = new VeriWord();
-			if($_POST['letter']) {
-				if ($vword->check_session($_POST['captcha'], $_POST['letter']) == FALSE) {
-					$error[] = $lang->phrase('veriword_mistake');
-				}
-				else {
-				     $human = array(
-                            'captcha' => $_POST['captcha'],
-							'letter' => $_POST['letter']
-					 );
-				}
+		if ($config['botgfxtest_posts'] > 0 && $human == false) {
+			$captcha = newCAPTCHA('posts');
+			$status = $captcha->check();
+			if ($status == CAPTCHA_FAILURE) {
+				$error[] = $lang->phrase('veriword_failed');
+			}
+			elseif ($status == CAPTCHA_MISTAKE) {
+				$error[] = $lang->phrase('veriword_mistake');
 			}
 			else {
-				$error[] = $lang->phrase('veriword_failed');
+				$human = true;
 			}
 		}
 		if (!check_mail($_POST['email']) && ($config['guest_email_optional'] == 0 || !empty($_POST['email']))) {
@@ -169,7 +168,7 @@ if ($_GET['action'] == "save") {
 			$data['name'] = $_POST['name'];
 		}
 		($code = $plugins->load('addreply_save_errordata')) ? eval($code) : null;
-		$fid = save_error_data($data);
+		$fid = save_error_data($data, $fid);
 		if (!empty($_POST['Preview'])) {
 			$slog->updatelogged();
 			$db->close();
@@ -290,8 +289,8 @@ else {
 
 	($code = $plugins->load('addreply_form_start')) ? eval($code) : null;
 
-	if (strlen($_GET['fid']) == 32) {
-		$data = $gpc->prepare(import_error_data($_GET['fid']));
+	if (is_hash($fid)) {
+		$data = $gpc->unescape(import_error_data($fid));
 		if ($id != $data['id']) {
 			error($lang->phrase('query_string_error'), 'showforum.php?id='.$info['board'].SID2URL_x);
 		}
@@ -304,9 +303,6 @@ else {
 			$bbcode->setReplace($data['dowords']);
 			$data['formatted_comment'] = $bbcode->parse($data['comment']);
 		}
-		if (isset($data['human']) == false) {
-			$data['human'] = null;
-		}
 	}
 	else {
 		$data = array(
@@ -317,7 +313,7 @@ else {
 			'dowords' => 1,
 			'digest' => -1,
 			'topic' => $lang->phrase('reply_prefix').$info['topic'],
-			'human' => null
+			'human' => false
 		);
 
 		$memberdata_obj = $scache->load('memberdata');
@@ -360,13 +356,11 @@ else {
 		}
 	}
 
-	if ($config['botgfxtest_posts'] == 1 && is_null($data['human']) == true) {
-		include("classes/graphic/class.veriword.php");
-		$vword = new VeriWord();
-		$veriid = $vword->set_veriword($config['botgfxtest_text_verification']);
-		if ($config['botgfxtest_text_verification'] == 1) {
-			$textcode = $vword->output_word($veriid);
-		}
+	if ($config['botgfxtest_posts'] > 0 && $data['human'] == false) {
+		$captcha = newCAPTCHA('posts');
+	}
+	else {
+		$captcha = null;
 	}
 
 	if ($my->vlogin && $data['digest'] == -1) {

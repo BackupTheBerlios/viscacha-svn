@@ -146,8 +146,7 @@ elseif ($_GET['action'] == "pwremind3") {
 	$user = $db->fetch_assoc($result);
 
 	$confirmcode = md5($config['cryptkey'].$user['pw']);
-	if ($confirmcode == $_GET['fid']) {
-
+	if ($confirmcode == $gpc->get('fid')) {
 		$pw = random_word();
 		$md5 = md5($pw);
 		$db->query("UPDATE {$db->pre}user SET pw = '{$md5}' WHERE id = '{$user['id']}' LIMIT 1");

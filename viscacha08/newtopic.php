@@ -31,6 +31,7 @@ include ("data/config.inc.php");
 include ("classes/function.viscacha_frontend.php");
 
 $board = $gpc->get('id', int);
+$fid = $gpc->get('fid', str);
 
 $my->p = $slog->Permissions($board);
 
@@ -83,8 +84,8 @@ if ($_GET['action'] == "startvote") {
 		errorLogin($error,"showforum.php?id=".$info['board'].SID2URL_x);
 	}
 
-	if (strlen($_GET['fid']) == 32) {
-		$data = $gpc->prepare(import_error_data($_GET['fid']));
+	if (is_hash($fid)) {
+		$data = $gpc->unescape(import_error_data($fid));
 		for ($i = 1; $i <= $temp; $i++) {
 			if (!isset($data[$i])) {
 				$data[$i] = '';
@@ -112,7 +113,7 @@ elseif ($_GET['action'] == "savevote") {
 
 	if (!empty($_POST['Update'])) {
 		$_POST['notice']['question'] = $_POST['question'];
-		$fid = save_error_data($_POST['notice']);
+		$fid = save_error_data($_POST['notice'], $fid);
 		$slog->updatelogged();
 		$db->close();
 		viscacha_header("Location: newtopic.php?action=startvote&id={$board}&topic_id={$topic_id}&temp={$temp}&fid=".$fid.SID2URL_x);
@@ -159,7 +160,7 @@ elseif ($_GET['action'] == "savevote") {
 	if (count($error) > 0) {
 		$_POST['notice']['question'] = $_POST['question'];
 		($code = $plugins->load('newtopic_savevote_errordata')) ? eval($code) : null;
-		$fid = save_error_data($_POST['notice']);
+		$fid = save_error_data($_POST['notice'], $fid);
 		error($error,"newtopic.php?action=startvote&amp;id={$info['board']}&topic_id={$topic_id}&amp;temp={$temp}&amp;fid=".$fid.SID2URL_x);
 	}
 	else {
@@ -180,28 +181,24 @@ elseif ($_GET['action'] == "savevote") {
 	}
 }
 elseif ($_GET['action'] == "save") {
-
-	$error = array();
-	$human = null;
 	$digest = $gpc->get('digest', int);
-
+	$error = array();
+	if (is_hash($fid)) {
+		$error_data = import_error_data($fid);
+	}
+	$human = empty($error_data['human']) ? false : $error_data['human'];
 	if (!$my->vlogin) {
-		if ($config['botgfxtest_posts'] == 1) {
-			include("classes/graphic/class.veriword.php");
-			$vword = new VeriWord();
-			if($_POST['letter']) {
-				if ($vword->check_session($_POST['captcha'], $_POST['letter']) == FALSE) {
-					$error[] = $lang->phrase('veriword_mistake');
-				}
-				else {
-				     $human = array(
-                     		'captcha' => $_POST['captcha'],
-							'letter' => $_POST['letter']
-					 );
-				}
+		if ($config['botgfxtest_posts'] > 0 && $human == false) {
+			$captcha = newCAPTCHA('posts');
+			$status = $captcha->check();
+			if ($status == CAPTCHA_FAILURE) {
+				$error[] = $lang->phrase('veriword_failed');
+			}
+			elseif ($status == CAPTCHA_MISTAKE) {
+				$error[] = $lang->phrase('veriword_mistake');
 			}
 			else {
-				$error[] = $lang->phrase('veriword_failed');
+				$human = true;
 			}
 		}
 		if (!check_mail($_POST['email']) && ($config['guest_email_optional'] == 0 || !empty($_POST['email']))) {
@@ -283,7 +280,7 @@ elseif ($_GET['action'] == "save") {
 			$data['guest'] = 1;
 		}
 		($code = $plugins->load('newtopic_save_errordata')) ? eval($code) : null;
-		$fid = save_error_data($data);
+		$fid = save_error_data($data, $fid);
 		if (!empty($_POST['Preview'])) {
 			$slog->updatelogged();
 			$db->close();
@@ -403,8 +400,8 @@ else {
 	$prefix_obj = $scache->load('prefix');
 	$prefix_arr = $prefix_obj->get($board);
 
-	if (strlen($_GET['fid']) == 32) {
-		$data = $gpc->prepare(import_error_data($_GET['fid']));
+	if (is_hash($fid)) {
+		$data = $gpc->unescape(import_error_data($fid));
 		$info = array($data['topic']);
 		if ($_GET['action'] == 'preview') {
 			$bbcode->setSmileys($data['dosmileys']);
@@ -433,7 +430,7 @@ else {
 			'dosmileys' => 1,
 			'dowords' => 1,
 			'topic' => '',
-			'human' => null,
+			'human' => false,
 			'digest' => 0
 		);
 		$_GET['action'] = '';
@@ -466,13 +463,11 @@ else {
 		$inner['index_prefix'] = '';
 	}
 
-	if ($config['botgfxtest_posts'] == 1 && $data['human'] == null) {
-		include("classes/graphic/class.veriword.php");
-		$vword = new VeriWord();
-		$veriid = $vword->set_veriword($config['botgfxtest_text_verification']);
-		if ($config['botgfxtest_text_verification'] == 1) {
-			$textcode = $vword->output_word($veriid);
-		}
+	if ($config['botgfxtest_posts'] > 0 && $data['human'] == false) {
+		$captcha = newCAPTCHA('posts');
+	}
+	else {
+		$captcha = null;
 	}
 
 	($code = $plugins->load('newtopic_form_prepared')) ? eval($code) : null;

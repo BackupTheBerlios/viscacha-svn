@@ -381,8 +381,9 @@ elseif ($_GET['action'] == "about") {
 
 	BBProfile($bbcode);
 
-	if (strlen($_GET['fid']) == 32) {
-		$data = $gpc->prepare(import_error_data($_GET['fid']));
+	$fid = $gpc->get('fid', str);
+	if (is_hash($fid)) {
+		$data = $gpc->unescape(import_error_data($fid));
 		if ($_GET['job'] == 'preview') {
 			$preview = true;
 			$data = $gpc->unescape($data);
@@ -588,7 +589,8 @@ elseif ($_GET['action'] == "profile2") {
 		$error[] = $lang->phrase('editprofile_fullname_incorrect');
 	}
 
-	$error_custom = editprofile_customsave(1, $my->id);
+	$save = (count($error) == 0);
+	$error_custom = editprofile_customsave(1, $my->id, $save);
 	$error = array_merge($error, $error_custom);
 	($code = $plugins->load('editprofile_profile2_errorhandling')) ? eval($code) : null;
 
@@ -714,7 +716,8 @@ elseif ($_GET['action'] == "settings2") {
 		$error[] = $lang->phrase('editprofile_settings_error').$lang->phrase('editprofile_newsletter');
 	}
 
-	$error_custom = editprofile_customsave(2, $my->id);
+	$save = (count($error) == 0);
+	$error_custom = editprofile_customsave(2, $my->id, $save);
 	$error = array_merge($error, $error_custom);
 
 	($code = $plugins->load('editprofile_settings2_errorhandling')) ? eval($code) : null;

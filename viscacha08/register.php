@@ -44,18 +44,24 @@ if ($_GET['action'] == "save") {
 	if ($config['disableregistration'] == 1) {
 		error($lang->phrase('register_disabled'));
 	}
+	$fid = $gpc->get('fid', str);
+	if (is_hash($fid)) {
+		$error_data = import_error_data($fid);
+	}
 	$error = array();
-	if ($config['botgfxtest'] == 1) {
-		include("classes/graphic/class.veriword.php");
-		$vword = new VeriWord();
-	    if($_POST['letter']) {
-	        if ($vword->check_session($_POST['captcha'], $_POST['letter']) == false) {
-	        	$error[] = $lang->phrase('veriword_mistake');
-	        }
-	    }
-	    else {
-	        $error[] = $lang->phrase('veriword_failed');
-	    }
+	$human = empty($error_data['human']) ? false : $error_data['human'];
+	if ($config['botgfxtest'] > 0 && $human == false) {
+		$captcha = newCAPTCHA();
+		$status = $captcha->check();
+		if ($status == CAPTCHA_FAILURE) {
+			$error[] = $lang->phrase('veriword_failed');
+		}
+		elseif ($status == CAPTCHA_MISTAKE) {
+			$error[] = $lang->phrase('veriword_mistake');
+		}
+		else {
+			$human = true;
+		}
 	}
 	if (flood_protect() == false) {
 		$error[] = $lang->phrase('flood_control');
@@ -90,44 +96,21 @@ if ($_GET['action'] == "save") {
 	if ($_POST['pw'] != $_POST['pwx']) {
 		$error[] = $lang->phrase('pw_comparison_failed');
 	}
-
 	// Custom profile fields
-	$upquery = array();
-	$query = $db->query("SELECT * FROM {$db->pre}profilefields WHERE editable != '0' AND required = '1' ORDER BY disporder");
-	while($profilefield = $db->fetch_assoc($query)) {
-		$profilefield['type'] = $gpc->prepare($profilefield['type']);
-		$thing = explode("\n", $profilefield['type'], 2);
-		$type = $thing[0];
-		$field = "fid{$profilefield['fid']}";
-
-		$value = $gpc->get($field, none);
-
-		if($profilefield['required'] == 1 && (empty($value) || (is_array($value) && count($value) == 0))) {
-			$error[] = $lang->phrase('error_missingrequiredfield');
-		}
-		if($profilefield['maxlength'] > 0 && ((is_string($value) && strxlen($value) > $profilefield['maxlength']) || (is_array($value) && count($value) > $profilefield['maxlength']))) {
-			$error[] = $lang->phrase('error_customfieldtoolong');
-		}
-
-		if($type == "multiselect" || $type == "checkbox") {
-			if (is_array($value)) {
-				$upquery[$field] = implode("\n", $value);
-			}
-			else {
-				$upquery[$field] = '';
-			}
-		}
-		else {
-			$upquery[$field] = $value;
-		}
-	}
+	$custom = addprofile_customprepare();
+	$error = array_merge($error, $custom['error']);
 
 	($code = $plugins->load('register_save_errorhandling')) ? eval($code) : null;
 
 	if (count($error) > 0) {
-		// ToDo: Save error data...
+		$data = $custom['data'];
+		$data['name'] = $_POST['name'];
+		$data['email'] = $_POST['email'];
+		$data['temp'] = $_POST['temp'];
+		$data['human'] = $human;
 		($code = $plugins->load('register_save_errordata')) ? eval($code) : null;
-		error($error,"register.php?name={$_POST['name']}&amp;email=".$_POST['email'].SID2URL_x);
+		$fid = save_error_data($data, $fid);
+		error($error, 'register.php?fid='.$fid.SID2URL_x);
 	}
 	else {
 		set_flood();
@@ -140,22 +123,7 @@ if ($_GET['action'] == "save") {
         $redirect = $db->insert_id();
 
 		// Custom profile fields
-		if (count($upquery) > 0) {
-			$fields = $db->list_fields("{$db->pre}userfields");
-			$sqldata = array();
-			foreach ($fields as $field) {
-				if (isset($upquery[$field])) {
-					$sqldata[$field] = "'{$upquery[$field]}'";
-				}
-				else {
-					$sqldata[$field] = "''";
-				}
-			}
-			$sqldata['ufid'] = "'{$redirect}'";
-			$fields = implode(', ', $fields);
-			$sqldata = implode(', ', $sqldata);
-			$db->query("INSERT INTO {$db->pre}userfields ({$fields}) VALUES ({$sqldata})");
-		}
+		addprofile_customsave($custom['data'], $redirect);
 
         if ($config['confirm_registration'] != '11') {
 			$data = $lang->get_mail('register_'.$config['confirm_registration']);
@@ -194,13 +162,12 @@ elseif ($_GET['action'] == 'resend') {
 	$breadcrumb->Add($lang->phrase('register_resend_title'));
 	echo $tpl->parse("header");
 	echo $tpl->parse("menu");
-	if ($config['botgfxtest'] == 1) {
-		include("classes/graphic/class.veriword.php");
-		$vword = new VeriWord();
-		$veriid = $vword->set_veriword($config['botgfxtest_text_verification']);
-		if ($config['botgfxtest_text_verification'] == 1) {
-			$textcode = $vword->output_word($veriid);
-		}
+
+	if ($config['botgfxtest'] > 0) {
+		$captcha = newCAPTCHA();
+	}
+	else {
+		$captcha = null;
 	}
 	$name = $gpc->get('name', str);
 	($code = $plugins->load('register_resend_form_start')) ? eval($code) : null;
@@ -221,19 +188,16 @@ elseif ($_GET['action'] == 'resend2') {
 	if (flood_protect() == false) {
 		$error[] = $lang->phrase('flood_control');
 	}
-	if ($config['botgfxtest'] == 1) {
-		include("classes/graphic/class.veriword.php");
-		$vword = new VeriWord();
-	    if($_POST['letter']) {
-	        if ($vword->check_session($_POST['captcha'], $_POST['letter']) == false) {
-	        	$error[] = $lang->phrase('veriword_mistake');
-	        }
-	    }
-	    else {
-	        $error[] = $lang->phrase('veriword_failed');
-	    }
+	if ($config['botgfxtest'] > 0) {
+		$captcha = newCAPTCHA();
+		$status = $captcha->check();
+		if ($status == CAPTCHA_FAILURE) {
+			$error[] = $lang->phrase('veriword_failed');
+		}
+		elseif ($status == CAPTCHA_MISTAKE) {
+			$error[] = $lang->phrase('veriword_mistake');
+		}
 	}
-
 	if (count($error) > 0) {
 		error($error, "register.php?action=resend&amp;name=".$_POST['name'].SID2URL_x);
 	}
@@ -270,7 +234,7 @@ elseif ($_GET['action'] == 'confirm') {
 
 	($code = $plugins->load('register_confirm_check')) ? eval($code) : null;
 
-	if ($confirmcode == $_GET['fid']) {
+	if ($confirmcode == $gpc->get('fid')) {
 		if ($row['confirm'] == '00') {
 			$cn = '01';
 		}
@@ -293,20 +257,32 @@ else {
 		error($lang->phrase('register_disabled'));
 	}
 
-	if ($config['botgfxtest'] == 1) {
-		include("classes/graphic/class.veriword.php");
-		$vword = new VeriWord();
-		$veriid = $vword->set_veriword($config['botgfxtest_text_verification']);
-		if ($config['botgfxtest_text_verification'] == 1) {
-			$textcode = $vword->output_word($veriid);
-		}
+	$fid = $gpc->get('fid', str);
+	if (is_hash($fid)) {
+		$data = $gpc->unescape(import_error_data($fid));
+		$customfields = addprofile_customfields($data);
+	}
+	else {
+		$data = array(
+			'name' => '',
+			'email' => '',
+			'temp' => '',
+			'human' => false
+		);
+		$customfields = addprofile_customfields();
+	}
+
+	if ($config['botgfxtest'] > 0 && $data['human'] == false) {
+		$captcha = newCAPTCHA();
+	}
+	else {
+		$captcha = null;
 	}
 
 	$breadcrumb->Add($lang->phrase('register_title'));
 	echo $tpl->parse("header");
 	echo $tpl->parse("menu");
 
-	$customfields = addprofile_customfields();
 	$rules = $lang->get_words('rules');
 
 	$_GET['email'] = $gpc->prepare($_GET['email']);

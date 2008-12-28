@@ -565,10 +565,10 @@ elseif ($job == "captcha_fonts") {
    <td class="ubox" width="10%"><?php echo $lang->phrase('admin_misc_delete'); ?><br /><span class="stext"><input type="checkbox" onclick="check_all(this);" name="all" value="delete[]" /> <?php echo $lang->phrase('admin_misc_all'); ?></span></td>
    <td class="ubox" width="90%"><?php echo $lang->phrase('admin_misc_front_preview'); ?></td>
   </tr>
-  <?php foreach ($fonts as $path) { ?>
+  <?php foreach ($fonts as $path) { $name = basename($path, ".ttf"); ?>
   <tr>
-   <td class="mbox"><input type="checkbox" name="delete[]" value="<?php echo basename($path, ".ttf"); ?>" /></td>
-   <td class="mbox"><img border="1" alt="" src="images.php?action=textimage&amp;file=<?php echo basename($path, ".ttf"); ?>&amp;text=1234567890&amp;size=30" /></td>
+   <td class="mbox"><input type="checkbox" name="delete[]" value="<?php echo $name; ?>" /></td>
+   <td class="mbox"><img border="1" alt="" src="images.php?action=textimage&amp;file=<?php echo $name; ?>&amp;text=1234567980ABCDEF&amp;size=30" /></td>
   </tr>
   <?php } ?>
   <tr>

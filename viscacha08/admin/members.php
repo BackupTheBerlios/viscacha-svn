@@ -1333,35 +1333,8 @@ elseif ($job == 'register2') {
 	}
 
 	// Custom profile fields
-	$upquery = array();
-	$query = $db->query("SELECT * FROM {$db->pre}profilefields WHERE editable != '0' AND required = '1' ORDER BY disporder");
-	while($profilefield = $db->fetch_assoc($query)) {
-		$profilefield['type'] = $gpc->prepare($profilefield['type']);
-		$thing = explode("\n", $profilefield['type'], 2);
-		$type = $thing[0];
-		$field = "fid{$profilefield['fid']}";
-
-		$value = $gpc->get($field, str);
-
-		if($profilefield['required'] == 1 && (empty($value) || (is_array($value) && count($value) == 0))) {
-			$error[] = $lang->phrase('admin_member_no_value_for_required_field');
-		}
-		if($profilefield['maxlength'] > 0 && ((is_string($value) && strxlen($value) > $profilefield['maxlength']) || (is_array($value) && count($value) > $profilefield['maxlength']))) {
-			$error[] = $lang->phrase('admin_member_to_many_chars_for_required_fields');
-		}
-
-		if($type == "multiselect" || $type == "checkbox") {
-			if (is_array($value)) {
-				$upquery[$field] = implode("\n", $value);
-			}
-			else {
-				$upquery[$field] = '';
-			}
-		}
-		else {
-			$upquery[$field] = $value;
-		}
-	}
+	$custom = addprofile_customprepare('admin_member_no_value_for_required_field', 'admin_member_to_many_chars_for_required_fields');
+	$error = array_merge($error, $custom['error']);
 
 	if (count($error) > 0) {
 		echo head();
@@ -1374,22 +1347,7 @@ elseif ($job == 'register2') {
 		$db->query("INSERT INTO {$db->pre}user (name, pw, mail, regdate, confirm, groups, signature, about, notice) VALUES ('{$name}', '{$pw_md5}', '{$email}', '{$reg}', '11', '".GROUP_MEMBER."', '', '', '')");
         $redirect = $db->insert_id();
 
-		if (count($upquery) > 0) {
-			$fields = $db->list_fields("{$db->pre}userfields");
-			$sqldata = array();
-			foreach ($fields as $field) {
-				if (isset($upquery[$field])) {
-					$sqldata[$field] = "'{$upquery[$field]}'";
-				}
-				else {
-					$sqldata[$field] = "''";
-				}
-			}
-			$sqldata['ufid'] = "'{$redirect}'";
-			$fields = implode(', ', array_keys($fields));
-			$sqldata = implode(', ', $sqldata);
-			$db->query("INSERT INTO {$db->pre}userfields ({$fields}) VALUES ({$sqldata})");
-		}
+		addprofile_customsave($custom['data'], $redirect);
 
 		$com = $scache->load('memberdata');
 		$cache = $com->delete();

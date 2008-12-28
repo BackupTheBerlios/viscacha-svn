@@ -1043,18 +1043,17 @@ function cleanUserData($data) {
  */
 function construct_sid() {
 	global $config;
-	srand((double)microtime()*1000000);
 	if ($config['sid_length'] == 64) {
-		$sid = md5(uniqid(rand())).md5(uniqid($this->ip));
+		$sid = md5(uniqid(mt_rand())).md5(uniqid($this->ip));
 	}
 	elseif ($config['sid_length'] == 96) {
-		$sid = md5(uniqid(rand())).md5(uniqid($this->ip)).md5(rand());
+		$sid = md5(uniqid(mt_rand())).md5(uniqid($this->ip)).md5(mt_rand());
 	}
 	elseif ($config['sid_length'] == 128) {
-		$sid = md5(uniqid(rand())).md5(uniqid($this->ip)).md5(rand()).md5(microtime());
+		$sid = md5(uniqid(mt_rand())).md5(uniqid($this->ip)).md5(mt_rand()).md5(microtime());
 	}
 	else {		// Falling back to 32 chars
-		$sid = md5(uniqid(rand()));
+		$sid = md5(uniqid(mt_rand()));
 	}
 	$this->sid = str_shuffle($sid);
 	return $this->sid;

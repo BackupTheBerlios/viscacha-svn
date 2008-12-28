@@ -176,8 +176,7 @@ class IMStatus {
 
 	function fallback($account, $medium) {
 
-		srand((double)microtime()*1000000);
-		$random = rand(0,count($this->server)-1);
+		$random = mt_rand(0,count($this->server)-1);
 		$server = $this->server[$random];
 
 		$url = "{$server}/{$medium}/{$account}/onurl=online/offurl=offline";

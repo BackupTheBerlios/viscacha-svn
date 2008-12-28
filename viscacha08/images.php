@@ -78,54 +78,37 @@ if ($_GET['action'] == 'vote') {
 	$PG->start();
 }
 elseif ($_GET['action'] == 'captcha') {
-	if ($_GET['type'] == 'register') {
-		$width = $config['botgfxtest_width'];
-		$height = $config['botgfxtest_height'];
-	}
-	if ($_GET['type'] == 'post') {
-		$width = $config['botgfxtest_posts_width'];
-		$height = $config['botgfxtest_posts_height'];
-	}
-	else {
-		$width = $gpc->get('width', int, 160);
-		$height = $gpc->get('height', int, 40);
-	}
-
-	include("classes/graphic/class.veriword.php");
-	$vword = new VeriWord();
-	$vword->set_filter($config['botgfxtest_filter']);
-	$vword->set_color($config['botgfxtest_colortext']);
-	$vword->set_size($width, $height, $config['botgfxtest_format'], $config['botgfxtest_quality']);
 	send_nocache_header();
-	$vword->output_image($_GET['captcha']);
+	$place = $gpc->get('place', none, 'posts');
+	$captcha = newCAPTCHA($place);
+	$captcha->makeImage();
 }
 elseif ($_GET['action'] == 'textimage') {
 	require('classes/graphic/class.text2image.php');
 
 	$img = new text2image();
-	if (empty($_GET['text'])) {
-		$_GET['text'] = '-';
+	$text = $gpc->get('text', none, '-');
+	$angle = $gpc->get('angle', int);
+	$size = $gpc->get('size', int);
+	$bg = $gpc->get('bg');
+	$fg = $gpc->get('fg');
+	$file = $gpc->get('file');
+	$enc = $gpc->get('enc');
+
+	if ($size < 6) {
+		$size = 10;
 	}
-	if (empty($_GET['angle'])) {
-		$_GET['angle'] = 0;
-	}
-	if (empty($_GET['size']) || $_GET['size'] < 6) {
-		$_GET['size'] = 10;
-	}
-	if (!empty($_GET['bg']) && strlen($_GET['bg']) > 2) {
-		$bg = $_GET['bg'];
-	}
-	else {
+	if (strlen($bg) != 3 && strlen($bg) != 6) {
 		$bg = 'ffffff';
 	}
-	if (!empty($_GET['fg']) && strlen($_GET['fg']) > 2) {
-		$fg = $_GET['fg'];
-	}
-	else {
+	if (strlen($fg) != 3 && strlen($fg) != 6) {
 		$fg = '000000';
 	}
-	$img->prepare($_GET['text'], $_GET['angle'], $_GET['size'], 'classes/fonts/trebuchet.ttf');
-	if (!empty($_REQUEST['enc'])) {
+	if (!preg_match('/^[\w\d\-\.]+$/', $file) || !file_exists("./classes/fonts/{$file}.ttf")) {
+		$file = 'trebuchet';
+	}
+	$img->prepare($text, $angle, $size, "./classes/fonts/{$file}.ttf");
+	if (!empty($enc)) {
 		$img->base64();
 	}
 	$img->build(4, $bg, $fg);

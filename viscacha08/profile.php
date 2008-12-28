@@ -125,8 +125,9 @@ if (($_GET['action'] == 'mail' || $_GET['action'] == 'sendmail') && $is_member) 
 				$row->mail = str_replace($chars, $entities, $row->mail);
 			}
 
-			if (strlen($_GET['fid']) == 32) {
-				$data = $gpc->prepare(import_error_data($_GET['fid']));
+			$fid = $gpc->get('fid', str);
+			if (is_hash($fid)) {
+				$data = $gpc->unescape(import_error_data($fid));
 			}
 			else {
 				$data = array(

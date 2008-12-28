@@ -300,8 +300,9 @@ elseif ($_GET['action'] == "new" || $_GET['action'] == "preview" || $_GET['actio
 
 	($code = $plugins->load('pm_compose_start')) ? eval($code) : null;
 
-	if (strlen($_GET['fid']) == 32) {
-		$data = $gpc->prepare(import_error_data($_GET['fid']));
+	$fid = $gpc->get('fid', str);
+	if (is_hash($fid)) {
+		$data = $gpc->unescape(import_error_data($fid));
 		if ($_GET['action'] == 'preview') {
 			$bbcode->setSmileys(1);
 			$bbcode->setReplace($config['wordstatus']);

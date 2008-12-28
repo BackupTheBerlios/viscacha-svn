@@ -207,8 +207,11 @@ if ($_GET['action'] == "search") {
 	}
 }
 elseif ($_GET['action'] == "result") {
-
-	$file = 'cache/search/'.$_GET['fid'].'.inc.php';
+	$fid = $gpc->get('fid');
+	if (!is_hash($fid)) {
+		error($lang->phrase('query_string_error'), 'search.php'.SID2URL_1);
+	}
+	$file = "cache/search/{$fid}.inc.php";
 	if (!file_exists($file)) {
 		error($lang->phrase('search_doesntexist'), 'search.php'.SID2URL_1);
 	}
@@ -269,7 +272,7 @@ elseif ($_GET['action'] == "result") {
 	}
 	$pages = array_chunk($cache, $config['searchzahl']);
 
-	$temp = pages($count, $config['searchzahl'], "search.php?action=result&amp;fid=".$_GET['fid'].SID2URL_x."&amp;", $_GET['page']);
+	$temp = pages($count, $config['searchzahl'], "search.php?action=result&amp;fid=".$fid.SID2URL_x."&amp;", $_GET['page']);
 
 	$catbid = $scache->load('cat_bid');
 	$forums = $catbid->get();
