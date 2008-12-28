@@ -288,11 +288,13 @@ elseif ($job == 'backup3') {
 	$fp = fopen($tfile, 'a');
 	if (is_resource($fp)) {
 		$data = '';
+		$offset_details = '';
 		if ($temp[$step]['structure'] == true) {
 			$data .= $db->new_line.$db->getStructure($temp[$step]['table'], $temp['drop']).$db->new_line;
 		}
 		if ($temp[$step]['offset'] >= 0) {
 			$data .= $db->new_line.$db->getData($temp[$step]['table'], $temp[$step]['offset']).$db->new_line;
+			$offset_details = ' {'.$temp[$step]['offset'].', '.($temp[$step]['offset']+$db->std_limit).'}';
 		}
 
 		fwrite($fp, $data);
@@ -320,7 +322,7 @@ elseif ($job == 'backup3') {
 		   <td class="mbox">
 		   	<div style="width: 600px; border: 1px solid black; background-color: white;"><div style="width: <?php echo ceil($percent)*6; ?>px; background-color: steelblue;">&nbsp;</div></div>
 		   <?php echo $lang->phrase('admin_db_progress').round($percent, 1); ?>%<br /><br />
-		   <?php echo $lang->phrase('admin_db_backup_table_x').' '.$temp[$step]['table'].' {'.$temp[$step]['offset'].', '.($temp[$step]['offset']+$db->std_limit).'}'; ?>
+		   <?php echo $lang->phrase('admin_db_backup_table_x').' '.$temp[$step]['table'].$offset_details; ?>
 		   </td>
 		  </tr>
 		  <tr>

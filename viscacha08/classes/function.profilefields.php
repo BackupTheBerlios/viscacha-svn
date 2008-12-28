@@ -152,7 +152,7 @@ function admin_customfields($uid) {
 }
 
 function addprofile_customprepare($e1 = 'error_missingrequiredfield', $e2 = 'error_customfieldtoolong') {
-	global $db, $gpc;
+	global $db, $gpc, $lang;
 	$error = array();
 	$upquery = array();
 	$query = $db->query("SELECT * FROM {$db->pre}profilefields WHERE editable != '0' AND required = '1' ORDER BY disporder");
