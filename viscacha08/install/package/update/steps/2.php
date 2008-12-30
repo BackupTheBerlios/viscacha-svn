@@ -1,3 +1,4 @@
+<?php include('data/config.inc.php'); ?>
 <div class="bbody">
 <p>
 Before we start the automatic update (file updates, updating CHMODs), you have to read the manual update instructions.
@@ -148,6 +149,6 @@ Replace with:<br />
 </ol>
 </p>
 </div>
-<?php if (!empty($code['ftp_server']) && !empty($code['ftp_port']) && !empty($code['ftp_pw']) && !empty($code['ftp_user'])) { ?>
+<?php if (!empty($config['ftp_server']) && !empty($config['ftp_port']) && !empty($config['ftp_pw']) && !empty($config['ftp_user'])) { ?>
 <div class="bfoot center"><input type="submit" value="Continue" /></div>
 <?php } ?>
