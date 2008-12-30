@@ -28,17 +28,10 @@ include_once(dirname(__FILE__)."/class.db_driver.php");
 
 class DB extends DB_Driver { // MySQL
 
-	var $escaper;
 	var $system;
 
 	function DB($host = 'localhost', $user = 'root', $pwd = '', $dbname = '', $dbprefix = '', $open = true) {
 	    $this->system = 'mysql';
-		if (version_compare(PHP_VERSION, "4.3.0", ">=") && viscacha_function_exists('mysql_real_escape_string') == true) {
-			$this->escaper = 'mysql_real_escape_string';
-		}
-		else {
-			$this->escaper = 'mysql_escape_string';
-		}
 		$this->errlogfile = 'data/errlog_'.$this->system.'.inc.php';
 		parent::DB_Driver($host, $user, $pwd, $dbname, $dbprefix, $open);
 		@ini_set('mysql.trace_mode', 0);
@@ -200,7 +193,7 @@ class DB extends DB_Driver { // MySQL
 
 	function escape_string($value) {
 		$this->open();
-		return call_user_func($this->escaper, $value);
+		return mysql_real_escape_string($value, $this->conn);
 	}
 
 	function num_fields($result = null) {
