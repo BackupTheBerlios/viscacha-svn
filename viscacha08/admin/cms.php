@@ -622,7 +622,7 @@ elseif ($job == 'nav_addplugin') {
 	$groups = $db->query("SELECT id, name FROM {$db->pre}groups");
 	$pos = parseNavPosSetting();
 	?>
-<form name="form" method="post" action="admin.php?action=cms&job=nav_addplugin2">
+<form name="form" method="post" action="admin.php?action=cms&amp;job=nav_addplugin2">
  <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
   <tr>
    <td class="obox" colspan="2"><?php echo $lang->phrase('admin_cms_nav_add_plugin'); ?></td>
@@ -694,7 +694,7 @@ elseif ($job == 'nav_addplugin2') {
 	echo head();
 	$plug = $gpc->get('plugin', int);
 	$result = $db->query("SELECT id, name, active FROM {$db->pre}plugins WHERE id = '{$plug}' AND position = 'navigation'");
-	$data = $db->fetch_assoc();
+	$data = $db->fetch_assoc($result);
 	$title = getNavTitle();
 	if (empty($title)) {
 		$title = $data['name'];

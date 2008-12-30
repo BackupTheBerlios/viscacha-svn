@@ -2249,7 +2249,7 @@ elseif ($job == 'plugins') {
 		$my->settings['admin_plugins_sort'] = 1;
 
 		$result = $db->query("
-		SELECT p.*, m.title, m.core, m.active AS mactive
+		SELECT p.id, p.name, p.ordering, p.active, p.position, p.required, m.title, m.core, m.active AS mactive, m.id AS module
 		FROM {$db->pre}packages AS m
 			LEFT JOIN {$db->pre}plugins AS p ON p.module = m.id
 		ORDER BY m.id, p.position
