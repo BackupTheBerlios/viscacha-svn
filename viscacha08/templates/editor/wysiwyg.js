@@ -47,10 +47,10 @@ var WYSIWYG = {
 		this.DisabledStyle = "font-family: \"Trebuchet MS\", Verdana, Arial, Helvetica, sans-serif; font-size: 9pt; background-color: #eeeeee; white-space: normal; color: #555555;";
 
 		// Confirmation message if you strip any HTML added by word
-		this.RemoveFormatConfMessage = "Clean HTML inserted by MS Word?";
+		this.RemoveFormatConfMessage = lng['wysiwyg_clean_word'];
 
 		// Nofication if browser is not supported by openWYSIWYG, leave it blank for no message output.
-		this.NoValidBrowserMessage = "The WYSIWYG-Editor is not (completely) supported by your browser.";
+		this.NoValidBrowserMessage = lng['wysiwyg_not_compatible'];
 
 		// Anchor path to strip, leave it blank to ignore
 		// or define auto to strip the path where the editor is placed
@@ -171,7 +171,7 @@ var WYSIWYG = {
 		this.DropDowns['headings'] = {
 			id: "headings",
 			command: "FormatBlock",
-			label: "<{value} style=\"margin:0px;text-decoration:none;font-family:Arial\">{value}</{value}>",
+			label: "<{value} style=\"margin:0px;text-decoration:none;font-family:sans-serif;\">{value}</{value}>",
 			width: "74px",
 			elements: new Array(
 				"H2",
@@ -224,41 +224,41 @@ var WYSIWYG = {
 
 	// List of available actions and their respective ID and images
 	ToolbarList: {
-	//Name			buttonID			 	buttonTitle		 		buttonImage			 	buttonImageRollover
-	"bold":			['Bold',				'Bold',					'bold.gif',				'bold.gif'],
-	"italic":		['Italic',				'Italic',				'italic.gif',			'italic.gif'],
-	"underline":	['Underline',			'Underline',			'underline.gif',		'underline.gif'],
-	"strikethrough":['Strikethrough',		'Strikethrough',		'strikethrough.gif',	'strikethrough.gif'],
-	"seperator":	['',					'',						'seperator.gif',		''],
-	"subscript":	['Subscript',			'Subscript',			'subscript.gif',		'subscript.gif'],
-	"superscript":	['Superscript',			'Superscript',			'superscript.gif',		'superscript.gif'],
-	"justifyleft":	['Justifyleft',			'Justify Left',			'left.gif',				'left.gif'],
-	"justifycenter":['Justifycenter',		'Justify Center',		'center.gif',			'center.gif'],
-	"justifyright":	['Justifyright',		'Justify Right',		'right.gif',			'right.gif'],
-	"justifyfull":	['Justifyfull',			'Justify',				'justify.gif',			'justify.gif'],
-	"unorderedlist":['InsertUnorderedList',	'Unordered List',		'list_unordered.gif',	'list_unordered.gif'],
-	"orderedlist":	['InsertOrderedList',	'Ordered List',			'list_ordered.gif',		'list_ordered.gif'],
-	"outdent":		['Outdent',				'Outdent',				'indent_left.gif',		'indent_left.gif'],
-	"indent":		['Indent',				'Indent',				'indent_right.gif',		'indent_right.gif'],
-	"cut":			['Cut',					'Cut',					'sys_cut.gif',			'sys_cut.gif'],
-	"copy":			['Copy',				'Copy',					'sys_copy.gif',			'sys_copy.gif'],
-	"paste":		['Paste',				'Paste',				'sys_paste.gif',		'sys_paste.gif'],
-	"forecolor":	['ForeColor',			'Fore Color',			'color.gif',			'color.gif'],
-	"backcolor":	['BackColor',			'Back Color',			'bgcolor.gif',			'bgcolor.gif'],
-	"undo":			['Undo',				'Undo',					'sys_undo.gif',			'sys_undo.gif'],
-	"redo":			['Redo',				'Redo',					'sys_redo.gif',			'sys_redo.gif'],
-	"inserthr":		['InsertHR',			'Horizontal Ruler',		'hr.gif',				'hr.gif'],
-	"inserttable":	['InsertTable',			'Table',				'table.gif',			'table.gif'],
-	"insertimage":	['InsertImage',			'Image',				'img.gif',				'img.gif'],
-	"createlink":	['CreateLink',			'Link',					'url.gif',				'url.gif'],
-	"viewSource":	['ViewSource',			'View Source',			'view_html.gif',		''],
-	"viewText":		['ViewText',			'View Text',			'view_text.gif',		''],
-	"fonts":		['Fonts',				'Font face',			'select_font.gif',		'select_font.gif'],
-	"fontsizes":	['Fontsizes',			'Font Size',			'select_size.gif',		'select_size.gif'],
-	"headings":		['Headings',			'Headings',				'select_heading.gif',	'select_heading.gif'],
-	"removenode":	['RemoveNode',			'Remove Formatting',	'remove_node.gif', 		'remove_node.gif'],
-	"removeformat":	['RemoveFormat',		'Strip Word HTML',		'remove_format.gif',	'remove_format.gif'],
-	"maximize":		['Maximize',			'Maximize the editor',	'maximize.gif',			'maximize.gif']
+	//Name			buttonID			 	buttonTitle		 					buttonImage			 	buttonImageRollover
+	"bold":			['Bold',				lng['wysiwyg_bold'],				'bold.gif',				'bold.gif'],
+	"italic":		['Italic',				lng['wysiwyg_italic'],				'italic.gif',			'italic.gif'],
+	"underline":	['Underline',			lng['wysiwyg_underline'],			'underline.gif',		'underline.gif'],
+	"strikethrough":['Strikethrough',		lng['wysiwyg_strikethrough'],		'strikethrough.gif',	'strikethrough.gif'],
+	"seperator":	['',					'',									'seperator.gif',		''],
+	"subscript":	['Subscript',			lng['wysiwyg_subscript'],			'subscript.gif',		'subscript.gif'],
+	"superscript":	['Superscript',			lng['wysiwyg_superscript'],			'superscript.gif',		'superscript.gif'],
+	"justifyleft":	['Justifyleft',			lng['wysiwyg_left'],				'left.gif',				'left.gif'],
+	"justifycenter":['Justifycenter',		lng['wysiwyg_center'],				'center.gif',			'center.gif'],
+	"justifyright":	['Justifyright',		lng['wysiwyg_right'],				'right.gif',			'right.gif'],
+	"justifyfull":	['Justifyfull',			lng['wysiwyg_justify'],				'justify.gif',			'justify.gif'],
+	"unorderedlist":['InsertUnorderedList',	lng['wysiwyg_unordered_list'],		'list_unordered.gif',	'list_unordered.gif'],
+	"orderedlist":	['InsertOrderedList',	lng['wysiwyg_ordered_list'],		'list_ordered.gif',		'list_ordered.gif'],
+	"outdent":		['Outdent',				lng['wysiwyg_outdent'],				'indent_left.gif',		'indent_left.gif'],
+	"indent":		['Indent',				lng['wysiwyg_indent'],				'indent_right.gif',		'indent_right.gif'],
+	"cut":			['Cut',					lng['wysiwyg_cut'],					'sys_cut.gif',			'sys_cut.gif'],
+	"copy":			['Copy',				lng['wysiwyg_copy'],				'sys_copy.gif',			'sys_copy.gif'],
+	"paste":		['Paste',				lng['wysiwyg_paste'],				'sys_paste.gif',		'sys_paste.gif'],
+	"forecolor":	['ForeColor',			lng['wysiwyg_forecolor'],			'color.gif',			'color.gif'],
+	"backcolor":	['BackColor',			lng['wysiwyg_backcolor'],			'bgcolor.gif',			'bgcolor.gif'],
+	"undo":			['Undo',				lng['wysiwyg_undo'],				'sys_undo.gif',			'sys_undo.gif'],
+	"redo":			['Redo',				lng['wysiwyg_redo'],				'sys_redo.gif',			'sys_redo.gif'],
+	"inserthr":		['InsertHR',			lng['wysiwyg_hr'],					'hr.gif',				'hr.gif'],
+	"inserttable":	['InsertTable',			lng['wysiwyg_table'],				'table.gif',			'table.gif'],
+	"insertimage":	['InsertImage',			lng['wysiwyg_image'],				'img.gif',				'img.gif'],
+	"createlink":	['CreateLink',			lng['wysiwyg_link'],				'url.gif',				'url.gif'],
+	"viewSource":	['ViewSource',			lng['wysiwyg_view_source'],			'view_html.gif',		''],
+	"viewText":		['ViewText',			lng['wysiwyg_view_text'],			'view_text.gif',		''],
+	"fonts":		['Fonts',				lng['wysiwyg_font_face'],			'select_font.gif',		'select_font.gif'],
+	"fontsizes":	['Fontsizes',			lng['wysiwyg_font_size'],			'select_size.gif',		'select_size.gif'],
+	"headings":		['Headings',			lng['wysiwyg_headings'],			'select_heading.gif',	'select_heading.gif'],
+	"removenode":	['RemoveNode',			lng['wysiwyg_remove_formatting'],	'remove_node.gif', 		'remove_node.gif'],
+	"removeformat":	['RemoveFormat',		lng['wysiwyg_strip_word'],			'remove_format.gif',	'remove_format.gif'],
+	"maximize":		['Maximize',			lng['wysiwyg_maximize'],			'maximize.gif',			'maximize.gif']
 	},
 
 	// stores the different settings for each textarea
@@ -792,8 +792,8 @@ var WYSIWYG = {
 								// View Source button
 								else if (toolbar[i] == "viewSource"){
 									editor += '<td style="width: 22px;">';
-									editor += '<span id="HTMLMode' + n + '"><img src="' + buttonImage +  '" border="0" unselectable="on" title="' + buttonTitle + '" id="' + buttonID + '" class="editor_toolbar_button" onmouseover="this.className=\'editor_toolbar_button_on\';" onmouseout="this.className=\'editor_toolbar_button\';" onclick="WYSIWYG.execCommand(\'' + n + '\', \'' + buttonID + '\');" unselectable="on" width="20" height="20"></span>';
-									editor += '<span id="textMode' + n + '"><img src="' + this.config[n].ImagesDir + 'view_text.gif" border="0" unselectable="on" title="' + buttonTitle + '" id="ViewText" class="editor_toolbar_button" onmouseover="this.className=\'editor_toolbar_button_on\';" onmouseout="this.className=\'editor_toolbar_button\';" onclick="WYSIWYG.execCommand(\'' + n + '\',\'ViewText\');" unselectable="on"  width="20" height="20"></span>';
+									editor += '<span id="HTMLMode' + n + '"><img src="' + buttonImage +  '" border="0" unselectable="on" title="' + buttonTitle + '" id="' + buttonID + n +'" class="editor_toolbar_button" onmouseover="this.className=\'editor_toolbar_button_on\';" onmouseout="this.className=\'editor_toolbar_button\';" onclick="WYSIWYG.execCommand(\'' + n + '\', \'' + buttonID + '\');" unselectable="on" width="20" height="20"></span>';
+									editor += '<span id="textMode' + n + '"><img src="' + this.config[n].ImagesDir + 'view_text.gif" border="0" unselectable="on" title="' + buttonTitle + '" id="ViewText' + n + '" class="editor_toolbar_button" onmouseover="this.className=\'editor_toolbar_button_on\';" onmouseout="this.className=\'editor_toolbar_button\';" onclick="WYSIWYG.execCommand(\'' + n + '\',\'ViewText\');" unselectable="on"  width="20" height="20"></span>';
 									editor += '</td>';
 								}
 								else {
@@ -804,7 +804,7 @@ var WYSIWYG = {
 									else {
 										onevent = 'onmouseover="this.className=\'editor_toolbar_button_on\'; this.src=\'' + buttonImageRollover + '\';" onmouseout="this.className=\'editor_toolbar_button\'; this.src=\'' + buttonImage + '\';"';
 									}
-									editor += '<img src="' + buttonImage + '" border=0 unselectable="on" title="' + buttonTitle + '" id="' + buttonID + '" class="editor_toolbar_button" '+onevent+' onclick="WYSIWYG.execCommand(\'' + n + '\', \'' + buttonID + '\');" unselectable="on" width="20" height="20">';
+									editor += '<img src="' + buttonImage + '" border=0 unselectable="on" title="' + buttonTitle + '" id="' + buttonID + n + '" class="editor_toolbar_button" '+onevent+' onclick="WYSIWYG.execCommand(\'' + n + '\', \'' + buttonID + '\');" unselectable="on" width="20" height="20">';
 									editor += '</td>';
 								}
 							}
@@ -1106,20 +1106,25 @@ var WYSIWYG = {
 	 */
 	updateStatusBar: function(n) {
 
-		// get the node structure
-		var nodeTree = this.getNodeTree(n);
-		if(nodeTree == null) { return; }
-		// format the output
-		var outputTree = "";
-		var max = nodeTree.length - 1;
-		for(var i=max;i>=0;i--) {
-			if(nodeTree[i].nodeName != "HTML" && nodeTree[i].nodeName != "BODY") {
-				outputTree += '<a href="javascript:WYSIWYG.selectNode(\'' + n + '\',' + i + ');">' + nodeTree[i].nodeName.toLowerCase() + '</a>';
+		if (this.viewTextMode[n] == false) {
+			// get the node structure
+			var nodeTree = this.getNodeTree(n);
+			if(nodeTree == null) { return; }
+			// format the output
+			var outputTree = "";
+			var max = nodeTree.length - 1;
+			for(var i=max;i>=0;i--) {
+				if(nodeTree[i].nodeName != "HTML" && nodeTree[i].nodeName != "BODY") {
+					outputTree += '<a href="javascript:WYSIWYG.selectNode(\'' + n + '\',' + i + ');">' + nodeTree[i].nodeName.toLowerCase() + '</a>';
+				}
+				else {
+					outputTree += nodeTree[i].nodeName.toLowerCase();
+				}
+				if(i > 0) { outputTree += " > "; }
 			}
-			else {
-				outputTree += nodeTree[i].nodeName.toLowerCase();
-			}
-			if(i > 0) { outputTree += " > "; }
+		}
+		else {
+			outputTree = '&nbsp;';
 		}
 
 		// update the status bar
@@ -1142,7 +1147,7 @@ var WYSIWYG = {
 		this.getEditorWindow(n).focus();
 
 		// When in Text Mode these execCommands are enabled
-		var textModeCommands = new Array("ViewText", "Print");
+		var textModeCommands = new Array("ViewText");
 
 	  	// Check if in Text mode and a disabled command execute
 		var cmdValid = false;
@@ -1152,7 +1157,7 @@ var WYSIWYG = {
 			}
 		}
 		if(this.viewTextMode[n] && !cmdValid) {
-			alert("You are in TEXT Mode. This feature has been disabled.");
+			alert(lng['wysiwyg_error_text_mode']);
 		  	return;
 		}
 
@@ -1547,6 +1552,54 @@ var WYSIWYG = {
 		this.closeDropDowns(n, id);
 	},
 
+	setOpacity: function(obj, opacity) {
+		opacity = (opacity == 100)?  99.99 : opacity;
+		obj.style.filter = "alpha(opacity:"+opacity+")"; // IE/Win
+		obj.style.KHTMLOpacity = opacity/100; // Safari<1.2, Konqueror
+		obj.style.MozOpacity = opacity/100; // Older Mozilla and Firefox
+		obj.style.opacity = opacity/100; // Safari 1.2, newer Firefox and Mozilla, CSS3
+	},
+
+	setToolbarOpacity: function(n, opacity, opacity2) {
+		for (var j = 0; j < this.config[n].Toolbar.length;j++) {
+			if(this.config[n].Toolbar[j] && this.config[n].Toolbar[j].length > 0) {
+				var toolbar = this.config[n].Toolbar[j];
+				for (var i = 0; i < toolbar.length;i++) {
+					var id = toolbar[i];
+					if (toolbar[i]) {
+						if(typeof (this.config[n].DropDowns[id]) != "undefined") {
+							buttonObj = this.config[n].DropDowns[id];
+							if(buttonObj) {
+								this.setOpacity($('img_'+buttonObj['id']+'_'+n), opacity);
+								this.setOpacity($('elm_'+buttonObj['id']+'_'+n), opacity2);
+							}
+						}
+						else {
+							buttonObj = this.ToolbarList[toolbar[i]];
+							if(buttonObj) {
+								buttonID = buttonObj[0] + n;
+								if (toolbar[i] != "seperator" && buttonID != "HTMLMode" && buttonID != "textMode") {
+									this.setOpacity($(buttonID), opacity);
+								}
+							}
+						}
+			  		}
+			  	}
+			}
+		}
+	},
+
+	formatSource: function(n) {
+		if (this.viewTextMode[n] == true && (WYSIWYG_Core.isFF || WYSIWYG_Core.isOpera)) {
+			var body = this.getEditorWindow(n).document.body;
+			var hl = new DlHighlight({ lang : "xml" });
+			var html = body.ownerDocument.createRange();
+			html.selectNodeContents(body);
+			html = hl.doItNow(html.toString());
+			body.innerHTML = html;
+		}
+	},
+
 	/**
 	 * Shows the HTML source code generated by the WYSIWYG editor
 	 *
@@ -1557,7 +1610,7 @@ var WYSIWYG = {
 		// document
 		var doc = this.getEditorWindow(n).document;
 
-		// Enable table highlighting
+		// Disable table highlighting
 		WYSIWYG_Table.disableHighlighting(n);
 
 		// View Source for IE
@@ -1590,17 +1643,21 @@ var WYSIWYG = {
 		if($('textMode' + n)) {
 			$('textMode' + n).style.display = 'block';
 		}
+		this.setToolbarOpacity(n, 40, 70);
 
 		// set the font values for displaying HTML source
-		doc.body.style.fontSize = "12px";
-		doc.body.style.fontFamily = "Courier New";
+		doc.body.style.fontSize = "10pt";
+		doc.body.style.fontFamily = "Courier New, monospace";
 		doc.body.style.whiteSpace = 'pre';
 
 	  	this.viewTextMode[n] = true;
+
+		// Update Status Bar
+		this.updateStatusBar(n);
 	},
 
 	/**
-	 * Shows the HTML source code generated by the WYSIWYG editor
+	 * Shows the Design of the code generated by the WYSIWYG editor.
 	 *
 	 * @param {String} n The editor identifier (textarea ID)
 	 */
@@ -1618,7 +1675,6 @@ var WYSIWYG = {
 			iText = WYSIWYG_Core.replaceRGBWithHexColor(iText);
 			doc.body.innerHTML = iText;
 		}
-
 		// View Text for Mozilla/Netscape
 	  	else {
 			var html = doc.body.ownerDocument.createRange();
@@ -1639,11 +1695,15 @@ var WYSIWYG = {
 		if($('HTMLMode' + n)) {
 			$('HTMLMode' + n).style.display = 'block';
 		}
+		this.setToolbarOpacity(n, 100, 90);
 
 		// reset the font values (changed)
 		WYSIWYG_Core.setAttribute(doc.body, "style", this.config[n].DefaultStyle);
 
 		this.viewTextMode[n] = false;
+
+		// Update Status Bar
+		this.updateStatusBar(n);
 	},
 
 	/* ---------------------------------------------------------------------- *\
@@ -2111,19 +2171,19 @@ var WYSIWYG = {
 var WYSIWYG_Core = {
 
 	/**
-	 * Holds true if browser is MSIE, otherwise false
+	 * Holds true if browser is MSIE
 	 */
-	isMSIE: navigator.appName == "Microsoft Internet Explorer" ? true : false,
+	isMSIE: (navigator.appName == "Microsoft Internet Explorer"),
+
+	/**
+	 * Holds true if browser is Opera
+	 */
+	isOpera: (navigator.appName == "Opera"),
 
 	/**
 	 * Holds true if browser is Firefox (Mozilla)
 	 */
-	isFF: !document.all && document.getElementById && !this.isOpera,
-
-	/**
-	 * Holds true if browser is Opera, otherwise false
-	 */
-	isOpera: navigator.appName == "Opera" ? true : false,
+	isFF: (!document.all && document.getElementById && navigator.appName != "Opera"),
 
 	/**
 	 * Trims whitespaces of the given string
@@ -2464,37 +2524,6 @@ var WYSIWYG_Core = {
 			obj.detachEvent("on" + ev, fu);
 		else
 			obj.removeEventListener(ev, fu, false);
-	},
-
-	/**
-	 * Includes a javascript file
-	 *
-	 * @param file Javascript file path and name
-	 */
-	includeJS: function(file) {
-		var script = document.createElement("script");
-		this.setAttribute(script, "type", "text/javascript");
-		this.setAttribute(script, "src", file);
-		var heads = document.getElementsByTagName("head");
-		for(var i=0;i<heads.length;i++) {
-			heads[i].appendChild(script);
-		}
-	},
-
-	/**
-	 * Includes a stylesheet file
-	 *
-	 * @param file Stylesheet file path and name
-	 */
-	includeCSS: function(path) {
-		var link = document.createElement("link");
-		this.setAttribute(link, "rel", "stylesheet");
-		this.setAttribute(link, "type", "text/css");
-		this.setAttribute(link, "href", path);
-		var heads = document.getElementsByTagName("head");
-		for(var i=0;i<heads.length;i++) {
-			heads[i].appendChild(link);
-		}
 	},
 
 	/**
