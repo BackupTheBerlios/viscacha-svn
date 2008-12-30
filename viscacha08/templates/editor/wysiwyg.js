@@ -34,7 +34,7 @@ var WYSIWYG = {
 		this.ImagesDir = "templates/editor/images/";
 
 		// Popups Directory
-		this.PopupsDir = "templates/editor/popups/";
+		this.PopupsDir = "admin.php?action=cms&job=doc_";
 
 		// Default WYSIWYG width and height (use px or %)
 		this.Width = "95%";
@@ -1171,7 +1171,7 @@ var WYSIWYG = {
 		};
 
 		// Check the insert image popup implementation
-		var imagePopupFile = this.config[n].PopupsDir + 'insert_image.html';
+		var imagePopupFile = this.config[n].PopupsDir + 'insert_image';
 		var imagePopupWidth = 400;
 		var imagePopupHeight = 210;
 		var currentColor, rgb, form;
@@ -1197,28 +1197,18 @@ var WYSIWYG = {
 			case "ForeColor":
 				var rgb = this.getEditorWindow(n).document.queryCommandValue(cmd);
 			  	var currentColor = rgb != '' ? toHexColor(this.getEditorWindow(n).document.queryCommandValue(cmd)) : "000000";
-			  	window.open(this.config[n].PopupsDir + 'select_color.html?color=' + currentColor + '&command=' + cmd + '&wysiwyg=' + n, 'popup', 'location=0,status=0,scrollbars=0,width=275,height=335,top=' + popupPosition.top + ',left=' + popupPosition.left).focus();
+			  	window.open(this.config[n].PopupsDir + 'select_color&color=' + currentColor + '&command=' + cmd + '&wysiwyg=' + n, 'popup', 'location=0,status=0,scrollbars=0,width=275,height=335,top=' + popupPosition.top + ',left=' + popupPosition.left).focus();
 			break;
 
 			// BackColor
 			case "BackColor":
 				var currentColor = toHexColor(this.getEditorWindow(n).document.queryCommandValue(cmd));
-			  	window.open(this.config[n].PopupsDir + 'select_color.html?color=' + currentColor + '&command=' + cmd + '&wysiwyg=' + n, 'popup', 'location=0,status=0,scrollbars=0,width=275,height=335,top=' + popupPosition.top + ',left=' + popupPosition.left).focus();
+			  	window.open(this.config[n].PopupsDir + 'select_color&color=' + currentColor + '&command=' + cmd + '&wysiwyg=' + n, 'popup', 'location=0,status=0,scrollbars=0,width=275,height=335,top=' + popupPosition.top + ',left=' + popupPosition.left).focus();
 			break;
 
 			// InsertImage
 			case "InsertImage":
 				window.open(imagePopupFile + 'wysiwyg=' + n, 'popup', 'location=0,status=0,scrollbars=1,resizable=1,width=' + imagePopupWidth + ',height=' + imagePopupHeight + ',top=' + popupPosition.top + ',left=' + popupPosition.left).focus();
-			break;
-
-			// Remove Image
-			case "RemoveImage":
-				this.removeImage(n);
-			break;
-
-			// Remove Link
-			case "RemoveLink":
-				this.removeLink(n);
 			break;
 
 			// Remove a Node
@@ -1228,17 +1218,17 @@ var WYSIWYG = {
 
 			// Create Link
 			case "CreateLink":
-				window.open(this.config[n].PopupsDir + 'insert_hyperlink.html?wysiwyg=' + n, 'popup', 'location=0,status=0,scrollbars=1,resizable=1,width=400,height=160,top=' + popupPosition.top + ',left=' + popupPosition.left).focus();
+				window.open(this.config[n].PopupsDir + 'insert_hyperlink&wysiwyg=' + n, 'popup', 'location=0,status=0,scrollbars=1,resizable=1,width=420,height=160,top=' + popupPosition.top + ',left=' + popupPosition.left).focus();
 			break;
 
 			// InsertHR
 			case "InsertHR":
-				window.open(this.config[n].PopupsDir + 'insert_hr.html?wysiwyg=' + n, 'popup', 'location=0,status=0,scrollbars=1,resizable=1,width=400,height=250,top=' + popupPosition.top + ',left=' + popupPosition.left).focus();
+				window.open(this.config[n].PopupsDir + 'insert_hr&wysiwyg=' + n, 'popup', 'location=0,status=0,scrollbars=1,resizable=1,width=400,height=250,top=' + popupPosition.top + ',left=' + popupPosition.left).focus();
 			break;
 
 			// InsertTable
 			case "InsertTable":
-				window.open(this.config[n].PopupsDir + 'create_table.html?wysiwyg=' + n, 'popup', 'location=0,status=0,scrollbars=1,resizable=1,width=530,height=260,top=' + popupPosition.top + ',left=' + popupPosition.left).focus();
+				window.open(this.config[n].PopupsDir + 'create_table&wysiwyg=' + n, 'popup', 'location=0,status=0,scrollbars=1,resizable=1,width=530,height=260,top=' + popupPosition.top + ',left=' + popupPosition.left).focus();
 			break;
 
 			// ViewSource

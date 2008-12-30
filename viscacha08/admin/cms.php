@@ -989,6 +989,196 @@ elseif ($job == 'nav_comslist') {
 	<?php
 	echo foot();
 }
+elseif ($job == 'doc_create_table') {
+	$htmlhead .= '<script type="text/javascript" src="templates/editor/wysiwyg-popup.js"></script>';
+	echo head();
+	?>
+	<table class="border" style="width: 490px;" border="0" cellpadding="4" cellspacing="0" align="center">
+		<tr><td class="obox" colspan="4"><?php echo $lang->phrase('admin_wysiwyg_table_properties'); ?></td></tr>
+		<tr class="mbox">
+			<td><?php echo $lang->phrase('admin_wysiwyg_table_rows'); ?></td>
+			<td><input type="text" size="4" id="rows" name="rows" value="2" /></td>
+			<td><?php echo $lang->phrase('admin_wysiwyg_table_cols'); ?></td>
+			<td><input type="text" size="4" id="cols" name="cols" value="2" /></td>
+		</tr><tr class="mbox">
+			<td><?php echo $lang->phrase('admin_wysiwyg_table_width'); ?></td>
+			<td>
+				<input type="text" name="width" id="width" value="100" size="10" />
+				<select name="widthType" id="widthType">
+					<option value="%">%</option>
+					<option value="px">px</option>
+				</select>
+			</td>
+			<td><?php echo $lang->phrase('admin_wysiwyg_alignment'); ?></td>
+			<td>
+				<select name="alignment" id="alignment">
+					<option value=""<?php echo $lang->phrase('admin_wysiwyg_alignment_not_set'); ?></option>
+					<option value="left"><?php echo $lang->phrase('admin_wysiwyg_alignment_left'); ?></option>
+					<option value="right"><?php echo $lang->phrase('admin_wysiwyg_alignment_right'); ?></option>
+					<option value="center"><?php echo $lang->phrase('admin_wysiwyg_alignment_center'); ?></option>
+				</select>
+			</td>
+		</tr><tr class="mbox">
+			<td><?php echo $lang->phrase('admin_wysiwyg_padding'); ?></td>
+			<td><input type="text" id="padding" name="padding" value="2" size="4" />px</td>
+			<td><?php echo $lang->phrase('admin_wysiwyg_bgcolor'); ?></td>
+			<td>
+				<input type="text" name="backgroundcolor" id="backgroundcolor" value="none">
+				<input type="button" value="Choose" onClick="WYSIWYG_ColorInst.choose('backgroundcolor');" />
+			</td>
+		</tr><tr class="mbox">
+			<td><?php echo $lang->phrase('admin_wysiwyg_border_width'); ?></td>
+			<td><input type="text" size="4" id="borderwidth" name="borderwidth" value="0" />px</td>
+			<td><?php echo $lang->phrase('admin_wysiwyg_border_color'); ?></td>
+			<td>
+				<input type="text" name="bordercolor" id="bordercolor" value="none">
+				<input type="button" value="Choose" onClick="WYSIWYG_ColorInst.choose('bordercolor');" />
+			</td>
+		</tr><tr class="mbox">
+			<td><?php echo $lang->phrase('admin_wysiwyg_border_style'); ?></td>
+			<td>
+				<select id="borderstyle" name="borderstyle">
+					<option value="none">none</option>
+					<option value="solid">solid</option>
+					<option value="double">double</option>
+					<option value="dotted">dotted</option>
+					<option value="dashed">dashed</option>
+					<option value="groove">groove</option>
+					<option value="ridge">ridge</option>
+					<option value="inset">inset</option>
+					<option value="outset">outset</option>
+				</select>
+			</td>
+			<td><?php echo $lang->phrase('admin_wysiwyg_border_collapse'); ?></td>
+			<td><input type="checkbox" name="bordercollapse" id="bordercollapse" checked="checked" /></td>
+		</tr><tr>
+			<td class="ubox" colspan="4" align="center">
+				<input type="submit" value="<?php echo $lang->phrase('admin_wysiwyg_form_submit'); ?>" onClick="buildTable(WYSIWYG_Popup.getParam('wysiwyg'));" />
+				<input type="submit" value="<?php echo $lang->phrase('admin_wysiwyg_form_cancel'); ?>" onClick="window.close();" />
+			</td>
+		</tr>
+	</table>
+	<?php
+	echo foot(true);
+}
+elseif ($job == 'doc_insert_hr') {
+	$htmlhead .= '<script type="text/javascript" src="templates/editor/wysiwyg-popup.js"></script>';
+	echo head();
+	?>
+	<form name="hr_form">
+	<table class="border" width="300" border="0" cellpadding="4" cellspacing="0" align="center">
+		<tr><td class="obox" colspan="3"><?php echo $lang->phrase('admin_wysiwyg_insert_hr'); ?></td></tr>
+		<tr class="mbox">
+			<td><?php echo $lang->phrase('admin_wysiwyg_width'); ?></td>
+			<td><input type="text" name="width" id="width" value="" size="10" /></td>
+			<td>
+				<select name="widthgroup" id="widthgroup" size="1">
+					<option value="1"><?php echo $lang->phrase('admin_wysiwyg_width_full'); ?></option>
+					<option value="2">px</option>
+					<option value="3">%</option>
+				</select>
+			</td>
+		</tr><tr class="mbox">
+			<td><?php echo $lang->phrase('admin_wysiwyg_height'); ?></td>
+			<td colspan="2"><input type="text" name="height" id="height" value="" size="10" /></td>
+		</tr><tr class="mbox">
+			<td><?php echo $lang->phrase('admin_wysiwyg_alignment'); ?></td>
+			<td colspan="2">
+				<select name="align" id="align" size="1">
+					<option value="1"><?php echo $lang->phrase('admin_wysiwyg_alignment_center'); ?></option>
+					<option value="2"><?php echo $lang->phrase('admin_wysiwyg_alignment_left'); ?></option>
+					<option value="3"><?php echo $lang->phrase('admin_wysiwyg_alignment_right'); ?></option>
+				</select>
+			</td>
+		</tr><tr class="mbox">
+			<td norwap="nowrap"><?php echo $lang->phrase('admin_wysiwyg_no_shade'); ?></td>
+			<td colspan="2"><input type="checkbox" name="shade" id="shade" value="1" /></td>
+		</tr><tr class="mbox">
+			<td norwap="nowrap"><?php echo $lang->phrase('admin_wysiwyg_color'); ?></td>
+			<td><input type="text" name="color" id="color" value="none" size="10" /></td>
+			<td><input type="button" onClick="WYSIWYG_ColorInst.choose('color');" value="<?php echo $lang->phrase('admin_wysiwyg_choose'); ?>" /></td>
+		</tr><tr>
+			<td class="ubox" colspan="3" align="center">
+				<input type="submit" value="<?php echo $lang->phrase('admin_wysiwyg_form_submit'); ?>" onClick="createHR(WYSIWYG_Popup.getParam('wysiwyg'));" />
+				<input type="submit" value="<?php echo $lang->phrase('admin_wysiwyg_form_cancel'); ?>" onClick="window.close();" />
+			</td>
+   		</tr>
+   	</table>
+	</form>
+	<?php
+	echo foot(true);
+}
+elseif ($job == 'doc_insert_hyperlink') {
+	$htmlhead .= '<script type="text/javascript" src="templates/editor/wysiwyg-popup.js"></script>';
+	echo head('loadLink();');
+	?>
+	<table class="border" width="360" border="0" cellpadding="4" cellspacing="0" align="center">
+		<tr><td class="obox" colspan="3"><?php echo $lang->phrase('admin_wysiwyg_insert_link'); ?></td></tr>
+		<tr class="mbox">
+			<td><?php echo $lang->phrase('admin_wysiwyg_url'); ?></td>
+			<td colspan="2"><input type="text" name="linkUrl" id="linkUrl" value="http://" size="50" /></td>
+		</tr><tr class="mbox">
+			<td><?php echo $lang->phrase('admin_wysiwyg_target'); ?></td>
+			<td><input type="text" name="linkTarget" id="linkTarget" value="" /></td>
+			<td>
+				<select name="linkTargetChooser" id="linkTargetChooser" onchange="updateTarget(this.value);">
+					<option value="" selected="selected"><?php echo $lang->phrase('admin_wysiwyg_custom_target'); ?></option>
+					<option value="_blank">_blank</option>
+					<option value="_self">_self</option>
+					<option value="_parent">_parent</option>
+					<option value="_top">_top</option>
+				</select>
+			</td>
+		</tr><tr class="mbox">
+			<td><?php echo $lang->phrase('admin_wysiwyg_name'); ?></td>
+			<td colspan="2"><input type="text" name="linkName" id="linkName" value="" /></td>
+		</tr><tr>
+			<td class="ubox" colspan="3" align="center">
+				<input type="submit" value="<?php echo $lang->phrase('admin_wysiwyg_form_submit'); ?>" onClick="insertHyperLink(WYSIWYG_Popup.getParam('wysiwyg'));" />
+				<input type="submit" value="<?php echo $lang->phrase('admin_wysiwyg_form_cancel'); ?>" onClick="window.close();" />
+			</td>
+		</tr>
+	</table>
+	<?php
+	echo foot(true);
+}
+elseif ($job == 'doc_select_color') {
+	$htmlhead .= '<script type="text/javascript" src="templates/editor/wysiwyg-popup.js"></script>';
+	echo head("loadColor();");
+	?>
+	<form onSubmit="selectColor(document.getElementById('enterColor').value);">
+	<table class="border" border="0" cellspacing="0" cellpadding="4" style="width: 232px;">
+	 <tr>
+	  <td class="obox"><?php echo $lang->phrase('admin_wysiwyg_select_color'); ?></td>
+	 </tr>
+	 <tr class="mbox" align="center">
+	  <td>
+	    <?php echo $lang->phrase('admin_wysiwyg_hey_code'); ?> <input type="text" size="10" name="enterColor" id="enterColor" /><br /><br class="minibr" />
+	    <input type="submit" value="<?php echo $lang->phrase('admin_wysiwyg_form_submit'); ?>" />
+	    <input type="button" onclick="self.close();" value="<?php echo $lang->phrase('admin_wysiwyg_form_cancel'); ?>" />
+	  </td>
+	 </tr>
+	 <tr>
+	  <td class="obox"><?php echo $lang->phrase('admin_wysiwyg_preview'); ?></td>
+	 </tr>
+	 <tr class="mbox">
+	  <td align="center" id="PreviewColor"><?php echo $lang->phrase('admin_wysiwyg_color_preview'); ?></td>
+	 </tr>
+	 <tr>
+	  <td class="obox"><?php echo $lang->phrase('admin_wysiwyg_predefined_colors'); ?></td>
+	 </tr>
+	 <tr class="mbox">
+	  <td align="center">
+	   <div class="colorpicker-td">
+		<script type="text/javascript">document.write(generateColorPicker("previewColor('<color>')", 'images/empty.gif'));</script>
+	   </div>
+	  </td>
+	 </tr>
+	</table>
+	</form>
+	<?php
+	echo foot(true);
+}
 elseif ($job == 'doc_select_image') {
 	/********************************************************************
 	 * openImageLibrary addon Copyright (c) 2006 openWebWare.com
