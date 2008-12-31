@@ -30,6 +30,8 @@ echo "- Hooks updated.<br />";
 $c = new manageconfig();
 $c->getdata('data/config.inc.php');
 $c->updateconfig('version', str, VISCACHA_VERSION);
+$c->updateconfig('fname', str, htmlentities($config['fname'], ENT_QUOTES));
+$c->updateconfig('fdesc', str, htmlentities($config['fdesc'], ENT_QUOTES));
 $c->updateconfig('always_send_js', int, 1);
 $c->updateconfig('vote_change', int, 0);
 $c->updateconfig('botgfxtest_width', int, 150);

@@ -1,4 +1,21 @@
-<?php include('data/config.inc.php'); ?>
+<?php
+$dataGiven = false;
+include('data/config.inc.php');
+require_once("install/classes/ftp/class.ftp.php");
+require_once("install/classes/ftp/class.ftp_".pemftp_class_module().".php");
+
+$ftp = new ftp(false, false);
+if($ftp->SetServer($config['ftp_server'], $config['ftp_port'])) {
+	if ($ftp->connect()) {
+		if ($ftp->login($config['ftp_user'], $config['ftp_pw'])) {
+			if ($ftp->chdir($config['ftp_path']) && $ftp->file_exists('data/config.inc.php')) {
+				$dataGiven = true;
+			}
+		}
+	}
+	$ftp->quit();
+}
+?>
 <div class="bbody">
 <p>
 Before we start the automatic update (file updates, updating CHMODs), you have to read the manual update instructions.
@@ -149,6 +166,11 @@ Replace with:<br />
 </ol>
 </p>
 </div>
-<?php if (!empty($config['ftp_server']) && !empty($config['ftp_port']) && !empty($config['ftp_pw']) && !empty($config['ftp_user'])) { ?>
-<div class="bfoot center"><input type="submit" value="Continue" /></div>
+<div class="bfoot center">
+<?php if ($dataGiven) { ?>
+<input type="submit" value="Continue" />
+<?php } else { ?>
+You need to specified correct ftp data in your <a href="admin.php" target="_blank">Admin Control Panel</a> (Viscacha Settings > FTP) before you continue with the next step!<br />
+<a class="submit" href="index.php?package=<?php echo $package;?>&amp;step=<?php echo $step; ?>">Try again</a>
 <?php } ?>
+</div>
