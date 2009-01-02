@@ -74,6 +74,19 @@ if ($config['tpcallow'] == 1 && $my->p['attachments'] == 1) {
 	$p_upload = 1;
 }
 
+$standard_data = array(
+			'name' => '',
+			'email' => '',
+			'guest' => iif($my->vlogin, 0, 1),
+			'comment' => '',
+			'dosmileys' => 1,
+			'dowords' => 1,
+			'digest' => -1,
+			'topic' => $lang->phrase('reply_prefix').$info['topic'],
+			'human' => false,
+			'id' => $id
+		);
+
 ($code = $plugins->load('addreply_start')) ? eval($code) : null;
 
 if ($_GET['action'] == "save") {
@@ -155,7 +168,9 @@ if ($_GET['action'] == "save") {
 			'id' => $id,
 			'digest' => $digest,
 			'guest' => 0,
-			'human' => $human
+			'human' => $human,
+			'name' => null,
+			'email' => null
 		);
 		if (!$my->vlogin) {
 			if ($config['guest_email_optional'] == 0 && empty($_POST['email'])) {
@@ -303,18 +318,14 @@ else {
 			$bbcode->setReplace($data['dowords']);
 			$data['formatted_comment'] = $bbcode->parse($data['comment']);
 		}
+		foreach ($standard_data as $key => $value) {
+			if (!isset($data[$key])) {
+				$data[$key] = $value;
+			}
+		}
 	}
 	else {
-		$data = array(
-			'name' => '',
-			'email' => '',
-			'comment' => '',
-			'dosmileys' => 1,
-			'dowords' => 1,
-			'digest' => -1,
-			'topic' => $lang->phrase('reply_prefix').$info['topic'],
-			'human' => false
-		);
+		$data = $standard_data;
 
 		$memberdata_obj = $scache->load('memberdata');
 		$memberdata = $memberdata_obj->get();

@@ -91,14 +91,14 @@ function checkmx_idna($host) {
 		}
 	}
 	else {
-       @exec("nslookup -querytype=MX {$host_idna}", $output);
-       while(list($k, $line) = each($output)) {
-           # Valid records begin with host name
-           if(preg_match("~^(".preg_quote($host)."|".preg_quote($host_idna).")~i", $line)) {
-               return true;
-           }
-       }
-       return false;
+	   @exec("nslookup -querytype=MX {$host_idna}", $output);
+	   while(list($k, $line) = each($output)) {
+		   # Valid records begin with host name
+		   if(preg_match("~^(".preg_quote($host)."|".preg_quote($host_idna).")~i", $line)) {
+			   return true;
+		   }
+	   }
+	   return false;
    }
 }
 
@@ -150,21 +150,21 @@ function checkRemotePic($pic, $id) {
 	if (filesize($origfile) > $config['avfilesize']) {
 		return REMOTE_FILESIZE_ERROR;
 	}
-    $imageinfo = @getimagesize($origfile);
-    if (is_array($imageinfo)) {
-    	list($width, $height, $type) = $imageinfo;
-    }
-    else {
-    	return REMOTE_IMAGE_ERROR;
-    }
+	$imageinfo = @getimagesize($origfile);
+	if (is_array($imageinfo)) {
+		list($width, $height, $type) = $imageinfo;
+	}
+	else {
+		return REMOTE_IMAGE_ERROR;
+	}
 	if ($width > $config['avwidth']) {
 		return REMOTE_IMAGE_WIDTH_ERROR;
 	}
 	if ($height > $config['avheight']) {
 		return REMOTE_IMAGE_HEIGHT_ERROR;
 	}
-    $types = explode(',', strtolower($config['avfiletypes']));
-    $ext = image_type_to_extension($type, false);
+	$types = explode(',', strtolower($config['avfiletypes']));
+	$ext = image_type_to_extension($type, false);
 	if (!in_array($ext, $types)) {
 		return REMOTE_EXTENSION_ERROR;
 	}
@@ -196,24 +196,24 @@ function JS_URL($url) {
 }
 
 function ini_maxupload() {
-    $keys = array(
-    'post_max_size' => 0,
-    'upload_max_filesize' => 0
-    );
-    foreach ($keys as $key => $bytes) {
-        $val = trim(@ini_get($key));
-        $last = strtolower($val{strlen($val)-1});
-        switch($last) {
-            case 'g':
-                $val *= 1024;
-            case 'm':
-                $val *= 1024;
-            case 'k':
-                $val *= 1024;
-        }
-        $keys[$key] = $val;
-    }
-    return min($keys);
+	$keys = array(
+	'post_max_size' => 0,
+	'upload_max_filesize' => 0
+	);
+	foreach ($keys as $key => $bytes) {
+		$val = trim(@ini_get($key));
+		$last = strtolower($val{strlen($val)-1});
+		switch($last) {
+			case 'g':
+				$val *= 1024;
+			case 'm':
+				$val *= 1024;
+			case 'k':
+				$val *= 1024;
+		}
+		$keys[$key] = $val;
+	}
+	return min($keys);
 }
 
 /**
@@ -222,7 +222,7 @@ function ini_maxupload() {
  * @param $arr, the array to be ordered
  * @param $l the "label" identifing the field
  * @param $f the ordering function to be used,
- *    strnatcasecmp() by default
+ *	strnatcasecmp() by default
  * @return  TRUE on success, FALSE on failure.
  */
 function array_columnsort(&$arr, $l , $f='strnatcasecmp') {
@@ -370,7 +370,7 @@ function invert ($int) {
 
 function serverload($int = false) {
 	if ($int == false) {
-		$unknown = 'Unknown';
+		$unknown = '-';
 	}
 	else {
 		$unknown = -1;
@@ -407,83 +407,83 @@ function convert2adress($url) {
    $url = strtolower($url);
 
    $find = array(' ',
-      '"',
-      '&',
-      '\r\n',
-      '\n',
-      '/',
-      '\\',
-      '+',
-      '<',
-      '>');
+	  '"',
+	  '&',
+	  '\r\n',
+	  '\n',
+	  '/',
+	  '\\',
+	  '+',
+	  '<',
+	  '>');
    $url = str_replace ($find, '-', $url);
 
    $find = array('é',
-      'è',
-      'ë',
-      'ê',
-      'É',
-      'È',
-      'Ë',
-      'Ê');
+	  'è',
+	  'ë',
+	  'ê',
+	  'É',
+	  'È',
+	  'Ë',
+	  'Ê');
    $url = str_replace ($find, 'e', $url);
 
    $find = array('í',
-      'ì',
-      'î',
-      'ï',
-      'Í',
-      'Ì',
-      'Î',
-      'Ï');
+	  'ì',
+	  'î',
+	  'ï',
+	  'Í',
+	  'Ì',
+	  'Î',
+	  'Ï');
    $url = str_replace ($find, 'i', $url);
 
    $find = array('ó',
-      'ò',
-      'ô',
-      'Ó',
-      'Ò',
-      'Ô');
+	  'ò',
+	  'ô',
+	  'Ó',
+	  'Ò',
+	  'Ô');
    $url = str_replace ($find, 'o', $url);
 
    $find = array('ö',
-       'Ö');
+	   'Ö');
    $url = str_replace ($find, 'oe', $url);
 
    $find = array('á',
-      'à',
-      'â',
-      'Á',
-      'À',
-      'Â');
+	  'à',
+	  'â',
+	  'Á',
+	  'À',
+	  'Â');
    $url = str_replace ($find, 'a', $url);
 
    $find = array('ä',
-       'Ä');
+	   'Ä');
    $url = str_replace ($find, 'ae', $url);
 
    $find = array('ú',
-      'ù',
-      'û',
-      'Ú',
-      'Ù',
-      'Û');
+	  'ù',
+	  'û',
+	  'Ú',
+	  'Ù',
+	  'Û');
    $url = str_replace ($find, 'u', $url);
 
    $find = array('ü',
-       'Ü');
+	   'Ü');
    $url = str_replace ($find, 'ue', $url);
 
    $find = array('ß');
    $url = str_replace ($find, 'ss', $url);
 
    $find = array('/[^a-z0-9\-<>]/',
-      '/[\-]+/',
-      '/<[^>]*>/');
+	  '/[\-]+/',
+	  '/<[^>]*>/');
 
    $repl = array('',
-      '-',
-      '');
+	  '-',
+	  '');
 
    $url =  preg_replace ($find, $repl, $url);
 
@@ -494,18 +494,18 @@ function convert2adress($url) {
 
 function removeOldImages ($dir, $name) {
 	global $filesystem;
-    $dir = realpath($dir);
-    $dir_open = @opendir($dir);
-    while (($dir_content = readdir($dir_open)) !== false) {
-        if ($dir_content != '.' && $dir_content != '..') {
-            $ext = get_extension($dir_content, true);
-            $fname = str_ireplace($ext, '', $dir_content);
-            if ($fname == $name) {
-                @$filesystem->unlink($dir.'/'.$dir_content);
-            }
-        }
-    }
-    closedir($dir_open);
+	$dir = realpath($dir);
+	$dir_open = @opendir($dir);
+	while (($dir_content = readdir($dir_open)) !== false) {
+		if ($dir_content != '.' && $dir_content != '..') {
+			$ext = get_extension($dir_content, true);
+			$fname = str_ireplace($ext, '', $dir_content);
+			if ($fname == $name) {
+				@$filesystem->unlink($dir.'/'.$dir_content);
+			}
+		}
+	}
+	closedir($dir_open);
 }
 
 function secure_path($path) {
@@ -555,16 +555,16 @@ function check_mail($email, $simple = false) {
 	 		}
 	 	}
 		if ($config['sessionmails'] == 1 && !$simple) {
-	    	// get the known domains in lower case
-	    	$sessionmails = file('data/sessionmails.php');
-	    	$sessionmails = array_map("trim", $sessionmails);
-	    	$sessionmails = array_map("strtolower", $sessionmails);
+			// get the known domains in lower case
+			$sessionmails = file('data/sessionmails.php');
+			$sessionmails = array_map("trim", $sessionmails);
+			$sessionmails = array_map("strtolower", $sessionmails);
 			// compare the data and return the result
 			if (in_array($domain, $sessionmails)) {
 				return false;
 			}
-	    }
-	    return true;
+		}
+		return true;
 	}
 	else {
 		return false;
@@ -602,8 +602,8 @@ function subxstr($str, $start, $length = null) {
 
 	// check if we can predict the return value and save some processing time
 	if ($html_length === 0 || $start >= $html_length || (isset($length) && $length <= -$html_length)) {
-     	return "";
-     }
+	 	return "";
+	 }
 
 	//calculate start position
 	if ($start >= 0) {
@@ -632,14 +632,14 @@ function subxstr($str, $start, $length = null) {
 }
 
 function random_word($laenge=8) {
-    $newpass = "";
-    $string="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-_?!.";
+	$newpass = "";
+	$string="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-_?!.";
 
-    for ($i=1; $i <= $laenge; $i++) {
-        $newpass .= substr($string, mt_rand(0,strlen($string)-1), 1);
-    }
+	for ($i=1; $i <= $laenge; $i++) {
+		$newpass .= substr($string, mt_rand(0,strlen($string)-1), 1);
+	}
 
-    return $newpass;
+	return $newpass;
 }
 
 function leading_zero($int,$length=2) {
@@ -764,8 +764,8 @@ function UpdateBoardStats($board) {
 	$topics = $count2[0];
 
 	$result = $db->query("SELECT id FROM {$db->pre}topics WHERE board = '{$board}' ORDER BY last DESC LIMIT 1");
-    $last = $db->fetch_num($result);
-    if (empty($last[0])) {
+	$last = $db->fetch_num($result);
+	if (empty($last[0])) {
 		$last[0] = 0;
 	}
 	$db->query("
@@ -779,8 +779,8 @@ function UpdateBoardStats($board) {
 function UpdateBoardLastStats($board) {
 	global $db;
 	$result = $db->query("SELECT id FROM {$db->pre}topics WHERE board = '{$board}' ORDER BY last DESC LIMIT 1");
-    $last = $db->fetch_num($result);
-    if (empty($last[0])) {
+	$last = $db->fetch_num($result);
+	if (empty($last[0])) {
 		$last[0] = 0;
 	}
 	$db->query("UPDATE {$db->pre}forums SET last_topic = '{$last[0]}' WHERE id = '{$board}'");
@@ -879,21 +879,21 @@ function ext_iptrim ($text, $peaces) {
 
 function getAge($bday) {
 	$now = times();
-    if (gmdate("Y", $now) == $bday[0] && gmdate("m", $now) == $bday[1] && gmdate("d", $now) == $bday[2]) {
+	if (gmdate("Y", $now) == $bday[0] && gmdate("m", $now) == $bday[1] && gmdate("d", $now) == $bday[2]) {
 		$result = 0;
-    }
+	}
 	else {
-    	$result = gmdate("Y", $now) - $bday[0];
-    	if ($bday[1] > gmdate("m", $now)) {
-    		$result--;
-    	}
-    	elseif ($bday[1] == gmdate("m", $now)) {
-        	if ($bday[2] > gmdate("d",$now)) {
-        		$result--;
-        	}
-    	}
-    }
-    return $result;
+		$result = gmdate("Y", $now) - $bday[0];
+		if ($bday[1] > gmdate("m", $now)) {
+			$result--;
+		}
+		elseif ($bday[1] == gmdate("m", $now)) {
+			if ($bday[2] > gmdate("d",$now)) {
+				$result--;
+			}
+		}
+	}
+	return $result;
 }
 
 function CheckForumTree($tree, &$tree2, $board) {
@@ -903,8 +903,8 @@ function CheckForumTree($tree, &$tree2, $board) {
 			if ($bdata['opt'] == 're' || !check_forumperm($bdata)) {
 				//unset();
 			}
-	    	CheckForumTree($sub, $tree2, $board);
-	    }
+			CheckForumTree($sub, $tree2, $board);
+		}
 	}
 }
 
@@ -942,11 +942,11 @@ function SelectForums($html, $tree, $cat, $board, $group = true, $char = '&nbsp;
 			}
 			$i++;
 			$html[] = '<option value="'.$bdata['id'].'">'.str_repeat($char, $level+1).$bdata['name'].'</option>';
-	    	$html = SelectForums($html, $sub, $cat, $board, $group, $char, $level+2);
-	    }
-	    if ($i == 0) {
-	    	$x = array_pop($html);
-	    }
+			$html = SelectForums($html, $sub, $cat, $board, $group, $char, $level+2);
+		}
+		if ($i == 0) {
+			$x = array_pop($html);
+		}
 	}
 	return $html;
 }
@@ -1027,7 +1027,7 @@ function xmail ($to, $from = array(), $topic, $comment) {
 	if ($config['smtp'] == 1) {
 		$mail->Mailer   = "smtp";
 		$mail->IsSMTP();
-		$mail->Host     = $config['smtp_host'];
+		$mail->Host	 = $config['smtp_host'];
 		if ($config['smtp_auth'] == 1) {
 			$mail->SMTPAuth = TRUE;
 			$mail->Username = $config['smtp_username'];
@@ -1050,29 +1050,29 @@ function xmail ($to, $from = array(), $topic, $comment) {
 	$i = 0;
 	foreach ($to as $email) {
 		$mail->IsHTML(false);
-	    $mail->Body = $gpc->plain_str($comment);
+		$mail->Body = $gpc->plain_str($comment);
 
-	    if (isset($email['name'])) {
-	    	$mail->AddAddress($gpc->plain_str($email['mail']), $gpc->plain_str($email['name']));
-	    }
-	    else {
-	    	$mail->AddAddress($gpc->plain_str($email['mail']));
-	    }
+		if (isset($email['name'])) {
+			$mail->AddAddress($gpc->plain_str($email['mail']), $gpc->plain_str($email['name']));
+		}
+		else {
+			$mail->AddAddress($gpc->plain_str($email['mail']));
+		}
 
 		if ($mail->Send()) {
 			$i++;
 		}
 
-	    $mail->ClearAddresses();
-	    $mail->ClearAttachments();
+		$mail->ClearAddresses();
+		$mail->ClearAttachments();
 	}
 	return $i;
 }
 
 function getcookie($name) {
-    global $config;
-    if (isset($_COOKIE[$config['cookie_prefix'].'_'.$name])) {
-    	return $_COOKIE[$config['cookie_prefix'].'_'.$name];
+	global $config;
+	if (isset($_COOKIE[$config['cookie_prefix'].'_'.$name])) {
+		return $_COOKIE[$config['cookie_prefix'].'_'.$name];
 	}
 	else {
 		return NULL;

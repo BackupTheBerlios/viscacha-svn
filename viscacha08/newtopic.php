@@ -267,8 +267,12 @@ elseif ($_GET['action'] == "save") {
 			'replies' => $_POST['temp'],
 			'guest' => 1,
 			'human' => $human,
-			'digest' => $digest
+			'digest' => $digest,
+			'name' => null,
+			'email' => null,
+			'guest' => 0
 		);
+
 		if (!$my->vlogin) {
 			if ($config['guest_email_optional'] == 0 && empty($_POST['email'])) {
 				$data['email'] = '';
@@ -400,6 +404,20 @@ else {
 	$prefix_obj = $scache->load('prefix');
 	$prefix_arr = $prefix_obj->get($board);
 
+	$standard_data = array(
+		'prefix' => 0,
+		'vote' => '',
+		'replies' => '',
+		'name' => '',
+		'email' => '',
+		'comment' => '',
+		'dosmileys' => 1,
+		'dowords' => 1,
+		'topic' => '',
+		'human' => false,
+		'digest' => 0
+	);
+
 	if (is_hash($fid)) {
 		$data = $gpc->unescape(import_error_data($fid));
 		$info = array($data['topic']);
@@ -418,22 +436,15 @@ else {
 				$prefix = $prefix_arr[$data['prefix']]['value'];
 			}
 		}
+		foreach ($standard_data as $key => $value) {
+			if (!isset($data[$key])) {
+				$data[$key] = $value;
+			}
+		}
 	}
 	else {
-		$data = array(
-			'prefix' => 0,
-			'vote' => '',
-			'replies' => '',
-			'name' => '',
-			'email' => '',
-			'comment' => '',
-			'dosmileys' => 1,
-			'dowords' => 1,
-			'topic' => '',
-			'human' => false,
-			'digest' => 0
-		);
-		$_GET['action'] = '';
+		$data = $standard_data;
+		$_GET['action'] = $_POST['action'] = '';
 	}
 
 	if (count($prefix_arr) > 0) {

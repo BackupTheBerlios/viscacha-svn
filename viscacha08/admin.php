@@ -97,6 +97,9 @@ if ($my->p['admin'] == 1) {
 	elseif ($action == 'packages') {
 		include('admin/packages.php');
 	}
+	elseif ($action == 'admin') {
+		include('admin/packages_admin.php');
+	}
 	elseif ($action == 'profilefield') {
 		include('admin/profilefield.php');
 	}

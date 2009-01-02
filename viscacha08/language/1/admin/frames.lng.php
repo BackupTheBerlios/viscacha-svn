@@ -9,7 +9,6 @@ $lang['admin_cache_manager'] = 'Cache-Verwaltung';
 $lang['admin_captcha_manager'] = 'Captcha-Verwaltung';
 $lang['admin_censorship'] = 'Zensur';
 $lang['admin_collapse_all'] = 'Alle zuklappen';
-$lang['admin_component_manager'] = 'Komponenten-Verwaltung';
 $lang['admin_content_manager'] = 'Content Management';
 $lang['admin_crawler'] = 'Spider & Robots';
 $lang['admin_crawler_manager'] = 'Spider & Robots verwalten';

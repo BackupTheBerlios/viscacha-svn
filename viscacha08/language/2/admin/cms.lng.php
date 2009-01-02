@@ -86,6 +86,7 @@ $lang['admin_cms_nav_existing_documents'] = 'Existing Documents';
 $lang['admin_cms_nav_file_url'] = 'File/URL:';
 $lang['admin_cms_nav_groups'] = 'Groups:';
 $lang['admin_cms_nav_groups_text'] = 'Groups which have the ability to view the box.';
+$lang['admin_cms_nav_package'] = 'Package:';
 $lang['admin_cms_nav_parent_box'] = 'Parent Box/Link:';
 $lang['admin_cms_nav_plugin'] = 'Plugin:';
 $lang['admin_cms_nav_plug_groups_text'] = 'Groups which have the ability to view the Plugin.';

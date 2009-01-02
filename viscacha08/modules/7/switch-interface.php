@@ -6,7 +6,10 @@ if (!empty($_POST['Extended']) && $my->vlogin) {
 		'dowords' => $_POST['dowords'],
 		'id' => $_POST['id'],
 		'digest' => 0,
-		'guest' => 0
+		'guest' => 0,
+		'human' => false,
+		'name' => null,
+		'email' => null
 	);
 	$fid = save_error_data($data);
 	viscacha_header("Location: addreply.php?id={$_POST['id']}&fid=".$fid.SID2URL_JS_x);

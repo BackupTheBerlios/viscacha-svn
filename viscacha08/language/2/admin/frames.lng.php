@@ -9,7 +9,6 @@ $lang['admin_cache_manager'] = 'Cache Manager';
 $lang['admin_captcha_manager'] = 'Captcha Manager';
 $lang['admin_censorship'] = 'Censorship Manager';
 $lang['admin_collapse_all'] = 'Collapse All';
-$lang['admin_component_manager'] = 'Component Manager';
 $lang['admin_content_manager'] = 'Content Management';
 $lang['admin_crawler'] = 'Crawler & Robots';
 $lang['admin_crawler_manager'] = 'Crawler & Robot Manager';

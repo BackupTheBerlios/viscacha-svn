@@ -112,6 +112,7 @@ function getViscachaCHMODs() {
 		array('path' => 'admin/data/bbcode_test.php', 'chmod' => CHMOD_WR, 'recursive' => false, 'req' => false),
 		array('path' => 'admin/data/config.inc.php', 'chmod' => CHMOD_WR, 'recursive' => false, 'req' => false),
 		array('path' => 'admin/data/hooks.txt', 'chmod' => CHMOD_WR, 'recursive' => false, 'req' => false),
+		array('path' => 'admin/html', 'chmod' => CHMOD_EX, 'recursive' => false, 'req' => true),
 
 		array('path' => 'data', 'chmod' => CHMOD_EX, 'recursive' => false, 'req' => true),
 		array('path' => 'data/cron', 'chmod' => CHMOD_EX, 'recursive' => false, 'req' => true),
@@ -135,6 +136,7 @@ function getViscachaCHMODs() {
 		array('path' => 'modules', 'chmod' => CHMOD_WR, 'recursive' => true, 'req' => false),
 
 		array('path' => 'temp', 'chmod' => CHMOD_EX, 'recursive' => true, 'req' => true),
+		array('path' => 'templates', 'chmod' => CHMOD_EX, 'recursive' => false, 'req' => true),
 		array('path' => 'uploads', 'chmod' => CHMOD_EX, 'recursive' => true, 'req' => true)
 
 	);

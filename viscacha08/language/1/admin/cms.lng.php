@@ -86,6 +86,7 @@ $lang['admin_cms_nav_existing_documents'] = 'Existierende Dokumente';
 $lang['admin_cms_nav_file_url'] = 'Datei/Adresse:';
 $lang['admin_cms_nav_groups'] = 'Gruppen:';
 $lang['admin_cms_nav_groups_text'] = 'Gruppen, denen es erlaubt ist die Box anzusehen';
+$lang['admin_cms_nav_package'] = 'Paket:';
 $lang['admin_cms_nav_parent_box'] = 'Übergeordnete/r Box/Link:';
 $lang['admin_cms_nav_plugin'] = 'Plugin:';
 $lang['admin_cms_nav_plug_groups_text'] = 'Gruppen, denen es erlaubt ist das Plugin anzusehen';

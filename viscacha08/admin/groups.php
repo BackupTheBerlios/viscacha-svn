@@ -12,12 +12,12 @@ if ($job == 'manage') {
 	$cache = array();
 	$delete = 0;
     while ($row = $db->fetch_assoc($result)) {
-    	if ($row['core'] == 0) {
-    		$delete = 1;
-    	}
-        $cache[] = $row;
-    }
-    $colspan = count($glk)+$delete;
+		if ($row['core'] == 0) {
+			$delete = 1;
+		}
+		$cache[] = $row;
+	}
+	$colspan = count($glk)+$delete;
 	?>
 <form name="form" method="post" action="admin.php?action=groups&job=delete">
  <table class="border">
@@ -51,7 +51,7 @@ if ($job == 'manage') {
   	<?php } ?>
   	</td>
   <?php } ?>
-  	<td><input type="radio" name="edit" value="<?php echo $row['id']; ?>"></td>
+    <td><input type="radio" name="edit" value="<?php echo $row['id']; ?>"></td>
     <td nowrap="nowrap"><?php echo $row['name']; ?><br /><?php echo $row['title']; ?></td>
 	<td><?php echo $row['id']; ?></td>
 	<?php
@@ -189,10 +189,10 @@ function setGroupBoxes(sel) {
   </tr>
   <tr>
       <td class="mbox" width="50%"><?php echo $lang->phrase('admin_groups_internal_name_for_the_group'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_groups_internal_name_for_the_group_description'); ?></span></td>
-      <td class="mbox" width="50%"><input type="text" name="name" size="35"></td>
+	  <td class="mbox" width="50%"><input type="text" name="name" size="35"></td>
   </tr><tr>
-      <td class="mbox" width="50%"><?php echo $lang->phrase('admin_groups_public_title'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_groups_public_title_for_users_in_the_forum'); ?></span></td>
-      <td class="mbox" width="50%"><input type="text" name="title" size="35"></td>
+	  <td class="mbox" width="50%"><?php echo $lang->phrase('admin_groups_public_title'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_groups_public_title_for_users_in_the_forum'); ?></span></td>
+	  <td class="mbox" width="50%"><input type="text" name="title" size="35"></td>
   </tr>
   <tr>
    <td class="ubox" colspan="2" align="center"><input type="hidden" name="guest" value="0"><input type="submit" name="Submit" value="<?php echo $lang->phrase('admin_groups_add'); ?>"></td>
@@ -293,7 +293,7 @@ elseif ($job == 'edit') {
   <?php
   foreach ($glk as $key) {
   	$result = array_search($key, $guest_limitation);
-  	$editable = !(($data['guest'] == 1 && $data['core'] == 1) && $result !== false && $result !== null);
+  	$editable = !(($data['guest'] == 1 && $data['core'] == 1) && $result !== false);
   	if ($key != 'guest' && $editable) {
   ?>
   <tr>
@@ -312,11 +312,11 @@ elseif ($job == 'edit') {
    <td class="obox" colspan="2"><?php echo $lang->phrase('admin_groups_edit_an_usergroup_settings'); ?></td>
   </tr>
   <tr>
-      <td class="mbox" width="50%"><?php echo $lang->phrase('admin_groups_internal_name_for_the_group'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_groups_internal_name_for_the_group_description'); ?></span></td>
-      <td class="mbox" width="50%"><input type="text" name="name" size="35" value="<?php echo $data['name']; ?>"></td>
+	  <td class="mbox" width="50%"><?php echo $lang->phrase('admin_groups_internal_name_for_the_group'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_groups_internal_name_for_the_group_description'); ?></span></td>
+	  <td class="mbox" width="50%"><input type="text" name="name" size="35" value="<?php echo $data['name']; ?>"></td>
   </tr><tr>
-      <td class="mbox" width="50%"><?php echo $lang->phrase('admin_groups_public_title'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_groups_public_title_description'); ?></span></td>
-      <td class="mbox" width="50%"><input type="text" name="title" size="35" value="<?php echo $data['title']; ?>"></td>
+	  <td class="mbox" width="50%"><?php echo $lang->phrase('admin_groups_public_title'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_groups_public_title_description'); ?></span></td>
+	  <td class="mbox" width="50%"><input type="text" name="title" size="35" value="<?php echo $data['title']; ?>"></td>
   </tr>
   <tr>
    <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="<?php echo $lang->phrase('admin_groups_edit'); ?>"></td>
@@ -339,7 +339,7 @@ elseif ($job == 'edit2') {
 	$sql_values = '';
 	foreach ($glk as $key) {
 	  	$result = array_search($key, $guest_limitation);
-	  	$editable = !(($data['guest'] == 1 && $data['core'] == 1) && $result !== false && $result !== null);
+	  	$editable = !(($data['guest'] == 1 && $data['core'] == 1) && $result !== false);
 		if ($key != 'guest' && $editable) {
 			$sql_values .= $key.' = "'.$gpc->get($key, int).'", ';
 		}
