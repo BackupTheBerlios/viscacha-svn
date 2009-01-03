@@ -1913,7 +1913,13 @@ elseif ($job == 'spiders') {
 	  </tr>
 	  <tr>
 	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_activate_logging_visits'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_activate_logging_visits_info'); ?></span></td>
-	   <td class="mbox" width="50%"><input type="checkbox" name="spider_logvisits" value="1"<?php echo iif($config['spider_logvisits'],' checked'); ?>></td>
+	   <td class="mbox" width="50%">
+	    <select name="spider_logvisits">
+	     <option value="0"<?php echo iif($config['spider_logvisits'] == 0, ' selected="selected"'); ?>><?php echo $lang->phrase('admin_logvisits_no_logging'); ?></option>
+	     <option value="1"<?php echo iif($config['spider_logvisits'] == 1, ' selected="selected"'); ?>><?php echo $lang->phrase('admin_logvisits_full_logging'); ?></option>
+	     <option value="2"<?php echo iif($config['spider_logvisits'] == 2, ' selected="selected"'); ?>><?php echo $lang->phrase('admin_logvisits_count_logging'); ?></option>
+	    </select>
+	   </td>
 	  </tr>
 	  <tr>
 	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_activate_logging_missing_ip'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_activate_logging_missing_ip_info'); ?></span></td>
