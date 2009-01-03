@@ -169,7 +169,7 @@ if (!empty($info['vquestion'])) {
 		'phrase' => null // Phrase to switch to the survey form (change/add)
 	);
 
-	if (!$my->vlogin || $my->p['voting'] == 0 || $_GET['temp'] == 1) {
+	if (!$my->vlogin || $my->p['voting'] == 0 || $_GET['temp'] == 1 || $info['status'] != 0) {
 		$vote['results'] = true;
 	}
 

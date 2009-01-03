@@ -883,6 +883,11 @@ elseif ($job == 'lang_array2') {
 	}
 	$c->savedata();
 
+	if (strpos($file,  'javascript.lng.php') !== false) {
+		$delobj = $scache->load('loadlanguage');
+		$delobj->delete();
+	}
+
 	ok('admin.php?action=language&job=lang_array&id='.$id.'&file='.$file.'&page='.$page);
 }
 elseif ($job == 'lang_default') {
@@ -1345,6 +1350,11 @@ elseif ($job == 'phrase_file_edit2') {
 		$c->savedata();
 	}
 
+	if (strpos($encfile,  'javascript.lng.php') !== false) {
+		$delobj = $scache->load('loadlanguage');
+		$delobj->delete();
+	}
+
 	ok('admin.php?action=language&job=phrase_file&file='.$file);
 }
 elseif ($job == 'phrase_file_copy') {
@@ -1437,6 +1447,10 @@ elseif ($job == 'phrase_file_delete') {
 			}
 			$c->savedata();
 		}
+	}
+	if (strpos($encfile,  'javascript.lng.php') !== false) {
+		$delobj = $scache->load('loadlanguage');
+		$delobj->delete();
 	}
 	ok('admin.php?action=language&job=phrase_file&file='.$file, $lang->phrase('admin_lang_selected_phrases_deleted'));
 }
@@ -1624,6 +1638,11 @@ elseif ($job == 'phrase_add2') {
 		$c->getdata("language/{$id}/{$file}", 'lang');
 		$c->updateconfig($varname, str, $t);
 		$c->savedata();
+	}
+
+	if (strpos($file,  'javascript.lng.php') !== false) {
+		$delobj = $scache->load('loadlanguage');
+		$delobj->delete();
 	}
 
 	ok('admin.php?action=language&job=phrase_file&file='.urlencode(base64_encode($file)));

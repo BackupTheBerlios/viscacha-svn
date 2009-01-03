@@ -17,6 +17,15 @@ class cache_loadlanguage extends CacheItem {
 		}
 	}
 
+	function delete() {
+		global $filesystem;
+		$this->createJavascript();
+    	if ($filesystem->unlink($this->file)) {
+        	return true;
+       	}
+	    return false;
+	}
+
 	function createJavascript() {
 		global $lang, $config, $filesystem;
 		$old_lang = $lang->getdir(true);

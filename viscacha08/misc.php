@@ -449,7 +449,7 @@ elseif ($_GET['action'] == "vote") {
 
 	($code = $plugins->load('misc_vote_start')) ? eval($code) : null;
 
-	$result = $db->query("SELECT board FROM {$db->pre}topics WHERE id = '{$_GET['id']}' LIMIT 1");
+	$result = $db->query("SELECT board, status FROM {$db->pre}topics WHERE id = '{$_GET['id']}' LIMIT 1");
 	$info = $db->fetch_assoc($result);
 	$my->p = $slog->Permissions($info['board']);
 
@@ -457,9 +457,13 @@ elseif ($_GET['action'] == "vote") {
 		errorLogin($lang->phrase('not_allowed'));
 	}
 
+	if ($info['status'] != 0) {
+		error($lang->phrase('topic_closed'));
+	}
+
 	$answers = array();
 	$result = $db->query("
-		SELECT r.mid
+		SELECT r.id
 		FROM {$db->pre}vote AS v
 			LEFT JOIN {$db->pre}votes AS r ON v.id = r.aid
 		WHERE v.tid = '{$_GET['id']}' AND r.mid = '{$my->id}'
@@ -482,7 +486,7 @@ elseif ($_GET['action'] == "vote") {
 	}
 	else {
 		($code = $plugins->load('misc_vote_savedata')) ? eval($code) : null;
-		if ($voted) {
+		if ($voted > 0) {
 			$db->query("UPDATE {$db->pre}votes SET aid = '{$_POST['temp']}' WHERE id = '{$voted}'");
 		}
 		else {
