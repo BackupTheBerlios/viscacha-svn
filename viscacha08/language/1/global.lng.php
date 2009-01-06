@@ -513,6 +513,7 @@ $lang['post_editinfo1'] = 'Dieser Beitrag wurde ';
 $lang['post_editinfo2'] = ' mal editiert, das letzte Mal am {$date} von {@lastdata->0}.';
 $lang['post_editinfo_na'] = 'Nicht angegeben.';
 $lang['post_info_location'] = 'Wohnort: ';
+$lang['post_info_postcount'] = 'Beiträge: ';
 $lang['post_info_registered_since'] = 'Dabei seit: ';
 $lang['post_quote'] = 'Zitieren';
 $lang['post_quote_direct'] = 'Beitrag direkt zitieren';

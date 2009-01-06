@@ -513,6 +513,7 @@ $lang['post_editinfo1'] = 'This post has been edited ';
 $lang['post_editinfo2'] = ' times. Last edit on {$date} by {@lastdata->0}.';
 $lang['post_editinfo_na'] = 'N/A';
 $lang['post_info_location'] = 'Location: ';
+$lang['post_info_postcount'] = 'Posts: ';
 $lang['post_info_registered_since'] = 'Registered since: ';
 $lang['post_quote'] = 'Quote';
 $lang['post_quote_direct'] = 'Quote post directly';

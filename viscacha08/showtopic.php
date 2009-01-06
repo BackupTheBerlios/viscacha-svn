@@ -296,12 +296,14 @@ if ($info['last'] > $my->clv) {
 // Custom Profile Fields
 include_once('classes/class.profilefields.php');
 $pfields = new ProfileFieldViewer();
-
+$rel_post_num = $start;
 while ($row = $db->fetch_object($result)) {
 	$inner['upload_box'] = '';
 	$inner['image_box'] = '';
 
 	$row = $slog->cleanUserData($row);
+	$rel_post_num++;
+	$row->rel_post_num = $rel_post_num;
 
 	if ($row->guest == 0) {
 		$row->mail = '';
