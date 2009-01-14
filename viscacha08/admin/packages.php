@@ -1749,7 +1749,7 @@ elseif ($job == 'package_active') {
 		}
 		$delobj = $scache->load('components');
 		$delobj->delete();
-		viscacha_header('Location: admin.php?action=packages&job=package');
+		sendStatusCode(307, $config['furl'].'/admin.php?action=packages&job=package');
 	}
 }
 elseif ($job == 'plugins') {
@@ -1986,7 +1986,7 @@ elseif ($job == 'plugins_move') {
 		$filesystem->unlink('cache/modules/'.$plugins->_group($row['position']).'.php');
 		$delobj = $scache->load('components');
 		$delobj->delete();
-		viscacha_header('Location: admin.php?action=packages&job=plugins');
+		sendStatusCode(307, $config['furl'].'/admin.php?action=packages&job=plugins');
 	}
 }
 elseif ($job == 'plugins_active') {
@@ -2007,7 +2007,7 @@ elseif ($job == 'plugins_active') {
 		$filesystem->unlink('cache/modules/'.$plugins->_group($row['position']).'.php');
 		$delobj = $scache->load('components');
 		$delobj->delete();
-		viscacha_header('Location: admin.php?action=packages&job=plugins');
+		sendStatusCode(307, $config['furl'].'/admin.php?action=packages&job=plugins');
 	}
 }
 elseif ($job == 'plugins_delete') {

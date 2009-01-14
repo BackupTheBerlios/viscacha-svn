@@ -11,7 +11,7 @@ if ($job == 'manage') {
 	$result = $db->query("SELECT * FROM {$db->pre}groups ORDER BY admin DESC , guest ASC , core ASC");
 	$cache = array();
 	$delete = 0;
-    while ($row = $db->fetch_assoc($result)) {
+	while ($row = $db->fetch_assoc($result)) {
 		if ($row['core'] == 0) {
 			$delete = 1;
 		}
@@ -30,7 +30,7 @@ if ($job == 'manage') {
   <tr class="ubox">
   	<?php if ($delete == 1) { ?><td valign="bottom"><b><?php echo $lang->phrase('admin_groups_delete'); ?></b></td><?php } ?>
   	<td valign="bottom"><b><?php echo $lang->phrase('admin_groups_edit'); ?></b></td>
-    <td valign="bottom"><b><?php echo $lang->phrase('admin_groups_name'); ?><br /><?php echo $lang->phrase('admin_groups_public_title_head'); ?></b></td>
+	<td valign="bottom"><b><?php echo $lang->phrase('admin_groups_name'); ?><br /><?php echo $lang->phrase('admin_groups_public_title_head'); ?></b></td>
 	<td valign="bottom"><b><?php echo $lang->phrase('admin_groups_id'); ?></b></td>
 	<?php foreach ($gls as $txt) { ?>
    	<td valign="bottom"><img src="images.php?action=textimage&amp;text=<?php echo rawurlencode($txt); ?>&amp;angle=90&amp;bg=<?php echo $txt2img_bg; ?>&amp;fg=<?php echo $txt2img_fg; ?>" border="0"></td>
@@ -51,8 +51,8 @@ if ($job == 'manage') {
   	<?php } ?>
   	</td>
   <?php } ?>
-    <td><input type="radio" name="edit" value="<?php echo $row['id']; ?>"></td>
-    <td nowrap="nowrap"><?php echo $row['name']; ?><br /><?php echo $row['title']; ?></td>
+	<td><input type="radio" name="edit" value="<?php echo $row['id']; ?>"></td>
+	<td nowrap="nowrap"><?php echo $row['name']; ?><br /><?php echo $row['title']; ?></td>
 	<td><?php echo $row['id']; ?></td>
 	<?php
 	foreach ($glk as $txt) {
@@ -188,7 +188,7 @@ function setGroupBoxes(sel) {
    <td class="obox" colspan="2"><?php echo $lang->phrase('admin_groups_add_a_new_usergroup_settings'); ?></td>
   </tr>
   <tr>
-      <td class="mbox" width="50%"><?php echo $lang->phrase('admin_groups_internal_name_for_the_group'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_groups_internal_name_for_the_group_description'); ?></span></td>
+	  <td class="mbox" width="50%"><?php echo $lang->phrase('admin_groups_internal_name_for_the_group'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_groups_internal_name_for_the_group_description'); ?></span></td>
 	  <td class="mbox" width="50%"><input type="text" name="name" size="35"></td>
   </tr><tr>
 	  <td class="mbox" width="50%"><?php echo $lang->phrase('admin_groups_public_title'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_groups_public_title_for_users_in_the_forum'); ?></span></td>
@@ -270,10 +270,10 @@ elseif ($job == 'delete') {
 		ok('admin.php?action=groups&job=manage', $lang->phrase('admin_groups_x_groups_deleted'));
 	}
 	elseif (isset($_POST['submit_edit']) && $edit > 0) {
-		viscacha_header('Location: admin.php?action=groups&job=edit&id='.$edit);
+		sendStatusCode(307, $config['furl'].'/admin.php?action=groups&job=edit&id='.$edit);
 	}
 	else {
-		viscacha_header('Location: admin.php?action=groups&job=manage');
+		sendStatusCode(307, $config['furl'].'/admin.php?action=groups&job=manage');
 	}
 }
 elseif ($job == 'edit') {

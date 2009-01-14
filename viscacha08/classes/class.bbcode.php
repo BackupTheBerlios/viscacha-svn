@@ -46,10 +46,10 @@ class BBCode {
 	var $url_regex;
 
 	function BBCode ($profile = 'viscacha') {
-	    $this->benchmark = array(
-	    	'smileys' => 0,
-	    	'bbcode' => 0
-	    );
+		$this->benchmark = array(
+			'smileys' => 0,
+			'bbcode' => 0
+		);
 		$this->smileys = null;
 		$this->bbcodes = null;
 		$this->custombb = null;
@@ -87,29 +87,29 @@ class BBCode {
 	}
 	function cb_list ($matches) {
 		list(, $type, $pattern) = $matches;
-	    $liarray = preg_split('/(\n\s?-\s|\[\*\])/', "\n".$pattern); // Add line break for the first "-", it will be trimmed in the next line.
-	    $liarray = array_map('trim', $liarray);
-	    $list = '';
-	    foreach ($liarray as $li) {
-	    	if (!empty($li)) {
-	        	$list .= '<li>'.$li.'</li>';
-	        }
-	    }
-	    if (empty($list)) {
-	    	return '';
-	    }
-	    if (!empty($type)) {
-	        if ($type == 'a' || $type == 'A' || $type == 'i' || $type == 'I') {
-	            $list = "<ol type='{$type}'>{$list}</ol>";
-	        }
-	        else {
-	            $list = "<ol>{$list}</ol>";
-	        }
-	    }
-	    else {
-	        $list = "<ul>{$list}</ul>";
-	    }
-	    return $list;
+		$liarray = preg_split('/(\n\s?-\s|\[\*\])/', "\n".$pattern); // Add line break for the first "-", it will be trimmed in the next line.
+		$liarray = array_map('trim', $liarray);
+		$list = '';
+		foreach ($liarray as $li) {
+			if (!empty($li)) {
+				$list .= '<li>'.$li.'</li>';
+			}
+		}
+		if (empty($list)) {
+			return '';
+		}
+		if (!empty($type)) {
+			if ($type == 'a' || $type == 'A' || $type == 'i' || $type == 'I') {
+				$list = "<ol type='{$type}'>{$list}</ol>";
+			}
+			else {
+				$list = "<ol>{$list}</ol>";
+			}
+		}
+		else {
+			$list = "<ul>{$list}</ul>";
+		}
+		return $list;
 	}
 	function code_trim ($code) {
 		$code = preg_replace('/^([\s\t]*\n+)?(.+?)(\n+[\s\t]*)?$/s', '\2', $code);
@@ -132,7 +132,7 @@ class BBCode {
 		$pid = $this->noparse_id();
 		list(,, $sclang, $code, $nl) = $matches;
 
-		$code = trim($code);
+		$code = trim($code, "\r\n");
 	    $rows = explode("\n", $code);
 	    if (count($rows) > 1) {
 	    	$scache->loadClass('UniversalCodeCache');
@@ -152,6 +152,7 @@ class BBCode {
 			$this->noparse[$pid] = $html;
 	    }
 		else {
+			$code = trim($code);
 			$code = $this->code_prepare($code, (count($rows) <= 1));
 			$this->noparse[$pid] = '<code class="bb_inlinecode">'.$code.'</code>';
 			if (!empty($nl)) {
@@ -251,8 +252,8 @@ class BBCode {
 		$this->noparse[$pid] = $url;
 
 		if ($title != false) {
-		    $ahref = '<a href="<!PID:'.$pid.'>" target="_blank">'.$title.'</a>';
-		    return $ahref;
+			$ahref = '<a href="<!PID:'.$pid.'>" target="_blank">'.$title.'</a>';
+			return $ahref;
 		}
 		elseif ($this->profile['reduceUrl'] == 1 && strxlen($url) >= $config['maxurllength']) {
 			$prefix = ceil($config['maxurllength']/5);
@@ -271,72 +272,72 @@ class BBCode {
 		   $ahref = '<a href="<!PID:'.$pid.'>" target="_blank"><!PID:'.$pid.'></a>';
 		}
 
-	    return $ahref.$chop;
+		return $ahref.$chop;
 	}
 	function cb_plain_list ($matches) {
 		list(, $type, $pattern) = $matches;
-	    $liarray = preg_split('/(\n\s?-\s|\[\*\])/',$pattern);
-	    $list = "\n";
-	    $i = 0;
-	    $pre = '  ';
-	    foreach ($liarray as $li) {
-	    	$li = trim($li);
-		    if (empty($li)) {
-		    	continue;
-		    }
-	    	$i++;
-	    	if (!empty($type)) {
-		        if ($type == 'i' || $type == 'I') {
+		$liarray = preg_split('/(\n\s?-\s|\[\*\])/',$pattern);
+		$list = "\n";
+		$i = 0;
+		$pre = '  ';
+		foreach ($liarray as $li) {
+			$li = trim($li);
+			if (empty($li)) {
+				continue;
+			}
+			$i++;
+			if (!empty($type)) {
+				if ($type == 'i' || $type == 'I') {
 					$converter = new ConvertRoman($i);
 					$a = $converter->result();
 					if ($type == 'i') {
 						$a = strtolower($a);
 					}
 					$list .= $pre."{$a}. {$li}\n";
-		        }
-		        elseif ($type == 'a' || $type == 'A') {
+				}
+				elseif ($type == 'a' || $type == 'A') {
 					$converter = new ConvertRoman($i, TRUE);
 					$a = $converter->result();
 					if ($type == 'a') {
 						$a = strtolower($a);
 					}
 					$list .= $pre."{$a}. {$li}\n";
-		        }
-		        else {
-		            $list .= $pre."{$i}. {$li}\n";
-		        }
-		    }
-		    else {
-		        $list .= $pre."- {$li}\n";
-		    }
-	    }
-	    // A workaround for a bug in the parser
-	    $list = preg_replace('/ +?([a-zA-Z0-9\-\.]+?) \n/is', '', $list);
-	    return $list;
+				}
+				else {
+					$list .= $pre."{$i}. {$li}\n";
+				}
+			}
+			else {
+				$list .= $pre."- {$li}\n";
+			}
+		}
+		// A workaround for a bug in the parser
+		$list = preg_replace('/ +?([a-zA-Z0-9\-\.]+?) \n/is', '', $list);
+		return $list;
 	}
 	function cb_plain_code ($matches) {
 		global $lang;
 		$pid = $this->noparse_id();
 
 		list(,,$code) = $matches;
-	    $rows = explode("\n",$code);
+		$rows = explode("\n",$code);
 		$code = $this->code_prepare($code);
 
-	    if (count($rows) > 1) {
-	    	$a = 0;
-	    	$code = '';
-	    	$lines = strlen(count($rows));
-		    foreach ($rows as $row) {
-		        $a++;
-		        $code .= leading_zero($a, $lines).": {$row}\n";
-		    }
+		if (count($rows) > 1) {
+			$a = 0;
+			$code = '';
+			$lines = strlen(count($rows));
+			foreach ($rows as $row) {
+				$a++;
+				$code .= leading_zero($a, $lines).": {$row}\n";
+			}
 
-		    $this->noparse[$pid] = "\n".$lang->phrase('bb_sourcecode')."\n-------------------\n{$code}-------------------\n";
+			$this->noparse[$pid] = "\n".$lang->phrase('bb_sourcecode')."\n-------------------\n{$code}-------------------\n";
 		}
 		else {
 			$this->noparse[$pid] = $code;
 		}
-	    return '<!PID:'.$pid.'>';
+		return '<!PID:'.$pid.'>';
 	}
 	function strip_bbcodes ($text) {
 		$this->cache_bbcode();
@@ -382,7 +383,7 @@ class BBCode {
 			$text = preg_replace('/\[edit=(.+?)\](.+?)\[\/edit\]\n?/is', "\n\\2\n", $text);
 		}
 
-		$text = str_ireplace('[tab]', "    ", $text);
+		$text = str_ireplace('[tab]', "	", $text);
 		$text = str_ireplace('[reader]', $this->reader, $text);
 
 		$text = preg_replace('/\[[^\/\r\n\[\]]+?\](.+?)\[\/[^\/\s\r\n\[\]]+?\]/is', "\\1", $text);
@@ -401,10 +402,10 @@ class BBCode {
 		$this->noparse = array();
 		$text = preg_replace('/(\r\n|\r|\n)/', "\n", $text);
 		if($type == 'html' && (!empty($my->p['admin']) || ($my->id > 0 && $my->id == $this->author))) {
-		    $text = preg_replace('/\n?\[hide\](.+?)\[\/hide\]/is', '<br /><div class="bb_hide"><strong>'.$lang->phrase('bb_hidden_content').'</strong><span>\1</span></div>', $text);
+			$text = preg_replace('/\n?\[hide\](.+?)\[\/hide\]/is', '<br /><div class="bb_hide"><strong>'.$lang->phrase('bb_hidden_content').'</strong><span>\1</span></div>', $text);
 		}
 		else {
-		    $text = preg_replace('/\[hide\](.+?)\[\/hide\]/is', '', $text);
+			$text = preg_replace('/\[hide\](.+?)\[\/hide\]/is', '', $text);
 		}
 		if ($type == 'plain') {
 			$text = preg_replace("~\[url={$this->url_regex}\](.+?)\[\/url\]~is", "\\3 (\\1)", $text);
@@ -452,7 +453,7 @@ class BBCode {
 			$text = preg_replace('/\[table(=[^\]]+)?\](.+?)\[\/table\]\n?/is', "\n", $text); // ToDo: Plain Table
 
 			$text = preg_replace('/(\[hr\]){1,}/is', "\n-------------------\n", $text);
-			$text = str_ireplace('[tab]', "    ", $text);
+			$text = str_ireplace('[tab]', "	", $text);
 		}
 		else {
 			$text = empty($this->profile['disallow']['code']) ? preg_replace_callback('/\[code(=(\w+?))?\](.+?)\[\/code\](\n?)/is', array(&$this, 'cb_hlcode'), $text) : $text;
@@ -674,11 +675,11 @@ class BBCode {
 	/**
 	 * Converts tabs to the appropriate amount of spaces while preserving formatting
 	 *
-	 * @author      Aidan Lister <aidan@php.net>
-	 * @version     1.2.0
-	 * @param       string    $text     The text to convert
-	 * @param       int       $spaces   Number of spaces per tab column
-	 * @return      string    The text with tabs replaced
+	 * @author	  Aidan Lister <aidan@php.net>
+	 * @version	 1.2.0
+	 * @param	   string	$text	 The text to convert
+	 * @param	   int	   $spaces   Number of spaces per tab column
+	 * @return	  string	The text with tabs replaced
 	 */
 	function tab2space ($text, $spaces = 4) {
 		$char = chr(7);
@@ -696,10 +697,10 @@ class BBCode {
 		return str_replace($char, '&nbsp;', implode("\n", $result));
 	}
 	function getBenchmark($type='bbcode') {
-	    return round($this->benchmark[$type], 5);
+		return round($this->benchmark[$type], 5);
 	}
 	function parseSmileys ($text, $type = 'html') {
-	    $start = benchmarktime();
+		$start = benchmarktime();
 		if ($type != 'plain') {
 			$this->cache_smileys();
 			foreach ($this->smileys as $smiley) {
@@ -726,7 +727,7 @@ class BBCode {
 		return $this->custombb;
 	}
 	function existsProfile($name) {
-	    return isset($this->cfg[$name]);
+		return isset($this->cfg[$name]);
 	}
 	function setProfile ($name = 'standard', $new = SP_CHANGE) {
 		if ($new == SP_COPY) {
@@ -842,77 +843,77 @@ class BBCode {
 			foreach ($this->bbcodes['word'] as $word) {
 				$this->index++;
 				$word['search'] = trim($word['search']);
-			    if ($type == 'plain') {
-			    	$text = str_replace(
-			    		'\"',
-			    		'"',
-			    		substr(
-			    			preg_replace(
-			    				'#(\>(((?>([^><]+|(?R)))*)\<))#se',
-			    				"preg_replace(
-			    					'#\b({$word['search']})\b#i',
-			    					'\\\\1 ({$word['replace']})',
-			    					'\\0'
-			    				)",
-			    				'>' . $text . '<',
-			    				1 // Only the first occurance
-			    			)
-			    			, 1,
-			    			-1
-			    		)
-			    	);
-	            }
-	            else {
-	            	$word['search'] = htmlspecialchars($word['search']);
-	            	$text = str_replace(
-	            		'\"',
-	            		'"',
-	            		substr(
-	            			preg_replace(
-	            				'#(\>(((?>([^><]+|(?R)))*)\<))#se',
-	            				"preg_replace(
-	            					'#\b({$word['search']})\b#i',
-	            					'<acronym title=\"{$word['replace']}\" id=\"menu_tooltip_{$this->index}\" onmouseover=\"RegisterTooltip({$this->index})\">\\\\1</acronym><div class=\"tooltip\" id=\"popup_tooltip_{$this->index}\"><span id=\"header_tooltip_{$this->index}\"></span><div class=\"tooltip_body\">{$word['desc']}</div></div>',
-	            					'\\0'
-	            				)",
-	            				'>' . $text . '<',
-	            				1 // Only the first occurance
-	            			),
-	            			1,
-	            			-1
-	            		)
-	            	);
-	            }
+				if ($type == 'plain') {
+					$text = str_replace(
+						'\"',
+						'"',
+						substr(
+							preg_replace(
+								'#(\>(((?>([^><]+|(?R)))*)\<))#se',
+								"preg_replace(
+									'#\b({$word['search']})\b#i',
+									'\\\\1 ({$word['replace']})',
+									'\\0'
+								)",
+								'>' . $text . '<',
+								1 // Only the first occurance
+							)
+							, 1,
+							-1
+						)
+					);
+				}
+				else {
+					$word['search'] = htmlspecialchars($word['search']);
+					$text = str_replace(
+						'\"',
+						'"',
+						substr(
+							preg_replace(
+								'#(\>(((?>([^><]+|(?R)))*)\<))#se',
+								"preg_replace(
+									'#\b({$word['search']})\b#i',
+									'<acronym title=\"{$word['replace']}\" id=\"menu_tooltip_{$this->index}\" onmouseover=\"RegisterTooltip({$this->index})\">\\\\1</acronym><div class=\"tooltip\" id=\"popup_tooltip_{$this->index}\"><span id=\"header_tooltip_{$this->index}\"></span><div class=\"tooltip_body\">{$word['desc']}</div></div>',
+									'\\0'
+								)",
+								'>' . $text . '<',
+								1 // Only the first occurance
+							),
+							1,
+							-1
+						)
+					);
+				}
 			}
 		}
 		return $text;
 	}
 	function censor ($text) {
 		$this->cache_bbcode();
-	    if ($this->profile['useCensor'] == 2) {
-	    	foreach ($this->bbcodes['censor'] as $word) {
-	            $letters = str_split($word['search']);
-	            $word['search'] = array();
-	            foreach ($letters as $letter) {
-	                $word['search'][] = preg_quote($letter, '~');
-	            }
-	            $word['search'] = implode("(\s|\.|\[[^\]]+?\])?", $word['search']);
-	            $text = preg_replace("~".$word['search']."~is", $word['replace'], $text);
-            }
-        }
-        elseif ($this->profile['useCensor'] == 1) {
-        	foreach ($this->bbcodes['censor'] as $word) {
-            	$text = str_ireplace($word['search'], $word['replace'], $text);
-            }
-        }
+		if ($this->profile['useCensor'] == 2) {
+			foreach ($this->bbcodes['censor'] as $word) {
+				$letters = str_split($word['search']);
+				$word['search'] = array();
+				foreach ($letters as $letter) {
+					$word['search'][] = preg_quote($letter, '~');
+				}
+				$word['search'] = implode("(\s|\.|\[[^\]]+?\])?", $word['search']);
+				$text = preg_replace("~".$word['search']."~is", $word['replace'], $text);
+			}
+		}
+		elseif ($this->profile['useCensor'] == 1) {
+			foreach ($this->bbcodes['censor'] as $word) {
+				$text = str_ireplace($word['search'], $word['replace'], $text);
+			}
+		}
 		return $text;
 	}
 	function replace ($text) {
 		$this->cache_bbcode();
 		if (isset($this->profile['useReplace']) && $this->profile['useReplace'] == 1) {
 			foreach ($this->bbcodes['replace'] as $word) {
-            	$text = str_ireplace($word['search'], $word['replace'], $text);
-            }
+				$text = str_ireplace($word['search'], $word['replace'], $text);
+			}
 		}
 		return $text;
 	}
@@ -930,8 +931,8 @@ class BBCode {
 			if ($type == 'plain') {
 				$re['bbcodereplacement'] = strip_tags($re['bbcodereplacement']);
 			}
-           	$text = preg_replace('~'.$regexp.'~is', $re['bbcodereplacement'], $text);
-        }
+		   	$text = preg_replace('~'.$regexp.'~is', $re['bbcodereplacement'], $text);
+		}
 		return $text;
 	}
 	function wordwrap ($text, $length = FALSE) {
@@ -997,7 +998,7 @@ class BBCode {
 		$codelang = $scache->load('syntaxhighlight');
 		$clang = $codelang->get();
 
-	    $this->cache_smileys();
+		$this->cache_smileys();
 		$smileys = array(0 => array(), 1 => array());
 		foreach ($this->smileys as $bb) {
 		   	if ($bb['show'] == 1) {

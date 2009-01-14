@@ -139,8 +139,8 @@ function sendStatusCode($code, $additional = null) {
 	);
 
 	if (isset($status[$code])) {
-		viscacha_header("HTTP 1.1 {$code} {$status[$code]}");
-		viscacha_header("Status: {$code} {$status[$code]}");
+
+		viscacha_header("Status: {$code} {$status[$code]}", true, $num);
 
 		// Additional headers
 		if ($additional != null) {
@@ -148,13 +148,13 @@ function sendStatusCode($code, $additional = null) {
 				case '301':
 				case '302':
 				case '307':
-					viscacha_header("Location: {$additional}");
+					viscacha_header("Location: {$additional}", true, $code);
 				break;
 				case '401':
-					viscacha_header('WWW-Authenticate: Basic Realm="'.$additional.'"');
+					viscacha_header('WWW-Authenticate: Basic Realm="'.$additional.'"', true, $code);
 				break;
 				case '503':
-					viscacha_header("Retry-After: {$additional}");
+					viscacha_header("Retry-After: {$additional}", true, $code);
 				break;
 			}
 		}

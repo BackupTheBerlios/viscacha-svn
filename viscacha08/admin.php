@@ -115,7 +115,7 @@ if ($my->p['admin'] == 1) {
 		$url = $gpc->get('url', none);
 		if (!empty($url)) {
 			$db->close();
-			viscacha_header('Location: '.$url);
+			sendStatusCode(307, $url);
 			exit;
 		}
 		else {

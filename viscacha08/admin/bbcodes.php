@@ -30,7 +30,7 @@ if ($job == 'smileys_delete') {
 elseif ($job == 'smileys_edit') {
 	$editid = $gpc->get('id', arr_int);
 	if (count($editid) == 0) {
-		viscacha_header('Location: admin.php?action=bbcodes&job=smileys');
+		sendStatusCode(307, $config['furl'].'/admin.php?action=bbcodes&job=smileys');
 		exit;
 	}
 	$result = $db->query('SELECT * FROM '.$db->pre.'smileys WHERE id IN ('.implode(',', $editid).')');
@@ -379,8 +379,8 @@ elseif ($job == 'smileys') {
   <tr>
    <td class="ubox" colspan="6" align="center">
    Selected Smileys: <select name="job">
-    <option value="smileys_edit" selected="selected"><?php echo $lang->phrase('admin_bbc_edit'); ?></option>
-    <option value="smileys_export"><?php echo $lang->phrase('admin_bbc_export'); ?></option>
+	<option value="smileys_edit" selected="selected"><?php echo $lang->phrase('admin_bbc_edit'); ?></option>
+	<option value="smileys_export"><?php echo $lang->phrase('admin_bbc_export'); ?></option>
    	<option value="smileys_delete"><?php echo $lang->phrase('admin_bbc_delete'); ?></option>
    </select>&nbsp;&nbsp;&nbsp;&nbsp;
    <input type="submit" value="<?php echo $lang->phrase('admin_bbc_go'); ?>">
@@ -471,7 +471,7 @@ elseif ($job == 'smileys_add') {
 		$error[] = $lang->phrase('admin_bbc_wrong_spec');
 	}
 	if (count($error) > 0) {
-	    error('admin.php?action=bbcodes&job=smileys', $error);
+		error('admin.php?action=bbcodes&job=smileys', $error);
 	}
 	if ($has_upload) {
 		$filesystem->copy($path.$has_upload, $config['smileypath'].'/'.$has_upload);
@@ -837,7 +837,7 @@ elseif ($job == 'del_codefiles') {
 	}
 	$delobj = $scache->load('syntaxhighlight');
 	$delobj->delete();
-    ok('admin.php?action=bbcodes&job=codefiles', $lang->phrase('admin_bbc_files_successfully_deleted'));
+	ok('admin.php?action=bbcodes&job=codefiles', $lang->phrase('admin_bbc_files_successfully_deleted'));
 }
 elseif ($job == 'custombb_export') {
 	$id = $gpc->get('id', int);
@@ -862,7 +862,7 @@ elseif ($job == 'custombb_export') {
 			$data['buttonimage'] = '';
 		}
 		else {
-		    $ext = get_extension($data['buttonimage']);
+			$ext = get_extension($data['buttonimage']);
 			if (!in_array($ext, $imagetype_extension)) {
 				$data['buttonimage'] = '';
 			}

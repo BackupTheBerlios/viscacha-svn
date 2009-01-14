@@ -2961,7 +2961,7 @@ elseif ($job == 'ips') {
 					</li>
 					<?php
 				}
-				if ($db->num_rows($result) == 0) {
+				if ($db->num_rows($users) == 0) {
 					?>
 					<li><?php echo $lang->phrase('admin_member_no_matches'); ?></li>
 					<?php
@@ -2990,7 +2990,7 @@ elseif ($job == 'ips') {
 					</li>
 					<?php
 				}
-				if ($db->num_rows($result) == 0) {
+				if ($db->num_rows($ips) == 0) {
 					?>
 					<li><?php echo $lang->phrase('admin_member_no_matches'); ?></li>
 					<?php

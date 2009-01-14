@@ -356,7 +356,7 @@ elseif ($_GET['action'] == "about2") {
 		if (!empty($_POST['Preview'])) {
 			$slog->updatelogged();
 			$db->close();
-			viscacha_header("Location: editprofile.php?action=about&job=preview&fid=".$fid.SID2URL_JS_x);
+			sendStatusCode(307, $config['furl'].'/editprofile.php?action=about&job=preview&fid='.$fid.SID2URL_JS_x);
 			exit;
 		}
 		else {

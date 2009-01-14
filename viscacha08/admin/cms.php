@@ -585,7 +585,7 @@ elseif ($job == 'nav_move') {
 	$delobj = $scache->load('modules_navigation');
 	$delobj->delete();
 
-	viscacha_header('Location: admin.php?action=cms&job=nav');
+	sendStatusCode(307, $config['furl'].'/admin.php?action=cms&job=nav');
 }
 elseif ($job == 'nav_active') {
 	$id = $gpc->get('id', int);
@@ -612,7 +612,7 @@ elseif ($job == 'nav_active') {
 
 	$delobj = $scache->load('modules_navigation');
 	$delobj->delete();
-	viscacha_header('Location: admin.php?action=cms&job=nav');
+	sendStatusCode(307, $config['furl'].'/admin.php?action=cms&job=nav');
 }
 elseif ($job == 'nav_addplugin') {
 	echo head();
@@ -1149,9 +1149,9 @@ elseif ($job == 'doc_select_color') {
 	 </tr>
 	 <tr class="mbox" align="center">
 	  <td>
-	    <?php echo $lang->phrase('admin_wysiwyg_hey_code'); ?> <input type="text" size="10" name="enterColor" id="enterColor" /><br /><br class="minibr" />
-	    <input type="submit" value="<?php echo $lang->phrase('admin_wysiwyg_form_submit'); ?>" />
-	    <input type="button" onclick="self.close();" value="<?php echo $lang->phrase('admin_wysiwyg_form_cancel'); ?>" />
+		<?php echo $lang->phrase('admin_wysiwyg_hey_code'); ?> <input type="text" size="10" name="enterColor" id="enterColor" /><br /><br class="minibr" />
+		<input type="submit" value="<?php echo $lang->phrase('admin_wysiwyg_form_submit'); ?>" />
+		<input type="button" onclick="self.close();" value="<?php echo $lang->phrase('admin_wysiwyg_form_cancel'); ?>" />
 	  </td>
 	 </tr>
 	 <tr>

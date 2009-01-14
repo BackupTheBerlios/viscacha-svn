@@ -1648,6 +1648,6 @@ elseif ($job == 'phrase_add2') {
 	ok('admin.php?action=language&job=phrase_file&file='.urlencode(base64_encode($file)));
 }
 else {
-	viscacha_header('Location: admin.php?action=language&job=manage');
+	sendStatusCode(307, $config['furl'].'/admin.php?action=language&job=manage');
 }
 ?>

@@ -54,7 +54,7 @@ if ($_GET['action'] == "boardin") {
 	else {
 		$slog->updatelogged();
 		$db->close();
-		viscacha_header('Location: showforum.php?id='.$board.SID2URL_JS_x);
+		sendStatusCode(307, $config['furl'].'/showforum.php?id='.$board.SID2URL_JS_x);
 		exit;
 	}
 
