@@ -991,6 +991,8 @@ function check_forumperm($forum) {
 /*
 Sends a plain text e-mail in UTF-8.
 
+All parameters should be in html entity mode, not in utf-8!
+
 Params:
 	(array/string)	$to		= Recipient
 					$to[]['name'] = Name of Recipient (opt)
@@ -1003,7 +1005,7 @@ Params:
 */
 
 function xmail ($to, $from = array(), $topic, $comment) {
-	global $config, $my, $lang, $bbcode, $gpc;
+	global $config, $gpc;
 
 	require_once("classes/mail/class.phpmailer.php");
 
@@ -1085,18 +1087,18 @@ function makecookie($name, $value = '', $expire = 31536000) {
 		return FALSE;
 	}
 
-//	if ($_SERVER['SERVER_PORT'] == '443' || isset($_SERVER['HTTPS'])) {
-//		$secure = 1;
-//	}
-//	else {
-//		$secure = 0;
-//	}
+	if ((isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == '443') || isset($_SERVER['HTTPS'])) {
+		$secure = true;
+	}
+	else {
+		$secure = false;
+	}
 	if ($expire != null) {
 		$expire = time() + $expire;
 	}
 	else {
 		$expire = 0;
 	}
-	setcookie($name, $value, $expire);
+	setcookie($name, $value, $expire, null, null, $secure);
 }
 ?>

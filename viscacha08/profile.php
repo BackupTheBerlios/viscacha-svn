@@ -113,7 +113,7 @@ if (($_GET['action'] == 'mail' || $_GET['action'] == 'sendmail') && $is_member) 
 				set_flood();
 				$to = array('0' => array('name' => $row->name, 'mail' => $row->mail));
 				$from = array('name' => $my->name, 'mail' => $my->mail);
-				xmail($to, $from, $gpc->get('topic', none), $gpc->get('comment', none));
+				xmail($to, $from, $gpc->get('topic', html_enc), $gpc->get('comment', html_enc));
 				ok($lang->phrase('email_sent'),"profile.php?id=".$_GET['id'].SID2URL_x);
 			}
 
