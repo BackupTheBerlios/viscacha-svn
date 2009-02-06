@@ -66,9 +66,15 @@ class GPC {
 					$_REQUEST[$index] = trim($_REQUEST[$index]);
 				}
 				$var = $this->save_str($_REQUEST[$index]);
+				if ($type == arr_str && !is_array($var)) {
+					$var = array($var);
+				}
 			}
 			elseif ($type == int || $type == arr_int) {
 				$var = $this->save_int($_REQUEST[$index]);
+				if ($type == arr_int && !is_array($var)) {
+					$var = array($var);
+				}
 			}
 			elseif ($type == db_esc) {
 				global $db;
@@ -83,6 +89,9 @@ class GPC {
 			}
 			else {
 				$var = $this->secure_null($_REQUEST[$index]);
+				if ($type == arr_none && !is_array($var)) {
+					$var = array($var);
+				}
 			}
 		}
 		else {

@@ -91,7 +91,7 @@ class HTML extends FeedCreator {
 		$description = $this->getDescription($this->encoding);
 		if ($description) {
 			$feedArray[] = "<div class='".$this->stylePrefix."description'>".
-				str_replace("]]>", "", str_replace("<![CDATA[", "", $encoding)).
+				str_replace("]]>", "", str_replace("<![CDATA[", "", $this->encoding)).
 				"</div>";
 		}
 

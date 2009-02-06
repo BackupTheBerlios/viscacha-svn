@@ -10,7 +10,7 @@ class cache_components extends CacheItem {
 			$result = $db->query("
 				SELECT p.id AS cid, c.id, p.internal
 				FROM {$db->pre}packages AS p
-					LEFT JOIN {$db->pre}plugin AS c ON c.module = p.id
+					LEFT JOIN {$db->pre}plugins AS c ON c.module = p.id
 				WHERE c.active = '1' AND p.active = '1' AND c.position = CONCAT('component_', p.internal)
 			");
 			$this->data = array();

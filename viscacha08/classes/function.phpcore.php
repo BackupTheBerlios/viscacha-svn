@@ -140,7 +140,7 @@ function sendStatusCode($code, $additional = null) {
 
 	if (isset($status[$code])) {
 
-		viscacha_header("Status: {$code} {$status[$code]}", true, $num);
+		viscacha_header("Status: {$code} {$status[$code]}", true, $code);
 
 		// Additional headers
 		if ($additional != null) {

@@ -334,7 +334,6 @@ else {
 }
 
 $slog->updatelogged();
-$zeitmessung = t2();
 $phpdoc->Out();
 $db->close();
 ?>

@@ -79,8 +79,6 @@ elseif ($job == 'l_mysqlerror') {
     <td class="stext"><?php echo date("D, j M Y", $data[6]); ?><br /><?php echo date("G:i:s O", $data[6]); ?></td>
    </tr>
    <?php } } ?>
-   </td>
-  </tr>
   <tr>
    <td class="ubox" align="center" colspan="8"><input type="submit" name="Submit" value="<?php echo $lang->phrase('admin_slog_delete_log_now'); ?>"></td>
   </tr>

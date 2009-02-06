@@ -795,6 +795,7 @@ function sid_new() {
 		$my = $this->cleanUserData($db->fetch_object($result));
 		$nodata = ($db->num_rows($result) == 1) ? false : true;
 		if ($nodata == true) { // Loginversuch mit falschen Daten => Versuch protokollieren!
+			makecookie($config['cookie_prefix'].'_vdata', '|', 0);
 			set_failed_login();
 		}
 	}
@@ -853,7 +854,7 @@ function sid_logout() {
 	");
 	$db->query("UPDATE {$db->pre}user SET lastvisit = '{$time}' WHERE id = '{$my->id}'");
 
-	makecookie($config['cookie_prefix'].'_vdata', '|', -60);
+	makecookie($config['cookie_prefix'].'_vdata', '|', 0);
 }
 
 /**
@@ -967,7 +968,7 @@ function sid_login($remember = true) {
 			$expire = 31536000;
 		}
 		else {
-			$expire = null;
+			$expire = 900;
 		}
 		makecookie($config['cookie_prefix'].'_vdata', $my->id.'|'.$my->pw, $expire);
 		$this->cookiedata[0] = $my->id;

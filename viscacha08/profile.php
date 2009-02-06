@@ -200,7 +200,7 @@ elseif ($_GET['action'] == 'emailimage' && $is_guest) {
 	}
 	include('classes/graphic/class.text2image.php');
 	$img = new text2image();
-	$img->prepare($email, 0, 10, 'classes/fonts/trebuchet.ttf');
+	$img->prepare($email, 0, 10);
 	$img->build();
 	$img->output();
 	exit;

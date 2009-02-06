@@ -335,6 +335,7 @@ $lang['htaccess_error_404'] = 'Page not found (404)';
 $lang['htaccess_error_500'] = 'Internal server error (500)';
 $lang['illegal_mail'] = 'Invalid e-mail address given';
 $lang['illegal_search'] = 'You created a invalid search request.';
+$lang['img_captcha_session_expired_error'] = 'Session expired<br>Refresh the Page';
 $lang['im_aol'] = 'AOL or Netscape Messenger';
 $lang['im_aol_1'] = 'Add <em>{@row->aol}</em> to your contact list';
 $lang['im_aol_2'] = 'Send a message to <em>{@row->aol}</em>';

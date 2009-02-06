@@ -1,5 +1,5 @@
 ########################################
-# Readme for Viscacha 0.8 RC 6         #
+# Readme for Viscacha 0.8 RC 7         #
 ########################################
 
 == Table of Contents ==
@@ -180,7 +180,7 @@ Replace with:
 == System requirements ==
 
 Minimum system requirements:
- - PHP Version: 4.3.0 and above
+ - PHP Version: 5.0.0 and above (PHP 4.3.0 or higher may work, too)
  - PHP-Extensions: mysql or mysqli, pcre, gd, zlib
  - MySQL Version: 4.0 and above
 
