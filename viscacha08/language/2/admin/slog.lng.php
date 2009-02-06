@@ -3,10 +3,12 @@ if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
 $lang = array();
 $lang['admin_slog_ascending'] = 'Ascending';
 $lang['admin_slog_attachments'] = 'Attachments:';
+$lang['admin_slog_backtrace'] = 'Runtime information';
 $lang['admin_slog_daily'] = 'Daily';
 $lang['admin_slog_date'] = 'Date';
 $lang['admin_slog_delete_log_now'] = 'Delete the log file now!';
 $lang['admin_slog_descending'] = 'Descending';
+$lang['admin_slog_error_num'] = 'No.';
 $lang['admin_slog_error_report'] = 'Error report';
 $lang['admin_slog_favourite_threads'] = 'Favourite threads:';
 $lang['admin_slog_file'] = 'File: ';
