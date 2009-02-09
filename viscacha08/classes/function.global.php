@@ -41,7 +41,8 @@ $plugins = new PluginSystem();
 // Construct base bb-code object
 $bbcode = new BBCode();
 
-define('URL_REGEXP', '/^(http:\/\/|www.)([\wäöüÄÖÜ@\-_\.]+)\:?([0-9]*)\/?(.*)$/i');
+define('URL_REGEXP', 'https?://[a-z\d\-\.@]+(?:\.[a-z]{2,7})?(?::\d+)?/?(?:[a-zA-Z0-9\-\.:_\?\,;/\\\+&%\$#\=\~\[\]]*[a-zA-Z0-9\-\.:_\?\,;/\\\+&%\$#\=\~])?');
+define('EMAIL_REGEXP', "[a-z0-9!#\$%&'\*\+/=\?\^_\{\|\}\~\-]+(?:\.[a-z0-9!#$%&'\*\+/=\?\^_\{\|\}\~\-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?");
 
 define('REMOTE_INVALID_URL', 100);
 define('REMOTE_CLIENT_ERROR', 200);
@@ -107,7 +108,7 @@ function get_remote($file) {
 		include('classes/class.snoopy.php');
 	}
 
-	if (!preg_match(URL_REGEXP, $file, $url_ary)) {
+	if (!preg_match('~^'.URL_REGEXP.'$~i', $file, $url_ary)) {
 		return REMOTE_INVALID_URL;
 	}
 
@@ -197,8 +198,8 @@ function JS_URL($url) {
 
 function ini_maxupload() {
 	$keys = array(
-	'post_max_size' => 0,
-	'upload_max_filesize' => 0
+		'post_max_size' => 0,
+		'upload_max_filesize' => 0
 	);
 	foreach ($keys as $key => $bytes) {
 		$val = trim(@ini_get($key));
@@ -534,7 +535,7 @@ function secure_path($path) {
 }
 
 function check_hp($hp) {
-	if (preg_match("~^https?://[a-z\d\-\.@]+(\.[a-z]{2,7})?(:\d+)?/?([a-zA-Z0-9\-\.:_\?\,;/\\\+&%\$#\=\~\[\]]*)?$~i", $hp)) {
+	if (preg_match("~^".URL_REGEXP."$~i", $hp)) {
 		return true;
 	}
 	else {
@@ -544,7 +545,7 @@ function check_hp($hp) {
 
 function check_mail($email, $simple = false) {
 	global $config;
-	if(preg_match("/^([_a-zA-Zäöü0-9-]+(\.[_a-zA-Z0-9äöu-]+)*@[a-zA-Zäöu0-9-]+(\.[a-zA-Z0-9äöü-]+)*(\.[a-zA-Z]{2,}))/si", $email)) {
+	if(preg_match("~^".EMAIL_REGEXP."$~i", $email)) {
 	 	list(, $domain) = explode('@', $email);
 	 	$domain = strtolower($domain);
 		// Check MX record.

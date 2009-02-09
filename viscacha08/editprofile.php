@@ -443,7 +443,7 @@ elseif ($_GET['action'] == "pic2") {
 			$error[] = $my_uploader->get_error();
 		}
 	}
-	elseif (!empty($pic) && preg_match(URL_REGEXP, $pic)) {
+	elseif (!empty($pic) && preg_match('~^'.URL_REGEXP.'$~i', $pic)) {
 		$my->pic = checkRemotePic($pic, $my->id);
 		switch ($my->pic) {
 			case REMOTE_INVALID_URL:

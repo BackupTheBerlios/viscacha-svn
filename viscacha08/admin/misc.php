@@ -652,7 +652,7 @@ elseif ($job == "credits") {
 		$mhashext = "<span style='color: red'>".$lang->phrase('admin_misc_n_a')."</span>";
 	}
 
-	if (version_compare(PHP_VERSION, '4.1.0', '>=')) {
+	if (version_compare(PHP_VERSION, '5.0.0', '>=')) {
 		$phpv = '<span style="color: green">'.$lang->phrase('admin_misc_yes').'</span>';
 	}
 	else {

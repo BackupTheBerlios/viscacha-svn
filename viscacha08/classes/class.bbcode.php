@@ -44,6 +44,7 @@ class BBCode {
 	var $author;
 	var $index;
 	var $url_regex;
+	var $currentCBB;
 
 	function BBCode ($profile = 'viscacha') {
 		$this->benchmark = array(
@@ -53,6 +54,7 @@ class BBCode {
 		$this->smileys = null;
 		$this->bbcodes = null;
 		$this->custombb = null;
+		$this->currentCBB = null;
 		$this->profile = '';
 		$this->cfg = array();
 		$this->reader = '';
@@ -429,6 +431,8 @@ class BBCode {
 				$text = preg_replace_callback('/\[list(?:=(a|A|I|i|OL|ol))?\](.+?)\[\/list\]/is', array(&$this, 'cb_plain_list'), $text);
 			}
 
+			$text = $this->customBB($text, $type);
+
 			$text = preg_replace('/\[note=([^\]]+?)\](.+?)\[\/note\]/is', "\\1 (\\2)", $text);
 			$text = preg_replace('/\[color=(\#?[0-9A-F]{3,6})\](.+?)\[\/color\]/is', "\\2", $text);
 			$text = preg_replace('/\[align=(left|center|right|justify)\](.+?)\[\/align\]/is', "\\2", $text);
@@ -470,6 +474,8 @@ class BBCode {
 			}
 
 			$text = $this->ListWorkAround($text);
+
+			$text = $this->customBB($text, $type);
 
 			$text = preg_replace_callback("~\[url\]{$this->url_regex}\[\/url\]~is", array(&$this, 'cb_url'), $text);
 			$text = preg_replace_callback("~\[url={$this->url_regex}\](.+?)\[\/url\]~is", array(&$this, 'cb_title_url'), $text);
@@ -516,7 +522,6 @@ class BBCode {
 			$text = $this->wordwrap($text);
 		}
 		$text = str_ireplace('[reader]', $this->reader, $text);
-		$text = $this->customBB($text, $type);
 		$text = $this->parseDoc($text);
 		$text = $this->dict($text, $type);
 		$text = $this->replace($text);
@@ -917,21 +922,30 @@ class BBCode {
 		}
 		return $text;
 	}
+	function cbb_helper($matches) {
+		if ($this->currentCBB != null) {
+			$index = $this->currentCBB['twoparams'] ? 2 : 1;
+			$this->currentCBB['bbcodereplacement'] = preg_replace('~\{param(:(?:\\\}|[^\}])+)?\}~i', $matches[$index], $this->currentCBB['bbcodereplacement']);
+			if ($this->currentCBB['twoparams']) {
+				$pid = $this->noparse_id();
+				$this->noparse[$pid] = $matches[1];
+				$this->currentCBB['bbcodereplacement'] = preg_replace('~\{option(:(?:\\\}|[^\}])+)?\}~i', "<!PID:{$pid}>", $this->currentCBB['bbcodereplacement']);
+			}
+			return $this->currentCBB['bbcodereplacement'];
+		}
+		else {
+			return $matches[0];
+		}
+	}
 	function customBB ($text, $type='html') {
 		$this->getCustomBB();
 		foreach ($this->custombb as $re) {
-			// Paramter for Opening Tag
-			$param = ($re['twoparams'] ? '=([^\]\'\"]*?)' : '');
-			// Opening Tag
-			$regexp = '\['.$re['bbcodetag'].$param.'\]';
-			// Getting content
-			$regexp .= '(.+?)';
-			// Closing Tag
-			$regexp .= '\[\/'.$re['bbcodetag'].'\]';
 			if ($type == 'plain') {
 				$re['bbcodereplacement'] = strip_tags($re['bbcodereplacement']);
 			}
-		   	$text = preg_replace('~'.$regexp.'~is', $re['bbcodereplacement'], $text);
+			$this->currentCBB = $re;
+		   	$text = preg_replace_callback('~'.$re['bbregexp'].'~i', array(&$this, 'cbb_helper'), $text);
+		   	$this->currentCBB = null;
 		}
 		return $text;
 	}

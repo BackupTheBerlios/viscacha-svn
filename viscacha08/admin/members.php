@@ -1701,7 +1701,7 @@ elseif ($job == 'edit2') {
 	if (!isset($cache2[$query['opt_5']])) {
 		$error[] = $lang->phrase('admin_member_lang_not_valid');
 	}
-	if (!empty($query['pic']) && preg_match(URL_REGEXP, $query['pic'])) {
+	if (!empty($query['pic']) && preg_match('~^'.URL_REGEXP.'$~i', $query['pic'])) {
 		$query['pic'] = checkRemotePic($query['pic'], $query['id']);
 		switch ($query['pic']) {
 			case REMOTE_INVALID_URL:
