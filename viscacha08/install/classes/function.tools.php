@@ -1,4 +1,7 @@
 <?php
+function makeOneLine($str) {
+	return str_replace(array("\r\n","\n","\r","\t","\0"), ' ', $str);
+}
 function getFilePath($package, $step) {
 	$package2 = explode('_', $package, 2);
 	if (!empty($package2[1]) && !file_exists('package/'.$package.'/steps/'.$step.'.php')) {

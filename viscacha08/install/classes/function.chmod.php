@@ -119,7 +119,7 @@ function getViscachaCHMODs() {
 		array('path' => 'data', 'chmod' => CHMOD_WR, 'recursive' => true, 'req' => true),
 
 		array('path' => 'cache', 'chmod' => CHMOD_EX, 'recursive' => true, 'req' => true),
-//		array('path' => 'cache', 'chmod' => CHMOD_WR, 'recursive' => true, 'req' => false),
+		array('path' => 'cache', 'chmod' => CHMOD_WR, 'recursive' => true, 'req' => false),
 
 		array('path' => 'classes/cron/jobs', 'chmod' => CHMOD_EX, 'recursive' => false, 'req' => false),
 		array('path' => 'classes/feedcreator', 'chmod' => CHMOD_EX, 'recursive' => false, 'req' => false),
@@ -128,7 +128,7 @@ function getViscachaCHMODs() {
 		array('path' => 'classes/graphic/noises', 'chmod' => CHMOD_EX, 'recursive' => false, 'req' => false),
 
 		array('path' => 'feeds', 'chmod' => CHMOD_EX, 'recursive' => false, 'req' => true),
-//		array('path' => 'feeds', 'chmod' => CHMOD_WR, 'recursive' => true, 'req' => true),
+		array('path' => 'feeds', 'chmod' => CHMOD_WR, 'recursive' => true, 'req' => true),
 
 		array('path' => 'images', 'chmod' => CHMOD_EX, 'recursive' => true, 'req' => false),
 
