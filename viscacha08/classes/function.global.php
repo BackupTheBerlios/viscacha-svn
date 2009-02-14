@@ -65,7 +65,8 @@ function is_hash($string) {
 function newCAPTCHA($place = null) {
 	global $config;
 	$place = 'botgfxtest'.iif(!empty($place), '_'.$place);
-	$type = constant('CAPTCHA_TYPE_'.$config[$place]);
+	$cfg = $config[$place];
+	$type = constant('CAPTCHA_TYPE_'.$cfg);
 	$filename = strtolower($type);
 	require_once("classes/graphic/class.{$filename}.php");
 	$obj = new $type();

@@ -2018,7 +2018,10 @@ elseif ($job == 'custom') {
 	<form name="form" method="post" action="admin.php?action=settings&job=custom2&id=<?php echo $id; ?>&package=<?php echo $package; ?>">
 	 <table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
 	  <tr>
-	   <td class="obox" colspan="4"><b><?php echo $lang->phrase('admin_custom_settings'); ?></b></td>
+	   <td class="obox" colspan="4">
+	    <span class="right"><a class="button" href="admin.php?action=settings&amp;job=new&amp;package=<?php echo $package; ?>"><?php echo $lang->phrase('admin_setting_new_setting'); ?></a></span>
+	    <?php echo $lang->phrase('admin_custom_settings'); ?>
+	   </td>
 	  </tr>
 	<?php
 	if ($db->num_rows($result) > 0) {
@@ -2042,7 +2045,7 @@ elseif ($job == 'custom') {
 	else {
 	?>
 	  <tr>
-	   <td class="mbox" colspan="4" align="center"><?php echo $lang->phrase('admin_custom_settings_info'); ?> <a href="admin.php?action=settings&job=new&package=<?php echo $package; ?>"><?php echo $lang->phrase('admin_custom_settings_info2'); ?></a></td>
+	   <td class="mbox" colspan="4" align="center"><?php echo $lang->phrase('admin_custom_settings_info'); ?> <a href="admin.php?action=settings&amp;job=new&amp;package=<?php echo $package; ?>"><?php echo $lang->phrase('admin_custom_settings_info2'); ?></a></td>
 	  </tr>
 	<?php
 	}

@@ -38,10 +38,10 @@ $com = $scache->load('components');
 $cache = $com->get();
 
 if (isset($cache[$cid])) {
-	DEFINE('PACKAGE_ID', $cache[$cid]['cid']);
-	DEFINE('PACKAGE_INTERNAL', $cache[$cid]['internal']);
-	DEFINE('PLUGIN_ID', $cache[$cid]['id']);
-	DEFINE('PLUGIN_DIR', 'modules/'.PACKAGE_ID.'/');
+	define('PACKAGE_ID', $cache[$cid]['cid']);
+	define('PACKAGE_INTERNAL', $cache[$cid]['internal']);
+	define('PACKAGE_DIR', 'modules/'.PACKAGE_ID.'/');
+	define('PLUGIN_ID', $cache[$cid]['id']);
 	unset($cache);
 
 	($code = $plugins->load('component_'.PACKAGE_INTERNAL)) ? eval($code) : null;

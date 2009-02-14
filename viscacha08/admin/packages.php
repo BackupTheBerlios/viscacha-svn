@@ -2763,7 +2763,7 @@ elseif ($job == 'plugins_template_edit') {
 		}
 
 		?>
-		<form method="post" action="admin.php?action=packages&job=plugins_template_edit2&id=<?php echo $data['id']; ?>&edit=<?php echo $editId; ?>">
+		<form method="post" action="admin.php?action=packages&amp;job=plugins_template_edit2&amp;id=<?php echo $data['id']; ?>&amp;edit=<?php echo $editId; ?>">
 		<table class="border" border="0" cellspacing="0" cellpadding="4" align="center">
 		 <tr>
 		  <td class="obox" colspan="2"><?php echo $lang->phrase('admin_packages_template_edit_add_edit_template'); ?></td>
@@ -2791,7 +2791,7 @@ elseif ($job == 'plugins_template_edit') {
 		  	echo '<td>';
 		  	echo $lang->phrase('admin_packages_template_edit_template_groups').' <b>'.$tplid.'</b><br />';
 		  	echo $lang->phrase('admin_packages_template_edit_designs_affected_by_changes').$affected.'<br />';
-		  	echo '<textarea name="code['.$tplid.']" rows="8" cols="80" class="texteditor">'.$content.'</textarea>';
+		  	echo '<textarea name="code['.$tplid.']" rows="8" cols="80" class="texteditor">'.$gpc->prepare($content).'</textarea>';
 		  	echo '</td></tr>';
 		  }
 		  ?>
