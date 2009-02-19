@@ -100,7 +100,7 @@ if ($job == 'package') {
 	  	<td class="mbox">
 	  		<a class="button" href="admin.php?action=packages&amp;job=package_info&amp;id=<?php echo $row['id']; ?>"><?php echo $lang->phrase('admin_packages_package_details'); ?></a>
 	  		<?php if (in_array($row['id'], $hasACP)) { ?>
-	  		<a class="button" href="admin.php?action=packages&amp;job=package_admin&amp;cid=<?php echo $row['id']; ?>"><?php echo $lang->phrase('admin_packages_administration'); ?></a>
+	  		<a class="button" href="admin.php?action=admin&amp;cid=<?php echo $row['id']; ?>"><?php echo $lang->phrase('admin_packages_administration'); ?></a>
 	  		<?php } if ($row['config'] > 0) { ?>
 	  		<a class="button" href="admin.php?action=settings&amp;job=custom&amp;id=<?php echo $row['config']; ?>&amp;package=<?php echo $row['id']; ?>"><?php echo $lang->phrase('admin_packages_configuration'); ?></a>
 	  		<?php } ?>
@@ -1458,7 +1458,7 @@ elseif ($job == 'package_info') {
 		<a class="button" href="admin.php?action=packages&amp;job=package_delete&amp;id=<?php echo $package['id']; ?>"><?php echo $lang->phrase('admin_packages_delete'); ?></a>
 		<a class="button" href="admin.php?action=packages&amp;job=package_edit&amp;id=<?php echo $package['id']; ?>"><?php echo $lang->phrase('admin_packages_info_edit'); ?></a>
 		<?php if (isset($modules['admin_component_'.$package['internal']])) { ?>
-	  	 <a class="button" href="admin.php?action=packages&amp;job=package_admin&amp;cid=<?php echo $package['id']; ?>"><?php echo $lang->phrase('admin_packages_administration'); ?></a>
+	  	 <a class="button" href="admin.php?action=admin&amp;cid=<?php echo $package['id']; ?>"><?php echo $lang->phrase('admin_packages_administration'); ?></a>
 	  	<?php } ?>
 	   </span>
 	   	<?php
