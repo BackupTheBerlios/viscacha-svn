@@ -30,139 +30,25 @@ _docs/readme.txt
 <p>
 <strong>Update instructions:</strong><br />
 <ol class="upd_instr">
-<li>Make sure you have a <b>complete backup of your data</b> (FTP + MySQL)!</li>
-<li><b>You need to specified the ftp data in your Admin Control Panel</b> before you continue with the next step or the CHMODs can't be set correctly!</li>
-
-<li>Open the file <b>designs/*/ie.css</b>:<br />
-<em>You have to apply the following changes (for all CSS files) to all your installed designs. * is a placeholder for a Design-ID (1,2,3,...). The CSS definitions can vary depending on your modifications to the styles.</em>
-<ol>
-<li>
-Search and delete:<br />
-<code>* html .editor_textarea_outer .popup {<br />
-&nbsp;&nbsp;&nbsp;&nbsp;border-top-width: 0px;<br />
-}<br />
-* html .editor_textarea_outer .popup strong {<br />
-&nbsp;&nbsp;&nbsp;&nbsp;border-width: 0px;<br />
-&nbsp;&nbsp;&nbsp;&nbsp;border-top: 1px solid #888888;<br />
-}<br />
-* html .editor_textarea_outer .popup li {<br />
-&nbsp;&nbsp;&nbsp;&nbsp;border-top: 1px solid #c4c4c4;<br />
-}
-</code>
-</li>
-
-<li>
-Add at the end of the file:<br />
-<code>* html .editor_textarea_outer .popup {<br />
-&nbsp;&nbsp;&nbsp;&nbsp;height: expression( this.scrollHeight > 249 ? "250px" : "auto" );<br />
-&nbsp;&nbsp;&nbsp;&nbsp;overflow-x: expression( this.scrollHeight > 249 && this.scrollWidth <= 200 ? "hidden" : "auto" );<br />
-}<br />
-* html .editor_textarea_outer .popup strong {<br />
-&nbsp;&nbsp;&nbsp;&nbsp;width: 196px;<br />
-}<br />
-* html .editor_textarea_outer .popup li {<br />
-&nbsp;&nbsp;&nbsp;&nbsp;width: 194px;<br />
-}<br />
-.bb_blockcode li {<br />
-&nbsp;&nbsp;&nbsp;&nbsp;white-space: normal;<br />
-}
-</code>
-</li>
-</ol>
-</li>
-</li>
-
-<li>Open the file <b>designs/*/standard.css</b>:
-<ol>
-<li>
-Search:<br />
-<code>.bb_blockcode li {<br />
-&nbsp;&nbsp;&nbsp;&nbsp;white-space: pre;<br />
-&nbsp;&nbsp;&nbsp;&nbsp;font-family: 'Courier New', monospace;<br />
-&nbsp;&nbsp;&nbsp;&nbsp;font-weight: normal;<br />
-&nbsp;&nbsp;&nbsp;&nbsp;font-style: normal;<br />
-&nbsp;&nbsp;&nbsp;&nbsp;margin-left: 4px;<br />
-}
-</code>
-Replace with:<br />
-<code>.bb_blockcode * {<br />
-&nbsp;&nbsp;&nbsp;&nbsp;font-family: 'Courier New', monospace;<br />
-}<br />
-.bb_blockcode li {<br />
-&nbsp;&nbsp;&nbsp;&nbsp;margin-left: 12px;<br />
-&nbsp;&nbsp;&nbsp;&nbsp;white-space: pre;<br />
-}
-</code>
-</li>
-
-<li>
-Search:<br />
-<code>.editor_textarea_inner {<br />
-&nbsp;&nbsp;&nbsp;&nbsp;background-color: #FFFFFF;<br />
-&nbsp;&nbsp;&nbsp;&nbsp;font-size: 9pt;<br />
-&nbsp;&nbsp;&nbsp;&nbsp;border-width: 0px;<br />
-&nbsp;&nbsp;&nbsp;&nbsp;width: 100%;<br />
-&nbsp;&nbsp;&nbsp;&nbsp;overflow: auto;<br />
-&nbsp;&nbsp;&nbsp;&nbsp;margin: -4px;<br />
-&nbsp;&nbsp;&nbsp;&nbsp;padding: 4px;<br />
-}
-</code>
-In this part of the stylesheet delete:<br />
-<code>&nbsp;&nbsp;&nbsp;&nbsp;overflow: auto;</code>
-</li>
-<li>
-Search:<br />
-<code>.editor_textarea_outer .popup {</code>
-Add below:<br />
-<code>&nbsp;&nbsp;&nbsp;&nbsp;overflow: auto;</code>
-</li>
-
-<li>
-Search:<br />
-<code>.bbcolor {<br />
-&nbsp;&nbsp;&nbsp;&nbsp;padding: 10px;<br />
-&nbsp;&nbsp;&nbsp;&nbsp;background-color: #ffffff;<br />
-&nbsp;&nbsp;&nbsp;&nbsp;line-height: 13px;<br />
-&nbsp;&nbsp;&nbsp;&nbsp;font-size: 13px;<br />
-}<br />
-.bbcolor span {<br />
-&nbsp;&nbsp;&nbsp;&nbsp;width: 10px;<br />
-&nbsp;&nbsp;&nbsp;&nbsp;height: 13px;<br />
-&nbsp;&nbsp;&nbsp;&nbsp;display: block;<br />
-&nbsp;&nbsp;&nbsp;&nbsp;float: left;<br />
-&nbsp;&nbsp;&nbsp;&nbsp;cursor: pointer;<br />
-}<br />
-.bbcolor img {<br />
-&nbsp;&nbsp;&nbsp;&nbsp;width: 10px;<br />
-&nbsp;&nbsp;&nbsp;&nbsp;height: 13px;<br />
-&nbsp;&nbsp;&nbsp;&nbsp;border-width: 0px;<br />
-}<br />
-.bbcolor img:hover {<br />
-&nbsp;&nbsp;&nbsp;&nbsp;width: 8px;<br />
-&nbsp;&nbsp;&nbsp;&nbsp;height: 11px;<br />
-&nbsp;&nbsp;&nbsp;&nbsp;border: 1px solid #ffffff;<br />
-}</code>
-Replace with:<br />
-<code>.bbcolor {<br />
-&nbsp;&nbsp;&nbsp;&nbsp;padding: 10px;<br />
-&nbsp;&nbsp;&nbsp;&nbsp;background-color: #ffffff;<br />
-&nbsp;&nbsp;&nbsp;&nbsp;line-height: 12px;<br />
-&nbsp;&nbsp;&nbsp;&nbsp;font-size: 12px;<br />
-}<br />
-.bbcolor img {<br />
-&nbsp;&nbsp;&nbsp;&nbsp;width: 8px;<br />
-&nbsp;&nbsp;&nbsp;&nbsp;height: 10px;<br />
-&nbsp;&nbsp;&nbsp;&nbsp;display: block;<br />
-&nbsp;&nbsp;&nbsp;&nbsp;float: left;<br />
-&nbsp;&nbsp;&nbsp;&nbsp;cursor: pointer;<br />
-&nbsp;&nbsp;&nbsp;&nbsp;border-width: 1px;<br />
-&nbsp;&nbsp;&nbsp;&nbsp;border-style: solid;<br />
-}</code>
-</li>
-
-</ol>
-</li>
-<li>After the update <b>check for updates of your installed packages</b> in the ACP!</li>
+ <li>Make sure you have a <b>complete backup of your data</b> (FTP + MySQL)!</li>
+ <li><b>You need to specified the ftp data in your Admin Control Panel</b> before you continue with the next step or the CHMODs can't be set correctly!</li>
+ <li>Open the file <b>designs/*/standard.css</b>:
+  <ol>
+   <li>
+    Search:<br />
+    <code>hr {<br />
+	&nbsp;&nbsp;&nbsp;&nbsp;height: 1px;<br />
+	&nbsp;&nbsp;&nbsp;&nbsp;border: 0;<br />
+	&nbsp;&nbsp;&nbsp;&nbsp;border-bottom: 1px #839FBC solid;<br />
+    }</code>
+    Add below (or at the end of the file):<br />
+    <code>tt {<br />
+	&nbsp;&nbsp;&nbsp;&nbsp;font-family: 'Courier New', monospace;<br />
+    }</code>
+   </li>
+  </ol>
+ </li>
+ <li>After the update <b>check for updates of your installed packages</b> in the ACP!</li>
 </ol>
 </p>
 </div>
