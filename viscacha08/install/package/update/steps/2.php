@@ -32,22 +32,7 @@ _docs/readme.txt
 <ol class="upd_instr">
  <li>Make sure you have a <b>complete backup of your data</b> (FTP + MySQL)!</li>
  <li><b>You need to specified the ftp data in your Admin Control Panel</b> before you continue with the next step or the CHMODs can't be set correctly!</li>
- <li>Open the file <b>designs/*/standard.css</b>:
-  <ol>
-   <li>
-    Search:<br />
-    <code>hr {<br />
-	&nbsp;&nbsp;&nbsp;&nbsp;height: 1px;<br />
-	&nbsp;&nbsp;&nbsp;&nbsp;border: 0;<br />
-	&nbsp;&nbsp;&nbsp;&nbsp;border-bottom: 1px #839FBC solid;<br />
-    }</code>
-    Add below (or at the end of the file):<br />
-    <code>tt {<br />
-	&nbsp;&nbsp;&nbsp;&nbsp;font-family: 'Courier New', monospace;<br />
-    }</code>
-   </li>
-  </ol>
- </li>
+ <li>No manual CSS changes this release! All files files will be patched automatically. For more information on manual update instructions see _docs/readme.txt.</li>
  <li>After the update <b>check for updates of your installed packages</b> in the ACP!</li>
 </ol>
 </p>

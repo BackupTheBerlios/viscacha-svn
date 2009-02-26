@@ -35,6 +35,11 @@ $c->updateconfig('version', str, VISCACHA_VERSION);
 $c->updateconfig('spider_logvisits', int, 2);
 $c->delete('always_send_js');
 $c->savedata();
+
+$c = new manageconfig();
+$c->getdata('admin/data/config.inc.php', 'admconfig');
+$c->updateconfig('checked_package_updates', int, 0);
+$c->savedata();
 echo "- Configuration updated.<br />";
 
 // Old files
@@ -372,7 +377,7 @@ while (false !== ($entry = $dir->read())) {
 	if (is_dir($path) && is_id($entry)) {
 		$css = file_get_contents("{$path}/standard.css");
 		$css .= "\r\ntt {\r\n\tfont-family: 'Courier New', monospace;\r\n}";
-		$filesystem->file_get_contents("{$path}/standard.css", $css);
+		$filesystem->file_put_contents("{$path}/standard.css", $css);
 	}
 }
 echo "- Stylesheets updated.<br />";
