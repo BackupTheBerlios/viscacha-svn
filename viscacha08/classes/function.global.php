@@ -109,17 +109,19 @@ function get_remote($file) {
 		include('classes/class.snoopy.php');
 	}
 
-	if (!preg_match('~^'.URL_REGEXP.'$~i', $file, $url_ary)) {
+	if (!preg_match('~^'.URL_REGEXP.'$~i', $file)) {
 		return REMOTE_INVALID_URL;
 	}
 
-	if (strtolower($url_ary[1]) == 'www.') {
+	$url_ary = parse_url($file);
+
+	if (isset($url_ary['host']) && preg_match('~^www\.~i', $url_ary['host'])) {
 		$file = 'http://'.$file;
 	}
 
 	$snoopy = new Snoopy;
-	if (is_id($url_ary[3])) {
-		$snoopy->port = $url_ary[3];
+	if (isset($url_ary['port']) && is_id($url_ary['port'])) {
+		$snoopy->port = $url_ary['port'];
 	}
 	else {
 		$snoopy->port = null;

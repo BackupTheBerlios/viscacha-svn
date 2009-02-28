@@ -331,18 +331,21 @@ while (false !== ($entry = $dir->read())) {
 }
 echo "- Stylesheets updated.<br />";
 
+// Set incompatible packages inactive
+$db->query("UPDATE {$db->pre}packages SET active = '0' WHERE internal = 'viscacha_quick_reply'");
+$result = $db->query("SELECT package FROM {$db->pre}component");
+while ($row = $db->fetch_assoc($result)) {
+	$db->query("UPDATE {$db->pre}packages SET active = '0' WHERE id = '{$row['package']}'");
+}
+setPackagesInactive();
+echo "- Incompatible Packages set as 'inactive'.<br />";
+
 // MySQL
 $file = 'install/package/'.$package.'/db/db_changes.sql';
 $sql = file_get_contents($file);
 $sql = str_ireplace('{:=DBPREFIX=:}', $db->prefix(), $sql);
 $db->multi_query($sql);
 echo "- Database tables updated.<br />";
-
-// Set incompatible packages inactive
-$db->query("UPDATE {$db->pre}packages SET active = '0' WHERE internal = 'viscacha_quick_reply'");
-// TODO: Delete/disable components
-setPackagesInactive();
-echo "- Incompatible Packages set as 'inactive'.<br />";
 
 // Refresh Cache
 $dirs = array('cache/', 'cache/modules/');

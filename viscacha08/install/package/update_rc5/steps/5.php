@@ -731,12 +731,32 @@ $dir = dir('designs');
 while (false !== ($entry = $dir->read())) {
 	$path = "{$dir->path}/{$entry}";
 	if (is_dir($path) && is_id($entry)) {
-		$css = file_get_contents("{$path}/standard.css");
-		$css .= "\r\ntt {\r\n\tfont-family: 'Courier New', monospace;\r\n}";
-		$filesystem->file_put_contents("{$path}/standard.css", $css);
+		if (file_exists("{$path}/standard.css")) {
+			$css = file_get_contents("{$path}/standard.css");
+			$css .= "\r\ntt {\r\n\tfont-family: 'Courier New', monospace;\r\n}";
+			$filesystem->file_put_contents("{$path}/standard.css", $css);
+		}
+
+		if (file_exists("{$path}/ie.css")) {
+			$css = file_get_contents("{$path}/ie.css");
+			$css .= "\r\n* html .editor_textarea_outer .popup {\r\n\theight: expression( this.scrollHeight > 249 ? \"250px\" : \"auto\" );\r\n\toverflow-x: expression( this.scrollHeight > 249 && this.scrollWidth <= 200 ? \"hidden\" : \"auto\" );\r\n}";
+			$css .= "\r\n* html .editor_textarea_outer .popup strong {\r\n\twidth: 196px;\r\n}";
+			$css .= "\r\n* html .editor_textarea_outer .popup li {\r\n\twidth: 194px;\r\n}";
+			$css .= "\r\n.bb_blockcode li {\r\n\twhite-space: normal;\r\n}";
+			$filesystem->file_put_contents("{$path}/ie.css", $css);
+		}
 	}
 }
 echo "- Stylesheets updated.<br />";
+
+// Set incompatible packages inactive
+$db->query("UPDATE {$db->pre}packages SET active = '0' WHERE internal = 'viscacha_quick_reply'");
+$result = $db->query("SELECT package FROM {$db->pre}component");
+while ($row = $db->fetch_assoc($result)) {
+	$db->query("UPDATE {$db->pre}packages SET active = '0' WHERE id = '{$row['package']}'");
+}
+setPackagesInactive();
+echo "- Incompatible Packages set as 'inactive'.<br />";
 
 // MySQL
 $file = 'install/package/'.$package.'/db/db_changes.sql';
@@ -744,12 +764,6 @@ $sql = file_get_contents($file);
 $sql = str_ireplace('{:=DBPREFIX=:}', $db->prefix(), $sql);
 $db->multi_query($sql);
 echo "- Database tables updated.<br />";
-
-// Set incompatible packages inactive
-$db->query("UPDATE {$db->pre}packages SET active = '0' WHERE internal = 'viscacha_quick_reply'");
-// TODO: Delete/disable components
-setPackagesInactive();
-echo "- Incompatible Packages set as 'inactive'.<br />";
 
 // Refresh Cache
 $dirs = array('cache/', 'cache/modules/');

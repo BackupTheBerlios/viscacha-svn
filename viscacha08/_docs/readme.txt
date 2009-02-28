@@ -35,7 +35,7 @@ Note: More information on how to set up the CHMODs you can get while
 
 Note: You can only update from Viscacha 0.8 RC5.
 
-== 2.1 == Stylesheet Changes ==
+== 2.1 == Stylesheet Changes (only RC6 to RC7) ==
 This changes are for later design updates.
 This steps will also be shown or executed in the update script!
 

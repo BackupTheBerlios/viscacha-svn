@@ -50,24 +50,6 @@ Search and delete:<br />
 }
 </code>
 </li>
-
-<li>
-Add at the end of the file:<br />
-<code>* html .editor_textarea_outer .popup {<br />
-&nbsp;&nbsp;&nbsp;&nbsp;height: expression( this.scrollHeight > 249 ? "250px" : "auto" );<br />
-&nbsp;&nbsp;&nbsp;&nbsp;overflow-x: expression( this.scrollHeight > 249 && this.scrollWidth <= 200 ? "hidden" : "auto" );<br />
-}<br />
-* html .editor_textarea_outer .popup strong {<br />
-&nbsp;&nbsp;&nbsp;&nbsp;width: 196px;<br />
-}<br />
-* html .editor_textarea_outer .popup li {<br />
-&nbsp;&nbsp;&nbsp;&nbsp;width: 194px;<br />
-}<br />
-.bb_blockcode li {<br />
-&nbsp;&nbsp;&nbsp;&nbsp;white-space: normal;<br />
-}
-</code>
-</li>
 </ol>
 </li>
 </li>
