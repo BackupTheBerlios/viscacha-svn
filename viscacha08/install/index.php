@@ -117,6 +117,14 @@ if (!SCRIPT_LOCKED) {
 		</div>
 		</form>
 		<?php } elseif (!SCRIPT_LOCKED) { ?>
+		<?php if (version_compare(PHP_VERSION, '5.0.0', '<')) { ?>
+		<div class="border">
+			<h3>Warning: PHP Version mismatch</h3>
+			<div class="bbody">
+			Support for PHP 4 has been discontinued since Viscacha 0.8 RC7. Please consider upgrading to the latest version of PHP 5. However it can be possible to run Viscacha with PHP 4, but you won't get any support for errors you will notice.
+			</div>
+		</div>
+		<?php } ?>
 		<div class="border">
 		<h3>Viscacha Setup</h3>
 		<div class="bbody">

@@ -732,7 +732,7 @@ class ftp_base {
 }
 
 function pemftp_class_module() {
-	if (extension_loaded('ftp')) {
+	if (extension_loaded('ftp') && version_compare(PHP_VERSION, '5.0.0', '>=')) {
 		return 'ext';
 	}
 	else {
@@ -755,7 +755,7 @@ function pemftp_class_module() {
 			return 'pure';
 		}
 		else {
-			die('Viscacha needs at least fsockopen, sockets extension or ftp extension to work! Please enable one of this features or you cannot use Viscacha!');
+			trigger_error('Viscacha needs at least fsockopen, sockets extension or ftp extension to work! Please enable one of this features or you cannot use Viscacha!', E_USER_ERROR);
 		}
 	}
 }

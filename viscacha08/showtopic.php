@@ -233,7 +233,9 @@ if (!empty($info['vquestion'])) {
 				    $vote['voter'][$row['id']][0] = '-';
 				}
 			}
-			$vote['phrase'] = iif($vote['voted'] > 0, 'vote_change_option', 'vote_go_form');
+			if ($my->vlogin && $my->p['voting'] == 1 && $info['status'] == 0) {
+				$vote['phrase'] = iif($vote['voted'] > 0, 'vote_change_option', 'vote_go_form');
+			}
 			($code = $plugins->load('showtopic_vote_result_prepared')) ? eval($code) : null;
 			$inner['vote_result'] = $tpl->parse("showtopic/vote_result");
 		}
