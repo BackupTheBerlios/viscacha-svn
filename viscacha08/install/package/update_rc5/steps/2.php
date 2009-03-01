@@ -152,7 +152,7 @@ Replace with:<br />
 <?php if ($dataGiven) { ?>
 <input type="submit" value="Continue" />
 <?php } else { ?>
-You need to specified correct ftp data in your <a href="admin.php" target="_blank">Admin Control Panel</a> (Viscacha Settings > FTP) before you continue with the next step!<br />
+You need to specified correct ftp data in your <a href="../admin/" target="_blank">Admin Control Panel</a> (Viscacha Settings > FTP) before you continue with the next step!<br />
 <a class="submit" href="index.php?package=<?php echo $package;?>&amp;step=<?php echo $step; ?>">Try again</a>
 <?php } ?>
 </div>

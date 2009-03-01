@@ -925,13 +925,13 @@ class BBCode {
 	function cbb_helper($matches) {
 		if ($this->currentCBB != null) {
 			$index = $this->currentCBB['twoparams'] ? 2 : 1;
-			$this->currentCBB['bbcodereplacement'] = preg_replace('~\{param(:(?:\\\}|[^\}])+)?\}~i', $matches[$index], $this->currentCBB['bbcodereplacement']);
+			$bbcodereplacement = preg_replace('~\{param(:(?:\\\}|[^\}])+)?\}~i', $matches[$index], $this->currentCBB['bbcodereplacement']);
 			if ($this->currentCBB['twoparams']) {
 				$pid = $this->noparse_id();
 				$this->noparse[$pid] = $matches[1];
-				$this->currentCBB['bbcodereplacement'] = preg_replace('~\{option(:(?:\\\}|[^\}])+)?\}~i', "<!PID:{$pid}>", $this->currentCBB['bbcodereplacement']);
+				$bbcodereplacement = preg_replace('~\{option(:(?:\\\}|[^\}])+)?\}~i', "<!PID:{$pid}>", $bbcodereplacement);
 			}
-			return $this->currentCBB['bbcodereplacement'];
+			return $bbcodereplacement;
 		}
 		else {
 			return $matches[0];

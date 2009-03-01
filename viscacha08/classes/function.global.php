@@ -406,94 +406,31 @@ function serverload($int = false) {
 	return $returnload;
 }
 
-function convert2adress($url) {
+function convert2adress($url, $toLower = true, $spacer = '-') {
+	if ($toLower == true) {
+		$url = strtolower($url);
+	}
 
-   $url = strtolower($url);
+	// International umlauts
+	$url = str_replace (array('á', 'à', 'â', 'Á', 'À', 'Â'),			'a', $url);
+	$url = str_replace (array('ç', 'Ç'), 								'c', $url);
+	$url = str_replace (array('é', 'è', 'ë', 'ê', 'É', 'È', 'Ë', 'Ê'),	'e', $url);
+	$url = str_replace (array('í', 'ì', 'î', 'ï', 'Í', 'Ì', 'Î', 'Ï'),	'i', $url);
+	$url = str_replace (array('ó', 'ò', 'ô', 'Ó', 'Ò', 'Ô'), 			'o', $url);
+	$url = str_replace (array('ú', 'ù', 'û', 'Ú', 'Ù', 'Û'), 			'u', $url);
+	// German umlauts
+	$url = str_replace (array('ä', 'Ä'), 'ae', $url);
+	$url = str_replace (array('ö', 'Ö'), 'oe', $url);
+	$url = str_replace (array('ü', 'Ü'), 'ue', $url);
+	$url = str_replace (array('ß'), 'ss', $url);
+	// Replace some special chars with delimiter
+	$url = preg_replace('/[\+\s\r\n\t]+/', $spacer, $url);
+	// Replace multiple delimiter chars with only one char
+	$url = preg_replace('/['.preg_quote($spacer, '/').']+/', $spacer, $url);
+	// Remove html and other special chars
+	$url = preg_replace(array('/<[^>]*>/', '/[^a-z0-9\-\._'.preg_quote($spacer, '/').']/i'), '', $url);
 
-   $find = array(' ',
-	  '"',
-	  '&',
-	  '\r\n',
-	  '\n',
-	  '/',
-	  '\\',
-	  '+',
-	  '<',
-	  '>');
-   $url = str_replace ($find, '-', $url);
-
-   $find = array('é',
-	  'è',
-	  'ë',
-	  'ê',
-	  'É',
-	  'È',
-	  'Ë',
-	  'Ê');
-   $url = str_replace ($find, 'e', $url);
-
-   $find = array('í',
-	  'ì',
-	  'î',
-	  'ï',
-	  'Í',
-	  'Ì',
-	  'Î',
-	  'Ï');
-   $url = str_replace ($find, 'i', $url);
-
-   $find = array('ó',
-	  'ò',
-	  'ô',
-	  'Ó',
-	  'Ò',
-	  'Ô');
-   $url = str_replace ($find, 'o', $url);
-
-   $find = array('ö',
-	   'Ö');
-   $url = str_replace ($find, 'oe', $url);
-
-   $find = array('á',
-	  'à',
-	  'â',
-	  'Á',
-	  'À',
-	  'Â');
-   $url = str_replace ($find, 'a', $url);
-
-   $find = array('ä',
-	   'Ä');
-   $url = str_replace ($find, 'ae', $url);
-
-   $find = array('ú',
-	  'ù',
-	  'û',
-	  'Ú',
-	  'Ù',
-	  'Û');
-   $url = str_replace ($find, 'u', $url);
-
-   $find = array('ü',
-	   'Ü');
-   $url = str_replace ($find, 'ue', $url);
-
-   $find = array('ß');
-   $url = str_replace ($find, 'ss', $url);
-
-   $find = array('/[^a-z0-9\-<>]/',
-	  '/[\-]+/',
-	  '/<[^>]*>/');
-
-   $repl = array('',
-	  '-',
-	  '');
-
-   $url =  preg_replace ($find, $repl, $url);
-
-   $url = str_replace ('--', '-', $url);
-
-   return $url;
+	return $url;
 }
 
 function removeOldImages ($dir, $name) {
