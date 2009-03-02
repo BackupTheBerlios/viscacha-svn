@@ -967,7 +967,7 @@ elseif ($job == 'nav_comslist') {
 	$result = $db->query("
 		SELECT p.id, p.title, c.name
 		FROM {$db->pre}packages AS p
-			LEFT JOIN {$db->pre}plugin AS c ON c.module = p.id
+			LEFT JOIN {$db->pre}plugins AS c ON c.module = p.id
 		WHERE c.position = CONCAT('component_', p.internal)
 	");
 	?>

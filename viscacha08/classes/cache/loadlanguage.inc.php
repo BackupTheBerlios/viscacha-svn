@@ -19,11 +19,23 @@ class cache_loadlanguage extends CacheItem {
 
 	function delete() {
 		global $filesystem;
-		$this->createJavascript();
+		$this->deleteJavascript();
     	if ($filesystem->unlink($this->file)) {
         	return true;
        	}
 	    return false;
+	}
+
+	function deleteJavascript() {
+		global $filesystem;
+		$folders = array("templates/", "admin/html/");
+		foreach ($folders as $folder) {
+			$dir = dir($folder);
+			while (false !== ($file = $dir->read())) {
+				$filesystem->unlink($folder.$file);
+			}
+			$dir->close();
+		}
 	}
 
 	function createJavascript() {

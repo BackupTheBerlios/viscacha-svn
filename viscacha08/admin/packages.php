@@ -1133,13 +1133,10 @@ elseif ($job == 'package_delete2') {
 		while ($data = $db->fetch_assoc($result)) {
 			$filesystem->unlink('cache/modules/'.$plugins->_group($data['position']).'.php');
 		}
-		$delobj = $scache->load('components');
-		$delobj->delete();
 
 		$cache = array();
 		$result = $db->query("SELECT template, stylesheet, images FROM {$db->pre}designs");
-		$design = $db->fetch_assoc($result);
-		while ($row = $db->fetch_assoc($design)) {
+		while ($row = $db->fetch_assoc($result)) {
 			$cache[] = $row;
 		}
 		// Delete templates
@@ -1154,6 +1151,8 @@ elseif ($job == 'package_delete2') {
 		$cache2 = array();
 		while ($language = $db->fetch_assoc($result)) {
 			$cache2[] = $language['id'];
+			// Delete (old component) language files
+			$filesystem->rmdirr("./language/{$language['id']}/modules/{$package['id']}");
 		}
 		if (isset($plug['language']) && count($plug['language']) > 0) {
 			foreach ($cache2 as $lid) {
@@ -1166,10 +1165,6 @@ elseif ($job == 'package_delete2') {
 					$c->savedata();
 				}
 			}
-		}
-		// Delete language files
-		foreach ($cache2 as $lid) {
-			$filesystem->rmdirr("./language/{$lid}/modules/{$package['id']}");
 		}
 		// Delete images
 		if (isset($plug['images']) && count($plug['images']) > 0) {
@@ -1194,6 +1189,18 @@ elseif ($job == 'package_delete2') {
 		// Delete modules
 		if (file_exists($dir)) {
 			$filesystem->rmdirr($dir);
+		}
+
+		// Delete Cache
+		$delobj = $scache->load('modules_navigation');
+		$delobj->delete();
+		$delobj = $scache->load('components');
+		$delobj->delete();
+		foreach ($plug['php'] as $pos => $file) {
+			$path = 'cache/modules/'.$plugins->_group($pos).'.php';
+			if (!isInvisibleHook($pos) && file_exists($path)) {
+				$filesystem->unlink($path);
+			}
 		}
 
 		if ($confirm == true) {
@@ -2075,7 +2082,10 @@ elseif ($job == 'plugins_delete2') {
 		$delobj->delete();
 		$delobj = $scache->load('components');
 		$delobj->delete();
-		$filesystem->unlink('cache/modules/'.$plugins->_group($data['position']).'.php');
+		$path = 'cache/modules/'.$plugins->_group($data['position']).'.php';
+		if (!isInvisibleHook($data['position']) && file_exists($path)) {
+			$filesystem->unlink($path);
+		}
 
 		ok('admin.php?action=packages&job=plugins', $lang->phrase('admin_packages_ok_plugin_successfully_deleted'));
 	}
