@@ -391,6 +391,8 @@ elseif ($job == 'forum_delete2') {
 	$delobj->delete();
 	$delobj = $scache->load('parent_forums');
 	$delobj->delete();
+	$delobj = $scache->load('prefix');
+	$delobj->delete();
 
 	ok('admin.php?action=forums&job=manage', $lang->phrase('admin_forum_forum_deleted'));
 }
@@ -990,6 +992,8 @@ elseif ($job == 'forum_add2') {
 		$delobj = $scache->load('forumtree');
 		$delobj->delete();
 		$delobj = $scache->load('parent_forums');
+		$delobj->delete();
+		$delobj = $scache->load('prefix');
 		$delobj->delete();
 
 		ok('admin.php?action=forums&job=manage', $lang->phrase('admin_forum_successfully_added'));

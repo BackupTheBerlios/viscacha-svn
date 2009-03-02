@@ -46,7 +46,7 @@ echo "- Configuration updated.<br />";
 $filesystem->unlink('templates/lang2js.php');
 $filesystem->unlink('classes/feedcreator/mbox.inc.php');
 $feeds = file_get_contents('data/feedcreator.inc.php');
-$feeds = preg_replace('~[\r\n]+MBOX\|mbox\.inc\.php\|MBox\|\d|\d~i', '', $feeds);
+$feeds = preg_replace('~[\r\n]+MBOX\|mbox\.inc\.php\|MBox\|\d\|\d~i', '', $feeds);
 $filesystem->file_put_contents('data/feedcreator.inc.php', $feeds);
 $dir = dir('language');
 while (false !== ($entry = $dir->read())) {

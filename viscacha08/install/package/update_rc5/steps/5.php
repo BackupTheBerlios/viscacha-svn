@@ -67,7 +67,7 @@ $filesystem->rmdirr("classes/fpdf/");
 $filesystem->rmdirr("temp/pdfimages");
 $filesystem->rmdirr("templates/editor/popups");
 $feeds = file_get_contents('data/feedcreator.inc.php');
-$feeds = preg_replace('~[\r\n]+MBOX\|mbox\.inc\.php\|MBox\|\d|\d~i', '', $feeds);
+$feeds = preg_replace('~[\r\n]+MBOX\|mbox\.inc\.php\|MBox\|\d\|\d~i', '', $feeds);
 $filesystem->file_put_contents('data/feedcreator.inc.php', $feeds);
 $dir = dir('images');
 while (false !== ($entry = $dir->read())) {
