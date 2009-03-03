@@ -197,17 +197,7 @@ function AdminLogInForm() {
 }
 
 function isInvisibleHook($hook) {
-	switch ($hook) {
-		case 'uninstall':
-		case 'update_init':
-		case 'update_finish':
-		case 'install':
-		case 'source':
-			return true;
-		break;
-		default:
-			return false;
-	}
+	return (bool) preg_match("~^((un)?install|update_(init|finish)|source(_\d+)?)$~i", $hook);
 }
 
 function getHookArray() {

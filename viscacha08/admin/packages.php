@@ -491,48 +491,75 @@ elseif ($job == 'package_update2') {
 			}
 			foreach ($diff as $handler => $files) {
 				foreach ($files as $hook => $plugfile) {
-					if (isInvisibleHook($hook)) {
-						continue;
-					}
 					$source = $tdir.'modules/'.$plugfile;
 					$target = $moddir.$plugfile;
-					if ($handler == DO_UPD_ADD) {
-						$result = $db->query("SELECT MAX(ordering) AS maximum FROM {$db->pre}plugins WHERE position = '{$hook}'");
-						$row = $db->fetch_assoc($result);
-						$priority = $row['maximum']+1;
-						$db->query("
-						INSERT INTO {$db->pre}plugins
-						(`name`,`module`,`ordering`,`required`,`position`)
-						VALUES
-						('{$plug['names'][$hook]}','{$packageid}','{$priority}','{$plug['required'][$hook]}','{$hook}')
-						");
-						if (file_exists($source)) { // Doesn't exist? => Already moved (or package not ok)
-							$filesystem->unlink($target);
-							$filesystem->rename($source, $target);
-						}
-					}
-					elseif ($handler == DO_UPD_DEL) {
-						$delete = true;
-						if (isset($plug['php']) && is_array($plug['php'])) {
-							foreach ($plug['php'] as $pos => $val) {
-								if ($pos != $hook && $plugfile == $val) {
-									$delete = false;
-								}
+					if (isInvisibleHook($hook)) {
+						if ($handler == DO_UPD_ADD) {
+							if (file_exists($source)) { // Doesn't exist? => Already moved (or package not ok)
+								$filesystem->unlink($target);
+								$filesystem->rename($source, $target);
 							}
 						}
-						if (file_exists($target) && $delete == true) {
-							$filesystem->unlink($target);
+						elseif ($handler == DO_UPD_DEL) {
+							$delete = true;
+							if (isset($plug['php']) && is_array($plug['php'])) {
+								foreach ($plug['php'] as $pos => $val) {
+									if ($plugfile == $val) {
+										$delete = false;
+										break;
+									}
+								}
+							}
+							if (file_exists($target) && $delete == true) {
+								$filesystem->unlink($target);
+							}
 						}
-
-						$db->query("DELETE FROM {$db->pre}plugins WHERE id = '{$plugs[$hook]}' LIMIT 1");
-						$db->query("DELETE FROM {$db->pre}menu WHERE module = '{$plugs[$hook]}'");
+						elseif ($handler == DO_UPD_EQU) {
+							if (file_exists($source)) {
+								$filesystem->unlink($target);
+								$filesystem->rename($source, $target);
+							}
+						}
 					}
-					elseif ($handler == DO_UPD_EQU) {
-						// Simply overwrite old file and update DB. Hopefully no changes were made and in this case no loss of data
-						$db->query("UPDATE {$db->pre}plugins SET `name` = '{$plug['names'][$hook]}', `required` = '{$plug['required'][$hook]}', `position` = '{$hook}' WHERE id = '{$plugs[$hook]}'");
-						if (file_exists($source)) {
-							$filesystem->unlink($target);
-							$filesystem->rename($source, $target);
+					else {
+						if ($handler == DO_UPD_ADD) {
+							$result = $db->query("SELECT MAX(ordering) AS maximum FROM {$db->pre}plugins WHERE position = '{$hook}'");
+							$row = $db->fetch_assoc($result);
+							$priority = $row['maximum']+1;
+							$db->query("
+							INSERT INTO {$db->pre}plugins
+							(`name`,`module`,`ordering`,`required`,`position`)
+							VALUES
+							('{$plug['names'][$hook]}','{$packageid}','{$priority}','{$plug['required'][$hook]}','{$hook}')
+							");
+							if (file_exists($source)) { // Doesn't exist? => Already moved (or package not ok)
+								$filesystem->unlink($target);
+								$filesystem->rename($source, $target);
+							}
+						}
+						elseif ($handler == DO_UPD_DEL) {
+							$delete = true;
+							if (isset($plug['php']) && is_array($plug['php'])) {
+								foreach ($plug['php'] as $pos => $val) {
+									if ($pos != $hook && $plugfile == $val) {
+										$delete = false;
+									}
+								}
+							}
+							if (file_exists($target) && $delete == true) {
+								$filesystem->unlink($target);
+							}
+
+							$db->query("DELETE FROM {$db->pre}plugins WHERE id = '{$plugs[$hook]}' LIMIT 1");
+							$db->query("DELETE FROM {$db->pre}menu WHERE module = '{$plugs[$hook]}'");
+						}
+						elseif ($handler == DO_UPD_EQU) {
+							// Simply overwrite old file and update DB. Hopefully no changes were made and in this case no loss of data
+							$db->query("UPDATE {$db->pre}plugins SET `name` = '{$plug['names'][$hook]}', `required` = '{$plug['required'][$hook]}', `position` = '{$hook}' WHERE id = '{$plugs[$hook]}'");
+							if (file_exists($source)) {
+								$filesystem->unlink($target);
+								$filesystem->rename($source, $target);
+							}
 						}
 					}
 					$filesystem->unlink('cache/modules/'.$plugins->_group($hook).'.php');
@@ -2216,9 +2243,13 @@ elseif ($job == 'plugins_edit') {
 		<select name="hook" id="hook">
 		<?php foreach ($hooks as $group => $positions) { ?>
 			<optgroup label="<?php echo $group; ?>">
-			<?php foreach ($positions as $hook) { ?>
-				<option value="<?php echo $hook; ?>"<?php echo iif($hook == $package['position'], ' selected="selected"'); ?>><?php echo $hook; ?></option>
-			<?php } ?>
+			<?php
+			foreach ($positions as $hook) {
+				if ($hook == 'source' && preg_match("~^source(_\d+)?$~i", $package['position'])) { ?>
+					<option value="<?php echo $package['position']; ?>" selected="selected"><?php echo $hook; ?></option>
+				<?php } else { ?>
+					<option value="<?php echo $hook; ?>"<?php echo iif($hook == $package['position'], ' selected="selected"'); ?>><?php echo $hook; ?></option>
+			<?php } } ?>
 			</optgroup>
 		<?php } ?>
 		</select>
@@ -2328,6 +2359,13 @@ elseif ($job == 'plugins_edit2') {
 	}
 	$filesystem->file_put_contents($dir.$file, $code);
 
+	if ($hook == 'source') {
+		$i = 1;
+		do {
+			$hook = 'source_'.$i;
+			$i++;
+		} while (isset($ini['php'][$hook]));
+	}
 	$ini['php'][$hook] = $file;
 	$ini['names'][$hook] = $title;
 	if ($data['position'] != $hook && is_id($package) == false) {
@@ -2336,6 +2374,9 @@ elseif ($job == 'plugins_edit2') {
 		unset($ini['names'][$data['position']]);
 		unset($ini['required'][$data['position']]);
 		$filesystem->unlink('cache/modules/'.$plugins->_group($hook).'.php');
+	}
+	else {
+		$ini['required'][$hook] = $ini['required'][$data['position']];
 	}
 
 	$myini->write($dir."plugin.ini", $ini);
@@ -2563,6 +2604,15 @@ elseif ($job == 'plugins_add3') {
 	else {
 		$ini = array();
 	}
+
+	if ($hook == 'source') {
+		$i = 1;
+		do {
+			$hook = 'source_'.$i;
+			$i++;
+		} while (isset($ini['php'][$hook]));
+	}
+
 	$ini['php'][$hook] = $file;
 	$ini['names'][$hook] = $title;
 	$ini['required'][$hook] = $required;
