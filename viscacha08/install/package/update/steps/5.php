@@ -55,6 +55,8 @@ while (false !== ($entry = $dir->read())) {
 		$filesystem->rmdirr("{$path}/modules/");
 	}
 }
+$filesystem->file_put_contents('data/errlog_php.inc.php', '');
+$filesystem->file_put_contents("data/errlog_{$db->system}.inc.php", '');
 echo "- Old files deleted.<br />";
 
 // Languages

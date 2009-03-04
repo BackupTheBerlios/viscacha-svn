@@ -1223,10 +1223,12 @@ elseif ($job == 'package_delete2') {
 		$delobj->delete();
 		$delobj = $scache->load('components');
 		$delobj->delete();
-		foreach ($plug['php'] as $pos => $file) {
-			$path = 'cache/modules/'.$plugins->_group($pos).'.php';
-			if (!isInvisibleHook($pos) && file_exists($path)) {
-				$filesystem->unlink($path);
+		if (isset($plug['php']) && is_array($plug['php'])) {
+			foreach ($plug['php'] as $pos => $file) {
+				$path = 'cache/modules/'.$plugins->_group($pos).'.php';
+				if (!isInvisibleHook($pos) && file_exists($path)) {
+					$filesystem->unlink($path);
+				}
 			}
 		}
 
