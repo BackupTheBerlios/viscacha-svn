@@ -792,8 +792,10 @@ elseif ($_GET['action'] == "error") {
 ($code = $plugins->load('misc_end')) ? eval($code) : null;
 
 $slog->updatelogged();
-$zeitmessung = t2();
-echo $tpl->parse("footer");
+if ($tpl->tplsent("header")) {
+	$zeitmessung = t2();
+	echo $tpl->parse("footer");
+}
 $phpdoc->Out();
 $db->close();
 ?>
