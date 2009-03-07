@@ -77,10 +77,12 @@ $ini = array (
     'language_de' =>
     array (
       'admin_cms_nav_package' => 'Paket:',
+      'admin_wysiwyg_target' => 'Ziel-Fenster:',
     ),
     'language' =>
     array (
       'admin_cms_nav_package' => 'Package:',
+      'admin_wysiwyg_target' => 'Target Window:',
     ),
   ),
   'admin/frames' =>

@@ -177,6 +177,7 @@ $lang['admin_wysiwyg_table_cols'] = 'Spalten:';
 $lang['admin_wysiwyg_table_properties'] = 'Tabellen-Einstellungen';
 $lang['admin_wysiwyg_table_rows'] = 'Zeilen:';
 $lang['admin_wysiwyg_table_width'] = 'Breite:';
+$lang['admin_wysiwyg_target'] = 'Ziel-Fenster:';
 $lang['admin_wysiwyg_upload_x'] = 'Bild hochladen';
 $lang['admin_wysiwyg_url'] = 'Adresse:';
 $lang['admin_wysiwyg_vspace'] = 'Vertikaler Zwischenraum:';
