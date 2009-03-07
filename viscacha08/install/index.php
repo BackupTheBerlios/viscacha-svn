@@ -14,21 +14,39 @@ if (!SCRIPT_LOCKED) {
 	require_once('install/classes/function.phpcore.php');
 	require_once('install/classes/function.tools.php');
 
-	$old_versions = array(
-		'update' => '0.8 RC6',
-		'update_rc5' => '0.8 RC5'
-	);
+	$old_versions = array();
+	if (file_exists("install/package/update/steps.inc.php")) {
+		$old_versions['update'] = '0.8 RC6';
+	}
+	if (file_exists("install/package/update_rc5/steps.inc.php")) {
+		$old_versions['update_rc5'] = '0.8 RC5';
+	}
 
-	$packages = array(
-		'install' => array(
+	$packages = array();
+	if (file_exists("install/package/install/steps.inc.php")) {
+		$packages['install'] = array(
 			'title' => 'Installation',
 			'description' => 'Choose this if you want to install a new copy of this software.'
-		)
-	);
-	foreach ($old_versions as $dir => $old_version) {
-		$packages[$dir] = array(
-			'title' => 'Update '.$old_version.' to '.VISCACHA_VERSION,
-			'description' => 'Already running Viscacha? Then choose this option to update from '.$old_version.' to the new Version!'
+		);
+	}
+	else {
+		$packages[] = array(
+			'title' => 'Installation',
+			'description' => 'For a fresh installation you need to download the Install-Package for Viscacha 0.8 RC7!'
+		);
+	}
+	if (count($old_versions) > 0) {
+		foreach ($old_versions as $dir => $old_version) {
+			$packages[$dir] = array(
+				'title' => 'Update '.$old_version.' to '.VISCACHA_VERSION,
+				'description' => 'Already running Viscacha? Then choose this option to update from '.$old_version.' to the new Version!'
+			);
+		}
+	}
+	else {
+		$packages[] = array(
+			'title' => 'Update',
+			'description' => 'For an update you need to download the Update-Package for Viscacha 0.8 RC7!'
 		);
 	}
 
@@ -67,26 +85,26 @@ if (!SCRIPT_LOCKED) {
 </head>
 <body>
 <div id="container">
-    <h1>&nbsp;</h1>
-    <div class="breadcrumb">
-    	<a href="index.php">Viscacha Setup</a> &raquo;
-    	<?php if (empty($package) && !SCRIPT_LOCKED) { ?>
-    	Choose Package
-    	<?php } elseif (!SCRIPT_LOCKED) { ?>
-    	<?php echo $package_data['title']; ?> &raquo; Step <?php echo $step; ?>
-    	<?php } else { ?>
-    	Locked
-    	<?php } ?>
-    </div>
-    <div id="navigation">
-    	<?php if (empty($package) && !SCRIPT_LOCKED) { ?>
+	<h1>&nbsp;</h1>
+	<div class="breadcrumb">
+		<a href="index.php">Viscacha Setup</a> &raquo;
+		<?php if (empty($package) && !SCRIPT_LOCKED) { ?>
+		Choose Package
+		<?php } elseif (!SCRIPT_LOCKED) { ?>
+		<?php echo $package_data['title']; ?> &raquo; Step <?php echo $step; ?>
+		<?php } else { ?>
+		Locked
+		<?php } ?>
+	</div>
+	<div id="navigation">
+		<?php if (empty($package) && !SCRIPT_LOCKED) { ?>
 		<h3>Packages</h3>
 		<ul class="nav">
 		<?php foreach ($packages as $id => $data) { ?>
 			<li><a href="index.php?package=<?php echo $id; ?>"><?php echo $data['title']; ?></a></li>
 		<?php } ?>
 		</ul>
-    	<?php } elseif (!SCRIPT_LOCKED) { ?>
+		<?php } elseif (!SCRIPT_LOCKED) { ?>
 		<h3>Steps</h3>
 		<ul class="nav">
 		<?php
@@ -132,7 +150,11 @@ if (!SCRIPT_LOCKED) {
 			<ul>
 			<?php foreach ($packages as $id => $data) { ?>
 				<li>
-					<strong><a href="index.php?package=<?php echo $id; ?>"><?php echo $data['title']; ?></a></strong><br />
+					<strong>
+					<?php if(is_id($id)) { echo $data['title']; } else { ?>
+					<a href="index.php?package=<?php echo $id; ?>"><?php echo $data['title']; ?></a>
+					<?php } ?>
+					</strong><br />
 					<span class="stext"><?php echo $data['description']; ?></span>
 				</li>
 			<?php } ?>

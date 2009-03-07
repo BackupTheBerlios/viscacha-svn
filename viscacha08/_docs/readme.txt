@@ -12,12 +12,15 @@
 
 == 1 == Installation ==
 
-1. Upload all files per ftp onto your server.
-   Note: You do not need to upload the folder install/files/ for the
-         installation! The folder is only required for the update.
-2. Call the "install/" directory in the Viscacha-root-directory and
+Warning: Since 0.8 RC7 we provide separate packages for installation
+         and update. Please use the package which contains "install"
+         in the name for an installation only.
+
+1. Download the installation package from the Viscacha homepage!
+2. Upload all files per ftp onto your server.
+3. Call the "install/" directory in the Viscacha-root-directory and
    follow the steps.
-3. You have a "fresh" Viscacha-Installation on your server.
+4. You have a "fresh" Viscacha-Installation on your server.
 
 Note: More information on how to set up the CHMODs you can get while
       installing the application. In the ACP you can also see a more
@@ -26,18 +29,23 @@ Note: More information on how to set up the CHMODs you can get while
 
 == 2 == Update ==
 
+Warning: Since 0.8 RC7 we provide separate packages for installation
+         and update. Please use the package which contains "update"
+         in the name for an update only.
+
 1. Make a complete backup of your data (FTP + MySQL)!
-2. Upload the install/ directory
-3. Execute the update script (Call the "install/" directory).
-4. Follow all the steps while the update script is running.
-5. After the update is ready and you are back in your Admin Control
+2. Download the update package from the Viscacha homepage!
+3. Upload the install/ directory
+4. Execute the update script (Call the "install/" directory).
+5. Follow all the steps while the update script is running.
+6. After the update is ready and you are back in your Admin Control
    Panel, please check for updates of your installed packages!
 
-Note: You can only update from Viscacha 0.8 RC5.
+Note: You can only update from Viscacha 0.8 RC5 and 0.8 RC6.
 
 == 2.1 == Stylesheet Changes (only RC6 to RC7) ==
-This changes are for later design updates.
-This steps will also be shown or executed in the update script!
+This changes are for later design updates that are not installed while 
+updating. This steps will be shown or executed in the update script!
 
 You have to apply the following changes (for all CSS files) to all
 your installed designs. * is a placeholder for a Design-ID (1 2,3,...).
