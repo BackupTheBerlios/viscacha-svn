@@ -1,0 +1,45 @@
+* html body {
+	text-align: center;
+}
+* html #container, * html #window {
+	text-align: left;
+}
+* html #content {
+	width: 603px;
+}
+.breadcrumb {
+	float: right;
+	margin-left: -170px;
+	margin-right: 1px;
+}
+#popup_bbsmileys {
+	overflow: scroll;
+}
+* html .tooltip {
+	width: 300px;
+}
+* html .border {
+	width: 100%;
+}
+* html .popup li {
+	float: left;
+	width: 100%;
+}
+* html .editprofile_index li {
+	width: 30%;
+}
+* html .editprofile_index ul {
+	margin-bottom: 0px;
+}
+* html .iefix_left {
+	float: left;
+}
+* html .tables_bbsmileys td {
+	border: 0px;
+}
+* html .iefix_br {
+	line-height: 2px;
+}
+* html #popup_bbsmileys {
+	height: 200px;
+}

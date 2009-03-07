@@ -1,0 +1,2 @@
+ALTER TABLE `{:=DBPREFIX=:}groups` DROP `pdf`;
+ALTER TABLE `{:=DBPREFIX=:}groups` DROP `docs`;

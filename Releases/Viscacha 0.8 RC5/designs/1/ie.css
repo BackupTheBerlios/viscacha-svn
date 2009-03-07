@@ -1,0 +1,46 @@
+* html body {
+	text-align: center;
+}
+* html #container, * html #window {
+	text-align: left;
+}
+* html #content {
+	width: 603px;
+}
+.breadcrumb {
+	float: right;
+	margin-left: -170px;
+	margin-right: 1px;
+}
+* html .tooltip {
+	width: 300px;
+}
+* html .border {
+	width: 100%;
+}
+* html .popup li {
+	float: left;
+	width: 100%;
+}
+* html .editprofile_index li {
+	width: 30%;
+}
+* html .editprofile_index ul {
+	margin-bottom: 0px;
+}
+* html .iefix_left {
+	float: left;
+}
+* html .iefix_br {
+	line-height: 2px;
+}
+* html .editor_textarea_outer .popup {
+	border-top-width: 0px;
+}
+* html .editor_textarea_outer .popup strong {
+	border-width: 0px;
+	border-top: 1px solid #888888;
+}
+* html .editor_textarea_outer .popup li {
+	border-top: 1px solid #c4c4c4;
+}

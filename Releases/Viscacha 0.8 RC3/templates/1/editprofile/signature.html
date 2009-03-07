@@ -1,0 +1,32 @@
+<?php if ($preview) { ?>
+<div class="border">
+  <h3><img src="<?php echo $tpl->img('signature'); ?>" alt="" /> <?php echo $lang->phrase('editprofile_signature_preview'); ?></h3>
+  <div class="bbody signature"><?php echo $parsedPreview; ?></div>
+</div>
+<br class="minibr" />
+<?php } ?>
+<form name="form2" method="post" action="editprofile.php?action=signature<?php echo SID2URL_x; ?>">
+<div class="border">
+  <h3><img src="<?php echo $tpl->img('signature'); ?>" alt="" /> <?php echo $lang->phrase('editprofile_signature'); ?></h3>
+  <div class="bbody">
+	<label><?php echo $inner['smileys']; ?></label>
+	<?php echo $inner['bbhtml']; ?>
+	<script type="text/javascript">
+	<!--
+	setTextfield('signature');
+	-->
+	</script>
+	<br class="newinput" /><hr class="formsep" />
+	<label for="signature" class="stext">
+		<?php echo $lang->phrase('editprofile_signature_longdesc'); ?><br /><br />
+		[<a href="#" onclick="return textarea_length(<?php echo $config['maxsiglength']; ?>)"><?php echo $lang->phrase('textarea_check_length'); ?></a>]
+	</label>
+  	<textarea class="label" name="signature" id="signature" rows="7" tabindex="1" cols="80"><?php echo $signature; ?></textarea>
+  	<br class="newinput" /><br class="iefix_br" />
+  </div>
+  <div class="bfoot center">
+   <input type="submit" name="Submit" tabindex="2" value="<?php echo $lang->phrase('submit_form'); ?>" />
+   <input type="submit" name="Preview" tabindex="3" value="<?php echo $lang->phrase('preview_form'); ?>" />
+  </div>
+</div>
+</form>
