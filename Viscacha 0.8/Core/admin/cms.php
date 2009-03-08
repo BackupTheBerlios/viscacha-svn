@@ -978,7 +978,7 @@ elseif ($job == 'nav_comslist') {
 	  <tr>
 	   <td class="mbox">
 	   <?php while ($row = $db->fetch_assoc($result)) { ?>
-	   <input type="radio" name="data" onclick="insert_doc('components.php?cid=<?php echo $row['id']; ?>','<?php echo htmlentities($row['title']); ?>')"> <?php echo  $ini['name']; ?> (<?php echo $lang->phrase('admin_cms_nav_package').' '.$row['title']; ?>)<br />
+	   <input type="radio" name="data" onclick="insert_doc('components.php?cid=<?php echo $row['id']; ?>','<?php echo htmlentities($row['title']); ?>')"> <?php echo $row['name']; ?> (<?php echo $lang->phrase('admin_cms_nav_package').' '.$row['title']; ?>)<br />
 	   <?php } ?>
 	   </td>
 	 </table>
