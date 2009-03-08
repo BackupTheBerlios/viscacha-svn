@@ -151,7 +151,7 @@ if (!SCRIPT_LOCKED) {
 			<?php foreach ($packages as $id => $data) { ?>
 				<li>
 					<strong>
-					<?php if(is_id($id)) { echo $data['title']; } else { ?>
+					<?php if(is_numeric($id)) { echo $data['title']; } else { ?>
 					<a href="index.php?package=<?php echo $id; ?>"><?php echo $data['title']; ?></a>
 					<?php } ?>
 					</strong><br />
