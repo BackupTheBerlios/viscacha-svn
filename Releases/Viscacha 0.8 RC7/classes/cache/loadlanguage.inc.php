@@ -32,7 +32,9 @@ class cache_loadlanguage extends CacheItem {
 		foreach ($folders as $folder) {
 			$dir = dir($folder);
 			while (false !== ($file = $dir->read())) {
-				$filesystem->unlink($folder.$file);
+				if (preg_match('~^language_\d+\.js$~', $file)) {
+					$filesystem->unlink($folder.$file);
+				}
 			}
 			$dir->close();
 		}
