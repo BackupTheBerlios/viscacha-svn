@@ -24,6 +24,24 @@
 
 if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
 
+define('URL_SPECIALCHARS', 'a-zA-Z·‡‚¡¿¬Á«ÈËÎÍ…»À ÌÏÓÔÕÃŒœÛÚÙ”“‘˙˘˚⁄Ÿ€‰ƒˆ÷¸‹');
+define('URL_REGEXP', 'https?://['.URL_SPECIALCHARS.'\d\-\.@]+(?:\.[a-z]{2,7})?(?::\d+)?/?(?:['.URL_SPECIALCHARS.'ﬂ\d\-\.:_\?\,;/\\\+&%\$#\=\~\[\]]*['.URL_SPECIALCHARS.'ﬂ\d\-\.:_\?\,;/\\\+&%\$#\=\~])?');
+define('EMAIL_REGEXP', "[".URL_SPECIALCHARS."\d!#\$%&'\*\+/=\?\^_\{\|\}\~\-]+(?:\.[".URL_SPECIALCHARS."\d!#$%&'\*\+/=\?\^_\{\|\}\~\-]+)*@(?:[".URL_SPECIALCHARS."\d](?:[".URL_SPECIALCHARS."\d\-]*[".URL_SPECIALCHARS."\d])?\.)+[".URL_SPECIALCHARS."\d](?:[".URL_SPECIALCHARS."\d\-]*[".URL_SPECIALCHARS."\d])?");
+
+define('REMOTE_INVALID_URL', 100);
+define('REMOTE_CLIENT_ERROR', 200);
+define('REMOTE_FILESIZE_ERROR', 300);
+define('REMOTE_IMAGE_HEIGHT_ERROR', 400);
+define('REMOTE_IMAGE_WIDTH_ERROR', 500);
+define('REMOTE_EXTENSION_ERROR', 600);
+define('REMOTE_IMAGE_ERROR', 700);
+
+define('CAPTCHA_FAILURE', 0);
+define('CAPTCHA_OK', 1);
+define('CAPTCHA_MISTAKE', 2);
+define('CAPTCHA_TYPE_2', 'ReCaptcha');
+define('CAPTCHA_TYPE_1', 'VeriWord');
+
 // Caching-Class
 require_once('classes/class.cache.php');
 // INI-File-Class
@@ -40,23 +58,6 @@ $plugins = new PluginSystem();
 
 // Construct base bb-code object
 $bbcode = new BBCode();
-
-define('URL_REGEXP', 'https?://[a-z\d\-\.@]+(?:\.[a-z]{2,7})?(?::\d+)?/?(?:[a-zA-Z0-9\-\.:_\?\,;/\\\+&%\$#\=\~\[\]]*[a-zA-Z0-9\-\.:_\?\,;/\\\+&%\$#\=\~])?');
-define('EMAIL_REGEXP', "[a-z0-9!#\$%&'\*\+/=\?\^_\{\|\}\~\-]+(?:\.[a-z0-9!#$%&'\*\+/=\?\^_\{\|\}\~\-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?");
-
-define('REMOTE_INVALID_URL', 100);
-define('REMOTE_CLIENT_ERROR', 200);
-define('REMOTE_FILESIZE_ERROR', 300);
-define('REMOTE_IMAGE_HEIGHT_ERROR', 400);
-define('REMOTE_IMAGE_WIDTH_ERROR', 500);
-define('REMOTE_EXTENSION_ERROR', 600);
-define('REMOTE_IMAGE_ERROR', 700);
-
-define('CAPTCHA_FAILURE', 0);
-define('CAPTCHA_OK', 1);
-define('CAPTCHA_MISTAKE', 2);
-define('CAPTCHA_TYPE_2', 'ReCaptcha');
-define('CAPTCHA_TYPE_1', 'VeriWord');
 
 function is_hash($string) {
 	return (bool) preg_match("/^[a-f\d]{32}$/i", $string);
