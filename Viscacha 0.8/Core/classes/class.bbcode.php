@@ -1042,11 +1042,13 @@ class BBCode {
 }
 
 function BBProfile(&$bbcode, $profile = 'standard') {
-	global $config, $my;
+	global $config, $my, $lang;
 	if (!$bbcode->existsProfile($profile)) {
 		if ($config['resizebigimg'] == 0) {
 			$config['resizebigimgwidth'] = 0;
 		}
+
+		$lang->group("bbcodes");
 
 		if ($profile == 'signature') {
 			$bbcode->setProfile('signature', SP_NEW);

@@ -144,7 +144,7 @@ function BBCodeToolBox($id, $content = '', $taAttr = '') {
 			<?php } ?>
 		<img src="templates/editor/images/seperator.gif" alt="" />
 			<?php if (count($smileys[0]) > 0) { ?>
-			<a id="menu_bbsmileys_<?php echo $id; ?>" href="#" onmouseover="RegisterMenu('bbsmileys_<?php echo $id; ?>');" class="editor_toolbar_dropdown"><img src="<?php echo $tpl->img('desc'); ?>" alt="<?php echo $lang->phrase('box_collapse'); ?>" /> <?php echo $lang->phrase('more_smileys'); ?></a>
+			<a id="menu_bbsmileys_<?php echo $id; ?>" href="#" onmouseover="RegisterMenu('bbsmileys_<?php echo $id; ?>');" class="editor_toolbar_dropdown"><img src="<?php echo $tpl->img('desc'); ?>" alt="" /> <?php echo $lang->phrase('more_smileys'); ?></a>
 			<div class="popup" id="popup_bbsmileys_<?php echo $id; ?>">
 			<strong><?php echo $lang->phrase('more_smileys'); ?></strong>
 			<ul class="bbsmileys">
