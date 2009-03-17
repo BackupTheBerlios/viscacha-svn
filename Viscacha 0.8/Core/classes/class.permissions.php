@@ -672,8 +672,14 @@ function checkBan() {
 	}
 	else {
 		// Try to ban other banned people or do nothing
-		$bannedip = file('data/bannedip.php');
-		$bannedip = array_map('trim', $bannedip);
+		if (file_exists('data/bannedip.php')) {
+			$bannedip = file('data/bannedip.php');
+			$bannedip = array_map('trim', $bannedip);
+		}
+		else {
+			$bannedip = array();
+			$filesystem->file_put_contents('data/bannedip.php', '');
+		}
 		$ban = false;
 		foreach ($bannedip as $row) {
 			$row = explode("\t", $row, 6);
