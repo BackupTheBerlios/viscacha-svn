@@ -913,7 +913,7 @@ function sid_login($remember = true) {
 		$my->vlogin = true;
 		$my->p = $this->Permissions();
 
-		if (!isset($my->timezone)) {
+		if (!isset($my->timezone) || $my->timezone == NULL) {
 			$my->timezone = $config['timezone'];
 		}
 

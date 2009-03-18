@@ -518,13 +518,16 @@ class BBCode {
 
 			$text = preg_replace('/\[tt\](.+?)\[\/tt\]/is', "<tt>\\1</tt>", $text);
 			$text = preg_replace_callback('/\[table(=(\d+\%;head|head;\d+\%|\d+\%|head))?\]\n*(.+?)\n*\[\/table\]\n?/is', array(&$this, 'cb_table'), $text);
-			$text = str_ireplace('[tab]', "\t", $text);
 
-			$text = $this->customBB($text, $type);
-
+			// Old way of doing this, superseded by table bb code - $text = $this->tab2space($text);
+			$text = str_ireplace("\t", "[tab]", $text); // Avoid conflicts with custom bb codes
+			// Apply custom bb codes
+			$text = $this->customBB($text, $type); // BEFORE Auto URL Parsing
+			// Auto replace urls
 			$text = preg_replace_callback("~([\t\r\n\x20\(\),\.:;\?!\<>\[\]]|^){$this->url_regex}([\t\r\n\x20\(\)\[\]<>]|$)~is", array(&$this, 'cb_auto_url'), $text);
+			// Apply tabs finally
+			$text = str_ireplace('[tab]', "&nbsp; &nbsp;&nbsp;", $text); // One normal whitespace to avoid really long lines
 
-			$text = $this->tab2space($text);
 			$text = $this->parseSmileys($text);
 			$text = $this->wordwrap($text);
 		}
@@ -687,6 +690,9 @@ class BBCode {
 	/**
 	 * Converts tabs to the appropriate amount of spaces while preserving formatting
 	 *
+	 * Currently not used!
+	 *
+	 * @deprecated Since Viscacha 0.8 Gold
 	 * @author	  Aidan Lister <aidan@php.net>
 	 * @version	 1.2.0
 	 * @param	   string	$text	 The text to convert
@@ -706,7 +712,8 @@ class BBCode {
 			}
 			$result[] = $line;
 		}
-		return str_replace($char, '&nbsp;', implode("\n", $result));
+		$result = str_replace($char.$char, '&nbsp; ', implode("\n", $result));
+		return str_replace($char, '&nbsp;', $result);
 	}
 	function getBenchmark($type='bbcode') {
 		return round($this->benchmark[$type], 5);

@@ -603,7 +603,7 @@ class GeSHi {
      */
     function get_language_name() {
         if (GESHI_ERROR_NO_SUCH_LANG == $this->error) {
-            return $this->language_data['LANG_NAME'] . ' (Unknown Language)';
+            return '?';
         }
         return $this->language_data['LANG_NAME'];
     }

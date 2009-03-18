@@ -171,11 +171,15 @@ include_once ("classes/function.flood.php");
 if (!file_exists('.htaccess')) {
 	$htaccess = array();
 	if ($config['hterrordocs'] == 1) {
-	    $htaccess[] = "ErrorDocument 400	{$config['furl']}/misc.php?action=error&id=400";
-	    $htaccess[] = "ErrorDocument 401	{$config['furl']}/misc.php?action=error&id=401";
-	    $htaccess[] = "ErrorDocument 403	{$config['furl']}/misc.php?action=error&id=403";
-	    $htaccess[] = "ErrorDocument 404	{$config['furl']}/misc.php?action=error&id=404";
-	    $htaccess[] = "ErrorDocument 500	{$config['furl']}/misc.php?action=error&id=500";
+		$doc_root = preg_quote(realpath($_SERVER['DOCUMENT_ROOT']), '~');
+		$vis_root = realpath($config['fpath']);
+		$vis_root = preg_replace("~^{$doc_root}~", '', $vis_root);
+
+	    $htaccess[] = "ErrorDocument 400	{$vis_root}/misc.php?action=error&id=400";
+	    $htaccess[] = "ErrorDocument 401	{$vis_root}/misc.php?action=error&id=401";
+	    $htaccess[] = "ErrorDocument 403	{$vis_root}/misc.php?action=error&id=403";
+	    $htaccess[] = "ErrorDocument 404	{$vis_root}/misc.php?action=error&id=404";
+	    $htaccess[] = "ErrorDocument 500	{$vis_root}/misc.php?action=error&id=500";
 	    $htaccess[] = "";
 	}
 	if ($config['correctsubdomains'] == 1) {
