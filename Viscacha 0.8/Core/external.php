@@ -110,11 +110,18 @@ else {
 	$rss->editorEmail = '';
 }
 
+// Dirty permission hack I
+$my->p = $slog->Permissions(0, GROUP_GUEST, false);
+$my->pb = $slog->GlobalPermissions();
 
 $sqllimit = 15;
 $sqlwhere = "r.tstart = '1' AND f.invisible != '2' AND f.active_topic = '1' AND f.opt != 'pw' ".$slog->sqlinboards('t.board');
 $sqlorder = "t.date DESC";
 $sqljoin = $sqlfields = '';
+
+// Dirty permission hack II
+$my->p = $slog->Permissions();
+$my->pb = $slog->GlobalPermissions();
 
 ($code = $plugins->load('external_query')) ? eval($code) : null;
 

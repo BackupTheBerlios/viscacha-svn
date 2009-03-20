@@ -1585,12 +1585,17 @@ class PHPMailer {
    * @modified for Viscacha
    */
     function RFCDate() {
-        $tz = (time()-times())*-1;
+    	global $config;
+    	// Global forum timezone to integer
+        $tz = intval($config['timezone']);
+        // Get the prefix for the timezone
         $tzs = ($tz < 0) ? "-" : "+";
+        // Get the absolute value of the timezone (withour prefix)
         $tz = abs($tz);
-        $tz = ($tz/3600)*100 + ($tz%3600)/60;
-        $result = sprintf("%s %s%04d", gmdate("D, j M Y H:i:s", times()), $tzs, $tz);
-
+        // Get the timestamp according to rfc 822
+        $tz = floor($tz)*100 + ($tz-floor($tz))*60;
+        // Put everything together
+        $result = sprintf("%s %s%04d", gmdate("D, j M Y H:i:s", times(false, $tz)), $tzs, $tz);
         return $result;
     }
 

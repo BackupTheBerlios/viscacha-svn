@@ -588,22 +588,24 @@ function leading_zero($int,$length=2) {
 	return sprintf("%0{$length}d", $int);
 }
 
-function times ($time=FALSE) {
-	global $my;
-
-	if ($time == FALSE) {
-		$stime = time();
+function times ($time = false, $timezone = false) {
+	$stime = $time == false ? time() : $time;
+	if ($timezone == false) {
+		if (isset($my->timezone)) {
+			global $my;
+			$timezone = $my->timezone;
+		}
+		else {
+			global $config;
+			$timezone = $config['timezone'];
+		}
 	}
-	else {
-		$stime = $time;
-	}
+	$timezone = intval($timezone);
 
-	//$retime = $stime + 3600*($my->timezone + gmdate("I"));
-	// gmdate('I') has a crazy bug. it shows something else (wrong) than date('I')
-	$retime = $stime + 3600*($my->timezone + date("I"));
+	// gmdate('I') can't detect DST so use date('I') instead
+	$retime = $stime + 3600*($timezone + date("I"));
 
 	return $retime;
-
 }
 
 function str_date($format, $time=FALSE) {

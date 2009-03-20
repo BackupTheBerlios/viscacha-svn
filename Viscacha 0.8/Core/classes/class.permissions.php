@@ -1344,8 +1344,6 @@ function GlobalPermissions() {
 
 	}
 
-	$this->pwboards();
-
 	return $permissions;
 }
 
