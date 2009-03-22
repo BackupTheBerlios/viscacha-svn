@@ -836,7 +836,10 @@ elseif ($_GET['action'] == "mylast") {
 	($code = $plugins->load('editprofile_mylast_end')) ? eval($code) : null;
 }
 elseif ($_GET['action'] == "addabo") {
-	$result = $db->query('SELECT id, board FROM '.$db->pre.'topics WHERE id = '.$_GET['id']);
+	$result = $db->query("SELECT id, board FROM {$db->pre}topics WHERE id = '{$_GET['id']}'");
+	if ($db->num_rows($result) != 1) {
+
+	}
 	$info = $db->fetch_assoc($result);
 	$my->p = $slog->Permissions($info['board']);
 
@@ -845,33 +848,34 @@ elseif ($_GET['action'] == "addabo") {
 	$last = $fc[$info['board']];
 	forum_opt($last);
 
-	if ($_GET['type'] == 0) {
-		$type = '';
-	}
-	elseif ($_GET['type'] == 1) {
-		$type = 'd';
-	}
-	elseif ($_GET['type'] == 7) {
-		$type = 'w';
-	}
-	elseif ($_GET['type'] == 9) {
-		$type = 'f';
-	}
-	else {
-		$error = true;
-		($code = $plugins->load('editprofile_addabo_types')) ? eval($code) : null;
-		if ($error == true) {
-			error($lang->phrase('query_string_error'));
-		}
+	switch ($_GET['type']) {
+		case 0:
+			$type = '';
+		break;
+		case 1:
+			$type = 'd';
+		break;
+		case 7:
+			$type = 'w';
+		break;
+		case 9:
+			$type = 'f';
+		break;
+		default:
+			$error = true;
+			($code = $plugins->load('editprofile_addabo_types')) ? eval($code) : null;
+			if ($error === true) {
+				error($lang->phrase('query_string_error'));
+			}
 	}
 
 	($code = $plugins->load('editprofile_addabo_prepared')) ? eval($code) : null;
-	$result = $db->query('SELECT id, type FROM '.$db->pre.'abos WHERE tid = '.$info['id'].' AND mid = '.$my->id);
+	$result = $db->query("SELECT id, type FROM {$db->pre}abos WHERE tid = '{$info['id']}' AND mid = '{$my->id}'");
 	if ($db->num_rows($result) > 0) {
 		error($lang->phrase('addabo_error'));
 	}
 	else {
-		$db->query('INSERT INTO '.$db->pre.'abos (tid,mid,type) VALUES ("'.$_GET['id'].'","'.$my->id.'","'.$type.'")');
+		$db->query("INSERT INTO {$db->pre}abos (tid, mid, type) VALUES ('{$_GET['id']}', '{$my->id}', '{$type}')");
 		ok($lang->phrase('subscribed_successfully'));
 	}
 }

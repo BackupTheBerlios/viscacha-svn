@@ -289,10 +289,6 @@ elseif ($job == 'posts') {
 	   <td class="mbox" width="50%"><input type="text" name="resizebigimgwidth" value="<?php echo $config['resizebigimgwidth']; ?>" size="6"></td>
 	  </tr>
 	  <tr>
-	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_number_of_subscriptions_per_page'); ?></td>
-	   <td class="mbox" width="50%"><input type="text" name="abozahl" value="<?php echo $config['abozahl']; ?>" size="4"></td>
-	  </tr>
-	  <tr>
 	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_show_real_name_post'); ?></td>
 	   <td class="mbox" width="50%"><input type="checkbox" name="fullname_posts" value="1"<?php echo iif($config['fullname_posts'] == 1,' checked="checked"'); ?>></td>
 	  </tr>
@@ -303,6 +299,23 @@ elseif ($job == 'posts') {
 	  <tr>
 	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_enable_change_vote'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_enable_change_vote_info'); ?></span></td>
 	   <td class="mbox" width="50%"><input type="checkbox" name="vote_change" value="1"<?php echo iif($config['vote_change'] == 1, ' checked="checked"'); ?> /></td>
+	  </tr>
+	  <tr>
+	   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="<?php echo $lang->phrase('admin_form_submit'); ?>"></td>
+	  </tr>
+	 </table>
+	 <br class="minibr" />
+	 <table class="border" border="0" cellspacing="0" cellpadding="4">
+	  <tr>
+	   <td class="obox" colspan="2"><?php echo $lang->phrase('admin_topics_subscriptions'); ?></td>
+	  </tr>
+	  <tr>
+	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_number_of_subscriptions_per_page'); ?></td>
+	   <td class="mbox" width="50%"><input type="text" name="abozahl" value="<?php echo $config['abozahl']; ?>" size="4"></td>
+	  </tr>
+	  <tr>
+	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_multiple_instant_notifications'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_multiple_instant_notifications_info'); ?></span></td>
+	   <td class="mbox" width="50%"><input type="checkbox" name="multiple_instant_notifications" value="1"<?php echo iif($config['multiple_instant_notifications'] == 1,' checked="checked"'); ?>></td>
 	  </tr>
 	  <tr>
 	   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="<?php echo $lang->phrase('admin_form_submit'); ?>"></td>
@@ -349,6 +362,7 @@ elseif ($job == 'posts2') {
 	$c->updateconfig('postrating_counter', int);
 	$c->updateconfig('guest_email_optional', int);
 	$c->updateconfig('abozahl', int);
+	$c->updateconfig('multiple_instant_notifications', int);
 	$c->updateconfig('fullname_posts', int);
 	$c->updateconfig('post_user_status', int);
 	$c->updateconfig('vote_change', int);
@@ -623,7 +637,7 @@ elseif ($job == 'server') {
 	  </tr>
 	  <tr>
 	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_htaccess_top_domain'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_htaccess_top_domain_info'); ?></span></td>
-	   <td class="mbox" width="50%"><input type="checkbox" name="correctsubdomains" value="1"<?php echo iif($config['hterrordocs'] == 1,' checked="checked"'); ?>></td>
+	   <td class="mbox" width="50%"><input type="checkbox" name="correctsubdomains" value="1"<?php echo iif($config['correctsubdomains'] == 1,' checked="checked"'); ?>></td>
 	  </tr>
 	  <tr>
 	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_htaccess_error_doc'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_htaccess_error_doc_info'); ?></span></td>

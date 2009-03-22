@@ -324,7 +324,7 @@ elseif ($_GET['action'] == "save") {
 		$db->query("UPDATE {$db->pre}uploads SET topic_id = '{$tredirect}', tid = '{$rredirect}' WHERE mid = '{$pid}' AND topic_id = '0' AND tid = '0'");
 
 		// Insert notifications
-		if ($my->vlogin && $type != 0) {
+		if ($my->vlogin && $digest != 0) {
 			switch ($digest) {
 				case 2:  $type = 'd'; break;
 				case 3:  $type = 'w'; break;

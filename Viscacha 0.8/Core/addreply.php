@@ -257,13 +257,27 @@ if ($_GET['action'] == "save") {
 
 		$lang_dir = $lang->getdir(true);
 		// ToDo: Send only one notification on more than one answer
-		$result = $db->query("
-		SELECT t.id, t.topic, u.name, u.mail, u.language
-		FROM {$db->pre}abos AS a
-			LEFT JOIN {$db->pre}user AS u ON u.id = a.mid
-			LEFT JOIN {$db->pre}topics AS t ON t.id = a.tid
-		WHERE a.type = '' AND a.tid = '{$id}' AND a.mid != '{$my->id}'
-		");
+		if ($config['multiple_instant_notifications'] == 1) {
+			$notification_query = "
+				SELECT t.id, t.topic, u.name, u.mail, u.language
+				FROM {$db->pre}abos AS a
+					LEFT JOIN {$db->pre}user AS u ON u.id = a.mid
+					LEFT JOIN {$db->pre}topics AS t ON t.id = a.tid
+				WHERE a.type = '' AND a.tid = '{$id}' AND a.mid != '{$my->id}'
+			";
+		}
+		else {
+			$notification_query = "
+				SELECT t.id, t.topic, u.name, u.mail, u.language, COUNT(*) AS num
+				FROM {$db->pre}abos AS a
+					LEFT JOIN {$db->pre}user AS u ON u.id = a.mid
+					LEFT JOIN {$db->pre}topics AS t ON t.id = a.tid
+					INNER JOIN {$db->pre}replies AS r ON r.topic_id = t.id AND r.date >= u.lastvisit
+				WHERE a.type = '' AND a.tid = '{$id}' AND a.mid != '{$my->id}'
+				GROUP BY t.id HAVING num = 1
+			";
+		}
+		$result = $db->query($notification_query);
 		while ($row = $db->fetch_assoc($result)) {
 			$lang->setdir($row['language']);
 			$data = $lang->get_mail('digest_s');

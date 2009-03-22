@@ -174,6 +174,7 @@ if (!file_exists('.htaccess')) {
 		$doc_root = preg_quote(realpath($_SERVER['DOCUMENT_ROOT']), '~');
 		$vis_root = realpath($config['fpath']);
 		$vis_root = preg_replace("~^{$doc_root}~", '', $vis_root);
+		$vis_root = str_replace('\\', '/', $vis_root);
 
 	    $htaccess[] = "ErrorDocument 400	{$vis_root}/misc.php?action=error&id=400";
 	    $htaccess[] = "ErrorDocument 401	{$vis_root}/misc.php?action=error&id=401";
