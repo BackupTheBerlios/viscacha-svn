@@ -81,13 +81,14 @@ Minimum system requirements:
 
 Normal system requirements:
  - PHP Version: 5.0.0 and above
- - PHP-Extensions: mysql or mysqli, pcre, gd, zlib, xml, mime_magic
+ - PHP-Extensions: mysql or mysqli, pcre, gd, zlib, xml, mime_magic,
+                   ftp or sockets
  - MySQL Version: 4.1 and above
 
 Optimal system requirements:
  - PHP Version: 5.2.0 and above
  - PHP-Extensions: mysql or mysqli, pcre, gd, zlib, xml, mime_magic,
-                   mbstring, sockets, xdiff
+                   mbstring, sockets, xdiff, ftp
  - MySQL Version: 5.0 and above (Strict mode off)
 
 If you are testing Viscacha, please give me some feedback how Viscacha
@@ -100,7 +101,7 @@ Following information are useful for me:
 - MySQL version (strict mode enabled?)
 - PHP version
 - Status of the extensions: mysql, mysqli, pcre, gd, zlib, xml,
-                            mime_magic, mbstring, sockets, xdiff
+                            mime_magic, mbstring, sockets, xdiff, ftp
 - The following settings in the file php.ini:
   - safe_mode
   - magic_quotes_gpc
