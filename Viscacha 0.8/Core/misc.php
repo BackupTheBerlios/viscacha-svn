@@ -779,7 +779,7 @@ elseif ($_GET['action'] == "board_rules") {
 elseif ($_GET['action'] == "error") {
 	$my->p = $slog->Permissions();
 	$errid = $gpc->get('id', int);
-	if ($errid != 400 && $errid != 404 && $errid != 401 && $errid != 403) {
+	if ($errid != 400 && $errid != 404 && $errid != 403) {
 		$errid = 500; // internal server error
 	}
 	sendStatusCode($errid);

@@ -114,11 +114,11 @@ function get_remote($file) {
 		return REMOTE_INVALID_URL;
 	}
 
-	$url_ary = parse_url($file);
-
-	if (isset($url_ary['host']) && preg_match('~^www\.~i', $url_ary['host'])) {
+	if (preg_match('~^www\.~i', $file)) {
 		$file = 'http://'.$file;
 	}
+
+	$url_ary = parse_url($file);
 
 	$snoopy = new Snoopy;
 	if (isset($url_ary['port']) && is_id($url_ary['port'])) {

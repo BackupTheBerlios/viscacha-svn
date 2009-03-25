@@ -140,7 +140,7 @@ $inner = array();
 $htmlhead = '';
 $htmlonload = '';
 if (defined('SCRIPTNAME')) {
-    $htmlbody = ' id="css_'.SCRIPTNAME.'"';
+	$htmlbody = ' id="css_'.SCRIPTNAME.'"';
 }
 if ($config['nocache'] == 1) {
 	$htmlhead .= '
@@ -171,25 +171,21 @@ include_once ("classes/function.flood.php");
 if (!file_exists('.htaccess')) {
 	$htaccess = array();
 	if ($config['hterrordocs'] == 1) {
-		$doc_root = preg_quote(realpath($_SERVER['DOCUMENT_ROOT']), '~');
-		$vis_root = realpath($config['fpath']);
-		$vis_root = preg_replace("~^{$doc_root}~", '', $vis_root);
-		$vis_root = str_replace('\\', '/', $vis_root);
-
-	    $htaccess[] = "ErrorDocument 400	{$vis_root}/misc.php?action=error&id=400";
-	    $htaccess[] = "ErrorDocument 401	{$vis_root}/misc.php?action=error&id=401";
-	    $htaccess[] = "ErrorDocument 403	{$vis_root}/misc.php?action=error&id=403";
-	    $htaccess[] = "ErrorDocument 404	{$vis_root}/misc.php?action=error&id=404";
-	    $htaccess[] = "ErrorDocument 500	{$vis_root}/misc.php?action=error&id=500";
-	    $htaccess[] = "";
+		$htaccess[] = "ErrorDocument 400	{$config['furl']}/misc.php?action=error&id=400";
+		// 401 ErrorDocument entfernt wegen Fehlermeldung (Bug #293): "Cannot use a full URL in a 401 ErrorDocument directive"
+		// Grund: Relative Angaben beschädigen bei Adressen in Unterverzeichnissen die relativen Verlinkungen zu Bildern etc.
+		$htaccess[] = "ErrorDocument 403	{$config['furl']}/misc.php?action=error&id=403";
+		$htaccess[] = "ErrorDocument 404	{$config['furl']}/misc.php?action=error&id=404";
+		$htaccess[] = "ErrorDocument 500	{$config['furl']}/misc.php?action=error&id=500";
+		$htaccess[] = "";
 	}
 	if ($config['correctsubdomains'] == 1) {
-	    $url = parse_url($config['furl']);
-	    $host = str_ireplace('www.', '', $url['host']);
-	    $htaccess[] = "RewriteEngine On";
-	    $htaccess[] = "RewriteCond %{HTTP_HOST} ^www\.".preg_quote($host)."$ [NC]";
-	    $htaccess[] = "RewriteRule ^(.*)$ http://".$host."/$1 [R=301,L]";
-	    $htaccess[] = "";
+		$url = parse_url($config['furl']);
+		$host = str_ireplace('www.', '', $url['host']);
+		$htaccess[] = "RewriteEngine On";
+		$htaccess[] = "RewriteCond %{HTTP_HOST} ^www\.".preg_quote($host)."$ [NC]";
+		$htaccess[] = "RewriteRule ^(.*)$ http://".$host."/$1 [R=301,L]";
+		$htaccess[] = "";
 	}
 	$filesystem->file_put_contents('.htaccess', implode("\r\n", $htaccess));
 }

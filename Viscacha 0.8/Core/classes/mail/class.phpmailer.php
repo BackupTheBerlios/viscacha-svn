@@ -1595,7 +1595,7 @@ class PHPMailer {
         // Get the timestamp according to rfc 822
         $tz = floor($tz)*100 + ($tz-floor($tz))*60;
         // Put everything together
-        $result = sprintf("%s %s%04d", gmdate("D, j M Y H:i:s", times(false, $tz)), $tzs, $tz);
+        $result = sprintf("%s %s%04d", gmdate("D, j M Y H:i:s", times(false, $config['timezone'])), $tzs, $tz);
         return $result;
     }
 

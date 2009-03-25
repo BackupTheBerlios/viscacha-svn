@@ -161,7 +161,7 @@ $lang['admin_gzip_compression_lvl_info'] = 'Die Kompressionsstufe muss zwischen 
 $lang['admin_headers_cookies_gzip'] = 'Headers, Cookies &amp; GZIP';
 $lang['admin_height_pic_pixels'] = 'Höhe für verkleinerte Bilder in Pixeln:';
 $lang['admin_htaccess_error_doc'] = '.htaccess: Error-Dokumente benutzen:';
-$lang['admin_htaccess_error_doc_info'] = 'Bei einem Server-Fehler (400, 401, 403, 404, 500) wird die benutzerdefinierte Fehlerseite angezeigt. Beispiel: <a href="misc.php?action=error&id=404" target="_blank">Fehler 404</a>';
+$lang['admin_htaccess_error_doc_info'] = 'Bei einem Server-Fehler (400, 403, 404, 500) wird die benutzerdefinierte Fehlerseite angezeigt. Beispiel: <a href="misc.php?action=error&id=404" target="_blank">Fehler 404</a>';
 $lang['admin_htaccess_top_domain'] = '.htaccess: Alle Subdomains (inkl. www) zur Domain weiterleiten:';
 $lang['admin_htaccess_top_domain_info'] = 'http://www.viscacha.org wird z.B. zu http://viscacha.org. Es kann vorkommen, dass auch alle Subdomains zur Hauptdomain weitergeleitet werden!';
 $lang['admin_image_height_captcha'] = 'Standard Bildhöhe:';

@@ -161,7 +161,7 @@ $lang['admin_gzip_compression_lvl_info'] = 'The Compression Level has to be betw
 $lang['admin_headers_cookies_gzip'] = 'Headers, Cookies &amp; GZIP';
 $lang['admin_height_pic_pixels'] = 'Height for resized Pictures in Pixels:';
 $lang['admin_htaccess_error_doc'] = '.htaccess: Use Error-Documents:';
-$lang['admin_htaccess_error_doc_info'] = 'On Server-Errors (400, 401, 403, 404, 500) the custom Error-sites will be shown. Example: <a href="misc.php?action=error&id=404" target="_blank">Error 404</a>';
+$lang['admin_htaccess_error_doc_info'] = 'On Server-Errors (400, 403, 404, 500) the custom Error-sites will be shown. Example: <a href="misc.php?action=error&id=404" target="_blank">Error 404</a>';
 $lang['admin_htaccess_top_domain'] = '.htaccess: Redirect all Subdomains to Top-Domain:';
 $lang['admin_htaccess_top_domain_info'] = 'http://www.viscacha.org will be http://viscacha.org. Though eventually all other subdomains will be redirected!';
 $lang['admin_image_height_captcha'] = 'Standard image height:';
