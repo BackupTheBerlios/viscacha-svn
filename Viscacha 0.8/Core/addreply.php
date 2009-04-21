@@ -60,7 +60,7 @@ if ($info['prefix'] > 0) {
 	}
 }
 
-get_headboards($fc, $last);
+$topforums = get_headboards($fc, $last, true);
 $breadcrumb->Add($last['name'], "showforum.php?id=".$last['id'].SID2URL_x);
 $breadcrumb->Add($prefix.$info['topic'], 'showtopic.php?id='.$id.SID2URL_x);
 $breadcrumb->Add($lang->phrase('addreply_title'));
@@ -301,9 +301,12 @@ if ($_GET['action'] == "save") {
 		if ($close == 1 && $my->vlogin) {
 			$my->mp = $slog->ModPermissions($info['board']);
 			if ($my->mp[0] == 1) {
-				$db->query("UPDATE {$db->pre}topics SET status = '1' WHERE id = '".$info['id']."'");
+				$db->query("UPDATE {$db->pre}topics SET status = '1' WHERE id = '{$info['id']}'");
 			}
 		}
+
+		// Set topic read
+		$slog->setTopicRead($info['id'], $topforums);
 
 		($code = $plugins->load('addreply_save_end')) ? eval($code) : null;
 

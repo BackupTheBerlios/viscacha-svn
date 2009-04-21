@@ -50,7 +50,7 @@ else {
 	$p_upload = 0;
 }
 
-get_headboards($fc, $last);
+$topforums = get_headboards($fc, $last, true);
 $breadcrumb->Add($last['name'], "showforum.php?id=".$last['id'].SID2URL_x);
 $breadcrumb->Add($lang->phrase('newtopic_title'));
 
@@ -381,6 +381,8 @@ elseif ($_GET['action'] == "save") {
 			xmail($to, $from, $data['title'], $data['comment']);
 		}
 
+		// Set topic read
+		$slog->setTopicRead($tredirect, $topforums);
 
 		($code = $plugins->load('newtopic_save_end')) ? eval($code) : null;
 

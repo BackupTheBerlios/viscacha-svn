@@ -49,7 +49,7 @@
  * @author  Matthias Sommerfeld <mso@phlylabs.de>
  * @author  Leonid Kogan <lko@neuse.de>
  * @copyright 2004-2009 phlyLabs Berlin, http://phlylabs.de
- * @version 0.6.2
+ * @version 0.6.3
  *
  */
 class idna_convert
@@ -1401,6 +1401,7 @@ class idna_convert
 					,0x555   => array(0x585)
 					,0x556   => array(0x586)
 					,0x587   => array(0x565, 0x582)
+                    ,0xE33   => array(0xE4D, 0xE32)
 					,0x1E00  => array(0x1E01)
 					,0x1E02  => array(0x1E03)
 					,0x1E04  => array(0x1E05)

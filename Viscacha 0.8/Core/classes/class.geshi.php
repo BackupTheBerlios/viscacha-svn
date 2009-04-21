@@ -601,9 +601,9 @@ class GeSHi {
      * @return string The name for the current language
      * @since  1.0.2
      */
-    function get_language_name() {
-        if (GESHI_ERROR_NO_SUCH_LANG == $this->error) {
-            return '?';
+    function get_language_name($language = '?') {
+        if (GESHI_ERROR_NO_SUCH_LANG == $this->error || !isset($this->language_data['LANG_NAME'])) {
+            return $language;
         }
         return $this->language_data['LANG_NAME'];
     }

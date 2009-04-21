@@ -892,23 +892,70 @@ elseif ($job == 'merge2') {
 	$old = $db->fetch_assoc($result2);
 
 	// Step 2: Update abos
-	$db->query("UPDATE {$db->pre}abos SET mid = '".$base['id']."' WHERE mid = '".$old['id']."'");
-	// Step 4: Update mods
-	$db->query("UPDATE {$db->pre}moderators SET mid = '".$base['id']."' WHERE mid = '".$old['id']."'");
+	$db->query("UPDATE {$db->pre}abos SET mid = '{$base['id']}' WHERE mid = '{$old['id']}'"); // Multiple entries with different type are possible!
+	// Step 3: Delete exactly the same abos
+	$result = $db->query("SELECT id FROM {$db->pre}abos WHERE mid = '1' GROUP BY tid, type HAVING COUNT(*) > 1");
+	if ($db->num_rows($result) > 0) {
+		$ids = array();
+		while ($row = $db->fetch_assoc($result)) {
+			$ids[] = $row['id'];
+		}
+		$ids = implode(',', $ids);
+		$db->query("DELETE FROM {$db->pre}abos WHERE id IN ({$ids})");
+	}
+	// Step 4: Update mods (keep the settings from base member)
+	$result = $db->query("SELECT bid FROM {$db->pre}moderators WHERE mid = '{$base['id']}'");
+	while ($row = $db->fetch_assoc($result)) {
+		// Delete settings from old member when there is data for the base member
+		$db->query("DELETE FROM {$db->pre}moderators WHERE mid = '{$old['id']}' AND bid = '{$row['bid']}'");
+	}
+	// All the other mod data move to new account
+	$db->query("UPDATE {$db->pre}moderators SET mid = '{$base['id']}' WHERE mid = '{$old['id']}'");
 	// Step 5: Update pms
-	$db->query("UPDATE {$db->pre}pm SET pm_to = '".$base['id']."' WHERE pm_to = '".$old['id']."'");
-	$db->query("UPDATE {$db->pre}pm SET pm_from = '".$base['id']."' WHERE pm_from = '".$old['id']."'");
+	$db->query("UPDATE {$db->pre}pm SET pm_to = '{$base['id']}' WHERE pm_to = '{$old['id']}'");
+	$db->query("UPDATE {$db->pre}pm SET pm_from = '{$base['id']}' WHERE pm_from = '{$old['id']}'");
 	// Step 6: Update posts
-	$db->query("UPDATE {$db->pre}replies SET name = '".$base['id']."' WHERE name = '".$old['id']."' AND email = ''");
-	// Step 7:Update topics
-	$db->query("UPDATE {$db->pre}topics SET name = '".$base['id']."' WHERE name = '".$old['id']."'");
-	$db->query("UPDATE {$db->pre}topics SET last_name = '".$base['id']."' WHERE last_name = '".$old['id']."'");
+	$db->query("UPDATE {$db->pre}replies SET name = '{$base['id']}' WHERE name = '{$old['id']}' AND guest = '0'");
+	// Step 7: Update topics
+	$db->query("UPDATE {$db->pre}topics SET name = '{$base['id']}' WHERE name = '{$old['id']}'");
+	$db->query("UPDATE {$db->pre}topics SET last_name = '{$base['id']}' WHERE last_name = '{$old['id']}'");
 	// Step 8: Update uploads
-	$db->query("UPDATE {$db->pre}uploads SET mid = '".$base['id']."' WHERE mid = '".$old['id']."'");
+	$db->query("UPDATE {$db->pre}uploads SET mid = '{$base['id']}' WHERE mid = '{$old['id']}'");
 	// Step 9: Delete pic
 	removeOldImages('uploads/pics/', $old['id']);
-	// Step 10: Update votes
-	$db->query("UPDATE {$db->pre}votes SET mid = '".$base['id']."' WHERE mid = '".$old['id']."'");
+	// Step 10: Update votes (@TODO Optimze this)
+	// Get topics the base member has voted for
+	$result = $db->query("
+		SELECT p.tid, v.id
+		FROM {$db->pre}votes AS v
+			LEFT JOIN {$db->pre}vote AS p ON p.id = v.aid
+		WHERE v.mid = '{$base['id']}'
+	");
+	$ids_base = array();
+	while ($row = $db->fetch_assoc($result)) {
+		$ids_base[] = $row['tid'];
+	}
+	// Get topics the old member has voted for
+	$result = $db->query("
+		SELECT p.tid, v.id
+		FROM {$db->pre}votes AS v
+			LEFT JOIN {$db->pre}vote AS p ON p.id = v.aid
+		WHERE v.mid = '{$old['id']}'
+	");
+	$ids_old = array();
+	while ($row = $db->fetch_assoc($result)) {
+		$ids_old[$row['id']] = $row['tid'];
+	}
+	// Get the topics where both users have voted, keep the vote id from the old user
+	$delete = array_intersect($ids_old, $ids_base);
+	// Delete multiple votes if existant
+	if (count($delete) > 0) {
+		$delete = implode(',', array_keys($delete));
+		$db->query("DELETE FROM {$db->pre}votes WHERE id IN ({$delete})");
+	}
+	// Update all votes that hasn't been double
+	$db->query("UPDATE {$db->pre}votes SET mid = '{$base['id']}' WHERE mid = '{$old['id']}'");
+
 	// Setp 11: Update User data
 	$newdata = array();
 	$base = $gpc->save_str($base);
