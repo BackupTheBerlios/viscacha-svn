@@ -1840,10 +1840,10 @@ elseif ($job == 'delete') {
 			// Step 2: Delete all pms
 			$db->query("DELETE FROM {$db->pre}pm WHERE pm_to IN ({$did})");
 			// Step 3: Search all old posts by an user, and update to guests post
-			$db->query("UPDATE {$db->pre}replies SET name = '".$user['name']."', email = '".$user['mail']."' WHERE name = '".$user['id']."' AND email = ''");
+			$db->query("UPDATE {$db->pre}replies SET name = '{$user['name']}', email = '{$user['mail']}', guest = '1' WHERE name = '{$user['id']}' AND guest = '0'");
 			// Step 4: Search all old topics by an user, and update to guests post
-			$db->query("UPDATE {$db->pre}topics SET name = '".$user['name']."' WHERE name = '".$user['id']."'");
-			$db->query("UPDATE {$db->pre}topics SET last_name = '".$user['name']."' WHERE last_name = '".$user['id']."'");
+			$db->query("UPDATE {$db->pre}topics SET name = '{$user['name']}' WHERE name = '{$user['id']}'");
+			$db->query("UPDATE {$db->pre}topics SET last_name = '{$user['name']}' WHERE last_name = '{$user['id']}'");
 			// Step 5: Delete pic
 			removeOldImages('uploads/pics/', $user['id']);
 		}
@@ -2145,8 +2145,8 @@ elseif ($job == 'inactive') {
   </tr>
   <tr>
    <td class="mbox"><?php echo $lang->phrase('admin_member_cmp_posts'); ?></td>
-   <td class="mbox" align="center">&lt;</td>
-   <td class="mbox"><input type="text" name="posts" size="3" value="10" />. </td>
+   <td class="mbox" align="center">&lt;=</td>
+   <td class="mbox"><input type="text" name="posts" size="3" value="0" /></td>
   </tr>
   <tr>
    <td class="mbox"><?php echo $lang->phrase('admin_member_date_of_registry'); ?></td>
@@ -2172,9 +2172,9 @@ elseif ($job == 'inactive') {
    <td class="mbox"><select size="1" name="confirm">
 	  <option selected="selected" value=""><?php echo $lang->phrase('admin_member_whatever'); ?></option>
 	  <option value="11"><?php echo $lang->phrase('admin_member_activated'); ?></option>
-	  <option value="10"><?php echo $lang->phrase('admin_member_activate_via_mail'); ?></option>
-	  <option value="01"><?php echo $lang->phrase('admin_member_activate_by_admin'); ?></option>
-	  <option value="00"><?php echo $lang->phrase('admin_member_not_activated'); ?></option>
+	  <option value="10"><?php echo $lang->phrase('admin_member_must_activate_via_mail'); ?></option>
+	  <option value="01"><?php echo $lang->phrase('admin_member_must_be_activated_by_admin'); ?></option>
+	  <option value="00"><?php echo $lang->phrase('admin_member_has_not_been_activated'); ?></option>
 	</select></td>
   </tr>
   <tr>
@@ -2193,7 +2193,7 @@ elseif ($job == 'inactive2') {
 	$fields = 	array(
 		'name' => array($lang->phrase('admin_member_user_name'), str, null),
 		'mail' => array($lang->phrase('admin_member_email'), str, null),
-		'posts' => array($lang->phrase('admin_member_posts'), int, '<'),
+		'posts' => array($lang->phrase('admin_member_posts'), int, '<='),
 		'regdate' => array($lang->phrase('admin_member_registration'), arr_int, '<'),
 		'lastvisit' => array($lang->phrase('admin_member_last_visit'), arr_int, '<'),
 		'confirm' => array($lang->phrase('admin_member_status'), none, '=')

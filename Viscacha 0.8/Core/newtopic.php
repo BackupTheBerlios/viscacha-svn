@@ -124,10 +124,10 @@ elseif ($_GET['action'] == "savevote") {
 		errorLogin($lang->phrase('not_allowed'),"showforum.php?id=".$info['board'].SID2URL_x);
 	}
 
-	$result = $db->query('SELECT id, vquestion, board FROM '.$db->pre.'topics WHERE id = "'.$topic_id.'" LIMIT 1');
+	$result = $db->query("SELECT id, vquestion, board FROM {$db->pre}topics WHERE id = '{$topic_id}' LIMIT 1");
 	$info = $db->fetch_assoc($result);
 
-	$error = $sqlwhere = array();
+	$error = array();
 	if ($db->num_rows($result) != 1) {
 		$error[] = $lang->phrase('query_string_error');
 	}
@@ -137,23 +137,26 @@ elseif ($_GET['action'] == "savevote") {
 	if (strxlen($_POST['question']) < $config['mintitlelength']) {
 		$error[] = $lang->phrase('question_too_short');
 	}
+	$i = 1;
+	foreach ($_POST['notice'] as $id => $uval) {
+		$uval = trim($uval);
+		if (strlen($uval) >= 255) {
+			$error[] = $lang->phrase('vote_reply_too_long');
+		}
+		if (strlen($uval) == 0) {
+			unset($_POST['notice'][$id]);
+		}
+		else {
+			$_POST['notice'][$id] = $uval;
+		}
+		$i++;
+	}
 	if (count_filled($_POST['notice']) < 2) {
 		$error[] = $lang->phrase('min_replies_vote');
-	}
-	else {
-		foreach ($_POST['notice'] as $uval) {
-			if (strlen($uval) > 0 && strlen($uval) < 255) {
-				array_push($sqlwhere, "({$topic_id}, '{$uval}')");
-			}
-		}
-		if (count_filled($sqlwhere) < 2) {
-			$error[] = $lang->phrase('min_replies_vote');
-		}
 	}
 	if (count_filled($_POST['notice']) > 50) {
 		$error[] = $lang->phrase('max_replies_vote');
 	}
-
 
 	($code = $plugins->load('newtopic_savevote_errorhandling')) ? eval($code) : null;
 
@@ -164,6 +167,10 @@ elseif ($_GET['action'] == "savevote") {
 		error($error,"newtopic.php?action=startvote&amp;id={$info['board']}&topic_id={$topic_id}&amp;temp={$temp}&amp;fid=".$fid.SID2URL_x);
 	}
 	else {
+		$sqlwhere = array();
+		foreach ($_POST['notice'] as $uval) {
+			$sqlwhere[] = "({$topic_id}, '{$uval}')";
+		}
 		$sqlwhere = implode(", ",$sqlwhere);
 
 		($code = $plugins->load('newtopic_savevote_queries')) ? eval($code) : null;

@@ -721,6 +721,7 @@ $lang['vote_export_votes'] = 'Stimmen';
 $lang['vote_go_form'] = 'Votum abgeben';
 $lang['vote_no_value_checked'] = 'Sie haben keine Auswahlmöglichkeit markiert';
 $lang['vote_replies'] = 'Anzahl der Antwortmöglichkeiten:';
+$lang['vote_reply_too_long'] = 'Die Antwortmöglichkeit {$i} ist zu lang.';
 $lang['vote_showresult'] = 'Ergebnis anzeigen';
 $lang['vote_titlevote'] = 'Umfrage: ';
 $lang['what_are_bbcodes'] = 'Was sind BB-Codes überhaupt?';

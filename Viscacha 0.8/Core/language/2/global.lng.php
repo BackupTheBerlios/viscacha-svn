@@ -721,6 +721,7 @@ $lang['vote_export_votes'] = 'votes';
 $lang['vote_go_form'] = 'Cast your vote';
 $lang['vote_no_value_checked'] = 'No choices given';
 $lang['vote_replies'] = 'Number of different answers:';
+$lang['vote_reply_too_long'] = 'Option {$i} of your vote is too long.';
 $lang['vote_showresult'] = 'Show result';
 $lang['vote_titlevote'] = 'Poll: ';
 $lang['what_are_bbcodes'] = 'What are BB-Codes?';
