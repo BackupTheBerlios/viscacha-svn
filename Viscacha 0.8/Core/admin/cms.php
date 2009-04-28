@@ -1020,7 +1020,7 @@ elseif ($job == 'doc_create_table') {
 			<td><?php echo $lang->phrase('admin_wysiwyg_bgcolor'); ?></td>
 			<td>
 				<input type="text" name="backgroundcolor" id="backgroundcolor" value="none">
-				<input type="button" value="Choose" onClick="WYSIWYG_ColorInst.choose('backgroundcolor');" />
+				<input type="button" value="<?php echo $lang->phrase('admin_wysiwyg_choose'); ?>" onClick="WYSIWYG_ColorInst.choose('backgroundcolor');" />
 			</td>
 		</tr><tr class="mbox">
 			<td><?php echo $lang->phrase('admin_wysiwyg_border_width'); ?></td>
@@ -1028,7 +1028,7 @@ elseif ($job == 'doc_create_table') {
 			<td><?php echo $lang->phrase('admin_wysiwyg_border_color'); ?></td>
 			<td>
 				<input type="text" name="bordercolor" id="bordercolor" value="none">
-				<input type="button" value="Choose" onClick="WYSIWYG_ColorInst.choose('bordercolor');" />
+				<input type="button" value="<?php echo $lang->phrase('admin_wysiwyg_choose'); ?>" onClick="WYSIWYG_ColorInst.choose('bordercolor');" />
 			</td>
 		</tr><tr class="mbox">
 			<td><?php echo $lang->phrase('admin_wysiwyg_border_style'); ?></td>

@@ -515,8 +515,10 @@ class PowerGraphic {
 						// Draw lines
 						if ($this->type == 4)
 						{
+							imageantialias($this->img, true);
 							imageline($this->img, $x[$i], $z[$i], $x[$i+1], $z[$i+1], $this->color['line_2']);
 							imageline($this->img, $x[$i], ($z[$i]+1), $x[$i+1], ($z[$i+1]+1), $this->color['line_2']);
+							imageantialias($this->img, false);
 						}
 						imagefilledrectangle($this->img, $x[$i]-1, $z[$i]-1, $x[$i]+2, $z[$i]+2, $color);
 					}
@@ -536,8 +538,10 @@ class PowerGraphic {
 					if (isset($y[$i+1])) {
 						// Draw lines
 						if ($this->type == 4) {
+							imageantialias($this->img, true);
 							imageline($this->img, $x[$i], $y[$i], $x[$i+1], $y[$i+1], $this->color['line_1']);
 							imageline($this->img, $x[$i], ($y[$i]+1), $x[$i+1], ($y[$i+1]+1), $this->color['line_1']);
+							imageantialias($this->img, false);
 						}
 						imagefilledrectangle($this->img, $x[$i]-1, $y[$i]-1, $x[$i]+2, $y[$i]+2, $color);
 					}
@@ -578,42 +582,49 @@ class PowerGraphic {
 			// Draw PIE
 			if ($this->type == 5)
 			{
-				$start = 270;
 				$height /= 1.6;
 
 				if ($this->sum_total == 0) {
-					for($i=1; $i <= 11; $i++) {
-						imagefilledarc($this->img, $center_x, ($center_y+$i-1), $width, $height, $start, ($start+$size), $this->color['gray_shadow'], IMG_ARC_NOFILL);
+					for($i=15; $i >= 0; $i--) {
+						imagefilledarc($this->img, $center_x, ($center_y+$i), $width, $height, $start, ($start+$size), $this->color['gray_shadow'], IMG_ARC_NOFILL);
 					}
-					imagefilledarc($this->img, $center_x, $center_y, ($width+2), $height, $start, ($start+$size), $this->color['gray'], IMG_ARC_PIE);
+					imagefilledarc($this->img, $center_x, $center_y, $width, $height, $start, ($start+$size), $this->color['gray'], IMG_ARC_PIE);
 				}
 				else {
+					$num_color = 1;
 					foreach ($sizes as $i => $size)
 					{
-						$num_color = $i + 1;
-						if (!isset($this->color['arc_' . $num_color . '_shadow'])) {
-							$num_color = 1;
+						$shadowColor = 'arc_'.$num_color.'_shadow';
+						if ($size > 0) {
+							for($i=15; $i >= 0; $i--) {
+								imagefilledarc($this->img, $center_x, ($center_y+$i), $width, $height, $start, ($start+$size), $this->color[$shadowColor], IMG_ARC_NOFILL);
+							}
+							$start += $size;
 						}
-						$shadowColor = 'arc_' . $num_color . '_shadow';
-						for($i=1; $i <= 10; $i++) {
-							imagefilledarc($this->img, $center_x, ($center_y+$i-1), $width, $height, $start, ($start+$size), $this->color[$shadowColor], IMG_ARC_NOFILL);
+						if ($num_color >= count($this->color)) {
+							$num_colot = 1;
 						}
-						$start += $size;
+						else {
+							$num_color++;
+						}
 					}
 
 					$start = 270;
-
+					$num_color = 1;
 					// Draw pieces
 					foreach ($sizes as $i => $size)
 					{
-						$num_color = $i + 1;
-						if (!isset($this->color['arc_' . $num_color])) {
-							$num_color = 1;
-						}
 						$color = 'arc_' . $num_color;
-						imagefilledarc($this->img, $center_x, $center_y, ($width+2), $height, $start, ($start+$size), $this->color[$color], IMG_ARC_PIE);
-
-						$start += $size;
+						if ($size > 0) {
+							imagefilledarc($this->img, $center_x, $center_y, $width, $height, $start, ($start+$size), $this->color[$color], IMG_ARC_PIE);
+							$start += $size;
+						}
+						if ($num_color >= count($this->color)) {
+							$num_colot = 1;
+						}
+						else {
+							$num_color++;
+						}
 					}
 				}
 			}
@@ -626,16 +637,20 @@ class PowerGraphic {
 					imagefilledarc($this->img, $center_x, $center_y, 100, 100, 0, 360, $this->color['background'], IMG_ARC_PIE);
 				}
 				else {
+					$num_color = 1;
 					foreach ($sizes as $i => $size)
 					{
-						$num_color = $i + 1;
-						while ($num_color > 7) {
-							$num_color -= 5;
+						$color = 'arc_' . $num_color;
+						if ($size > 0) {
+							imagefilledarc($this->img, $center_x, $center_y, $width, $height, $start, ($start+$size), $this->color[$color], IMG_ARC_PIE);
+							$start += $size;
 						}
-						$color		  = 'arc_' . $num_color;
-						$color_shadow = 'arc_' . $num_color . '_shadow';
-						imagefilledarc($this->img, $center_x, $center_y, $width, $height, $start, ($start+$size), $this->color[$color], IMG_ARC_PIE);
-						$start += $size;
+						if ($num_color >= count($this->color)) {
+							$num_colot = 1;
+						}
+						else {
+							$num_color++;
+						}
 					}
 					imagefilledarc($this->img, $center_x, $center_y, 100, 100, 0, 360, $this->color['background'], IMG_ARC_PIE);
 					imagearc($this->img, $center_x, $center_y, 100, 100, 0, 360, $this->color['bg_legend']);
@@ -911,6 +926,60 @@ class PowerGraphic {
 
 	function load_color_palette()
 	{
+
+		$colour_palette = array(
+			array(255,0,0),
+			array(255,255,0),
+			array(0,255,0),
+			array(0,255,255),
+			array(0,0,255),
+			array(255,0,255),
+			array(128,0,0),
+			array(128,128,0),
+			array(0,128,0),
+			array(0,128,128),
+			array(0,0,128),
+			array(128,0,128),
+			array(97,97,97),
+			array(192,192,192),
+			array(255,128,128),
+			array(255,255,128),
+			array(128,255,128),
+			array(128,255,255),
+			array(128,128,255),
+			array(255,128,255),
+			array(194,0,0),
+			array(194,194,0),
+			array(0,194,0),
+			array(0,194,194),
+			array(0,0,194),
+			array(194,0,194),
+			array(255,192,128),
+			array(194,255,128),
+			array(128,255,192),
+			array(128,194,255),
+			array(192,128,255),
+			array(255,128,94),
+			array(161,97,33),
+			array(97,161,33),
+			array(33,161,97),
+			array(33,97,161),
+			array(97,33,161),
+			array(161,33,97),
+			array(255,128,0),
+			array(128,255,0),
+			array(0,255,128),
+			array(0,128,255),
+			array(128,0,255),
+			array(255,0,128),
+			array(128,64,0),
+			array(64,128,0),
+			array(0,128,64),
+			array(0,64,128),
+			array(64,0,128),
+			array(128,0,64),
+		);
+
 		switch ($this->skin)
 		{
 			// Office
@@ -939,15 +1008,7 @@ class PowerGraphic {
 				}
 				else if (ereg("^(5|6)$", $this->type))
 				{
-					$colours = array(
-						array(100, 150, 200),
-						array(200, 250, 150),
-						array(250, 200, 150),
-						array(250, 150, 150),
-						array(250, 250, 150),
-						array(230, 180, 250),
-						array(200, 200, 150)
-					);
+					$colours = $colour_palette;
 				}
 				break;
 
@@ -977,15 +1038,7 @@ class PowerGraphic {
 				}
 				else if (ereg("^(5|6)$", $this->type))
 				{
-					$colours = array(
-						array(255, 255, 255),
-						array(200, 220, 200),
-						array(160, 200, 160),
-						array(135, 180, 135),
-						array(115, 160, 115),
-						array(100, 140, 100),
-						array(90, 120, 90)
-					);
+					$colours = $colour_palette;
 				}
 				break;
 
@@ -1016,15 +1069,7 @@ class PowerGraphic {
 				}
 				else if (ereg("^(5|6)$", $this->type))
 				{
-					$colours = array(
-						array(100, 150, 200),
-						array(200, 250, 150),
-						array(250, 200, 150),
-						array(250, 150, 150),
-						array(250, 250, 150),
-						array(230, 180, 250),
-						array(200, 200, 150)
-					);
+					$colours = $colour_palette;
 				}
 				break;
 
@@ -1042,8 +1087,8 @@ class PowerGraphic {
 				if (ereg("^(1|2)$", $this->type))
 				{
 					$colours = array(
-						array($this->img, 80, 139, 199),
-						array($this->img, 200, 250, 150)
+						array(80, 139, 199),
+						array(200, 250, 150)
 					);
 				}
 				else if (ereg("^(3|4)$", $this->type))
@@ -1055,23 +1100,7 @@ class PowerGraphic {
 				}
 				else if (ereg("^(5|6)$", $this->type))
 				{
-					$colours = array(
-						array(2, 78, 0),
-						array(148, 170, 36),
-						array(233, 191, 49),
-						array(240, 127, 41),
-						array(243, 63, 34),
-						array(190, 71, 47),
-						array(135, 81, 60),
-						array(128, 78, 162),
-						array(121, 75, 255),
-						array(142, 165, 250),
-						array(162, 254, 239),
-						array(137, 240, 166),
-						array(104, 221, 71),
-						array(98, 174, 35),
-						array(93, 129, 1)
-					);
+					$colours = $colour_palette;
 
 				}
 				break;
@@ -1141,6 +1170,5 @@ class PowerGraphic {
 		$this->x = $this->y = $this->z = array();
 	}
 }
-
 
 ?>
