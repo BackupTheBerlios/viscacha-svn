@@ -166,12 +166,12 @@ else {
 	}
 
 	$sqlwhere = array();
+	$_GET['letter'] = $gpc->get('letter', db_esc);
 	if (strxlen($_GET['letter']) == 1) {
 		if ($_GET['letter'] == '#') {
 			$sqlwhere[] = "LEFT(name, 1) REGEXP '^[^".implode('', $available)."]'";
 		}
 		else {
-			$_GET['letter'] = $gpc->html_entity_decode($_GET['letter'], ENT_QUOTES);
 			$sqlwhere[] = "LEFT(name, 1) = '{$_GET['letter']}'";
 		}
 	}

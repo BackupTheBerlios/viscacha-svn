@@ -61,6 +61,9 @@ class GPC {
 
 	function get($index, $type = none, $standard = NULL) {
 		if (isset($_REQUEST[$index])) {
+			if (is_array($_REQUEST[$index]) && $type != arr_str && $type != arr_int && $type != arr_none) {
+				$_REQUEST[$index] = null;
+			}
 			if ($type == str || $type == arr_str) {
 				if ($type == str) {
 					$_REQUEST[$index] = trim($_REQUEST[$index]);
