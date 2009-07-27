@@ -40,12 +40,7 @@ function ImageHexColorAllocate(&$image, $string) {
 
 // Change $gpc->plain_str(..., false) to true when Charts-lib can use utf-8
 if ($_GET['action'] == 'vote') {
-	$result = $db->query('
-	SELECT id, topic, posts, sticky, status, last, board, vquestion, prefix
-	FROM '.$db->pre.'topics
-	WHERE id = '.$_GET['id'].'
-	LIMIT 1
-	');
+	$result = $db->query("SELECT id, topic, posts, sticky, status, last, board, vquestion, prefix FROM {$db->pre}topics WHERE id = '{$_GET['id']}'");
 	$info = $db->fetch_assoc($result);
 
 	require_once('classes/class.charts.php');

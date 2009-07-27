@@ -854,8 +854,8 @@ class idna_convert
 			} elseif ($v < (1 << 21)) { // 4 bytes
 				$output .= chr(240+($v >> 18)).chr(128+(($v >> 12) & 63)).chr(128+(($v >> 6) & 63)).chr(128+($v & 63));
 //	Mod: Commented out for php 4 compatibility
-//			} elseif (idna_convert::$safe_mode) {
-//				$output .= idna_convert::$safe_char;
+//            } elseif (self::$safe_mode) {
+//               $output .= self::$safe_char;
 			} else {
 				$this->_error('Conversion from UCS-4 to UTF-8 failed: malformed input at byte '.$k);
 				return false;
