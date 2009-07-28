@@ -76,7 +76,7 @@ class lang {
 
 		global $slog;
 		if (isset($slog) && is_object($slog) && method_exists($slog, 'setlang')) {
-			$slog->setlang($this->phrase('fallback_no_username'), $this->phrase('timezone_summer'));
+			$slog->setlang();
 		}
 		global $config, $breadcrumb;
 		if (isset($breadcrumb)) {

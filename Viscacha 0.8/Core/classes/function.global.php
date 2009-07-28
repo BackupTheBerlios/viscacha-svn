@@ -589,6 +589,7 @@ function leading_zero($int,$length=2) {
 }
 
 function times ($time = false, $timezone = false) {
+	global $my, $config;
 	$stime = $time == false ? time() : $time;
 	if ($timezone == false) {
 		if (isset($my->timezone)) {
@@ -929,6 +930,20 @@ function check_forumperm($forum) {
 		else {
 			return true;
 		}
+	}
+}
+
+function selectTZ($user, $compare) {
+	global $config;
+	if ($user === null) {
+		$user = $config['timezone'];
+	}
+	$user = (int) str_replace('+', '', $user);
+	if ($user == $compare) {
+		echo ' selected="selected"';
+	}
+	else {
+		echo '';
 	}
 }
 

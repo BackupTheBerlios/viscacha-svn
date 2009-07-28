@@ -509,7 +509,6 @@ $lang['admin_timelimit_post_delete'] = 'Zeitbegrenzung um Beiträge löschen zu kö
 $lang['admin_timelimit_post_delete_info'] = 'Zeitbegrenzung (in Minuten) nach der ein Beitrag, nach der Erstellung, noch gelöscht werden darf. Nach dieser Zeit können nur noch Moderatoren bzw. Administratoren diesen Beitrag löschen. 0 = Keine Beschränkung';
 $lang['admin_timelimit_post_edit'] = 'Zeitbegrenzung um Beiträge ändern zu können:';
 $lang['admin_timelimit_post_edit_info'] = 'Zeitbegrenzung (in Minuten) nach der ein Beitrag, nach der Erstellung, noch geändert werden darf. Nach dieser Zeit können nur noch Moderatoren bzw. Administratoren diesen Beitrag ändern. 0 = Keine Beschränkung';
-$lang['admin_timezone_maintain'] = 'Zeitzone beibehalten (GMT {@config->timezone})';
 $lang['admin_time_after_user_inactive'] = 'Zeit, nach der Benutzer als inaktiv gesetzt werden:';
 $lang['admin_time_after_user_inactive_info'] = 'In Minuten.';
 $lang['admin_time_check_inactive_users'] = 'Zeit, nach der nach inaktiven Benutzern gesucht werden soll:';

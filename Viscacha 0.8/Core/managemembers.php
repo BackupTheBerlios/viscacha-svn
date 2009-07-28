@@ -113,10 +113,10 @@ elseif ($_GET['action'] == 'edit') {
 	($code = $plugins->load('managemembers_edit_start')) ? eval($code) : null;
 
 	if (empty($user['template'])) {
-	    $user['template'] = $config['templatedir'];
+		$user['template'] = $config['templatedir'];
 	}
 	if (empty($user['language'])) {
-	    $user['language'] = $config['langdir'];
+		$user['language'] = $config['langdir'];
 	}
 	$user['icq'] = iif(empty($user['icq']), '', $user['icq']);
 
@@ -130,11 +130,15 @@ elseif ($_GET['action'] == 'edit') {
 	$mylanguage = $language[$user['language']]['language'];
 
 	// Profile
-    $bday = explode('-',$user['birthday']);
-    $year = gmdate('Y');
-    $maxy = $year-6;
-    $miny = $year-100;
-    $result = $db->query("SELECT id, title, name, core FROM {$db->pre}groups ORDER BY admin DESC , guest ASC , core ASC");
+	$bday = explode('-',$user['birthday']);
+	$year = gmdate('Y');
+	$maxy = $year-6;
+	$miny = $year-100;
+	$result = $db->query("SELECT id, title, name, core FROM {$db->pre}groups ORDER BY admin DESC , guest ASC , core ASC");
+
+	if (!isset($user['timezone']) || $user['timezone'] === null) {
+		$user['timezone'] = $config['timezone'];
+	}
 
 	$random = md5(microtime());
 
@@ -168,7 +172,7 @@ elseif ($_GET['action'] == 'edit2') {
 	}
 	$_POST['pw'] = $gpc->get('pw_'.$random, str);
 
-    $error = array();
+	$error = array();
 	if (strxlen($_POST['comment']) > $config['maxaboutlength']) {
 		$error[] = $lang->phrase('about_too_long');
 	}
@@ -283,18 +287,18 @@ elseif ($_GET['action'] == 'edit2') {
 		$_POST['birthyear'] = leading_zero($_POST['birthyear'], 4);
 		$bday = $_POST['birthyear'].'-'.$_POST['birthmonth'].'-'.$_POST['birthday'];
 
-	    $_POST['icq'] = str_replace('-', '', $_POST['icq']);
+		$_POST['icq'] = str_replace('-', '', $_POST['icq']);
 		if (!is_id($_POST['icq'])) {
 			$_POST['icq'] = 0;
-	    }
+		}
 
-        if (!empty($_POST['pw']) && strxlen($_POST['pw']) >= $config['minpwlength']) {
-            $md5 = md5($_POST['pw']);
+		if (!empty($_POST['pw']) && strxlen($_POST['pw']) >= $config['minpwlength']) {
+			$md5 = md5($_POST['pw']);
 			$update_sql = ", pw = '{$md5}' ";
-        }
-        else {
-            $update_sql = ' ';
-        }
+		}
+		else {
+			$update_sql = ' ';
+		}
 
 		admin_customsave($user['id']);
 

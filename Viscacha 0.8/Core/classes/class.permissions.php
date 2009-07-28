@@ -356,19 +356,54 @@ function getStatus($groups, $implode = '') {
  * This is a quick and dirty helper function to set some data.
  *
  * This function sets some language-data (name for guests and the timezone) and sets $my->ip.
- *
- * @param string Language: Guest's name
- * @param string Language: Timezone
  */
-function setlang($l1, $l2) {
-	global $my;
+function setlang() {
+	global $my, $lang;
 	if (!$my->vlogin) {
-		$my->name = $l1;
+		$my->name = $lang->phrase('fallback_no_username');
 	}
-	if (date('I', times()) == 1) {
-		$my->timezonestr .= $l2;
-	}
+	$my->timezone_str = $this->getTimezone();
+	$my->current_time = gmdate($lang->phrase('dformat3'), times());
 	$my->ip = $this->ip;
+}
+
+/**
+ * Returns the timezone for the current user (GMT +/-??:?? or just GMT).
+ */
+function getTimezone($base = null) {
+	global $my, $lang;
+
+	$summer = (date('I', times()) == 1);
+	$tz = $lang->phrase('gmt');
+
+	if ($base === null) {
+		$base = $my->timezone;
+	}
+
+	if ($base != 0) {
+		preg_match('~^(\+|-)?(\d{1,2})\.?(\d{0,2})?$~', $base, $parts);
+		$parts[2] = intval($parts[2]);
+		$parts[3] = intval($parts[3]);
+
+		if ($summer) {
+			$parts[2] = $parts[2] + 1;
+		}
+
+		if ($parts[2] != 0) {
+			if (empty($parts[1])) {
+				$parts[1] = '+';
+			}
+
+			$parts[2] = leading_zero($parts[2]);
+
+			$parts[3] = $parts[3]/100*60;
+			$parts[3] = leading_zero($parts[3]);
+
+			$tz .= ' '.$parts[1].$parts[2].':'.$parts[3];
+		}
+	}
+
+	return $tz;
 }
 
 /**
@@ -548,18 +583,8 @@ function logged () {
 		}
 	}
 
-	if (!isset($my->timezone) || $my->timezone == NULL) {
+	if (!isset($my->timezone) || $my->timezone === null) {
 		$my->timezone = $config['timezone'];
-	}
-
-	$my->timezonestr = '';
-	if ($my->timezone <> 0) {
-		if ($my->timezone{0} != '+' && $my->timezone > 0) {
-			$my->timezonestr = '+'.$my->timezone;
-		}
-		else {
-			$my->timezonestr = $my->timezone;
-		}
 	}
 
 	$admin = $gpc->get('admin', str);
@@ -913,18 +938,8 @@ function sid_login($remember = true) {
 		$my->vlogin = true;
 		$my->p = $this->Permissions();
 
-		if (!isset($my->timezone) || $my->timezone == NULL) {
+		if (!isset($my->timezone) || $my->timezone === null) {
 			$my->timezone = $config['timezone'];
-		}
-
-		$my->timezonestr = '';
-		if ($my->timezone <> 0) {
-			if ($my->timezone{0} != '+' && $my->timezone > 0) {
-				$my->timezonestr = '+'.$my->timezone;
-			}
-			else {
-				$my->timezonestr = $my->timezone;
-			}
 		}
 
 		$loaddesign_obj = $scache->load('loaddesign');

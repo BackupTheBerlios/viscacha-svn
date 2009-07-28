@@ -672,8 +672,6 @@ elseif ($_GET['action'] == "settings") {
 		$my->language = $config['langdir'];
 	}
 
-	$time = gmdate($lang->phrase('dformat3'), times());
-
 	$customfields = editprofile_customfields(2, $my->id);
 
 	($code = $plugins->load('editprofile_settings_prepared')) ? eval($code) : null;

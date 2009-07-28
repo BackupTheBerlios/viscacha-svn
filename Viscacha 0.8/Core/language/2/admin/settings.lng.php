@@ -509,7 +509,6 @@ $lang['admin_timelimit_post_delete'] = 'Time Limit on Deleting of Posts:';
 $lang['admin_timelimit_post_delete_info'] = 'Time limit (in minutes) to impose on deleting of messages. After this time limit only moderators will be able to delete the message. 0 = Disabled.';
 $lang['admin_timelimit_post_edit'] = 'Time Limit on Editing of Posts:';
 $lang['admin_timelimit_post_edit_info'] = 'Time limit (in minutes) to impose on editing of messages. After this time limit only moderators will be able to edit the message. 0 = Disabled.';
-$lang['admin_timezone_maintain'] = 'Maintain Timezone (GMT {@config->timezone})';
 $lang['admin_time_after_user_inactive'] = 'Time after users will be set inactive:';
 $lang['admin_time_after_user_inactive_info'] = 'in minutes';
 $lang['admin_time_check_inactive_users'] = 'Time for check on inactive users in Session-table:';

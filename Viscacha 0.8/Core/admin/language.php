@@ -1628,7 +1628,7 @@ elseif ($job == 'phrase_add2') {
 	$varname = $gpc->get('varname', none);
 	$text = $gpc->get('text', none);
 	$file = base64_decode($gpc->get('file', none));
-	$language = $gpc->get('langt', none);
+	$language = $gpc->get('langt', arr_none);
 
 	$c = new manageconfig();
 	foreach ($language as $id => $t) {
