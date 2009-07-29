@@ -303,12 +303,12 @@ elseif ($_GET['action'] == 'edit2') {
 		admin_customsave($user['id']);
 
 		($code = $plugins->load('managemembers_edit2_savedata')) ? eval($code) : null;
-		$db->query("
-		UPDATE {$db->pre}user
-		SET groups = '".saveCommaSeparated($gpc->get('groups', db_esc))."', timezone = '{$_POST['temp']}', opt_textarea = '{$_POST['opt_0']}', opt_pmnotify = '{$_POST['opt_1']}', opt_hidebad = '{$_POST['opt_2']}', opt_hidemail = '{$_POST['opt_3']}', template = '{$_POST['opt_4']}', language = '{$_POST['opt_5']}', pic = '{$_POST['pic']}', about = '{$_POST['comment']}', icq = '{$_POST['icq']}', yahoo = '{$_POST['yahoo']}', aol = '{$_POST['aol']}', msn = '{$_POST['msn']}', jabber = '{$_POST['jabber']}', skype = '{$_POST['skype']}', birthday = '{$bday}', gender = '{$_POST['gender']}', hp = '{$_POST['hp']}', signature = '{$_POST['signature']}', location = '{$_POST['location']}', fullname = '{$_POST['fullname']}', mail = '{$_POST['email']}', name = '{$_POST['name']}' {$update_sql}
-		WHERE id = '{$user['id']}'
-		LIMIT 1
-		");
+
+		$db->query("UPDATE {$db->pre}user SET groups = '".saveCommaSeparated($gpc->get('groups', db_esc))."', timezone = '{$_POST['temp']}', opt_textarea = '{$_POST['opt_0']}', opt_pmnotify = '{$_POST['opt_1']}', opt_hidebad = '{$_POST['opt_2']}', opt_hidemail = '{$_POST['opt_3']}', template = '{$_POST['opt_4']}', language = '{$_POST['opt_5']}', pic = '{$_POST['pic']}', about = '{$_POST['comment']}', icq = '{$_POST['icq']}', yahoo = '{$_POST['yahoo']}', aol = '{$_POST['aol']}', msn = '{$_POST['msn']}', jabber = '{$_POST['jabber']}', skype = '{$_POST['skype']}', birthday = '{$bday}', gender = '{$_POST['gender']}', hp = '{$_POST['hp']}', signature = '{$_POST['signature']}', location = '{$_POST['location']}', fullname = '{$_POST['fullname']}', mail = '{$_POST['email']}', name = '{$_POST['name']}' {$update_sql} WHERE id = '{$user['id']}'");
+
+		$cache = $scache->load('memberdata');
+		$cache = $cache->delete();
+
 		ok($lang->phrase('data_success'), "profile.php?id=".$user['id']);
 	}
 }

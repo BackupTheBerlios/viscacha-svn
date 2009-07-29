@@ -1817,7 +1817,11 @@ elseif ($job == 'edit2') {
 
 		admin_customsave($query['id']);
 
-		$db->query("UPDATE {$db->pre}user SET groups = '".saveCommaSeparated($query['groups'])."', timezone = '".$query['temp']."', opt_textarea = '".$query['opt_0']."', opt_pmnotify = '".$query['opt_1']."', opt_hidebad = '".$query['opt_2']."', opt_hidemail = '".$query['opt_3']."', template = '".$query['opt_4']."', language = '".$query['opt_5']."', pic = '".$query['pic']."', about = '".$query['comment']."', icq = '".$query['icq']."', yahoo = '".$query['yahoo']."', aol = '".$query['aol']."', msn = '".$query['msn']."', jabber = '".$query['jabber']."', birthday = '".$bday."', gender = '".$query['gender']."', hp = '".$query['hp']."', signature = '".$query['signature']."', location = '".$query['location']."', fullname = '".$query['fullname']."', skype = '".$query['skype']."', mail = '".$query['email']."', name = '".$query['name']."'".$update_sql." WHERE id = '".$user['id']."' LIMIT 1");
+		$db->query("UPDATE {$db->pre}user SET groups = '".saveCommaSeparated($query['groups'])."', timezone = '{$query['temp']}', opt_textarea = '{$query['opt_0']}', opt_pmnotify = '{$query['opt_1']}', opt_hidebad = '{$query['opt_2']}', opt_hidemail = '{$query['opt_3']}', template = '{$query['opt_4']}', language = '{$query['opt_5']}', pic = '{$query['pic']}', about = '{$query['comment']}', icq = '{$query['icq']}', yahoo = '{$query['yahoo']}', aol = '{$query['aol']}', msn = '{$query['msn']}', jabber = '{$query['jabber']}', birthday = '{$bday}', gender = '{$query['gender']}', hp = '{$query['hp']}', signature = '{$query['signature']}', location = '{$query['location']}', fullname = '{$query['fullname']}', skype = '{$query['skype']}', mail = '{$query['email']}', name = '{$query['name']}' {$update_sql} WHERE id = '{$user['id']}'");
+
+		$cache = $scache->load('memberdata');
+		$cache = $cache->delete();
+
 		ok("admin.php?action=members&job=manage", $lang->phrase('admin_member_data_saved'));
 	}
 }
@@ -1834,7 +1838,7 @@ elseif ($job == 'delete') {
 		$olduserdata = file_get_contents('data/deleteduser.php');
 		while ($user = $gpc->prepare($db->fetch_assoc($result))) {
 			// Step 1: Write Data to File with old Usernames
-			$olduserdata .= "\n".$user['id']."\t".$user['name'];
+			$olduserdata .= "\n{$user['id']}\t{$user['name']}";
 			$olduserdata = trim($olduserdata);
 			// Step 2: Delete all pms
 			$db->query("DELETE FROM {$db->pre}pm WHERE pm_to IN ({$did})");

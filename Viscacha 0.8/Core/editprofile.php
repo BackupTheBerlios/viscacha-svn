@@ -618,8 +618,10 @@ elseif ($_GET['action'] == "profile2") {
 			$_POST['icq'] = 0;
 		}
 
-		if ($config['changename_allowed'] == 1) {
+		if ($config['changename_allowed'] == 1 && $_POST['name'] != $my->name) {
 			$changename = ", name = '{$_POST['name']}'";
+			$cache = $scache->load('memberdata');
+			$cache = $cache->delete();
 		}
 		else {
 			$changename = '';
