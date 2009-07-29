@@ -177,7 +177,7 @@ function isWindows() {
 		return true;
 	}
 	elseif (viscacha_function_exists('php_uname') && stristr(@php_uname(), 'windows')) {
-
+		return true;
 	}
 	else {
 		return false;

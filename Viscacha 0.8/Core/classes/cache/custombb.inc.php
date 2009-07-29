@@ -29,7 +29,7 @@ class cache_custombb extends CacheItem {
 					return '.+?';
 				}
 				else {
-					return '[^\]\'\"]*?';
+					return '[^\]\'\"\r\n\t]*?';
 				}
 		}
 	}

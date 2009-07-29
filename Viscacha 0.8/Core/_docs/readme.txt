@@ -79,14 +79,8 @@ Minimum system requirements:
  - PHP-Extensions: mysql or mysqli, pcre, gd, zlib
  - MySQL Version: 4.0 and above
 
-Normal system requirements:
- - PHP Version: 5.0.0 and above
- - PHP-Extensions: mysql or mysqli, pcre, gd, zlib, xml, mime_magic,
-                   ftp or sockets
- - MySQL Version: 4.1 and above
-
-Optimal system requirements:
- - PHP Version: 5.2.0 and above
+Recommended system requirements:
+ - PHP Version: 5.2.0 and above, 5.3.0 on Windows
  - PHP-Extensions: mysql or mysqli, pcre, gd, zlib, xml, mime_magic,
                    mbstring, sockets, xdiff, ftp
  - MySQL Version: 5.0 and above (Strict mode off)

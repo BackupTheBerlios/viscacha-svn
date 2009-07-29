@@ -958,7 +958,7 @@ class BBCode {
 				$re['bbcodereplacement'] = strip_tags($re['bbcodereplacement']);
 			}
 			$this->currentCBB = $re;
-			$text = preg_replace_callback('~'.$re['bbregexp'].'~i', array(&$this, 'cbb_helper'), $text);
+			$text = preg_replace_callback('~'.$re['bbregexp'].'~is', array(&$this, 'cbb_helper'), $text);
 			$this->currentCBB = null;
 		}
 		return $text;
