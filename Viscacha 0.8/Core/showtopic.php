@@ -337,7 +337,7 @@ while ($row = $db->fetch_object($result)) {
 	else {
 	    $edit_seconds = $config['edit_edit_time']*60;
 	}
-	$can_edit = ((($row->mid == $my->id && $row->guest == 0 && $edit_seconds >= $diff) || $my->mp[0] == 1) && $my->p['edit'] == 1 && $last['readonly'] == 0 && $info['status'] == 0);
+	$can_edit = ((($row->mid == $my->id && $row->guest == 0 && $edit_seconds >= $diff) || $my->mp[0] == 1) && $my->p['edit'] == 1 && $last['readonly'] == 0 && !($info['status'] != 0 && $my->mp[0] != 1));
 
 	$new = iif($row->date > $my->clv, 'new', 'old');
 

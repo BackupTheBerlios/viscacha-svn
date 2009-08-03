@@ -725,6 +725,7 @@ function general_message($errortpl, $errorhook, $errormsg, $errorurl, $EOS) {
 
 function errorLogin($errormsg = null, $errorurl = null, $EOS = null) {
 	if ($errormsg == null) {
+		global $lang;
 		$errormsg = array($lang->phrase('not_allowed'));
 	}
 	elseif (!is_array($errormsg)) {
@@ -740,6 +741,7 @@ function errorLogin($errormsg = null, $errorurl = null, $EOS = null) {
 
 function error($errormsg = null, $errorurl = null, $EOS = null) {
 	if ($errormsg == null) {
+		global $lang;
 		$errormsg = array($lang->phrase('unknown_error'));
 	}
 	elseif (!is_array($errormsg)) {
@@ -751,6 +753,7 @@ function error($errormsg = null, $errorurl = null, $EOS = null) {
 
 function ok($errormsg = null, $errorurl = null, $EOS = null) {
 	if ($errormsg == null) {
+		global $lang;
 		$errormsg = $lang->phrase('unknown_ok');
 	}
 
