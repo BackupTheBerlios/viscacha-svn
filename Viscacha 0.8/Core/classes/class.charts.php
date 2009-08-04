@@ -529,7 +529,7 @@ class PowerGraphic {
 							}
 							$start += $size;
 						}
-						if ($num_color >= count($this->color)) {
+						if ($num_color >= $this->color['palette_count']) {
 							$num_colot = 1;
 						}
 						else {
@@ -546,7 +546,7 @@ class PowerGraphic {
 							imagefilledarc($this->img, $center_x, $center_y, $width, $height, $start, ($start+$size), $this->color[$color], IMG_ARC_PIE);
 							$start += $size;
 						}
-						if ($num_color >= count($this->color)) {
+						if ($num_color >= $this->color['palette_count']) {
 							$num_colot = 1;
 						}
 						else {
@@ -570,7 +570,7 @@ class PowerGraphic {
 							imagefilledarc($this->img, $center_x, $center_y, $width, $height, $start, ($start+$size), $this->color[$color], IMG_ARC_PIE);
 							$start += $size;
 						}
-						if ($num_color >= count($this->color)) {
+						if ($num_color >= $this->color['palette_count']) {
 							$num_colot = 1;
 						}
 						else {
@@ -1066,6 +1066,7 @@ class PowerGraphic {
  		}
  		elseif ($this->type == 5 ||  $this->type == 6) {
 			$i = 1;
+			$this->color['palette_count'] = count($colours);
 			foreach ($colours as $array) {
 				$this->color['arc_'.$i]		 		= imagecolorallocate($this->img, $array[0], $array[1], $array[2]);
 				$this->color['arc_'.$i.'_shadow'] 	= imagecolorallocate($this->img, $this->get_shadow($array[0]), $this->get_shadow($array[1]), $this->get_shadow($array[2]));

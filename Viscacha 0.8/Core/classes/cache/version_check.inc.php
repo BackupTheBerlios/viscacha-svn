@@ -13,7 +13,7 @@ class cache_version_check extends CacheItem {
 		}
 		else {
 			if (viscacha_function_exists('xml_parser_create')) {
-				$rssnews = get_remote('http://version.viscacha.org/news/rss');
+				$rssnews = get_remote('http://version.viscacha.org/news/rss/?version='.base64_encode($config['version']));
 				include('classes/magpie_rss/rss_fetch.inc.php');
 				$rss = new MagpieRSS($rssnews);
 				$news = '';
