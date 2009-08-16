@@ -7,15 +7,15 @@ if (isset($_REQUEST['save']) && $_REQUEST['save'] == 1) {
 	include('install/classes/class.phpconfig.php');
 	$c = new manageconfig();
 	$c->getdata('data/config.inc.php');
-	if (!isset($_REQUEST['fname'])) {
-		$_REQUEST['fname'] = '';
+	$c->updateconfig('fname', html_enc);
+	$c->updateconfig('fdesc', html_enc);
+	$_REQUEST['furl'] = empty($_REQUEST['furl']) ? getFUrl() : $_REQUEST['furl'];
+	if (strtolower(substr($_REQUEST['furl'], 0, 4)) == 'www.') {
+		$https = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ? 'https://' : 'http://');
+		$_REQUEST['furl'] = $https.$_REQUEST['furl'];
 	}
-	if (!isset($_REQUEST['fdesc'])) {
-		$_REQUEST['fdesc'] = '';
-	}
-	$c->updateconfig('fname', str, htmlentities($_REQUEST['fname'], ENT_QUOTES));
-	$c->updateconfig('fdesc', str, htmlentities($_REQUEST['fdesc'], ENT_QUOTES));
 	$c->updateconfig('furl', str);
+	$_REQUEST['fpath'] = !empty($_REQUEST['fpath']) ? $_REQUEST['fpath'] : str_replace('\\', '/', realpath('./'));
 	$c->updateconfig('fpath', str);
 	$c->updateconfig('forenmail', str);
 	$c->updateconfig('cookie_prefix', str);

@@ -757,7 +757,7 @@ function pemftp_class_module() {
 			return 'pure';
 		}
 		else {
-			trigger_error('Viscacha needs at least fsockopen, sockets extension or ftp extension to work! Please enable one of this features or you cannot use Viscacha!', E_USER_ERROR);
+			return null;
 		}
 	}
 }

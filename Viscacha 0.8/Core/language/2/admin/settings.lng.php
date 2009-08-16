@@ -139,6 +139,7 @@ $lang['admin_ftp_command_log'] = 'FTP-Command-Log:';
 $lang['admin_ftp_connection_test'] = 'FTP Connection Test';
 $lang['admin_ftp_directory_does_not_exist'] = 'Directory "{$ftp_path}" does not exist!';
 $lang['admin_ftp_password'] = 'FTP-Password:';
+$lang['admin_ftp_php_extension_error'] = 'Viscacha needs at least fsockopen, sockets extension or ftp extension to work! Please enable one of this features or disable ftp.';
 $lang['admin_ftp_port'] = 'FTP-Port:';
 $lang['admin_ftp_server'] = 'FTP-Server:';
 $lang['admin_ftp_server_info'] = 'You can leave it empty for disabling FTP.';
@@ -503,7 +504,7 @@ $lang['admin_sync_forumstatistic_info'] = 'Not recommended for big Forums! If th
 $lang['admin_task_log_file'] = 'Use Task-Log-File:';
 $lang['admin_task_log_file_info'] = 'The log file can be viewed <a href="admin.php?action=slog&job=l_cron" target="_blank">here</a>.';
 $lang['admin_teamlist_edit'] = 'Teamlist';
-$lang['admin_test_ftp_connection'] = 'Test FTP Connection';
+$lang['admin_test_ftp_connection'] = 'Save data and if so test FTP connection';
 $lang['admin_thread_upload_edit'] = 'Post Uploads';
 $lang['admin_timelimit_post_delete'] = 'Time Limit on Deleting of Posts:';
 $lang['admin_timelimit_post_delete_info'] = 'Time limit (in minutes) to impose on deleting of messages. After this time limit only moderators will be able to delete the message. 0 = Disabled.';

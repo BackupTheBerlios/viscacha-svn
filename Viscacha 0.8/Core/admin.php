@@ -113,6 +113,7 @@ if ($my->p['admin'] == 1) {
 	}
 	elseif ($action == 'locate') {
 		$url = $gpc->get('url', none);
+		$url = addslashes($url);
 		if (!empty($url)) {
 			$db->close();
 			sendStatusCode(307, $url);

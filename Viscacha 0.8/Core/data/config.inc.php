@@ -67,6 +67,7 @@ $config['hterrordocs'] = 0;
 $config['indexpage'] = 'portal';
 $config['langdir'] = 1;
 $config['lasttopic_chars'] = 40;
+$config['local_mode'] = 0;
 $config['login_attempts_blocktime'] = 60;
 $config['login_attempts_max'] = 5;
 $config['login_attempts_time'] = 60;

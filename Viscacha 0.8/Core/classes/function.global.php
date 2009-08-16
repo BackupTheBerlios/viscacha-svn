@@ -1020,8 +1020,10 @@ function xmail ($to, $from = array(), $topic, $comment) {
 			$mail->AddAddress($gpc->plain_str($email['mail']));
 		}
 
-		if ($mail->Send()) {
-			$i++;
+		if ($config['local_mode'] == 0) {
+			if ($mail->Send()) {
+				$i++;
+			}
 		}
 
 		$mail->ClearAddresses();

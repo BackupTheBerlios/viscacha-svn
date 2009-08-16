@@ -147,8 +147,7 @@ elseif ($job == 'ftp') {
 	echo foot();
 }
 elseif ($job == 'ftp2') {
-	require_once("classes/ftp/class.ftp.php");
-	require_once("classes/ftp/class.ftp_".pemftp_class_module().".php");
+	$error = false;
 
 	$temp = array(
 		'ftp_server' => $gpc->get('ftp_server', none),
@@ -158,8 +157,16 @@ elseif ($job == 'ftp2') {
 		'ftp_path' => $gpc->get('ftp_path', none, DIRECTORY_SEPARATOR)
 	);
 
-	$error = false;
-	$dataGiven = count(array_unique($temp)) == 5;
+	require_once("classes/ftp/class.ftp.php");
+	$pemftp_class = pemftp_class_module();
+	if ($pemftp_class !== null) {
+		require_once("classes/ftp/class.ftp_{$pemftp_class}.php");
+	}
+	elseif (empty($temp['ftp_server'])) {
+		$error = 'admin_ftp_php_extension_error';
+	}
+
+	$dataGiven = (!empty($temp['ftp_server']) && !empty($temp['ftp_port']) && !empty($temp['ftp_user']) && !empty($temp['ftp_pw']) && !empty($temp['ftp_path']) && $error === false);
 	if ($dataGiven) {
 		ob_start();
 		$ftp = new ftp(true, true);
@@ -199,7 +206,7 @@ elseif ($job == 'ftp2') {
 		$c->updateconfig('ftp_port', int, $temp['ftp_port']);
 		$c->savedata();
 
-		$msg = $dataGiven ? $lang->phrase('admin_connection_is_ok') : null;
+		$msg = $dataGiven ? $lang->phrase('admin_connection_is_ok').'<br />'.$lang->phrase('admin_settings_successfully_saved') : null;
 
 		ok('admin.php?action=settings&job=settings', $msg);
 	}

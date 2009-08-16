@@ -139,6 +139,7 @@ $lang['admin_ftp_command_log'] = 'FTP-Befehlsprotokoll:';
 $lang['admin_ftp_connection_test'] = 'FTP-Verbindung testen';
 $lang['admin_ftp_directory_does_not_exist'] = 'Verzeichnis "{$ftp_path}" existiert leider nicht!';
 $lang['admin_ftp_password'] = 'FTP-Passwort:';
+$lang['admin_ftp_php_extension_error'] = 'Viscacha benötigt mindestens fsockopen, die Sockets-Erweiterung oder die FTP-Erweiterung für die FTP-Funktionalität. Bitte aktiviere eines dieser Features oder deaktiviere FTP.';
 $lang['admin_ftp_port'] = 'FTP-Port:';
 $lang['admin_ftp_server'] = 'FTP-Server:';
 $lang['admin_ftp_server_info'] = 'Sie können das Feld leer lassen, um FTP zu deaktivieren. Nicht empfohlen, wenn Safe Mode aktiviert ist!';
@@ -503,7 +504,7 @@ $lang['admin_sync_forumstatistic_info'] = 'Nicht empfohlen für große Foren! Wenn
 $lang['admin_task_log_file'] = 'Protokollierung der geplante Aufgaben aktivieren:';
 $lang['admin_task_log_file_info'] = 'Die Protokolldatei kann <a href="admin.php?action=slog&job=l_cron" target="_blank">hier</a> eingesehen werden.';
 $lang['admin_teamlist_edit'] = 'Teamliste';
-$lang['admin_test_ftp_connection'] = 'FTP-Verbindung testen';
+$lang['admin_test_ftp_connection'] = 'Daten speichern und FTP-Verbindung ggf. testen';
 $lang['admin_thread_upload_edit'] = 'Themen-Anhänge';
 $lang['admin_timelimit_post_delete'] = 'Zeitbegrenzung um Beiträge löschen zu können:';
 $lang['admin_timelimit_post_delete_info'] = 'Zeitbegrenzung (in Minuten) nach der ein Beitrag, nach der Erstellung, noch gelöscht werden darf. Nach dieser Zeit können nur noch Moderatoren bzw. Administratoren diesen Beitrag löschen. 0 = Keine Beschränkung';

@@ -196,7 +196,7 @@ elseif ($job == 'import2') {
 
 	$inserted = false;
 	if ($overwrite == 0) {
-		$db->query("INSERT INTO {$db->pre}language (language, detail) VALUES ($lang->phrase('admin_lang_new_langpack'), $lang->phrase('admin_lang_langpack_import_error'))");
+		$db->query("INSERT INTO {$db->pre}language (language, detail) VALUES (".$lang->phrase('admin_lang_new_langpack').", ".$lang->phrase('admin_lang_langpack_import_error').")");
 		$inserted = true;
 		$overwrite = $db->insert_id();
 	}
@@ -928,7 +928,6 @@ elseif ($job == 'lang_edit') {
    <li><strong><?php echo $lang->phrase('admin_lang_text_templates'); ?></strong>
 	  <ul>
 	   	<li><a href="admin.php?action=language&job=lang_txttpl&id=<?php echo $id; ?>&file=moved"><?php echo $lang->phrase('admin_lang_topic_moved'); ?></a></li>
-	   	<li><a href="admin.php?action=language&job=lang_txttpl&id=<?php echo $id; ?>&file=notice"><?php echo $lang->phrase('admin_lang_copied_posts'); ?></a></li>
 	  </ul>
    </li>
    <li><a href="admin.php?action=language&job=lang_ignore&id=<?php echo $id; ?>"><?php echo $lang->phrase('admin_lang_ignored_search_keys'); ?></a></li>
