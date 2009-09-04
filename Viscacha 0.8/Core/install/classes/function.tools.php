@@ -280,7 +280,7 @@ function GPC_unescape($var){
 		}
 	}
 	elseif (is_string($var)){
-		$var = stripslashes($var);
+		$var = stripslashes(trim($var));
 	}
 	return $var;
 }
@@ -326,5 +326,4 @@ if (@ini_get('register_globals') == '1' || strtolower(@ini_get('register_globals
 if (get_magic_quotes_gpc() == 1) {
 	$_REQUEST = GPC_unescape($_REQUEST);
 }
-$_REQUEST = array_map('trim', $_REQUEST);
 ?>

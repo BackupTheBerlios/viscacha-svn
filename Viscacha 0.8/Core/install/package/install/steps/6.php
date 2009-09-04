@@ -97,7 +97,7 @@ if (!empty($config['dbsystem'])) {
 	  <td class="mbox" width="50%"><input type="text" name="dbprefix" value="<?php echo $config['dbprefix']; ?>" size="10" /></td>
 	 </tr>
 	 <tr>
-	  <td class="mbox" width="50%">Use a persistent connection:<br /><span class="stext">Only for "MySQL Standard". For more information visit: <a href="http://www.php.net/manual/features.persistent-connections.php" target="_blank">php.net - Persistent Database Connections</a></span></td>
+	  <td class="mbox" width="50%">Use a persistent connection:<br /><span class="stext">Only available for "MySQL Standard". For more information visit: <a href="http://www.php.net/manual/features.persistent-connections.php" target="_blank">php.net - Persistent Database Connections</a></span></td>
 	  <td class="mbox" width="50%"><input type="checkbox" name="pconnect" value="1"<?php echo iif($config['pconnect'] == 1, ' checked="checked"'); ?> /></td>
 	 </tr>
 	</table>
