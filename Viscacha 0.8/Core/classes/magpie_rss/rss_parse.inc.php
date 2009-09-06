@@ -167,7 +167,7 @@ class MagpieRSS {
 		// check for a namespace, and split if found
 		$ns = false;
 		if ( strpos( $element, ':' ) ) {
-			list($ns, $el) = split( ':', $element, 2);
+			list($ns, $el) = explode( ':', $element, 2);
 		}
 		if ( $ns and $ns != 'rdf' ) {
 			$this->current_namespace = $ns;
@@ -349,9 +349,9 @@ class MagpieRSS {
 		$this->current_namespace = false;
 	}
 
-	function concat (&$str1, $str2="", $separator='') {
-		if (!isset($str1) ) {
-			$str1="";
+	function concat (&$str1, $str2 = '', $separator = '') {
+		if (empty($str1)) {
+			$str1 = $str2;
 		}
 		else {
 			$str1 .= $separator;
@@ -372,48 +372,37 @@ class MagpieRSS {
 
 	// smart append - field and namespace aware
 	function append($el, $text) {
-		if (!$el) {
+		if (empty($el)) {
 			return;
 		}
-		if ( $this->current_namespace )
-		{
+		if ( $this->current_namespace ) {
 			if ( $this->initem ) {
-				$this->concat(
-					$this->current_item[ $this->current_namespace ][ $el ], $text,
-					$el=='category' ? ',' : ''
-				);
+				$sep = ($el == 'category') ? ',' : '';
+				$this->concat( $this->current_item[$this->current_namespace][$el], $text, $sep );
 			}
 			elseif ($this->inchannel) {
-				$this->concat(
-					$this->channel[ $this->current_namespace][ $el ], $text );
+				$this->concat( $this->channel[$this->current_namespace][$el], $text );
 			}
 			elseif ($this->intextinput) {
-				$this->concat(
-					$this->textinput[ $this->current_namespace][ $el ], $text );
+				$this->concat( $this->textinput[$this->current_namespace][$el], $text );
 			}
 			elseif ($this->inimage) {
-				$this->concat(
-					$this->image[ $this->current_namespace ][ $el ], $text );
+				$this->concat( $this->image[$this->current_namespace][$el], $text );
 			}
 		}
 		else {
 			if ( $this->initem ) {
-				$this->concat(
-					$this->current_item[ $el ], $text,
-					$el=='category' ? ',' : ''
-				);
+				$sep = ($el == 'category') ? ',' : '';
+				$this->concat( $this->current_item[$el], $text, $sep );
 			}
 			elseif ($this->intextinput) {
-				$this->concat(
-					$this->textinput[ $el ], $text );
+				$this->concat( $this->textinput[$el], $text );
 			}
 			elseif ($this->inimage) {
-				$this->concat(
-					$this->image[ $el ], $text );
+				$this->concat( $this->image[$el], $text );
 			}
 			elseif ($this->inchannel) {
-				$this->concat(
-					$this->channel[ $el ], $text );
+				$this->concat( $this->channel[$el], $text );
 			}
 
 		}

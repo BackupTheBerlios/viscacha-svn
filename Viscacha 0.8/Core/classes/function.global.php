@@ -393,9 +393,9 @@ function serverload($int = false) {
 	}
 	if (empty($serverload[0]) && viscacha_function_exists('exec') == true) {
 		$load = @exec("uptime");
-		$load = split("load averages?: ", $load);
+		$load = preg_split("~load averages?: ~i", $load);
 		if (isset($load[1])) {
-			$serverload = @explode(",", $load[1]);
+			$serverload = explode(",", $load[1]);
 		}
 	}
 	if (isset($serverload[0])) {

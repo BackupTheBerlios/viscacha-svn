@@ -847,10 +847,23 @@ class BBCode {
 	}
 	function highlight($text) {
 		if (isset($this->profile['highlight']) && count($this->profile['highlight']) > 0) {
-			$class = $this->profile['highlight_class'];
+			$class = htmlspecialchars($this->profile['highlight_class'], ENT_QUOTES);
 			foreach ($this->profile['highlight'] as $token) {
 				if (strxlen($token) > 2) {
-					$text = str_replace('\"', '"', substr(preg_replace('#(\>(((?>([^><]+|(?R)))*)\<))#se', "preg_replace('#\b(" . $token . ")\b#i', '<span class=\"" . $class . "\">\\\\1</span>', '\\0')", '>' . $text . '<'), 1, -1));
+					$token = preg_quote($token, '#');
+					$text = str_replace(
+						'\"',
+						'"',
+						substr(
+							preg_replace(
+								'#(\>(((?>([^><]+|(?R)))*)\<))#se',
+								"preg_replace('#\b({$token})\b#i', '<span class=\"{$class}\">\\\\1</span>', '\\0')",
+								">{$text}<"
+							),
+							1,
+							-1
+						)
+					);
 				}
 			}
 		}
