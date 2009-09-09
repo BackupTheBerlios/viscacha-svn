@@ -301,7 +301,7 @@ function head($onload = '') {
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head>
-	<title><?php echo $config['fname']; ?> - Editor CP</title>
+	<title><?php echo $config['fname']; ?>: Editor Control Panel - powered by Viscacha</title>
 	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 	<meta http-equiv="Pragma" content="no-cache" />
 	<meta http-equiv="Expires" content="-1" />
