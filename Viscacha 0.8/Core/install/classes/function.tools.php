@@ -12,7 +12,7 @@ function getFUrl() {
 	$source = str_replace(array('\\', '//', '/install'), '/', $source);
 	$source = trim(trim(dirname($source)), '/');
 
-	$furl = $https.$server_name.'/'.$source;
+	$furl = rtrim($https.$server_name.'/'.$source, '/');
 	return $furl;
 }
 function makeOneLine($str) {

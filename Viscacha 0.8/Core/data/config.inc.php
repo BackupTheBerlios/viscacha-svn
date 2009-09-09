@@ -169,6 +169,7 @@ $config['updateboardstats'] = 1;
 $config['updatepostcounter'] = 1;
 $config['version'] = '0.8';
 $config['viscacha_addreply_last_replies']['repliesnum'] = '5';
+$config['viscacha_document_on_portal']['doc_id'] = '0';
 $config['viscacha_news_boxes']['cutat'] = 'teaser';
 $config['viscacha_news_boxes']['items'] = '5';
 $config['viscacha_news_boxes']['teaserlength'] = '300';
