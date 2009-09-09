@@ -97,7 +97,7 @@ function checkmx_idna($host) {
 	   @exec("nslookup -querytype=MX {$host_idna}", $output);
 	   while(list($k, $line) = each($output)) {
 		   # Valid records begin with host name
-		   if(preg_match("~^(".preg_quote($host)."|".preg_quote($host_idna).")~i", $line)) {
+		   if(preg_match("~^(".preg_quote($host, '~')."|".preg_quote($host_idna, '~').")~i", $line)) {
 			   return true;
 		   }
 	   }
