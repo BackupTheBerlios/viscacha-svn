@@ -7,7 +7,7 @@ if (!class_exists('filesystem')) {
 }
 
 $tar_packs = array(
-	1 => 'update.admin.tar',
+	1 => 'update.classes.tar',
 	2 => 'update.misc.tar',
 	3 => 'update.rc6.tar',
 	4 => 'update.rc5.tar'

@@ -6,8 +6,13 @@ require('data/config.inc.php');
 require_once('install/classes/class.phpconfig.php');
 
 function loadSettingArray($path) {
-	include_once("{$path}/settings.lng.php");
-	return $lang;
+	include("{$path}/settings.lng.php");
+	if (isset($lang['lang_code'])) {
+		return $lang;
+	}
+	else {
+		return array('lang_code' => 'en');
+	}
 }
 
 echo "- Source files loaded<br />";
@@ -32,10 +37,10 @@ $add_acom = array('admin/packages_admin.php');
 $result = $db->query("SELECT internal FROM {$db->pre}packages");
 while ($row = $db->fetch_assoc($result)) {
 	$internal = preg_quote($row['internal'], "~");
-	if (!preg_match("~^-component_{$internal}$~im")) {
+	if (!preg_match("~^-component_{$internal}$~im", $hooks)) {
 		$add_com[] = "-component_{$row['internal']}";
 	}
-	if (!preg_match("~^-admin_component_{$internal}$~im")) {
+	if (!preg_match("~^-admin_component_{$internal}$~im", $hooks)) {
 		$add_acom[] = "-admin_component_{$row['internal']}";
 	}
 }
@@ -269,11 +274,6 @@ while (false !== ($entry = $dir->read())) {
 echo "- Stylesheets updated.<br />";
 
 // Set incompatible packages inactive
-$db->query("UPDATE {$db->pre}packages SET active = '0' WHERE internal = 'viscacha_quick_reply'");
-$result = $db->query("SELECT package FROM {$db->pre}component");
-while ($row = $db->fetch_assoc($result)) {
-	$db->query("UPDATE {$db->pre}packages SET active = '0' WHERE id = '{$row['package']}'");
-}
 setPackagesInactive();
 echo "- Incompatible Packages set as 'inactive'.<br />";
 

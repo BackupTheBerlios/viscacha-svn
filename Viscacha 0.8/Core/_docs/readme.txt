@@ -1,5 +1,5 @@
 ########################################
-# Readme for Viscacha 0.8 RC 7         #
+# Readme for Viscacha 0.8 Gold         #
 ########################################
 
 == Table of Contents ==
@@ -41,9 +41,9 @@ Warning: Since 0.8 RC7 we provide separate packages for installation
 6. After the update is ready and you are back in your Admin Control
    Panel, please check for updates of your installed packages!
 
-Note: You can only update from Viscacha 0.8 RC5 and 0.8 RC6.
+Note: You can only update from Viscacha 0.8 RC5, 0.8 RC6 and 0.8 RC7.
 
-== 2.1 == Stylesheet Changes (only RC6 to RC7) ==
+== 2.1 == Stylesheet Changes (only 0.8 RC7 to 0.8 Gold) ==
 This changes are for later design updates that are not installed while 
 updating. This steps will be shown or executed in the update script!
 
@@ -56,18 +56,12 @@ styles.
 
 1. Search:
 ------------------------------------------------------------------------
-hr {
-	height: 1px;
-	border: 0;
-	border-bottom: 1px #839FBC solid;
-}
+.popup {
 ------------------------------------------------------------------------
 
 Add below:
 ------------------------------------------------------------------------
-tt {
-	font-family: 'Courier New', monospace;
-}
+	overflow: hidden;
 ------------------------------------------------------------------------
 
 
@@ -75,7 +69,7 @@ tt {
 
 Minimum system requirements:
  - PHP Version: 5.0.0 and above
-               (4.3.0 or higher may work, but is unsupported as of 0.8 RC7)
+               (PHP 4 is unsupported as of 0.8 RC7)
  - PHP-Extensions: mysql or mysqli, pcre, gd, zlib
  - MySQL Version: 4.0 and above
 

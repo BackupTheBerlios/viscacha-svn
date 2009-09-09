@@ -6,8 +6,13 @@ require('data/config.inc.php');
 require_once('install/classes/class.phpconfig.php');
 
 function loadSettingArray($path) {
-	include_once("{$path}/settings.lng.php");
-	return $lang;
+	include("{$path}/settings.lng.php");
+	if (isset($lang['lang_code'])) {
+		return $lang;
+	}
+	else {
+		return array('lang_code' => 'en');
+	}
 }
 
 echo "- Source files loaded<br />";
