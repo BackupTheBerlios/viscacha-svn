@@ -35,7 +35,7 @@ _docs/readme.txt
 <strong>Update instructions:</strong><br />
 <ol class="upd_instr">
 <li>Make sure you have a <b>complete backup of your data</b> (FTP + MySQL)!</li>
-<li><b>You should specified the ftp data in your <a href="../admin.php?addr=<?php echo rawurlencode('admin.php?action=settings&job=ftp'); ?>" target="_blank">Admin Control Panel</a></b> (Viscacha Settings > FTP) before you continue with the next step or the CHMODs can't be set correctly!</li>
+<li><b>You should specified the ftp data in your <a href="../admin.php?addr=<?php echo rawurlencode('admin.php?action=settings&job=ftp'); ?>" target="_blank">Admin Control Panel</a></b> (Viscacha Settings > FTP) before you continue with the next step or the CHMODs may not be set correctly!</li>
 
 <li>Open the file <b>designs/*/ie.css</b>:<br />
 <em>You have to apply the following changes (for all CSS files) to all your installed designs. * is a placeholder for a Design-ID (1,2,3,...). The CSS definitions can vary depending on your modifications to the styles.</em>

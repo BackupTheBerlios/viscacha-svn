@@ -36,14 +36,14 @@ if (!SCRIPT_LOCKED) {
 	else {
 		$packages[] = array(
 			'title' => 'Installation',
-			'description' => 'For a fresh installation you need to download the Install-Package for Viscacha 0.8 RC7!'
+			'description' => 'For a fresh installation you need to download the Install-Package for Viscacha '.VISCACHA_VERSION.'!'
 		);
 	}
 	if (count($old_versions) > 0) {
 		foreach ($old_versions as $dir => $old_version) {
 			$packages[$dir] = array(
 				'title' => 'Update '.$old_version.' to '.VISCACHA_VERSION,
-				'description' => 'Already running Viscacha? Then choose this option to update from '.$old_version.' to the new Version!'
+				'description' => 'Already running Viscacha? Choose this option to update from '.$old_version.' to the new version!'
 			);
 		}
 	}
