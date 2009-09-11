@@ -216,7 +216,7 @@ elseif ($job == 'import2') {
 		}
 		$delobj = $scache->load('loadlanguage');
 		$delobj->delete();
-		ok('admin.php?action=language&job=manage', 'Languagepack import successful.');
+		ok('admin.php?action=language&job=manage', $lang->phrase('admin_lang_imported_successfully'));
 	}
 	else {
 		if ($inserted) {
@@ -770,7 +770,7 @@ elseif ($job == 'lang_emailtpl') {
   </tr>
   <tr>
    <td class="mbox" width="20%"><?php echo $lang->phrase('admin_lang_message'); ?></td>
-   <td class="mbox" width="80%"><textarea name="tpl" rows="10" cols="80"><?php echo $tpl[2]; ?></textarea></td>
+   <td class="mbox" width="80%"><textarea name="tpl" rows="10" cols="80"><?php echo $gpc->prepare($tpl[2]); ?></textarea></td>
   </tr>
   <tr>
    <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="<?php echo $lang->phrase('admin_lang_form_save'); ?>" /></td>
@@ -1337,7 +1337,7 @@ elseif ($job == 'phrase_file_edit2') {
 	$encfile = base64_decode($file);
 	$varname = $gpc->get('varname', none);
 	$text = $gpc->get('text', none);
-	$language = $gpc->get('langt', none);
+	$language = $gpc->get('langt', arr_none);
 
 	$c = new manageconfig();
 	foreach ($language as $id => $t) {

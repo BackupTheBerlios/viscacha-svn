@@ -491,7 +491,7 @@ function check_mail($email, $simple = false) {
 	 	$domain = strtolower($domain);
 		// Check MX record.
 	 	// The idea for this is from UseBB/phpBB
-	 	if ($config['email_check_mx'] && !$simple) {
+	 	if ($config['local_mode'] == 0 && $config['email_check_mx'] == 1 && !$simple) {
 	 		if (checkmx_idna($domain) === false) {
 	 			return false;
 	 		}

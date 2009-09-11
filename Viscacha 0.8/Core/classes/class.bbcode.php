@@ -147,7 +147,7 @@ class BBCode {
 
 		$code = trim($code, "\r\n");
 		$rows = explode("\n", $code);
-		if (count($rows) > 1) {
+		if (count($rows) > 1 || $this->wordwrap($code) != $code) {
 			$scache->loadClass('UniversalCodeCache');
 			$cache = new UniversalCodeCache();
 			$cache->setData($code, $sclang);
@@ -983,7 +983,7 @@ class BBCode {
 		if ($length == FALSE) {
 			$length = $this->profile['wordwrap_wordlength'];
 		}
-		$text = preg_replace("~([^\n\r\s&\./<>\[\]\\\]{".$length.'})~i', "\\1".$this->profile['wordwrap_char'], $text);
+		$text = preg_replace("~([^\n\r\s&\./<>\[\]\\\]{".intval($length)."})~i", "\\1".$this->profile['wordwrap_char'], $text);
 		return $text;
 	}
 	function cache_bbcode () {

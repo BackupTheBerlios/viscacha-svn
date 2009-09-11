@@ -24,6 +24,9 @@
 
 if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
 
+// Load flood check (essential for this class)
+include_once("classes/function.flood.php");
+
 class slog {
 
 var $statusdata;

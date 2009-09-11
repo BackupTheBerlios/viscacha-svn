@@ -651,6 +651,7 @@ $lang['showtopic_options_abo7'] = 'Weekly notification';
 $lang['showtopic_options_abo_remove'] = 'Unsubscribe from this topic';
 $lang['showtopic_options_export'] = 'Export';
 $lang['showtopic_options_favs'] = 'Add to favorites';
+$lang['showtopic_options_fav_remove'] = 'Remove from favorites';
 $lang['showtopic_options_manage'] = 'Manage topics';
 $lang['showtopic_options_print'] = 'Printer friendly version';
 $lang['showtopic_prefix_title'] = '[{$prefix}] ';

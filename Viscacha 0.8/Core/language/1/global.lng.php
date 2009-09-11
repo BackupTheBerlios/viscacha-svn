@@ -651,6 +651,7 @@ $lang['showtopic_options_abo7'] = 'Wöchentliche Benachrichtigung';
 $lang['showtopic_options_abo_remove'] = 'Themenabonnement abbestellen';
 $lang['showtopic_options_export'] = 'Exportieren';
 $lang['showtopic_options_favs'] = 'Zu den Favoriten hinzufügen';
+$lang['showtopic_options_fav_remove'] = 'Aus den Favoriten entfernen';
 $lang['showtopic_options_manage'] = 'Themen verwalten';
 $lang['showtopic_options_print'] = 'Druckoptimierte Version';
 $lang['showtopic_prefix_title'] = '[{$prefix}] ';

@@ -453,11 +453,11 @@ while ($row = $db->fetch_object($result)) {
 }
 
 if ($my->vlogin && is_id($info['id'])) {
-	$result = $db->query("SELECT id FROM {$db->pre}abos WHERE mid = '{$my->id}' AND tid = '{$info['id']}'");
+	$result = $db->query("SELECT id, type FROM {$db->pre}abos WHERE mid = '{$my->id}' AND tid = '{$info['id']}'");
 	$abox = $db->fetch_assoc($result);
 }
 else {
-	$abox = array('id' => null);
+	$abox = array('id' => null, 'type' => null);
 }
 
 $inner['index_bit'] = implode('', $inner['index_bit']);

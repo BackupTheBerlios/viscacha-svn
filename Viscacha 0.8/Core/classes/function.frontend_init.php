@@ -165,8 +165,6 @@ require_once ("classes/class.template.php");
 include_once ("classes/class.breadcrumb.php");
 // Global functions
 require_once ("classes/function.global.php");
-// Load Flood-Check
-include_once ("classes/function.flood.php");
 
 if (!file_exists('.htaccess')) {
 	$htaccess = array();

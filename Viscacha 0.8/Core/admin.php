@@ -151,8 +151,6 @@ else {
 		error('index.php'.SID2URL_1, $lang->phrase('admin_not_allowed_to_view_this_page'));
 	}
 
-	include("classes/function.flood.php");
-
 	$addr = rawurldecode($gpc->get('addr', none));
 	if ($action == "login2") {
 		$log_status = $slog->sid_login(true);

@@ -176,6 +176,32 @@ elseif ($_GET['action'] == 'postrating' || $_GET['action'] == 'memberrating' || 
 	imagePNG($image);
 	imagedestroy($image);
 }
+elseif ($_GET['action'] == 'm_email' || $_GET['action'] == 'g_email') {
+	$email = $lang->phrase('profile_mail_1');
+	
+	if ($_GET['action'] == 'm_email') {
+		$result = $db->query("SELECT id, opt_hidemail, mail FROM {$db->pre}user WHERE id = '{$_GET['id']}'");
+		if ($db->num_rows($result) == 1) {
+			$row = $db->fetch_assoc($result);
+			if ($row['opt_hidemail'] == 0) {
+				$email = $row['mail'];
+			}
+		}
+	}
+	else {
+		$result = $db->query("SELECT email FROM {$db->pre}replies WHERE id = '{$_GET['id']}' AND guest = '1'");
+		if ($db->num_rows($result) == 1) {
+			$row = $db->fetch_assoc($result);
+			$email = $row['email'];
+		}
+	}
+
+	include('classes/graphic/class.text2image.php');
+	$img = new text2image();
+	$img->prepare($email, 0, 10);
+	$img->build();
+	$img->output();
+}
 ($code = $plugins->load('images_end')) ? eval($code) : null;
 
 $slog->updatelogged();
