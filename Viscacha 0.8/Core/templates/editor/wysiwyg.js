@@ -883,8 +883,9 @@ var WYSIWYG = {
 
 		// status bar update
 		if(this.config[n].StatusBarEnabled) {
-			WYSIWYG_Core.addEvent(doc, "mouseup", function xxx_dd() { WYSIWYG.updateStatusBar(n); });
-			WYSIWYG_Core.addEvent(doc, "keyup", function xxx_ee() { WYSIWYG.updateStatusBar(n); });
+			var xxx_dd = function() { WYSIWYG.updateStatusBar(n); };
+			WYSIWYG_Core.addEvent(doc, "mouseup", xxx_dd);
+			WYSIWYG_Core.addEvent(doc, "keyup", xxx_dd);
 		}
 
 		// init viewTextMode var
@@ -1142,9 +1143,13 @@ var WYSIWYG = {
 	 * @param {String} value The value when applicable
 	 */
 	execCommand: function(n, cmd, value) {
-
 		// When user clicks toolbar button make sure it always targets its respective WYSIWYG
-		this.getEditorWindow(n).focus();
+		if (WYSIWYG_Core.isFF) {
+			this.getEditorWindow(n).document.body.focus();
+		}
+		else {
+			this.getEditorWindow(n).focus();
+		}
 
 		// When in Text Mode these execCommands are enabled
 		var textModeCommands = new Array("ViewText");
@@ -2085,18 +2090,10 @@ var WYSIWYG = {
 				range.selectNode(node);
 			}
 
-			/*
-			if (endNode) {
-				try {
-					range.setStart(node, startOffset);
-					range.setEnd(endNode, endOffset);
-				} catch(e) {
-				}
+			if (sel) {
+				sel.removeAllRanges();
+				sel.addRange(range);
 			}
-			*/
-
-			if (sel) { sel.removeAllRanges(); }
-			if (sel) { sel.addRange(range);	 }
 		}
 		else {
 			// MSIE may not select everything when BODY is selected -
@@ -2138,7 +2135,7 @@ var WYSIWYG = {
 			}
 		}
 	}
-}
+};
 
 /********************************************************************
  * openWYSIWYG core functions Copyright (c) 2006 openWebWare.com
@@ -2149,20 +2146,27 @@ var WYSIWYG = {
  ********************************************************************/
 var WYSIWYG_Core = {
 
+	// Browser-Check bases on http://www.lipfert-malik.de/webdesign/tutorial/bsp/browser_js_test.html
+
 	/**
 	 * Holds true if browser is MSIE
 	 */
-	isMSIE: (navigator.appName == "Microsoft Internet Explorer"),
+	isMSIE: window.ActiveXObject ? true : false,
 
 	/**
 	 * Holds true if browser is Opera
 	 */
-	isOpera: (navigator.appName == "Opera"),
+	isOpera: window.opera ? true : false,
 
 	/**
-	 * Holds true if browser is Firefox (Mozilla)
+	 * Holds true if browser is based on Webkit (Safari, Chrome, KHTML)
 	 */
-	isFF: (!document.all && document.getElementById && navigator.appName != "Opera"),
+	isWebKit: navigator.userAgent.match(/(Safari|Chrome|WebKit|KHTML)/),
+
+	/**
+	 * Holds true if browser is based on Gecko (Mozilla, Firefox)
+	 */
+	isFF: (window.netscape && !window.opera),
 
 	/**
 	 * Trims whitespaces of the given string
@@ -2240,7 +2244,7 @@ var WYSIWYG_Core = {
 	 */
 	_getStyleAttribute: function(node) {
 		if(this.isMSIE) {
-			return node.style['cssText'].toLowerCase();
+			return node.style.cssText.toLowerCase();
 		}
 		else {
 			return node.getAttribute("style");
@@ -2421,10 +2425,10 @@ var WYSIWYG_Core = {
 	 * @param cmd Command which is execute
 	 */
 	execCommand: function(n, cmd, value) {
-		if(typeof(value) == "undefined") value = null;
+		if(typeof(value) == "undefined") { value = null; }
 
 		// firefox BackColor problem fixed
-		if(cmd == 'BackColor' && WYSIWYG_Core.isFF) cmd = 'HiliteColor';
+		if(cmd == 'BackColor' && WYSIWYG_Core.isFF) { cmd = 'HiliteColor'; }
 
 		// firefox cut, paste and copy
 		if(WYSIWYG_Core.isFF && (cmd == "Cut" || cmd == "Paste" || cmd == "Copy")) {
@@ -2485,10 +2489,11 @@ var WYSIWYG_Core = {
 	 * @param fu Function which is execute on the event
 	 */
 	addEvent: function(obj, ev, fu) {
-		if (obj.attachEvent)
+		if (obj.attachEvent) {
 			obj.attachEvent("on" + ev, fu);
-		else
+		} else {
 			obj.addEventListener(ev, fu, false);
+		}
 	},
 
 	/**
@@ -2499,10 +2504,11 @@ var WYSIWYG_Core = {
 	 * @param fu Function which is execute on the event
 	 */
 	removeEvent:  function(obj, ev, fu) {
-		if (obj.attachEvent)
+		if (obj.attachEvent) {
 			obj.detachEvent("on" + ev, fu);
-		else
+		} else {
 			obj.removeEventListener(ev, fu, false);
+		}
 	},
 
 	/**
@@ -2535,7 +2541,7 @@ var WYSIWYG_Core = {
 		return {width: e[a + w], height: e[a + 'Height']};
 	}
 
-}
+};
 
 /*
  * FCKeditor - The text editor for Internet - http://www.fckeditor.net
@@ -2618,7 +2624,7 @@ var WYSIWYG_Beautifier = {
 
 		return sFormatted;
 	}
-}
+};
 
 /**
  * Table object
