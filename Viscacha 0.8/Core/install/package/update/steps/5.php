@@ -75,6 +75,17 @@ $ini = array (
       'gmt' => 'GMT',
     ),
   ),
+  'admin/language' =>
+  array (
+    'language_de' =>
+    array (
+      'admin_lang_imported_successfully' => 'Sprachpaket wurde erfolgreich importiert.',
+    ),
+    'language' =>
+    array (
+      'admin_lang_imported_successfully' => 'Languagepack imported successfully.',
+    ),
+  ),
   'admin/members' =>
   array (
     'language_de' =>
@@ -119,6 +130,7 @@ $ini = array (
       'admin_htaccess_error_doc_info' => 'Bei einem Server-Fehler (400, 403, 404, 500) wird die benutzerdefinierte Fehlerseite angezeigt. Beispiel: <a href="misc.php?action=error&id=404" target="_blank">Fehler 404</a>',
       'admin_test_ftp_connection' => 'Daten speichern und FTP-Verbindung ggf. testen',
       'admin_timezone_maintain' => NULL,
+      'admin_wordwrap_character_html_tag_long_words' => 'Wordwrap: Text (HTML erlaubt) der für die Trennung von zu langen Wörtern genutzt wird:',
       'admin_ftp_php_extension_error' => 'Viscacha benötigt mindestens fsockopen, die Sockets-Erweiterung oder die FTP-Erweiterung für die FTP-Funktionalität. Bitte aktiviere eines dieser Features oder deaktiviere FTP.',
       'admin_multiple_instant_notifications' => 'Pro Antwort eine E-Mail-Benachrichtigungen schicken:',
       'admin_multiple_instant_notifications_info' => 'Bei der sofortigen E-Mail-Benachrichtigung (Abonnements) von Themen wird, wenn diese Option aktiviert ist, pro Antwort eine Benachrichtigung geschickt. Andernfalls wird nur bei der ersten Antwort seit dem letzten Besuch eine Benachrichtigung verschickt.',
@@ -129,6 +141,7 @@ $ini = array (
       'admin_htaccess_error_doc_info' => 'On Server-Errors (400, 403, 404, 500) the custom Error-sites will be shown. Example: <a href="misc.php?action=error&id=404" target="_blank">Error 404</a>',
       'admin_test_ftp_connection' => 'Save data and if so test FTP connection',
       'admin_timezone_maintain' => NULL,
+      'admin_wordwrap_character_html_tag_long_words' => 'Wordwrap: Text (HTML allowed) which will be used for separation of too long words:',
       'admin_ftp_php_extension_error' => 'Viscacha needs at least fsockopen, sockets extension or ftp extension to work! Please enable one of this features or disable ftp.',
       'admin_multiple_instant_notifications' => 'Send one e-mail subscriptions per reply:',
       'admin_multiple_instant_notifications_info' => 'For instant e-mail notifications (subscriptions) of replies you can receive one notification per reply, if this option is turned on. In the other case, you only get one notification for the first reply since your last visit.',
@@ -197,6 +210,7 @@ $ini = array (
       'timezone_desc' => 'Aktuelle Uhrzeit: {%my->current_time}.',
       'timezone_summer' => NULL,
       'gmt' => 'GMT',
+      'showtopic_options_fav_remove' => 'Aus den Favoriten entfernen',
       'vote_reply_too_long' => 'Die Antwortmöglichkeit {$i} ist zu lang.',
     ),
     'language' =>
@@ -217,6 +231,7 @@ $ini = array (
       'timezone_desc' => 'Current time: {%my->current_time}.',
       'timezone_summer' => NULL,
       'gmt' => 'GMT',
+      'showtopic_options_fav_remove' => 'Remove from favorites',
       'vote_reply_too_long' => 'Option {$i} of your vote is too long.',
     ),
   ),

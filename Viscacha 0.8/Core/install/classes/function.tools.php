@@ -74,7 +74,7 @@ function updateLanguageFiles($ini) {
 					$c->delete($varname);
 				}
 				else {
-					$c->updateconfig($varname, html_enc, $text);
+					$c->updateconfig($varname, str, $text);
 				}
 			}
 			$c->savedata();

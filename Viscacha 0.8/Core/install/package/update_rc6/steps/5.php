@@ -152,6 +152,7 @@ $ini = array (
       'admin_lang_edit_langfile_package_id' => NULL,
       'admin_lang_files' => NULL,
       'admin_lang_packages_phrases' => 'Pakete',
+      'admin_lang_imported_successfully' => 'Sprachpaket wurde erfolgreich importiert.',
     ),
     'language' =>
     array (
@@ -161,6 +162,7 @@ $ini = array (
       'admin_lang_edit_langfile_package_id' => NULL,
       'admin_lang_files' => NULL,
       'admin_lang_packages_phrases' => 'Packages',
+      'admin_lang_imported_successfully' => 'Languagepack imported successfully.',
     ),
   ),
   'admin/members' =>
@@ -272,6 +274,7 @@ $ini = array (
       'admin_suggestions_slow_mode' => NULL,
       'admin_test_ftp_connection' => 'Daten speichern und FTP-Verbindung ggf. testen',
       'admin_timezone_maintain' => NULL,
+      'admin_wordwrap_character_html_tag_long_words' => 'Wordwrap: Text (HTML erlaubt) der für die Trennung von zu langen Wörtern genutzt wird:',
       'admin_ftp_php_extension_error' => 'Viscacha benötigt mindestens fsockopen, die Sockets-Erweiterung oder die FTP-Erweiterung für die FTP-Funktionalität. Bitte aktiviere eines dieser Features oder deaktiviere FTP.',
       'admin_logvisits_count_logging' => 'Nur Anzahl der Besuche protokollieren',
       'admin_logvisits_full_logging' => 'Zeit und Anzahl der Besuche protokollieren',
@@ -296,6 +299,7 @@ $ini = array (
       'admin_suggestions_slow_mode' => NULL,
       'admin_test_ftp_connection' => 'Save data and if so test FTP connection',
       'admin_timezone_maintain' => NULL,
+      'admin_wordwrap_character_html_tag_long_words' => 'Wordwrap: Text (HTML allowed) which will be used for separation of too long words:',
       'admin_ftp_php_extension_error' => 'Viscacha needs at least fsockopen, sockets extension or ftp extension to work! Please enable one of this features or disable ftp.',
       'admin_logvisits_count_logging' => 'Log only number of visits',
       'admin_logvisits_full_logging' => 'Log time and number of visits',
@@ -402,6 +406,7 @@ $ini = array (
       'page_gzip_off' => 'Aus',
       'page_gzip_on' => 'An<br />Komprimierungsrate: ',
       'post_info_postcount' => 'Beiträge: ',
+      'showtopic_options_fav_remove' => 'Aus den Favoriten entfernen',
       'vote_reply_too_long' => 'Die Antwortmöglichkeit {$i} ist zu lang.',
     ),
     'language' =>
@@ -450,6 +455,7 @@ $ini = array (
       'page_gzip_off' => 'Off',
       'page_gzip_on' => 'On<br />Compression Rate: ',
       'post_info_postcount' => 'Posts: ',
+      'showtopic_options_fav_remove' => 'Remove from favorites',
       'vote_reply_too_long' => 'Option {$i} of your vote is too long.',
     ),
   ),

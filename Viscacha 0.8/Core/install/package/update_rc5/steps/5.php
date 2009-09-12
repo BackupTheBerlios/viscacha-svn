@@ -397,6 +397,7 @@ $ini = array (
       'admin_lang_edit_langfile_package_id' => NULL,
       'admin_lang_files' => NULL,
       'admin_lang_packages_phrases' => 'Pakete',
+      'admin_lang_imported_successfully' => 'Sprachpaket wurde erfolgreich importiert.',
     ),
     'language' =>
     array (
@@ -406,6 +407,7 @@ $ini = array (
       'admin_lang_edit_langfile_package_id' => NULL,
       'admin_lang_files' => NULL,
       'admin_lang_packages_phrases' => 'Packages',
+      'admin_lang_imported_successfully' => 'Languagepack imported successfully.',
     ),
   ),
   'admin/members' =>
@@ -559,6 +561,7 @@ $ini = array (
       'admin_timezone_maintain' => NULL,
       'admin_topics_posts_pdf' => NULL,
       'admin_wave_filter_captcha' => 'Wende den "Wellen"-Filter auf das Spamschutz-Bild an:',
+      'admin_wordwrap_character_html_tag_long_words' => 'Wordwrap: Text (HTML erlaubt) der für die Trennung von zu langen Wörtern genutzt wird:',
       'admin_captcha_type0' => 'Nicht aktiviert',
       'admin_captcha_type1' => 'Standard (VeriWord)',
       'admin_captcha_type2' => 'reCaptcha',
@@ -624,6 +627,7 @@ $ini = array (
       'admin_timezone_maintain' => NULL,
       'admin_topics_posts_pdf' => NULL,
       'admin_wave_filter_captcha' => 'Use "wave"-filter on Spam-Bot-Protection-Picture:',
+      'admin_wordwrap_character_html_tag_long_words' => 'Wordwrap: Text (HTML allowed) which will be used for separation of too long words:',
       'admin_captcha_type0' => 'Not active',
       'admin_captcha_type1' => 'Standard (VeriWord)',
       'admin_captcha_type2' => 'reCaptcha',
@@ -765,6 +769,7 @@ $ini = array (
       'page_gzip_off' => 'Aus',
       'page_gzip_on' => 'An<br />Komprimierungsrate: ',
       'post_info_postcount' => 'Beiträge: ',
+      'showtopic_options_fav_remove' => 'Aus den Favoriten entfernen',
       'vote_change_option' => 'Votum ändern',
       'vote_go_form' => 'Votum abgeben',
       'vote_reply_too_long' => 'Die Antwortmöglichkeit {$i} ist zu lang.',
@@ -824,6 +829,7 @@ $ini = array (
       'page_gzip_off' => 'Off',
       'page_gzip_on' => 'On<br />Compression Rate: ',
       'post_info_postcount' => 'Posts: ',
+      'showtopic_options_fav_remove' => 'Remove from favorites',
       'vote_change_option' => 'Change vote',
       'vote_go_form' => 'Cast your vote',
       'vote_reply_too_long' => 'Option {$i} of your vote is too long.',
