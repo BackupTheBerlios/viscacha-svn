@@ -273,7 +273,7 @@ class BBCode {
 			}
 			$newurl = $func($url, 0, $after+1).$config['maxurltrenner'].subxstr($url, -$before);
 			$pid2 = $this->noparse_id();
-			$this->noparse[$pid] = $newurl;
+			$this->noparse[$pid2] = $newurl;
 			$ahref = '<a href="<!PID:'.$pid.'>" target="_blank"><!PID:'.$pid2.'></a>';
 		}
 		else { // Die URL wird ungekürzt als Titel genommen
@@ -408,7 +408,7 @@ class BBCode {
 		$thiszm1=benchmarktime();
 		$this->cache_bbcode();
 		$this->noparse = array();
-		$text = preg_replace('/(\r\n|\r|\n)/', "\n", $text);
+		$text = preg_replace("/(\r\n|\r|\n)/", "\n", $text);
 		if($type == 'html' && (!empty($my->p['admin']) || ($my->id > 0 && $my->id == $this->author))) {
 			$text = preg_replace('/\n?\[hide\](.+?)\[\/hide\]/is', '<br /><div class="bb_hide"><strong>'.$lang->phrase('bb_hidden_content').'</strong><span>\1</span></div>', $text);
 		}
@@ -570,12 +570,12 @@ class BBCode {
 	}
 	function parseDoc ($text) {
 		if ($this->profile['reduceEndChars'] == 1) {
-			$text = preg_replace('/\!{2,}1?/i', "!", $text);
-			$text = preg_replace('/\?{2,}(&szlig;)?/i', "?", $text);
+			$text = preg_replace('/\!{2,}1{0,}/i', "!", $text);
+			$text = preg_replace('/\?{2,}(&szlig;){0,}/i', "?", $text);
 			$text = preg_replace('/\.{4,}/i', "...", $text);
 		}
 		if ($this->profile['reduceNL'] == 1) {
-			$text = preg_replace('/\n{3,}/i', "\n\n", $text);
+			$text = preg_replace("/\n{3,}/i", "\n\n", $text);
 		}
 		return $text;
 	}
@@ -726,11 +726,14 @@ class BBCode {
 				// Old way to replace smileys - use this when you have problems with smileys
 				// $text = str_replace(' '.$smiley['search'], ' <img src="'.$smiley['replace'].'" border="0" alt="'.$smiley['desc'].'" />', $text);
 				if (strpos($text, $smiley['search']) !== false) {
-					$text = preg_replace(
-						'~(\r|\n|\t|\s|\>|\<|^)'.preg_quote($smiley['search'], '~').'(\r|\n|\t|\s|\>|\<|$)~s',
-						'\1<img src="'.$smiley['replace'].'" border="0" alt="'.$smiley['desc'].'" />\2',
-						$text
-					);
+					$pattern = '~(\r|\n|\t|\s|\>|\<|^)'.preg_quote($smiley['search'], '~').'(\r|\n|\t|\s|\>|\<|$)~s';
+					while (preg_match($pattern, $text)) {
+						$text = preg_replace(
+							$pattern,
+							'\1<img src="'.$smiley['replace'].'" border="0" alt="'.$smiley['desc'].'" />\2',
+							$text
+						);
+					}
 				}
 			}
 		}

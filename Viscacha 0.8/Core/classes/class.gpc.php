@@ -172,6 +172,7 @@ class GPC {
 				$var = htmlentities($var, ENT_QUOTES, $lang->charset());
 				$var = str_replace('&amp;#', '&#', $var);
 			}
+			$var = preg_replace("~\\\\(\r|\n)~", "&#92;\\1", $var); // NL Hack
 			if ($db_esc == true && is_object($db)) {
 				$var = $db->escape_string($var);
 			}

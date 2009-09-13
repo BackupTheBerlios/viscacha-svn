@@ -386,7 +386,6 @@ elseif ($_GET['action'] == "about") {
 		$data = $gpc->unescape(import_error_data($fid));
 		if ($_GET['job'] == 'preview') {
 			$preview = true;
-			$data = $gpc->unescape($data);
 			$parsedPreview = $bbcode->parse($data);
 		}
 		else {
