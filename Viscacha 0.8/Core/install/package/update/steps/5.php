@@ -64,6 +64,17 @@ echo "- Configuration updated.<br />";
 
 // Languages
 $ini = array (
+  'admin/forums' =>
+  array (
+    'language_de' =>
+    array (
+      'admin_forum_until' => 'bis ',
+    ),
+    'language' =>
+    array (
+      'admin_forum_until' => 'until ',
+    ),
+  ),
   'admin/global' =>
   array (
     'language_de' =>

@@ -118,6 +118,17 @@ $ini = array (
       'admin_wysiwyg_target' => 'Target Window:',
     ),
   ),
+  'admin/forums' =>
+  array (
+    'language_de' =>
+    array (
+      'admin_forum_until' => 'bis ',
+    ),
+    'language' =>
+    array (
+      'admin_forum_until' => 'until ',
+    ),
+  ),
   'admin/frames' =>
   array (
     'language_de' =>

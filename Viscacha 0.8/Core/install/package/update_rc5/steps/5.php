@@ -274,6 +274,17 @@ $ini = array (
       'admin_design_create_new_template_directory' => 'Create a new directory for templates and use the templates from the standard design as base.',
     ),
   ),
+  'admin/forums' =>
+  array (
+    'language_de' =>
+    array (
+      'admin_forum_until' => 'bis ',
+    ),
+    'language' =>
+    array (
+      'admin_forum_until' => 'until ',
+    ),
+  ),
   'admin/frames' =>
   array (
     'language_de' =>

@@ -1482,7 +1482,7 @@ function setTopicRead($tid, $parents) {
 	// Erstelle ein Array mit schon gelesenen Beiträgen
 	$inkeys = implode(',', array_keys($my->mark['t']));
 	foreach ($parents as $tf) {
-		$result = $db->query("SELECT COUNT(*) FROM {$db->pre}topics WHERE board = '{$tf}' AND last > '{$my->clv}' AND id NOT IN({$inkeys})");
+		$result = $db->query("SELECT COUNT(*) FROM {$db->pre}topics WHERE board = '{$tf}' AND last >= '{$my->clv}' AND id NOT IN({$inkeys})");
 		$row = $db->fetch_num($result);
 		if ($row[0] == 0) {
 			$my->mark['f'][$tf] = time();
@@ -1492,7 +1492,7 @@ function setTopicRead($tid, $parents) {
 
 function setForumRead($fid) {
 	global $db, $my;
-	$result = $db->query("SELECT id FROM {$db->pre}topics WHERE board = '{$fid}' AND last > '{$my->clv}'");
+	$result = $db->query("SELECT id FROM {$db->pre}topics WHERE board = '{$fid}' AND last >= '{$my->clv}'");
 	while ($row = $db->fetch_assoc($result)) {
 		$my->mark['t'][$row['id']] = time();
 	}
@@ -1528,12 +1528,12 @@ function setAllRead() {
 
 function isForumRead($fid, $last_change) {
 	global $my;
-	return ((isset($my->mark['f'][$fid]) && $my->mark['f'][$fid] > $last_change) || $last_change < $my->clv);
+	return ((isset($my->mark['f'][$fid]) && $my->mark['f'][$fid] >= $last_change) || $last_change <= $my->clv);
 }
 
 function isTopicRead($tid, $last_change) {
 	global $my;
-	return ((isset($my->mark['t'][$tid]) && $my->mark['t'][$tid] > $last_change) || $last_change < $my->clv);
+	return ((isset($my->mark['t'][$tid]) && $my->mark['t'][$tid] >= $last_change) || $last_change <= $my->clv);
 }
 
 }
