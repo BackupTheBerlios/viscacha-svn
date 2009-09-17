@@ -263,7 +263,7 @@ class BBCode {
 			$ahref = '<a href="<!PID:'.$pid.'>" target="_blank">'.$title.'</a>';
 			return $ahref;
 		}
-		elseif ($this->profile['reduceUrl'] == 1 && strxlen($url) >= $config['maxurllength']) { // Die URL wird als Titel genommen und gekürzt
+		elseif ($this->profile['reduceUrl'] == 1) { // Die URL wird als Titel genommen und gekürzt
 			$before = ceil($config['maxurllength']/5);
 			$after = strpos($url, '/', 8);
 			$func = 'substr';
@@ -481,9 +481,6 @@ class BBCode {
 
 			$text = $this->ListWorkAround($text);
 
-			$text = preg_replace_callback("~\[url\]{$this->url_regex}\[\/url\]~is", array(&$this, 'cb_plain_url'), $text);
-			$text = preg_replace_callback("~\[url={$this->url_regex}\](.+?)\[\/url\]~is", array(&$this, 'cb_title_url'), $text);
-
 			$text = preg_replace_callback('/\[note=([^\]]+?)\](.+?)\[\/note\]/is', array(&$this, 'cb_note'), $text);
 
 			$text = empty($this->profile['disallow']['img']) ? preg_replace_callback("~\[img\]([^?&=\[\]]+\.(png|gif|bmp|jpg|jpe|jpeg))\[\/img\]~is", array($this, 'cb_image'), $text) : $text;
@@ -517,6 +514,10 @@ class BBCode {
 			$text = preg_replace('/\n?(\[hr\]){1,}\n?/is', "<hr />", $text);
 
 			$text = preg_replace('/\[tt\](.+?)\[\/tt\]/is', "<tt>\\1</tt>", $text);
+
+			$text = preg_replace_callback("~\[url\]{$this->url_regex}\[\/url\]~is", array(&$this, 'cb_plain_url'), $text);
+			$text = preg_replace_callback("~\[url={$this->url_regex}\](.+?)\[\/url\]~is", array(&$this, 'cb_title_url'), $text);
+
 			$text = preg_replace_callback('/\[table(=(\d+\%;head|head;\d+\%|\d+\%|head))?\]\n*(.+?)\n*\[\/table\]\n?/is', array(&$this, 'cb_table'), $text);
 
 			// Old way of doing this, superseded by table bb code - $text = $this->tab2space($text);
