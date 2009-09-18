@@ -39,7 +39,7 @@ if ($config['syndication'] == 0) {
 }
 
 // Get the correct formatted timzone
-$posneg = $my->timezone{0};
+$posneg = substr($my->timezone, 0, 1);
 if ($posneg != '+' && $posneg != '-') {
 	$posneg = '+';
 	$mtz = $my->timezone;

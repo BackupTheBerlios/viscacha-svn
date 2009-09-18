@@ -376,7 +376,6 @@ function setlang() {
 function getTimezone($base = null) {
 	global $my, $lang;
 
-	$summer = (date('I', times()) == 1);
 	$tz = $lang->phrase('gmt');
 
 	if ($base === null) {
@@ -387,23 +386,34 @@ function getTimezone($base = null) {
 		preg_match('~^(\+|-)?(\d{1,2})\.?(\d{0,2})?$~', $base, $parts);
 		$parts[2] = intval($parts[2]);
 		$parts[3] = intval($parts[3]);
+	}
+	else {
+		$parts = array(
+			1 => '',
+			2 => 0,
+			3 => 0
+		);
+	}
 
-		if ($summer) {
-			$parts[2] = $parts[2] + 1;
+	$summer = (date('I', times()) == 1);
+	if ($summer && $parts[1] == '-') {
+		$parts[2] = $parts[2] - 1;
+	}
+	else if ($summer) {
+		$parts[2] = $parts[2] + 1;
+	}
+
+	if ($parts[2] != 0) {
+		if (empty($parts[1])) {
+			$parts[1] = '+';
 		}
 
-		if ($parts[2] != 0) {
-			if (empty($parts[1])) {
-				$parts[1] = '+';
-			}
+		$parts[2] = leading_zero($parts[2]);
 
-			$parts[2] = leading_zero($parts[2]);
+		$parts[3] = $parts[3]/100*60;
+		$parts[3] = leading_zero($parts[3]);
 
-			$parts[3] = $parts[3]/100*60;
-			$parts[3] = leading_zero($parts[3]);
-
-			$tz .= ' '.$parts[1].$parts[2].':'.$parts[3];
-		}
+		$tz .= ' '.$parts[1].$parts[2].':'.$parts[3];
 	}
 
 	return $tz;
