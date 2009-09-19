@@ -44,10 +44,10 @@ $add_acom = array('admin/packages_admin.php');
 $result = $db->query("SELECT internal FROM {$db->pre}packages");
 while ($row = $db->fetch_assoc($result)) {
 	$internal = preg_quote($row['internal'], "~");
-	if (!preg_match("~^-component_{$internal}$~im")) {
+	if (!preg_match("~^-component_{$internal}$~im", $hooks)) {
 		$add_com[] = "-component_{$row['internal']}";
 	}
-	if (!preg_match("~^-admin_component_{$internal}$~im")) {
+	if (!preg_match("~^-admin_component_{$internal}$~im", $hooks)) {
 		$add_acom[] = "-admin_component_{$row['internal']}";
 	}
 }
