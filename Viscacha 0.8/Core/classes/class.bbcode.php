@@ -75,6 +75,7 @@ class BBCode {
 
 		// URL RegExp - Two matches predefined: First is whole url, second is URI scheme
 		$this->url_regex = "({$this->url_protocol}{$url_auth}{$url_host}{$url_path}{$url_query}{$url_fragment})";
+		$this->url_regex2 = "({$this->url_protocol}{$url_auth}{$url_host}{$url_path}(?:\?[{$url_word}ß\d=\&;\.:,\_\-\/%\+\~]*)?{$url_fragment})";
 
 		if (!class_exists('ConvertRoman')) {
 			include_once('classes/class.convertroman.php');
@@ -351,7 +352,7 @@ class BBCode {
 		$this->cache_bbcode();
 		$text = preg_replace('/(\r\n|\r|\n)/', "\n", $text);
 		$text = preg_replace('/\[hide\](.+?)\[\/hide\]/is', '', $text);
-		$text = preg_replace("~\[url={$this->url_regex}\](.+?)\[\/url\]~is", "\\3 (\\1)", $text);
+		$text = preg_replace("~\[url={$this->url_regex2}\](.+?)\[\/url\]~is", "\\3 (\\1)", $text);
 
 		$search = array(
 			'[sub]','[/sub]',
@@ -416,7 +417,7 @@ class BBCode {
 			$text = preg_replace('/\[hide\](.+?)\[\/hide\]/is', '', $text);
 		}
 		if ($type == 'plain') {
-			$text = preg_replace("~\[url={$this->url_regex}\](.+?)\[\/url\]~is", "\\3 (\\1)", $text);
+			$text = preg_replace("~\[url={$this->url_regex2}\](.+?)\[\/url\]~is", "\\3 (\\1)", $text);
 
 			$search = array(
 			'[sub]','[/sub]',
@@ -484,7 +485,7 @@ class BBCode {
 			$text = preg_replace_callback('/\[note=([^\]]+?)\](.+?)\[\/note\]/is', array(&$this, 'cb_note'), $text);
 
 			$text = empty($this->profile['disallow']['img']) ? preg_replace_callback("~\[img\]([^?&=\[\]]+\.(png|gif|bmp|jpg|jpe|jpeg))\[\/img\]~is", array($this, 'cb_image'), $text) : $text;
-			$text = preg_replace_callback("~\[img\]{$this->url_regex}\[\/img\]~is", array(&$this, 'cb_plain_url'), $text); // Correct invalid image urls
+			$text = preg_replace_callback("~\[img\]{$this->url_regex2}\[\/img\]~is", array(&$this, 'cb_plain_url'), $text); // Correct invalid image urls
 
 			$text = preg_replace('/\[color=\#?([0-9A-F]{3,6})\](.+?)\[\/color\]/is', '<span style="color: #\1">\2</span>', $text);
 			$text = preg_replace('/\[align=(left|center|right|justify)\](.+?)\[\/align\]/is', "<p style='text-align: \\1'>\\2</p>", $text);
@@ -515,8 +516,8 @@ class BBCode {
 
 			$text = preg_replace('/\[tt\](.+?)\[\/tt\]/is', "<tt>\\1</tt>", $text);
 
-			$text = preg_replace_callback("~\[url\]{$this->url_regex}\[\/url\]~is", array(&$this, 'cb_plain_url'), $text);
-			$text = preg_replace_callback("~\[url={$this->url_regex}\](.+?)\[\/url\]~is", array(&$this, 'cb_title_url'), $text);
+			$text = preg_replace_callback("~\[url\]{$this->url_regex2}\[\/url\]~is", array(&$this, 'cb_plain_url'), $text);
+			$text = preg_replace_callback("~\[url={$this->url_regex2}\](.+?)\[\/url\]~is", array(&$this, 'cb_title_url'), $text);
 
 			$text = preg_replace_callback('/\[table(=(\d+\%;head|head;\d+\%|\d+\%|head))?\]\n*(.+?)\n*\[\/table\]\n?/is', array(&$this, 'cb_table'), $text);
 
