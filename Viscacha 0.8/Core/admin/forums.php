@@ -171,18 +171,25 @@ elseif ($job == 'mods') {
 elseif ($job == 'mods_delete') {
 	echo head();
 	$id = $gpc->get('id', int);
-	if (count($gpc->get('delete', none)) > 0) {
-		$deleteids = array();
-		foreach ($gpc->get('delete', none) as $did) {
-			list($mid, $bid) = explode('_',$did);
-			$mid = $gpc->save_int($mid);
-			$bid = $gpc->save_int($bid);
-			$deleteids[] = " (mid = '{$mid}' AND bid = '{$bid}') ";
-		}
+	$del = $gpc->get('delete', arr_none);
+	$deleteids = array();
+	
+	foreach ($del as $did) {
+		list($mid, $bid) = explode('_', $did);
+		$mid = $gpc->save_int($mid);
+		$bid = $gpc->save_int($bid);
+		$deleteids[] = " (mid = '{$mid}' AND bid = '{$bid}') ";
+	}
+	if (count($deleteids) > 0) {
 		$db->query("DELETE FROM {$db->pre}moderators WHERE ".implode(' OR ',$deleteids));
 		$anz = $db->affected_rows();
 		$delobj = $scache->load('index_moderators');
 		$delobj->delete();
+	}
+	else {
+		$anz = 0;
+	}
+	if ($anz > 0) {
 		ok('admin.php?action=forums&job=mods'.iif($id > 0, '&id='.$id), $lang->phrase('admin_forum_entries_deleted'));
 	}
 	else {
