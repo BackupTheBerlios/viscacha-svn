@@ -173,7 +173,7 @@ elseif ($job == 'mods_delete') {
 	$id = $gpc->get('id', int);
 	$del = $gpc->get('delete', arr_none);
 	$deleteids = array();
-	
+
 	foreach ($del as $did) {
 		list($mid, $bid) = explode('_', $did);
 		$mid = $gpc->save_int($mid);
@@ -458,6 +458,16 @@ elseif ($job == 'forum_edit') {
    <td class="mbox"><?php echo $lang->phrase('admin_forum_number_topics'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_forum_default_value'); ?> (<?php echo $config['forumzahl']; ?>)</span></td>
    <td class="mbox"><input type="text" name="forumzahl" size="5" value="<?php echo $row['forumzahl']; ?>" /></td>
   </tr>
+  <tr>
+   <td class="mbox"><?php echo $lang->phrase('admin_forum_po_title'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_forum_po_desc').$lang->phrase('admin_forum_po_'.iif($config['post_order'] == 1, 'new', 'old')); ?></span></td>
+   <td class="mbox">
+    <select name="post_order">
+     <option value="-1"<?php echo iif($row['post_order'] == -1, ' selected="selected"'); ?>><?php echo $lang->phrase('admin_forum_po_default'); ?></option>
+     <option value="0"<?php echo iif($row['post_order'] == 0, ' selected="selected"'); ?>><?php echo $lang->phrase('admin_forum_po_old'); ?></option>
+     <option value="1"<?php echo iif($row['post_order'] == 1, ' selected="selected"'); ?>><?php echo $lang->phrase('admin_forum_po_new'); ?></option>
+    </select>
+   </td>
+  </tr>
   <tr><td class="ubox" colspan="2"><?php echo $lang->phrase('admin_forum_moderation_options'); ?></td></tr>
   <tr>
    <td class="mbox"><?php echo $lang->phrase('admin_forum_automatic_status'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_forum_info_topic_status'); ?></span></td>
@@ -557,6 +567,7 @@ elseif ($job == 'forum_edit2') {
 	$message_active = $gpc->get('message_active', int);
 	$message_title = $gpc->get('message_title', str);
 	$message_text = $gpc->get('message_text', str);
+	$post_order = $gpc->get('post_order', int);
 
 	$error = array();
 	$result = $db->query("SELECT * FROM {$db->pre}forums WHERE id = '{$id}' LIMIT 1");
@@ -610,6 +621,9 @@ elseif ($job == 'forum_edit2') {
 		}
 		if ($forumzahl < 0) {
 			$forumzahl * -1;
+		}
+		if ($post_order != 0 && $post_order != 1) {
+			$post_order = -1;
 		}
 
 		$emails = preg_split('/[\r\n]+/', $reply_notification, -1, PREG_SPLIT_NO_EMPTY);
@@ -666,7 +680,8 @@ elseif ($job == 'forum_edit2') {
 		  `count_posts` = '{$count_posts}',
 		  `message_active` = '{$message_active}',
 		  `message_title` = '{$message_title}',
-		  `message_text` = '{$message_text}'
+		  `message_text` = '{$message_text}',
+		  `post_order` = '{$post_order}'
 		WHERE id = '{$id}'
 		");
 
@@ -731,16 +746,15 @@ elseif ($job == 'forum_add') {
   </tr>
   <tr><td class="ubox" colspan="2"><?php echo $lang->phrase('admin_forum_moderation_options'); ?></td></tr>
   <tr>
-   <td class="mbox"><?php echo $lang->phrase('admin_forum_automatic_status'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_forum_info_topic_status'); ?></span></td>
+   <td class="mbox"><?php echo $lang->phrase('admin_forum_po_title'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_forum_po_desc').$lang->phrase('admin_forum_po_'.iif($config['post_order'] == 1, 'new', 'old')); ?></span></td>
    <td class="mbox">
-	<select name="auto_status" size="1">
-	 <option value="" selected="selected"><?php echo $lang->phrase('admin_forum_no_status'); ?></option>
-	 <option value="a"><?php echo $lang->phrase('admin_forum_article'); ?></option>
-	 <option value="n"><?php echo $lang->phrase('admin_forum_news'); ?></option>
-	</select>
+    <select name="post_order">
+     <option value="-1"><?php echo $lang->phrase('admin_forum_po_default'); ?></option>
+     <option value="0"><?php echo $lang->phrase('admin_forum_po_old'); ?></option>
+     <option value="1"><?php echo $lang->phrase('admin_forum_po_new'); ?></option>
+    </select>
    </td>
   </tr>
-  <tr>
    <td class="mbox"><?php echo $lang->phrase('admin_forum_email_topic'); ?><br />
    <span class="stext"><?php echo $lang->phrase('admin_forum_info_separate_address'); ?></span></td>
    <td class="mbox"><textarea name="topic_notification" rows="2" cols="70"></textarea></td>
@@ -845,6 +859,7 @@ elseif ($job == 'forum_add2') {
 	$message_title = $gpc->get('message_title', str);
 	$message_text = $gpc->get('message_text', str);
 	$prefix = $gpc->get('prefix', none);
+	$post_order = $gpc->get('post_order', int);
 
 	$error = array();
 	if (strlen($name) < 2) {
@@ -893,6 +908,9 @@ elseif ($job == 'forum_add2') {
 		}
 		if ($forumzahl < 0) {
 			$forumzahl * -1;
+		}
+		if ($post_order != 0 && $post_order != 1) {
+			$post_order = -1;
 		}
 
 		$emails = preg_split('/[\r\n]+/', $reply_notification, -1, PREG_SPLIT_NO_EMPTY);
@@ -967,10 +985,10 @@ elseif ($job == 'forum_add2') {
 		$db->query("
 		INSERT INTO {$db->pre}forums (
 		  `name`,`description`,`parent`,`position`,`opt`,`optvalue`,`forumzahl`,`topiczahl`,`invisible`,`readonly`,`count_posts`,
-		  `auto_status`,`reply_notification`,`topic_notification`,`active_topic`,`message_active`,`message_title`,`message_text`
+		  `auto_status`,`reply_notification`,`topic_notification`,`active_topic`,`message_active`,`message_title`,`message_text`,`post_order`,
 		) VALUES (
 		  '{$name}','{$description}','{$parent}','{$position}','{$opt}','{$optvalue}','{$forumzahl}','{$topiczahl}','{$invisible}','{$readonly}','{$count_posts}',
-		  '{$auto_status}','{$reply_notification}','{$topic_notification}','{$active_topic}','{$message_active}','{$message_title}','{$message_text}'
+		  '{$auto_status}','{$reply_notification}','{$topic_notification}','{$active_topic}','{$message_active}','{$message_title}','{$message_text}','{$post_order}'
 		)
 		");
 		$newid = $db->insert_id();

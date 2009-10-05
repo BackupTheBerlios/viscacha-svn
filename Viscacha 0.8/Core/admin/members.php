@@ -1011,7 +1011,7 @@ elseif ($job == 'merge2') {
 	if (($base['birthday'] == '0000-00-00' || $base['birthday'] == '1000-00-00') && $old['birthday'] != '0000-00-00' && $old['birthday'] != '1000-00-00') {
 		$newdata[] ="birthday = '{$old['birthday']}'";
 	}
-	if ((!isset($base['timezone']) || $base['timezone'] === null) && !empty($old['timezone'])) {
+	if ((!isset($base['timezone']) || $base['timezone'] === null || $base['timezone'] === '') && !empty($old['timezone'])) {
 		$newdata[] ="timezone = '{$old['timezone']}'";
 	}
 	$g1 = explode(',', $base['groups']);
@@ -2807,7 +2807,7 @@ elseif ($job == 'search2') {
 				if (empty($row['icq'])) {
 					$row['icq'] = '-';
 				}
-				if (!isset($row['timezone']) || $row['timezone'] === '') {
+				if (!isset($row['timezone']) || $row['timezone'] === null || $row['timezone'] === '') {
 					$row['timezone'] = $config['timezone'];
 				}
 				$row['timezone'] = (int) str_replace('+', '', $row['timezone']);

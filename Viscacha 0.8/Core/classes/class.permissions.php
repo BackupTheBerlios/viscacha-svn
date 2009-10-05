@@ -378,7 +378,7 @@ function getTimezone($base = null) {
 
 	$tz = $lang->phrase('gmt');
 
-	if ($base === null) {
+	if ($base === null || $base === '') {
 		$base = $my->timezone;
 	}
 
@@ -596,7 +596,7 @@ function logged () {
 		}
 	}
 
-	if (!isset($my->timezone) || $my->timezone === null) {
+	if (!isset($my->timezone) || $my->timezone === null || $my->timezone === '') {
 		$my->timezone = $config['timezone'];
 	}
 
@@ -951,7 +951,7 @@ function sid_login($remember = true) {
 		$my->vlogin = true;
 		$my->p = $this->Permissions();
 
-		if (!isset($my->timezone) || $my->timezone === null) {
+		if (!isset($my->timezone) || $my->timezone === null || $my->timezone === '') {
 			$my->timezone = $config['timezone'];
 		}
 
@@ -993,6 +993,8 @@ function sid_login($remember = true) {
 		if (!isset($my->settings) || !is_array($my->settings)) {
 			$my->settings = array();
 		}
+
+		$this->setlang();
 
 		$action = $gpc->get('action', str);
 		$qid = $gpc->get('id', int);

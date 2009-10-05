@@ -18,6 +18,7 @@ function highlight_sql_query($sql) {
 	$geshi->enable_classes(false);
 	$geshi->set_header_type(GESHI_HEADER_DIV);
 	$geshi->enable_line_numbers(GESHI_FANCY_LINE_NUMBERS, 5);
+	$geshi->enable_keyword_links(false);
 	return $geshi->parse_code();
 }
 
