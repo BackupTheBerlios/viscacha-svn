@@ -430,7 +430,7 @@ elseif ($job == 'forum_edit') {
   </tr>
   <tr>
    <td class="mbox" width="45%"><?php echo $lang->phrase('admin_forum_title'); ?></td>
-   <td class="mbox" width="55"><input type="text" name="name" size="70" value="<?php echo $row['name']; ?>" /></td>
+   <td class="mbox" width="55%"><input type="text" name="name" size="70" value="<?php echo $row['name']; ?>" /></td>
   </tr>
   <tr>
    <td class="mbox"><?php echo $lang->phrase('admin_forum_description'); ?><br />
@@ -1407,7 +1407,7 @@ elseif ($job == 'cat_edit') {
    </td>
   </tr>
   <tr>
-   <td class="ubox" width="100%" colspan="2" align="center"><input type="submit" name="Submit" value="<?php echo $lang->phrase('admin_forum_add'); ?>" /></td>
+   <td class="ubox" width="100%" colspan="2" align="center"><input type="submit" name="Submit" value="<?php echo $lang->phrase('admin_forum_form_submit'); ?>" /></td>
   </tr>
  </table>
 </form>
@@ -1429,10 +1429,10 @@ elseif ($job == 'cat_edit2') {
 		$parents = $parent_forums->get();
 		$result = $db->query("SELECT parent FROM {$db->pre}categories WHERE id = '{$id}' LIMIT 1");
 		$row = $db->fetch_assoc($result);
-		foreach ($parents as $id => $p_arr) {
+		foreach ($parents as $p_id => $p_arr) {
 			array_shift($p_arr);
 			if (in_array($row['parent'], $p_arr)) {
-				$subs[] = $id;
+				$subs[] = $p_id;
 			}
 		}
 		if (in_array($parent, $subs)) {
