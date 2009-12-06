@@ -67,7 +67,7 @@ abstract class Arrays {
 	 */
 	public static function find($array, $keyword) {
 		foreach($array as $key => $value) {
-			if($keyword === $value || (is_array($value) && Arrays::find($array, $value) !== false)) {
+			if($keyword === $value || (is_array($value) == true && Arrays::find($array, $value) !== false)) {
 				return $key;
 			}
 		}
@@ -128,20 +128,23 @@ abstract class Arrays {
 	    $array2 = array_slice($array, $halfway);
 
 	    // Recurse to sort the two halves
-	    self::mergesort($array1, $cmp_function);
-	    self::mergesort($array2, $cmp_function);
+	    self::mergesort($array1);
+	    self::mergesort($array2);
 
 	    // If all of $array1 is <= all of $array2, just append them.
-	    if (end($array1).compareTo($array2[0]) < 1) { // Original code: call_user_func($cmpFunction, end($array1), $array2[0])
+		 // Original code: call_user_func($cmpFunction, end($array1), $array2[0])
+	    if (end($array1).compareTo($array2[0]) < 1) {
 	        $array = array_merge($array1, $array2);
 	        return true;
 	    }
 
 	    // Merge the two sorted arrays into a single sorted array
 	    $array = array();
-	    $ptr1 = $ptr2 = 0;
+	    $ptr1 = 0;
+		$ptr2 = 0;
 	    while ($ptr1 < count($array1) && $ptr2 < count($array2)) {
-	        if ($array1[$ptr1].compareTo($array2[$ptr2]) < 1) { // Original code: call_user_func($cmpFunction, $array1[$ptr1], $array2[$ptr2])
+			// Original code: call_user_func($cmpFunction, $array1[$ptr1], $array2[$ptr2])
+	        if ($array1[$ptr1].compareTo($array2[$ptr2]) < 1) {
 	            $array[] = $array1[$ptr1++];
 	        }
 	        else {

@@ -206,9 +206,13 @@ abstract class Core {
 	 */
 	public static function loadPackage($package){
 	    $path = 'source/'.str_replace('.', '/', $package).'/';
-		$files = glob($path.'(class|interface)\.*\.php');
+		$files = glob($path.'*.*.php');
 		foreach ($files as $file) {
-		    include_once($path.$file);
+			$fileName = basename($file);
+			if (strpos($fileName, 'class.') === 0 || strpos($fileName, 'interface.') === 0) {
+				include_once($file);
+			}
+		    
 		}
 	}
 

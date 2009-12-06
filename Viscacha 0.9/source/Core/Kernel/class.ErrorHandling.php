@@ -1,12 +1,13 @@
 <?php
 /**
- * Viscacha CMS - A website management solution for managing your content easily.
- * Copyright (C) 2004-2008  Viscacha.org
+ * Viscacha - Flexible Website Management Solution
+ *
+ * Copyright (C) 2004 - 2010 by Viscacha.org
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -17,8 +18,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- * @package		Viscacha
- * @subpackage 	System
+ * @package		Core
+ * @subpackage	Kernel
+ * @author		Matthias Mohr
+ * @copyright	Copyright (c) 2004-2010, Viscacha.org
+ * @license		http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License
  */
 
 /**
@@ -26,11 +30,11 @@
  *
  * Exceptions and errors will be caught and presented here.
  *
- * @package		Viscacha
- * @subpackage 	System
+ * @package		Core
+ * @subpackage	Kernel
  * @author		Matthias Mohr
- * @copyright	Viscacha.org Team
- * @since 		0.9
+ * @since 		1.0
+ * @todo		Rework class
  */
 class ErrorHandling {
 
@@ -133,7 +137,7 @@ class ErrorHandling {
 			<p>Please notify the board administrator: <a href="mailto:<?php echo Config::get('general.email'); ?>"><?php echo Config::get('general.email'); ?></a></p>
 			<h3>Copyright</h3>
 			<p>
-				<strong><a href="http://www.viscacha.org" target="_blank">Viscacha <?php echo Core::version(); ?></a></strong><br />
+				<strong><a href="http://www.viscacha.org">Viscacha <?php echo Core::version(); ?></a></strong><br />
 				Copyright &copy; by Viscacha.org Team
 			</p>
 		</body>
@@ -212,7 +216,7 @@ class ErrorHandling {
 			<p>Please notify the board administrator: <a href="mailto:<?php echo Config::get('general.email'); ?>"><?php echo Config::get('general.email'); ?></a></p>
 			<h3>Copyright</h3>
 			<p>
-				<strong><a href="http://www.viscacha.org" target="_blank">Viscacha <?php echo Core::version(); ?></a></strong><br />
+				<strong><a href="http://www.viscacha.org">Viscacha <?php echo Core::version(); ?></a></strong><br />
 				Copyright &copy; by Viscacha.org Team
 			</p>
 		</body>

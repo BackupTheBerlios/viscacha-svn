@@ -48,6 +48,13 @@ class ClassManagerException extends InfoException {
 		parent::__construct($message, $code);
 	}
 
+	/**
+	 * Returns an array with additional information about the excpetion.
+	 *
+	 * The keys of the array are the class names, the values are the paths to the class files.
+	 *
+	 * @return	array	Data with keys as labels and values as data.
+	 */
 	public function getData() {
 		return $this->index;
 	}

@@ -38,7 +38,7 @@ Core::loadClass('Core.Cache.CacheObject');
  */
 abstract class CacheItem extends CacheObject {
 
-	public function __construct($filename, $path = CACHE_DEFAULT_DIR){
+	public function __construct($filename, $path = CACHE_DEFAULT_DIR) {
 		parent::__construct($filename, $path);
 	}
 

@@ -51,6 +51,13 @@ class CoreException extends InfoException {
 		parent::__construct($message, $code);
 	}
 
+	/**
+	 * Returns an array with additional information about the excpetion.
+	 *
+	 * {@inheritdoc}
+	 *
+	 * @return	array	Data with keys as labels and values as data.
+	 */
 	public function getData() {
 		return $this->data;
 	}

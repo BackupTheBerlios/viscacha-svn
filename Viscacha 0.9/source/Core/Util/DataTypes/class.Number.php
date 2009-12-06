@@ -43,30 +43,46 @@ abstract class Number {
 	/**
 	 * Checks whether a number is a natural number (without zero).
 	 *
-	 * The natural number can be given as integer, float or as string.
-	 * For strings it is not allowed to use and other chars than 0-9, so its not allowed to use
-	 * floats in strings (1.0 or 1,0).
+	 * The natural number can be given as integer or as string.
+	 * For strings it is not allowed to use and other chars than 0-9 and the first char can't be 0.
 	 *
-	 * @param	mixed	Number
-	 * @return	boolean	true if the specified data is a natural number, false if not.
+	 * @param	int|string	Number
+	 * @return	boolean		true if the specified data is a natural number, false if not.
 	 */
 	public static function isNatural($x) {
-		if (is_int($x) && $x > 0) {
+		if (is_int($x) == true && $x > 0) {
 			return true;
 		}
-		elseif(is_float($x) && $x > 0 && intval($x) == $x) {
-			return true;
-		}
-		elseif (is_string($x) && ctype_digit($x) && intval($x) > 0) {
+		elseif (is_string($x) == true && ctype_digit($x) == true && $x[0] != 0) {
 			return true;
 		}
 		else {
 			return false;
 		}
-		// return (is_numeric($x) && $x > 0) ? (intval($x) == $x) : false;
 	}
 
+	/**
+	 * Checks whether a number is an integer (no type check!).
+	 *
+	 * This method checks whether the specified number is an representative of an integer, this does
+	 * not check whether the given parameter is a variable of the type int! The integer can be given
+	 * as integer or as string. The string is a valid int if it contains only the chars 0-9 with an
+	 * additional sign (+/-) as suffix.
+	 *
+	 * @param	int|string	Number
+	 * @return	boolean		true if the specified data is an integer, false if not.
+	 */
 	public static function isInteger($x) {
+		if (is_int($x) == true) {
+			return true;
+		}
+		// Is there a faster way than preg_match that can deal with numbers > PHP_INT_MAX?
+		elseif (is_string($x) == true && preg_match('~^[\-\+]?\d+$~', $x) == 1) {
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 
 	public static function isDecimal($x) {

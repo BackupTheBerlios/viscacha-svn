@@ -41,7 +41,8 @@ class Viscacha_Sniffs_Classes_ClassFileNameSniff implements PHP_CodeSniffer_Snif
     public function register()
     {
         return array(
-                T_CLASS
+                T_CLASS,
+                T_INTERFACE
                );
 
     }//end register()
@@ -58,12 +59,13 @@ class Viscacha_Sniffs_Classes_ClassFileNameSniff implements PHP_CodeSniffer_Snif
      */
     public function process(PHP_CodeSniffer_File $phpcsFile, $stackPtr)
     {
-        $tokens   = $phpcsFile->getTokens();
-        $decName  = $phpcsFile->findNext(T_STRING, $stackPtr);
-        $fullPath = basename($phpcsFile->getFilename());
-        $fileName = "class.".substr($fullPath, 0, strrpos($fullPath, '.'));
+        $tokens    = $phpcsFile->getTokens();
+        $decName   = $phpcsFile->findNext(T_STRING, $stackPtr);
+        $fullPath  = basename($phpcsFile->getFilename());
+        $fileName  = substr($fullPath, 0, strrpos($fullPath, '.'));
+        $className = preg_replace('~^(class|interface)\.~', '', $fileName);
 
-        if ($tokens[$decName]['content'] !== "".$fileName) {
+        if ($tokens[$decName]['content'] !== "".$className) {
             $error  = ucfirst($tokens[$stackPtr]['content']);
             $error .= ' name doesn\'t match filename. Expected ';
             $error .= '"'.$tokens[$stackPtr]['content'].' ';
