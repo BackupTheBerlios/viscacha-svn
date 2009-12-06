@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
- <project name="test" basedir="." default="app">
+ <project name="test" basedir="./" default="">
     <property name="builddir" value="${ws}/build" />
 
     <target name="clean">
@@ -29,7 +29,7 @@
                 sourcecode="yes"
                 defaultpackagename="Core"
                 output="HTML:Smarty:PHP">
-            <fileset dir="./app">
+            <fileset dir="./">
                 <include name="**/*.php" />
             </fileset>
         </phpdoc>
