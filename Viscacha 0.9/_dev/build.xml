@@ -53,6 +53,6 @@
   <!-- Unit Tests & coverage analysis -->
   <target name="phpunit">
     <echo msg="PHP Unit..." />
-    <exec command="phpunit --log-junit ${builddir}/logs/phpunit.xml --log-pmd ${builddir}/logs/phpunit.pmd.xml --coverage-clover ${builddir}/logs/coverage/clover.xml --coverage-html ${builddir}/logs/coverage/ ${ws}/source/tests" />
+    <exec command="phpunit --log-junit ${builddir}/logs/phpunit.xml --log-pmd ${builddir}/logs/phpunit.pmd.xml --coverage-clover ${builddir}/logs/coverage/clover.xml --coverage-html ${builddir}/logs/coverage/ ${ws}/source/_dev/tests/" />
   </target>
 </project>

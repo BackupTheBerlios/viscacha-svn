@@ -10,13 +10,9 @@
  * @author    Marc McIntyre <mmcintyre@squiz.net>
  * @copyright 2006 Squiz Pty Ltd (ABN 77 084 670 600)
  * @license   http://matrix.squiz.net/developer/tools/php_cs/licence BSD Licence
- * @version   CVS: $Id: ForbiddenFunctionsSniff.php 251093 2008-01-21 21:40:50Z squiz $
+ * @version   CVS: $Id: ForbiddenFunctionsSniff.php 265109 2008-08-19 06:35:37Z squiz $
  * @link      http://pear.php.net/package/PHP_CodeSniffer
  */
-
-if (class_exists('Viscacha_Sniffs_PHP_ForbiddenFunctionsSniff', true) === false) {
-    throw new PHP_CodeSniffer_Exception('Class Viscacha_Sniffs_PHP_ForbiddenFunctionsSniff not found');
-}
 
 /**
  * Viscacha_Sniffs_PHP_ForbiddenFunctionsSniff.
@@ -33,7 +29,7 @@ if (class_exists('Viscacha_Sniffs_PHP_ForbiddenFunctionsSniff', true) === false)
  * @version   Release: 1.2.0
  * @link      http://pear.php.net/package/PHP_CodeSniffer
  */
-class Viscacha_Sniffs_PHP_ForbiddenFunctionsSniff extends Viscacha_Sniffs_PHP_ForbiddenFunctionsSniff
+class Viscacha_Sniffs_PHP_ForbiddenFunctionsSniff implements PHP_CodeSniffer_Sniff
 {
 
     /**
@@ -52,6 +48,13 @@ class Viscacha_Sniffs_PHP_ForbiddenFunctionsSniff extends Viscacha_Sniffs_PHP_Fo
                                      'create_function' => null,
                                     );
 
+    /**
+     * If true, an error will be thrown; otherwise a warning.
+     *
+     * @var bool
+     */
+    protected $error = true;
+
 
     /**
      * Returns an array of tokens this test wants to listen for.
@@ -60,12 +63,54 @@ class Viscacha_Sniffs_PHP_ForbiddenFunctionsSniff extends Viscacha_Sniffs_PHP_Fo
      */
     public function register()
     {
-        return array(
-                T_STRING,
-                T_PRINT,
-               );
+        return array(T_STRING, T_PRINT);
 
     }//end register()
+
+
+    /**
+     * Processes this test, when one of its tokens is encountered.
+     *
+     * @param PHP_CodeSniffer_File $phpcsFile The file being scanned.
+     * @param int                  $stackPtr  The position of the current token in the
+     *                                        stack passed in $tokens.
+     *
+     * @return void
+     */
+    public function process(PHP_CodeSniffer_File $phpcsFile, $stackPtr)
+    {
+        $tokens = $phpcsFile->getTokens();
+
+        $prevToken = $phpcsFile->findPrevious(T_WHITESPACE, ($stackPtr - 1), null, true);
+        if (in_array($tokens[$prevToken]['code'], array(T_DOUBLE_COLON, T_OBJECT_OPERATOR, T_FUNCTION)) === true) {
+            // Not a call to a PHP function.
+            return;
+        }
+
+        $function = strtolower($tokens[$stackPtr]['content']);
+
+        if (in_array($function, array_keys($this->forbiddenFunctions)) === false) {
+            return;
+        }
+
+        $error = "The use of function $function() is ";
+        if ($this->error === true) {
+            $error .= 'forbidden';
+        } else {
+            $error .= 'discouraged';
+        }
+
+        if ($this->forbiddenFunctions[$function] !== null) {
+            $error .= '; use '.$this->forbiddenFunctions[$function].'() instead';
+        }
+
+        if ($this->error === true) {
+            $phpcsFile->addError($error, $stackPtr);
+        } else {
+            $phpcsFile->addWarning($error, $stackPtr);
+        }
+
+    }//end process()
 
 
 }//end class
