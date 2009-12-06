@@ -1,6 +1,6 @@
 <?php
 /**
- * Generic_Sniffs_ControlStructures_InlineControlStructureSniff.
+ * Viscacha_Sniffs_ControlStructures_InlineControlStructureSniff.
  *
  * PHP version 5
  *
@@ -15,7 +15,7 @@
  */
 
 /**
- * Generic_Sniffs_ControlStructures_InlineControlStructureSniff.
+ * Viscacha_Sniffs_ControlStructures_InlineControlStructureSniff.
  *
  * Verifies that inline control statements are not present.
  *
@@ -28,7 +28,7 @@
  * @version   Release: 1.2.0
  * @link      http://pear.php.net/package/PHP_CodeSniffer
  */
-class Generic_Sniffs_ControlStructures_InlineControlStructureSniff implements PHP_CodeSniffer_Sniff
+class Viscacha_Sniffs_ControlStructures_InlineControlStructureSniff implements PHP_CodeSniffer_Sniff
 {
 
     /**

@@ -1,6 +1,6 @@
 <?php
 /**
- * Squiz_Sniffs_WhiteSpace_SuperfluousWhitespaceSniff.
+ * Viscacha_Sniffs_WhiteSpace_SuperfluousWhitespaceSniff.
  *
  * PHP version 5
  *
@@ -15,7 +15,7 @@
  */
 
 /**
- * Squiz_Sniffs_WhiteSpace_SuperfluousWhitespaceSniff.
+ * Viscacha_Sniffs_WhiteSpace_SuperfluousWhitespaceSniff.
  *
  * Checks that no whitespace proceeds the first content of the file, exists
  * after the last content of the file, resides after content on any line, or
@@ -30,7 +30,7 @@
  * @version   Release: 1.2.0
  * @link      http://pear.php.net/package/PHP_CodeSniffer
  */
-class Squiz_Sniffs_WhiteSpace_SuperfluousWhitespaceSniff implements PHP_CodeSniffer_Sniff
+class Viscacha_Sniffs_WhiteSpace_SuperfluousWhitespaceSniff implements PHP_CodeSniffer_Sniff
 {
 
     /**

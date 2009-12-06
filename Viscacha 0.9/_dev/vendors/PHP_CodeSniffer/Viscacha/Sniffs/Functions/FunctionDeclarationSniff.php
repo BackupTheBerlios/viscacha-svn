@@ -1,6 +1,6 @@
 <?php
 /**
- * Squiz_Sniffs_Functions_FunctionDeclarationSniff.
+ * Viscacha_Sniffs_Functions_FunctionDeclarationSniff.
  *
  * PHP version 5
  *
@@ -19,7 +19,7 @@ if (class_exists('PHP_CodeSniffer_Standards_AbstractPatternSniff', true) === fal
 }
 
 /**
- * Squiz_Sniffs_Functions_FunctionDeclarationSniff.
+ * Viscacha_Sniffs_Functions_FunctionDeclarationSniff.
  *
  * Checks the function declaration is correct.
  *
@@ -32,7 +32,7 @@ if (class_exists('PHP_CodeSniffer_Standards_AbstractPatternSniff', true) === fal
  * @version   Release: 1.2.0
  * @link      http://pear.php.net/package/PHP_CodeSniffer
  */
-class Squiz_Sniffs_Functions_FunctionDeclarationSniff extends PHP_CodeSniffer_Standards_AbstractPatternSniff
+class Viscacha_Sniffs_Functions_FunctionDeclarationSniff extends PHP_CodeSniffer_Standards_AbstractPatternSniff
 {
 
 

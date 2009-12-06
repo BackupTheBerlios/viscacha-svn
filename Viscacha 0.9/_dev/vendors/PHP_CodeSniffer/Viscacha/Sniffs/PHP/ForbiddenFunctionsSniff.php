@@ -1,6 +1,6 @@
 <?php
 /**
- * Squiz_Sniffs_PHP_ForbiddenFunctionsSniff.
+ * Viscacha_Sniffs_PHP_ForbiddenFunctionsSniff.
  *
  * PHP version 5
  *
@@ -14,12 +14,12 @@
  * @link      http://pear.php.net/package/PHP_CodeSniffer
  */
 
-if (class_exists('Generic_Sniffs_PHP_ForbiddenFunctionsSniff', true) === false) {
-    throw new PHP_CodeSniffer_Exception('Class Generic_Sniffs_PHP_ForbiddenFunctionsSniff not found');
+if (class_exists('Viscacha_Sniffs_PHP_ForbiddenFunctionsSniff', true) === false) {
+    throw new PHP_CodeSniffer_Exception('Class Viscacha_Sniffs_PHP_ForbiddenFunctionsSniff not found');
 }
 
 /**
- * Squiz_Sniffs_PHP_ForbiddenFunctionsSniff.
+ * Viscacha_Sniffs_PHP_ForbiddenFunctionsSniff.
  *
  * Discourages the use of alias functions that are kept in PHP for compatibility
  * with older versions. Can be used to forbid the use of any function.
@@ -33,7 +33,7 @@ if (class_exists('Generic_Sniffs_PHP_ForbiddenFunctionsSniff', true) === false) 
  * @version   Release: 1.2.0
  * @link      http://pear.php.net/package/PHP_CodeSniffer
  */
-class Squiz_Sniffs_PHP_ForbiddenFunctionsSniff extends Generic_Sniffs_PHP_ForbiddenFunctionsSniff
+class Viscacha_Sniffs_PHP_ForbiddenFunctionsSniff extends Viscacha_Sniffs_PHP_ForbiddenFunctionsSniff
 {
 
     /**

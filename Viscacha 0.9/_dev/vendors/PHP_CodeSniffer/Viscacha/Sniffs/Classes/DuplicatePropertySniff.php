@@ -1,6 +1,6 @@
 <?php
 /**
- * Squiz_Sniffs_Classes_DuplicatePropertySniff.
+ * Viscacha_Sniffs_Classes_DuplicatePropertySniff.
  *
  * PHP version 5
  *
@@ -14,7 +14,7 @@
  */
 
 /**
- * Squiz_Sniffs_Classes_DuplicatePropertySniff.
+ * Viscacha_Sniffs_Classes_DuplicatePropertySniff.
  *
  * Ensures JS classes dont contain duplicate property names.
  *
@@ -26,7 +26,7 @@
  * @version   Release: 1.2.0
  * @link      http://pear.php.net/package/PHP_CodeSniffer
  */
-class Squiz_Sniffs_Classes_DuplicatePropertySniff implements PHP_CodeSniffer_Sniff
+class Viscacha_Sniffs_Classes_DuplicatePropertySniff implements PHP_CodeSniffer_Sniff
 {
 
     /**

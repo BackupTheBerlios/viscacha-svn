@@ -24,7 +24,7 @@
  * @version   Release: 1.2.0
  * @link      http://pear.php.net/package/PHP_CodeSniffer
  */
-class Generic_Sniffs_Classes_DuplicateClassNameSniff implements PHP_CodeSniffer_MultiFileSniff
+class Viscacha_Sniffs_Classes_DuplicateClassNameSniff implements PHP_CodeSniffer_MultiFileSniff
 {
 
 

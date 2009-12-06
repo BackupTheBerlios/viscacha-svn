@@ -1,6 +1,6 @@
 <?php
 /**
- * Generic_Sniffs_Formatting_SpaceAfterCastSniff.
+ * Viscacha_Sniffs_Formatting_SpaceAfterCastSniff.
  *
  * PHP version 5
  *
@@ -15,7 +15,7 @@
  */
 
 /**
- * Generic_Sniffs_Formatting_SpaceAfterCastSniff.
+ * Viscacha_Sniffs_Formatting_SpaceAfterCastSniff.
  *
  * Ensures there is a single space after cast tokens.
  *
@@ -28,7 +28,7 @@
  * @version   Release: 1.2.0
  * @link      http://pear.php.net/package/PHP_CodeSniffer
  */
-class Generic_Sniffs_Formatting_SpaceAfterCastSniff implements PHP_CodeSniffer_Sniff
+class Viscacha_Sniffs_Formatting_SpaceAfterCastSniff implements PHP_CodeSniffer_Sniff
 {
 
 

@@ -1,6 +1,6 @@
 <?php
 /**
- * Squiz_Sniffs_PHP_InnerFunctionsSniff.
+ * Viscacha_Sniffs_PHP_InnerFunctionsSniff.
  *
  * PHP version 5
  *
@@ -15,7 +15,7 @@
  */
 
 /**
- * Squiz_Sniffs_PHP_NonExecutableCodeSniff.
+ * Viscacha_Sniffs_PHP_NonExecutableCodeSniff.
  *
  * Warns about code that can never been executed. This happens when a function
  * returns before the code, or a break ends execution of a statement etc.
@@ -29,7 +29,7 @@
  * @version   Release: 1.2.0
  * @link      http://pear.php.net/package/PHP_CodeSniffer
  */
-class Squiz_Sniffs_PHP_NonExecutableCodeSniff implements PHP_CodeSniffer_Sniff
+class Viscacha_Sniffs_PHP_NonExecutableCodeSniff implements PHP_CodeSniffer_Sniff
 {
 
 

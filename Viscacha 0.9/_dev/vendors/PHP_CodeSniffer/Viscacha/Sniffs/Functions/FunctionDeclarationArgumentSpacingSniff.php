@@ -1,6 +1,6 @@
 <?php
 /**
- * Squiz_Sniffs_Functions_FunctionDeclarationArgumentSpacingSniff.
+ * Viscacha_Sniffs_Functions_FunctionDeclarationArgumentSpacingSniff.
  *
  * PHP version 5
  *
@@ -15,7 +15,7 @@
  */
 
 /**
- * Squiz_Sniffs_Functions_FunctionDeclarationArgumentSpacingSniff.
+ * Viscacha_Sniffs_Functions_FunctionDeclarationArgumentSpacingSniff.
  *
  * Checks that arguments in function declarations are spaced correctly.
  *
@@ -28,7 +28,7 @@
  * @version   Release: 1.2.0
  * @link      http://pear.php.net/package/PHP_CodeSniffer
  */
-class Squiz_Sniffs_Functions_FunctionDeclarationArgumentSpacingSniff implements PHP_CodeSniffer_Sniff
+class Viscacha_Sniffs_Functions_FunctionDeclarationArgumentSpacingSniff implements PHP_CodeSniffer_Sniff
 {
 
 

@@ -1,6 +1,6 @@
 <?php
 /**
- * Squiz_Sniffs_PHP_DisallowMultipleAssignmentsSniff.
+ * Viscacha_Sniffs_PHP_DisallowMultipleAssignmentsSniff.
  *
  * PHP version 5
  *
@@ -15,7 +15,7 @@
  */
 
 /**
- * Squiz_Sniffs_PHP_DisallowMultipleAssignmentsSniff.
+ * Viscacha_Sniffs_PHP_DisallowMultipleAssignmentsSniff.
  *
  * Ensures that there is only one value assignment on a line, and that it is
  * the first thing on the line.
@@ -29,7 +29,7 @@
  * @version   Release: 1.2.0
  * @link      http://pear.php.net/package/PHP_CodeSniffer
  */
-class Squiz_Sniffs_PHP_DisallowMultipleAssignmentsSniff implements PHP_CodeSniffer_Sniff
+class Viscacha_Sniffs_PHP_DisallowMultipleAssignmentsSniff implements PHP_CodeSniffer_Sniff
 {
 
 

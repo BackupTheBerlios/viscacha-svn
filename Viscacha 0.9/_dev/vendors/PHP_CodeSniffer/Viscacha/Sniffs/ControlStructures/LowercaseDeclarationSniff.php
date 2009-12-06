@@ -1,6 +1,6 @@
 <?php
 /**
- * Squiz_Sniffs_ControlStructures_LowercaseDeclarationSniff.
+ * Viscacha_Sniffs_ControlStructures_LowercaseDeclarationSniff.
  *
  * PHP version 5
  *
@@ -15,7 +15,7 @@
  */
 
 /**
- * Squiz_Sniffs_ControlStructures_LowercaseDeclarationSniff.
+ * Viscacha_Sniffs_ControlStructures_LowercaseDeclarationSniff.
  *
  * Ensures all control structure keywords are lowercase.
  *
@@ -28,7 +28,7 @@
  * @version   Release: 1.2.0
  * @link      http://pear.php.net/package/PHP_CodeSniffer
  */
-class Squiz_Sniffs_ControlStructures_LowercaseDeclarationSniff implements PHP_CodeSniffer_Sniff
+class Viscacha_Sniffs_ControlStructures_LowercaseDeclarationSniff implements PHP_CodeSniffer_Sniff
 {
 
 

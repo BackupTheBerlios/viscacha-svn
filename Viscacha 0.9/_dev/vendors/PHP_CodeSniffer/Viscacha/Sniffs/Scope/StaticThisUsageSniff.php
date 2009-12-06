@@ -1,6 +1,6 @@
 <?php
 /**
- * Squiz_Sniffs_Scope_StaticThisUsageSniff.
+ * Viscacha_Sniffs_Scope_StaticThisUsageSniff.
  *
  * PHP version 5
  *
@@ -19,7 +19,7 @@ if (class_exists('PHP_CodeSniffer_Standards_AbstractScopeSniff', true) === false
 }
 
 /**
- * Squiz_Sniffs_Scope_StaticThisUsageSniff.
+ * Viscacha_Sniffs_Scope_StaticThisUsageSniff.
  *
  * Checks for usage of "$this" in static methods, which will cause
  * runtime errors.
@@ -33,7 +33,7 @@ if (class_exists('PHP_CodeSniffer_Standards_AbstractScopeSniff', true) === false
  * @version   Release: 1.2.0
  * @link      http://pear.php.net/package/PHP_CodeSniffer
  */
-class Squiz_Sniffs_Scope_StaticThisUsageSniff extends PHP_CodeSniffer_Standards_AbstractScopeSniff
+class Viscacha_Sniffs_Scope_StaticThisUsageSniff extends PHP_CodeSniffer_Standards_AbstractScopeSniff
 {
 
 

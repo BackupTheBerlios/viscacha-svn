@@ -1,6 +1,6 @@
 <?php
 /**
- * Squiz_Sniffs_Classes_ValidClassNameSniff.
+ * Viscacha_Sniffs_Classes_ValidClassNameSniff.
  *
  * PHP version 5
  *
@@ -15,7 +15,7 @@
  */
 
 /**
- * Squiz_Sniffs_Classes_ValidClassNameSniff.
+ * Viscacha_Sniffs_Classes_ValidClassNameSniff.
  *
  * Ensures classes are in camel caps, and the first letter is capitalised
  *
@@ -28,7 +28,7 @@
  * @version   Release: 1.2.0
  * @link      http://pear.php.net/package/PHP_CodeSniffer
  */
-class Squiz_Sniffs_Classes_ValidClassNameSniff implements PHP_CodeSniffer_Sniff
+class Viscacha_Sniffs_Classes_ValidClassNameSniff implements PHP_CodeSniffer_Sniff
 {
 
 

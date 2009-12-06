@@ -1,6 +1,6 @@
 <?php
 /**
- * Squiz_Sniffs_Objects_ObjectInstantiationSniff.
+ * Viscacha_Sniffs_Objects_ObjectInstantiationSniff.
  *
  * PHP version 5
  *
@@ -15,7 +15,7 @@
  */
 
 /**
- * Squiz_Sniffs_Objects_ObjectInstantiationSniff.
+ * Viscacha_Sniffs_Objects_ObjectInstantiationSniff.
  *
  * Ensures objects are assigned to a variable when instantiated.
  *
@@ -28,7 +28,7 @@
  * @version   Release: 1.2.0
  * @link      http://pear.php.net/package/PHP_CodeSniffer
  */
-class Squiz_Sniffs_Objects_ObjectInstantiationSniff implements PHP_CodeSniffer_Sniff
+class Viscacha_Sniffs_Objects_ObjectInstantiationSniff implements PHP_CodeSniffer_Sniff
 {
 
 

@@ -1,6 +1,6 @@
 <?php
 /**
- * Squiz_Sniffs_ControlStructures_ForEachLoopDeclarationSniff.
+ * Viscacha_Sniffs_ControlStructures_ForEachLoopDeclarationSniff.
  *
  * PHP version 5
  *
@@ -15,7 +15,7 @@
  */
 
 /**
- * Squiz_Sniffs_ControlStructures_ForEachLoopDeclarationSniff.
+ * Viscacha_Sniffs_ControlStructures_ForEachLoopDeclarationSniff.
  *
  * Verifies that there is a spce between each condition of foreach loops.
  *
@@ -28,7 +28,7 @@
  * @version   Release: 1.2.0
  * @link      http://pear.php.net/package/PHP_CodeSniffer
  */
-class Squiz_Sniffs_ControlStructures_ForEachLoopDeclarationSniff implements PHP_CodeSniffer_Sniff
+class Viscacha_Sniffs_ControlStructures_ForEachLoopDeclarationSniff implements PHP_CodeSniffer_Sniff
 {
 
 

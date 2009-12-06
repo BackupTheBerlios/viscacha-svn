@@ -1,6 +1,6 @@
 <?php
 /**
- * Generic_Sniffs_Functions_OpeningFunctionBraceKernighanRitchieSniff.
+ * Viscacha_Sniffs_Functions_OpeningFunctionBraceKernighanRitchieSniff.
  *
  * PHP version 5
  *
@@ -15,7 +15,7 @@
  */
 
 /**
- * Generic_Sniffs_Functions_OpeningFunctionBraceKernighanRitchieSniff.
+ * Viscacha_Sniffs_Functions_OpeningFunctionBraceKernighanRitchieSniff.
  *
  * Checks that the opening brace of a function is on the same line
  * as the function declaration.
@@ -29,7 +29,7 @@
  * @version   Release: 1.2.0
  * @link      http://pear.php.net/package/PHP_CodeSniffer
  */
-class Generic_Sniffs_Functions_OpeningFunctionBraceKernighanRitchieSniff implements PHP_CodeSniffer_Sniff
+class Viscacha_Sniffs_Functions_OpeningFunctionBraceKernighanRitchieSniff implements PHP_CodeSniffer_Sniff
 {
 
 

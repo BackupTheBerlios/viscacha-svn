@@ -1,6 +1,6 @@
 <?php
 /**
- * Generic_Sniffs_Formatting_DisallowMultipleStatementsSniff.
+ * Viscacha_Sniffs_Formatting_DisallowMultipleStatementsSniff.
  *
  * PHP version 5
  *
@@ -14,7 +14,7 @@
  */
 
 /**
- * Generic_Sniffs_Formatting_DisallowMultipleStatementsSniff.
+ * Viscacha_Sniffs_Formatting_DisallowMultipleStatementsSniff.
  *
  * Ensures each statement is on a line by itself.
  *
@@ -26,7 +26,7 @@
  * @version   Release: 1.2.0
  * @link      http://pear.php.net/package/PHP_CodeSniffer
  */
-class Generic_Sniffs_Formatting_DisallowMultipleStatementsSniff implements PHP_CodeSniffer_Sniff
+class Viscacha_Sniffs_Formatting_DisallowMultipleStatementsSniff implements PHP_CodeSniffer_Sniff
 {
 
 

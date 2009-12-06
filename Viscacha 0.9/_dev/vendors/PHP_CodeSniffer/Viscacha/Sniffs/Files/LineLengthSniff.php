@@ -1,6 +1,6 @@
 <?php
 /**
- * Generic_Sniffs_Files_LineLengthSniff.
+ * Viscacha_Sniffs_Files_LineLengthSniff.
  *
  * PHP version 5
  *
@@ -15,7 +15,7 @@
  */
 
 /**
- * Generic_Sniffs_Files_LineLengthSniff.
+ * Viscacha_Sniffs_Files_LineLengthSniff.
  *
  * Checks all lines in the file, and throws warnings if they are over 80
  * characters in length and errors if they are over 100. Both these
@@ -30,7 +30,7 @@
  * @version   Release: 1.2.0
  * @link      http://pear.php.net/package/PHP_CodeSniffer
  */
-class Generic_Sniffs_Files_LineLengthSniff implements PHP_CodeSniffer_Sniff
+class Viscacha_Sniffs_Files_LineLengthSniff implements PHP_CodeSniffer_Sniff
 {
 
     /**

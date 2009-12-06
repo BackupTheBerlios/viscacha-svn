@@ -1,6 +1,6 @@
 <?php
 /**
- * Squiz_Sniffs_Functions_LowercaseFunctionKeywordsSniff.
+ * Viscacha_Sniffs_Functions_LowercaseFunctionKeywordsSniff.
  *
  * PHP version 5
  *
@@ -15,7 +15,7 @@
  */
 
 /**
- * Squiz_Sniffs_Functions_LowercaseFunctionKeywordsSniff.
+ * Viscacha_Sniffs_Functions_LowercaseFunctionKeywordsSniff.
  *
  * Ensures all class keywords are lowercase.
  *
@@ -28,7 +28,7 @@
  * @version   Release: 1.2.0
  * @link      http://pear.php.net/package/PHP_CodeSniffer
  */
-class Squiz_Sniffs_Functions_LowercaseFunctionKeywordsSniff implements PHP_CodeSniffer_Sniff
+class Viscacha_Sniffs_Functions_LowercaseFunctionKeywordsSniff implements PHP_CodeSniffer_Sniff
 {
 
 

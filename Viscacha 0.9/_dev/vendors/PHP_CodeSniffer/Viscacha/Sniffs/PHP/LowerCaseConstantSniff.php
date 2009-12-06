@@ -1,6 +1,6 @@
 <?php
 /**
- * Generic_Sniffs_PHP_LowerCaseConstantSniff.
+ * Viscacha_Sniffs_PHP_LowerCaseConstantSniff.
  *
  * PHP version 5
  *
@@ -15,7 +15,7 @@
  */
 
 /**
- * Generic_Sniffs_PHP_LowerCaseConstantSniff.
+ * Viscacha_Sniffs_PHP_LowerCaseConstantSniff.
  *
  * Checks that all uses of true, false and null are lowerrcase.
  *
@@ -28,7 +28,7 @@
  * @version   Release: 1.2.0
  * @link      http://pear.php.net/package/PHP_CodeSniffer
  */
-class Generic_Sniffs_PHP_LowerCaseConstantSniff implements PHP_CodeSniffer_Sniff
+class Viscacha_Sniffs_PHP_LowerCaseConstantSniff implements PHP_CodeSniffer_Sniff
 {
 
     /**

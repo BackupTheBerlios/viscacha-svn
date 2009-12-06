@@ -1,6 +1,6 @@
 <?php
 /**
- * Squiz_Sniffs_Functions_FunctionDuplicateArgumentSpacingSniff.
+ * Viscacha_Sniffs_Functions_FunctionDuplicateArgumentSpacingSniff.
  *
  * PHP version 5
  *
@@ -15,7 +15,7 @@
  */
 
 /**
- * Squiz_Sniffs_Functions_FunctionDuplicateArgumentSpacingSniff.
+ * Viscacha_Sniffs_Functions_FunctionDuplicateArgumentSpacingSniff.
  *
  * Checks that duplicate arguments are not used in function declarations.
  *
@@ -28,7 +28,7 @@
  * @version   Release: 1.2.0
  * @link      http://pear.php.net/package/PHP_CodeSniffer
  */
-class Squiz_Sniffs_Functions_FunctionDuplicateArgumentSniff implements PHP_CodeSniffer_Sniff
+class Viscacha_Sniffs_Functions_FunctionDuplicateArgumentSniff implements PHP_CodeSniffer_Sniff
 {
 
 

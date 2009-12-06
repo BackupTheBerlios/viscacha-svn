@@ -30,7 +30,7 @@ if (class_exists('PHP_CodeSniffer_Standards_AbstractVariableSniff', true) === fa
  * @version   Release: 1.2.0
  * @link      http://pear.php.net/package/PHP_CodeSniffer
  */
-class Squiz_Sniffs_Scope_MemberVarScopeSniff extends PHP_CodeSniffer_Standards_AbstractVariableSniff
+class Viscacha_Sniffs_Scope_MemberVarScopeSniff extends PHP_CodeSniffer_Standards_AbstractVariableSniff
 {
 
 

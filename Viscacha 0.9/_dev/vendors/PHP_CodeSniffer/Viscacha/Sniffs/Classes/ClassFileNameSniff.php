@@ -1,6 +1,6 @@
 <?php
 /**
- * Squiz_Sniffs_Classes_ClassFileNameSniff.
+ * Viscacha_Sniffs_Classes_ClassFileNameSniff.
  *
  * PHP version 5
  *
@@ -15,7 +15,7 @@
  */
 
 /**
- * Squiz_Sniffs_Classes_ClassFileNameSniff.
+ * Viscacha_Sniffs_Classes_ClassFileNameSniff.
  *
  * Tests that the file name and the name of the class contained within the file
  * match.
@@ -29,7 +29,7 @@
  * @version   Release: 1.2.0
  * @link      http://pear.php.net/package/PHP_CodeSniffer
  */
-class Squiz_Sniffs_Classes_ClassFileNameSniff implements PHP_CodeSniffer_Sniff
+class Viscacha_Sniffs_Classes_ClassFileNameSniff implements PHP_CodeSniffer_Sniff
 {
 
 
@@ -61,7 +61,7 @@ class Squiz_Sniffs_Classes_ClassFileNameSniff implements PHP_CodeSniffer_Sniff
         $tokens   = $phpcsFile->getTokens();
         $decName  = $phpcsFile->findNext(T_STRING, $stackPtr);
         $fullPath = basename($phpcsFile->getFilename());
-        $fileName = "class."substr($fullPath, 0, strrpos($fullPath, '.'));
+        $fileName = "class.".substr($fullPath, 0, strrpos($fullPath, '.'));
 
         if ($tokens[$decName]['content'] !== "".$fileName) {
             $error  = ucfirst($tokens[$stackPtr]['content']);

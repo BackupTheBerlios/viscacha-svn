@@ -1,6 +1,6 @@
 <?php
 /**
- * Squiz_Sniffs_Strings_EchoedStringsSniff.
+ * Viscacha_Sniffs_Strings_EchoedStringsSniff.
  *
  * PHP version 5
  *
@@ -15,7 +15,7 @@
  */
 
 /**
- * Squiz_Sniffs_Strings_EchoedStringsSniff.
+ * Viscacha_Sniffs_Strings_EchoedStringsSniff.
  *
  * Makes sure that any strings that are "echoed" are not enclosed in brackets
  * like a function call.
@@ -29,7 +29,7 @@
  * @version   Release: 1.2.0
  * @link      http://pear.php.net/package/PHP_CodeSniffer
  */
-class Squiz_Sniffs_Strings_EchoedStringsSniff implements PHP_CodeSniffer_Sniff
+class Viscacha_Sniffs_Strings_EchoedStringsSniff implements PHP_CodeSniffer_Sniff
 {
 
 

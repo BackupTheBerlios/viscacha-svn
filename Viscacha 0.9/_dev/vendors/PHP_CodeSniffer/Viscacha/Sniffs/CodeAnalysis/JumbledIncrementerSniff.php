@@ -45,7 +45,7 @@
  * @version   Release: 1.2.0
  * @link      http://pear.php.net/package/PHP_CodeSniffer
  */
-class Generic_Sniffs_CodeAnalysis_JumbledIncrementerSniff implements PHP_CodeSniffer_Sniff
+class Viscacha_Sniffs_CodeAnalysis_JumbledIncrementerSniff implements PHP_CodeSniffer_Sniff
 {
 
 

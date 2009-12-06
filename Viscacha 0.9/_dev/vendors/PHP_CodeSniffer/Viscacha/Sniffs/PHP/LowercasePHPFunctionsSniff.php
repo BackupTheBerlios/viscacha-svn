@@ -1,6 +1,6 @@
 <?php
 /**
- * Squiz_Sniffs_PHP_LowercasePHPFunctionsSniff.
+ * Viscacha_Sniffs_PHP_LowercasePHPFunctionsSniff.
  *
  * PHP version 5
  *
@@ -15,7 +15,7 @@
  */
 
 /**
- * Squiz_Sniffs_PHP_LowercasePHPFunctionsSniff.
+ * Viscacha_Sniffs_PHP_LowercasePHPFunctionsSniff.
  *
  * Ensures all calls to inbuilt PHP functions are lowercase.
  *
@@ -28,7 +28,7 @@
  * @version   Release: 1.2.0
  * @link      http://pear.php.net/package/PHP_CodeSniffer
  */
-class Squiz_Sniffs_PHP_LowercasePHPFunctionsSniff implements PHP_CodeSniffer_Sniff
+class Viscacha_Sniffs_PHP_LowercasePHPFunctionsSniff implements PHP_CodeSniffer_Sniff
 {
 
 

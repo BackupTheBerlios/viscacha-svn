@@ -1,6 +1,6 @@
 <?php
 /**
- * Squiz_Sniffs_Arrays_ArrayBracketSpacingSniff.
+ * Viscacha_Sniffs_Arrays_ArrayBracketSpacingSniff.
  *
  * PHP version 5
  *
@@ -15,7 +15,7 @@
  */
 
 /**
- * Squiz_Sniffs_Arrays_ArrayBracketSpacingSniff.
+ * Viscacha_Sniffs_Arrays_ArrayBracketSpacingSniff.
  *
  * Ensure that there are no spaces around square brackets.
  *
@@ -28,7 +28,7 @@
  * @version   Release: 1.2.0
  * @link      http://pear.php.net/package/PHP_CodeSniffer
  */
-class Squiz_Sniffs_Arrays_ArrayBracketSpacingSniff implements PHP_CodeSniffer_Sniff
+class Viscacha_Sniffs_Arrays_ArrayBracketSpacingSniff implements PHP_CodeSniffer_Sniff
 {
 
 

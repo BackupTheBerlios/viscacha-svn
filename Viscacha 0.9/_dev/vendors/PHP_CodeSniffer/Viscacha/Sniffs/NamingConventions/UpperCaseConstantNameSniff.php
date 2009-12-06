@@ -1,6 +1,6 @@
 <?php
 /**
- * Generic_Sniffs_NamingConventions_UpperCaseConstantNameSniff.
+ * Viscacha_Sniffs_NamingConventions_UpperCaseConstantNameSniff.
  *
  * PHP version 5
  *
@@ -15,7 +15,7 @@
  */
 
 /**
- * Generic_Sniffs_NamingConventions_UpperCaseConstantNameSniff.
+ * Viscacha_Sniffs_NamingConventions_UpperCaseConstantNameSniff.
  *
  * Ensures that constant names are all uppercase.
  *
@@ -28,7 +28,7 @@
  * @version   Release: 1.2.0
  * @link      http://pear.php.net/package/PHP_CodeSniffer
  */
-class Generic_Sniffs_NamingConventions_UpperCaseConstantNameSniff implements PHP_CodeSniffer_Sniff
+class Viscacha_Sniffs_NamingConventions_UpperCaseConstantNameSniff implements PHP_CodeSniffer_Sniff
 {
 
 

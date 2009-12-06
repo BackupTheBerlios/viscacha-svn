@@ -1,6 +1,6 @@
 <?php
 /**
- * Squiz_Sniffs_PHP_InnerFunctionsSniff.
+ * Viscacha_Sniffs_PHP_InnerFunctionsSniff.
  *
  * PHP version 5
  *
@@ -15,7 +15,7 @@
  */
 
 /**
- * Squiz_Sniffs_PHP_InnerFunctionsSniff.
+ * Viscacha_Sniffs_PHP_InnerFunctionsSniff.
  *
  * Ensures that functions within functions are never used.
  *
@@ -28,7 +28,7 @@
  * @version   Release: 1.2.0
  * @link      http://pear.php.net/package/PHP_CodeSniffer
  */
-class Squiz_Sniffs_PHP_InnerFunctionsSniff implements PHP_CodeSniffer_Sniff
+class Viscacha_Sniffs_PHP_InnerFunctionsSniff implements PHP_CodeSniffer_Sniff
 {
 
 
