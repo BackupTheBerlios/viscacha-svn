@@ -1,6 +1,6 @@
 <?php
 /**
- * Viscacha_Sniffs_Operators_ValidLogicalOperatorsSniff.
+ * Viscacha_Sniffs_Objects_ValidLogicalOperatorsSniff.
  *
  * PHP version 5
  *
@@ -15,7 +15,7 @@
  */
 
 /**
- * Viscacha_Sniffs_Operators_ValidLogicalOperatorsSniff.
+ * Viscacha_Sniffs_Objects_ValidLogicalOperatorsSniff.
  *
  * Checks to ensure that the logical operators 'and' and 'or' are not used.
  * Use the && and || operators instead.
@@ -29,7 +29,7 @@
  * @version   Release: 1.2.0
  * @link      http://pear.php.net/package/PHP_CodeSniffer
  */
-class Viscacha_Sniffs_Operators_ValidLogicalOperatorsSniff implements PHP_CodeSniffer_Sniff
+class Viscacha_Sniffs_Objects_ValidLogicalOperatorsSniff implements PHP_CodeSniffer_Sniff
 {
 
 

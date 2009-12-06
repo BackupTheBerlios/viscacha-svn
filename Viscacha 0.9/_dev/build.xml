@@ -35,19 +35,19 @@
   <!-- PHP copy/paste analysis -->
   <target name="phpcpd">
     <echo msg="PHP Copy/Paste..." />
-    <exec command="phpcpd --log-pmd=${builddir}/logs/pmd.xml source"
+    <exec command="phpcpd --log-pmd=${builddir}/logs/pmd.xml ${ws}/source/source"
           escape="false" />
   </target>
   <!-- PHP dependency checker -->
   <target name="pdepend">
     <echo msg="PHP Depend..." />
-    <exec command="pdepend --jdepend-xml=${builddir}/logs/jdepend.xml ${ws}/source"
+    <exec command="pdepend --jdepend-xml=${builddir}/logs/jdepend.xml ${ws}/source/source"
           escape="false" />
   </target>
   <!-- PHP CodeSniffer -->
   <target name="phpcs">
     <echo msg="PHP CodeSniffer..." />
-    <exec command="phpcs --standard=Viscacha --report=checkstyle ${ws}/source &gt; ${builddir}/logs/checkstyle.xml"
+    <exec command="phpcs --standard=Viscacha --report=checkstyle ${ws}/source/source &gt; ${builddir}/logs/checkstyle.xml"
           escape="false" />
   </target>
   <!-- Unit Tests & coverage analysis -->
