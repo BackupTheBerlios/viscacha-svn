@@ -427,7 +427,7 @@ class MimeType {
 	 * The array contains the extensions without dot and written in lowercase.
 	 * NULL will be returned if no extension is found.
 	 *
-	 * Internaö note: This is a simple mapping mime type to extension.
+	 * Internal note: This is a simple mapping mime type to extension.
 	 *
 	 * @param string Mime Type
 	 * @return array Array with extensions or null
@@ -465,7 +465,7 @@ class MimeType {
 		if (class_exists('finfo', false) && file_exists($file)) {
 			$finfo = new finfo(FILEINFO_MIME_TYPE);
 			if ($finfo) {
-				$mimeType = $finfo->file($filename);
+				$mimeType = $finfo->file($file);
 			}
 		}
 		if ($mimeType === false) {

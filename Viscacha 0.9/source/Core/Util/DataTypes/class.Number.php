@@ -41,22 +41,59 @@
 abstract class Number {
 
 	/**
-	 * true for natural numbers without zero.
+	 * Checks whether a number is a natural number (without zero).
+	 *
+	 * The natural number can be given as integer, float or as string.
+	 * For strings it is not allowed to use and other chars than 0-9, so its not allowed to use
+	 * floats in strings (1.0 or 1,0).
+	 *
+	 * @param	mixed	Number
+	 * @return	boolean	true if the specified data is a natural number, false if not.
 	 */
 	public static function isNatural($x) {
-		return (is_numeric($x) && $x > 0) ? (intval($x) == $x) : false;
+		if (is_int($x) && $x > 0) {
+			return true;
+		}
+		elseif(is_float($x) && $x > 0 && intval($x) == $x) {
+			return true;
+		}
+		elseif (is_string($x) && ctype_digit($x) && intval($x) > 0) {
+			return true;
+		}
+		else {
+			return false;
+		}
+		// return (is_numeric($x) && $x > 0) ? (intval($x) == $x) : false;
 	}
 
 	public static function isInteger($x) {
-
 	}
 
 	public static function isDecimal($x) {
-
 	}
 
+	/**
+	 * Add leading zeros to an integer until the specified length is reached.
+	 *
+	 * You can specify an integer or a string where leading zeros should be added.
+	 * If the specified string is invalid it will be returned without any change.
+	 * The sign of a number does not count to the length.
+	 *
+	 * If the length is negative the absolute value of the length will be used.
+	 * The length 0 will do nothing.
+	 *
+	 * @param	int|string	Number to
+	 */
 	public static function leadingZero($x, $length = 2) {
-		return sprintf("%0{$length}d", $x);
+		// strval() is used because without this call the $x on the right would be converted to an
+		// integer as the left side is already an integer and that is always true.
+		if ($length == 0 || intval($length) != $length || strval(intval($x)) != $x) {
+			return $x;
+		}
+		else {
+			$length = abs($length);
+			return sprintf("%0{$length}d", $x);
+		}
 	}
 
 }
