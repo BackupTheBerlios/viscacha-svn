@@ -40,14 +40,14 @@ class ClassManagerCache extends CacheItem {
 	private $next;
 	private $classes;
 
-	public function __construct($name = __CLASS__, $path = CACHE_DEFAULT_DIR){
+	public function __construct($name = __CLASS__, $path = CACHE_DEFAULT_DIR) {
 		parent::__construct($name, $path);
 		$this->next = false;
 		$this->classes = array();
 	}
 
 	public function load() {
-		$files = $this->scanSourceFolder('source', 'class.*.php');
+		$files = $this->scanSourceFolder('source');
 		foreach($files as $file){
 			$this->parse($file);
 		}
@@ -56,25 +56,20 @@ class ClassManagerCache extends CacheItem {
 	/**
 	 * Scans recursively all Source folders for classes.
 	 *
-	 * @param string 	Directory to start with.
-	 * @param string 	Pattern to glob for.
-	 * @param int 		Flags sent to glob.
-	 * @return array containing all pattern-matched files.
-	 * @todo escapeshellcmd gegen eigene Variante ersetzen (weil die Methode auf manchen Hosts gesperrt ist)
+	 * @param	string 	Directory to search in
+	 * @return	array	Array containing all pattern-matched files.
+	 * @todo	Escape path in glob
 	 */
-	private function scanSourceFolder($sDir, $sPattern, $nFlags = null) {
-		if (function_exists('escapeshellcmd')) {
-			$sDir = @escapeshellcmd($sDir);
+	private function scanSourceFolder($dir) {
+		$files = glob($dir.'/{class,interface}.*.php', GLOB_BRACE);
+		$folders = Folder::getFolders($dir);
+
+		foreach ($folders as $subDir) {
+			$subFiles = $this->scanSourceFolder($subDir);
+			$files = array_merge($files, $subFiles);
 		}
 
-		$aFiles = glob("{$sDir}/{$sPattern}", $nFlags);
-
-		foreach (glob("{$sDir}/*", GLOB_ONLYDIR) as $sSubDir) {
-			$aSubFiles = $this->scanSourceFolder($sSubDir, $sPattern, $nFlags);
-			$aFiles = array_merge($aFiles, $aSubFiles);
-		}
-
-		return $aFiles;
+		return $files;
 	}
 
 	/**
@@ -87,8 +82,11 @@ class ClassManagerCache extends CacheItem {
 	 */
 	private function parse($file) {
 		if (function_exists('token_get_all') == false) {
-			// Klassenerkennung-Regexp: (abstract\s+)?class\s+([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)(\s+(extends|implements)\s+[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*){0,2}\s*\{
-			throw CoreException("Function token_get_all() is not supported. You can't use the ClassManager.");
+			// Klassenerkennung-Regexp:
+			// (abstract\s+)?class\s+([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)(\s+(extends|implements)\s+[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*){0,2}\s*\{
+			throw CoreException(
+				"Function token_get_all() is not supported. You can't use the ClassManager."
+			);
 		}
 		$file = new File($file);
 		if ($file->exists() == true) {
@@ -104,7 +102,11 @@ class ClassManagerCache extends CacheItem {
 				}
 				if ($token[0] == T_STRING && $this->next === true) {
 					if (isset($this->data[$token[1]]) == true) {
-						Core::throwError('Class with name '.$token[1].' was found more than once. Only file '.$file.' has been indexed!', INTERNAL_NOTICE);
+						Core::throwError(
+							'Class with name '.$token[1].' was found more than once. '.
+								"Only file {$file} has been indexed!",
+							INTERNAL_NOTICE
+						);
 					}
 					$this->data[$token[1]] = $file->relPath();
 					$this->next = false;

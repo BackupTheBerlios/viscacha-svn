@@ -55,7 +55,8 @@ abstract class Core {
 	 * The method loads a stored object, which has to be stored with storeObject() before.
 	 * The parameter is case sensitive. On failure a CoreException will be thrown (error code 1).
 	 *
-	 * Alternative: You can use the short wrapper function to get the stored objects. Just use Core(DB) for the DB class.
+	 * Alternative: You can use the global wrapper function Core to get the stored objects. Just use
+	 * Core(DB) for the DB class or Core(My) for an object that as been stored under the name My.
 	 *
 	 * @param	string	Stored name of object
 	 * @return	Object	Returns the object
@@ -81,8 +82,9 @@ abstract class Core {
 	 * If a stored object with the specified name is existant it will be replaced.
 	 * The second parameter is case sensitive.
 	 *
-	 * The object name will be declared as a constant, but you can declare a name multiple times (unlike constants).
-	 * The constant will get an internal id and this is used also for stored objects with the same name.
+	 * The object name will be declared as a constant, but you can declare a name multiple
+	 * times (unlike constants). The constant will get an internal id and this is used also
+	 * for stored objects with the same name.
 	 *
 	 * @param	Object	Object to store
 	 * @param	string	Name for the object
@@ -128,45 +130,52 @@ abstract class Core {
 	}
 
 	/**
-	 * Checks case sensitive if a class for the specified full class name (package + class) exists on the server.
+	 * Checks case sensitive if a class for the specified full class name (package and class) exists
+	 * on the server.
 	 *
 	 * If the class exists the path will be returned in the other case null will be returned.
 	 *
-	 * Attention: This method only checks whether the corresponding file exists, but the content of the file won't be checked!
+	 * Attention: This method only checks whether the corresponding file exists, but the content of
+	 * the file won't be checked!
 	 *
 	 * Example full class names for classes:
 	 * <ul>
 	 * <li>Core.Core is this class
-	 * <li>Core.System.ClassManager is the ClassManager class at aource/Core/System/class.ClassManager.php
-	 * <lI>Board.Controller.Forums would be a class located at source/Board/Controller/class.Forums.php
+	 * <li>Core.System.ClassManager is the ClassManager class at
+	 *     source/Core/System/class.ClassManager.php
+	 * <li>Board.Controller.Forums would be a class located at
+	 *     source/Board/Controller/class.Forums.php
 	 * </ul>
 	 *
 	 * @param	string	Full class name
 	 * @return	string	Path to class or null
 	 * @see Core::sourceFileExists()
 	 **/
-	public static function classExists($class){
+	public static function classExists($class) {
 		return self::sourceFileExists($class, 'class');
 	}
 
 	/**
-	 * Checks case sensitive if an interface for the specified full interface name (pakcage + interface) exists on the server.
+	 * Checks case sensitive if an interface for the specified full interface name
+	 * (package and interface) exists on the server.
 	 *
 	 * If the interface exists the path will be returned in the other case null will be returned.
 	 *
-	 * Attention: This method only checks whether the corresponding file exists, but the content of the file won't be checked!
+	 * Attention: This method only checks whether the corresponding file exists, but the content of
+	 * the file won't be checked!
 	 *
 	 * Example full interface names:
 	 * <ul>
 	 * <li>Core.DB.DBAL is the interface DBAL in the subpackage DB in the package Core.
-	 * <li>Core.Cache.CacheObject is the interface CacheObject in the subpackage Cache in the pckage Core.
+	 * <li>Core.Cache.CacheObject is the interface CacheObject in the subpackage Cache in the
+	 *     package Core.
 	 * </ul>
 	 *
 	 * @param	string	Full interface class
 	 * @return	string	Path to interface or null.
 	 * @see Core::sourceFileExists()
 	 **/
-	public static function interfaceExists($interface){
+	public static function interfaceExists($interface) {
 		return self::sourceFileExists($interface, 'interface');
 	}
 
@@ -198,35 +207,40 @@ abstract class Core {
 	/**
 	 * Loads every class and interface from the specified package.
 	 *
-	 * This method loads every file (and the containing classes/interfaces) in the specified package.
-	 * This does not include possible subpackages (subdirectories), these packages have to be included separately.
+	 * This method loads every file (and the containing classes/interfaces) in the specified
+	 * package. This does not include possible subpackages (subdirectories), these packages have to
+	 * be included separately.
 	 *
-	 * @param	string	Name of package (e.q. Core.Util.DataTypes for classes and interfaces in source/Core/Util/Datatypes)
+	 * The package name is similar to the full interface/class names, just without the last part.
+	 * Example: Use Core.Util.DataTypes to load classes and interfaces in source/Core/Util/DataTypes
+	 *
+	 * @param	string	Name of package
 	 * @todo	Check Implementation
+	 * @todo	Escape path in glob
 	 */
-	public static function loadPackage($package){
-	    $path = 'source/'.str_replace('.', '/', $package).'/';
-		$files = glob($path.'*.*.php');
+	public static function loadPackage($package) {
+	    $path = 'source/'.str_replace('.', '/', $package);
+		$files = glob($path.'/{class,interface}.*.php', GLOB_BRACE);
 		foreach ($files as $file) {
 			$fileName = basename($file);
 			if (strpos($fileName, 'class.') === 0 || strpos($fileName, 'interface.') === 0) {
 				include_once($file);
 			}
-		    
 		}
 	}
 
 	/**
 	 * Loads a class from the filesystem that can be used afterwards.
 	 *
-	 * On failure the class won't be available (but maybe the file) and a CoreException will be thrown.
-	 * The parameter is case sensitive. For the format of a full package name see Core::classExists().
+	 * On failure the class won't be available (but maybe the file with its content has been loaded)
+	 * and a CoreException will be thrown. The parameter is case sensitive. For the format of a full
+	 * package name see Core::classExists().
 	 *
-	 * @see 	Core::classExists()
 	 * @param	string	Full name of the class
+	 * @see 	Core::classExists()
 	 * @throws	CoreException
 	 */
-	public static function loadClass($class){
+	public static function loadClass($class) {
 		$className = self::getNameFromPackage($class);
 		if (class_exists($className, false) == false) {
 			$file = self::classExists($class);
@@ -236,7 +250,10 @@ abstract class Core {
 			else {
 				include_once($file);
 				if (class_exists($className, false) == false) {
-					throw new CoreException("Included source file does not contain a class with the name '{$className}'", 3);
+					throw new CoreException(
+						"Included source file does not contain the class '{$className}'",
+						3
+					);
 				}
 			}
 		}
@@ -245,13 +262,14 @@ abstract class Core {
 	/**
 	 * Loads an interface from the filesystem that can be used afterwards.
 	 *
-	 * On failure the interface is not available (but maybe the file) and the script will throw a CoreException.
+	 * On failure the interface is not available (but maybe the file with its content has been
+	 * loaded) and the script will throw a CoreException.
 	 *
 	 * @see		Core::interfaceExists()
 	 * @param	string	Full name of the interface
 	 * @throws	CoreException
 	 **/
-	public static function loadInterface($interface){
+	public static function loadInterface($interface) {
 		$interfaceName = self::getNameFromPackage($interface);
 		if (interface_exists($interfaceName, false) == false) {
 			$file = self::interfaceExists($interface);
@@ -261,7 +279,10 @@ abstract class Core {
 			else {
 				include_once($file);
 				if (interface_exists($interfaceName, false) == false) {
-					throw new CoreException("Included source file does not contain an interface with the name '{$interfaceName}'", 5);
+					throw new CoreException(
+						"Included source file does not contain the interface '{$interfaceName}'",
+						5
+					);
 				}
 			}
 		}

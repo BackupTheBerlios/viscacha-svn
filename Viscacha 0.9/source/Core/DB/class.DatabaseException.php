@@ -28,7 +28,7 @@
 Core::loadClass('Viscacha.Core.InfoException');
 
 /**
- * Exception for errors in Queries to the database.
+ * Exception for general database errors (not query errors).
  *
  * @package		Core
  * @subpackage	DB
@@ -36,16 +36,6 @@ Core::loadClass('Viscacha.Core.InfoException');
  * @since 		1.0
  */
 class DatabaseException extends InfoException {
-
-	/**
-	 * Constructs the QueryException.
-	 *
-	 * @param string Database error message
-	 * @param int Database error number (default: 0)
-	 */
-	public function __construct($message, $code = 0) {
-		parent::__construct($message, $code);
-	}
 
 	/**
 	 * Returns a detailed error message.

@@ -106,6 +106,11 @@ class Viscacha_Sniffs_PHP_LowercasePHPFunctionsSniff implements PHP_CodeSniffer_
             return;
         }
 
+        if ($tokens[$next]['code'] !== T_NEW) {
+            // Mod: Not a function call, object creation.
+            return;
+        }
+
         if ($tokens[$prev]['code'] === T_OBJECT_OPERATOR) {
             // Not an inbuilt function.
             return;

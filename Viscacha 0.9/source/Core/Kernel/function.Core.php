@@ -33,11 +33,12 @@ Core::loadClass('Core.Kernel.ClassManager');
  *
  * During implementation we tried several short forms and decided to take the last one:
  * <code>
- * Core::_(DB)->query("SQL"); // This is ugly
- * Core::DB()->query("SQL"); // Ok, but slow (see php manual)
- * Core::DB('query', "SQL"); // Alternative for the above
- * Core::$DB->query("SQL"); // Not possible in PHP 5.3 (__getStatic, __setStatic), maybe introduced in PHP 6
- * Core(DB)->query("SQL"); // Short, fast, but not really oop. It's just a good short wrapper
+ * Core::_(DB)->query("SQL");	// This is ugly
+ * Core::DB()->query("SQL");	// Ok, but slow (see php manual)
+ * Core::DB('query', "SQL");	// Alternative for the above
+ * Core::$DB->query("SQL");		// Not possible in PHP 5.3 (__getStatic, __setStatic), maybe
+ *								// introduced in PHP 6, then the best option!
+ * Core(DB)->query("SQL");		// Short, fast, but not really oop. Seems to be the best one...
  * </code>
  *
  * @param int Constant for the object to be loaded

@@ -56,13 +56,8 @@ class Viscacha_Sniffs_Functions_FunctionDeclarationArgumentSpacingSniff implemen
     public function process(PHP_CodeSniffer_File $phpcsFile, $stackPtr)
     {
         $tokens = $phpcsFile->getTokens();
-        
-        $paramArgType = array(
-          T_VARIABLE
-          T_CONSTANT
-        );
 
-        $functionName = $phpcsFile->findNext(array(T_STRING), $stackPtr);
+        $functionName = $phpcsFile->findNext(T_STRING, $stackPtr);
         $openBracket  = $tokens[$stackPtr]['parenthesis_opener'];
         $closeBracket = $tokens[$stackPtr]['parenthesis_closer'];
 
@@ -70,7 +65,7 @@ class Viscacha_Sniffs_Functions_FunctionDeclarationArgumentSpacingSniff implemen
 
         $nextParam = $openBracket;
         $params    = array();
-        while (($nextParam = $phpcsFile->findNext($paramArgType, ($nextParam + 1), $closeBracket)) !== false) {
+        while (($nextParam = $phpcsFile->findNext(T_VARIABLE, ($nextParam + 1), $closeBracket)) !== false) {
 
             $nextToken = $phpcsFile->findNext(T_WHITESPACE, ($nextParam + 1), ($closeBracket + 1), true);
             if ($nextToken === false) {

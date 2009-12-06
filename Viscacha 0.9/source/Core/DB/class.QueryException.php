@@ -28,7 +28,7 @@
 Core::loadClass('Viscacha.Core.DatabaseException');
 
 /**
- * Exception for errors in Queries to the database.
+ * Exception for errors during queriing the database.
  *
  * @package		Core
  * @subpackage	DB
@@ -42,16 +42,6 @@ class QueryException extends DatabaseException {
 	 * @var string
 	 */
 	protected $query;
-
-	/**
-	 * Constructs the QueryException.
-	 *
-	 * @param string Database error message
-	 * @param int Database error number (default: 0)
-	 */
-	public function __construct($message, $code = 0) {
-		parent::__construct($message, $code);
-	}
 
 	/**
 	 * Returns a detailed error message.
@@ -95,7 +85,8 @@ class QueryException extends DatabaseException {
 	/**
 	 * Returns an array with additional information about the excpetion.
 	 *
-	 * The array contains one element. The key is "Query" and contains the query which causes the exception.
+	 * The array contains one element.
+	 * The key is "Query" and contains the query which caused the exception.
 	 *
 	 * @return array Data with keys as labels and values as data.
 	 */

@@ -68,7 +68,10 @@ abstract class InfoException extends Exception {
 	 * Quit the program immediately with an error message.
 	 */
 	protected function hardExit() {
-		die('Error: Recursive exception during the following exception - '.$this->getMessage().' (File: '.$exception->getFile().', Line: '.$exception->getLine().')');
+		die(
+			'Error: Recursive exception during the following exception - '.$this->getMessage().
+				' (File: '.$this->getFile().', Line: '.$this->getLine().')'
+		);
 	}
 
 }

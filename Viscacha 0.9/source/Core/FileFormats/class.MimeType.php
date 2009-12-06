@@ -434,8 +434,8 @@ class MimeType {
 	 */
 	public static function getExtensions($mimeType) {
 		$mimeType = strtolower($mimeType);
-		if (isset($this->data[$mimeType]) == true && count($this->data[$mimeType]) > 0) {
-			return $this->data[$mimeType];
+		if (isset(self::data[$mimeType]) == true && count(self::data[$mimeType]) > 0) {
+			return self::data[$mimeType];
 		}
 		else {
 			return null;
@@ -470,7 +470,7 @@ class MimeType {
 		}
 		if ($mimeType === false) {
 			$ext = File::getExtension($file);
-			$mimeType = Arrays::find($this->data, $ext);
+			$mimeType = Arrays::find(self::data, $ext);
 		}
 		return ($mimeType === false) ? null : $mimeType;
 	}

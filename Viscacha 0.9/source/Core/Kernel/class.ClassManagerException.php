@@ -39,16 +39,6 @@ class ClassManagerException extends InfoException {
 	private $index;
 
 	/**
-	 * Constructs the ClassManagerException.
-	 *
-	 * @param	string	ClassManager error message
-	 * @param	int		ClassManager error code (default: 0)
-	 */
-	public function __construct($message, $code = 0) {
-		parent::__construct($message, $code);
-	}
-
-	/**
 	 * Returns an array with additional information about the excpetion.
 	 *
 	 * The keys of the array are the class names, the values are the paths to the class files.

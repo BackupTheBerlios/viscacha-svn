@@ -19,58 +19,36 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * @package		Core
- * @subpackage	Cache
+ * @subpackage	FileSystem
  * @author		Matthias Mohr
  * @copyright	Copyright (c) 2004-2010, Viscacha.org
  * @license		http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License
  */
 
-Core::loadClass('Core.Cache.CacheObject');
-
 /**
- * Abstract class for Cache classes that implement data retrieval (e.q. from database) instead of
- * using the CacheObject::set() method directly.
+ * Folder/Directory functions
  *
  * @package		Core
- * @subpackage	Cache
+ * @subpackage	FileSystem
  * @author		Matthias Mohr
  * @since 		1.0
- * @abstract
  */
-abstract class CacheItem extends CacheObject {
+class Folder {
 
-	/**
-	 * Implement the data retrieval for the cache.
-	 *
-	 * You just need to set the data with the CoreCobject::set() method afterwards.
-	 *
-	 * @see CoreObject::set()
-	 */
-	public abstract function load();
+	public function __callStatic() {
 
-	/**
-	 * @todo Add Documentation
-	 */
-	public function get() {
-		if ($this->data === null || $this->exists() == false) {
-			$this->load();
-			$this->save();
-		}
-		else {
-			$this->read();
-		}
-		return $this->data;
 	}
 
-	/**
-	 * Returns whether the file can be rebuilt or not.
-	 *
-	 * {@inheritDoc}
-	 *
-	 * @return	boolean	true if the file can be rebuilt without context
-	 */
-	public function rebuildable() {
-		return true;
+	public function __construct() {
+
+	}
+
+	public function getFolders() {
+
+	}
+
+	public function getFiles() {
+
 	}
 
 }

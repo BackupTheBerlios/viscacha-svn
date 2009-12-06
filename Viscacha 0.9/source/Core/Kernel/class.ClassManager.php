@@ -32,7 +32,8 @@ Core::loadClass('Core.Cache.CacheServer');
  * Maps all classes to their location in the source folder.
  *
  * This class creates an index of all classes available in the Viscacha "source" directory.
- * When a class is loaded (via __autoload), it just performs simple index lookup to determine the path of each class file.
+ * When a class is loaded (via __autoload), it just performs simple index lookup to determine the
+ * path of each class file.
  *
  * @package		Core
  * @subpackage	Kernel
@@ -71,9 +72,14 @@ class ClassManager extends Singleton {
 				include_once($filename);
 			}
 			else {
-				// Class name is indexed, but no source file available, force a rebuild (Index seems to be outdated)
+				// Class name is indexed, but no source file available
+				// Force a rebuild as the index seems to be outdated
 				$this->deleteIndex();
-				$e = new ClassManagerException("ClassManager index seems to be outdated. File for class '{$className}' not found: ".$this->index[$className], 1);
+				$e = new ClassManagerException(
+					"ClassManager index seems to be outdated. ".
+						"File for class '{$className}' not found: ".$this->index[$className],
+					1
+				);
 				$e->setIndex($this->index);
 				throw $e;
 			}
@@ -81,7 +87,10 @@ class ClassManager extends Singleton {
 		else {
 			// No class with this name indexed, force a rebuild
 			$this->deleteIndex();
-			$e = new ClassManagerException("ClassManager has no class with name {$className} indexed.", 2);
+			$e = new ClassManagerException(
+				"ClassManager has no class with name {$className} indexed.",
+				2
+			);
 			$e->setIndex($this->index);
 			throw $e;
 		}

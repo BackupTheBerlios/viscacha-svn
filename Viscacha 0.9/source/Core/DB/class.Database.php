@@ -219,7 +219,8 @@ abstract class Database {
 	 * while the socket parameter specifies the socket or named pipe that should be used.
 	 * If you specify a port and a socket, only the port will be used.
 	 *
-	 * Note: The database will not be selected! You have to call selectDB() before you can work with the database.
+	 * Note: The database will not be selected! You have to call selectDB() before you can work with
+	 * the database.
 	 *
 	 * The charset should be set to UTF-8 in the best case.
 	 *
@@ -229,7 +230,8 @@ abstract class Database {
 	 * @param int Port
 	 * @param string Socket
 	 */
-	public abstract function connect($username = null, $password = null, $host = null, $port = null, $socket = null);
+	public abstract function connect($username = null, $password = null, $host = null,
+									 $port = null, $socket = null);
 
 	/**
 	 * Returns the create statement for creating the specified table.
@@ -277,8 +279,8 @@ abstract class Database {
 	 * Fetch all result rows as a multidimensional associative array.
 	 *
 	 * Each first level element contains an associative array that corresponds to the fetched row.
-	 * The keys of the first level array can be set to the values of a field from the received result rows.
-	 * If no key is specified, the array will be an enumerated array, where each column
+	 * The keys of the first level array can be set to the values of a field from the received
+	 * result rows. If no key is specified, the array will be an enumerated array, where each column
 	 * is stored in an array offset starting from 0 (zero).
 	 *
 	 * If the result set parameter is not specified, the last result will be used.
@@ -294,7 +296,11 @@ abstract class Database {
 		while($row = $this->fetchAssoc($result)){
 			if ($key != null) {
 				if (isset($row[$key]) == false) {
-					Core::throwError("Key assigned in fetchAll() was not found in result set. The keys will be enumerated.", INTERNAL_NOTICE);
+					Core::throwError(
+						"Key assigned in fetchAll() was not found in result set. ".
+							"The keys will be enumerated.",
+						INTERNAL_NOTICE
+					);
 					$error = true;
 				}
 				$cache[$row[$key]] = $row;
@@ -313,16 +319,19 @@ abstract class Database {
 	/**
 	 * Fetch a result row as an associative array
 	 *
-	 * Returns an associative array that corresponds to the fetched row or null if there are no more rows.
-	 * The function is used to return an associative array representing the next row in the result set for
-	 * the result represented by the result parameter, where each key in the array represents the name of
-	 * one of the result set's columns. If two or more columns of the result have the same field names,
-	 * the last column will take precedence. To access the other column(s) of the same name, you either
-	 * need to access the result with numeric indices by using fetchNum() or add alias names.
+	 * Returns an associative array that corresponds to the fetched row or null if there are no
+	 * more rows. The function is used to return an associative array representing the next row in
+	 * the result set for the result represented by the result parameter, where each key in the
+	 * array represents the name of one of the result set's columns. If two or more columns of the
+	 * result have the same field names, the last column will take precedence. To access the other
+	 * column(s) of the same name, you either need to access the result with numeric indices by
+	 * using fetchNum() or add alias names.
 	 *
-	 * @param mixed $result
-	 * @return Associative array or null
-	 **/
+	 * If the result set parameter is not specified (null), the last result will be used.
+	 *
+	 * @param	mixed	Result set or null
+	 * @return	array	Associative array or null
+	 */
 	public abstract function fetchAssoc($result = null);
 
 	/**

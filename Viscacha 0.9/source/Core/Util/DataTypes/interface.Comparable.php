@@ -38,11 +38,11 @@ interface Comparable {
 
 	/**
 	 * Compares this object with the specified object for order. Returns a
-     * negative integer (-1), zero (0), or a positive integer (1) as this object
+	 * negative integer (e.q. -1), zero (0), or a positive integer (e.q 1) as this object
 	 * is less than, equal to, or greater than the specified object.
 	 *
-	 * @param	self	The object to be compared to.
-     * @return	int		A negative integer, zero, or a positive integer as this object is less than, equal to, or greater than the specified object.
+	 * @param	self	The object to be compared to
+     * @return	int		An integer defining the sorting order
 	 * @see		http://www.php.net/manual/de/language.oop5.interfaces.php#69467
 	 */
 	public function compareTo(self $object);

@@ -84,7 +84,7 @@ class Stack {
 	 *
 	 * @returns mixed The element at the top of this stack or null.
 	 */
-	function top() {
+	public function top() {
 		if ($this->isEmpty() == true) {
 			return null;
 		}
@@ -115,8 +115,8 @@ class Stack {
 	/**
 	 * Returns the stack as an enumerated array.
 	 *
-	 * The element at the top has the highest key and the element first added to the stack has the key 0.
-	 * If the parameter is set to TRUE the whole array is reversed before it is returned.
+	 * The element at the top has the highest key and the element first added to the stack has the
+	 * key 0. If the parameter is set to TRUE the whole array is reversed before it is returned.
 	 * The array pointer is at the element with the key 0.
 	 *
 	 * @param boolean Set this to TRUE ro reverse the whole stack. Default is false.

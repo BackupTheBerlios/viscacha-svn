@@ -187,23 +187,18 @@ class ExtMySQL extends VendorMySQL {
 	/**
 	 * Fetch a result row as an associative array
 	 *
-	 * Returns an associative array that corresponds to the fetched row or null if there are no more rows.
-	 * The function is used to return an associative array representing the next row in the result set for
-	 * the result represented by the result parameter, where each key in the array represents the name of
-	 * one of the result set's columns. If two or more columns of the result have the same field names,
-	 * the last column will take precedence. To access the other column(s) of the same name, you either
-	 * need to access the result with numeric indices by using fetchNum() or add alias names.
+	 * {@inheritdoc}
 	 *
-	 * If the result set parameter is not specified, the last result will be used.
-	 *
-	 * @param mixed $result
-	 * @return array Result in an associative array
-	 **/
+	 * @param	mixed	Result set or null
+	 * @return	array	Associative array or null
+	 */
 	public function fetchAssoc($result = null) {
 		if ($result == null) {
 			$result = $this->result;
 		}
-		return mysql_fetch_assoc($result);
+
+		$row = mysql_fetch_assoc($result);
+		return ($row !== false) ? $row : null;
 	}
 
 	/**

@@ -25,8 +25,6 @@
  * @license		http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License
  */
 
-define('CACHE_DEFAULT_DIR', 'data/cache/');
-
 /**
  * CacheObject to store general data.
  *
@@ -37,16 +35,17 @@ define('CACHE_DEFAULT_DIR', 'data/cache/');
  */
 class CacheObject {
 
+	const DEFAULT_DIR = 'data/cache/';
+
 	protected $name;
 	protected $file;
 	protected $data;
 	protected $maxAge;
 
-
 	/**
 	 * @todo Add Documentation
 	 */
-	public function __construct($name, $path = CACHE_DEFAULT_DIR) {
+	public function __construct($name, $path = CacheObject::DEFAULT_DIR) {
 		$this->name = $name;
 		$this->path = rtrim($path, '\\/').'/';
 		$this->file = new File($this->path.$this->name.'.cache.php');
@@ -70,8 +69,8 @@ class CacheObject {
 	/**
 	 * Sets the data that should be cached.
 	 *
-	 * For more information on the allowed data types please refer to the documentation of the CacheObject::store() method.
-	 * No checks will be made!
+	 * For more information on the allowed data types please refer to the documentation of the
+	 * CacheObject::save() method. No further checks will be made!
 	 *
 	 * @param	mixed	Data to be cached
 	 * @see		CacheObject::save()
@@ -87,7 +86,8 @@ class CacheObject {
 	 * Specify an negative integer or null (not zero!) to disable the expiry of the cache.
 	 *
 	 * It is recommended to call this function directly after object creation.
-	 * If you use this function after you have retrieved data, this setting won't have any effect on the loaded data.
+	 * If you use this function after you have retrieved data, this setting won't have any
+	 * effect on the loaded data.
 	 *
 	 * @param int Expiry time in seconds or null
 	 */
@@ -119,10 +119,10 @@ class CacheObject {
 	/**
 	 * Returns whether the file can be rebuilt or not.
 	 *
-	 * Normally a file can't be rebuilt if the data has been set only via CoreObject::set() method as the
-	 * context of the usage is missing and there is no built-in data retrieval method. If there is data
-	 * retrival logic implemented (this is normally the case if CacheItem is extended and the load method
-	 * implemented) you can normally rebuild a class.
+	 * A cache file can't be rebuilt if the data has been set only via CoreObject::set() method
+	 * as the context of the usage is missing and there is no built-in data retrieval method. If
+	 * there is data retrival logic implemented (this is normally the case if CacheItem is extended
+	 * and the load method implemented) you can normally rebuild a class.
 	 *
 	 * @return	boolean	true if the file can be rebuilt without context
 	 */
@@ -194,8 +194,9 @@ class CacheObject {
 	/**
 	 * Checks whether the cache exists or not.
 	 *
-	 * This function returns only true if the cache file exists in the filesystem and the file size is greater than 0.
-	 * In addition the cache has to be up to date, if the file is expired the cache file will be deleted and false will be returned.
+	 * This function returns only true if the cache file exists in the filesystem and the file size
+	 * is greater than 0. In addition the cache has to be up to date, if the file is expired the
+	 * cache file will be deleted and false will be returned.
 	 *
 	 * @return boolean Returns true if the cache file is not expired, exists in the file system and has a file size larger than zero, in all other cases false will be returned.
 	 * @see CacheObject::isExpired()
