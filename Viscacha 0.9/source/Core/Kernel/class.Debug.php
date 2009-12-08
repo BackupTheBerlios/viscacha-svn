@@ -113,7 +113,7 @@ class Debug {
 	 */
 	public function add($text){
 		$text = str_replace("\t", "    ", $text);
-		$text = str_replace(array("\r\n", "\n", "\r"), "\t", $text);
+		$text = String::replaceLineBreak($text, "\t");
 		$text = '['.gmdate('r').'] '.$text;
 		$this->logs[] = $text;
 	}

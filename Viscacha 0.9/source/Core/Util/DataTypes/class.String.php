@@ -40,17 +40,51 @@
  */
 abstract class String {
 
+	const WORD_SEPARATOR = '\.\,;:\+!\?\_\|\s"\'\#\[\]\%\{\}\(\)\/\\';
+
 	public static function replaceLineBreak($string, $replace) {
 		return str_replace(array("\r\n", "\n", "\r"), $replace, $string);
+	}
+
+	/**
+	 * Splits a string into an array.
+	 *
+	 * The string is splitted at every line break and additionally all whitespaces are trimmed (this
+	 * is the same as applying trim() to every element of the array). Empty lines/array elements are
+	 * removed from the array. If the parameter is not a string or an error occurs null will be
+	 * returned.
+	 *
+	 * @param string String to split
+	 * @return array Splitted string as array or null on failure
+	 * @see trim()
+	 */
+	public static function toTrimmedArray($text) {
+		if (!is_string($text)) {
+			return null;
+		}
+		else {
+			return preg_split("~[ \t\0\x0B]*[\r\n]+[ \t\0\x0B]*~", $text, -1, PREG_SPLIT_NO_EMPTY);
+		}
 	}
 
 	public static function isHash($string) {
 		return (bool) preg_match("/^[a-f\d]{32}$/i", $string);
 	}
 
+	/**
+	 * Splits a text into an array containing the words.
+	 *
+	 * @param string Text to split
+	 * @return array Array wirh words or null on failure
+	 * @see String::WORD_SEPARATOR
+	 */
 	public static function splitWords($text) {
-		$word_seperator = "\\.\\,;:\\+!\\?\\_\\|\s\"'\\#\\[\\]\\%\\{\\}\\(\\)\\/\\\\";
-		return preg_split('/['.$word_seperator.']+?/', $text, -1, PREG_SPLIT_NO_EMPTY);
+		if (!is_string($text)) {
+			return null;
+		}
+		else {
+			return preg_split('~['.String::WORD_SEPARATOR.']+?~', $text, -1, PREG_SPLIT_NO_EMPTY);
+		}
 	}
 
 }

@@ -116,9 +116,9 @@ abstract class Database {
 	protected $null;
 
 	/**
-	 * Constructs that Database class and sets some default values.
+	 * Constructs the Database class and sets some default values.
 	 *
-	 * Auto-commit is off at the beginning!<br />
+	 * Auto-commit is off at the beginning!
 	 * The log file for debugging will be saved in data/logs/database.log.
 	 */
 	public function __construct() {
@@ -159,7 +159,7 @@ abstract class Database {
 	}
 
 	/**
-	 * Returns the number of rows affected by the last INSERT, UPDATE, or DELETE query.
+	 * Returns the number of rows affected by the last INSERT, UPDATE or DELETE query.
 	 *
 	 * If the last query was invalid, this function will return -1.
 	 *
@@ -219,8 +219,8 @@ abstract class Database {
 	 * while the socket parameter specifies the socket or named pipe that should be used.
 	 * If you specify a port and a socket, only the port will be used.
 	 *
-	 * Note: The database will not be selected! You have to call selectDB() before you can work with
-	 * the database.
+	 * Note: The database will not be selected! You have to call Database::selectDB() before you can
+	 * work with the database.
 	 *
 	 * The charset should be set to UTF-8 in the best case.
 	 *
@@ -270,9 +270,9 @@ abstract class Database {
 	 * You can either specify an string to be escaped or an array.
 	 * Each array element will be escaped recursively.
 	 *
-	 * @param mixed String or array to escape
-	 * @return mixed Escaped string or array
-	 **/
+	 * @param string|array String or array to escape
+	 * @return string|array Escaped string or array
+	 */
 	public abstract function escapeString($data);
 
 	/**
@@ -289,7 +289,7 @@ abstract class Database {
 	 * @param resource Result set
 	 * @param string Field to use for the keys or null to get an enumerated array
 	 * @return array All results in a multimensional associative array
-	 **/
+	 */
 	public function fetchAll($result = null, $key = null) {
 		$cache = array();
 		$error = false;
@@ -337,11 +337,13 @@ abstract class Database {
 	/**
 	 * Get a result row as an enumerated array.
 	 *
-	 * Fetches one row of data from the result set represented by result and returns it as an enumerated array,
-	 * where each column is stored in an array offset starting from 0 (zero). Each subsequent call to the
-	 * function will return the next row within the result set, or null if there are no more rows.
+	 * Fetches one row of data from the result set represented by result and returns it as an
+	 * enumerated array, where each column is stored in an array offset starting from 0 (zero). 
+	 * Each subsequent call to the function will return the next row within the result set, or 
+	 * null if there are no more rows. If the result set parameter is not specified, the last
+	 * result will be used.
 	 *
-	 * @param resource Result set
+	 * @param mixed Result set
 	 * @return array Enumerated array or null
 	 **/
 	public abstract function fetchNum($result = null);
@@ -349,13 +351,15 @@ abstract class Database {
 	/**
 	 * Returns the current row of a result set as an object.
 	 *
-	 * Returns the current row result set as an object where the attributes of the object represent the names
-	 * of the fields found within the result set. If no more rows exist in the current result set, null is returned.
-	 * If two or more columns of the result have the same field names, the last column will take precedence.
+	 * Returns the current row result set as an object where the attributes of the object represent
+	 * the names of the fields found within the result set. If no more rows exist in the current
+	 * result set, null is returned. If two or more columns of the result have the same field names,
+	 * the last column will take precedence. If the result set parameter is not specified, the last
+	 * result will be used.
 	 *
-	 * @param resource Result set
+	 * @param mixed Result set
 	 * @return object Object or null
-	 **/
+	 */
 	public abstract function fetchObject($result = null);
 
 	/**
@@ -370,7 +374,7 @@ abstract class Database {
 	 * @param mixed Result set (resource) or query (string) or null
 	 * @return mixed First field in first row or null
 	 * @todo Replace Core::throwError with Exception
-	 **/
+	 */
 	public function fetchOne($result = null) {
 		if ($result == null) {
 			$result = $this->result;
@@ -394,8 +398,10 @@ abstract class Database {
 	/**
 	 * Frees the memory associated with a result.
 	 *
+	 * If the result set parameter is not specified, the last result will be used.
+	 *
 	 * @param resource Result set
-	 **/
+	 */
 	public abstract function freeResults($result = null);
 
 	/**
@@ -404,9 +410,9 @@ abstract class Database {
 	 * If offset is = -1: all rows will be returned at once and $limit parameter won't be used.<br />
 	 * Is offset is >= 0: all rows starting at row $offset until we reached the row ($offset + $limit).
 	 *
-	 * @param string $table Table name
-	 * @param int $offset Offset to begin at
-	 * @param int $limit Limit that is used per call
+	 * @param string Table name
+	 * @param int Offset to begin with
+	 * @param int Limit that is used per call
 	 * @return string Insert statements
 	 */
 	public abstract function getData($table, $offset = -1, $limit = 1000);
@@ -424,7 +430,7 @@ abstract class Database {
 	 * Returns the prefix of the tables.
 	 *
 	 * @return string Prefix
-	 **/
+	 */
 	public function getPrefix(){
 		return $this->pre;
 	}
@@ -432,11 +438,12 @@ abstract class Database {
 	/**
 	 * Returns the create statement for creating the specified table.
 	 *
-	 * Turning the first parameter to true, "DROP TABLE IF EXISTS" statements will be added before the create statement.
+	 * Set the second parameter to true to add "DROP TABLE IF EXISTS" statements before the 
+	 * create statement.
 	 *
 	 * @param string Name of the table
 	 * @param boolean Add drop statements (default: false, no drop statements)
-	 * @return string Create statement or false
+	 * @return string Create statement or null
 	 */
 	public abstract function getStructure($table, $drop = false);
 
@@ -446,7 +453,7 @@ abstract class Database {
 	 * null is returned on failure or when there was no last INSERT query.
 	 *
 	 * @return int ID or null
-	 **/
+	 */
 	public abstract function insertID();
 
 	/**
@@ -480,7 +487,7 @@ abstract class Database {
 	 * @param string Table
 	 * @param string Database or null
 	 * @return array Array containing all fields of a table
-	 **/
+	 */
 	public function listFields($table, $database = null);
 
 	/**
@@ -506,10 +513,6 @@ abstract class Database {
 
 	/**
 	 * Gets the number of rows in a result.
-	 *
-	 * The use depends on whether you use buffered or unbuffered result sets.
-	 * In case you use unbuffered resultsets this function will not correct the
-	 * correct number of rows until all the rows in the result have been retrieved.
 	 *
 	 * @param resource Result set
 	 * @return int Number of rows
@@ -616,12 +619,13 @@ abstract class Database {
 	/**
 	 * Performs a raw query on the database.
 	 *
-	 * On failure a QueryExcpetion will be thrown.
+	 * Returns the result set for a select statement, a boolean for other statements (true on
+	 * success, false on failure). On failure a QueryExcpetion will be thrown.
 	 *
 	 * @throws QueryException
-	 * @param string Single raw query
-	 * @return mixed Result set for a select statement, a boolean for other statements (true on success, false on failure).
-	 **/
+	 * @param string Single raw Query
+	 * @return mixed Result set for a select statement, a boolean for other statements.
+	 */
 	public abstract function rawQuery($query);
 
 	protected function replaceQueryPlaceholder($matches) {
@@ -672,30 +676,30 @@ abstract class Database {
 	 *
 	 * @param resource Result set
 	 * @return boolean Returns true on success, false on failure
-	 **/
+	 */
 	public abstract function resetResult($result = null);
 
 	/**
 	 * Rolls back current transaction.
 	 *
 	 * @return boolean Returns TRUE on success or FALSE on failure.
-	 **/
+	 */
 	public abstract function rollback();
 
 	/**
-	 * Selects the default database to be used when performing queries against the database connection.
+	 * Select the default database to use when performing queries against the database.
 	 *
 	 * @param string Database name
 	 * @param string Prefix for tables
 	 * @return boolean true on success, false on failure
-	 **/
+	 */
 	public abstract function selectDB($database, $prefix = '');
 
 	/**
 	 * Sets the prefix of the tables.
 	 *
 	 * @param string Prefix
-	 **/
+	 */
 	public function setPrefix($prefix){
 		$this->pre = $prefix;
 	}
@@ -704,7 +708,7 @@ abstract class Database {
 	 * Returns a string containing which database system (database abstraction layer) is used.
 	 *
 	 * @return string Database System
-	 **/
+	 */
 	public function system() {
 		return $this->system;
 	}
@@ -713,7 +717,7 @@ abstract class Database {
 	 * Returns a string representing the version of the database server.
 	 *
 	 * @return string Version
-	 **/
+	 */
 	public abstract function version();
 
 }

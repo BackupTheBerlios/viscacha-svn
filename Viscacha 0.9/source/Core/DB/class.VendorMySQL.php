@@ -25,10 +25,12 @@
  * @license		http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License
  */
 
+Core::loadClass('Core.DB.Database');
+
 /**
  * Abstract class database, that has to be extended by all database drivers.
  *
- * Note: All data should be in UTF-8. Keep this in mind!
+ * {@inheritdoc}
  *
  * @package		Core
  * @subpackage	DB
@@ -39,23 +41,15 @@
 abstract class VendorMySQL extends Database {
 
 	/**
-	 * Constructs that Database class and sets some default values.
+	 * Constructs the Database class and sets some default values.
 	 *
-	 * Auto-commit is off at the beginning!<br />
-	 * The log file for debugging will be saved in data/logs/database.log.
+	 * {@inheritdoc}
 	 */
 	public function __construct() {
 		parent::__construct();
 		$this->vendor = 'MySQL';
 		$this->port = 3306;
 		$this->null = 'NULL';
-	}
-
-	/**
-	 * Disconnect from the database and roll back open transactions.
-	 */
-	public function __destruct() {
-		parent::__destruct();
 	}
 
 	/**
@@ -120,18 +114,26 @@ abstract class VendorMySQL extends Database {
     /**
      * Returns insert statements for the specified table.
      *
-     * If offset is = -1: all rows will be returned at once and $limit parameter won't be used.<br />
-     * Is offset is >= 0: all rows starting at row $offset until we reached the row ($offset + $limit).
+     * If offset is = -1: All rows will be returned at once and $limit parameter won't be used.
+     * Is offset is >= 0: Returns the number of rows specified with $limit starting at the row
+	 * specified in $offset.
      *
-     * @param string $table Table name
-     * @param int $offset Offset to begin at
-     * @param int $limit Limit that is used per call
+     * @param string Table name
+     * @param int Offset to begin with
+     * @param int Limit that is used per call
      * @return string Insert statements
      */
     public function getData($table, $offset = -1, $limit = 1000) {
-	    $table_data = $this->new_line. $this->commentdel.' Data: ' .$table . iif ($offset != -1, ' {'.$offset.', '.($offset+$limit).'}' ). "\n";
+	    $table_data = $this->new_line.$this->commentdel.' Data: '.$table.
+			($offset != -1 ? ' {'.$offset.', '.($offset+$limit).'}' : '').
+			"\n";
      	// Datensaetze vorhanden?
-     	$result = $this->rawQuery('SELECT * FROM '.chr(96).$table.chr(96).iif($offset >= 0, " LIMIT {$offset},{$limit}"), __LINE__, __FILE__);
+     	$result = $this->rawQuery(
+			'SELECT * FROM '.chr(96).$table.chr(96).
+				($offset >= 0 ? " LIMIT {$offset},{$limit}" : ''),
+			__LINE__,
+			__FILE__
+		);
   	    while ($select_result = $this->fetchAssoc($result)) {
       		// Result-Keys
       		$select_result_keys = array_keys($select_result);
@@ -148,7 +150,8 @@ abstract class VendorMySQL extends Database {
                 $table_value .= "'".$this->escapeString($select_result[$table_field])."'";
 	        }
 	        // Aktuelle Werte
-	        $table_data .= 'INSERT INTO '.chr(96).$table.chr(96).' (' .$table_structure. ') VALUES (' .$table_value. ');' ."\n";
+	        $table_data .= 'INSERT INTO '.chr(96).$table.chr(96).' ('.$table_structure.') '.
+						   'VALUES ('.$table_value.');'."\n";
 			unset($table_structure, $table_value);
   	    }
 		return trim($table_data);
@@ -157,13 +160,14 @@ abstract class VendorMySQL extends Database {
 	/**
 	 * Returns the create statement for creating the specified table.
 	 *
-	 * Turning the first parameter to true, "DROP TABLE IF EXISTS" statements will be added before the create statement.
+	 * Set the second parameter to true to add "DROP TABLE IF EXISTS" statements before the
+	 * create statement.
 	 *
 	 * After executing this method the MySQL option "SQL_QUOTE_SHOW_CREATE" is set to 1.
 	 *
 	 * @param string Name of the table
 	 * @param boolean Add drop statements (default: false, no drop statements)
-	 * @return string Create statement or false
+	 * @return string Create statement or null
 	 */
     public function getStructure($table, $drop = false) {
     	// Activate Quotes in sql names
@@ -179,7 +183,7 @@ abstract class VendorMySQL extends Database {
 		    return false;
 	    }
 		else {
-		    $table_data .= str_replace(array("\r\n", "\r", "\n"), "\n", $show_results[1]). ';' ."\n";
+			$table_data .= String::replaceLineBreak($show_results[1], "\n").';';
 		    return trim($table_data);
 		}
     }
@@ -233,9 +237,7 @@ abstract class VendorMySQL extends Database {
 	 */
 	public function multiQuery($query) {
 		$results = array();
-		$lines = str_replace("\r", "\n", $query);
-		$lines = explode("\n", $lines);
-		$lines = array_map("trim", $lines);
+		$lines = String::toTrimmedArray($query);
 		$query = '';
 		foreach ($lines as $line) {
 			$comment = substr($line, 0, 2);
@@ -269,7 +271,14 @@ abstract class VendorMySQL extends Database {
 		$this->inProgress = false;
 		return $this->rawQuery("ROLLBACK");
 	}
-	
+
+	/**
+	 * Executes a query for UTF-8 support.
+	 *
+	 * Executed query: <code>SET NAMES 'UTF8'</code>
+	 *
+	 * @see http://dev.mysql.com/doc/refman/5.0/en/charset-connection.html
+	 */
 	protected function setUTF8() {
 		// MySQL should	return UTF-8
 		$this->rawQuery("SET NAMES 'UTF8'");

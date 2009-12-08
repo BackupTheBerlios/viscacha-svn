@@ -25,7 +25,6 @@
  * @license		http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License
  */
 
-Core::loadClass('Core.DB.Database');
 Core::loadClass('Core.DB.VendorMySQL');
 
 /**
@@ -45,7 +44,8 @@ class ExtMySQL extends VendorMySQL {
 	/**
 	 * Initializes the class and the variables.
 	 *
-	 * No connection will be established. Use the methods connect() and selectDB() to open a connection.
+	 * No connection will be established. Use the methods ExtMySQL::connect() and
+	 * ExtMySQL::selectDB() to open a connection and select a database.
 	 */
 	public function __construct() {
 		parent::__construct();
@@ -53,14 +53,7 @@ class ExtMySQL extends VendorMySQL {
 	}
 
 	/**
-	 * Disconnect from the database and roll back open transactions.
-	 **/
-	public function __destruct() {
-		parent::__destruct();
-	}
-
-	/**
-	 * Returns the number of rows affected by the last INSERT, UPDATE, or DELETE query.
+	 * Returns the number of rows affected by the last INSERT, UPDATE or DELETE query.
 	 *
 	 * If the last query was invalid, this function will return -1.
 	 *
@@ -90,9 +83,10 @@ class ExtMySQL extends VendorMySQL {
 	 * Password: <empty><br>
 	 * Port: 3306<br>
 	 *
-	 * Note: The database will not be selected! You have to call selectDB() before you can work with the database.
+	 * Note: The database will not be selected! You have to call ExtMySQL::selectDB() before you can
+	 * work with the database.
 	 *
-	 * The charset is set to UTF-8 with <code>SET NAMES 'UTF8'</code>.
+	 * The charset is set to UTF-8 with VendorMySQL::setUTF8().
 	 *
 	 * @param string Host
 	 * @param string Username
@@ -101,7 +95,8 @@ class ExtMySQL extends VendorMySQL {
 	 * @param string Socket
 	 * @throws DatabaseException
 	 */
-	public function connect($username = null, $password = null, $host = null, $port = null, $socket = null) {
+	public function connect($username = null, $password = null, $host = null,
+							$port = null, $socket = null) {
 		$this->username = $username === null ? 'root' : $username;
 		$this->password = $password === null ? ''  : $password;
 		$this->host = $host === null ? 'localhost' : $host;
@@ -118,7 +113,10 @@ class ExtMySQL extends VendorMySQL {
 		$this->connection = @mysql_connect($host, $this->username, $this->password);
 
 		if ($this->hasConnection() == false) {
-			throw new DatabaseException('Could not connect to database! Pleasy try again later or check the database settings!');
+			throw new DatabaseException(
+				'Could not connect to database! '.
+					'Pleasy try again later or check the database settings!'
+			);
 		}
 		else {
 			$this->setUTF8();
@@ -131,7 +129,7 @@ class ExtMySQL extends VendorMySQL {
 	 * If no connection is open TRUE will be returned.
 	 *
 	 * @return boolean true on success, false on failure
-	 **/
+	 */
 	public function disconnect() {
 		if ($this->hasConnection() == false) {
 			return true;
@@ -143,7 +141,7 @@ class ExtMySQL extends VendorMySQL {
 	 * Returns an internal error message for the last error.
 	 *
 	 * @return string Error message
-	 **/
+	 */
 	public function error() {
 		if ($this->hasConnection() == false) {
 			return null;
@@ -155,7 +153,7 @@ class ExtMySQL extends VendorMySQL {
 	 * Returns an internal error number for the last error.
 	 *
 	 * @return int Error number
-	 **/
+	 */
 	public function errno() {
 		if ($this->hasConnection() == false) {
 			return 0;
@@ -169,8 +167,8 @@ class ExtMySQL extends VendorMySQL {
 	 * You can either specify an string to be escaped or an array.
 	 * Each array element will be escaped recursively.
 	 *
-	 * @param mixed String or array to escape
-	 * @return mixed Escaped string or array
+	 * @param string|array String or array to escape
+	 * @return string|array Escaped string or array
 	 **/
 	public function escapeString($data) {
 		if (is_array($data) == true) {
@@ -204,11 +202,7 @@ class ExtMySQL extends VendorMySQL {
 	/**
 	 * Get a result row as an enumerated array.
 	 *
-	 * Fetches one row of data from the result set represented by result and returns it as an enumerated array,
-	 * where each column is stored in an array offset starting from 0 (zero). Each subsequent call to the
-	 * function will return the next row within the result set, or null if there are no more rows.
-	 *
-	 * If the result set parameter is not specified, the last result will be used.
+	 * {@inheritdoc}
 	 *
 	 * @param resource Result set
 	 * @return array Enumerated array or null
@@ -217,17 +211,14 @@ class ExtMySQL extends VendorMySQL {
 		if ($result == null) {
 			$result = $this->result;
 		}
-		return mysql_fetch_row($result);
+		$row = mysql_fetch_row($result);
+		return ($row !== false) ? $row : null;
 	}
 
 	/**
 	 * Returns the current row of a result set as an object.
 	 *
-	 * Returns the current row result set as an object where the attributes of the object represent the names
-	 * of the fields found within the result set. If no more rows exist in the current result set, null is returned.
-	 * If two or more columns of the result have the same field names, the last column will take precedence.
-	 *
-	 * If the result set parameter is not specified, the last result will be used.
+	 * {@inheritdoc}
 	 *
 	 * @param resource Result set
 	 * @return object Object or null
@@ -236,7 +227,8 @@ class ExtMySQL extends VendorMySQL {
 		if ($result == null) {
 			$result = $this->result;
 		}
-		return mysql_fetch_object($result);
+		$row = mysql_fetch_object($result);
+		return ($row !== false) ? $row : null;
 	}
 
 	/**
@@ -261,7 +253,7 @@ class ExtMySQL extends VendorMySQL {
 	 * null is returned on failure or when there was no last INSERT query.
 	 *
 	 * @return int ID or null
-	 **/
+	 */
 	public function insertID() {
 		$id = mysql_insert_id($this->connection);
 		return String::isNatural($id) ? $id : null;
@@ -286,11 +278,7 @@ class ExtMySQL extends VendorMySQL {
 	}
 
 	/**
-	 * Gets the number of rows in a result.
-	 *
-	 * The use depends on whether you use buffered or unbuffered result sets.
-	 * In case you use unbuffered resultsets this function will not correct the
-	 * correct number of rows until all the rows in the result have been retrieved.
+	 * Gets the number of rows in a result set.
 	 *
 	 * @param resource Result set
 	 * @return int Number of rows
@@ -305,12 +293,13 @@ class ExtMySQL extends VendorMySQL {
 	/**
 	 * Performs a raw query on the database.
 	 *
-	 * On failure a QueryExcpetion will be thrown.
+	 * Returns the result set for a select statement, a boolean for other statements (true on
+	 * success, false on failure). On failure a QueryExcpetion will be thrown.
 	 *
 	 * @throws QueryException
 	 * @param string Single raw Query
-	 * @return mixed Result set for a select statement, a boolean for other statements (true on success, false on failure)
-	 **/
+	 * @return mixed Result set for a select statement, a boolean for other statements.
+	 */
 	public function rawQuery($query){
 		$this->benchmark['count']++;
 
@@ -334,7 +323,7 @@ class ExtMySQL extends VendorMySQL {
 	 *
 	 * @param resource Result set
 	 * @return boolean Returns true on success, false on failure
-	 **/
+	 */
 	public function resetResult($result = null) {
 		if ($result == null) {
 			$result = $this->result;
@@ -343,13 +332,13 @@ class ExtMySQL extends VendorMySQL {
 	}
 
 	/**
-	 * Selects the default database to be used when performing queries against the database connection.
+	 * Select the default database to use when performing queries against the database.
 	 *
 	 * @param string Database name
 	 * @param string Prefix for tables
 	 * @return boolean true on success, false on failure
-	 **/
-	public function selectDB($database, $prefix = '') {
+	 */
+	public function selectDB($database, $prefix = null) {
 		$this->database = $database;
 		$this->pre = $prefix;
 		return @mysql_select_db($this->database, $this->connection);
@@ -359,7 +348,7 @@ class ExtMySQL extends VendorMySQL {
 	 * Returns a string representing the version of the database server.
 	 *
 	 * @return string Version or an empty string on failure
-	 **/
+	 */
 	public function version() {
 		$version = @mysql_get_server_info();
 		return empty($version) ? '' : $version;

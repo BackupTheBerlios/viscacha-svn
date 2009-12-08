@@ -434,8 +434,8 @@ class MimeType {
 	 */
 	public static function getExtensions($mimeType) {
 		$mimeType = strtolower($mimeType);
-		if (isset(self::data[$mimeType]) == true && count(self::data[$mimeType]) > 0) {
-			return self::data[$mimeType];
+		if (isset(self::$data[$mimeType]) == true && count(self::$data[$mimeType]) > 0) {
+			return self::$data[$mimeType];
 		}
 		else {
 			return null;
