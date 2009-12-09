@@ -431,7 +431,7 @@ abstract class Database {
 	 *
 	 * @return string Prefix
 	 */
-	public function getPrefix(){
+	public function getPrefix() {
 		return $this->pre;
 	}
 
@@ -482,18 +482,15 @@ abstract class Database {
 	/**
 	 * Returns an array containing all fields of the specified table.
 	 *
-	 * If no database is specified, the database will be read from the configuration file.
-	 *
 	 * @param string Table
-	 * @param string Database or null
 	 * @return array Array containing all fields of a table
 	 */
-	public function listFields($table, $database = null);
+	public function listFields($table);
 
 	/**
 	 * Returns an array containing all tables of the specified database.
 	 *
-	 * If no database is specified, the database will be read from the configuration file.
+	 * If no database is specified, the currently selected database will be used.
 	 *
 	 * @param string Database or null
 	 * @return array Array containing all tables of a database
@@ -516,7 +513,8 @@ abstract class Database {
 	 *
 	 * @param resource Result set
 	 * @return int Number of rows
-	 **/
+	 * @todo Replace error with exception
+	 */
 	public abstract function numRows($result = null);
 
 	protected function parseFloat($var) {
@@ -527,7 +525,9 @@ abstract class Database {
 	//@todo Replace error with exception
 	protected function parseInt($var) {
 		if (!is_string($var) && !is_numeric($var)) {
-			Core::throwError('Database::parseInt() can only convert strings and numerical data to integers.');
+			Core::throwError(
+				'Database::parseInt() can only convert strings and numerical data to integers.'
+			);
 		}
 		if (is_string($var)) {
 			$var = trim($var);
@@ -566,7 +566,11 @@ abstract class Database {
 		$query = str_ireplace(array('<p>', '<prefix>'), $this->pre, $query);
 		if (count($data) > 0) {
 			$this->tempData = $data;
-			$query = preg_replace_callback('~<([a-zA-Z0-9_\-\.]+)(:([a-z]+(\[\])?))?>~', array($this, 'replaceQueryPlaceholder'), $query);
+			$query = preg_replace_callback(
+				'~<([a-zA-Z0-9_\-\.]+)(:([a-z]+(\[\])?))?>~',
+				array($this, 'replaceQueryPlaceholder'),
+				$query
+			);
 			$this->tempData = null;
 		}
 		return $query;
@@ -575,14 +579,15 @@ abstract class Database {
 	/**
 	 * Performs a secure query on the database.
 	 *
-	 * On failure a QueryExcpetion will be thrown.
+	 * Returns an result set for a select statement or a boolean for other statements (true on
+	 * success or false on failure). Additionally on failure a QueryExcpetion will be thrown.
 	 * For information about the parameters see the method prepareQuery().
 	 *
-	 * @throws QueryException
-	 * @see DbDriver::prepareQuery()
 	 * @param string Single query
 	 * @param array Data for the query
-	 * @return mixed Result set for a select statement, a boolean for other statements (true on success, false on failure).
+	 * @throws QueryException
+	 * @see Database::prepareQuery()
+	 * @return mixed Result set for a select statement, a boolean for other statements.
 	 **/
 	public function query($query, $data = array()) {
 		return $this->rawQuery($this->prepareQuery($query, $data));
@@ -700,7 +705,7 @@ abstract class Database {
 	 *
 	 * @param string Prefix
 	 */
-	public function setPrefix($prefix){
+	public function setPrefix($prefix) {
 		$this->pre = $prefix;
 	}
 

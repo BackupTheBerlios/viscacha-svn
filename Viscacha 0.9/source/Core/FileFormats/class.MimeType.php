@@ -470,7 +470,7 @@ class MimeType {
 		}
 		if ($mimeType === false) {
 			$ext = File::getExtension($file);
-			$mimeType = Arrays::find(self::data, $ext);
+			$mimeType = Arrays::find(self::$data, $ext);
 		}
 		return ($mimeType === false) ? null : $mimeType;
 	}

@@ -43,7 +43,7 @@ class Debug {
 	 */
 	private $file;
 	/**
-	 * Log data for saving to the file.
+	 * Log data to save to the file.
 	 * @var array
 	 */
 	private $logs;
@@ -61,27 +61,23 @@ class Debug {
 	/**
 	 * Constructs a new Debug-Object.
 	 *
-	 * The first parameter has to be the file name with extension, but without directory.
-	 * Standard value is null, then the filename will be "internal.log".
-	 * The second parameter has to be a valid and existing directory with trailing slash.
-	 * Standard value is also null, then the directory will be "data/logs/" (make sure that it is writable).
-	 * If the specified file doesn't exist, it will created.
-	 * If it is not possible to create a file nn Exception will be thrown.
+	 * The first parameter has to be the file name with extension (standard: internal.log), but
+	 * without directory. The second parameter has to be a valid and existing directory path with
+	 * trainling directory separator (make sure the directory is writable). Standard value for this
+	 * paramteer is null, the directory will be "data/logs/". If the specified file doesn't exist,
+	 * it will created. If it is not possible to create a file a CoreException will be thrown.
 	 *
 	 * @param string File for saving the logdata or null (filename is internal.log then)
 	 * @param string Directory for saving the logfile or null (directory is data/logs/ then)
 	 * @throws Exception
 	 */
-	public function __construct($file = null, $dir = null) {
+	public function __construct($file = 'internal.log', $dir = null) {
 		if ($dir == null || is_dir($dir) == false) {
 			$dir = 'data/logs/';
 		}
-		if ($file == null) {
-			$file = 'internal.log';
-		}
 		$this->file = new File($dir.basename($file));
 		if ($this->file->create() == false) {
-			throw new Exception('Could not create log file in method Debug::__construct().');
+			throw new CoreException('Could not create log file in method Debug::__construct().');
 		}
 		if ($this->file->readable() == false || $this->file->writable() == false) {
 			$writable = new CHMOD(666);
@@ -111,7 +107,7 @@ class Debug {
 	 *
 	 * @param string Things to write to the logfile
 	 */
-	public function add($text){
+	public function add($text) {
 		$text = str_replace("\t", "    ", $text);
 		$text = String::replaceLineBreak($text, "\t");
 		$text = '['.gmdate('r').'] '.$text;
@@ -151,10 +147,9 @@ class Debug {
 	 * @return array Content of log file plus current log array
 	 */
 	public function getLogs() {
-		$array = array();
 		$benchmarks = array();
 		$array = $this->file->read(FILE_LINES_TRIM);
-		if (is_null($array)) {
+		if ($array == null) {
 			$array = array();
 		}
 		$benchmarks = $this->getBenchmarkStringArray();
@@ -173,9 +168,8 @@ class Debug {
 	 * @return array Content of log file
 	 */
 	public function clearFile() {
-		$array = array();
 		$array = $this->file->read(FILE_LINES_TRIM);
-		if (is_null($array)) {
+		if ($array == null) {
 			$array = array();
 		}
 		if ($this->file->truncate() == false) {
@@ -238,7 +232,7 @@ class Debug {
 		if (array_key_exists($name, $this->temp) == true) {
 			$this->stopClock($name);
 		}
-		if (is_null($name)) {
+		if ($name == null) {
 			return $this->benchmarks;
 		}
 		elseif (array_key_exists($name, $this->benchmarks) == true) {

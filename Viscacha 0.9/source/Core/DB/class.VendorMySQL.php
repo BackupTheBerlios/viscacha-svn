@@ -105,57 +105,60 @@ abstract class VendorMySQL extends Database {
 	public function createStatement($table) {
 		$this->query('SET SQL_QUOTE_SHOW_CREATE = 1');
 
-    	$result = $this->query("SHOW CREATE TABLE `{$table}`", __LINE__, __FILE__);
-    	$show_results = $this->fetchNum($result);
+		$result = $this->query("SHOW CREATE TABLE `{$table}`", __LINE__, __FILE__);
+		$show_results = $this->fetchNum($result);
 
-    	return $show_results[1];
+		return $show_results[1];
 	}
 
-    /**
-     * Returns insert statements for the specified table.
-     *
-     * If offset is = -1: All rows will be returned at once and $limit parameter won't be used.
-     * Is offset is >= 0: Returns the number of rows specified with $limit starting at the row
+	/**
+	 * Returns insert statements for the specified table.
+	 *
+	 * If offset is = -1: All rows will be returned at once and $limit parameter won't be used.
+	 * Is offset is >= 0: Returns the number of rows specified with $limit starting at the row
 	 * specified in $offset.
-     *
-     * @param string Table name
-     * @param int Offset to begin with
-     * @param int Limit that is used per call
-     * @return string Insert statements
-     */
-    public function getData($table, $offset = -1, $limit = 1000) {
-	    $table_data = $this->new_line.$this->commentdel.' Data: '.$table.
+	 *
+	 * @param string Table name
+	 * @param int Offset to begin with
+	 * @param int Limit that is used per call
+	 * @return string Insert statements
+	 */
+	public function getData($table, $offset = -1, $limit = 1000) {
+		$table_data = $this->new_line.$this->commentdel.' Data: '.$table.
 			($offset != -1 ? ' {'.$offset.', '.($offset+$limit).'}' : '').
 			"\n";
-     	// Datensaetze vorhanden?
-     	$result = $this->rawQuery(
+	 	// Datensaetze vorhanden?
+	 	$result = $this->rawQuery(
 			'SELECT * FROM '.chr(96).$table.chr(96).
 				($offset >= 0 ? " LIMIT {$offset},{$limit}" : ''),
 			__LINE__,
 			__FILE__
 		);
-  	    while ($select_result = $this->fetchAssoc($result)) {
-      		// Result-Keys
-      		$select_result_keys = array_keys($select_result);
-      		foreach ($select_result_keys as $table_field) {
-	      		// Struktur & Werte der Tabelle
-	      		if (isset($table_structure)) {
-	          		$table_structure .= ', ';
-	          		$table_value .= ', ';
-	      		}
-	      		else {
-		            $table_structure = $table_value = '';
-	            }
-                $table_structure .= chr(96).$table_field.chr(96);
-                $table_value .= "'".$this->escapeString($select_result[$table_field])."'";
-	        }
-	        // Aktuelle Werte
-	        $table_data .= 'INSERT INTO '.chr(96).$table.chr(96).' ('.$table_structure.') '.
+  		while ($select_result = $this->fetchAssoc($result)) {
+	  		// Result-Keys
+			$table_structure = '';
+			$table_value = '';
+	  		$select_result_keys = array_keys($select_result);
+	  		foreach ($select_result_keys as $table_field) {
+		  		// Struktur & Werte der Tabelle
+		  		if (isset($table_structure)) {
+			  		$table_structure .= ', ';
+			  		$table_value .= ', ';
+		  		}
+		  		else {
+					$table_structure = '';
+					$table_value = '';
+				}
+				$table_structure .= chr(96).$table_field.chr(96);
+				$table_value .= "'".$this->escapeString($select_result[$table_field])."'";
+			}
+			// Aktuelle Werte
+			$table_data .= 'INSERT INTO '.chr(96).$table.chr(96).' ('.$table_structure.') '.
 						   'VALUES ('.$table_value.');'."\n";
 			unset($table_structure, $table_value);
-  	    }
+  		}
 		return trim($table_data);
-    }
+	}
 
 	/**
 	 * Returns the create statement for creating the specified table.
@@ -169,35 +172,32 @@ abstract class VendorMySQL extends Database {
 	 * @param boolean Add drop statements (default: false, no drop statements)
 	 * @return string Create statement or null
 	 */
-    public function getStructure($table, $drop = false) {
-    	// Activate Quotes in sql names
-    	$this->rawQuery('SET SQL_QUOTE_SHOW_CREATE = 1');
+	public function getStructure($table, $drop = false) {
+		// Activate Quotes in sql names
+		$this->rawQuery('SET SQL_QUOTE_SHOW_CREATE = 1');
 
-    	$table_data = '';
-        if ($drop == true) {
-	        $table_data .= 'DROP TABLE IF EXISTS '.chr(96).$table.chr(96).';' ."\n";
-	    }
-	    $result = $this->rawQuery('SHOW CREATE TABLE '.chr(96).$table.chr(96));
-	    $show_results = $this->fetchNum($result);
-	    if (!$this->isResultSet($show_results)) {
-		    return false;
-	    }
+		$table_data = '';
+		if ($drop == true) {
+			$table_data .= 'DROP TABLE IF EXISTS '.chr(96).$table.chr(96).';' ."\n";
+		}
+		$result = $this->rawQuery('SHOW CREATE TABLE '.chr(96).$table.chr(96));
+		$show_results = $this->fetchNum($result);
+		if (!$this->isResultSet($show_results)) {
+			return false;
+		}
 		else {
 			$table_data .= String::replaceLineBreak($show_results[1], "\n").';';
-		    return trim($table_data);
+			return trim($table_data);
 		}
-    }
+	}
 
 	/**
 	 * Returns an array containing all fields of the specified table.
 	 *
-	 * If no database is specified, the database will be read from the configuration file.
-	 *
 	 * @param string Table
-	 * @param string Database or null
 	 * @return array Array containing all fields of a table
 	 */
-	public function listFields($table, $database = null) {
+	public function listFields($table) {
 		$result = $this->query("SHOW COLUMNS FROM `{$table}`", __LINE__, __FILE__);
 		$columns = array();
 		while ($row = $this->fetch_num($result)) {
@@ -209,7 +209,7 @@ abstract class VendorMySQL extends Database {
 	/**
 	 * Returns an array containing all tables of the specified database.
 	 *
-	 * If no database is specified, the database will be read from the configuration file.
+	 * If no database is specified, the currently selected database will be used.
 	 *
 	 * @param string Database or null
 	 * @return array Array containing all tables of a database

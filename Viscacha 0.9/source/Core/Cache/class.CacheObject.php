@@ -198,7 +198,7 @@ class CacheObject {
 	 * is greater than 0. In addition the cache has to be up to date, if the file is expired the
 	 * cache file will be deleted and false will be returned.
 	 *
-	 * @return boolean Returns true if the cache file is not expired, exists in the file system and has a file size larger than zero, in all other cases false will be returned.
+	 * @return boolean Returns boolean true if the cache file is not expired, not empty and exists
 	 * @see CacheObject::isExpired()
 	 */
 	protected function exists() {

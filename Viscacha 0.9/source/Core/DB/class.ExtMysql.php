@@ -172,7 +172,7 @@ class ExtMySQL extends VendorMySQL {
 	 **/
 	public function escapeString($data) {
 		if (is_array($data) == true) {
-			foreach($data as $key => $value){
+			foreach($data as $key => $value) {
 				$data[$key] = $this->escapeString($value);
 			}
 		}
@@ -264,7 +264,7 @@ class ExtMySQL extends VendorMySQL {
 	 *
 	 * @return boolean
 	 */
-	function hasConnection(){
+	public function hasConnection() {
 		return is_resource($this->connection);
 	}
 
@@ -273,7 +273,7 @@ class ExtMySQL extends VendorMySQL {
 	 *
 	 * @return boolean
 	 */
-	function isResultSet($result){
+	public function isResultSet($result) {
 		return is_resource($result);
 	}
 
@@ -300,7 +300,7 @@ class ExtMySQL extends VendorMySQL {
 	 * @param string Single raw Query
 	 * @return mixed Result set for a select statement, a boolean for other statements.
 	 */
-	public function rawQuery($query){
+	public function rawQuery($query) {
 		$this->benchmark['count']++;
 
 		$this->debug->startClock($query);

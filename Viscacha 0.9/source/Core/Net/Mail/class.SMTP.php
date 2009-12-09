@@ -129,11 +129,13 @@ class SMTP {
 		}
 
 		// connect to the smtp server
-		$this->smtp_conn = @fsockopen($host, // the host of the server
-		$port, // the port to use
-		$errno, // error number if any
-		$errstr, // error message if any
-		$tval); // give up after ? secs
+		$this->smtp_conn = @fsockopen(
+			$host, // the host of the server
+			$port, // the port to use
+			$errno, // error number if any
+			$errstr, // error message if any
+			$tval // give up after ? secs
+		);
 		// verify we connected properly
 		if (empty($this->smtp_conn)) {
 			$this->error = array(
@@ -149,7 +151,7 @@ class SMTP {
 
 		// SMTP server can take longer to respond, give longer timeout for first read
 		// Windows does not have support for this timeout function
-		if (substr(PHP_OS, 0, 3) != "WIN") {
+		if (System::getOS() != System::WINDOWS) {
 			socket_set_timeout($this->smtp_conn, $tval, 0);
 		}
 
@@ -173,7 +175,7 @@ class SMTP {
 	 * @return bool success
 	 */
 	public function StartTLS() {
-		$this->error = null; # to avoid confusion
+		$this->error = null; // to avoid confusion
 
 		if (!$this->connected()) {
 			$this->error = array("error" => "Called StartTLS() without being connected");
@@ -375,8 +377,7 @@ class SMTP {
 		 */
 
 		// normalize the line breaks so we know the explode works
-		$msg_data = str_replace("\r\n", "\n", $msg_data);
-		$msg_data = str_replace("\r", "\n", $msg_data);
+		$msg_data = String::replaceLineBreak($msg_data, "\n");
 		$lines = explode("\n", $msg_data);
 
 		/* we need to find a good way to determine is headers are
