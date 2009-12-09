@@ -138,7 +138,8 @@ class POP3 {
 	 * @param string $username
 	 * @param string $password
 	 */
-	public function Authorise($host, $port = false, $tval = false, $username, $password, $debug_level = 0) {
+	public function Authorise($host, $port = false, $tval = false, $username, $password,
+							  $debug_level = 0) {
 		$this->host = $host;
 
 		//  If no port value is passed, retrieve it
@@ -206,11 +207,13 @@ class POP3 {
 		set_error_handler(array(&$this, 'catchWarning'));
 
 		//  Connect to the POP3 server
-		$this->pop_conn = fsockopen($host, //  POP3 Host
-		$port, //  Port #
-		$errno, //  Error Number
-		$errstr, //  Error Message
-		$tval); //  Timeout (seconds)
+		$this->pop_conn = fsockopen(
+			$host, //  POP3 Host
+			$port, //  Port #
+			$errno, //  Error Number
+			$errstr, //  Error Message
+			$tval
+		); //  Timeout (seconds)
 
 		//  Restore the error handler
 		restore_error_handler();
@@ -224,9 +227,9 @@ class POP3 {
 		if ($this->pop_conn == false) {
 			//  It would appear not...
 			$this->error = array(
-			'error' => "Failed to connect to server $host on port $port",
-			'errno' => $errno,
-			'errstr' => $errstr
+				'error' => "Failed to connect to server $host on port $port",
+				'errno' => $errno,
+				'errstr' => $errstr
 			);
 
 			if ($this->do_debug >= 1) {
@@ -239,14 +242,10 @@ class POP3 {
 		//  Increase the stream time-out
 
 		//  Check for PHP 4.3.0 or later
-		if (version_compare(phpversion(), '5.0.0', 'ge')) {
-			stream_set_timeout($this->pop_conn, $tval, 0);
-		}
-		else {
-			//  Does not work on Windows
-			if (substr(PHP_OS, 0, 3) !== 'WIN') {
-				socket_set_timeout($this->pop_conn, $tval, 0);
-			}
+		stream_set_timeout($this->pop_conn, $tval, 0);
+		//  Does not work on Windows
+		if (System::getOS() != System::WINDOWS) {
+			socket_set_timeout($this->pop_conn, $tval, 0);
 		}
 
 		//  Get the POP3 server response

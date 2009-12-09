@@ -11,7 +11,7 @@ class NumberTest extends PHPUnit_Framework_TestCase {
 		$result = Number::isNatural($value);
 		$this->assertEquals($expected, $result, "Given: {$value}; Result: ".var_export($result, true));
 	}
-	
+
 	public function providerIsNatural() {
 		return array(
 			array(0, false),
@@ -31,7 +31,9 @@ class NumberTest extends PHPUnit_Framework_TestCase {
 			array(null, false),
 			array(0123, true),
 			array(PHP_INT_MAX, true),
-			array(str_repeat('9', strlen(PHP_INT_MAX)), true), // Should be always greater than PHP_INT_MAX
+			// This should be always greater than PHP_INT_MAX
+			// and we care also about differences with different int sizes on 64bit/32bit etc.
+			array(str_repeat('9', strlen(PHP_INT_MAX)), true),
 			array("+77", false),
 			array("+0123.45e6", false),
 			array("50e3", false),

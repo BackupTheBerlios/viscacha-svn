@@ -46,9 +46,9 @@ class FTPClientSockets extends FTPClient {
 		return $sock;
 	}
 
-	protected function _readMsg($function = "_readMsg"){
+	protected function _readMsg($function = "_readMsg") {
 		if(!$this->connected) {
-			$this->pushError($function,'Connect first');
+			$this->pushError($function, 'Connect first');
 			return false;
 		}
 		$result = true;
@@ -151,7 +151,7 @@ class FTPClientSockets extends FTPClient {
 				$this->_data_close();
 				return false;
 			}
-			if(!@socket_bind($this->ftp_data_sock,$addr)){
+			if(!@socket_bind($this->ftp_data_sock, $addr)) {
 				$this->pushError(
 					"_data_prepare",
 					"can't bind data socket",

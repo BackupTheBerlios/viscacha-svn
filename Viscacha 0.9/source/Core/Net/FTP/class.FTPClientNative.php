@@ -1,20 +1,20 @@
 <?php
 class FTPClientNative extends FTPClient {
 
-	function __construct($verb = false, $le = false) {
+	public function __construct($verb = false, $le = false) {
 		parent::__construct(false, $verb, $le);
 	}
 
 	protected function _settimeout($sock) {
 		if(!@stream_set_timeout($sock, $this->timeout)) {
-			$this->pushError('_settimeout','socket set send timeout');
+			$this->pushError('_settimeout', 'socket set send timeout');
 			$this->_quit();
 			return false;
 		}
 		return true;
 	}
 
-	function _connect($host, $port) {
+	protected function _connect($host, $port) {
 		$this->sendMsg("Creating socket");
 		$sock = @fsockopen($host, $port, $errno, $errstr, $this->timeout);
 		if (!$sock) {
@@ -25,7 +25,7 @@ class FTPClientNative extends FTPClient {
 		return $sock;
 	}
 
-	function _readMsg($function = "_readmsg"){
+	protected function _readMsg($function = "_readmsg") {
 		if(!$this->connected) {
 			$this->pushError($function, 'Connect first');
 			return false;
@@ -60,7 +60,7 @@ class FTPClientNative extends FTPClient {
 		return $result;
 	}
 
-	function _exec($cmd, $function = "_exec") {
+	protected function _exec($cmd, $function = "_exec") {
 		if(!$this->ready) {
 			$this->pushError($function, 'Connect first');
 			return false;
@@ -80,7 +80,7 @@ class FTPClientNative extends FTPClient {
 		return true;
 	}
 
-	function _data_prepare($mode = FTPClient::ASCII) {
+	protected function _data_prepare($mode = FTPClient::ASCII) {
 		if(!$this->_settype($mode)) {
 			return false;
 		}
@@ -126,7 +126,7 @@ class FTPClientNative extends FTPClient {
 		return true;
 	}
 
-	function _data_read($mode = self::ASCII, $fp = null) {
+	protected function _data_read($mode = self::ASCII, $fp = null) {
 		if(is_resource($fp)) {
 			$out = 0;
 		}
@@ -152,7 +152,7 @@ class FTPClientNative extends FTPClient {
 		return $out;
 	}
 
-	function _data_write($mode = self::ASCII, $fp = null) {
+	protected function _data_write($mode = self::ASCII, $fp = null) {
 		if(!$this->passive) {
 			$this->sendMsg("Only passive connections available!");
 			return false;
@@ -171,7 +171,7 @@ class FTPClientNative extends FTPClient {
 		return true;
 	}
 
-	function _data_write_block($mode, $block) {
+	protected function _data_write_block($mode, $block) {
 		if($mode != self::BINARY) {
 			$block = String::replaceLineBreak($block, $this->eol_code[$this->OS_remote]);
 		}
@@ -187,13 +187,13 @@ class FTPClientNative extends FTPClient {
 		return true;
 	}
 
-	function _data_close() {
+	protected function _data_close() {
 		@fclose($this->ftp_data_sock);
 		$this->sendMsg("Disconnected data from remote host");
 		return true;
 	}
 
-	function _quit($force = false) {
+	protected function _quit($force = false) {
 		if($this->connected || $force) {
 			@fclose($this->ftp_control_sock);
 			$this->connected = false;

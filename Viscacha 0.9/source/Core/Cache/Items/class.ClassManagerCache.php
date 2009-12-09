@@ -48,7 +48,7 @@ class ClassManagerCache extends CacheItem {
 
 	public function load() {
 		$files = $this->scanSourceFolder('source');
-		foreach($files as $file){
+		foreach($files as $file) {
 			$this->parse($file);
 		}
 	}

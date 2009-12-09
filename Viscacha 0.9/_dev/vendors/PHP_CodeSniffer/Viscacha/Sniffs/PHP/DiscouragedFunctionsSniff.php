@@ -6,15 +6,15 @@
  *
  * @category  PHP
  * @package   PHP_CodeSniffer
- * @author    Greg Sherwood <gsherwood@squiz.net>
+ * @author	Greg Sherwood <gsherwood@squiz.net>
  * @copyright 2006 Squiz Pty Ltd (ABN 77 084 670 600)
  * @license   http://matrix.squiz.net/developer/tools/php_cs/licence BSD Licence
  * @version   CVS: $Id: DiscouragedFunctionsSniff.php 265110 2008-08-19 06:36:11Z squiz $
- * @link      http://pear.php.net/package/PHP_CodeSniffer
+ * @link	  http://pear.php.net/package/PHP_CodeSniffer
  */
 
 if (class_exists('Viscacha_Sniffs_PHP_ForbiddenFunctionsSniff', true) === false) {
-    throw new PHP_CodeSniffer_Exception('Class Viscacha_Sniffs_PHP_ForbiddenFunctionsSniff not found');
+	throw new PHP_CodeSniffer_Exception('Class Viscacha_Sniffs_PHP_ForbiddenFunctionsSniff not found');
 }
 
 /**
@@ -24,34 +24,34 @@ if (class_exists('Viscacha_Sniffs_PHP_ForbiddenFunctionsSniff', true) === false)
  *
  * @category  PHP
  * @package   PHP_CodeSniffer
- * @author    Greg Sherwood <gsherwood@squiz.net>
+ * @author	Greg Sherwood <gsherwood@squiz.net>
  * @copyright 2006 Squiz Pty Ltd (ABN 77 084 670 600)
  * @license   http://matrix.squiz.net/developer/tools/php_cs/licence BSD Licence
  * @version   Release: 1.2.0
- * @link      http://pear.php.net/package/PHP_CodeSniffer
+ * @link	  http://pear.php.net/package/PHP_CodeSniffer
  */
 class Viscacha_Sniffs_PHP_DiscouragedFunctionsSniff extends Viscacha_Sniffs_PHP_ForbiddenFunctionsSniff
 {
 
-    /**
-     * A list of forbidden functions with their alternatives.
-     *
-     * The value is NULL if no alternative exists. IE, the
-     * function should just not be used.
-     *
-     * @var array(string => string|null)
-     */
-    protected $forbiddenFunctions = array(
-                                     'error_log' => null,
-                                     'print_r'   => null,
-                                    );
+	/**
+	 * A list of forbidden functions with their alternatives.
+	 *
+	 * The value is NULL if no alternative exists. IE, the
+	 * function should just not be used.
+	 *
+	 * @var array(string => string|null)
+	 */
+	protected $forbiddenFunctions = array(
+									 'error_log' => null,
+									 'print_r'   => null,
+									);
 
-    /**
-     * If true, an error will be thrown; otherwise a warning.
-     *
-     * @var bool
-     */
-    protected $error = false;
+	/**
+	 * If true, an error will be thrown; otherwise a warning.
+	 *
+	 * @var bool
+	 */
+	protected $error = false;
 
 }//end class
 

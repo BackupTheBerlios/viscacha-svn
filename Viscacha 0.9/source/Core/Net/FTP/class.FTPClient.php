@@ -84,7 +84,7 @@ abstract class FTPClient {
 	protected $eol_code;
 	protected $AutoAsciiExt;
 
-	function __construct($port_mode = false, $verb = false, $le = false) {
+	public function __construct($port_mode = false, $verb = false, $le = false) {
 		$this->LocalEcho = $le;
 		$this->Verbose = $verb;
 		$this->lastaction = null;
@@ -150,7 +150,10 @@ abstract class FTPClient {
 			"xul"
 		);
 		$this->port_available = ($port_mode == true);
-		$this->sendMsg("Staring FTP client class".($this->port_available ? "" : " without PORT mode support"));
+		$this->sendMsg(
+			"Staring FTP client class".
+				($this->port_available ? "" : " without PORT mode support")
+		);
 		$this->connected = false;
 		$this->ready = false;
 		$this->can_restore = false;
@@ -177,9 +180,10 @@ abstract class FTPClient {
 	 * If ftp extension can't be used null will be returned.
 	 */
 	public static function getObject($verbose = false, $localeEcho = false) {
+		$object = null;
 		if (extension_loaded('ftp')) {
 			Core::loadClass('Core.Net.FTP.FTPClientExtension');
-			return new FTPClientExtension($verbose, $localeEcho);
+			$object = new FTPClientExtension($verbose, $localeEcho);
 		}
 		else {
 			$modSockets = true;
@@ -195,15 +199,13 @@ abstract class FTPClient {
 				}
 			}
 			if ($modSockets == true) {
-				return new FTPClientSockets($verbose, $localeEcho);
+				$object =  new FTPClientSockets($verbose, $localeEcho);
 			}
 			elseif ($modSockets == false && function_exists('fsockopen')) {
-				return new FTPClientNative($verbose, $localeEcho);
-			}
-			else {
-				return null;
+				$object =  new FTPClientNative($verbose, $localeEcho);
 			}
 		}
+		return $object;
 	}
 
 	/**
@@ -216,7 +218,13 @@ abstract class FTPClient {
 	 * @return array Parsed result as array
 	 */
 	public function parseListing($list) {
-		if(preg_match("/^([-ld])([rwxst-]+)\s+(\d+)\s+([^\s]+)\s+([^\s]+)\s+(\d+)\s+(\w{3})\s+(\d+)\s+([\:\d]+)\s+(.+)$/i", $list, $ret)) {
+		$match = preg_match(
+			"/^([-ld])([rwxst-]+)\s+(\d+)\s+([^\s]+)\s+([^\s]+)\s+(\d+)\s+(\w{3})\s+(\d+)\s+".
+				"([\:\d]+)\s+(.+)$/i",
+			$list,
+			$ret
+		);
+		if($match) {
 			$v = array(
 				"type"	=> ($ret[1] == "-" ? "f" : $ret[1]),
 				"perms"	=> 0,
@@ -800,7 +808,7 @@ abstract class FTPClient {
 	/**
 	 * Receive remotefile from FTP server and save it as localfile or return contents of this file
 	 */
-	public function get($remotefile, $localfile = null, $rest=0) {
+	public function get($remotefile, $localfile = null, $rest = 0) {
 		if($localfile === null) {
 			$localfile = $remotefile;
 		}
@@ -950,7 +958,7 @@ abstract class FTPClient {
 		$handle = opendir($local);
 		if(!$handle) {
 			$list = array();
-			while (false !== ($file = readdir($handle))) {
+			while (($file = readdir($handle)) !== false) {
 				if ($file != "." && $file != "..") {
 					$list[] = $file;
 				}
@@ -1116,7 +1124,7 @@ abstract class FTPClient {
 			return false;
 		}
 		$r = $this->mkdir($dir, $mode);
-		$this->chmod($dir,$mode);
+		$this->chmod($dir, $mode);
 		return $r;
 	}
 
@@ -1140,7 +1148,7 @@ abstract class FTPClient {
 		if(is_array($handle) && !empty($handle)) {
 			while($dir = each($handle)) {
 				if($this->glob_pattern_match($pattern, $dir)) {
-					$output[]=$dir;
+					$output[] = $dir;
 				}
 			}
 		}
@@ -1234,7 +1242,7 @@ abstract class FTPClient {
 		return $out;
 	}
 
-	protected function pushError($fctname, $msg, $desc = false){
+	protected function pushError($fctname, $msg, $desc = false) {
 		$error = array();
 		$error['time'] = time();
 		$error['fctname'] = $fctname;
@@ -1250,7 +1258,7 @@ abstract class FTPClient {
 		return array_push($this->error_array, $error);
 	}
 
-	protected function popError(){
+	protected function popError() {
 		if(count($this->error_array)) {
 			return array_pop($this->error_array);
 		}

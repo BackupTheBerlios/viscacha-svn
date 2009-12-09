@@ -6,16 +6,16 @@
  *
  * @category  PHP
  * @package   PHP_CodeSniffer
- * @author    Greg Sherwood <gsherwood@squiz.net>
- * @author    Marc McIntyre <mmcintyre@squiz.net>
+ * @author	Greg Sherwood <gsherwood@squiz.net>
+ * @author	Marc McIntyre <mmcintyre@squiz.net>
  * @copyright 2006 Squiz Pty Ltd (ABN 77 084 670 600)
  * @license   http://matrix.squiz.net/developer/tools/php_cs/licence BSD Licence
  * @version   CVS: $Id: FunctionDeclarationSniff.php 274897 2009-01-29 23:39:52Z squiz $
- * @link      http://pear.php.net/package/PHP_CodeSniffer
+ * @link	  http://pear.php.net/package/PHP_CodeSniffer
  */
 
 if (class_exists('PHP_CodeSniffer_Standards_AbstractPatternSniff', true) === false) {
-    throw new PHP_CodeSniffer_Exception('Class PHP_CodeSniffer_Standards_AbstractPatternSniff not found');
+	throw new PHP_CodeSniffer_Exception('Class PHP_CodeSniffer_Standards_AbstractPatternSniff not found');
 }
 
 /**
@@ -25,30 +25,30 @@ if (class_exists('PHP_CodeSniffer_Standards_AbstractPatternSniff', true) === fal
  *
  * @category  PHP
  * @package   PHP_CodeSniffer
- * @author    Greg Sherwood <gsherwood@squiz.net>
- * @author    Marc McIntyre <mmcintyre@squiz.net>
+ * @author	Greg Sherwood <gsherwood@squiz.net>
+ * @author	Marc McIntyre <mmcintyre@squiz.net>
  * @copyright 2006 Squiz Pty Ltd (ABN 77 084 670 600)
  * @license   http://matrix.squiz.net/developer/tools/php_cs/licence BSD Licence
  * @version   Release: 1.2.0
- * @link      http://pear.php.net/package/PHP_CodeSniffer
+ * @link	  http://pear.php.net/package/PHP_CodeSniffer
  */
 class Viscacha_Sniffs_Functions_FunctionDeclarationSniff extends PHP_CodeSniffer_Standards_AbstractPatternSniff
 {
 
 
-    /**
-     * Returns an array of patterns to check are correct.
-     *
-     * @return array
-     */
-    protected function getPatterns()
-    {
-        return array(
-                'function abc(...);',
-                'abstract function abc(...);',
-               );
+	/**
+	 * Returns an array of patterns to check are correct.
+	 *
+	 * @return array
+	 */
+	protected function getPatterns()
+	{
+		return array(
+				'function abc(...);',
+				'abstract function abc(...);',
+			   );
 
-    }//end getPatterns()
+	}//end getPatterns()
 
 
 }//end class

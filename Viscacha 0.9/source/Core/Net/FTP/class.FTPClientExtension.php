@@ -134,7 +134,7 @@ class FTPClientExtension extends FTPClient {
 
 		if (!file_exists($localfile) && !is_resource($localfile)) {
 			$this->pushError(
-				"put" ,
+				"put",
 				"can't open local file",
 				"No such file or directory '{$localfile}'"
 			);
@@ -185,7 +185,7 @@ class FTPClientExtension extends FTPClient {
 
 	protected function _list($arg = '', $cmd = 'LIST', $function = '_list') {
 		if(!$this->ready) {
-			$this->pushError('_list', 'Connect first');
+			$this->pushError($function, 'Connect first');
 			return false;
 		}
 
@@ -199,7 +199,7 @@ class FTPClientExtension extends FTPClient {
 		return $contents;
 	}
 
-	protected function _readMsg($function = "_readmsg"){
+	protected function _readMsg($function = "_readmsg") {
 		if(!$this->connected) {
 			$this->pushError($function, 'Connect first');
 			return false;

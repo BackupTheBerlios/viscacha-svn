@@ -820,7 +820,7 @@ class PHPMailer {
 	 * @return bool
 	 */
 	public function SmtpConnect() {
-		if (is_null($this->smtp)) {
+		if ($this->smtp === null) {
 			$this->smtp = new SMTP();
 		}
 
@@ -883,7 +883,7 @@ class PHPMailer {
 	 * @return void
 	 */
 	public function SmtpClose() {
-		if (!is_null($this->smtp)) {
+		if ($this->smtp !== null) {
 			if ($this->smtp->Connected()) {
 				$this->smtp->Quit();
 				$this->smtp->Close();
@@ -897,6 +897,7 @@ class PHPMailer {
 	 * @param string $langcode ISO 639-1 2-character language code (e.g. Portuguese: "br")
 	 * @param string $lang_path Path to the language file directory
 	 * @access public
+	 * @todo Rework integration of language files etc.
 	 */
 	function SetLanguage($langcode = 'en', $lang_path = 'language/') {
 		//Define full set of translatable strings
@@ -990,12 +991,14 @@ class PHPMailer {
 
 		$line = explode($this->LE, $message);
 		$message = '';
-		for ($i = 0; $i < count($line); $i++) {
+		$count = count($line);
+		for ($i = 0; $i < $count; $i++) {
 			$line_part = explode(' ', $line[$i]);
 			$buf = '';
-			for ($e = 0; $e < count($line_part); $e++) {
+			$count2 = count($line_part);
+			for ($e = 0; $e < $count2; $e++) {
 				$word = $line_part[$e];
-				if ($qp_mode and (strlen($word) > $length)) {
+				if ($qp_mode && (strlen($word) > $length)) {
 					$space_left = $length - strlen($buf) - 1;
 					if ($e != 0) {
 						if ($space_left > 20) {
@@ -1041,7 +1044,7 @@ class PHPMailer {
 					$buf_o = $buf;
 					$buf .= ($e == 0) ? $word : (' '.$word);
 
-					if (strlen($buf) > $length and $buf_o != '') {
+					if (strlen($buf) > $length && $buf_o != '') {
 						$message .= $buf_o.$soft_break;
 						$buf = $word;
 					}
@@ -1202,7 +1205,8 @@ class PHPMailer {
 		}
 
 		// Add custom headers
-		for ($index = 0; $index < count($this->CustomHeader); $index++) {
+		$count = count($this->CustomHeader);
+		for ($index = 0; $index < $count; $index++) {
 			$result .= $this->HeaderLine(
 				trim($this->CustomHeader[$index][0]),
 				$this->EncodeHeader(trim($this->CustomHeader[$index][1]))
@@ -1578,11 +1582,12 @@ class PHPMailer {
 			if (!is_readable($path)) {
 				throw new PHPMailerException($this->Lang('file_open').$path, self::STOP_CONTINUE);
 			}
-			if (function_exists('get_magic_quotes')) {
+// What is this for?!
+/*			if (function_exists('get_magic_quotes')) {
 				function get_magic_quotes() {
 					return false;
 				}
-			}
+			} */
 			$file_buffer = file_get_contents($path);
 			$file_buffer = $this->EncodeString($file_buffer, $encoding);
 			return $file_buffer;
@@ -1614,7 +1619,9 @@ class PHPMailer {
 			case '8bit':
 				$encoded = $this->FixEOL($str);
 				//Make sure it ends with a line break
-				if (substr($encoded, -(strlen($this->LE))) != $this->LE) $encoded .= $this->LE;
+				if (substr($encoded, -(strlen($this->LE))) != $this->LE) {
+					$encoded .= $this->LE;
+				}
 				break;
 			case 'binary':
 				$encoded = $str;
@@ -2042,9 +2049,9 @@ class PHPMailer {
 	 */
 	protected function SetError($msg) {
 		$this->error_count++;
-		if ($this->Mailer == 'smtp' and !is_null($this->smtp)) {
+		if ($this->Mailer == 'smtp' && $this->smtp !== null) {
 			$lasterror = $this->smtp->getError();
-			if (!empty($lasterror) and array_key_exists('smtp_msg', $lasterror)) {
+			if (!empty($lasterror) && array_key_exists('smtp_msg', $lasterror)) {
 				$msg .= '<p>'.$this->Lang('smtp_error').$lasterror['smtp_msg']."</p>\n";
 			}
 		}
@@ -2172,11 +2179,8 @@ class PHPMailer {
 		}
 		$this->IsHTML(true);
 		$this->Body = $message;
-		$textMsg = trim(strip_tags(preg_replace(
-			'/<(head|title|style|script)[^>]*>.*?<\/\\1>/s',
-			'',
-			$message
-		)));
+		$textMsg = preg_replace('/<(head|title|style|script)[^>]*>.*?<\/\\1>/s', '', $message);
+		$textMsg = trim(strip_tags($textMsg));
 		if (!empty($textMsg) && empty($this->AltBody)) {
 			$this->AltBody = html_entity_decode($textMsg);
 		}
@@ -2263,7 +2267,8 @@ class PHPMailer {
 	public function DKIM_QP($txt) {
 		$tmp = "";
 		$line = "";
-		for ($i = 0; $i < strlen($txt); $i++) {
+		$len = strlen($txt);
+		for ($i = 0; $i < $len; $i++) {
 			$ord = ord($txt[$i]);
 			if ((0x21 <= $ord && $ord <= 0x3A) || $ord == 0x3C || (0x3E <= $ord && $ord <= 0x7E)) {
 				$line .= $txt[$i];
@@ -2320,7 +2325,9 @@ class PHPMailer {
 	 * @param string $body Message Body
 	 */
 	public function DKIM_BodyC($body) {
-		if ($body == '') return "\r\n";
+		if ($body == '') {
+			return "\r\n";
+		}
 		// stabilize line endings
 		$body = str_replace("\r\n", "\n", $body);
 		$body = str_replace("\n", "\r\n", $body);
@@ -2363,14 +2370,14 @@ class PHPMailer {
 		 // Base64 of packed binary SHA-1 hash of body
 		$DKIMb64 = base64_encode(pack("H*", sha1($body)));
 		$ident = ($this->DKIM_identity == '') ? '' : " i=".$this->DKIM_identity.";";
-		$from     = str_replace('|','=7C',$this->DKIM_QP($from_header));
-		$to       = str_replace('|','=7C',$this->DKIM_QP($to_header));
+		$from     = str_replace('|','=7C', $this->DKIM_QP($from_header));
+		$to       = str_replace('|','=7C', $this->DKIM_QP($to_header));
 		 // Copied header fields (dkim-quoted-printable
-		$subject  = str_replace('|','=7C',$this->DKIM_QP($subject_header));
+		$subject  = str_replace('|','=7C', $this->DKIM_QP($subject_header));
 		$body     = $this->DKIM_BodyC($body);
-		$DKIMlen  = strlen($body) ; // Length of body
-		$DKIMb64  = base64_encode(pack("H*", sha1($body))) ; // Base64 of packed binary SHA-1 hash of body
-		$ident    = ($this->DKIM_identity == '')? '' : " i=" . $this->DKIM_identity . ";";
+		$DKIMlen  = strlen($body); // Length of body
+		$DKIMb64  = base64_encode(pack("H*", sha1($body))); // Base64 of packed binary SHA-1 hash of body
+		$ident    = ($this->DKIM_identity == '') ? '' : " i=" . $this->DKIM_identity . ";";
 		$dkimhdrs = "DKIM-Signature: v=1; a=" . $DKIMsignatureType . "; q=" . $DKIMquery .
 						"; l=" . $DKIMlen . "; s=" . $this->DKIM_selector . ";\r\n".
 						"\tt=" . $DKIMtime . "; c=" . $DKIMcanonicalization . ";\r\n".

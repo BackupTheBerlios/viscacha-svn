@@ -293,7 +293,7 @@ abstract class Database {
 	public function fetchAll($result = null, $key = null) {
 		$cache = array();
 		$error = false;
-		while($row = $this->fetchAssoc($result)){
+		while($row = $this->fetchAssoc($result)) {
 			if ($key != null) {
 				if (isset($row[$key]) == false) {
 					Core::throwError(
@@ -485,7 +485,7 @@ abstract class Database {
 	 * @param string Table
 	 * @return array Array containing all fields of a table
 	 */
-	public function listFields($table);
+	public abstract function listFields($table);
 
 	/**
 	 * Returns an array containing all tables of the specified database.
@@ -495,7 +495,7 @@ abstract class Database {
 	 * @param string Database or null
 	 * @return array Array containing all tables of a database
 	 **/
-	public function listTables($database = null);
+	public abstract function listTables($database = null);
 
 	/**
 	 * Performs one or more raw queries on the database.
@@ -506,7 +506,7 @@ abstract class Database {
 	 *
 	 * @param string Queries
 	 */
-	public function multiQuery($query);
+	public abstract function multiQuery($query);
 
 	/**
 	 * Gets the number of rows in a result.
@@ -545,18 +545,22 @@ abstract class Database {
 	 * The first parameter is a query with placeholders.
 	 * The second parameter is an array with the data for the query as an array.
 	 * The keys of the array are the placeholders (in the query between the chars < and >).
-	 * Placeholders can have only alphanumerical chars plus "_", "-" and ".".
-	 * After the placeholder you can specify the type of the placeholder separated by ":".
-	 * If you do not specify the type then string will be assumed to be the correct one. You do not need to quote the placeholders.
-	 * The values of the array is the data for the placeholder. NULL in php is NULL in the database.<br />
-	 * Reserved placeholders: p, prefix for prefix of tables.<br />
-	 * Possible types: <br />
-	 * - raw: no quotes, no escaping <br />
-	 * - string /: quotes, escaping<br />
-	 * - string[]: every element -> seperated by a comma, qupotes, escaping<br />
-	 * - int: no quotes, conversion to integer<br />
-	 * - int[]: every element -> seperated by a comma, no quotes, conversion to integer<br />
-	 * - float: quotes, conversion to float
+	 * Placeholders can have only alphanumerical chars plus "_", "-" and ".". After the placeholder
+	 * you can specify the type of the placeholder separated by ":". If you do not specify the type
+	 * then string will be assumed to be the correct one. You do not need to quote the placeholders.
+	 * The values of the array is the data for the placeholder. NULL in php is NULL in the database.
+	 *
+	 * Reserved placeholders: p, prefix for prefix of tables.
+	 *
+	 * Possible types:
+	 * <ul>
+	 * <li> raw: no quotes, no escaping
+	 * <li> string /: quotes, escaping
+	 * <li> string[]: every element -> seperated by a comma, qupotes, escaping
+	 * <li> int: no quotes, conversion to integer
+	 * <li> int[]: every element -> seperated by a comma, no quotes, conversion to integer
+	 * <li> float: quotes, conversion to float
+	 * </ul>
 	 *
 	 * @param string Single query
 	 * @param array Data for the query
