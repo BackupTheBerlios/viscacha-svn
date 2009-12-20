@@ -182,7 +182,6 @@ abstract class FTPClient {
 	public static function getObject($verbose = false, $localeEcho = false) {
 		$object = null;
 		if (extension_loaded('ftp')) {
-			Core::loadClass('Core.Net.FTP.FTPClientExtension');
 			$object = new FTPClientExtension($verbose, $localeEcho);
 		}
 		else {
@@ -394,10 +393,7 @@ abstract class FTPClient {
 		return true;
 	}
 
-	public function connect($server = null) {
-		if(!empty($server) && !$this->setServer($server)) {
-			return false;
-		}
+	public function connect() {
 		if($this->ready) {
 			return true;
 		}
@@ -823,8 +819,8 @@ abstract class FTPClient {
 		if($this->can_restore && $rest != 0) {
 			fseek($fp, $rest);
 		}
-		$ext = File::getExtension($remotefile);
-		if($this->type == self::ASCII || ($this->type == self::AUTO && in_array($ext, $this->AutoAsciiExt))) {
+		$file = new File($remotefile);
+		if($this->type == self::ASCII || ($this->type == self::AUTO && in_array($file->extension(), $this->AutoAsciiExt))) {
 			$mode = self::ASCII;
 		}
 		else {
@@ -900,8 +896,8 @@ abstract class FTPClient {
 		if($this->can_restore && $rest != 0) {
 			fseek($fp, $rest);
 		}
-		$ext = File::getExtension($localfile);
-		if($this->type == self::ASCII || ($this->type == self::AUTO && in_array($ext, $this->AutoAsciiExt))) {
+		$file = new File($localfile);
+		if($this->type == self::ASCII || ($this->type == self::AUTO && in_array($file->extension(), $this->AutoAsciiExt))) {
 			$mode = self::ASCII;
 		}
 		else {
@@ -1111,21 +1107,6 @@ abstract class FTPClient {
 			$ret = false;
 		}
 		return $ret;
-	}
-
-	public function mmkdir($dir, $mode = 0777) {
-		if(empty($dir)) {
-			return false;
-		}
-		if($this->exists($dir) || $dir == "/") {
-			return true;
-		}
-		if(!$this->mmkdir(dirname($dir), $mode)) {
-			return false;
-		}
-		$r = $this->mkdir($dir, $mode);
-		$this->chmod($dir, $mode);
-		return $r;
 	}
 
 	public function glob($pattern, $handle = null) {

@@ -27,6 +27,8 @@
  * @license		http://www.gnu.org/licenses/lgpl-2.1.txt GNU Lesser General Public License
  */
 
+Core::loadClass('Core.Net.FTP.FTPClient');
+
 /**
  * FTP class that uses the ftp extension of PHP.
  *
@@ -50,24 +52,17 @@ class FTPClientExtension extends FTPClient {
 		return true;
 	}
 
-	public function connect($server = null) {
-		if(!empty($server) && !$this->setServer($server)) {
-			return false;
-		}
+	public function connect() {
 		if($this->ready) {
 			return true;
 		}
 		$this->sendMsg('Local OS: '.$this->OS_FullName[$this->OS_local]);
 		$this->ftp_control_sock = $this->_connect($this->host, $this->port);
 		if(!$this->ftp_control_sock) {
-			$this->sendMsg(
-				"Error: Cannot connect to remote host '{$this->fullhost}:{$this->port}'"
-			);
+			$this->sendMsg("Error: Cannot connect to remote host '{$this->fullhost}:{$this->port}'");
 			return false;
 		}
-		$this->sendMsg(
-			"Connected to remote host '{$this->fullhost}:{$this->port}'. Waiting for greeting."
-		);
+		$this->sendMsg("Connected to remote host '{$this->fullhost}:{$this->port}'. Waiting for greeting.");
 		$this->lastaction = time();
 		$this->ready = true;
 		$this->detectOS();
@@ -106,8 +101,8 @@ class FTPClientExtension extends FTPClient {
 			$this->sendMsg("Warning: local file will be overwritten");
 		}
 
-		$ext = File::getExtension($remotefile);
-		if($this->type == self::ASCII || ($this->type == self::AUTO && in_array($ext, $this->AutoAsciiExt))) {
+		$file = new File($remotefile);
+		if($this->type == self::ASCII || ($this->type == self::AUTO && in_array($file->extension(), $this->AutoAsciiExt))) {
 			$mode = self::ASCII;
 		}
 		else {
@@ -162,8 +157,8 @@ class FTPClientExtension extends FTPClient {
 			}
 		}
 
-		$ext = File::getExtension($localfile);
-		if($this->type == self::ASCII || ($this->type == self::AUTO && in_array($ext, $this->AutoAsciiExt))) {
+		$file = new File($localfile);
+		if($this->type == self::ASCII || ($this->type == self::AUTO && in_array($file->extension(), $this->AutoAsciiExt))) {
 			$mode = self::ASCII;
 		}
 		else {

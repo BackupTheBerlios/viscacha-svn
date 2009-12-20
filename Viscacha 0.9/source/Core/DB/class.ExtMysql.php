@@ -95,16 +95,15 @@ class ExtMySQL extends VendorMySQL {
 	 * @param string Socket
 	 * @throws DatabaseException
 	 */
-	public function connect($username = null, $password = null, $host = null,
-							$port = null, $socket = null) {
+	public function connect($username = null, $password = null, $host = null, $port = null, $socket = null) {
 		$this->username = $username === null ? 'root' : $username;
-		$this->password = $password === null ? ''  : $password;
+		$this->password = $password === null ? '' : $password;
 		$this->host = $host === null ? 'localhost' : $host;
 		$this->port = ($port === null && $this->socket == null) ? '3306' : $port;
 		$this->socket = $port === null ? $socket : null;
 
 		$host = $this->host;
-		if (Number::isNatural($this->port)) {
+		if (Numbers::isNatural($this->port)) {
 			$this->host += ":{$this->port}";
 		}
 		elseif ($this->socket !== null) {
@@ -114,8 +113,7 @@ class ExtMySQL extends VendorMySQL {
 
 		if ($this->hasConnection() == false) {
 			throw new DatabaseException(
-				'Could not connect to database! '.
-					'Pleasy try again later or check the database settings!'
+				'Could not connect to database! Pleasy try again later or check the database settings!'
 			);
 		}
 		else {
@@ -256,7 +254,7 @@ class ExtMySQL extends VendorMySQL {
 	 */
 	public function insertID() {
 		$id = mysql_insert_id($this->connection);
-		return String::isNatural($id) ? $id : null;
+		return Numbers::isNatural($id) ? $id : null;
 	}
 
 	/**

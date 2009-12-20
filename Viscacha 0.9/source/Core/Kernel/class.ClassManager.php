@@ -26,7 +26,6 @@
  */
 
 Core::loadClass('Core.Kernel.Singleton');
-Core::loadClass('Core.Cache.CacheServer');
 
 /**
  * Maps all classes to their location in the source folder.
@@ -127,7 +126,7 @@ class ClassManager extends Singleton {
 	 */
 	private function deleteIndex() {
 		$cache = CacheServer::getInstance();
-		$classesCache = $cache->load('classes');
+		$classesCache = $cache->load('ClassManagerCache');
 		$classesCache->delete();
 	}
 

@@ -26,7 +26,6 @@
  */
 
 Core::loadClass('Core.Kernel.Singleton');
-Core::loadClass('Core.Cache.CacheObject');
 
 /**
  * The CacheServer manages the CacheObjects.
@@ -132,10 +131,10 @@ class CacheServer extends Singleton {
 	 * @see CacheServer::setSourceDir()
 	 */
 	private function loadClass($name) {
-		if (class_exists($name) == false) {
-			$file = "{$this->sourceDir}class.{$name}.php";
-			if (File::exists($file) == true) {
-				include_once($file);
+		if (class_exists($name, false) == false) {
+			$file = new File("{$this->sourceDir}class.{$name}.php");
+			if ($file->exists() == true) {
+				include_once($file->relPath());
 			}
 		}
 	}

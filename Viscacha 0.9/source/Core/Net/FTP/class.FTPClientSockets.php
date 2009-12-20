@@ -1,4 +1,44 @@
 <?php
+/**
+ * pemftp - Advanced FTP client class
+ *
+ * Copyright (C) 2008 by Alexey Dotsenko
+ *
+ * This library is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of the
+ * License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ * @package		Core
+ * @subpackage	Net
+ * @version		2008-09-17
+ * @author		Alexey Dotsenko
+ * @author		Matthias Mohr
+ * @copyright	Copyright (c) 2008, Alexey Dotsenko
+ * @license		http://www.gnu.org/licenses/lgpl-2.1.txt GNU Lesser General Public License
+ */
+
+Core::loadClass('Core.Net.FTP.FTPClient');
+
+/**
+ * FTP class that uses the sockets extension of PHP.
+ *
+ * @package		Core
+ * @subpackage	Net
+ * @author		Alexey Dotsenko
+ * @author		Matthias Mohr
+ * @copyright	Copyright (c) 2008, Alexey Dotsenko
+ * @since 		0.8
+ */
 class FTPClientSockets extends FTPClient {
 
 	public function __construct($verb = false, $le = false) {
@@ -218,7 +258,7 @@ class FTPClientSockets extends FTPClient {
 				break;
 			}
 			if($mode != self::BINARY) {
-				$block = String::replaceLineBreak($block, $this->_eol_code[$this->OS_local]);
+				$block = Strings::replaceLineBreaks($block, $this->_eol_code[$this->OS_local]);
 			}
 			if(is_resource($fp)) {
 				$out += fwrite($fp, $block, strlen($block));
@@ -257,7 +297,7 @@ class FTPClientSockets extends FTPClient {
 
 	protected function _data_write_block($mode, $block) {
 		if($mode != self::BINARY) {
-			$block = String::replaceLineBreak($block, $this->eol_code[$this->OS_remote]);
+			$block = Strings::replaceLineBreaks($block, $this->eol_code[$this->OS_remote]);
 		}
 		do {
 			if(($t = @socket_write($this->ftp_temp_sock, $block)) === false) {

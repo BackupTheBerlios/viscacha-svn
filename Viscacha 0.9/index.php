@@ -26,7 +26,6 @@
 
 error_reporting(E_ALL);
 require_once("source/Core/Kernel/function.Bootstrap.php");
-Core::loadClass('Core.Controller.Sample');
 $sample = new Sample();
 echo $sample->main();
 ?>

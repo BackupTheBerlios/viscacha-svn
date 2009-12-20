@@ -124,9 +124,8 @@ abstract class VendorMySQL extends Database {
 	 * @return string Insert statements
 	 */
 	public function getData($table, $offset = -1, $limit = 1000) {
-		$table_data = $this->new_line.$this->commentdel.' Data: '.$table.
-			($offset != -1 ? ' {'.$offset.', '.($offset+$limit).'}' : '').
-			"\n";
+		$table_data = $this->new_line.$this->commentdel.' Data: '.$table;
+		$table_data .= ($offset != -1 ? ' {'.$offset.', '.($offset+$limit).'}' : '')."\n";
 	 	// Datensaetze vorhanden?
 	 	$result = $this->rawQuery(
 			'SELECT * FROM '.chr(96).$table.chr(96).
@@ -186,7 +185,7 @@ abstract class VendorMySQL extends Database {
 			return false;
 		}
 		else {
-			$table_data .= String::replaceLineBreak($show_results[1], "\n").';';
+			$table_data .= Strings::replaceLineBreaks($show_results[1], "\n").';';
 			return trim($table_data);
 		}
 	}
@@ -237,7 +236,7 @@ abstract class VendorMySQL extends Database {
 	 */
 	public function multiQuery($query) {
 		$results = array();
-		$lines = String::toTrimmedArray($query);
+		$lines = Strings::toTrimmedArray($query);
 		$query = '';
 		foreach ($lines as $line) {
 			$comment = substr($line, 0, 2);
@@ -278,6 +277,7 @@ abstract class VendorMySQL extends Database {
 	 * Executed query: <code>SET NAMES 'UTF8'</code>
 	 *
 	 * @see http://dev.mysql.com/doc/refman/5.0/en/charset-connection.html
+	 * @todo Use mysql_set_charset() when possible
 	 */
 	protected function setUTF8() {
 		// MySQL should	return UTF-8

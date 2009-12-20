@@ -151,7 +151,7 @@ abstract class Database {
 			try {
 				$this->rollback();
 			} catch (QueryException $e) {
-				$this->debug->add($e);
+				$this->debug->addText($e);
 				throw $e;
 			}
 		}
@@ -296,10 +296,8 @@ abstract class Database {
 		while($row = $this->fetchAssoc($result)) {
 			if ($key != null) {
 				if (isset($row[$key]) == false) {
-					Core::throwError(
-						"Key assigned in fetchAll() was not found in result set. ".
-							"The keys will be enumerated.",
-						INTERNAL_NOTICE
+					$this->debug->addText(
+						"Key '{$key}' assigned in Database::fetchAll() was not found in result set. The keys will be enumerated."
 					);
 					$error = true;
 				}
@@ -373,7 +371,6 @@ abstract class Database {
 	 *
 	 * @param mixed Result set (resource) or query (string) or null
 	 * @return mixed First field in first row or null
-	 * @todo Replace Core::throwError with Exception
 	 */
 	public function fetchOne($result = null) {
 		if ($result == null) {
@@ -383,7 +380,7 @@ abstract class Database {
 			$result = $this->rawQuery($result);
 		}
 		if ($this->isResultSet($result) == false) {
-			Core::throwError('No valid result set specified.');
+			$this->debug->addText('No valid result set specified in Database::fetchOne().');
 		}
 		if ($this->numRows($result) > 0) {
 			$this->resetResult($result);
@@ -525,7 +522,7 @@ abstract class Database {
 	//@todo Replace error with exception
 	protected function parseInt($var) {
 		if (!is_string($var) && !is_numeric($var)) {
-			Core::throwError(
+			$this->debug->addText(
 				'Database::parseInt() can only convert strings and numerical data to integers.'
 			);
 		}
@@ -620,7 +617,7 @@ abstract class Database {
 			}
 		}
 
-		$this->debug->add($e);
+		$this->debug->addText($e);
 
 		throw $e;
 	}

@@ -25,7 +25,7 @@
  * @license		http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License
  */
 
-Core::loadClass('Viscacha.Core.InfoException');
+Core::loadClass('Core.Kernel.InfoException');
 
 /**
  * Exception for general database errors (not query errors).

@@ -25,6 +25,8 @@
  * @license		http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License
  */
 
+Core::loadClass('Core.Cache.CacheItem');
+
 /**
  * Caches the classes for the ClassesManager.
  *
@@ -37,17 +39,15 @@
  */
 class ClassManagerCache extends CacheItem {
 
-	private $next;
 	private $classes;
 
 	public function __construct($name = __CLASS__, $path = CACHE_DEFAULT_DIR) {
 		parent::__construct($name, $path);
-		$this->next = false;
 		$this->classes = array();
 	}
 
 	public function load() {
-		$files = $this->scanSourceFolder('source');
+		$files = $this->scanSourceFolder(new Folder('./source/'));
 		foreach($files as $file) {
 			$this->parse($file);
 		}
@@ -60,9 +60,9 @@ class ClassManagerCache extends CacheItem {
 	 * @return	array	Array containing all pattern-matched files.
 	 * @todo	Escape path in glob
 	 */
-	private function scanSourceFolder($dir) {
-		$files = glob($dir.'/{class,interface}.*.php', GLOB_BRACE);
-		$folders = Folder::getFolders($dir);
+	private function scanSourceFolder(Folder $dir) {
+		$files = $dir->getFiles(Folder::RETURN_PATHS, Folder::FILTER_GLOB, '{class,interface}.*.php');
+		$folders = $dir->getFolders(Folder::RETURN_OBJECTS);
 
 		foreach ($folders as $subDir) {
 			$subFiles = $this->scanSourceFolder($subDir);
@@ -73,43 +73,48 @@ class ClassManagerCache extends CacheItem {
 	}
 
 	/**
-	 * Looks for class names in a PHP code
+	 * Retrieves the classname for a given file.
 	 *
 	 * @param string File to scan for class name.
-	 * @throws CoreException
-	 * @todo Reine PHP Alternative um Klassen zu erkennen (RegExp)
-	 * @todo Replace Core::throwError
 	 */
 	private function parse($file) {
 		if (function_exists('token_get_all') == false) {
-			// Klassenerkennung-Regexp:
-			// (abstract\s+)?class\s+([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)(\s+(extends|implements)\s+[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*){0,2}\s*\{
-			throw CoreException(
-				"Function token_get_all() is not supported. You can't use the ClassManager."
-			);
-		}
-		$file = new File($file);
-		if ($file->exists() == true) {
-			$code = $file->read();
-			$tokens = @token_get_all($code);
-			foreach ($tokens as $token) {
-				if (!isset($token[0])) {
-					continue;
-				}
-				// next token after this one is our desired class name
-				if ($token[0] == T_CLASS) {
-					$this->next = true;
-				}
-				if ($token[0] == T_STRING && $this->next === true) {
-					if (isset($this->data[$token[1]]) == true) {
-						Core::throwError(
-							'Class with name '.$token[1].' was found more than once. '.
-								"Only file {$file} has been indexed!",
-							INTERNAL_NOTICE
+			// use the file names as an indicator
+			if (preg_match('~(class|interface)\.([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)\.php$~i', $file, $match) == 1) {
+				if (!empty($match[2])) {
+					if (isset($this->data[$match[2]]) == true) {
+						Core::addLog(
+							'Class with name '.$match[2].' was found more than once. '.
+								"Only file {$file} has been indexed!"
 						);
 					}
-					$this->data[$token[1]] = $file->relPath();
-					$this->next = false;
+					$this->data[$match[2]] = $file;
+				}
+			}
+		}
+		else {
+			$file = new File($file);
+			if ($file->exists() == true) {
+				$next = false;
+				$tokens = token_get_all($file->read());
+				foreach ($tokens as $token) {
+					if (!isset($token[0])) {
+						continue;
+					}
+					// next token after this one is our desired class name
+					if ($token[0] == T_CLASS || $token[0] == T_INTERFACE) {
+						$next = true;
+					}
+					if ($token[0] == T_STRING && $next === true) {
+						if (isset($this->data[$token[1]]) == true) {
+							Core::addLog(
+								'Class with name '.$token[1].' was found more than once. '.
+									"File '{$file} has been indexed and replaced the other entry!"
+							);
+						}
+						$this->data[$token[1]] = $file->relPath();
+						$next = false;
+					}
 				}
 			}
 		}

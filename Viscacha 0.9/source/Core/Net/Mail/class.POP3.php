@@ -110,10 +110,6 @@ class POP3 {
 	 */
 	public $password;
 
-	/////////////////////////////////////////////////
-	// PROPERTIES, PRIVATE AND PROTECTED
-	/////////////////////////////////////////////////
-
 	private $pop_conn;
 	private $connected;
 	private $error; //  Error log array
@@ -138,8 +134,7 @@ class POP3 {
 	 * @param string $username
 	 * @param string $password
 	 */
-	public function Authorise($host, $port = false, $tval = false, $username, $password,
-							  $debug_level = 0) {
+	public function Authorise($host, $port = false, $tval = false, $username, $password, $debug_level = 0) {
 		$this->host = $host;
 
 		//  If no port value is passed, retrieve it
@@ -212,8 +207,8 @@ class POP3 {
 			$port, //  Port #
 			$errno, //  Error Number
 			$errstr, //  Error Message
-			$tval
-		); //  Timeout (seconds)
+			$tval //  Timeout (seconds)
+		);
 
 		//  Restore the error handler
 		restore_error_handler();
@@ -240,8 +235,6 @@ class POP3 {
 		}
 
 		//  Increase the stream time-out
-
-		//  Check for PHP 4.3.0 or later
 		stream_set_timeout($this->pop_conn, $tval, 0);
 		//  Does not work on Windows
 		if (System::getOS() != System::WINDOWS) {
@@ -318,10 +311,6 @@ class POP3 {
 		fclose($this->pop_conn);
 	}
 
-	/////////////////////////////////////////////////
-	//  Private Methods
-	/////////////////////////////////////////////////
-
 	/**
 	 * Get the socket response back.
 	 * $size is the maximum number of bytes to retrieve
@@ -359,13 +348,13 @@ class POP3 {
 				'error' => "Server reported an error: $string",
 				'errno' => 0,
 				'errstr' => ''
-				);
+			);
 
-				if ($this->do_debug >= 1) {
-					$this->displayErrors();
-				}
+			if ($this->do_debug >= 1) {
+				$this->displayErrors();
+			}
 
-				return false;
+			return false;
 		}
 		else {
 			return true;
@@ -403,6 +392,5 @@ class POP3 {
 		);
 	}
 
-	//  End of class
 }
 ?>

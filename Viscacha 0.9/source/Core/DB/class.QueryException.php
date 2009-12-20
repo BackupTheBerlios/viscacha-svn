@@ -25,7 +25,7 @@
  * @license		http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License
  */
 
-Core::loadClass('Viscacha.Core.DatabaseException');
+Core::loadClass('Core.DB.DatabaseException');
 
 /**
  * Exception for errors during queriing the database.
@@ -58,7 +58,7 @@ class QueryException extends DatabaseException {
 	public function __toString() {
 		$error = parent::__toString();
 		if (empty($this->query) == false) {
-			$query = String::replaceLineBreak($this->query, "\t");
+			$query = Strings::replaceLineBreaks($this->query, "\t");
 			$error .= "\r\nQuery: {$query}";
 		}
 		return $error;

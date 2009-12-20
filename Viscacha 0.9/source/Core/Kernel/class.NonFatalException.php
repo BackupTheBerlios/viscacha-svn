@@ -25,10 +25,12 @@
  * @license		http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License
  */
 
-Core::loadClass('Core.Kernel.InfoException');
-
 /**
- * Exception for class ClassManager.
+ * Abstract class for Exceptions that should not break page execution.
+ *
+ * If this exception is not catched, this should just give out some information to the screen
+ * (included in the page). We highly recommend to use the Debug class instead of this Exception
+ * type, this should be used only in the Core when the Debug class can't be used.
  *
  * @package		Core
  * @subpackage	Kernel
@@ -36,28 +38,32 @@ Core::loadClass('Core.Kernel.InfoException');
  * @copyright	Copyright (c) 2004-2010, Viscacha.org
  * @since 		1.0
  */
-class ClassManagerException extends InfoException {
+class NonFatalException extends Exception {
 
-	private $index;
+	protected static $objInExec;
 
 	/**
-	 * Returns an array with additional information about the excpetion.
+	 * Constructs the Exception.
 	 *
-	 * The keys of the array are the class names, the values are the paths to the class files.
-	 *
-	 * @return	array	Data with keys as labels and values as data.
+	 * @param	string	Error message
+	 * @param	int		Error code (default: 0)
 	 */
-	public function getData() {
-		return $this->index;
+	public function __construct($message, $code = 0) {
+		if (self::$objInExec instanceof self) {
+			self::$objInExec->hardExit();
+		}
+		self::$objInExec = $this;
+		parent::__construct($message, $code);
 	}
 
 	/**
-	 * Sets the index data from the class manager for the exception.
-	 *
-	 * @param	array	Index from ClassManager
+	 * Quit the program immediately with an error message.
 	 */
-	public function setIndex($index) {
-		$this->index = $index;
+	protected function hardExit() {
+		die(
+			'Error: Recursive exception during the following exception - '.$this->getMessage().
+				' (File: '.$this->getFile().', Line: '.$this->getLine().')'
+		);
 	}
 
 }

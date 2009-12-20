@@ -38,7 +38,7 @@
 class Debug {
 
 	/**
-	 * File to save the log-data to.
+	 * File to save the log data to.
 	 * @var File
 	 */
 	private $file;
@@ -61,27 +61,26 @@ class Debug {
 	/**
 	 * Constructs a new Debug-Object.
 	 *
-	 * The first parameter has to be the file name with extension (standard: internal.log), but
-	 * without directory. The second parameter has to be a valid and existing directory path with
-	 * trainling directory separator (make sure the directory is writable). Standard value for this
-	 * paramteer is null, the directory will be "data/logs/". If the specified file doesn't exist,
-	 * it will created. If it is not possible to create a file a CoreException will be thrown.
+	 * The first parameter has to be the file name with extension, but without directory. The second
+	 * parameter has to be a valid and existing directory path with trainling directory separator
+	 * (make sure the directory is writable). Standard value for this paramteer is null. If the
+	 * directory is null or invalid  "data/logs/" will be used. If the specified file doesn't exist
+	 * it will created. If it is not possible to create a file a NonFatalException will be thrown.
 	 *
-	 * @param string File for saving the logdata or null (filename is internal.log then)
-	 * @param string Directory for saving the logfile or null (directory is data/logs/ then)
-	 * @throws Exception
+	 * @param string File for saving the logdata
+	 * @param string Valid Directory for saving the logfile or null (directory will be "data/logs/")
+	 * @throws NonFatalException
 	 */
-	public function __construct($file = 'internal.log', $dir = null) {
-		if ($dir == null || is_dir($dir) == false) {
+	public function __construct($file, $dir = null) {
+		if ($dir === null || is_dir($dir) === false) {
 			$dir = 'data/logs/';
 		}
 		$this->file = new File($dir.basename($file));
-		if ($this->file->create() == false) {
-			throw new CoreException('Could not create log file in method Debug::__construct().');
+		if ($this->file->create() === false) {
+			throw new NonFatalException('Could not create log file "'.$this->file->relPath().'".');
 		}
-		if ($this->file->readable() == false || $this->file->writable() == false) {
-			$writable = new CHMOD(666);
-			$this->file->setChmod($writable);
+		if ($this->file->readable() === false || $this->file->writable() === false) {
+			$this->file->setPermissions(666);
 		}
 		$this->logs = array();
 		$this->benchmarks = array();
@@ -92,6 +91,7 @@ class Debug {
 	 * Write logs and benchmarks to file.
 	 *
 	 * This method simply calls the function saveFile().
+	 * @todo Check Core::destruct function
 	 */
 	public function __destruct() {
 		Core::destruct();
@@ -101,35 +101,33 @@ class Debug {
 	/**
 	 * Text to add to the logfile.
 	 *
-	 * Specify a text without line breaks and/or carriage returns.
-	 * Line breaks and carriage returns will be converted to a tab.
-	 * Before this all tabs will be converted to 4 white spaces.
+	 * Line breaks, carriage returns and tabs will be converted to a single space char.
 	 *
-	 * @param string Things to write to the logfile
+	 * @param string Text to write to the logfile
 	 */
-	public function add($text) {
-		$text = str_replace("\t", "    ", $text);
-		$text = String::replaceLineBreak($text, "\t");
-		$text = '['.gmdate('r').'] '.$text;
-		$this->logs[] = $text;
+	public function addText($text) {
+		$text = str_replace("\t", " ", $text);
+		$text = Strings::replaceLineBreaks($text, " ");
+		$this->logs[] = '['.gmdate('r').'] '.$text;
 	}
 
 	/**
 	 * Finished Benchmarks and log texts will be added to the logfile.
 	 *
-	 * Each benchmark is one row in the file.
-	 * After calling this function successfully, the finished benchmarks array and the log data array are empty.
-	 * It is not recommended to use this function directly.
-	 * If an error occurs while writing the file a warning will be thrown.
+	 * Each benchmark is one row in the file. After calling this function successfully, the finished
+	 * benchmarks array and the log data array are empty. It is not recommended to use this function
+	 * directly. If an error occurs while writing the file a NonFatalException will be thrown.
+	 *
+	 * @throws NonFatalException
 	 */
 	public function saveFile() {
 		$benchmarks = array();
 		//add new line if file is not empty
-		$text = iif(($this->file->size() != 0 && $this->file->size() != false), "\r\n");
+		$text = $this->file->size() != 0 ? "\r\n" : '';
 		$benchmarks = $this->getBenchmarkStringArray();
 		$text .= implode("\r\n", array_merge($this->logs, $benchmarks));
 		if ($this->file->write($text, true) === false) {
-			Core::throwError('Could not write log file in method Debug::saveFile().');
+			throw NonFatalException('Could not write to log file.');
 		}
 		else {
 			$this->clear();
@@ -202,8 +200,9 @@ class Debug {
 	/**
 	 * Stops a benchmark with the specified name and returns result.
 	 *
-	 * If name is invalid or the benchmark is already stopped -1.0 will be returned.
-	 * If benchmark already exists it will be added to the time of the existent benchmark and the sum will be returned.
+	 * If name is invalid or the benchmark is already stopped -1.0 will be returned. If benchmark
+	 * already exists it will be added to the time of the existent benchmark and the sum will be
+	 * returned.
 	 *
 	 * @param string Name of benchmark
 	 * @return float Benchmark result
@@ -214,16 +213,19 @@ class Debug {
 			return (float) -1.0;
 		}
 		$diff = $now - $this->temp[$name];
-		$this->benchmarks[$name] = array_key_exists($name, $this->benchmarks) ? ($this->benchmarks[$name] + $diff) : $diff;
+		$this->benchmarks[$name] = array_key_exists(
+			$name,
+			($this->benchmarks ? ($this->benchmarks[$name] + $diff) : $diff)
+		);
 		return (float) $this->benchmarks[$name];
 	}
 
 	/**
 	 * Gets the benchmark result of the specified name or the complete array.
 	 *
-	 * When the specified name does not exist, -1.0 will be returned.
-	 * If benchmark is currently in progress the Benchmark will be stopped and the result will be returned.
-	 * If the whole array is requested, only those Benchmarks which are already stopped will be returned.
+	 * When the specified name does not exist, -1.0 will be returned. If benchmark is currently in
+	 * progress the Benchmark will be stopped and the result will be returned If the whole array is
+	 * requested, only those Benchmarks which are already stopped will be returned.
 	 *
 	 * @param string Name of benchmark or null (for array)
 	 * @return float Benchmark result
@@ -244,7 +246,7 @@ class Debug {
 	}
 
 	/**
-	 * Makes a "ready-to-save" numeric String array out of the associative Benchmark array
+	 * Makes a "ready-to-save" numeric String array out of the associative Benchmark array.
 	 *
 	 * @return array Benchmarks for Output
 	 */

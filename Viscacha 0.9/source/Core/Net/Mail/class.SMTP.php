@@ -31,6 +31,7 @@
  * @version		5.1
  * @see			http://phpmailer.sourceforge.net
  * @license		http://www.gnu.org/copyleft/lesser.html GNU Lesser General Public License
+ * @todo		Use http://www.php.net/manual/ref.intl.idn.php if possible
  */
 
 /**
@@ -75,10 +76,6 @@ class SMTP {
 	 */
 	public $do_verp = false;
 
-	/////////////////////////////////////////////////
-	// PROPERTIES, PRIVATE AND PROTECTED
-	/////////////////////////////////////////////////
-
 	private $smtp_conn; // the socket to the server
 	private $error; // error if any on the last call
 	private $helo_rply; // the reply the server sent to us for HELO
@@ -92,13 +89,8 @@ class SMTP {
 		$this->smtp_conn = 0;
 		$this->error = null;
 		$this->helo_rply = null;
-
 		$this->do_debug = 0;
 	}
-
-	/////////////////////////////////////////////////
-	// CONNECTION FUNCTIONS
-	/////////////////////////////////////////////////
 
 	/**
 	 * Connect to the server specified on the port specified.
@@ -313,10 +305,6 @@ class SMTP {
 		}
 	}
 
-	/////////////////////////////////////////////////
-	// SMTP COMMANDS
-	/////////////////////////////////////////////////
-
 	/**
 	 * Issues a data command and sends the msg_data to the server
 	 * finializing the mail transaction. $msg_data is the message
@@ -377,7 +365,7 @@ class SMTP {
 		 */
 
 		// normalize the line breaks so we know the explode works
-		$msg_data = String::replaceLineBreak($msg_data, "\n");
+		$msg_data = Strings::replaceLineBreaks($msg_data, "\n");
 		$lines = explode("\n", $msg_data);
 
 		/* we need to find a good way to determine is headers are
@@ -792,10 +780,6 @@ class SMTP {
 	public function getError() {
 		return $this->error;
 	}
-
-	/////////////////////////////////////////////////
-	// INTERNAL FUNCTIONS
-	/////////////////////////////////////////////////
 
 	/**
 	 * Read in as many lines as possible

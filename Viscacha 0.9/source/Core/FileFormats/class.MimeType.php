@@ -26,6 +26,8 @@
  */
 
 /**
+ * Detect mime type by extension and vice versa.
+ *
  * @todo		Add documentation / description
  * @package		Core
  * @subpackage	FileFormats
@@ -469,8 +471,8 @@ class MimeType {
 			}
 		}
 		if ($mimeType === false) {
-			$ext = File::getExtension($file);
-			$mimeType = Arrays::find(self::$data, $ext);
+			$ext = new File($file);
+			$mimeType = Arrays::find(self::$data, $ext->extension());
 		}
 		return ($mimeType === false) ? null : $mimeType;
 	}

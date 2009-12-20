@@ -25,8 +25,13 @@
  * @license		http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License
  */
 
-checkCore();
-Core::loadClass('Core.Kernel.ClassManager');
+Core::loadPackage('Core.Kernel');
+Core::loadPackage('Core.Util.DataTypes');
+Core::loadPackage('Core.Cache');
+Core::loadClass('Core.Util.System');
+Core::loadClass('Core.FileSystem.FileSystem');
+Core::loadClass('Core.FileSystem.File');
+Core::loadClass('Core.FileSystem.Folder');
 
 /**
  * Short form for Core::getObject().
@@ -47,19 +52,6 @@ Core::loadClass('Core.Kernel.ClassManager');
  */
 function Core($objectConst) {
 	return Core::getObject($objectConst);
-}
-
-/**
- * This function should be used at the top of every source file. This is not neede for classes.
- *
- * This checks whether the VISCACHA_CORE constant is set to 2 or not.
- * In case VISCACHA_CORE is not "2" the script dies immediately with the following error message:
- * <code>Error: Internal protection against hacking attempts</code>
- */
-function checkCore() {
-	if (constant('VISCACHA_CORE') !== '2') {
-		die('Error: Internal protection against hacking attempts');
-	}
 }
 
 /**

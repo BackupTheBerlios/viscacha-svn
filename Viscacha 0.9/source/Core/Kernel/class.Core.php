@@ -25,8 +25,6 @@
  * @license		http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License
  */
 
-Core::loadClass('Core.Kernel.CoreException');
-
 /**
  * Useful Core functionality for centralized object handling and more.
  *
@@ -48,6 +46,14 @@ abstract class Core {
 	 * @static
 	 */
 	private static $namedObjects = array();
+
+	/**
+	 * Global debugging for Core functionality
+	 *
+	 * @var Debug
+	 * @static
+	 */
+	private static $debug = null;
 
 	/**
 	 * Gets an object of a class with the stored name passed as parameter.
@@ -215,8 +221,7 @@ abstract class Core {
 	 * Example: Use Core.Util.DataTypes to load classes and interfaces in source/Core/Util/DataTypes
 	 *
 	 * @param	string	Name of package
-	 * @todo	Check Implementation
-	 * @todo	Escape path in glob
+	 * @todo	Check usage of glob: Escape path?
 	 */
 	public static function loadPackage($package) {
 	    $path = 'source/'.str_replace('.', '/', $package);
@@ -293,8 +298,16 @@ abstract class Core {
 	 *
 	 * @param	string	Package name
 	 */
-	private function getNameFromPackage($name) {
-		return array_pop(explode('.', $name));
+	private static function getNameFromPackage($name) {
+		$parts = explode('.', $name);
+		return array_pop($parts);
+	}
+
+	public static function addLog($text, $function) {
+		if (self::$debug === null) {
+			self::$debug = new Debug('core.log');
+		}
+		self::$debug->addText("{$function} - {$text}");
 	}
 
 }

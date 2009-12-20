@@ -48,7 +48,7 @@ class ErrorHandling {
 	 */
 	public function __construct($error = true, $exception = true) {
 		if ($error == true) {
-			//set_error_handler(array($this, 'errorHandler'));
+			set_error_handler(array($this, 'errorHandler'));
 		}
 		if ($exception == true) {
 			set_exception_handler(array($this, 'exceptionHandler'));
@@ -59,13 +59,13 @@ class ErrorHandling {
 	/**
 	 * Handles the PHP errors and outputs xHTML-Code with debugging information.
 	 *
-	 * Each time this method is called the error details will be passed to the ErrrorHandling::log()-method.
+	 * Each time this method is called the error details will be will be written to Core::addLog().
 	 *
-	 * @see ErrrorHandling::log()
 	 * @param int Error Number
 	 * @param string Error Text
 	 * @param string Filename
 	 * @param int Line number
+	 * @see Core::addLog();
 	 **/
 	public function errorHandler($errno, $errtext, $errfile, $errline) {
 		// Fifth parameter $errcontext can not be used with OOP.
@@ -73,15 +73,17 @@ class ErrorHandling {
 
 		$errdate = gmdate("r");
 
+		// This error types can be catched, others not (e.q. E_ERROR)
 		$errortype = array (
-			E_ERROR				=> "PHP Error",
 			E_RECOVERABLE_ERROR => "PHP Error",
 			E_WARNING			=> "PHP Warning",
 			E_NOTICE			=> "PHP Notice",
+			E_DEPRECATED		=> "PHP Deprecated",
 			E_USER_ERROR		=> "Viscacha Error",
 			E_USER_WARNING		=> "Viscacha Warning",
 			E_USER_NOTICE		=> "Viscacha Notice",
-			E_STRICT			=> "PHP5 Strict Notice"
+			E_USER_DEPRECATED	=> "Viscacha Deprecated",
+			E_STRICT			=> "PHP Strict Notice"
 		);
 
 		switch ($errno) {
@@ -89,6 +91,8 @@ class ErrorHandling {
 			case E_NOTICE:
 			case E_USER_WARNING:
 			case E_USER_NOTICE:
+			case E_USER_DEPRECATED:
+			case E_STRICT:
 				echo "{$errortype[$errno]}: {$errtext} (File {$errfile} on line {$errline})";
 				$this->log("{$errortype[$errno]} [{$errdate}]: {$errtext} (File {$errfile} on line {$errline})");
 				$this->depth--;
@@ -96,11 +100,9 @@ class ErrorHandling {
 			break;
 			case E_USER_ERROR:
 			case E_RECOVERABLE_ERROR:
-
 				if ($this->depth > 1) {
 					restore_error_handler();
 				}
-
 				if (function_exists('ob_clean') && @ob_get_level() != 0) {
 					@ob_clean();
 				}
@@ -109,7 +111,7 @@ class ErrorHandling {
 	<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr">
 		<head>
 			<meta http-equiv="content-type" content="text/html; charset=urf-8" />
-			<title>Viscacha <?php echo Core::version(); ?> &raquo; Error</title>
+			<title>Viscacha &raquo; Error</title>
 			<link rel="stylesheet" type="text/css" href="client/error.css" />
 		</head>
 		<body>
@@ -143,7 +145,7 @@ class ErrorHandling {
 		</body>
 	</html>
 				<?php
-				$this->log("{$errortype[$errno]} [{$errdate}]: {$errtext} (File {$errfile} on line {$errline})");
+				Core::addLog("{$errortype[$errno]} [{$errdate}]: {$errtext} (File {$errfile} on line {$errline})", 'ErrorHandling::errorHandler');
 				exit;
 			break;
 		}
@@ -156,6 +158,7 @@ class ErrorHandling {
 	 *
 	 * @see ErrrorHandling::log()
 	 * @param mixed Exception
+	 * @todo Handle NonFatalException correctly
 	 **/
 	public function exceptionHandler($exception) {
 		if ($this->depth > 0) {
@@ -185,7 +188,7 @@ class ErrorHandling {
 	<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr">
 		<head>
 			<meta http-equiv="content-type" content="text/html; charset=urf-8" />
-			<title>Viscacha <?php echo Core::version(); ?> &raquo; Exception</title>
+			<title>Viscacha &raquo; Exception</title>
 			<link rel="stylesheet" type="text/css" href="client/error.css" />
 		</head>
 		<body>
@@ -222,21 +225,8 @@ class ErrorHandling {
 		</body>
 	</html>
 		<?php
-		$this->log("{$name} [{$errdate}]: {$exception}");
+		Core::addLog("{$name} [{$errdate}]: {$exception}", "ErrorHandler::exceptionHandler");
 		exit;
-	}
-
-	/**
-	 * Writes a error message to the log file internals.log.
-	 *
-	 * @see Debug::add()
-	 * @param string Error that should be saved to the log file.
-	 */
-	private function log($error) {
-		if (Config::get('core.debug') == 1) {
-			$debug = Core::getObject('Viscacha.System.Debug');
-			$debug->add($error);
-		}
 	}
 
 	/**
@@ -274,11 +264,13 @@ class ErrorHandling {
 					switch (gettype($argument)) {
 						case 'integer':
 						case 'double':
+							// float?
 							$args[] = $argument;
 						break;
 
 						case 'string':
-							$argument = htmlspecialchars(substr($argument, 0, 64)) . ((strlen($argument) > 64) ? '...' : '');
+							$argument = htmlspecialchars(substr($argument, 0, 64));
+							$argument .= (strlen($argument) > 64) ? '...' : '';
 							$args[] = "'{$argument}'";
 						break;
 
@@ -313,10 +305,11 @@ class ErrorHandling {
 			$trace['class'] = (!isset($trace['class'])) ? '' : $trace['class'];
 			$trace['type'] = (!isset($trace['type'])) ? '' : $trace['type'];
 
+			$argOutput = (count($args) ? implode(', ', $args) : '');
 			$output .= '<ul class="code">';
 			$output .= '<li class="linetwo"><b>File:</b> ' . htmlspecialchars($trace['file']) . '</li>';
 			$output .= '<li class="lineone"><b>Line:</b> ' . $trace['line'] . '</li>';
-			$output .= '<li class="linetwo"><b>Call:</b> ' . htmlspecialchars($trace['class'] . $trace['type'] . $trace['function']) . '(' . ((count($args)) ? implode(', ', $args) : '') . ')</li>';
+			$output .= '<li class="linetwo"><b>Call:</b> ' . htmlspecialchars($trace['class'] . $trace['type'] . $trace['function']) . '(' . $argOutput . ')</li>';
 			$output .= '</ul>';
 		}
 		return $output;
@@ -345,11 +338,11 @@ class ErrorHandling {
 			if(($i >= 1) && ($i <= $total)) {
 	            $codeline = htmlentities($lines[$i - 1]);
 	            $codeline = str_replace("\t", '&nbsp;&nbsp;&nbsp;&nbsp;', $codeline);
-	            $codeline = str_replace(' ',  '&nbsp;',                   $codeline);
+	            $codeline = str_replace(' ', '&nbsp;', $codeline);
 
 	            $i = sprintf("%05d", $i);
 
-	            $class = $i % 2 == 0 ? 'lineone' : 'linetwo';
+	            $class = ($i % 2 == 0) ? 'lineone' : 'linetwo';
 
 	            if($i != $line) {
 	                $code .= "<li class=\"{$class}\"><span>{$i}</span>{$codeline}</li>\n";
@@ -388,7 +381,8 @@ class ErrorHandling {
 				$code .= "</ul>\n";
 			}
 			else {
-				$code .= "Function get_loaded_extensions() is disabled. Can not get information about installed extensions.";
+				$code .= "Function get_loaded_extensions() is disabled. ";
+				$code .= "Can not get information about installed extensions.";
 			}
 			$code .= "</p>\n";
 			return $code;

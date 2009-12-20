@@ -188,7 +188,9 @@ class IDNA {
 			foreach ($arr as $k => $v) {
 				if (preg_match('!^'.preg_quote($this->_punycode_prefix, '!').'!', $v)) {
 					$conv = $this->_decode($v);
-					if ($conv) $arr[$k] = $conv;
+					if ($conv) {
+						$arr[$k] = $conv;
+					}
 				}
 			}
 			$input = join('.', $arr);
@@ -203,7 +205,8 @@ class IDNA {
 			}
 			$email_pref = join('.', $arr);
 			$return = $email_pref . '@' . $input;
-		} elseif (preg_match('![:\./]!', $input)) {
+		}
+		elseif (preg_match('![:\./]!', $input)) {
 			// Or a complete domain name (with or without paths / parameters)
 
 			// No no in strict mode
@@ -221,16 +224,16 @@ class IDNA {
 					}
 				}
 				$parsed['host'] = join('.', $arr);
-				$return = (empty($parsed['scheme']) ? '' :
-						$parsed['scheme'].(strtolower($parsed['scheme']) == 'mailto' ? ':' : '://'))
-					.(empty($parsed['user']) ? '' :
-						$parsed['user'].(empty($parsed['pass']) ? '' : ':'.$parsed['pass']).'@')
+                $return =
+					(empty($parsed['scheme']) ? '' : $parsed['scheme'].(strtolower($parsed['scheme']) == 'mailto' ? ':' : '://'))
+					.(empty($parsed['user']) ? '' : $parsed['user'].(empty($parsed['pass']) ? '' : ':'.$parsed['pass']).'@')
 					.$parsed['host']
 					.(empty($parsed['port']) ? '' : ':'.$parsed['port'])
 					.(empty($parsed['path']) ? '' : $parsed['path'])
 					.(empty($parsed['query']) ? '' : '?'.$parsed['query'])
 					.(empty($parsed['fragment']) ? '' : '#'.$parsed['fragment']);
-			} else { // parse_url seems to have failed, try without it
+			}
+			else { // parse_url seems to have failed, try without it
 				$arr = explode('.', $input);
 				foreach ($arr as $k => $v) {
 					$conv = $this->_decode($v);
@@ -880,16 +883,21 @@ class IDNA {
 		foreach ($input as $k => $v) {
 			if ($v < 128) { // 7bit are transferred literally
 				$output .= chr($v);
-			} elseif ($v < (1 << 11)) { // 2 bytes
+			}
+			elseif ($v < (1 << 11)) { // 2 bytes
 				$output .= chr(192+($v >> 6)).chr(128+($v & 63));
-			} elseif ($v < (1 << 16)) { // 3 bytes
+			}
+			elseif ($v < (1 << 16)) { // 3 bytes
 				$output .= chr(224+($v >> 12)).chr(128+(($v >> 6) & 63)).chr(128+($v & 63));
-			} elseif ($v < (1 << 21)) { // 4 bytes
-				$output .= chr(240+($v >> 18)).chr(128+(($v >> 12) & 63)).
-							chr(128+(($v >> 6) & 63)).chr(128+($v & 63));
-			} elseif (self::$safe_mode) {
+			}
+			elseif ($v < (1 << 21)) { // 4 bytes
+				$output .= chr(240+($v >> 18)).chr(128+(($v >> 12) & 63));
+				$output .= chr(128+(($v >> 6) & 63)).chr(128+($v & 63));
+			}
+			elseif (self::$safe_mode) {
 				$output .= self::$safe_char;
-			} else {
+			}
+			else {
 				$this->_error('Conversion from UCS-4 to UTF-8 failed: malformed input at byte '.$k);
 				return false;
 			}
