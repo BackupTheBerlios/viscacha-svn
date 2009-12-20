@@ -1,14 +1,14 @@
 <?php
 require_once 'PHPUnit/Framework.php';
-require_once dirname(__FILE__).'/../../../../../../source/Core/Util/DataTypes/class.Number.php';
+require_once dirname(__FILE__).'/../../../../../../source/Core/Util/DataTypes/class.Numbers.php';
 
-class NumberTest extends PHPUnit_Framework_TestCase {
+class NumbersTest extends PHPUnit_Framework_TestCase {
 
 	/**
 	 * @dataProvider providerIsNatural
 	 */
 	public function testIsNatural($value, $expected) {
-		$result = Number::isNatural($value);
+		$result = Numbers::isNatural($value);
 		$this->assertEquals($expected, $result, "Given: {$value}; Result: ".var_export($result, true));
 	}
 
@@ -45,7 +45,7 @@ class NumberTest extends PHPUnit_Framework_TestCase {
 	 * @dataProvider providerIsInteger
 	 */
 	public function testIsInteger($value, $expected) {
-		$result = Number::isInteger($value);
+		$result = Numbers::isInteger($value);
 		$this->assertEquals($expected, $result, "Given: {$value}; Result: ".var_export($result, true));
 	}
 
@@ -81,7 +81,7 @@ class NumberTest extends PHPUnit_Framework_TestCase {
 	 * @dataProvider providerLeadingZero
 	 */
 	public function testLeadingZero($value, $leading, $expected) {
-		$this->assertEquals($expected, Number::leadingZero($value, $leading));
+		$this->assertEquals($expected, Numbers::leadingZero($value, $leading));
 	}
 
 	function providerLeadingZero() {

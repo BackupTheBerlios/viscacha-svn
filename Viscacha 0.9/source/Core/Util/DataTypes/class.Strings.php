@@ -38,11 +38,11 @@
  * @since 		1.0
  * @abstract
  */
-abstract class String {
+abstract class Strings {
 
 	const WORD_SEPARATOR = '\.\,;:\+!\?\_\|\s"\'\#\[\]\%\{\}\(\)\/\\';
 
-	public static function replaceLineBreak($string, $replace) {
+	public static function replaceLineBreaks($string, $replace) {
 		return str_replace(array("\r\n", "\n", "\r"), $replace, $string);
 	}
 
@@ -76,14 +76,14 @@ abstract class String {
 	 *
 	 * @param string Text to split
 	 * @return array Array wirh words or null on failure
-	 * @see String::WORD_SEPARATOR
+	 * @see Strings::WORD_SEPARATOR
 	 */
 	public static function splitWords($text) {
 		if (!is_string($text)) {
 			return null;
 		}
 		else {
-			return preg_split('~['.String::WORD_SEPARATOR.']+?~', $text, -1, PREG_SPLIT_NO_EMPTY);
+			return preg_split('~['.Strings::WORD_SEPARATOR.']+?~', $text, -1, PREG_SPLIT_NO_EMPTY);
 		}
 	}
 

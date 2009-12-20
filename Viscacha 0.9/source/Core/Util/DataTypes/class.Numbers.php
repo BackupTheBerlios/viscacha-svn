@@ -38,7 +38,7 @@
  * @since 		1.0
  * @abstract
  */
-abstract class Number {
+abstract class Numbers {
 
 	/**
 	 * Checks whether a number is a natural number (without zero).
