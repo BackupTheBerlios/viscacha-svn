@@ -71,9 +71,17 @@ class Viscacha_Sniffs_Formatting_DisallowMultipleStatementsSniff implements PHP_
 		}
 
 		if ($tokens[$prev]['line'] === $tokens[$stackPtr]['line']) {
-			$error = 'Each PHP statement must be on a line by itself';
-			$phpcsFile->addError($error, $stackPtr);
-			return;
+
+			$prevOpen = $phpcsFile->findPrevious(T_OPEN_TAG, ($stackPtr - 1));
+			$nextEnd = $phpcsFile->findNext(T_CLOSE_TAG, ($stackPtr + 1));
+			if ($tokens[$prevOpen]['line'] === $tokens[$stackPtr]['line'] && $tokens[$nextEnd]['line'] === $tokens[$stackPtr]['line']) {
+				return; // Ignore if it is in a template (open and close tag in the same line)
+			}
+			else {
+				$error = 'Each PHP statement must be on a line by itself';
+				$phpcsFile->addWarning($error, $stackPtr);
+				return;
+			}
 		}
 
 	}//end process()

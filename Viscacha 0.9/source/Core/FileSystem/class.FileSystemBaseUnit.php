@@ -160,8 +160,7 @@ abstract class FileSystemBaseUnit {
 		if ($this->exists() == false) {
 			return null;
 		}
-		// If you only want the permissions (lowest three octal numbers) you can use a 
-		// bitwise AND to mask the bits
+		// Use a bitwise AND to mask the bits so we get only the lowest three octal numbers
 		$mode = fileperms($this->path) & 511;
 		if ($type == self::PERMISSIONS_STRING) {
 			$trans = array(

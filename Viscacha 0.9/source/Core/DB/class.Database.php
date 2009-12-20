@@ -230,8 +230,7 @@ abstract class Database {
 	 * @param int Port
 	 * @param string Socket
 	 */
-	public abstract function connect($username = null, $password = null, $host = null,
-									 $port = null, $socket = null);
+	public abstract function connect($username = null, $password = null, $host = null, $port = null, $socket = null);
 
 	/**
 	 * Returns the create statement for creating the specified table.

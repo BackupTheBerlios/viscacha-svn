@@ -38,7 +38,7 @@ class Viscacha_Sniffs_Files_LineLengthSniff implements PHP_CodeSniffer_Sniff
      *
      * @var int
      */
-    protected $lineLimit = 100;
+    protected $lineLimit = null;
 
     /**
      * The limit that the length of a line must not exceed.
@@ -47,7 +47,7 @@ class Viscacha_Sniffs_Files_LineLengthSniff implements PHP_CodeSniffer_Sniff
      *
      * @var int
      */
-    protected $absoluteLineLimit = 200;
+    protected $absoluteLineLimit = 160;
 
 
     /**
@@ -120,7 +120,7 @@ class Viscacha_Sniffs_Files_LineLengthSniff implements PHP_CodeSniffer_Sniff
             if ($this->absoluteLineLimit > 0 && $lineLength > $this->absoluteLineLimit) {
                 $error = 'Line exceeds maximum limit of '.$this->absoluteLineLimit." characters; contains $lineLength characters";
                 $phpcsFile->addError($error, $stackPtr);
-            } else if ($lineLength > $this->lineLimit) {
+            } else if ($this->lineLimit > 0 && $lineLength > $this->lineLimit) {
                 $warning = 'Line exceeds '.$this->lineLimit." characters; contains $lineLength characters";
                 $phpcsFile->addWarning($warning, $stackPtr);
             }

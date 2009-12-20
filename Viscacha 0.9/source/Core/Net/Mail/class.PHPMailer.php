@@ -789,7 +789,6 @@ class PHPMailer {
 			}
 		}
 
-
 		if (count($bad_rcpt) > 0) { //Create error message for any bad addresses
 			$badaddresses = implode(', ', $bad_rcpt);
 			throw new PHPMailerException($this->Lang('recipients_failed').$badaddresses);
@@ -890,7 +889,7 @@ class PHPMailer {
 	 * @access public
 	 * @todo Rework integration of language files etc.
 	 */
-	function SetLanguage($langcode = 'en', $lang_path = 'language/') {
+	public function SetLanguage($langcode = 'en', $lang_path = 'language/') {
 		//Define full set of translatable strings
 		$PHPMAILER_LANG = array(
 			'provide_address' => 'You must provide at least one recipient email address.',

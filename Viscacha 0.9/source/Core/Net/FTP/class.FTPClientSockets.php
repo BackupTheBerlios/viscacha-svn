@@ -56,7 +56,7 @@ class FTPClientSockets extends FTPClient {
 			@socket_close($sock);
 			return false;
 		}
-		if(!@socket_set_option($sock, SOL_SOCKET , SO_SNDTIMEO, $timeout)) {
+		if(!@socket_set_option($sock, SOL_SOCKET, SO_SNDTIMEO, $timeout)) {
 			$se = socket_strerror(socket_last_error($sock));
 			$this->pushError('_connect', 'socket set send timeout', $se);
 			@socket_close($sock);

@@ -65,10 +65,10 @@ class Viscacha_Sniffs_Classes_ClassFileNameSniff implements PHP_CodeSniffer_Snif
         $fileName  = substr($fullPath, 0, strrpos($fullPath, '.'));
         $className = preg_replace('~^(class|interface)\.~', '', $fileName);
 
-        if ($tokens[$decName]['content'] !== "".$className) {
+        if ($tokens[$decName]['content'] != $className) {
             $error  = ucfirst($tokens[$stackPtr]['content']);
             $error .= ' name doesn\'t match filename. Expected ';
-            $error .= '"'.$tokens[$stackPtr]['content'].' ';
+            $error .= '"'.$className.' ';
             $error .= $fileName.'".';
             $phpcsFile->addError($error, $stackPtr);
         }

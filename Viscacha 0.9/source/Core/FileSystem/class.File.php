@@ -302,7 +302,7 @@ class File extends FileSystemBaseUnit {
 	 * @todo Implement
 	 */
 	public function setTime($accessTime = null, $modTime = null) {
-		
+		return touch($this->file, $modTime, $accessTime);
 	}
 
 	/**
