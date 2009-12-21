@@ -10,7 +10,7 @@
  * @author    Marc McIntyre <mmcintyre@squiz.net>
  * @copyright 2006 Squiz Pty Ltd (ABN 77 084 670 600)
  * @license   http://matrix.squiz.net/developer/tools/php_cs/licence BSD Licence
- * @version   CVS: $Id: MethodScopeSniff.php 240383 2007-07-27 05:38:59Z squiz $
+ * @version   SVN Rev. 292390
  * @link      http://pear.php.net/package/PHP_CodeSniffer
  */
 
@@ -27,7 +27,7 @@ if (class_exists('PHP_CodeSniffer_Standards_AbstractScopeSniff', true) === false
  * @author    Marc McIntyre <mmcintyre@squiz.net>
  * @copyright 2006 Squiz Pty Ltd (ABN 77 084 670 600)
  * @license   http://matrix.squiz.net/developer/tools/php_cs/licence BSD Licence
- * @version   Release: 1.2.0
+ * @version   SVN Rev. 292390
  * @link      http://pear.php.net/package/PHP_CodeSniffer
  */
 class Viscacha_Sniffs_Scope_MethodScopeSniff extends PHP_CodeSniffer_Standards_AbstractScopeSniff
@@ -57,16 +57,19 @@ class Viscacha_Sniffs_Scope_MethodScopeSniff extends PHP_CodeSniffer_Standards_A
     {
         $tokens = $phpcsFile->getTokens();
 
+        $methodName = $phpcsFile->getDeclarationName($stackPtr);
+        if ($methodName === null) {
+            // Ignore closures.
+            return;
+        }
+
         $modifier = $phpcsFile->findPrevious(PHP_CodeSniffer_Tokens::$scopeModifiers, $stackPtr);
         if (($modifier === false) || ($tokens[$modifier]['line'] !== $tokens[$stackPtr]['line'])) {
-            $name  = $phpcsFile->findNext(T_STRING, ($stackPtr + 1));
-            $name  = $tokens[$name]['content'];
-            $error = "No scope modifier specified for function \"$name\"";
+            $error = "No scope modifier specified for function \"$methodName\"";
             $phpcsFile->addError($error, $stackPtr);
         }
 
     }//end processTokenWithinScope()
-
 
 }//end class
 

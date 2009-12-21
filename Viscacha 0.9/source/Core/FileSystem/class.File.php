@@ -352,6 +352,20 @@ class File extends FileSystemBaseUnit {
 	}
 
 	/**
+	 * Moves an uploaded file to another destination.
+	 *
+	 * @param string Destination
+	 * @return boolean true on success, false on failure.
+	 * @see move_uploaded_file()
+	 */
+	public function moveUploaded($destination) {
+		if (is_uploaded_file($this->path) == false) {
+			return false;
+		}
+		return move_uploaded_file($this->path, $destination);
+	}
+
+	/**
 	 * Checks whether a file exists or not.
 	 *
 	 * @return boolean Returns TRUE if the file exists; FALSE otherwise.

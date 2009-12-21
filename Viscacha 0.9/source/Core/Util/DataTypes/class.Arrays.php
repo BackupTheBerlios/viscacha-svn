@@ -65,7 +65,7 @@ abstract class Arrays {
 	 * @param mxied Text to find
 	 * @return mixed Key of array or false on failure
 	 */
-	public static function find($array, $keyword) {
+	public static function find(array $array, $keyword) {
 		foreach($array as $key => $value) {
 			if($keyword === $value || (is_array($value) == true && Arrays::find($array, $value) !== false)) {
 				return $key;
@@ -94,7 +94,7 @@ abstract class Arrays {
      * @param	array	The array to be sorted
      * @return	boolean	true on success, false on failure
      */
-	public static function sort(&$array) {
+	public static function sort(array &$array) {
 		return self::mergeSort($array);
 	}
 
@@ -116,7 +116,7 @@ abstract class Arrays {
 	 * @see		http://www.php.net/manual/en/function.usort.php#38827
 	 * @todo	Implement check with class_implements() and return value false.
 	 */
-	private static function mergesort(&$array) {
+	private static function mergesort(array &$array) {
 	    // Arrays of size < 2 require no action.
 	    if (count($array) < 2) {
 	    	return true;
@@ -193,6 +193,39 @@ abstract class Arrays {
 			return true;
 		}
 	}
+
+	/**
+	 * Simple Emulation of xPath for arrays.
+	 *
+	 * With this function you can find values in an array by an path like "abc/def/ghi".
+	 * If nothing was found (function returns false) the third parameter contains null.
+	 *
+	 * @author Jonas John
+	 * @license Public Domain
+	 * @see http://www.jonasjohn.de/snippets/php/array-get-path.htm
+	 * @param array Array to search in
+	 * @param string Path to follow
+	 * @param array Holds the result of the search or null on failure
+	 * @return boolean true on success, false on failure
+	 * @todo Add support to search for values
+	 */
+	function xPath(array $data, $path, &$result) {
+		$result = null;
+		$path = explode("/", $path);
+		$count = count($path);
+		for ($x=0; $x < $count; $x++){
+			$key = $path[$x];
+			if (is_array($data) && isset($data[$key])){
+				$data = $data[$key];
+			}
+			else {
+				return false;
+			}
+		}
+		$result = $data;
+		return true;
+	}
+
 
 }
 ?>

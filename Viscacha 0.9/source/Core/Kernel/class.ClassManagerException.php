@@ -56,7 +56,7 @@ class ClassManagerException extends InfoException {
 	 *
 	 * @param	array	Index from ClassManager
 	 */
-	public function setIndex($index) {
+	public function setIndex(array $index) {
 		$this->index = $index;
 	}
 

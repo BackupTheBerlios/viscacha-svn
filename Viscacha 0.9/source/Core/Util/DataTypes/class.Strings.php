@@ -40,7 +40,7 @@
  */
 abstract class Strings {
 
-	const WORD_SEPARATOR = '\.\,;:\+!\?\_\|\s"\'\#\[\]\%\{\}\(\)\/\\';
+	const WORD_SEPARATOR = ".,;:+!?_| '\"#[]%{}()/\r\n\t\\";
 
 	public static function replaceLineBreaks($string, $replace) {
 		return str_replace(array("\r\n", "\n", "\r"), $replace, $string);
@@ -83,8 +83,121 @@ abstract class Strings {
 			return null;
 		}
 		else {
-			return preg_split('~['.Strings::WORD_SEPARATOR.']+?~', $text, -1, PREG_SPLIT_NO_EMPTY);
+			return preg_split(
+				'~['.preg_quote(Strings::WORD_SEPARATOR, '~').']+~',
+				$text,
+				-1,
+				PREG_SPLIT_NO_EMPTY
+			);
 		}
+	}
+
+	/**
+	 * Normalizes a string (replace/remove special chars).
+	 *
+	 * This function tries to replace as many chars as it can with standard ascii chars. Every char
+	 * from String::WORD_SEPARATOR will be replaced with the char specified as second parameter,
+	 * but if there are multiple of these chars in a row it is replaced with one separator only. If
+	 * you specify a string with more than one char as separator only the first char will be used.
+	 * Removes every char that couldn't be replaced before. The result will be a string with only
+	 * alphanumerical chars plus the chars dot (.), underscore (_), dash (-) and if applicable the
+	 * separator specified.
+	 *
+	 * @param string Initial string
+	 * @param string Separator
+	 * @return string Normalized string
+	 */
+	public static function replaceSpecialChars($text, $separator = '_') {
+		if (strlen($separator) > 1) {
+			$separator = $separator[0];
+		}
+		$text = strtr($text, $this->getSpecialCharsMap());
+		$text = preg_replace(
+			'~['.preg_quote(Strings::WORD_SEPARATOR, '~').']+~',
+			$separator,
+			$text
+		);
+		$text = preg_replace("~[^\w\d\.-_".preg_quote($separator, '~')."]+~i", '', $text);
+		return $text;
+	}
+
+	protected static function getSpecialCharsMap() {
+		return array(
+			'Š' => 'S',
+			'š' => 's',
+			'Đ' => 'Dj',
+			'đ' => 'dj',
+			'Ž' => 'Z',
+			'ž' => 'z',
+			'Č' => 'C',
+			'č' => 'c',
+			'Ć' => 'C',
+			'ć' => 'c',
+			'Ç' => 'C',
+			'À' => 'A',
+			'Á' => 'A',
+			'Â' => 'A',
+			'Ã' => 'A',
+			'Ä' => 'Ae',
+			'Å' => 'A',
+			'Æ' => 'Ae',
+			'È' => 'E',
+			'É' => 'E',
+			'Ê' => 'E',
+			'Ë' => 'E',
+			'Ì' => 'I',
+			'Í' => 'I',
+			'Î' => 'I',
+			'Ï' => 'I',
+			'Ñ' => 'N',
+			'Ò' => 'O',
+			'Ó' => 'O',
+			'Ô' => 'O',
+			'Õ' => 'O',
+			'Ö' => 'Oe',
+			'Ø' => 'O',
+			'Ù' => 'U',
+			'Ú' => 'U',
+			'Û' => 'U',
+			'Ü' => 'Ue',
+			'Ý' => 'Y',
+			'Þ' => 'B',
+			'ß' => 'ss',
+			'à' => 'a',
+			'á' => 'a',
+			'â' => 'a',
+			'ã' => 'a',
+			'ä' => 'ae',
+			'å' => 'a',
+			'æ' => 'a',
+			'ç' => 'c',
+			'è' => 'e',
+			'é' => 'e',
+			'ê' => 'e',
+			'ë' => 'e',
+			'ì' => 'i',
+			'í' => 'i',
+			'î' => 'i',
+			'ï' => 'i',
+			'ð' => 'o',
+			'ñ' => 'n',
+			'ò' => 'o',
+			'ó' => 'o',
+			'ô' => 'o',
+			'õ' => 'o',
+			'ö' => 'oe',
+			'ø' => 'o',
+			'ù' => 'u',
+			'ú' => 'u',
+			'û' => 'u',
+			'ý' => 'y',
+			'ý' => 'y',
+			'þ' => 'b',
+			'ÿ' => 'y',
+			'Ŕ' => 'R',
+			'ŕ' => 'r',
+			'ü' => 'ue'
+		);
 	}
 
 }

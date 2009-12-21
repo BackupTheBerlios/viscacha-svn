@@ -32,7 +32,7 @@ Core::loadClass('Core.FileSystem.FileSystemBaseUnit');
  *
  * Static methods are also implemented in the Folders class.
  *
-	 * Information: This class is named Folder because PHP has a built-in class named 'Directory'.
+ * Information: This class is named Folder because PHP has a built-in class named 'Directory'.
  *
  * @package		Core
  * @subpackage	FileSystem

@@ -146,7 +146,7 @@ class Viscacha_Sniffs_PHP_ForbiddenFunctionsSniff implements PHP_CodeSniffer_Sni
 		$isErrorFunc = in_array($function, array_keys($this->forbiddenFunctions));
 		$isAliasFunc = in_array($function, array_keys($this->aliasFunctions));
 
-		if ($isErrorFunc === false || $isAliasFunc === false) {
+		if ($isErrorFunc === false && $isAliasFunc === false) {
 			return;
 		}
 

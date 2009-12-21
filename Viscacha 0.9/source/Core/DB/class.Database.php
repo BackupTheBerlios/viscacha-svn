@@ -562,7 +562,7 @@ abstract class Database {
 	 * @param array Data for the query
 	 * @return string Prepared query
 	 */
-	public function prepareQuery($query, $data = array()) {
+	public function prepareQuery($query, array $data = array()) {
 		$query = str_ireplace(array('<p>', '<prefix>'), $this->pre, $query);
 		if (count($data) > 0) {
 			$this->tempData = $data;
@@ -589,7 +589,7 @@ abstract class Database {
 	 * @see Database::prepareQuery()
 	 * @return mixed Result set for a select statement, a boolean for other statements.
 	 **/
-	public function query($query, $data = array()) {
+	public function query($query, array $data = array()) {
 		return $this->rawQuery($this->prepareQuery($query, $data));
 	}
 

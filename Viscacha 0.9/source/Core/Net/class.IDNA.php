@@ -614,7 +614,6 @@ class IDNA {
 				}
 			}
 			else {
-				}
 				$output[] = (int) $v;
 			}
 		}

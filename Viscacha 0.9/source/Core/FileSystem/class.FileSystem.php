@@ -142,5 +142,13 @@ abstract class FileSystem {
 
         return $drive . $separator . implode($separator, $dirStack);
     }
+
+	public static function checkTrailingSlash($path, $addSlash = false) {
+		$path = rtrim($path, '\\/');
+		if ($addSlash == true) {
+			$path .= Folder::SEPARATOR;
+		}
+		return $path;
+	}
 }
 ?>

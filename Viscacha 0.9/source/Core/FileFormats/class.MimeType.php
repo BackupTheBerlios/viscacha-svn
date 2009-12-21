@@ -427,17 +427,24 @@ class MimeType {
 	 *
 	 * This function returns an array with file extensions for this mime type.
 	 * The array contains the extensions without dot and written in lowercase.
+	 * If you set the second parameter to boolean true only the first extension from the array will be returrned as string.
 	 * NULL will be returned if no extension is found.
 	 *
-	 * Internal note: This is a simple mapping mime type to extension.
+	 * Internal note: This is a simple mime type to extension mapping.
 	 *
 	 * @param string Mime Type
-	 * @return array Array with extensions or null
+	 * @param boolean false (default) to return extension array, true to return first element only
+	 * @return array|string Array with extensions or null
 	 */
-	public static function getExtensions($mimeType) {
+	public static function getExtensions($mimeType, $single = false) {
 		$mimeType = strtolower($mimeType);
 		if (isset(self::$data[$mimeType]) == true && count(self::$data[$mimeType]) > 0) {
-			return self::$data[$mimeType];
+			if ($single == false) {
+				return self::$data[$mimeType];
+			}
+			else {
+				return reset(self::$data[$mimeType]); // Return first element of the array
+			}
 		}
 		else {
 			return null;
