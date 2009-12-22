@@ -277,7 +277,7 @@ class Upload {
 	 * @param string Upload directory
 	 * @return mixed bool false on error, filename on single, filename array on multiple uploads.
 	 */
-	public function upload($filename, $destination = '') {
+	public function doUpload($filename, $destination = '') {
 		$this->setErrorCode(self::ERROR_NONE);
 		if (!$this->isUpload($filename)) {
 			return false;
@@ -288,7 +288,7 @@ class Upload {
 		/*
 		 * $_FILES acts differently if HTML form field, type="file",
 		 * is single upload (name='foo') or array (name='foo[]'):
-		 * 
+		 *
 		 * 1. Single:
 		 *   $_FILES = array([$formfield] => array([name] => ?, [type] => ?, [tmp_name] => ?, ...));
 		 * 2. Array:
@@ -320,7 +320,7 @@ class Upload {
 					$this->file['size'] = $_FILES[$filename]['size'][$i];
 				}
 
-				if ($this->doUpload()) {
+				if ($this->processUpload()) {
 					$this->file_array[] = $this->file;
 				}
 			}
@@ -357,7 +357,7 @@ class Upload {
 				$this->file['size'] = $_FILES[$filename]['size'];
 			}
 
-			if ($this->doUpload()) {
+			if ($this->processUpload()) {
 				$this->file_array = $this->file;
 				return $this->file['name']; // success; return single filename
 			}
@@ -382,9 +382,9 @@ class Upload {
 	 *  [height] => pixel height (if image),
 	 *  [basename] => basename without extension
 	 *
-	 * @return array file attributes
+	 * @return array File attributes
 	 */
-	public function getFile() {
+	public function getFileInfo() {
 		return $this->file_array;
 	}
 
@@ -402,7 +402,7 @@ class Upload {
     /**
 	 * Resets the error message
 	 */
-	public function resetError() {
+	private function resetError() {
 		$this->error = '';
 	}
 
@@ -427,7 +427,7 @@ class Upload {
 	 * @param  string HTML form file field
 	 * @return boolean TRUE, if HTML form is setup, and user uploaded a file
 	 */
-	public function isUpload($filename) {
+	private function isUpload($filename) {
 		if (!isset($_SERVER['CONTENT_TYPE']) || !stristr($_SERVER['CONTENT_TYPE'], 'multipart/form-data')) {
 			$this->setErrorCode(self::ERROR_INPUT_MALFORMED);
 			return false;
@@ -452,7 +452,7 @@ class Upload {
 	 *
 	 * @return boolean true, if file is uploaded and moved
 	 */
-	private function doUpload() {
+	private function processUpload() {
 		if (!isset($this->file) || !is_array($this->file)) {
 			return false;
 		}
@@ -744,7 +744,7 @@ class Upload {
 	 * @return string Path, without trailing slash
 	 */
 	private function makePath($path) {
-		$path = FileSystem::removeTrailingSlash($path);
+		$path = FileSystem::adjustTrailingSlash$path);
 		if (strlen($path) == 0) {
 			$path = ".";
 		}

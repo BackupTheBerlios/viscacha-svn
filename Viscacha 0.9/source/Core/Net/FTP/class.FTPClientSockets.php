@@ -114,7 +114,7 @@ class FTPClientSockets extends FTPClient {
 			}
 		} while($go);
 		if($this->LocalEcho) {
-			echo "GET < ".rtrim($this->message, self::CRLF).self::CRLF;
+			echo "GET < ".Strings::trimLineBreaks($this->message).self::CRLF;
 		}
 		$this->code = (int) $regs[1];
 		return $result;

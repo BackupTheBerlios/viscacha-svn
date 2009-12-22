@@ -42,6 +42,11 @@ abstract class Strings {
 
 	const WORD_SEPARATOR = ".,;:+!?_| '\"#[]%{}()/\r\n\t\\";
 
+	public static function trimLineBreaks($string, $rightOnly = true) {
+		$function = $rightOnly ? 'rtrim' : 'trim';
+		return $function($string, "\r\n");
+	}
+
 	public static function replaceLineBreaks($string, $replace) {
 		return str_replace(array("\r\n", "\n", "\r"), $replace, $string);
 	}
@@ -84,7 +89,7 @@ abstract class Strings {
 		}
 		else {
 			return preg_split(
-				'~['.preg_quote(Strings::WORD_SEPARATOR, '~').']+~',
+				'~['.preg_quote(self::WORD_SEPARATOR, '~').']+~',
 				$text,
 				-1,
 				PREG_SPLIT_NO_EMPTY
@@ -111,9 +116,9 @@ abstract class Strings {
 		if (strlen($separator) > 1) {
 			$separator = $separator[0];
 		}
-		$text = strtr($text, $this->getSpecialCharsMap());
+		$text = strtr($text, self::getSpecialCharsMap());
 		$text = preg_replace(
-			'~['.preg_quote(Strings::WORD_SEPARATOR, '~').']+~',
+			'~['.preg_quote(self::WORD_SEPARATOR, '~').']+~',
 			$separator,
 			$text
 		);

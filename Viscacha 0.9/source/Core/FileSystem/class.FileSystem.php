@@ -143,7 +143,13 @@ abstract class FileSystem {
         return $drive . $separator . implode($separator, $dirStack);
     }
 
-	public static function checkTrailingSlash($path, $addSlash = false) {
+	/**
+	 * Check a path to contain a trailing slash or not.
+	 *
+	 * @param string Path to a folder
+	 * @param boolean Set to true to add a trailing slash, false to remove it from the path.
+	 */
+	public static function adjustTrailingSlash($path, $addSlash = false) {
 		$path = rtrim($path, '\\/');
 		if ($addSlash == true) {
 			$path .= Folder::SEPARATOR;

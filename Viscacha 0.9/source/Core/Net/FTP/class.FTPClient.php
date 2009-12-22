@@ -335,7 +335,7 @@ abstract class FTPClient {
 	 * Set ftp host
 	 */
 	public function setServer($host, $port = 21, $reconnect = true) {
-		if(!is_long($port)) {
+		if(!is_int($port)) {
 	        $this->verbose = true;
     	    $this->sendMsg("Incorrect port syntax");
 			return false;

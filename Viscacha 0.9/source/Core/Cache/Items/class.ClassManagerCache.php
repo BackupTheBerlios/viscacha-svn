@@ -41,7 +41,7 @@ class ClassManagerCache extends CacheItem {
 
 	private $classes;
 
-	public function __construct($name = __CLASS__, $path = CACHE_DEFAULT_DIR) {
+	public function __construct($name = __CLASS__, $path = CacheObject::DEFAULT_DIR) {
 		parent::__construct($name, $path);
 		$this->classes = array();
 	}
@@ -59,6 +59,7 @@ class ClassManagerCache extends CacheItem {
 	 * @param	string 	Directory to search in
 	 * @return	array	Array containing all pattern-matched files.
 	 * @todo	Escape path in glob
+	 * @todo	Check implementation
 	 */
 	private function scanSourceFolder(Folder $dir) {
 		$files = $dir->getFiles(Folder::RETURN_PATHS, Folder::FILTER_GLOB, '{class,interface}.*.php');

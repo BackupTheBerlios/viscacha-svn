@@ -209,7 +209,7 @@ abstract class Arrays {
 	 * @return boolean true on success, false on failure
 	 * @todo Add support to search for values
 	 */
-	function xPath(array $data, $path, &$result) {
+	public function xPath(array $data, $path, &$result) {
 		$result = null;
 		$path = explode("/", $path);
 		$count = count($path);

@@ -59,7 +59,7 @@ class CacheServer extends Singleton {
 	 * @param string Cache class source directory
 	 */
 	public function setSourceDir($sourceDir) {
-		$this->sourceDir = FileSystem::removeTrailingSlash($sourceDir, true);
+		$this->sourceDir = FileSystem::adjustTrailingSlash($sourceDir, true);
 	}
 
 	/**
@@ -68,7 +68,7 @@ class CacheServer extends Singleton {
 	 * @param string Directory for cached data
 	 */
 	public function setCacheDir($cacheDir) {
-		$this->cacheDir = FileSystem::removeTrailingSlash($cacheDir, true);
+		$this->cacheDir = FileSystem::adjustTrailingSlash($cacheDir, true);
 	}
 
 

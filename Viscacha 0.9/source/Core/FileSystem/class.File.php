@@ -39,9 +39,12 @@ Core::loadClass('Core.FileSystem.FileSystemBaseUnit');
  */
 class File extends FileSystemBaseUnit {
 
+	const UNICODE = 0;
+	const BINARY = 1;
+
 	const READ_STRING = 0;
-	const READ_BINARY = 1;
-	const READ_LINES = 2;
+	const READ_LINES = -1;
+	const READ_LINES_FILLED = -2;
 
 	/**
 	 * File handle.
@@ -54,6 +57,7 @@ class File extends FileSystemBaseUnit {
 	 *
 	 * The file given as parameter must not exist.
 	 * The file path can be a relative or an absolute path.
+	 * Sets the default mode for read/write operations to binary.
 	 *
 	 * @param	string	Path to a file.
 	 */
@@ -146,24 +150,30 @@ class File extends FileSystemBaseUnit {
 	/**
 	 * Writes a string to a file.
 	 *
-	 * Before writing to the file, it will be created if needed and the chmod will be set to 666.
+	 * If the file is not writable the chmod is set to 666 before the write operation.
+	 * The second parameter is the mode of writing (Binary or Unicode). You have to use one of the
+	 * class constants File::BINARY or File::UNICODE (default).
 	 *
 	 * This function implements the ftp fallback!
 	 *
-	 * @param	string	String to write to the file.
-	 * @param 	boolean Set this to true to append data to the file.
-	 * @return	boolean Returns TRUE on success or FALSE on failure.
-	 * @todo Implement (incl. ftp)
+	 * @param string String to write to the file.
+	 * @param int Mode to write the file: Unicode (default) or Binary
+	 * @param boolean Set this to true to append data to the file.
+	 * @return boolean Returns TRUE on success or FALSE on failure.
+	 * @todo Implement ftp fallback (using tmpfile, pay attention with Binary/Unicode mode)
 	 */
-	public function write($content, $append = false) {
+	public function write($content, $mode = self::UNICODE, $append = false) {
+		$mode = ($mode == self::BINARY) ? FILE_BINARY : FILE_TEXT;
 		if ($append == true) {
-			$append = FILE_APPEND;
+			$flags = $mode | FILE_APPEND;
 		}
 		else {
-			$append = null;
+			$flags = $mode;
 		}
-		$this->setPermissions('666');
-		if (file_put_contents($this->path, $content, $append) === false) {
+		if ($this->writable() == false) {
+			$this->setPermissions(666);
+		}
+		if (file_put_contents($this->path, $content, $flags) === false) {
 			return false;
 		}
 		else {
@@ -174,94 +184,141 @@ class File extends FileSystemBaseUnit {
 	/**
 	 * Reads a file (in three different ways).
 	 *
-	 * If the parameter is -1 (FILE_COMPLETE) or if no parameter is given, the complete file will be returned at once.<br />
+	 * 1. If the first parameter is 0 (File::READ_STRING, default) the complete file will be
+	 * returned at once as string. The function returns the content of the file as string, if the
+	 * file does not exist or another error occured, boolean false will be returned. This is similar
+	 * to PHP's file_get_contents() function.
 	 *
-	 * If the parameter is -2 (FILE_LINES) or -3 (FILE_LINES_TRIM), the function returns the file in an array.
-	 * Each element of the array corresponds to a line in the file.
-	 * If the parameter is -2 (FILE_LINES) the newline/carriage return will be still attached, -3 (FILE_LINES_TRIM) removes them at the end.<br />
+	 * 2. If the first parameter is -1 (File::READ_LINES) or -2 (File::READ_LINES_FILLED), the
+	 * function returns the file as an array. Each element of the array corresponds to a line in the
+	 * file. The newline and/or carriage return chars will be removed from the line endings. If you
+	 * use the option -2 (File::READ_LINES_FILLED) only lines with content will be returned, all
+	 * empty lines will be skipped. The function returns the content of the file as array, if the
+	 * file does not exist or another error occured, boolean false will be returned. Both options
+	 * are similar to PHP's file() function.
 	 *
-	 * If the parameter is > 0, the function reads up to the specified amount of bytes from the file pointer.
-	 * When the end of file (EOF) is reached the function returns null.
-	 * If the file does not exist or an error occurs, null will be returned.
+	 * 3. If the first parameter is greater than zero (> 0), the function reads up to the specified
+	 * amount of bytes from the file pointer opened before. When the end of file (EOF) is reached
+	 * the function returns null, if the (partial) reading process was successful the function
+	 * returns true, not the content. On failure false will be returned. The content is "returned"
+	 * as the third parameter of this function.
 	 *
-	 * Example:
+	 * The third parameter of this fucntion is only used when the first parameter is greater than
+	 * zero (see the third way to read a file).
+	 *
+	 * Warning: This function may return Boolean FALSE, but may also return a non-Boolean value
+	 * which evaluates to FALSE, such as 0 or "". Use the === operator for testing the return value
+	 * of this function.
+	 *
+	 * The second parameter is the mode of reading (Binary or Unicode). You have to use one of the
+	 * class constants File::BINARY or File::UNICODE (default).
+	 *
+	 * Examples:
 	 * <code>
 	 *	$f = new File('file.txt');
-	 *	while ($data = $f->read(1024)) {
+	 *	while ($f->read(1024, File::UNICODE, $data) === true) {
 	 *		echo $data;
 	 *	}
 	 * </code>
+	 * <code>
+	 *	$f = new File('blank.gif');
+	 *	$content = $f->read(File::READ_STRING, File::BINARY);
+	 *  if ($content !== false) {
+	 *    echo $content;
+	 *  }
+	 * </code>
+	 * <code>
+	 *	$f = new File('core.log');
+	 *	$content = $f->read(File::READ_LINES_FILLED);
+	 *  if ($content !== false) {
+	 *    print_r($content);
+	 *  }
+	 * </code>
 	 *
-	 * @param	int	Type to read the file. Standard: -1 (FILE_COMPLETE)
-	 * @return	mixed	Requested content (as array or string) or null
-	 * @todo Better trim for FILE_LINES_TRIM (replace foreach with ...?)
-	 * @todo Check implementation
+	 * @param int Type to read the file, default: 0 (File::READ_STRING)
+	 * @param int Mode to read a file: Unicode (default) or Binary
+	 * @param string Only used when first parameter is > 0, contains partial content of the file.
+	 * @return mixed Requested Content or false (or only the bool state when first param is > 0)
+	 * @todo Check whether $fopenMode is really correct for php 6 binary/unicode handling
 	 */
-	public function read($type = self::READ_STRING) {
+	public function read($type = File::READ_STRING, $mode = self::UNICODE, &$data = null) {
 		if ($this->readable() == false) {
-			return null;
+			return false;
 		}
+
+		if ($mode == self::BINARY) {
+			$mode = FILE_BINARY;
+			$fopenMode = 'rb';
+		}
+		else {
+			$mode = FILE_TEXT;
+			$fopenMode = 'r';
+		}
+
 		if ($type == self::READ_STRING) {
-			$contents = file_get_contents($this->path);
-			if ($contents != false) {
+			$contents = file_get_contents($this->path, $mode);
+			if ($contents !== false) {
 				return $contents;
 			}
 			else {
-				return null;
+				return false;
 			}
 		}
-		elseif ($type == self::READ_LINES || $type == FILE_LINES_TRIM) {
-			// When files are bigger than 8 MB then use another method to read file into array.
+		elseif ($type == self::READ_LINES || $type == self::READ_LINES_FILLED) {
+			// When filesize is > 8 MB we use another method to read the file into an array.
 			if ($this->size() <= 8*1024*1024) {
-				$array = file($this->path);
+				if ($type == self::READ_LINES_FILLED) {
+					$flags = FILE_SKIP_EMPTY_LINES | $mode;
+				}
+				else {
+					$flags = $mode;
+				}
+				$array = file($this->path, $flags);
 			}
 			else {
 				$array = array();
-				$this->handle = fopen($this->path, 'rb');
+				$this->handle = fopen($this->path, $fopenMode);
 				if (is_resource($this->handle) == false) {
-					return null;
+					return false;
 				}
 				while (feof($this->handle) == false) {
-					$array[] = fgets($this->handle);
+					$line = fgets($this->handle);
+					$line = Strings::trimLineBreaks($line);
+					if ($type == self::READ_LINES || !empty($line)) {
+						$array[] = $line;
+					}
 				}
 				fclose($this->handle);
 			}
-			if ($array != false) {
-				if ($type == FILE_LINES_TRIM) {
-					foreach ($array as $key => $value) {
-						$array[$key] = rtrim($value, "\r\n");
-					}
-				}
-				return $array;
-			}
-			else {
-				return null;
-			}
+			// Remove line breaks
+			$array = array_map(array('Strings', 'trimLineBreaks'), $array);
 		}
 		elseif ($type > 0) {
 			if (is_resource($this->handle) == false) {
-				$this->handle = fopen($this->path, 'rb');
+				$this->handle = fopen($this->path, $fopenMode);
 				if (is_resource($this->handle) == false) {
-					return null;
+					return false;
 				}
 			}
 			if (feof($this->handle) == false) {
-				$part = fread($this->handle, $type);
-				if ($part != false) {
-					return $part;
+				$data = fread($this->handle, $type);
+				if ($data !== false) {
+					return true;
 				}
 				else {
-					return null;
+					fclose($this->handle);
+					return false;
 				}
 			}
 			else {
+				// Reached end of file (EOF)
 				fclose($this->handle);
 				return null;
 			}
 		}
 		else {
 			FileSystem::addDebug("The specified type ({$type}) to read the file '{$this->path}' is not supported.");
-			return null;
+			return false;
 		}
 	}
 
