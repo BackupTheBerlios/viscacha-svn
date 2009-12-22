@@ -38,10 +38,20 @@
  */
 class ErrorHandling {
 
+	/**
+	 * @var int
+	 */
 	private $depth;
+	/**
+	 * @var Debug
+	 */
+	private static $debug;
 
 	/**
 	 * Sets the error handler and the exception handler.
+	 *
+	 * The ErrorHandling class uses an own instance of the Debug class to save logs etc. To use
+	 * this debug object just call ErrorHandling::getDebug().
 	 *
 	 * @param boolean TRUE to set error handler, FALSE to use PHP error handler
 	 * @param boolean TRUE to set exception handler, FALSE to use PHP exception handler
@@ -54,18 +64,29 @@ class ErrorHandling {
 			set_exception_handler(array($this, 'exceptionHandler'));
 		}
 		$this->depth = 0;
+		$this->debug = new Debug('core.log');
+	}
+
+	/**
+	 * Returns the Debug instance of this class.
+	 *
+	 * The Debug class uses the logfile core.log.
+	 *
+	 * @return Debug
+	 */
+	public static function getDebug() {
+		return self::$debug;
 	}
 
 	/**
 	 * Handles the PHP errors and outputs xHTML-Code with debugging information.
 	 *
-	 * Each time this method is called the error details will be will be written to Core::addLog().
+	 * Each time this method is called the error details will be will be written to the 'core.log'.
 	 *
 	 * @param int Error Number
 	 * @param string Error Text
 	 * @param string Filename
 	 * @param int Line number
-	 * @see Core::addLog();
 	 **/
 	public function errorHandler($errno, $errtext, $errfile, $errline) {
 		// Fifth parameter $errcontext can not be used with OOP.
@@ -145,7 +166,9 @@ class ErrorHandling {
 		</body>
 	</html>
 				<?php
-				Core::addLog("{$errortype[$errno]} [{$errdate}]: {$errtext} (File {$errfile} on line {$errline})", 'ErrorHandling::errorHandler');
+				self::$debug->addText(
+					"{$errortype[$errno]} [{$errdate}]: {$errtext} (File {$errfile} on line {$errline})"
+				);
 				exit;
 			break;
 		}
@@ -225,7 +248,7 @@ class ErrorHandling {
 		</body>
 	</html>
 		<?php
-		Core::addLog("{$name} [{$errdate}]: {$exception}", "ErrorHandler::exceptionHandler");
+		self::$debug->addText("{$name} [{$errdate}]: {$exception}");
 		exit;
 	}
 

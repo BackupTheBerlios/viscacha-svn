@@ -60,7 +60,7 @@ class NonFatalException extends Exception {
 	 * Quit the program immediately with an error message.
 	 */
 	protected function hardExit() {
-		die(
+		exit(
 			'Error: Recursive exception during the following exception - '.$this->getMessage().
 				' (File: '.$this->getFile().', Line: '.$this->getLine().')'
 		);

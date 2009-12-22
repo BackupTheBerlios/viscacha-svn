@@ -46,8 +46,8 @@ Core::loadClass('Core.FileSystem.Folder');
  * Core(DB)->query("SQL");		// Short, fast, but not really oop. Seems to be the best one...
  * </code>
  *
- * @param int Constant for the object to be loaded
- * @return Object Stored object of a class
+ * @param	string|int	Stored name of object as string or constant (internally that's an int)
+ * @return	Object		Stored object of a class
  * @see Core::getObject()
  */
 function Core($objectConst) {

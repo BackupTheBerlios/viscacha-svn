@@ -48,7 +48,7 @@ abstract class Singleton {
 
 	private static $objects = array();
 
-	// getInstance is better that getObject as this name is already used in Core class (confusing)
+	// getInstance is better than getObject as this name is already used in Core class (confusing)
 	final public static function getInstance() {
 		$class = get_called_class();
 		if (empty(self::$objects[$class])) {

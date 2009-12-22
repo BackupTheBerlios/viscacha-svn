@@ -49,7 +49,13 @@ abstract class CacheItem extends CacheObject {
 	public abstract function load();
 
 	/**
-	 * @todo Add Documentation
+	 * Call this function to get the cached data.
+	 *
+	 * If needed the data will be loaded from the cache file once. If the cache file doesn't exist
+	 * the data is loaded with the load-method and saved with the save-method.
+	 * Function returns null on failure.
+	 *
+	 * @return mixed Cached data or null
 	 */
 	public function get() {
 		if ($this->data === null || $this->exists() == false) {

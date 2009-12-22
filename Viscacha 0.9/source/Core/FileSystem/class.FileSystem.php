@@ -26,6 +26,11 @@
  */
 
 /**
+ * The default working dir at script startup.
+ */
+define('DEFAULT_WORKING_DIR', getcwd());
+
+/**
  * Utility functions for files and folders.
  *
  * This class also handles the ftp connection and debug information for the File and Folder objects.
@@ -38,8 +43,28 @@
  */
 abstract class FileSystem {
 
+	/**
+	 * @var FTPClient
+	 */
 	private static $ftp = null;
+
+	/**
+	 * @var Debug
+	 */
 	private static $debug = null;
+
+	/**
+	 * Sets the current working dir to DEFAULT_WORKING_DIR.
+	 *
+	 * This method has to be used in all __destruct() methods which need the current working
+	 * directory.
+	 *
+	 * @see http://bugs.php.net/bug.php?id=34206
+	 * @see http://www.php.net/language.oop5.decon
+	 */
+	public static function resetWorkingDir() {
+		chdir(DEFAULT_WORKING_DIR);
+	}
 
 	/**
 	 * Returns an object that is a child of the FTPClient class or null on failure.
@@ -50,21 +75,21 @@ abstract class FileSystem {
 		if (self::$ftp === null) {
 			self::$ftp = FTPClient::getObject();
 			if (self::$ftp !== null && self::$ftp->setServer('localhost', 21) !== true) {
-				self::addDebugText('Could not set ftp server to ...');
+				self::$debug->addText('Could not set ftp server to ...');
 				self::$ftp = null;
 			}
 			if (self::$ftp !== null && self::$ftp->connect() !== true) {
-				self::addDebugText('Could not connect to ftp server');
+				self::$debug->addText('Could not connect to ftp server');
 				self::$ftp->quit();
 				self::$ftp = null;
 			}
 			if (self::$ftp !== null && self::$ftp->login('user', 'password') !== true) {
-				self::addDebugText('Could not login on ftp server with user data ...');
+				self::$debug->addText('Could not login on ftp server with user data ...');
 				self::$ftp->quit();
 				self::$ftp = null;
 			}
 			if (self::$ftp !== null && self::$ftp->chdir(DIRECTORY_SEPARATOR) !== true) {
-				self::addDebugText('Could not change directory on ftp server to ...');
+				self::$debug->addText('Could not change directory on ftp server to ...');
 				self::$ftp->quit();
 				self::$ftp = null;
 			}
@@ -77,10 +102,6 @@ abstract class FileSystem {
 			self::$debug = new Debug('filesystem.log');
 		}
 		return self::$debug;
-	}
-
-	public static function addDebugText($text) {
-		self::getDebug()->addText($text);
 	}
 
     /**

@@ -91,10 +91,9 @@ class Debug {
 	 * Write logs and benchmarks to file.
 	 *
 	 * This method simply calls the function saveFile().
-	 * @todo Check Core::destruct function
 	 */
 	public function __destruct() {
-		Core::destruct();
+		FileSystem::resetWorkingDir();
 		$this->saveFile();
 	}
 

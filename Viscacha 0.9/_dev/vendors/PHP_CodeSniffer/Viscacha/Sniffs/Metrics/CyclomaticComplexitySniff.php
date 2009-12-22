@@ -38,14 +38,14 @@ class Viscacha_Sniffs_Metrics_CyclomaticComplexitySniff implements PHP_CodeSniff
      *
      * @var int
      */
-    protected $complexity = 10;
+    protected $complexity = 20;
 
     /**
      * A complexity higer than this value will throw an error.
      *
      * @var int
      */
-    protected $absoluteComplexity = 20;
+    protected $absoluteComplexity = 50;
 
 
     /**

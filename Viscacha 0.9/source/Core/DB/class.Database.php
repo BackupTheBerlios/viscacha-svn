@@ -414,15 +414,6 @@ abstract class Database {
 	public abstract function getData($table, $offset = -1, $limit = 1000);
 
 	/**
-	 * Returns the internal used Debug-object.
-	 *
-	 * @return Debug Object used for debugging
-	 */
-	public function getDebug() {
-		return $this->debug;
-	}
-
-	/**
 	 * Returns the prefix of the tables.
 	 *
 	 * @return string Prefix
@@ -509,7 +500,6 @@ abstract class Database {
 	 *
 	 * @param resource Result set
 	 * @return int Number of rows
-	 * @todo Replace error with exception
 	 */
 	public abstract function numRows($result = null);
 
@@ -518,11 +508,11 @@ abstract class Database {
 		return "'".$this->escapeString($var)."'";
 	}
 
-	//@todo Replace error with exception
 	protected function parseInt($var) {
 		if (!is_string($var) && !is_numeric($var)) {
 			$this->debug->addText(
-				'Database::parseInt() can only convert strings and numerical data to integers.'
+				'Database::parseInt() can only convert strings and numerical data to integers; '.
+					'given variable of type "'.gettype($var).'".'
 			);
 		}
 		if (is_string($var)) {
@@ -708,6 +698,13 @@ abstract class Database {
 	public function setPrefix($prefix) {
 		$this->pre = $prefix;
 	}
+
+	/**
+	 * Sets runtime charset to the specified charset for the current connection.
+	 *
+	 * @return boolean true on success, false on failure
+	 */
+	protected abstract function setCharset($charset);
 
 	/**
 	 * Returns a string containing which database system (database abstraction layer) is used.

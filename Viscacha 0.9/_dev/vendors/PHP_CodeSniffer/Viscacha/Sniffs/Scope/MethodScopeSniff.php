@@ -10,7 +10,7 @@
  * @author    Marc McIntyre <mmcintyre@squiz.net>
  * @copyright 2006 Squiz Pty Ltd (ABN 77 084 670 600)
  * @license   http://matrix.squiz.net/developer/tools/php_cs/licence BSD Licence
- * @version   SVN Rev. 292390
+ * @version   CVS: $Id: MethodScopeSniff.php 292390 2009-12-21 00:32:14Z squiz $
  * @link      http://pear.php.net/package/PHP_CodeSniffer
  */
 
@@ -27,7 +27,7 @@ if (class_exists('PHP_CodeSniffer_Standards_AbstractScopeSniff', true) === false
  * @author    Marc McIntyre <mmcintyre@squiz.net>
  * @copyright 2006 Squiz Pty Ltd (ABN 77 084 670 600)
  * @license   http://matrix.squiz.net/developer/tools/php_cs/licence BSD Licence
- * @version   SVN Rev. 292390
+ * @version   Release: @package_version@
  * @link      http://pear.php.net/package/PHP_CodeSniffer
  */
 class Viscacha_Sniffs_Scope_MethodScopeSniff extends PHP_CodeSniffer_Standards_AbstractScopeSniff

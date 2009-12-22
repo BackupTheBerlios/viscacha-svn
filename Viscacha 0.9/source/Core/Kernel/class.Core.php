@@ -48,14 +48,6 @@ abstract class Core {
 	private static $namedObjects = array();
 
 	/**
-	 * Global debugging for Core functionality
-	 *
-	 * @var Debug
-	 * @static
-	 */
-	private static $debug = null;
-
-	/**
 	 * Gets an object of a class with the stored name passed as parameter.
 	 *
 	 * The method loads a stored object, which has to be stored with storeObject() before.
@@ -63,13 +55,17 @@ abstract class Core {
 	 *
 	 * Alternative: You can use the global wrapper function Core to get the stored objects. Just use
 	 * Core(DB) for the DB class or Core(My) for an object that as been stored under the name My.
+	 * You can either specify a string with the name or the constant as parameter.
 	 *
-	 * @param	string	Stored name of object
-	 * @return	Object	Returns the object
+	 * @param	string|int	Stored name of object as string or constant (internally that's an int)
+	 * @return	Object		Returns the object
 	 * @see Core()
 	 * @throws CoreException
 	 */
 	public static function getObject($objectId) {
+		if (is_string($objectId)) {
+			$objectId = constant($objectId);
+		}
 		if (isset(self::$namedObjects[$objectId]) && is_object(self::$namedObjects[$objectId])) {
 			return self::$namedObjects[$objectId];
 		}
@@ -301,13 +297,6 @@ abstract class Core {
 	private static function getNameFromPackage($name) {
 		$parts = explode('.', $name);
 		return array_pop($parts);
-	}
-
-	public static function addLog($text, $function) {
-		if (self::$debug === null) {
-			self::$debug = new Debug('core.log');
-		}
-		self::$debug->addText("{$function} - {$text}");
 	}
 
 }

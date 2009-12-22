@@ -42,9 +42,6 @@ class CacheObject {
 	protected $data;
 	protected $maxAge;
 
-	/**
-	 * @todo Add Documentation
-	 */
 	public function __construct($name, $path = CacheObject::DEFAULT_DIR) {
 		$this->name = $name;
 		$this->path = FileSystem::adjustTrailingSlash($path, true);
@@ -54,7 +51,12 @@ class CacheObject {
 	}
 
 	/**
-	 * @todo Add Documentation
+	 * Call this function to get the cached data.
+	 *
+	 * If needed the data will be loaded from the cache file once.
+	 * Function returns null if no data was specified before or no cache file exists.
+	 *
+	 * @return mixed Cached data or null
 	 */
 	public function get() {
 		if ($this->data === null || $this->exists() == false) {
@@ -131,26 +133,32 @@ class CacheObject {
 	}
 
 	/**
-	 * @todo Add Documentation
+	 * Saves the data to the cache file as serialized data.
+	 *
+	 * @return boolean true on success, false on failure.
 	 */
 	protected function save() {
 		return $this->file->write(serialize($this->data));
 	}
 
-
 	/**
-	 * @todo Add Documentation
+	 * Reads a cache file and unserializes the data.
+	 * 
+	 * Returns false if the cache file can't be read otherwise true.
+	 *
+	 * @return true on success, false on failure.
 	 */
 	protected function read() {
 		if ($this->file->exists() == true) {
 			$data = $this->file->read();
-			if ($data !== null) {
+			if ($data !== false) {
 				$this->data = unserialize($data);
+				return true;
 			}
 			else {
 				$this->data = null;
+				return false;
 			}
-			return true;
 		}
 		else {
 			return false;

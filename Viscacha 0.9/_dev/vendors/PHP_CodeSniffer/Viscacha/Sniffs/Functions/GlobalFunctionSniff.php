@@ -10,7 +10,7 @@
  * @author	Marc McIntyre <mmcintyre@squiz.net>
  * @copyright 2006 Squiz Pty Ltd (ABN 77 084 670 600)
  * @license   http://matrix.squiz.net/developer/tools/php_cs/licence BSD Licence
- * @version   SVN Rev. 291629
+ * @version   CVS: $Id: GlobalFunctionSniff.php 261303 2008-06-18 04:49:50Z squiz $
  * @link	  http://pear.php.net/package/PHP_CodeSniffer
  */
 
@@ -64,7 +64,8 @@ class Viscacha_Sniffs_Functions_GlobalFunctionSniff implements PHP_CodeSniffer_S
 			}
 
             // Special exception for __autoload as it needs to be global.
-            if ($functionName !== '__autoload') {
+            // Viscacha specific Core function should be global too for quick access
+            if ($functionName !== '__autoload' && $functionName !== 'Core') {
                 $error = "Consider putting global function \"$functionName\" in a static class";
                 $phpcsFile->addWarning($error, $stackPtr);
             }

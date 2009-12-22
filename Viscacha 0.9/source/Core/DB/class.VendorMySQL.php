@@ -271,18 +271,5 @@ abstract class VendorMySQL extends Database {
 		return $this->rawQuery("ROLLBACK");
 	}
 
-	/**
-	 * Executes a query for UTF-8 support.
-	 *
-	 * Executed query: <code>SET NAMES 'UTF8'</code>
-	 *
-	 * @see http://dev.mysql.com/doc/refman/5.0/en/charset-connection.html
-	 * @todo Use mysql_set_charset() when possible
-	 */
-	protected function setUTF8() {
-		// MySQL should	return UTF-8
-		$this->rawQuery("SET NAMES 'UTF8'");
-	}
-
 }
 ?>

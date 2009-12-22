@@ -34,14 +34,14 @@ class Viscacha_Sniffs_Metrics_NestingLevelSniff implements PHP_CodeSniffer_Sniff
      *
      * @var int
      */
-    protected $nestingLevel = 5;
+    protected $nestingLevel = 8;
 
     /**
      * A nesting level than this value will throw an error.
      *
      * @var int
      */
-    protected $absoluteNestingLevel = 10;
+    protected $absoluteNestingLevel = 16;
 
 
     /**

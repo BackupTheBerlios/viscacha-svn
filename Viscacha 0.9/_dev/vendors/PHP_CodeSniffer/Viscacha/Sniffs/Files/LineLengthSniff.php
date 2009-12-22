@@ -10,7 +10,7 @@
  * @author    Marc McIntyre <mmcintyre@squiz.net>
  * @copyright 2006 Squiz Pty Ltd (ABN 77 084 670 600)
  * @license   http://matrix.squiz.net/developer/tools/php_cs/licence BSD Licence
- * @version   CVS: $Id: LineLengthSniff.php 261688 2008-06-27 01:58:38Z squiz $
+ * @version   CVS: $Id: LineLengthSniff.php 291908 2009-12-09 03:56:09Z squiz $
  * @link      http://pear.php.net/package/PHP_CodeSniffer
  */
 
@@ -27,7 +27,7 @@
  * @author    Marc McIntyre <mmcintyre@squiz.net>
  * @copyright 2006 Squiz Pty Ltd (ABN 77 084 670 600)
  * @license   http://matrix.squiz.net/developer/tools/php_cs/licence BSD Licence
- * @version   Release: 1.2.0
+ * @version   Release: @package_version@
  * @link      http://pear.php.net/package/PHP_CodeSniffer
  */
 class Viscacha_Sniffs_Files_LineLengthSniff implements PHP_CodeSniffer_Sniff
@@ -119,10 +119,10 @@ class Viscacha_Sniffs_Files_LineLengthSniff implements PHP_CodeSniffer_Sniff
             $lineLength = strlen($lineContent);
             if ($this->absoluteLineLimit > 0 && $lineLength > $this->absoluteLineLimit) {
                 $error = 'Line exceeds maximum limit of '.$this->absoluteLineLimit." characters; contains $lineLength characters";
-                $phpcsFile->addError($error, $stackPtr);
+                $phpcsFile->addError($error, $stackPtr, 'MaxLengthExceeded');
             } else if ($this->lineLimit > 0 && $lineLength > $this->lineLimit) {
                 $warning = 'Line exceeds '.$this->lineLimit." characters; contains $lineLength characters";
-                $phpcsFile->addWarning($warning, $stackPtr);
+                $phpcsFile->addWarning($warning, $stackPtr, 'LineTooLong');
             }
         }
 

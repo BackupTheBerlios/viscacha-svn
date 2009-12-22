@@ -34,10 +34,10 @@ Core::loadClass('Core.Cache.CacheItem');
  * @subpackage	Cache
  * @author		Matthias Mohr
  * @since 		1.0
- * @todo		Better Documentation
- * @todo		Check implementation (glob, token_get_all, ...)
  */
 class ClassManagerCache extends CacheItem {
+
+	const FILE_PATTERN = '~(class|interface)\.([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)\.php$~i';
 
 	private $classes;
 
@@ -58,12 +58,10 @@ class ClassManagerCache extends CacheItem {
 	 *
 	 * @param	string 	Directory to search in
 	 * @return	array	Array containing all pattern-matched files.
-	 * @todo	Escape path in glob
-	 * @todo	Check implementation
 	 */
 	private function scanSourceFolder(Folder $dir) {
-		$files = $dir->getFiles(Folder::RETURN_PATHS, Folder::FILTER_GLOB, '{class,interface}.*.php');
-		$folders = $dir->getFolders(Folder::RETURN_OBJECTS);
+		$files = $dir->getFiles(self::FILE_PATTERN, Folder::RETURN_PATHS);
+		$folders = $dir->getFolders();
 
 		foreach ($folders as $subDir) {
 			$subFiles = $this->scanSourceFolder($subDir);
@@ -77,20 +75,20 @@ class ClassManagerCache extends CacheItem {
 	 * Retrieves the classname for a given file.
 	 *
 	 * @param string File to scan for class name.
+	 * @todo token_get_all war bei Implementierung nicht Unicode-kompatibel. Entferne Workaround...
 	 */
 	private function parse($file) {
 		if (function_exists('token_get_all') == false) {
-			// use the file names as an indicator
-			if (preg_match('~(class|interface)\.([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)\.php$~i', $file, $match) == 1) {
-				if (!empty($match[2])) {
-					if (isset($this->data[$match[2]]) == true) {
-						Core::addLog(
-							'Class with name '.$match[2].' was found more than once. '.
-								"Only file {$file} has been indexed!"
-						);
-					}
-					$this->data[$match[2]] = $file;
+			// use the file names as an indicator for the class name
+			$result = preg_match(self::FILE_PATTERN, $file, $match);
+			if ($result > 0 && !empty($match[2])) {
+				if (isset($this->data[$match[2]]) == true) {
+					ErrorHandling::getDebug()->addText(
+						"Class with name '{$match[2]}' was found more than once. ".
+							"Only file '{$file}' has been indexed!"
+					);
 				}
+				$this->data[$match[2]] = $file;
 			}
 		}
 		else {
@@ -102,19 +100,24 @@ class ClassManagerCache extends CacheItem {
 					if (!isset($token[0])) {
 						continue;
 					}
-					// next token after this one is our desired class name
+					// next T_STRING token after this one is our desired class name
 					if ($token[0] == T_CLASS || $token[0] == T_INTERFACE) {
 						$next = true;
 					}
 					if ($token[0] == T_STRING && $next === true) {
+						// Workaround for unicoede incompatible token_get_all function
+						// TODO: Remove workaround when function is unicode compatible
+						settype($token[1], 'unicode');
+						// End Workaround
 						if (isset($this->data[$token[1]]) == true) {
-							Core::addLog(
-								'Class with name '.$token[1].' was found more than once. '.
-									"File '{$file} has been indexed and replaced the other entry!"
+							ErrorHandling::getDebug()->addText(
+								"Class with name '{$token[1]}' was found more than once. ".
+									"File '{$file}' has been indexed and replaced the other entry!"
 							);
 						}
 						$this->data[$token[1]] = $file->relPath();
-						$next = false;
+						// We found what we need, stop the search
+						break;
 					}
 				}
 			}

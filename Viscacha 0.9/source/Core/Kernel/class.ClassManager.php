@@ -65,9 +65,9 @@ class ClassManager extends Singleton {
 	 */
 	public function loadFile($className) {
 		$filename = null;
-		if (isset($this->index[$className]) == true) {
-			if(file_exists($this->index[$className]) == true) {
-				$filename = $this->index[$className];
+		if (array_key_exists($className, $this->index) == true) {
+			$filename = $this->index[$className];
+			if(file_exists($filename) == true) {
 				include_once($filename);
 			}
 			else {
@@ -76,7 +76,7 @@ class ClassManager extends Singleton {
 				$this->deleteIndex();
 				$e = new ClassManagerException(
 					"ClassManager index seems to be outdated. ".
-						"File for class '{$className}' not found: ".$this->index[$className],
+						"File for class '{$className}' not found: ".$filename,
 					1
 				);
 				$e->setIndex($this->index);
@@ -119,6 +119,8 @@ class ClassManager extends Singleton {
 			$classesCache->delete();
 		}
 		$this->index = $classesCache->get();
+		// Cache data is already saved to class property index, to save memory free the cache
+		$cache->unload('ClassManagerCache');
 	}
 
 	/**

@@ -317,7 +317,9 @@ class File extends FileSystemBaseUnit {
 			}
 		}
 		else {
-			FileSystem::addDebug("The specified type ({$type}) to read the file '{$this->path}' is not supported.");
+			FileSystem::getDebug()->addText(
+				"The specified type ({$type}) to read the file '{$this->path}' is not supported."
+			);
 			return false;
 		}
 	}
@@ -353,13 +355,29 @@ class File extends FileSystemBaseUnit {
 	}
 
 	/**
+	 * Attempts to set the access and modification times of the file.
+	 * 
+	 * Note that both times will be set regardless of the number of specified parameters.
+	 * The default value for both parameters is the current timestamp returned by time().
+	 * If the file does not exist, it won't be created and false will be returned.
 	 *
-	 * @param int
-	 * @param int
-	 * @todo Implement
+	 * This function has some drawbacks as it relies on the touch() function of PHP, see the
+	 * corresponding documentation page for more information.
+	 *
+	 * @see http://www.php.net/touch
+	 * @param int Timestamp for Access Time
+	 * @param int Timestamp for Modification Time
+	 * @return boolean Returns TRUE on success or FALSE on failure.
 	 */
 	public function setTime($accessTime = null, $modTime = null) {
-		return touch($this->file, $modTime, $accessTime);
+		if ($this->exists()) {
+			$accessTime = ($accessTime !== null) ? $accessTime : time();
+			$modTime = ($modTime !== null) ? $modTime : time();
+			return touch($this->file, $modTime, $accessTime);
+		}
+		else {
+			return false;
+		}
 	}
 
 	/**

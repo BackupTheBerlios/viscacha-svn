@@ -86,7 +86,7 @@ class ExtMySQL extends VendorMySQL {
 	 * Note: The database will not be selected! You have to call ExtMySQL::selectDB() before you can
 	 * work with the database.
 	 *
-	 * The charset is set to UTF-8 with VendorMySQL::setUTF8().
+	 * The charset is set to UTF-8 after connecting.
 	 *
 	 * @param string Host
 	 * @param string Username
@@ -117,7 +117,7 @@ class ExtMySQL extends VendorMySQL {
 			);
 		}
 		else {
-			$this->setUTF8();
+			$this->setCharset('utf8');
 		}
 	}
 
@@ -340,6 +340,17 @@ class ExtMySQL extends VendorMySQL {
 		$this->database = $database;
 		$this->pre = $prefix;
 		return @mysql_select_db($this->database, $this->connection);
+	}
+
+	/**
+	 * Sets runtime charset to the specified charset for the current connection.
+	 *
+	 * @see http://dev.mysql.com/doc/refman/5.0/en/charset-connection.html
+	 * @return boolean true on success, false on failure
+	 */
+	protected function setCharset($charset) {
+		// Query "SET NAMES '?'" is not recommended
+		return mysql_set_charset($charset, $this->connection);
 	}
 
 	/**

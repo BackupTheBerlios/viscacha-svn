@@ -744,7 +744,7 @@ class Upload {
 	 * @return string Path, without trailing slash
 	 */
 	private function makePath($path) {
-		$path = FileSystem::adjustTrailingSlash$path);
+		$path = FileSystem::adjustTrailingSlash($path);
 		if (strlen($path) == 0) {
 			$path = ".";
 		}

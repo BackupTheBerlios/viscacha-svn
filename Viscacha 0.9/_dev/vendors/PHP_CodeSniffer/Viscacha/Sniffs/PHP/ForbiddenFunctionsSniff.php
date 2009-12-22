@@ -70,7 +70,7 @@ class Viscacha_Sniffs_PHP_ForbiddenFunctionsSniff implements PHP_CodeSniffer_Sni
 		'mysqli_stmt_send_long_data' => 'mysqli_send_long_data',
 		'imagecreate' => 'imagecreatetruecolor',
 		'eval' => null,
-		//'die' => 'exit',
+		'die' => 'exit',
 		'mysql_db_query' => 'mysql_query',
 		'mysql_ping' => null,
 		'mysql_list_tables' => null,
@@ -82,7 +82,8 @@ class Viscacha_Sniffs_PHP_ForbiddenFunctionsSniff implements PHP_CodeSniffer_Sni
 		'mysql_fieldflags' => 'mysql_field_flags',
 		'print_r' => 'Debug class',
 		'var_dump' => 'Debug class',
-		'error_log' => 'Debug class'
+		'error_log' => 'Debug class',
+		'glob' => 'Folder::getContents'
 	);
 
 	/**
@@ -135,8 +136,15 @@ class Viscacha_Sniffs_PHP_ForbiddenFunctionsSniff implements PHP_CodeSniffer_Sni
 	public function process(PHP_CodeSniffer_File $phpcsFile, $stackPtr) {
 		$tokens = $phpcsFile->getTokens();
 
+        $ignore = array(
+                   T_DOUBLE_COLON,
+                   T_OBJECT_OPERATOR,
+                   T_FUNCTION,
+                   T_CONST,
+                  );
+
 		$prevToken = $phpcsFile->findPrevious(T_WHITESPACE, ($stackPtr - 1), null, true);
-		if (in_array($tokens[$prevToken]['code'], array(T_DOUBLE_COLON, T_OBJECT_OPERATOR, T_FUNCTION)) === true) {
+		if (in_array($tokens[$prevToken]['code'], $ignore) === true) {
 			// Not a call to a PHP function.
 			return;
 		}
@@ -154,13 +162,13 @@ class Viscacha_Sniffs_PHP_ForbiddenFunctionsSniff implements PHP_CodeSniffer_Sni
 		if ($isErrorFunc === true) {
 			$error .= 'forbidden';
 			if ($this->forbiddenFunctions[$function] !== null) {
-				$error .= '; use '.$this->forbiddenFunctions[$function].'() instead';
+				$error .= '; use '.$this->forbiddenFunctions[$function].' instead';
 			}
 		}
 		else {
 			$error .= 'discouraged';
 			if ($this->aliasFunctions[$function] !== null) {
-				$error .= '; use '.$this->aliasFunctions[$function].'() instead';
+				$error .= '; use '.$this->aliasFunctions[$function].' instead';
 			}
 		}
 

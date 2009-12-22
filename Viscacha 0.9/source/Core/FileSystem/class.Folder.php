@@ -41,10 +41,6 @@ Core::loadClass('Core.FileSystem.FileSystemBaseUnit');
  */
 class Folder extends FileSystemBaseUnit {
 
-	const FILTER_NONE = 0;
-	const FILTER_GLOB = 1;
-	const FILTER_PCRE = 2;
-
 	const RETURN_OBJECTS = 0;
 	const RETURN_PATHS = 1;
 
@@ -143,99 +139,127 @@ class Folder extends FileSystemBaseUnit {
 	 * @returns	boolean Returns TRUE on success or FALSE on failure.
 	 */
 	public function clear() {
-		foreach ($this->getContents(self::OBJECTS) as $content) {
+		foreach ($this->getContents() as $content) {
 			$content->delete();
 		}
 		return $this->isEmpty();
 	}
 
 	/**
-	 * This returns an array with the folders and files in the directory (not recursive).
+	 * Returns an array with the folders and files in the directory (not recursive).
 	 *
-	 * The returned array will contain objects of the types File and Folder.
-	 * This is the merged result of the functions Folder::getFolders() and Folder::getFiles().
+	 * The returned array will contain objects of the types File and Folder, but if the second
+	 * parameter is set to Folder::RETURN_PATHS just the paths are returned.
+	 * This function returns the merged result of the functions Folder::getFolders() and
+	 * Folder::getFiles(). Note that the returned array does have numeric keys and not the file and
+	 * folder names like the functions Folder::getFolders() and Folder::getFiles().
 	 *
-	 * @param int Function that uses the pattern (one of the Folder::FILTER_* constants)
-	 * @param string Search pattern
-	 * @return array
+	 * The first argument is a regular expression pattern that is used to filter the result.
+	 * This method does not allow the extension pattern that is allowed by Folder::getFiles(), but
+	 * the restriction, that the regexp can't start with a dot applies here, too.
+	 *
+	 * @param int Whether to return objects or paths
+	 * @param string Search pattern (regular expression or a file extension starting with a dot)
+	 * @return array Returns the array or null on failrue
 	 * @see Folder::getFolders()
 	 * @see Folder::getFiles()
-	 * @todo Check what happens if there are the same indice (folder and file named x for example)
-	 * @todo Implement
 	 */
-	public function getContents($mode = self::RETURN_OBJECTS, $type = self::FILTER_NONE, $pattern = null) {
-		return array_merge($this->getFolders($type, $pattern), $this->getFiles($type, $pattern));
+	public function getContents($pattern = null, $mode = self::RETURN_OBJECTS) {
+		return array_merge(
+			array_values($this->getFolders($pattern, $mode)),
+			array_values($this->getFiles($pattern, $mode))
+		);
 	}
 
 	/**
 	 * Returns an array with all folders directly in this folder (not recursive).
 	 *
-	 * All array elements are Folder objects.
-	 * The keys of the array are the folder names.
-	 * The array is sorted by the keys.
+	 * The returned array will contain objects of the type Folder, but if the second parameter is
+	 * set to Folder::RETURN_PATHS just the paths are returned. The keys of the array are the folder
+	 * names.
 	 *
-	 * @see ksort()
-	 * @return array
-	 * @todo Implement
+	 * The first argument is a regular expression pattern that is used to filter the result. The
+	 * pattern is applied only on the folder name, not on the whole path.
+	 *
+	 * @param int Whether to return objects or paths
+	 * @param string Regular expression search pattern
+	 * @return array Returns the array or null on failrue
 	 */
-	public function getFolders($mode = self::RETURN_OBJECTS, $type = self::FILTER_NONE, $pattern = null) {
-		$path = $this->absPath().DIRECTORY_SEPARATOR;
-		if ($pattern == null) {
-			$type = self::FILTER_NONE;
-		}
-		if ($type != self::FILTER_GLOB) {
-			$d = dir($path);
-			$folders = array();
-			while (false !== ($entry = $d->read())) {
-				if (is_dir($path.$entry) && $entry != '.' && $entry != '..') {
-					if ($type == self::FILTER_NONE || ($type == self::FILTER_PCRE && preg_match($pattern, $entry))) {
-						if ($mode == self::RETURN_OBJECTS) {
-							$folders[$entry] = new Folder($path.$entry);
-						}
-						else {
-							$folders[$entry] = $path.$entry;
-						}
+	public function getFolders($pattern = null, $mode = self::RETURN_OBJECTS) {
+		$path = $this->absPath().Folder::SEPARATOR;
+		$d = dir($path);
+		$folders = array();
+		while (false !== ($entry = $d->read())) {
+			if (is_dir($path.$entry) && $entry != '.' && $entry != '..') {
+				if ($pattern === null || ($pattern !== null && preg_match($pattern, $entry))) {
+					if ($mode == self::RETURN_OBJECTS) {
+						$folders[$entry] = new Folder($path.$entry);
+					}
+					else {
+						$folders[$entry] = $path.$entry;
 					}
 				}
 			}
-			$d->close();
 		}
-		else {
-			// Glob
-		}
-		ksort($folders);
+		$d->close();
 		return $folders;
 	}
 
 	/**
 	 * Returns an array with all files directly in this folder (not recursive).
 	 *
-	 * You can limit the files by giving an extension as paramter.
+	 * The returned array will contain objects of the type File, but if the second parameter is set
+	 * to Folder::RETURN_PATHS just the paths are returned. The keys of the array are the file
+	 * names.
 	 *
-	 * All array elements are File objects.
-	 * The keys of the array are the filenames.
-	 * The array is sorted by the keys.
+	 * The first argument is a regular expression pattern that is used to filter the result. The
+	 * pattern is applied only on the file name, not on the whole path.
+	 * If the first parameter pattern starts with a dot a faster filter only on the file extension
+	 * is applied. This causes that a regular expression pattern can't start with a dot! This
+	 * extenstion filter is a simple string comparison, not a regular expression and thus it's much
+	 * faster.
 	 *
-	 * @return array
-	 * @todo Implement
+	 * @param int Whether to return objects or paths
+	 * @param string Search pattern (regular expression or a file extension starting with a dot)
+	 * @return array Returns the array or null on failrue
 	 */
-	public function getFiles($mode = self::RETURN_OBJECTS, $type = self::FILTER_NONE, $pattern = null) {
+	public function getFiles($pattern = null, $mode = self::RETURN_OBJECTS) {
+		if ($pattern === null) {
+			$filter = 0; // All files
+		}
+		else if (strlen($pattern) > 0 && $pattern[0] == '.') {
+			$filter = 1; // Extension filter
+			$pattern = strtolower(substr($pattern, 1));
+		}
+		else {
+			$filter = 2; // RegExp
+		}
+
 		$path = $this->absPath().Folder::SEPARATOR;
 		$d = dir($path);
-		$files = array();
+		$folders = array();
 		while (false !== ($entry = $d->read())) {
-			if (is_file($path.$entry)) {
-				if ($mode == self::RETURN_OBJECTS) {
-					$files[$entry] = new File($path.$entry);
+			if (is_file($path.$entry) && $entry != '.' && $entry != '..') {
+				// Calculate whether to add the file to the array or not
+				// This test could be done in one long if clause, but thats hard to understand...
+				$add = ($filter == 0);
+				if ($filter == 1 && strtolower(pathinfo($entry, PATHINFO_EXTENSION)) == $pattern) {
+					$add = true;
 				}
-				else {
-					$files[$entry] = $path.$entry;
+				elseif ($filter == 2 && preg_match($pattern, $entry) > 0) {
+					$add = true;
+				}
+				// Add the array in the correct return mode
+				if ($add == true && $mode == self::RETURN_OBJECTS) {
+					$folders[$entry] = new Folder($path.$entry);
+				}
+				elseif ($add == true) {
+					$folders[$entry] = $path.$entry;
 				}
 			}
 		}
-		ksort($files);
 		$d->close();
-		return $files;
+		return $folders;
 	}
 
 	/**

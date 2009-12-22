@@ -131,7 +131,7 @@ abstract class Arrays {
 	    self::mergesort($array1);
 	    self::mergesort($array2);
 
-	    // If all of $array1 is <= all of $array2, just append them.
+	    // If all of $array 1 is <= all of $array2, just append them.
 		 // Original code: call_user_func($cmpFunction, end($array1), $array2[0])
 	    if (end($array1).compareTo($array2[0]) < 1) {
 	        $array = array_merge($array1, $array2);
@@ -165,33 +165,32 @@ abstract class Arrays {
 	/**
 	 * Checks whether an array is empty.
 	 *
-	 * An array is empty if there is no value in it that passes the empty() check.
+	 * An array is empty if all elements (if any) pass the empty() check. The second parameter
+	 * specifies whether to search the array recursive or not.
 	 *
-	 * @see empty()
-	 * @todo Enhance documentation
+	 * Example for the differences between recursive check and first level check only:
+	 * array(array()) with recurisve check is empty, with first level check is NOT empty.
+	 *
+	 * @param array Array to check
+	 * @param boolean Enables recursive check (true) or not (false).
+	 * @return true if array is empty, false if not.
 	 */
-	public static function isEmpty(array $array) {
-		$array = array_unique($array);
-		if (count($array) == 0) {
-			return true;
-		}
-		elseif (count($array) == 1) {
-			$current = current($array);
-			if (empty($current)) {
-				return true;
-			}
-			else {
-				return false;
-			}
-		}
-		else {
+	public static function isEmpty(array $array, $recursive = false) {
+		if (count($array) > 0) {
+			// Some tests fail with: $array = array_unique($array); [Reason unknown]
 			foreach ($array as $val) {
-				if (!empty($val)) {
+				if ($recursive == true && is_array($val)) {
+					$return = self::isEmpty($val, $recursive);
+					if ($return === false) {
+						return false;
+					}
+				}
+				elseif (!empty($val)) {
 					return false;
 				}
 			}
-			return true;
 		}
+		return true;
 	}
 
 	/**
