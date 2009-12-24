@@ -42,13 +42,49 @@ abstract class Strings {
 
 	const WORD_SEPARATOR = ".,;:+!?_| '\"#[]%{}()/\r\n\t\\";
 
+	/**
+	 * Trims line breaks (new lines/carriage returns) from a string.
+	 *
+	 * Set the second parameter to true to trim only the right side of the string (default), false
+	 * to trim both sides of the string.
+	 *
+	 * @param string String to trim
+	 * @param boolean true to trim only the right side of the string, false for both sides.
+	 * @return string Trimmed string
+	 */
 	public static function trimLineBreaks($string, $rightOnly = true) {
 		$function = $rightOnly ? 'rtrim' : 'trim';
 		return $function($string, "\r\n");
 	}
 
+	/**
+	 * Replaces line breaks (new lines/carriage returns) with something in a string.
+	 *
+	 * @param string String to replace in
+	 * @param mixed Something to replace with
+	 * @return string String with linebreaks replaced.
+	 */
 	public static function replaceLineBreaks($string, $replace) {
 		return str_replace(array("\r\n", "\n", "\r"), $replace, $string);
+	}
+
+	/**
+	 * Splits a string into an array.
+	 *
+	 * The string is splitted at every line break. Empty lines/array elements are removed from the
+	 * array. If the parameter is not a string or an error occurs null will be returned.
+	 *
+	 * @param string String to split
+	 * @return array Splitted string as array or null on failure
+	 * @see trim()
+	 */
+	public static function toArray($text) {
+		if (!is_string($text)) {
+			return null;
+		}
+		else {
+			return preg_split("~[\r\n]+~", $text, -1, PREG_SPLIT_NO_EMPTY);
+		}
 	}
 
 	/**
@@ -70,10 +106,6 @@ abstract class Strings {
 		else {
 			return preg_split("~[ \t\0\x0B]*[\r\n]+[ \t\0\x0B]*~", $text, -1, PREG_SPLIT_NO_EMPTY);
 		}
-	}
-
-	public static function isHash($string) {
-		return (bool) preg_match("/^[a-f\d]{32}$/i", $string);
 	}
 
 	/**

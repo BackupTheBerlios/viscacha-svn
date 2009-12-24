@@ -55,11 +55,11 @@ class Folder extends FileSystemBaseUnit {
 	 *
 	 * @param	string	Path to a folder.
 	 */
-	public function __construct($dir) {
+	public function __construct($dir, $ftpFallback = true) {
 		if (is_file($dir)) {
 			$dir = dirname($dir);
 		}
-		$this->path = $dir;
+		parent::__construct($dir, $ftpFallback);
 	}
 
 	/**
@@ -74,8 +74,8 @@ class Folder extends FileSystemBaseUnit {
 	/**
 	 * Folder will be created and Permissions will be set to the specified permissions.
 	 *
-	 * If the folder exists just the permissions will be set correctly.
-	 * See FileSystemBaseUnit::setPermissions on how to set the permissions correctly.
+	 * If the folder exists just the permissions will be set.
+	 * See FileSystemBaseUnit::setPermissions() on how to specify the permissions correctly.
 	 * This function will also return false if the chmod are not set correctly.
 	 * Folders are created recursively.
 	 *
@@ -88,7 +88,7 @@ class Folder extends FileSystemBaseUnit {
 	 */
 	public function create($permissions = 777) {
 		if ($this->exists() == false) {
-			if (!mkdir($this->path, $permissions, true)) {
+			if (mkdir($this->path, octdec($permissions), true) == false && $this->ftp == true) {
 				$ftp = FileSystem::initializeFTP();
 				// Make sure the dir is created recursively as this is not natively supported by ftp
 				$folders = preg_split('~[\\/]+~', $this->ftpPath(), -1, PREG_SPLIT_NO_EMPTY);
@@ -105,7 +105,14 @@ class Folder extends FileSystemBaseUnit {
 		else {
 			$this->setPermissions($permissions);
 		}
-		return ($this->exists() && $this->getPermissions() == $permissions);
+
+		/*
+		 * We should check the permissions like below, but windows does not support chmods properly
+		 * and therefore this condition would fail always for chmods other than 666 and 777.
+		 *
+		 * return ($this->exists() && $this->getPermissions() == $permissions);
+		 */
+		return $this->exists();
 	}
 
 	/**
@@ -118,15 +125,22 @@ class Folder extends FileSystemBaseUnit {
 	 * @return boolean Returns TRUE on success or FALSE on failure.
 	 */
 	public function delete() {
-		if ($this->exists()) {
-			// Remove the content
-			$this->clear();
-			if (rmdir($this->path) == false) {
-				$ftp = FileSystem::initializeFTP();
+		if ($this->exists() == false) {
+			return true;
+		}
+
+		// Remove the content
+		$clear = $this->clear();
+		if ($clear == true && rmdir($this->path) == true) {
+			return true;
+		}
+		elseif ($clear == true && $this->ftp == true) {
+			$ftp = FileSystem::initializeFTP();
+			if ($ftp !== null) {
 				return $ftp->rmdir($this->ftpPath());
 			}
 		}
-		return true;
+		return false;
 	}
 
 	/**

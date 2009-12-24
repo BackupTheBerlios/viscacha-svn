@@ -28,7 +28,7 @@
 Core::loadClass('Core.FileSystem.FileSystemBaseUnit');
 
 /**
- * File handling class with ftp fallback if configured.
+ * File handling class with optional ftp fallback if configured.
  *
  * Static methods are also implemented in the Files class.
  *
@@ -55,14 +55,13 @@ class File extends FileSystemBaseUnit {
 	/**
 	 * Creates a new object of type File.
 	 *
-	 * The file given as parameter must not exist.
-	 * The file path can be a relative or an absolute path.
-	 * Sets the default mode for read/write operations to binary.
+	 * The specified path needn't exist and can be a relative or an absolute path.
 	 *
 	 * @param	string	Path to a file.
+	 * @param	boolean	Set to false to disable ftp fallback, true to enable ftp fallback (default).
 	 */
-	public function __construct($path) {
-		$this->path = $path;
+	public function __construct($path, $ftpFallback = true) {
+		parent::__construct($path, $ftpFallback);
 		$this->handle = null;
 	}
 
@@ -390,13 +389,20 @@ class File extends FileSystemBaseUnit {
 	 * @return boolean Returns TRUE on success or FALSE on failure.
 	 */
 	public function delete() {
-		if ($this->exists() == true) {
-			if (unlink($this->path) == false) {
-				$ftp = FileSystem::initializeFTP();
+		if ($this->exists() == false) {
+			return true;
+		}
+
+		if (unlink($this->path) == true) {
+			return true;
+		}
+		elseif ($this->ftp == true) {
+			$ftp = FileSystem::initializeFTP();
+			if ($ftp !== null) {
 				return $ftp->delete($this->ftpPath());
 			}
 		}
-		return true;
+		return false;
 	}
 
 	/**
@@ -414,7 +420,11 @@ class File extends FileSystemBaseUnit {
 		if ($this->exists() == false) {
 			return false;
 		}
-		if (copy($this->path, $dest) == false) {
+
+		if (copy($this->path, $dest) == true) {
+			return true;
+		}
+		elseif ($this->ftp == true) {
 			$fp = fopen($this->path, "r");
 			$ftp = FileSystem::initializeFTP();
 			if (is_resource($fp) == true && $ftp !== null) {
@@ -424,20 +434,6 @@ class File extends FileSystemBaseUnit {
 			}
 		}
 		return false;
-	}
-
-	/**
-	 * Moves an uploaded file to another destination.
-	 *
-	 * @param string Destination
-	 * @return boolean true on success, false on failure.
-	 * @see move_uploaded_file()
-	 */
-	public function moveUploaded($destination) {
-		if (is_uploaded_file($this->path) == false) {
-			return false;
-		}
-		return move_uploaded_file($this->path, $destination);
 	}
 
 	/**

@@ -45,7 +45,7 @@ class CacheObject {
 	public function __construct($name, $path = CacheObject::DEFAULT_DIR) {
 		$this->name = $name;
 		$this->path = FileSystem::adjustTrailingSlash($path, true);
-		$this->file = new File($this->path.$this->name.'.cache.php');
+		$this->file = new File($this->path.$this->name.'.ser');
 		$this->data = null;
 		$this->maxAge = null;
 	}

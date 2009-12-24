@@ -24,9 +24,9 @@
     <echo msg="PHP Documentor..." />
     <phpdoc defaultpackagename="Core"
             destdir="${builddir}/docs"
-            output="HTML:Smarty:PHP"
+            output="HTML:frames:DOM:earthli"
             sourcecode="yes"
-            title="Viscacha 0.9 API Documentation">
+            title="Viscacha 1.0 API Documentation">
       <fileset dir="./source">
         <include name="**/*.php" />
       </fileset>

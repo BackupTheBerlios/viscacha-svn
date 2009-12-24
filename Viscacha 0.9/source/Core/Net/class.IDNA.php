@@ -605,7 +605,9 @@ class IDNA {
 			}
 			// Hangul syllable decomposition
 			if (0xAC00 <= $v && $v <= 0xD7AF) {
-				foreach ($this->_hangul_decompose($v) as $out) $output[] = (int) $out;
+				foreach ($this->_hangul_decompose($v) as $out) {
+					$output[] = (int) $out;
+				}
 				// There's a decomposition mapping for that code point
 			}
 			elseif (isset($this->NP['replacemaps'][$v])) {
@@ -769,8 +771,12 @@ class IDNA {
 	private function _combine($input) {
 		$inp_len = count($input);
 		foreach ($this->NP['replacemaps'] as $np_src => $np_target) {
-			if ($np_target[0] != $input[0]) continue;
-			if (count($np_target) != $inp_len) continue;
+			if ($np_target[0] != $input[0]) {
+				continue;
+			}
+			if (count($np_target) != $inp_len) {
+				continue;
+			}
 			$hit = false;
 			foreach ($input as $k2 => $v2) {
 				if ($v2 == $np_target[$k2]) {
@@ -781,7 +787,9 @@ class IDNA {
 					break;
 				}
 			}
-			if ($hit) return $np_src;
+			if ($hit) {
+				return $np_src;
+			}
 		}
 		return false;
 	}

@@ -48,6 +48,25 @@ abstract class FileSystemBaseUnit {
 	protected $path;
 
 	/**
+	 * Use FTP fallback or not.
+	 * @var boolean
+	 */
+	private $ftp;
+
+	/**
+	 * Creates a new file/folder.
+	 *
+	 * The specified path needn't exist and can be a relative or an absolute path.
+	 *
+	 * @param	string	Path to a file/folder.
+	 * @param	boolean	Set to false to disable ftp fallback, true to enable ftp fallback (default).
+	 */
+	public function  __construct($path, $ftpFallback = true) {
+		$this->path = $path;
+		$this->ftp = (boolean) $ftpFallback;
+	}
+
+	/**
 	 * Returns the file/folder path as specified in the constructor.
 	 *
 	 * @return string
@@ -132,19 +151,21 @@ abstract class FileSystemBaseUnit {
 	 * @return boolean true on success, false on failure
 	 */
 	public function setPermissions($chmod) {
-		if ($this->exists() == true) {
-			$chmod = octdec($chmod); // Convert it to octal for PHP
-			if (chmod($this->path, $chmod) == false) {
-				$ftp = FileSystem::initializeFTP();
-				return $ftp->chmod($this->ftpPath(), $chmod);
-			}
-			else {
-				return true;
-			}
-		}
-		else {
+		if ($this->exists() == false) {
 			return false;
 		}
+
+		$chmod = octdec($chmod); // Convert it to octal for PHP
+		if (chmod($this->path, $chmod) == true) {
+			return true;
+		}
+		elseif ($this->ftp == true) {
+			$ftp = FileSystem::initializeFTP();
+			if ($ftp !== null) {
+				return $ftp->chmod($this->ftpPath(), $chmod);
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -202,23 +223,22 @@ abstract class FileSystemBaseUnit {
 	 * @return boolean Returns TRUE on success or FALSE on failure.
 	 */
 	public function move($dest) {
-		if ($this->exists() == false || file_exists($dest) == false) {
+		if ($this->exists() == false || file_exists($dest) == true) {
 			return false;
 		}
-		else if (rename($this->path, $dest) == true) {
+
+		if (rename($this->path, $dest) == true) {
 			$this->path = $dest;
 			return true;
 		}
-		else {
+		elseif ($this->ftp == true) {
 			$ftp = FileSystem::initializeFTP();
 			if ($ftp !== null && $ftp->rename($this->ftpPath(), $this->ftpize($dest)) === true) {
 				$this->path = $dest;
 				return true;
 			}
-			else {
-				return false;
-			}
 		}
+		return false;
 	}
 
 	/**
@@ -237,18 +257,13 @@ abstract class FileSystemBaseUnit {
 	 * @return boolean Returns TRUE on success or FALSE on failure.
 	 */
 	public function rename($newname) {
-		if ($this->exists() === false) {
-			return false;
-		}
-		else {
+		if ($this->exists()) {
 			$parentDir = dirname($this->absPath());
 			$to = $parentDir.Folder::SEPARATOR.$newname;
-			if (file_exists($to) === false) {
-				return $this->move($to);
-			}
-			else {
-				return false;
-			}
+			return $this->move($to);
+		}
+		else {
+			return false;
 		}
 	}
 

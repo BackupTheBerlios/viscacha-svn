@@ -27,6 +27,7 @@
 
 /**
  * The default working dir at script startup.
+ * @todo Replace with runtime config...
  */
 define('DEFAULT_WORKING_DIR', getcwd());
 

@@ -727,14 +727,27 @@ class Upload {
 			break;
 		}
 		$destination = $this->destination_dir.Folder::SEPARATOR.$this->file['name'];
-		$source = new File($this->file['tmp_name']);
-		if ($source->moveUploaded($destination) == false) {
+		if ($this->moveUploadedFile($destination) == false) {
 			$this->setErrorCode(self::ERROR_MOVE_FAILED);
 			return false;
 		}
 		else {
 			return true;
 		}
+	}
+
+	/**
+	 * Moves an uploaded file to another destination.
+	 *
+	 * @param string Destination
+	 * @return boolean true on success, false on failure.
+	 * @see move_uploaded_file()
+	 */
+	private function moveUploadedFile($destination) {
+		if (is_uploaded_file($this->file['tmp_name']) == false) {
+			return false;
+		}
+		return move_uploaded_file($this->file['tmp_name'], $destination);
 	}
 
 	/**
