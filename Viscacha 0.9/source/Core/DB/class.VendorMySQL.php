@@ -28,7 +28,9 @@
 Core::loadClass('Core.DB.Database');
 
 /**
- * Abstract class database, that has to be extended by all database drivers.
+ * Abstract class for the SQL vendor MySQL, that has to be extended by all mysql drivers.
+ *
+ * This class implements MySQL specific functions, but without using a specific php extension.
  *
  * {@inheritdoc}
  *

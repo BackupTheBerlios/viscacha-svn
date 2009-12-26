@@ -19,51 +19,67 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * @package		Core
- * @subpackage	Util
+ * @subpackage	Kernel
  * @author		Matthias Mohr
  * @copyright	Copyright (c) 2004-2010, Viscacha.org
  * @license		http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License
  */
 
 /**
- * Operating system specific functions.
+ * ValidatorElement class that bundles the validation rules and filters for this element.
  *
  * @package		Core
- * @subpackage	Util
+ * @subpackage	Security
  * @author		Matthias Mohr
+ * @copyright	Copyright (c) 2004-2010, Viscacha.org
  * @since 		1.0
+ * @see			http://www.php.de/software-design/50128-formular-validierung.html
  * @abstract
  */
-abstract class System {
 
-	const WINDOWS = 1;
-	const MAC = 2;
-	const UNIX = 3; // Linux, BSD, Unix etc.
+abstract class AbstractValidator {
 
-	/**
-	 * Returns the basic type/family of operating system.
-	 *
-	 * The default OS is UNIX (used for everything not Windows and not MAC). 
-	 *
-	 * @return int Constant: System::WINDOWS, System::MAC or System::UNIX (default)
-	 */
-	public static function getOS() {
-		$os = strtoupper(substr(PHP_OS, 0, 3));
-		if($os == 'MAC' || $os == 'DAR') {
-			return System::MAC;
+	private $errors;
+	private $messages;
+
+	public function  __construct() {
+		$this->reset();
+		$this->messages = array();
+	}
+
+	public abstract function isValid($value);
+
+	public function getErrors() {
+		return $this->errors;
+	}
+
+	public function countErrors() {
+		return count($this->errors);
+	}
+
+	public function setMessages(array $messages) {
+		$this->messages = $messages;
+	}
+
+	public function getMessages() {
+		$messages = array();
+		foreach ($this->errors as $code) {
+			if (isset($this->messages[$code]) == true) {
+				$messages[$code] = $this->messages[$code];
+			}
+			else {
+				$messages[$code] = $code;
+			}
 		}
-		elseif ($os == 'WIN') {
-			return System::WINDOWS;
-		}
-		elseif (isset($_SERVER['OS']) && stripos($_SERVER['OS'], 'Windows') !== false) {
-			return System::WINDOWS;
-		}
-		elseif (function_exists('php_uname') && stripos(@php_uname(), 'Windows') !== false) {
-			return System::WINDOWS;
-		}
-		else {
-			return System::UNIX;
-		}
+		return $messages;
+	}
+
+	protected function setError($error) {
+		$this->errors[] = $error;
+	}
+
+	protected function reset() {
+		$this->errors = array();
 	}
 
 }

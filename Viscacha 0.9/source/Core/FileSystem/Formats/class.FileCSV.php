@@ -222,7 +222,7 @@ class FileCSV extends File {
 	 * @param string String to parse
 	 * @return array Parsed string as array
 	 */
-	private function parseLine($str){
+	private function parseLine($str) {
 		$sep = preg_quote($this->sep, '/');
 		$quote = preg_quote($this->quote, '/');
 		$expr = "/{$sep}(?=(?:[^{$quote}]*{$quote}[^{$quote}]*{$quote})*(?![^{$quote}]*{$quote}))/";

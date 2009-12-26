@@ -32,8 +32,9 @@
  * @subpackage	FileSystem
  * @author		Matthias Mohr
  * @since 		1.0
+ * @abstract
  */
-class MimeType {
+abstract class MimeType {
 
 	/**
 	 * Mapping table for mime type to file extensions.

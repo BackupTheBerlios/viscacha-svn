@@ -46,7 +46,7 @@ abstract class Numbers {
 	 * The natural number can be given as integer or as string.
 	 * For strings it is not allowed to use and other chars than 0-9 and the first char can't be 0.
 	 *
-	 * @param	int|string	Number
+	 * @param	int|string	Number to check (Number system N)
 	 * @return	boolean		true if the specified data is a natural number, false if not.
 	 */
 	public static function isNatural($x) {
@@ -69,7 +69,7 @@ abstract class Numbers {
 	 * as integer or as string. The string is a valid int if it contains only the chars 0-9 with an
 	 * additional sign (+/-) as suffix.
 	 *
-	 * @param	int|string	Number
+	 * @param	int|string	Number to check (Number system Z)
 	 * @return	boolean		true if the specified data is an integer, false if not.
 	 */
 	public static function isInteger($x) {
@@ -85,7 +85,29 @@ abstract class Numbers {
 		}
 	}
 
+	/**
+	 * Checks whether a number is a decimal (no type check!).
+	 *
+	 * This method checks whether the specified number is an representative of a decimal, this does
+	 * not check whether the given parameter is a variable of the type float or int! The decimal can
+	 * be given as integer, float or as string. The string is a valid decimal if it contains:
+	 * Adittional +/-, one or more chars with a value between 0 and 9, another addtional part
+	 * starting with a dot (not a comma!) and followed by one or more chars with a value
+	 * between 0 and 9.
+	 *
+	 * @param mixed Number to check (Number system Q)
+	 */
 	public static function isDecimal($x) {
+		if (is_int($x) == true || is_float($x) == true) {
+			return true;
+		}
+		// Is there a better way than preg_match?
+		elseif (is_string($x) == true && preg_match('~^[\-\+]?\d+(\.\d+)?$~', $x) == 1) {
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 
 	/**

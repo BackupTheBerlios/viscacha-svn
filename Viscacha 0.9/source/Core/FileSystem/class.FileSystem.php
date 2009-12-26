@@ -44,6 +44,9 @@ define('DEFAULT_WORKING_DIR', getcwd());
  */
 abstract class FileSystem {
 
+	const RETURN_OBJECTS = 0;
+	const RETURN_PATHS = 1;
+
 	/**
 	 * @var FTPClient
 	 */

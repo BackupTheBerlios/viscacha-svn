@@ -39,13 +39,14 @@
 class ErrorHandling {
 
 	/**
-	 * @var int
+	 * @var	int
 	 */
 	private $depth;
 	/**
-	 * @var Debug
+	 * @var	Debug
+	 * @static
 	 */
-	private static $debug;
+	private static $debug = null;
 
 	/**
 	 * Sets the error handler and the exception handler.
@@ -64,7 +65,6 @@ class ErrorHandling {
 			set_exception_handler(array($this, 'exceptionHandler'));
 		}
 		$this->depth = 0;
-		$this->debug = new Debug('core.log');
 	}
 
 	/**
@@ -75,6 +75,9 @@ class ErrorHandling {
 	 * @return Debug
 	 */
 	public static function getDebug() {
+		if (self::$debug === null) {
+			self::$debug = new Debug('core.log');
+		}
 		return self::$debug;
 	}
 

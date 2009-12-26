@@ -19,51 +19,53 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * @package		Core
- * @subpackage	Util
+ * @subpackage	FileSystem
  * @author		Matthias Mohr
  * @copyright	Copyright (c) 2004-2010, Viscacha.org
  * @license		http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License
  */
 
 /**
- * Operating system specific functions.
+ * FolderIterator to iterate through folders.
  *
  * @package		Core
- * @subpackage	Util
+ * @subpackage	FileSystem
  * @author		Matthias Mohr
  * @since 		1.0
- * @abstract
  */
-abstract class System {
-
-	const WINDOWS = 1;
-	const MAC = 2;
-	const UNIX = 3; // Linux, BSD, Unix etc.
+class FolderIterator extends FileFolderIterator {
 
 	/**
-	 * Returns the basic type/family of operating system.
+	 * Checks whether a folder can be used in this Iterator.
 	 *
-	 * The default OS is UNIX (used for everything not Windows and not MAC). 
+	 * Checks the name against the filter etc.
 	 *
-	 * @return int Constant: System::WINDOWS, System::MAC or System::UNIX (default)
+	 * @param string Folder name to check
+	 * @return boolean Returns true for a valid, false for an invalid folder.
 	 */
-	public static function getOS() {
-		$os = strtoupper(substr(PHP_OS, 0, 3));
-		if($os == 'MAC' || $os == 'DAR') {
-			return System::MAC;
+	protected function matchesFilter($name) {
+		if ($name == '.' || $name == '..' || $name === false || is_dir($this->path.$name) == false) {
+			return false; // Reject: This and the parent directory or no more entries or not a dir
 		}
-		elseif ($os == 'WIN') {
-			return System::WINDOWS;
+		elseif ($this->filter === null) {
+			return true; // No filter, allow folder
 		}
-		elseif (isset($_SERVER['OS']) && stripos($_SERVER['OS'], 'Windows') !== false) {
-			return System::WINDOWS;
-		}
-		elseif (function_exists('php_uname') && stripos(@php_uname(), 'Windows') !== false) {
-			return System::WINDOWS;
+		elseif($this->filter !== null && preg_match($this->filter, $name) > 0) {
+			return true; // Filter set and name matches the filter, allow folder
 		}
 		else {
-			return System::UNIX;
+			return false; // Filter set and name doesn't match the filter, reject folder
 		}
+	}
+
+	/**
+	 * Constructs a new Folder object for the specified path.
+	 *
+	 * @param string Path for the new object
+	 * @return Folder
+	 */
+	protected function constructObject($path) {
+		return new Folder($path);
 	}
 
 }

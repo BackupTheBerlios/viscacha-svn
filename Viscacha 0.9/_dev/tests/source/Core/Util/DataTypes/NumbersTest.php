@@ -69,11 +69,51 @@ class NumbersTest extends PHPUnit_Framework_TestCase {
 			array(0123, true),
 			array(PHP_INT_MAX, true),
 			array(str_repeat('9', strlen(PHP_INT_MAX)), true), // Always greater than PHP_INT_MAX
-			array('-'.str_repeat('9', strlen(PHP_INT_MAX)), true), //Always smaller than PHP_INT_MAX
+			array('-'.str_repeat('9', strlen(PHP_INT_MAX)), true), //Always smaller than -PHP_INT_MAX
 			array("+77", true),
 			array("+0123.45e6", false),
 			array("-0", true),
 			array("1.0", false)
+		);
+	}
+
+	/**
+	 * @dataProvider providerIsDecimal
+	 */
+	public function testIsDecimal($value, $expected) {
+		$result = Numbers::isDecimal($value);
+		$this->assertEquals($expected, $result, "Given: {$value}; Result: ".var_export($result, true));
+	}
+
+	public function providerIsDecimal() {
+		$longStringInt = str_repeat('9', strlen(PHP_INT_MAX));
+		return array(
+			array(0, true),
+			array("", false),
+			array(false, false),
+			array(true, false),
+			array(2.5, true),
+			array(-2, true),
+			array(1, true),
+			array(99, true),
+			array("1", true),
+			array("01", true),
+			array(floatval(1.0), true),
+			array("a1b", false),
+			array(0x1a, true),
+			array("0x12", false),
+			array(null, false),
+			array(0123, true),
+			array(PHP_INT_MAX, true),
+			array($longStringInt, true), // Always greater than PHP_INT_MAX
+			array('-'.$longStringInt, true), //Always smaller than -PHP_INT_MAX
+			array("+77", true),
+			array("+0123.45e6", false),
+			array("-0", true),
+			array("1.0", true),
+			array("1,0", false),
+			array($longStringInt.'.'.$longStringInt, true),
+			array(1.8e308, true)
 		);
 	}
 

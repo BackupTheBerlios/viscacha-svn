@@ -30,8 +30,6 @@ Core::loadClass('Core.FileSystem.FileSystemBaseUnit');
 /**
  * Folder handling class with ftp fallback if configured.
  *
- * Static methods are also implemented in the Folders class.
- *
  * Information: This class is named Folder because PHP has a built-in class named 'Directory'.
  *
  * @package		Core
@@ -40,9 +38,6 @@ Core::loadClass('Core.FileSystem.FileSystemBaseUnit');
  * @since 		1.0
  */
 class Folder extends FileSystemBaseUnit {
-
-	const RETURN_OBJECTS = 0;
-	const RETURN_PATHS = 1;
 
 	const SEPARATOR = DIRECTORY_SEPARATOR;
 
@@ -160,120 +155,157 @@ class Folder extends FileSystemBaseUnit {
 	}
 
 	/**
-	 * Returns an array with the folders and files in the directory (not recursive).
+	 * Returns an FileFolderIterator for the files and folders in this directory (not recursive).
 	 *
-	 * The returned array will contain objects of the types File and Folder, but if the second
-	 * parameter is set to Folder::RETURN_PATHS just the paths are returned.
-	 * This function returns the merged result of the functions Folder::getFolders() and
-	 * Folder::getFiles(). Note that the returned array does have numeric keys and not the file and
-	 * folder names like the functions Folder::getFolders() and Folder::getFiles().
+	 * The returned iterator will return objects of the types File and Folder, but if the second
+	 * parameter is set to FileSystem::RETURN_PATHS just the paths are returned.
 	 *
-	 * The first argument is a regular expression pattern that is used to filter the result.
-	 * This method does not allow the extension pattern that is allowed by Folder::getFiles(), but
-	 * the restriction, that the regexp can't start with a dot applies here, too.
+	 * The first parameter is a regular expression pattern that is used to filter the result. This
+	 * method does not allow the extension pattern that is allowed by Folder::getFileIterator().
 	 *
 	 * @param int Whether to return objects or paths
-	 * @param string Search pattern (regular expression or a file extension starting with a dot)
-	 * @return array Returns the array or null on failrue
-	 * @see Folder::getFolders()
-	 * @see Folder::getFiles()
+	 * @param string Search pattern (Regular Expression)
+	 * @return FileFolderIterator
+	 * @see Folder::getFileIterator()
+	 * @see Folder::getContents()
 	 */
-	public function getContents($pattern = null, $mode = self::RETURN_OBJECTS) {
-		return array_merge(
-			array_values($this->getFolders($pattern, $mode)),
-			array_values($this->getFiles($pattern, $mode))
-		);
+	public function getFileFolderIterator($pattern = null, $mode = FileSystem::RETURN_OBJECTS) {
+		$iterator = new FileFolderIterator($this->path);
+		if ($pattern !== null) {
+			$iterator->setFilter($pattern);
+		}
+		$iterator->setMode($mode);
+		return $iterator;
 	}
 
 	/**
-	 * Returns an array with all folders directly in this folder (not recursive).
+	 * Returns a FolderIterator for the folders in this folder (not recursive).
 	 *
-	 * The returned array will contain objects of the type Folder, but if the second parameter is
-	 * set to Folder::RETURN_PATHS just the paths are returned. The keys of the array are the folder
-	 * names.
+	 * The returned Iterator will return objects of the type Folder, but if the second parameter is
+	 * set to FileSystem::RETURN_PATHS just the paths are returned.
 	 *
 	 * The first argument is a regular expression pattern that is used to filter the result. The
 	 * pattern is applied only on the folder name, not on the whole path.
 	 *
 	 * @param int Whether to return objects or paths
-	 * @param string Regular expression search pattern
-	 * @return array Returns the array or null on failrue
+	 * @param string Search pattern (Regular Expression)
+	 * @return FolderIterator
+	 * @see Folder::getFolders()
 	 */
-	public function getFolders($pattern = null, $mode = self::RETURN_OBJECTS) {
-		$path = $this->absPath().Folder::SEPARATOR;
-		$d = dir($path);
-		$folders = array();
-		while (false !== ($entry = $d->read())) {
-			if (is_dir($path.$entry) && $entry != '.' && $entry != '..') {
-				if ($pattern === null || ($pattern !== null && preg_match($pattern, $entry))) {
-					if ($mode == self::RETURN_OBJECTS) {
-						$folders[$entry] = new Folder($path.$entry);
-					}
-					else {
-						$folders[$entry] = $path.$entry;
-					}
-				}
-			}
+	public function getFolderIterator($pattern = null, $mode = FileSystem::RETURN_OBJECTS) {
+		$iterator = new FolderIterator($this->path);
+		if ($pattern !== null) {
+			$iterator->setFilter($pattern);
 		}
-		$d->close();
-		return $folders;
+		$iterator->setMode($mode);
+		return $iterator;
 	}
 
 	/**
-	 * Returns an array with all files directly in this folder (not recursive).
+	 * Returns an FileIterator for the files directly in this folder (not recursive).
 	 *
-	 * The returned array will contain objects of the type File, but if the second parameter is set
-	 * to Folder::RETURN_PATHS just the paths are returned. The keys of the array are the file
-	 * names.
+	 * The returned Iterator will return objects of the type File, but if the second parameter is
+	 * set to FileSystem::RETURN_PATHS just the paths are returned.
 	 *
 	 * The first argument is a regular expression pattern that is used to filter the result. The
 	 * pattern is applied only on the file name, not on the whole path.
-	 * If the first parameter pattern starts with a dot a faster filter only on the file extension
-	 * is applied. This causes that a regular expression pattern can't start with a dot! This
-	 * extenstion filter is a simple string comparison, not a regular expression and thus it's much
-	 * faster.
+	 * If the first parameter starts with a dot a faster filter only on the file extension will be
+	 * set. This causes that a regular expression pattern can't start with a dot!
 	 *
 	 * @param int Whether to return objects or paths
 	 * @param string Search pattern (regular expression or a file extension starting with a dot)
 	 * @return array Returns the array or null on failrue
 	 */
-	public function getFiles($pattern = null, $mode = self::RETURN_OBJECTS) {
-		if ($pattern === null) {
-			$filter = 0; // All files
-		}
-		else if (strlen($pattern) > 0 && $pattern[0] == '.') {
-			$filter = 1; // Extension filter
-			$pattern = strtolower(substr($pattern, 1));
-		}
-		else {
-			$filter = 2; // RegExp
-		}
-
-		$path = $this->absPath().Folder::SEPARATOR;
-		$d = dir($path);
-		$folders = array();
-		while (false !== ($entry = $d->read())) {
-			if (is_file($path.$entry) && $entry != '.' && $entry != '..') {
-				// Calculate whether to add the file to the array or not
-				// This test could be done in one long if clause, but thats hard to understand...
-				$add = ($filter == 0);
-				if ($filter == 1 && strtolower(pathinfo($entry, PATHINFO_EXTENSION)) == $pattern) {
-					$add = true;
-				}
-				elseif ($filter == 2 && preg_match($pattern, $entry) > 0) {
-					$add = true;
-				}
-				// Add the array in the correct return mode
-				if ($add == true && $mode == self::RETURN_OBJECTS) {
-					$folders[$entry] = new Folder($path.$entry);
-				}
-				elseif ($add == true) {
-					$folders[$entry] = $path.$entry;
-				}
+	public function getFileIterator($pattern = null, $mode = FileSystem::RETURN_OBJECTS) {
+		$iterator = new FileIterator($this->path);
+		$iterator->setMode($mode);
+		if ($pattern !== null) {
+			if ($pattern !== null && strlen($pattern) > 0 && $pattern[0] == '.') {
+				$extension = substr($pattern, 1);
+				$iterator->setExtensionFilter($extension);
+			}
+			elseif ($pattern !== null) {
+				$iterator->setFilter($pattern);
 			}
 		}
-		$d->close();
-		return $folders;
+		return $iterator;
+	}
+
+	/**
+	 * Returns an array containing files and folders in the directory (not recursive).
+	 *
+	 * The first argument is a regular expression pattern that is used to filter the result.
+	 * This method does not allow the extension pattern that is allowed by Folder::getFiles().
+	 *
+	 * The returned array will contain objects of the types File and Folder, but if the second
+	 * parameter is set to Folder::RETURN_PATHS just the paths are returned.
+	 *
+	 * Note that the returned array does have numeric keys and not the file and folder names like
+	 * the FileFolderIterator.
+	 *
+	 * It is recommended to use Folder::getFileFolderIterator() if possible as this just calls
+	 * FileFolderIterator::toArray() using an additional loop.
+	 *
+	 * @param int Whether to return objects or paths
+	 * @param string Search pattern (regular expression or a file extension starting with a dot)
+	 * @return array
+	 * @see Folder::getFileFolderIterator()
+	 * @see FileFolderIterator::toArray()
+	 */
+	public function getContents($pattern = null, $mode = self::RETURN_ITERATOR) {
+		return array_values($this->getFileFolderIterator($pattern, $mode)->toArray());
+	}
+
+	/**
+	 * Returns an array containing folders directly in this folder (not recursive).
+	 *
+	 * The first argument is a regular expression pattern that is used to filter the result. The
+	 * pattern is applied only on the folder name, not on the whole path.
+	 *
+	 * The returned array will contain objects of the type Folder, but if the second parameter is
+	 * set to Folder::RETURN_PATHS just the paths are returned.
+	 *
+	 * Note that the returned array does have numeric keys and not the file and folder names like
+	 * the FolderIterator.
+	 *
+	 * It is recommended to use Folder::getFolderIterator() if possible as this just calls
+	 * FolderIterator::toArray() using an additional loop.
+	 *
+	 * @param int Whether to return objects or paths
+	 * @param string Search pattern (Regular Expression)
+	 * @return array
+	 * @see Folder::getFolderIterator()
+	 * @see FolderIterator::toArray()
+	 */
+	public function getFolders($pattern = null, $mode = self::RETURN_ITERATOR) {
+		return array_values($this->getFolderIterator($pattern, $mode)->toArray());
+	}
+
+	/**
+	 * Returns an array containing files directly in this folder (not recursive).
+	 *
+	 * The first argument is a regular expression pattern that is used to filter the result. The
+	 * pattern is applied only on the file name, not on the whole path.
+	 * If the first parameter pattern starts with a dot a faster filter only on the file extension
+	 * is applied. This causes that a regular expression pattern can't start with a dot!
+	 *
+	 * The returned array will contain objects of the type File, but if the second parameter is set
+	 * to Folder::RETURN_PATHS just the paths are returned.
+	 *
+	 * Note that the returned array does have numeric keys and not the file and folder names like
+	 * the FileIterator.
+	 *
+	 * It is recommended to use Folder::getFileIterator() if possible as this just calls
+	 * FileIterator::toArray() using an additional loop.
+	 *
+	 * @param int Whether to return objects or paths
+	 * @param string Search pattern (regular expression or a file extension starting with a dot)
+	 * @return array
+	 * @see Folder::getFileIterator()
+	 * @see FileIterator::toArray()
+	 */
+	public function getFiles($pattern = null, $mode = FolderIterator::RETURN_OBJECTS) {
+		return array_values($this->getFileIterator($pattern, $mode)->toArray());
 	}
 
 	/**

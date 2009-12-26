@@ -30,8 +30,6 @@ Core::loadClass('Core.FileSystem.FileSystemBaseUnit');
 /**
  * File handling class with optional ftp fallback if configured.
  *
- * Static methods are also implemented in the Files class.
- *
  * @package		Core
  * @subpackage	FileSystem
  * @author		Matthias Mohr
