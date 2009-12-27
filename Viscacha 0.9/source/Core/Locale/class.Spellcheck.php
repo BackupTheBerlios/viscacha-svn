@@ -53,7 +53,7 @@ class Spellcheck extends Singleton {
 	 */
 	public function __construct($language) {
 		$this->word = '';
-		if (function_exists('pspell_new')) {
+		if (extension_loaded('pspell') == true && function_exists('pspell_new') == true) {
 			$this->handle = pspell_new($language, "", "", "", PSPELL_NORMAL);
 			if ($this->handle === false) {
 				throw new CoreException('Could not load spellcheck instance');

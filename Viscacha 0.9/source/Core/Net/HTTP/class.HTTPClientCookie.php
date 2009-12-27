@@ -1,6 +1,44 @@
 <?php
-// Todo: Make compliant to RFC (see old HTTP? classes, ReadOnly etc.)
-class HTTPCookie {
+/**
+ * Advanced HTTP Client Class
+ *
+ * Copyright (C) 2002 - 2003 by GuinuX
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * For any suggestions or bug report please contact me: guinux@cosmoplazza.com
+ *
+ * @package		Core
+ * @subpackage	Net
+ * @author		GuinuX <guinux@cosmoplazza.com>
+ * @author		Matthias Mohr
+ * @copyright	Copyright (C) 2002 - 2003 by GuinuX
+ * @version		1.1 (Released: 06-20-2002, Last Modified: 06-10-2003)
+ * @license		http://www.gnu.org/licenses/lgpl-2.1.txt GNU Lesser General Public License
+ */
+
+/**
+ * A HTTP client class - HTTPClientCookie
+ *
+ * @package		Core
+ * @subpackage	Net
+ * @author		GuinuX <guinux@cosmoplazza.com>
+ * @author		Matthias Mohr
+ * @since 		1.0
+ */
+class HTTPClientCookie {
 
 	private $cookies;
 
@@ -60,7 +98,7 @@ class HTTPCookie {
 		$value_str = $data[0];
 
 		$cookie_param = 'domain=';
-		$start = strpos( $cookie_str, $cookie_param );
+		$start = strpos($cookie_str, $cookie_param);
 		if ($start > 0) {
 			$domain = substr($cookie_str, $start + strlen($cookie_param));
 			$domain = substr($domain, 0, strpos($domain, ';'));
@@ -82,7 +120,7 @@ class HTTPCookie {
 		$cookie_param = 'path=';
 		$start = strpos($cookie_str, $cookie_param);
 		if ($start > 0) {
-			$path = substr($cookie_str, $start + strlen($cookie_param ));
+			$path = substr($cookie_str, $start + strlen($cookie_param));
 			$path = substr($path, 0, strpos($path, ';'));
 		}
 		else {
