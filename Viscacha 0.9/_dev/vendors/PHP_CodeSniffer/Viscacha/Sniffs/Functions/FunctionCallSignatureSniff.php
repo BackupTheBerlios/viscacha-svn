@@ -87,14 +87,14 @@ class Viscacha_Sniffs_Functions_FunctionCallSignatureSniff implements PHP_CodeSn
 		if (($stackPtr + 1) !== $openBracket) {
 			// Checking this: $value = my_function[*](...).
 			$error = 'Space before opening parenthesis of function call prohibited';
-			$phpcsFile->addError($error, $stackPtr);
+			$phpcsFile->addWarning($error, $stackPtr);
 		}
 
 		$next = $phpcsFile->findNext(T_WHITESPACE, ($closeBracket + 1), null, true);
 		if ($tokens[$next]['code'] === T_SEMICOLON) {
 			if (in_array($tokens[($closeBracket + 1)]['code'], PHP_CodeSniffer_Tokens::$emptyTokens) === true) {
 				$error = 'Space after closing parenthesis of function call prohibited';
-				$phpcsFile->addError($error, $closeBracket);
+				$phpcsFile->addWarning($error, $closeBracket);
 			}
 		}
 
@@ -126,7 +126,7 @@ class Viscacha_Sniffs_Functions_FunctionCallSignatureSniff implements PHP_CodeSn
 		if ($tokens[($openBracket + 1)]['code'] === T_WHITESPACE) {
 			// Checking this: $value = my_function([*]...).
 			$error = 'Space after opening parenthesis of function call prohibited';
-			$phpcsFile->addError($error, $stackPtr);
+			$phpcsFile->addWarning($error, $stackPtr);
 		}
 
 		$closer = $tokens[$openBracket]['parenthesis_closer'];
@@ -142,7 +142,7 @@ class Viscacha_Sniffs_Functions_FunctionCallSignatureSniff implements PHP_CodeSn
 			// $value = my_function( ).
 			if ($between !== $closer) {
 				$error = 'Space before closing parenthesis of function call prohibited';
-				$phpcsFile->addError($error, $closer);
+				$phpcsFile->addWarning($error, $closer);
 			}
 		}
 

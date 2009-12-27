@@ -71,27 +71,27 @@ class Password {
 	public static function generate($minpairs = 2, $maxpairs = 5, $minnumbers = 1, $maxnumbers = 3) {
 		$password = "";
 		$pairs = mt_rand($minpairs, $maxpairs);
-		$lenv = strlen($this->vowels) - 1;
-		$lenc = strlen($this->consonants) - 1;
+		$lenv = strlen(self::$vowels) - 1;
+		$lenc = strlen(self::$consonants) - 1;
 		$usedBig = false; // Speichert, ob schon mal ein Großbuchstabe eingefügt wurde
 
 		for($i = 1; $i <= $pairs; $i++) {
 			//Per Zufall ein Großbuchstaben als Konsonant einfügen
-			$password .= $this->vowels[mt_rand(0, $lenv)];
+			$password .= self::$vowels[mt_rand(0, $lenv)];
 
 			if (mt_rand(0, 1) == 0 && $usedBig == false) {
-				$password .= strtoupper($this->consonants[mt_rand(0, $lenc)]);
+				$password .= strtoupper(self::$consonants[mt_rand(0, $lenc)]);
 				if (mt_rand(0, 1) == 0) {
 					$usedBig = true;
 				}
 			}
 			else {
-				$password .= $this->consonants[mt_rand(0, $lenc)];
+				$password .= self::$consonants[mt_rand(0, $lenc)];
 			}
 		}
 
 		//zufälliges Sonderzeichen einfügen
-		$password .= $this->specialchars[mt_rand(0, strlen($this->specialchars)-1)];
+		$password .= self::$specialchars[mt_rand(0, strlen(self::$specialchars)-1)];
 
 		//Zufällige Anzahl an Zahlen einfügen
 		$sizeNumbers = mt_rand($minnumbers, $maxnumbers);
@@ -204,7 +204,7 @@ class Password {
 		}
 
 		// Check for increasing or decreasing numbers in a row. (min. 3 chars)
-		foreach($this->keyboardSequences as &$sequence) {
+		foreach(self::$keyboardSequences as &$sequence) {
 			if (strpos($smallPassword, $sequence) !== false) {
 				$failureArray[] = self::KEYBOARD_SEQUENCE;
 				$rating -= 15;
@@ -215,7 +215,7 @@ class Password {
 		//ABC oder Zahlenreihen (ab 3 Buchstaben) => 20 Punkte abziehen
 		for ($i = 0; $i <= $passwordLength-3; $i++) {
 			$excerpt = substr($smallPassword, $i, 3);
-			if(strpos($this->alphabet, $excerpt) !== false) {
+			if(strpos(self::$alphabet, $excerpt) !== false) {
 				$failureArray[] = self::ALPHABETICAL_SEQUENCE;
 				$rating -= 15;
 				break;
