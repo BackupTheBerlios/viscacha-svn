@@ -60,17 +60,18 @@ class ClassManagerCache extends CacheItem {
 	 * @return	array	Array containing all pattern-matched files.
 	 */
 	private function scanSourceFolder(Folder $dir) {
-		$files = array();
+		// Get all folders in $dir
 		$folders = $dir->getFolderIterator();
-		
+		// Get all files in $dir
+		$files = $dir->getFiles(self::FILE_PATTERN, FileSystem::RETURN_PATHS);
+		// Iterate through all folders
 		foreach ($folders as $subDir) {
+			// Look into this subfolder (recursive)
 			$subFiles = $this->scanSourceFolder($subDir);
-			$files = array_merge(
-				$dir->getFiles(self::FILE_PATTERN, Folder::RETURN_PATHS),
-				$subFiles
-			);
+			// Merge folders together
+			$files = array_merge($files, $subFiles);
 		}
-
+		// Return files
 		return $files;
 	}
 

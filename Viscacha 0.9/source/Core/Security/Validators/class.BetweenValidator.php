@@ -53,7 +53,10 @@ class BetweenValidator extends AbstractValidator {
 
 	public function isValid($value) {
 		$this->reset();
-		if ($this->inclusive == false) {
+		if ($this->optional == true && empty($value) == true) {
+			return true;
+		}
+		if ($this->inclusive == true) {
 			if (Numbers::isDecimal($value) == true && $this->min >= $value && $value <= $this->max) {
 				return true;
 			}

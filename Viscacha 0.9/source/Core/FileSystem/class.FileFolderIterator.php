@@ -35,7 +35,7 @@
  * @author		Matthias Mohr
  * @since 		1.0
  */
-class FileFolderIterator extends Iterator {
+class FileFolderIterator implements Iterator {
 
 	protected $current;
 	protected $filter;
@@ -53,11 +53,9 @@ class FileFolderIterator extends Iterator {
 	public function __construct($path) {
 		$this->mode = FileSystem::RETURN_OBJECTS;
 		$this->filter = null;
-
 		$this->path = FileSystem::unifyPath($path).Folder::SEPARATOR;
 		$this->handle = opendir($this->path);
 		$this->current = false;
-		$this->next(); // Set to first element
 	}
 
 	/**
@@ -65,7 +63,9 @@ class FileFolderIterator extends Iterator {
 	 */
 	public function  __destruct() {
 		FileSystem::resetWorkingDir();
-		closedir($this->handle);
+		if ($this->handle) {
+			closedir($this->handle);
+		}
 	}
 
 	/**
@@ -97,14 +97,14 @@ class FileFolderIterator extends Iterator {
 	public function rewind() {
 		if ($this->handle) {
 			rewinddir($this->handle);
-			$this->next(); // Set to first element
 		}
+		$this->next(); // Set to first element
 	}
 
 	/**
 	 * Returns the current element.
 	 *
-	 * @return File|Folder
+	 * @return mixed
 	 */
 	public function current() {
 		$fullpath = $this->path.$this->current;
@@ -137,8 +137,11 @@ class FileFolderIterator extends Iterator {
 		if ($this->handle) {
 			do {
 				$entry = readdir($this->handle);
-			} while ($this->matchesFilter($entry) == false);
+			} while ($entry !== false && $this->matchesFilter($entry) == false);
 			$this->current = $entry;
+		}
+		else {
+			$this->current = false;
 		}
 	}
 
@@ -148,7 +151,7 @@ class FileFolderIterator extends Iterator {
 	 * @return boolean Returns TRUE on success or FALSE on failure.
 	 */
 	public function valid() {
-		return ($this->current !== false);
+		return ($this->handle && $this->current !== false);
 	}
 
 	/**
@@ -176,8 +179,8 @@ class FileFolderIterator extends Iterator {
 	 * @return boolean Returns true for a valid, false for an invalid file/folder.
 	 */
 	protected function matchesFilter($name) {
-		if ($name == '.' || $name == '..' || $name === false) {
-			return false; // This and the parent directory or no more entries
+		if ($name == '.' || $name == '..') {
+			return false; // This and the parent directory
 		}
 		elseif (is_file($this->path.$name) == false && is_dir($this->path.$name) == false) {
 			return false; // Not a dir and not a file

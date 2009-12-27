@@ -25,6 +25,8 @@
  * @license		http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License
  */
 
+Core::loadClass('Core.FileSystem.FileFolderIterator');
+
 /**
  * File Iterator to iterate through files with filters.
  *
@@ -73,7 +75,7 @@ class FileIterator extends FileFolderIterator {
 	 * @return boolean Returns true for a valid file, false for an invalid file.
 	 */
 	protected function matchesFilter($name) {
-		if ($name === false || !is_file($this->path.$name) == false) {
+		if (is_file($this->path.$name) == false) {
 			return false; // Reject: Not a file (inlcudes folders '.' and '..') or name is not given
 		}
 		if ($this->extension !== null && strtolower(pathinfo($name, PATHINFO_EXTENSION)) != $this->extension) {

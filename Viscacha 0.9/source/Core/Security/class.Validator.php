@@ -48,7 +48,7 @@ class Validator {
 	 * @param array Array with data to validate
 	 */
 	public function __construct($data) {
-		$this->data = array();
+		$this->data = $data;
 	}
 
 	/**
@@ -74,26 +74,6 @@ class Validator {
 			ErrorHandling::getDebug()->addText(
 				"Validation: You specified an element multiple times, this can be a security hole!"
 			);
-		}
-	}
-
-	/**
-	 * Assigns data to the form (e.g. $_POST).
-	 *
-	 * @param array Data to check
-	 */
-	public function setData(array $data) {
-		// iterate over all elements
-		foreach ($this->elements as $element) {
-			// iterate over data array
-			foreach($data as $key => $value) {
-				// check if element exists
-				if($key == $element->getName()) {
-					// assign value
-					$element->setValue($value);
-					break;
-				}
-			}
 		}
 	}
 

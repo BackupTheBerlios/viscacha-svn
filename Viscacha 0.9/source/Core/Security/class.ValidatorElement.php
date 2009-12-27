@@ -40,13 +40,15 @@ class ValidatorElement {
 
 	protected $name;
 	protected $value;
-	protected $validators = array();
-	protected $errors = array();
+	protected $validators;
+	protected $errors;
 
 	/**
 	 * @param string Element name
 	 */
 	public function __construct($name, $value = null) {
+		$this->validators = array();
+		$this->errors = array();
 		$this->name = $name;
 		$this->value = $value;
 	}
@@ -61,6 +63,7 @@ class ValidatorElement {
 	public function addValidator(AbstractValidator $validator, $optional = false) {
 		// Don't add a validator with the same data multiple times
 		if(in_array($validator, $this->validators) == false) {
+			$validator->setOptional($optional);
 			$this->validators[] = $validator;
 		}
 	}
@@ -100,7 +103,7 @@ class ValidatorElement {
 	public function isValid() {
 		$isValid = true;
 		foreach($this->validators as $validator) {
-			if(!$validator->isValid($this->value) == false) {
+			if($validator->isValid($this->value) == false) {
 				$isValid = false;
 				$this->errors = array_merge($this->errors, $validator->getErrors());
 			}

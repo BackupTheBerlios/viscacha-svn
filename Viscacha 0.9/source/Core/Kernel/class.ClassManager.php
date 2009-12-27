@@ -39,6 +39,7 @@ Core::loadClass('Core.Kernel.Singleton');
  * @author		Matthias Mohr
  * @copyright	Copyright (c) 2004-2010, Viscacha.org
  * @since 		1.0
+ * @todo		Try to implement this native
  */
 class ClassManager extends Singleton {
 
@@ -133,5 +134,4 @@ class ClassManager extends Singleton {
 	}
 
 }
-
 ?>

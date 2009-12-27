@@ -25,6 +25,8 @@
  * @license		http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License
  */
 
+Core::loadClass('Core.FileSystem.FileFolderIterator');
+
 /**
  * FolderIterator to iterate through folders.
  *
@@ -44,7 +46,7 @@ class FolderIterator extends FileFolderIterator {
 	 * @return boolean Returns true for a valid, false for an invalid folder.
 	 */
 	protected function matchesFilter($name) {
-		if ($name == '.' || $name == '..' || $name === false || is_dir($this->path.$name) == false) {
+		if ($name == '.' || $name == '..' || is_dir($this->path.$name) == false) {
 			return false; // Reject: This and the parent directory or no more entries or not a dir
 		}
 		elseif ($this->filter === null) {

@@ -28,10 +28,8 @@
 Core::loadPackage('Core.Kernel');
 Core::loadPackage('Core.Util.DataTypes');
 Core::loadPackage('Core.Cache');
+Core::loadPackage('Core.FileSystem');
 Core::loadClass('Core.Util.System');
-Core::loadClass('Core.FileSystem.FileSystem');
-Core::loadClass('Core.FileSystem.File');
-Core::loadClass('Core.FileSystem.Folder');
 
 /**
  * Short form for Core::getObject().
