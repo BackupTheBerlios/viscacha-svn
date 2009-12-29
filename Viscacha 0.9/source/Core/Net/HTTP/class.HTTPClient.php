@@ -112,7 +112,7 @@
 class HTTPClient {
 
 	const CRLF = "\r\n";
-	
+
 	const V10 = '1.0';
 	const V11 = '1.1';
 
@@ -168,7 +168,7 @@ class HTTPClient {
 			$this->auth_pwd	= '';
 		}
 	}
-	
+
 	public function  __destruct() {
 		$this->disconnect();
 	}
@@ -358,7 +358,6 @@ class HTTPClient {
 			fwrite($this->socket, $body);
 		}
 
-
 		$readResp = ($method != self::HEAD);
 		$this->readResponse($readResp);
 
@@ -395,7 +394,8 @@ class HTTPClient {
 
 	private function connect() {
 		if ($this->host == '') {
-			trigger_error('Class HTTP::connect() : host property not set !' , E_ERROR);
+			// ToDo : Replace with Exception or something...
+			trigger_error('Class HTTP::connect() : host property not set !', E_ERROR);
 		}
 		if (!$this->use_proxy) {
 			$this->socket = fsockopen($this->host, $this->port, $errno, $errstr, 10);
@@ -441,14 +441,16 @@ class HTTPClient {
 	}
 
 
-	private function mergeFormData(&$param_array,  $param_name = '') {
+	private function mergeFormData(&$param_array, $param_name = '') {
 		$params = '';
-		$format = ($param_name !=''?'&'.$param_name.'[%s]=%s':'&%s=%s');
-		foreach ($param_array as $key=>$value) {
-			if (!is_array($value))
+		$format = ($param_name != '') ? '&'.$param_name.'[%s]=%s' : '&%s=%s';
+		foreach ($param_array as $key => $value) {
+			if (!is_array($value)) {
 				$params .= sprintf($format, $key, urlencode($value));
-			else
-				$params .= $this->mergeFormData($param_array[$key],  $key);
+			}
+			else {
+				$params .= $this->mergeFormData($param_array[$key], $key);
+			}
 		}
 		return $params;
 	}
@@ -473,7 +475,9 @@ class HTTPClient {
 
 			// Read the Response Headers
 			while ((($line = fgets($this->socket, 4096)) != self::CRLF || $header == '') && !feof($this->socket)) {
-				if ($line != self::CRLF) $header .= $line;
+				if ($line != self::CRLF) {
+					$header .= $line;
+				}
 			}
 			$this->response->deserializeHeaders($header);
 			$this->response->parseCookies($this->host);

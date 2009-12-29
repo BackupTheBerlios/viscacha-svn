@@ -34,5 +34,5 @@ define('VISCACHA_CORE', '2');
 
 // Boot the object oriented system...
 require_once("source/Core/Kernel/class.Core.php");
-require_once('source/Core/Kernel/function.Core.php');
+require_once('source/Core/Kernel/function.core.php');
 ?>

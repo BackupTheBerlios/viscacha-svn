@@ -104,7 +104,7 @@ abstract class Strings {
 			return null;
 		}
 		else {
-			return preg_split("~[ \t\0\x0B]*[\r\n]+[ \t\0\x0B]*~", $text, -1, PREG_SPLIT_NO_EMPTY);
+			return preg_split('~[ \t\0\x0B]*[\r\n]+[ \t\0\x0B]*~', $text, -1, PREG_SPLIT_NO_EMPTY);
 		}
 	}
 

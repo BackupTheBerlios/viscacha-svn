@@ -196,35 +196,103 @@ abstract class Arrays {
 	/**
 	 * Simple Emulation of xPath for arrays.
 	 *
-	 * With this function you can find values in an array by an path like "abc/def/ghi".
-	 * If nothing was found (function returns false) the third parameter contains null.
+	 * With this function you can find (and change) values in an array by a path like
+	 * "abc/def/ghi" or "abc/*=value/ghi. Each level of the array is separated by a slash ('/').
+	 * The names specified between the slashes have to match the keys, but you can also use a
+	 * wildcard (*) to search in all keys on that level. The wildcard can't be used on the last
+	 * level. The syntax of the search query limits the array keys a bit, you cant use slashes in
+	 * array keys and you cant search for keys named '*'.
 	 *
-	 * @author Jonas John
-	 * @license Public Domain
-	 * @see http://www.jonasjohn.de/snippets/php/array-get-path.htm
-	 * @param array Array to search in
+	 * The function returns true on success and false if nothing was found.
+	 *
+	 * You can use this function in a Get Mode (1) and in a Set Mode (2):
+	 * <ul>
+	 * <li>Get Mode: If you specify a variable that is null (an unset variable which is null, too)
+	 * as third parameter, the search result will be assigned to this variable after the function
+	 * call. If the function returns false (no search result) the third parameter will be null.
+	 * When using the wildcard * and results are found every result will be added to an array that
+	 * has the keys from the level where the wilcard was used and the search results as values.
+	 * <li>Set Mode: If you specify something unequal to null as third parameter the search result
+	 * will be replace with the value given in the original array. When using the wildcard * and
+	 * multiple results are found every result will be replaced.
+	 * Note: As the third parameter takes a reference you have to specify a variable, you can't
+	 * just specify an integer, a string, ... in the function call as PHP can't reference that,
+	 * but you can assign a variable in the function call, of course.
+	 * </ul>
+	 *
+	 * Original idea by {@link http://www.jonasjohn.de/snippets/php/array-get-path.htm Jonas John}.
+	 *
+	 * @param array Array/data to search in
 	 * @param string Path to follow
 	 * @param array Holds the result of the search or null on failure
 	 * @return boolean true on success, false on failure
-	 * @todo Add support to search for values
 	 */
-	public function xPath(array $data, $path, &$result) {
-		$result = null;
-		$path = explode("/", $path);
-		$count = count($path);
-		for ($x=0; $x < $count; $x++){
-			$key = $path[$x];
-			if (is_array($data) && isset($data[$key])){
-				$data = $data[$key];
+	public static function xPath(array &$data, $path, &$result) {
+		// Is there a / in the path?
+		if (strpos($path, '/') !== false) {
+			// More than one key, separate key from path
+			list($key, $path) = explode('/', $path, 2);
+			
+			if ($key != '*' && isset($data[$key]) == true && is_array($data[$key]) == true) {
+				// If $data is an array and the next key is set, call this method again (recursion).
+				return self::xPath($data[$key], $path, $result);
 			}
-			else {
-				return false;
+			elseif ($key == '*' && is_array($data) == true) {
+				// There is a wildcard on this level, loop through all elements
+				$resultArray = array(); // For get mode
+				$status = false; // For set mode
+				foreach ($data as $array_key => &$array_value) {
+					// Not an array, we can't search there... go to next element
+					if (!is_array($array_value)) {
+						continue;
+					}
+
+					if ($result === null) { // We are in get mode
+						// $result2 is the array we save our result in, must be null on every iteration
+						$result2 = null;
+						$status = self::xPath($array_value, $path, $result2);
+						if ($status == true) {
+							// Oh we found something, add to our array
+							$resultArray[$array_key] = $result2;
+						}
+					}
+					else { // We are in set mode
+						$temp = $result; // Security against overwriting $result in case of an error
+						if(self::xPath($array_value, $path, $result) == true) {
+							$status = true;
+						}
+						$result = $temp; // Write back
+					}
+				}
+
+				if ($result === null) { // We are in get mode
+					// Return true when something was found, false in the other case
+					$result = $resultArray;
+					return (count($result) > 0);
+				}
+				else { // we are in set mode
+					return $status;
+				}
 			}
 		}
-		$result = $data;
-		return true;
-	}
+		else {
+			// Last key, lets bring this to an end
+			if (isset($data[$path]) == true) {
+				// Yes, there is also the last key in the array
+				if ($result === null) { // We are in get mode
+					$result = $data[$path];
+				}
+				else { // We are in set mode
+					$data[$path] = $result;
+				}
+				return true;
+			}
+		}
 
+		// An error occured (Key not found, data invalid, ...)
+		$result = null;
+		return false;
+	}
 
 }
 ?>

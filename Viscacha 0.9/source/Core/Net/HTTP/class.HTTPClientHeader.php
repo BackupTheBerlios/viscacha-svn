@@ -70,7 +70,7 @@ abstract class HTTPClientHeader {
 
 	public function serializeHeaders() {
 		$str = '';
-		foreach ( $this->headers as $name=>$value) {
+		foreach ($this->headers as $name => $value) {
 			$str .= "{$name}: {$value}" . HTTPClient::CRLF;
 		}
 		return $str;
@@ -78,7 +78,7 @@ abstract class HTTPClientHeader {
 
 	private function formatHeaderName($header_name) {
 		$formatted = str_replace('-', ' ', strtolower($header_name));
-		$formatted = ucwords( $formatted );
+		$formatted = ucwords($formatted);
 		$formatted = str_replace(' ', '-', $formatted);
 		return $formatted;
 	}

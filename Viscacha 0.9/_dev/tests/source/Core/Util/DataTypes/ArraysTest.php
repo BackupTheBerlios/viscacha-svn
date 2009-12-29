@@ -15,8 +15,123 @@ class ArraysTest extends PHPUnit_Framework_TestCase {
 			'light' => array('eeeeee', 'e7e7e7'),
 			'dark' => array('cccccc')
 		),
+		'black' => array(
+			'pure' => array('000000')
+		),
+		'test1' => array(
+			'test11' => array(
+				'test1111' => array(
+					'x' => 'x'
+				),
+				'test1112' => '1112'
+			),
+			'test12' => array(
+				'test1121' => '1121'
+			)
+		),
+		'test2' => array(
+			'test11' => array(
+				'test2111' => array(
+					'x' => 'x'
+				),
+				'test2112' => '2112'
+			),
+			'test12' => array(
+				'test2121' => '2121'
+			)
+		),
 		7 => 'foobar'
 	);
+
+	/**
+	 * @test
+	 */
+	public function xPathChangeArrayTest1() {
+		$expected_result = $this->xPathData;
+		$expected_result['red']['max'] = 200;
+		$array = $this->xPathData;
+
+		$return = Arrays::xPath($array, 'red/max', $var = 200);
+
+		$this->assertEquals(
+			true,
+			$return,
+			"Returned boolean does not fit to test case."
+		);
+		$this->assertEquals(
+			$expected_result,
+			$array,
+			"Change array with xPath test 1 - Data wasn't modified correctly."
+		);
+	}
+
+	/**
+	 * @test
+	 */
+	public function xPathChangeArrayTest2() {
+		$expected_result = $this->xPathData;
+		$expected_result['test1']['test11'] = array();
+		$expected_result['test2']['test11'] = array();
+		$array = $this->xPathData;
+
+		$return = Arrays::xPath($array, '*/test11', $var = array());
+
+		$this->assertEquals(
+			true,
+			$return,
+			"Returned boolean does not fit to test case."
+		);
+		$this->assertEquals(
+			$expected_result,
+			$array,
+			"Change array with xPath test 2 - Data wasn't modified correctly."
+		);
+	}
+
+	/**
+	 * @test
+	 */
+	public function xPathChangeArrayTest3() {
+		$expected_result = $this->xPathData;
+		$array = $this->xPathData;
+
+		$return = Arrays::xPath($array, 'test1/*/nothingToFind', $var = 0);
+
+		$this->assertEquals(
+			false,
+			$return,
+			"Returned boolean does not fit to test case."
+		);
+		$this->assertEquals(
+			$expected_result,
+			$array,
+			"Change array with xPath test 3 - Data wasn't modified correctly."
+		);
+	}
+
+
+	/**
+	 * @test
+	 */
+	public function xPathChangeArrayTest4() {
+		$newValue = '111111';
+		$expected_result = $this->xPathData;
+		$expected_result['black']['pure'][0] = $newValue;
+		$array = $this->xPathData;
+
+		$return = Arrays::xPath($array, 'black/*/0', $newValue);
+
+		$this->assertEquals(
+			true,
+			$return,
+			"Returned boolean does not fit to test case."
+		);
+		$this->assertEquals(
+			$expected_result,
+			$array,
+			"Change array with xPath test 4 - Data wasn't modified correctly."
+		);
+	}
 
 	/**
 	 * @dataProvider providerXPath
@@ -26,12 +141,12 @@ class ArraysTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals(
 			$expected_return,
 			$return,
-			"Returned result does not fit to test case."
+			"Returned boolean does not fit to test case."
 		);
 		$this->assertEquals(
 			$expected_result,
 			$result,
-			"Returned data does not fit to test case."
+			"Result does not fit to test case."
 		);
 	}
 
@@ -55,7 +170,52 @@ class ArraysTest extends PHPUnit_Framework_TestCase {
 				)
 			),
 			array('', false, null),
-			array('/', false, null)
+			array('/', false, null),
+			array(null, false, null),
+			array('*/max', true, array('red' => 100)),
+			array(
+				'*/*/1',
+				true,
+				array(
+					'grey' => array(
+						'light' => 'e7e7e7'
+					)
+				)
+			),
+			array(
+				'*/*/0',
+				true,
+				array(
+					'grey' => array(
+						'light' => 'eeeeee',
+						'dark' => 'cccccc'
+					),
+					'black' => array(
+						'pure' => '000000'
+					)
+				)
+			),
+			array(
+				'grey/*/0',
+				true,
+				array(
+					'light' => 'eeeeee',
+					'dark' => 'cccccc'
+				)
+			),
+			array('*', false, null),
+			array(
+				'*/test11/*/x',
+				true,
+				array(
+					'test1' => array(
+						'test1111' => 'x'
+					),
+					'test2' => array(
+						'test2111' => 'x'
+					)
+				)
+			)
 		);
 	}
 

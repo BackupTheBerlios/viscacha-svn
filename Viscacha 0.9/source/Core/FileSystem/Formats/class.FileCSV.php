@@ -32,13 +32,13 @@ Core::loadClass('Core.FileSystem.File');
  *
  * This class can read and write CSV files according to the RFC 4180.
  *
- * @todo		What about unicode/binary for reading/writing etc.?
  * @package		Core
  * @subpackage	FileSystem
  * @author		Stefan Tenhaeff
  * @author		Matthias Mohr
  * @since 		1.0
  * @see			http://tools.ietf.org/html/rfc4180
+ * @todo		What do we do when we only need to parse a string (no file)
  */
 class FileCSV extends File {
 
@@ -61,13 +61,18 @@ class FileCSV extends File {
 	 * Use Excel compatibility mode (for reading)? true = yes, false = no
 	 */
 	private $compat;
+	/**
+	 * File read and write mode (Unicode or Binary)
+	 */
+	private $mode;
 
 	/**
 	 * Construct a new CSV object for the specified file.
 	 *
 	 * The specified path needn't exist and can be a relative or an absolute path.
 	 * The field separator is set to ',', the char the values are enclosed with is set to '"'.
-	 * Excel compatibility mode is turned off by default.
+	 * Excel compatibility mode is turned off by default. Default mode for read and write access is
+	 * Unicode.
 	 *
 	 * FTP fallback is activated automatically for this class.
 	 *
@@ -80,6 +85,16 @@ class FileCSV extends File {
 		$this->sep = ',';
 		$this->quote = '"';
 		$this->compat = false;
+		$this->setFileMode();
+	}
+
+	/**
+	 * Sets the read and write mode.
+	 *
+	 * Use either File::UNICODE (default) or File::BINARY as parameter.
+	 */
+	public function setFileMode($mode = self::UNICODE) {
+		$this->mode = $mode;
 	}
 
 	/**
@@ -141,18 +156,16 @@ class FileCSV extends File {
 	 * @return array Array with the data or null on failure
 	 */
 	public function parse() {
-		$content = $this->read();
+		$content = $this->read(self::READ_STRING, $this->mode);
 		if ($content !== false) {
 			$data = $this->parseString($content);
-			if ($data !== null) {
-				return $data;
-			}
+			return $data;
 		}
 		return null;
 	}
 
 	/**
-	 * Reads and parses a string containing csv formatted data.
+	 * Parses a string containing csv formatted data.
 	 *
 	 * Returns a multidimensional array with the parsed content of the string or null on failure.
 	 * If the usage of headers are enabled the header values are used as keys for the array.
@@ -213,7 +226,7 @@ class FileCSV extends File {
 	 * @return boolean true on success, false on failure.
 	 */
 	public function writeArray(array $data) {
-		return $this->write($this->transformArray($data));
+		return $this->write($this->transformArray($data), $this->mode);
 	}
 
 	/**
