@@ -111,7 +111,7 @@ abstract class FileSystem {
     /**
      * Returns canonicalized absolute pathname to a file or directory.
      *
-     * This works with non-existant paths. For directories there won't be a trailing slash.
+     * This works with non-existent paths. For directories there won't be a trailing slash.
 	 *
 	 * LICENSE:
 	 * This source file is subject to version 3.0 of the PHP license

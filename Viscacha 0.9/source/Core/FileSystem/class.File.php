@@ -126,22 +126,37 @@ class File extends FileSystemBaseUnit {
 	 }
 
 	/**
-	 * File will be created.
+	 * File will be created and Permissions will be set to the specified permissions.
 	 *
-	 * If the file exists, the command will be ignored and true will be returned.
+	 * If the file exists just the permissions will be set.
+	 * See FileSystemBaseUnit::setPermissions() on how to specify the permissions correctly.
+	 * This function will also return false if the chmod are not set correctly.
+	 * If the containing folder does not exist, it won't be created!
 	 *
 	 * This function implements the ftp fallback!
 	 *
-	 * @return	boolean Returns TRUE on success or FALSE on failure.
-	 * @todo Add documentation about permissions
+	 * @see File::setPermissions()
+	 * @param int Permissions to set for the file (default is 666)
+	 * @return boolean Returns TRUE on success or FALSE on failure.
 	 */
 	public function create($permissions = 666) {
+		$chmodResult = false;
 		if ($this->exists() == false) {
-			return $this->write('');
+			if ($this->write('') == true) {
+				$chmodResult = $this->setPermissions($permissions);
+			}
 		}
 		else {
-			return true;
+			$chmodResult = $this->setPermissions($permissions);
 		}
+
+		/*
+		 * We should check the permissions like below, but windows does not support chmods properly
+		 * and therefore this condition would fail always for chmods other than 666 and 777.
+		 *
+		 * return ($this->exists() && $this->getPermissions() == $permissions);
+		 */
+		return ($this->exists() && $chmodResult);
 	}
 
 	/**

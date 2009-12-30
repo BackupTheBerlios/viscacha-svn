@@ -37,16 +37,15 @@
  * @since 		1.0
  */
 class Stack {
+
 	/**
-	 * The Stack data
+	 * The stack data
 	 * @var array
 	 */
 	private $stack;
 
 	/**
-	 * Constructs an Stack object.
-	 *
-	 * When a stack is first created, it contains no items.
+	 * Constructs an Stack object containing no items.
 	 */
 	public function __construct() {
 		$this->stack = array();
@@ -66,15 +65,15 @@ class Stack {
 	 *
 	 * Returns null if the stack is empty.
 	 *
-	 * @returns mixed The element at the top of this stack or null.
+	 * @return mixed The element at the top of this stack or null.
 	 */
 	public function pop() {
 		if ($this->isEmpty() == true) {
 			return null;
 		}
-		$element = $this->top();
-		array_pop($this->stack);
-		return $element;
+		else {
+			return array_pop($this->stack);
+		}
 	}
 
 	/**
@@ -82,7 +81,7 @@ class Stack {
 	 *
 	 * Returns null if the stack is empty.
 	 *
-	 * @returns mixed The element at the top of this stack or null.
+	 * @return mixed The element at the top of this stack or null.
 	 */
 	public function top() {
 		if ($this->isEmpty() == true) {
@@ -106,7 +105,7 @@ class Stack {
 	/**
 	 * Returns the lenght of the Stack.
 	 *
-	 * @returns int The lenght of the Stack.
+	 * @return int The lenght of the stack.
 	 */
 	public function getLength() {
 		return count($this->stack);
@@ -117,18 +116,17 @@ class Stack {
 	 *
 	 * The element at the top has the highest key and the element first added to the stack has the
 	 * key 0. If the parameter is set to TRUE the whole array is reversed before it is returned.
-	 * The array pointer is at the element with the key 0.
+	 * The array pointer is pointing to the element with the key 0.
 	 *
 	 * @param boolean Set this to TRUE ro reverse the whole stack. Default is false.
-	 * @returns array Stack representing the array
+	 * @return array Array representing the stack
 	 */
 	public function getArray($reverse = false) {
-		$stack = $this->stack;
 		if ($reverse == true) {
 			$stack = array_reverse($this->stack);
 		}
 		else {
-			$stack = array_merge($this->stack);
+			$stack = $this->stack;
 		}
 		reset($stack);
 		return $stack;

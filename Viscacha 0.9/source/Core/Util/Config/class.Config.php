@@ -30,7 +30,7 @@
  *
  * Example:
  * <code>
- *  // Store temporary entries (Registry like) - Namespace: temp
+ * // Store temporary entries (Registry like) - Namespace: temp
  * Config::setConfigHandler(new TempConfig(), 'temp');
  * // Load/Write entries from a native php array in file data/config.php - Namespace: base
  * Config::setConfigHandler(new PHPConfig('data/config.php'), 'base');

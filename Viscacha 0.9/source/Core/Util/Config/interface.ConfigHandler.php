@@ -31,11 +31,11 @@
  * All the classes that implement the several config formats have to implement this interface as
  * the Config Manager can only handle classes that have this specifications.
  *
- * The name of a config entry is in the format 'group1.group2.groupX.varname'.
- * Group and entry names can contain the following chars: A-Z, a-Z, 0-9, _, - and can have a
- * maximum length of 64 chars.
- * Values can only be scalar (int, float, string, boolean), to store objects see class Core with the
- * methods storeObject() and getObject().
+ * The name of a config entry is in the format 'groupname.varname'. If no group name is specified 
+ * the group 'default' is automatically used. Group names can contain the following chars:
+ * A-Z, a-Z, 0-9, _, - and variable/entry names can contain the same chars plus the dot (.).
+ * Both values can each have a maximum length of 32 chars. Values can only be scalar (int, float,
+ * string, boolean), to store objects see class Core with the methods storeObject() and getObject().
  *
  * @package		Core
  * @subpackage	Util
@@ -44,51 +44,45 @@
  */
 interface ConfigHandler {
 
+	// The constructor params are for what needs to be set (file paths, database tables, ...)
+
 	/**
-	 * This function has to save the data if needed.
+	 * This function must save the data if needed.
 	 * 
 	 * @see ConfigHandler::save()
 	 */
 	public function __destruct();
 
 	/**
-	 * Returns one specific config entry.
+	 * Return config data.
 	 *
-	 * @param string Config entry name
-	 * @return scalar Scalar value for the config entry or null on failure
+	 * This function can return a specific config entry as scalar or the whole group as associative
+	 * array. On failure null will be returned.
+	 *
+	 * @param string Config name
+	 * @return mixed Config data
 	 */
 	public function get($name);
 
 	/**
-	 * Returns a group of config entries.
+	 * Add or edit config data.
 	 *
-	 * @param string Config group name
-	 * @return array Array containing the config group or null on failure
-	 */
-	public function getGroup($name);
-
-	/**
-	 * Sets (add or edit) a config entry.
+	 * This function can add or edit a specific config entry (allowed type is scalar) or the whole
+	 * group (allowed type is an associative array with the keys as entry names and scalar values).
+	 * Function returns true on success and false on failure.
 	 *
-	 * @param string Config entry name
-	 * @param scalar Scalar value for the config entry
+	 * @param string Config name
+	 * @param scalar Config data
 	 * @return boolean true on success, false on failure
 	 */
 	public function set($name, $value);
 
 	/**
-	 * Sets (add or edit) a group of config entries.
+	 * Rename config data.
 	 *
-	 * @param string Config group name
-	 * @param array Array containing the config group data (only scalars are allowed!)
-	 * @return boolean true on success, false on failure
-	 */
-	public function setGroup($name, array $data);
-
-	/**
-	 * Renames a config group or a single entry.
-	 *
-	 * If newname is already available it will be overwritten.
+	 * This can rename a whole group or just a single entry. You can't move a group to a single
+	 * entry or vice versa. If newname is already available it will be overwritten. Function
+	 * returns true on success and false on failure.
 	 *
 	 * @param string Old group or entry name
 	 * @param string New group or entry name
@@ -97,27 +91,42 @@ interface ConfigHandler {
 	public function rename($oldName, $newName);
 
 	/**
-	 * Remmoves a config group or a single entry.
+	 * Remove a config group or a single entry.
 	 *
-	 * @param string Config group or entry name
+	 * Function returns true on success (when specified name does not exist at end of the function
+	 * runtime) and false on failure.
+	 *
+	 * @param string Config name
 	 */
 	public function delete($name);
 
 	/**
-	 * Loads the config data.
+	 * Creates a new container to store the data.
 	 *
-	 * This coule be done on object construction or maybe on first usage (lazy loading).
+	 * This function creates the "container" where the data is stored, for example a database table
+	 * or a new file. Container will only be created if not already existent.
+	 *
+	 * @return boolean true on success, false on failure
+	 */
+	public function create();
+
+	/**
+	 * Load the config data.
+	 *
+	 * Replaces existent data.
+	 * This could be done on object creation or on first usage (lazy loading).
 	 *
 	 * @return boolean true on success, false on failure.
 	 */
-	protected function load();
+	public function load();
 
 	/**
-	 * Saves the config data.
+	 * Save the config data.
 	 *
 	 * This function must be called in the destructor!
 	 * 
 	 * @return boolean true on success, false on failure.
+	 * @see ConfigHandler::__destruct()
 	 */
 	public function save();
 

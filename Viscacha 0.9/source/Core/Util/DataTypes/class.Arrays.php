@@ -232,7 +232,7 @@ abstract class Arrays {
 		if (strpos($path, '/') !== false) {
 			// More than one key, separate key from path
 			list($key, $path) = explode('/', $path, 2);
-			
+
 			if ($key != '*' && isset($data[$key]) == true && is_array($data[$key]) == true) {
 				// If $data is an array and the next key is set, call this method again (recursion).
 				return self::xPath($data[$key], $path, $result);

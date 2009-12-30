@@ -25,6 +25,9 @@
  * @license		http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License
  */
 
+Core::loadInterface('Core.Util.Config.ConfigHandler');
+Core::loadClass('Core.Util.Config.PHPConfig');
+
 /**
  * Implementation of a temporary config.
  *
@@ -35,97 +38,27 @@
  * @author		Matthias Mohr
  * @since 		1.0
  */
-class TempConfig implements ConfigHandler {
-
-	private $data;
+class TempConfig extends PHPConfig implements ConfigHandler {
 
 	public function __construct() {
-		$this->load();
+		$this->data = array();
 	}
 
-	public function __destruct() {
-		$this->save();
-	}
-
-	public function get($name) {
-		$path = str_replace('.', '/', $name);
-		if (Arrays::xPath($this->data, $path, $value) == true && is_scalar($value) == true) {
-			return $value;
+	public function create() {
+		if (!is_array($this->data)) {
+			$this->data = array();
 		}
-		else {
-			return null;
-		}
-	}
-
-	public function getGroup($name) {
-		$path = str_replace('.', '/', $name);
-		if (Arrays::xPath($this->data, $path, $value) == true && is_array($value) == true) {
-			return $value;
-		}
-		else {
-			return null;
-		}
-	}
-
-	public function set($name, $value) {
-		if (is_scalar($value) == false || $this->get($name) === null) {
-			return false;
-		}
-		else {
-			$path = str_replace('.', '/', $name);
-			return Arrays::xPath($this->data, $path, $value);
-		}
-	}
-
-	public function setGroup($name, array $data) {
-		if ($this->getGroup($name) === null) {
-			return false;
-		}
-		else {
-			$path = str_replace('.', '/', $name);
-			return Arrays::xPath($this->data, $path, $data);
-		}
-	}
-
-	public function rename($oldName, $newName) {
-		$oldPath = str_replace('.', '/', $oldName);
-		$newPath = str_replace('.', '/', $newName);
-		if (Arrays::xPath($this->data, $oldPath, $data) == false) { // get data
-			return false;
-		}
-		if (Arrays::xPath($this->data, $newPath, $data) == false) { // set data
-			return false;
-		}
-		// Remove old data
-		$this->delete($oldName);
 		return true;
 	}
 
-	public function delete($name) {
-		$this->deletePath($this->data, $name);
-	}
-
-	protected function load() {
-		// Only create fresh array for temporary data
+	public function load() {
 		$this->data = array();
+		return true;
 	}
 
 	public function save() {
 		// Nothing to do for temporary data
-	}
-
-	private function deletePath(array &$data, $path) {
-		if (strpos($path, '.') !== false) {
-			list($key, $path) = explode('.', $path, 2);
-			if (isset($data[$key]) == true && is_array($data[$key]) == true) {
-				 $this->deletePath($data[$key], $path);
-			}
-		}
-		else {
-			if (isset($data[$path]) == true) {
-				unset($data[$path]);
-			}
-		}
+		return true;
 	}
 
 }

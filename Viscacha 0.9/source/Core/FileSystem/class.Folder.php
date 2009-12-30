@@ -77,11 +77,12 @@ class Folder extends FileSystemBaseUnit {
 	 * This function implements the ftp fallback!
 	 *
 	 * @see Folder::setPermissions()
-	 * @see File::setPermissions()
 	 * @param int Permissions to set for the directory (default is 777)
 	 * @return boolean Returns TRUE on success or FALSE on failure.
+	 * @todo
 	 */
 	public function create($permissions = 777) {
+		$chmodResult = false;
 		if ($this->exists() == false) {
 			if (mkdir($this->path, octdec($permissions), true) == false && $this->ftp == true) {
 				$ftp = FileSystem::initializeFTP();
@@ -94,20 +95,19 @@ class Folder extends FileSystemBaseUnit {
 						$ftp->mkdir($root);
 					}
 				}
-				$this->setPermissions($permissions);
+				$chmodResult = $this->setPermissions($permissions);
 			}
 		}
 		else {
-			$this->setPermissions($permissions);
+			$chmodResult = $this->setPermissions($permissions);
 		}
 
 		/*
 		 * We should check the permissions like below, but windows does not support chmods properly
 		 * and therefore this condition would fail always for chmods other than 666 and 777.
-		 *
 		 * return ($this->exists() && $this->getPermissions() == $permissions);
 		 */
-		return $this->exists();
+		return ($this->exists() && $chmodResult);
 	}
 
 	/**
