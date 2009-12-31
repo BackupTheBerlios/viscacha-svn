@@ -43,7 +43,7 @@ interface Comparable {
 	 *
 	 * @param	self	The object to be compared to
      * @return	int		An integer defining the sorting order
-	 * @see		http://www.php.net/manual/de/language.oop5.interfaces.php#69467
+	 * @link	http://www.php.net/manual/de/language.oop5.interfaces.php#69467
 	 */
 	public function compareTo(self $object);
 

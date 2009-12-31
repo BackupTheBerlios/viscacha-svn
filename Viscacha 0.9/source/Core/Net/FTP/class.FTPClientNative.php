@@ -56,7 +56,7 @@ class FTPClientNative extends FTPClient {
 
 	protected function _connect($host, $port) {
 		$this->sendMsg("Creating socket");
-		$sock = @fsockopen($host, $port, $errno, $errstr, $this->timeout);
+		$sock = fsockopen(Networking::encodeIDNA($host), $port, $errno, $errstr, $this->timeout);
 		if (!$sock) {
 			$this->pushError('_connect', 'socket connect failed', $errstr." (".$errno.")");
 			return false;
@@ -143,7 +143,7 @@ class FTPClientNative extends FTPClient {
 			$this->dataport = (((int)$ip_port[4])<<8) + ((int)$ip_port[5]);
 			$this->sendMsg("Connecting to ".$this->datahost.":".$this->dataport);
 			$this->ftp_data_sock = @fsockopen(
-				$this->datahost,
+				Networking::encodeIDNA($this->datahost),
 				$this->dataport,
 				$errno,
 				$errstr,

@@ -26,7 +26,7 @@
  */
 
 /**
- * Operating system specific functions.
+ * Global Configuration Manager supporting namespaces.
  *
  * Example:
  * <code>
@@ -48,17 +48,34 @@
  * @subpackage	Util
  * @author		Matthias Mohr
  * @since 		1.0
- * @abstract
- * @todo Check implementation
  */
 class Config {
 
+	/**
+	 * Array containing the ConfigHandler
+	 * @var array
+	 */
 	private static $configHandler = array();
 
+	/**
+	 * Add a ConfigHandler to the Config Manager using a specified namespace.
+	 *
+	 * You can add mutliple ConfigHandler from the same type, but the namespace is unique and will
+	 * be overwritten if soecified twice per runtime.
+	 *
+	 * @param ConfigHandler Object that implements the ConfigHandler interface
+	 * @param string Namespace to use for the config data of this handler
+	 */
 	public static function setConfigHandler(ConfigHandler $config, $namespace) {
 		self::$configHandler[$namespace] = $config;
 	}
 
+	/**
+	 * Get a ConfigHandler by namespace from the Config Manager for advanced use of the handler.
+	 *
+	 * @param string Namespace
+	 * @return ConfigHandler ConfigHandler for the namespace or null
+	 */
 	public static function getConfigHandler($namespace) {
 		if (isset(self::$configHandler[$namespace]) == true) {
 			return self::$configHandler[$namespace];
@@ -68,6 +85,19 @@ class Config {
 		}
 	}
 
+	/**
+	 * Returns a variable or group of variables.
+	 *
+	 * This function can return a specific config entry as scalar or the whole group as associative
+	 * array. On failure null will be returned.
+	 *
+	 * Use the following notation to get a group of variables: 'Namespace.Group' and this notation
+	 * to get one specific variable: 'Namespace.Group.VariableName'.
+	 *
+	 * @param string Namespace.Group[.VariableName]
+	 * @return mixed Array for a variable group, scalar for a single variable or null on failure
+	 * @see ConfigHandler::set()
+	 */
 	public static function get($name) {
 		list($namespace, $path) = explode('.', $name, 2);
 		if (isset(self::$configHandler[$namespace]) == true) {
@@ -78,22 +108,36 @@ class Config {
 		}
 	}
 
+	/**
+	 * Adds or edits a variable or a group of variables.
+	 *
+	 * This function can add or edit a specific config entry (allowed type is scalar) or the whole
+	 * group (allowed type is an associative array with the keys as entry names and scalar values).
+	 * If you specify a whole group of arrays you can only specify a subset of the group as the
+	 * add/edit works for each element separately. If you miss one entry it won't be deleted or
+	 * changed. Function returns true on success and false on failure.
+	 *
+	 * @param string Name for the variable (group), see Config::get() method for syntax.
+	 * @param mixed Array for variable groups, scalar for specific variables
+	 * @return boolean true on success, false on failure
+	 * @see Config::get()
+	 */
 	public static function set($name, $value) {
 		list($namespace, $path) = explode('.', $name, 2);
 		if (isset(self::$configHandler[$namespace]) == true) {
 			return self::$configHandler[$namespace]->set($path, $value);
 		}
 		else {
-			return null;
+			return false;
 		}
 	}
 
+	/**
+	 * Saves configuration data.
+	 */
 	public static function save() {
-		if (isset(self::$configHandler[$namespace]) == true) {
-			return self::$configHandler[$namespace]->save();
-		}
-		else {
-			return null;
+		foreach (self::$configHandler as $handler) {
+			$handler->save();
 		}
 	}
 

@@ -69,6 +69,9 @@ interface ConfigHandler {
 	 *
 	 * This function can add or edit a specific config entry (allowed type is scalar) or the whole
 	 * group (allowed type is an associative array with the keys as entry names and scalar values).
+	 * If you specify a whole group of arrays you can only specify a subset of the group as the
+	 * add/edit works for each element separately. If you miss one entry it won't be deleted or
+	 * changed. Use delete and set to get the behaviour of a simple replacement.
 	 * Function returns true on success and false on failure.
 	 *
 	 * @param string Config name
@@ -124,6 +127,9 @@ interface ConfigHandler {
 	 * Save the config data.
 	 *
 	 * This function must be called in the destructor!
+	 * As this method may be called on each desctruction you should implement a short check whether
+	 * the config has been changed during runtime or not and only execute the saving process when
+	 * needed. Returns true when nothing has changed.
 	 * 
 	 * @return boolean true on success, false on failure.
 	 * @see ConfigHandler::__destruct()

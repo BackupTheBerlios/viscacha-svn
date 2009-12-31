@@ -29,7 +29,7 @@
  * @copyright	Copyright (c) 2004-2009, Andy Prevost. All Rights Reserved.
  * @copyright	Copyright (c) 2001-2003, Brent R. Matzelle
  * @version		5.1
- * @see			http://phpmailer.sourceforge.net
+ * @link		http://phpmailer.sourceforge.net
  * @license		http://www.gnu.org/copyleft/lesser.html GNU Lesser General Public License
  */
 

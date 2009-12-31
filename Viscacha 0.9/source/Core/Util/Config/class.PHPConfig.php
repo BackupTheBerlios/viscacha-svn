@@ -40,6 +40,7 @@ Core::loadInterface('Core.Util.Config.ConfigHandler');
 class PHPConfig implements ConfigHandler {
 
 	protected $data;
+	protected $hasChanged;
 	private $file;
 	private $varname;
 
@@ -47,6 +48,7 @@ class PHPConfig implements ConfigHandler {
 		$this->file = new File($file);
 		$this->varname = $varname;
 		$this->data = array();
+		$this->hasChanged = false;
 		if ($this->file->exists() == true) {
 			$this->load();
 		}
@@ -76,11 +78,17 @@ class PHPConfig implements ConfigHandler {
 	public function set($name, $value) {
 		list($group, $entry) = explode('.', $name, 2);
 		if (empty($entry) == true && is_array($value) == true) {
-			$this->data[$group] = $value;
+			foreach ($value as $entry => $entryValue) {
+				$this->data[$group][$entry] = $entryValue;
+			}
+			if (count($value) > 0) {
+				$this->hasChanged = true;
+			}
 			return true;
 		}
 		elseif (empty($entry) == false && is_scalar($value) == true) {
 			$this->data[$group][$entry] = $value;
+			$this->hasChanged = true;
 			return true;
 		}
 		else {
@@ -98,6 +106,7 @@ class PHPConfig implements ConfigHandler {
 				if ($this->delete($oldName) == true) {
 					return true;
 				}
+				$this->hasChanged = true;
 			}
 		}
 		return false;
@@ -105,6 +114,7 @@ class PHPConfig implements ConfigHandler {
 
 	public function delete($name) {
 		list($group, $entry) = explode('.', $name, 2);
+		$this->hasChanged = true;
 		if (empty($entry) == true) { // Group
 			if (isset($this->data[$group])) {
 				unset($this->data[$group]);
@@ -138,7 +148,12 @@ class PHPConfig implements ConfigHandler {
 	}
 
 	public function save() {
-		return $this->writeFile($this->data);
+		if ($this->hasChanged == true) {
+			return $this->writeFile($this->data);
+		}
+		else {
+			return true;
+		}
 	}
 
 	private function writeFile($data = null) {

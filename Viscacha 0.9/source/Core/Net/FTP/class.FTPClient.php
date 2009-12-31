@@ -341,7 +341,7 @@ abstract class FTPClient {
 			return false;
 		}
 		else {
-			$ip = @gethostbyname($host);
+			$ip = @gethostbyname(Networking::encodeIDNA($host));
 	        $dns = @gethostbyaddr($host);
 	        if(!$ip) {
 				$ip = $host;

@@ -109,7 +109,11 @@ class ExtMySQL extends VendorMySQL {
 		elseif ($this->socket !== null) {
 			$this->host += ":{$this->socket}";
 		}
-		$this->connection = @mysql_connect($host, $this->username, $this->password);
+		$this->connection = mysql_connect(
+			Networking::encodeIDNA($host),
+			$this->username,
+			$this->password
+		);
 
 		if ($this->hasConnection() == false) {
 			throw new DatabaseException(
@@ -345,7 +349,7 @@ class ExtMySQL extends VendorMySQL {
 	/**
 	 * Sets runtime charset to the specified charset for the current connection.
 	 *
-	 * @see http://dev.mysql.com/doc/refman/5.0/en/charset-connection.html
+	 * @link http://dev.mysql.com/doc/refman/5.0/en/charset-connection.html
 	 * @return boolean true on success, false on failure
 	 */
 	protected function setCharset($charset) {

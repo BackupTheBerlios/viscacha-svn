@@ -137,6 +137,7 @@ class HTTPClient {
 	private $host;
 	private $port;
 	private $errstr;
+	private $timeout;
 
 	public $http_version;
 	public $user_agent;
@@ -149,6 +150,7 @@ class HTTPClient {
 		$this->user_agent = 'Mozilla/5.0 (compatible; MSIE 8.0; Windows) Viscacha HTTPClient';
 		$this->errstr = '';
 		$this->keep_alive = $keep_alive;
+		$this->timeout = 10;
 		$this->proxy_host = '';
 		$this->proxy_port = -1;
 		$this->proxy_login = '';
@@ -175,6 +177,10 @@ class HTTPClient {
 
 	public function getError() {
 		return $this->errstr;
+	}
+
+	public function setTimeout($timeout) {
+		$this->timeout = $timeout;
 	}
 
 	public function setServer($host, $port = 80) {
@@ -398,10 +404,22 @@ class HTTPClient {
 			trigger_error('Class HTTP::connect() : host property not set !', E_ERROR);
 		}
 		if (!$this->use_proxy) {
-			$this->socket = fsockopen($this->host, $this->port, $errno, $errstr, 10);
+			$this->socket = fsockopen(
+				Networking::encodeIDNA($this->host),
+				$this->port,
+				$errno,
+				$errstr,
+				$this->timeout
+			);
 		}
 		else {
-			$this->socket = fsockopen($this->proxy_host, $this->proxy_port, $errno, $errstr, 10);
+			$this->socket = fsockopen(
+				Networking::encodeIDNA($this->proxy_host),
+				$this->proxy_port,
+				$errno,
+				$errstr,
+				$this->timeout
+			);
 		}
 		$this->errstr  = $errstr;
 		$this->connected = ($this->socket == true);

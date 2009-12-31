@@ -77,7 +77,7 @@ class FTPClientExtension extends FTPClient {
 
 	protected function _connect($host, $port) {
 		$this->sendMsg("Creating ftp connection");
-		$sock = ftp_connect($host, $port, $this->timeout);
+		$sock = ftp_connect(Networking::encodeIDNA($host), $port, $this->timeout);
 		if (!$sock) {
 			$this->pushError('_connect', 'ftp connect failed');
 			return false;

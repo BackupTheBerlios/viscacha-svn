@@ -29,9 +29,8 @@
  * @copyright	Copyright (c) 2004-2009, Andy Prevost. All Rights Reserved.
  * @copyright	Copyright (c) 2001-2003, Brent R. Matzelle
  * @version		5.1
- * @see			http://phpmailer.sourceforge.net
+ * @link		http://phpmailer.sourceforge.net
  * @license		http://www.gnu.org/copyleft/lesser.html GNU Lesser General Public License
- * @todo		Use http://www.php.net/manual/ref.intl.idn.php if possible
  */
 
 /**
@@ -122,7 +121,7 @@ class SMTP {
 
 		// connect to the smtp server
 		$this->smtp_conn = @fsockopen(
-			$host, // the host of the server
+			Networking::encodeIDNA($host), // the host of the server
 			$port, // the port to use
 			$errno, // error number if any
 			$errstr, // error message if any
