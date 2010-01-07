@@ -25,12 +25,6 @@
  * @license		http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License
  */
 
-Core::loadPackage('Core.Kernel');
-Core::loadPackage('Core.Util.DataTypes');
-Core::loadPackage('Core.Cache');
-Core::loadPackage('Core.FileSystem');
-Core::loadClass('Core.Util.System');
-
 /**
  * Short form for Core::getObject().
  *

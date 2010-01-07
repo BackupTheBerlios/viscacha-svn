@@ -32,7 +32,47 @@
  */
 define('VISCACHA_CORE', '2');
 
+// Define several paths
+define('VISCACHA_CACHE_DIR', 'data/cache/');
+define('VISCACHA_TEMP_DIR', 'data/temp/');
+define('VISCACHA_LOGS_DIR', 'data/logs/');
+define('VISCACHA_UPLOAD_DIR', 'data/upload/');
+define('VISCACHA_CONFIG_FILE', 'data/config.php');
+define('VISCACHA_ERROR_CSS_FILE', 'client/error.css');
+define('VISCACHA_JS_DIR', 'client/js/');
+define('VISCACHA_DESIGN_DIR', 'client/designs/');
+define('VISCACHA_SOURCE_DIR', 'source/');
+// Get the script start time for benchmarks
+$scriptStart = microtime(true);
+
 // Boot the object oriented system...
-require_once("source/Core/Kernel/class.Core.php");
+require_once('source/Core/Kernel/class.Core.php');
 require_once('source/Core/Kernel/function.core.php');
+
+// Load the class manager for autoload support
+Core::loadClass('Core.Kernel.ClassManager');
+
+ // Store temporary entries (Registry like) - Namespace: temp
+Config::setConfigHandler(new TempConfig(), 'temp');
+// Load/Write entries from a native php array in file data/config.php - Namespace: base
+Config::setConfigHandler(new PHPConfig(VISCACHA_CONFIG_FILE), 'base');
+// Load/Write entries from a database table named config - Namespace: core
+// Config::setConfigHandler(new DBConfig('config'), 'core');
+
+// set the script start and cwd to temp config
+Config::set('temp.benchmark.start', $scriptStart);
+Config::set('temp.system.cwd', getcwd()); // see FileSystem::resetWorkdingDir() for more information
+
+// Set up database connection
+if (Config::get('base.database.enabled') == true) {
+	$db = Database::getObject(Config::get('base.database.driver'));
+	$db->connect(
+		Config::get('base.database.username'),
+		Config::get('base.database.password'),
+		Config::get('base.database.host'),
+		Config::get('base.database.port'),
+		Config::get('base.database.socket')
+	);
+	Core::storeObject($db, 'DB');
+}
 ?>
