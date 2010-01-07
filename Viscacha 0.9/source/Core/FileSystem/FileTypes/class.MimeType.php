@@ -465,7 +465,7 @@ abstract class MimeType {
 	 * This could be a valid file or an extension, this function assumes that
 	 * every input is a vlid file and, if this fails, we check for the extension mapping.
 	 * 
-	 * @see http://www.php.net/fileinfo
+	 * @link http://www.php.net/fileinfo
 	 * @param string File extension without dot
 	 * @return string Mime type
 	 */

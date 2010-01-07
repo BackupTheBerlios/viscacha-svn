@@ -25,8 +25,6 @@
  * @license		http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License
  */
 
-Core::loadClass('Core.DB.Database');
-
 /**
  * Abstract class for the SQL vendor MySQL, that has to be extended by all mysql drivers.
  *

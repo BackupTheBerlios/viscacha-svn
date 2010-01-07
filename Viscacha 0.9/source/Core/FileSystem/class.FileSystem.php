@@ -26,12 +26,6 @@
  */
 
 /**
- * The default working dir at script startup.
- * @todo Replace with runtime config...
- */
-define('DEFAULT_WORKING_DIR', getcwd());
-
-/**
  * Utility functions for files and folders.
  *
  * This class also handles the ftp connection and debug information for the File and Folder objects.
@@ -63,22 +57,21 @@ abstract class FileSystem {
 	 * This method has to be used in all __destruct() methods which need the current working
 	 * directory.
 	 *
-	 * @see http://bugs.php.net/bug.php?id=34206
-	 * @see http://www.php.net/language.oop5.decon
+	 * @link http://bugs.php.net/bug.php?id=34206
+	 * @link http://www.php.net/language.oop5.decon
 	 */
 	public static function resetWorkingDir() {
-		chdir(DEFAULT_WORKING_DIR);
+		chdir(Config::get('temp.system.cwd'));
 	}
 
 	/**
 	 * Returns an object that is a child of the FTPClient class or null on failure.
-	 *
-	 * @todo Replace host data / working dir with config data
 	 */
 	public static function initializeFTP() {
-		if (self::$ftp === null) {
+		if (self::$ftp === null && Config::get('base.ftp.enabled') == true) {
 			self::$ftp = FTPClient::getObject();
-			if (self::$ftp !== null && self::$ftp->setServer('localhost', 21) !== true) {
+			$data = Config::get('base.ftp');
+			if (self::$ftp !== null && self::$ftp->setServer($data['host'], $data['port']) !== true) {
 				self::$debug->addText('Could not set ftp server to ...');
 				self::$ftp = null;
 			}
@@ -87,12 +80,12 @@ abstract class FileSystem {
 				self::$ftp->quit();
 				self::$ftp = null;
 			}
-			if (self::$ftp !== null && self::$ftp->login('user', 'password') !== true) {
+			if (self::$ftp !== null && self::$ftp->login($data['username'], $data['password']) !== true) {
 				self::$debug->addText('Could not login on ftp server with user data ...');
 				self::$ftp->quit();
 				self::$ftp = null;
 			}
-			if (self::$ftp !== null && self::$ftp->chdir(DIRECTORY_SEPARATOR) !== true) {
+			if (self::$ftp !== null && self::$ftp->chdir($data['directory']) !== true) {
 				self::$debug->addText('Could not change directory on ftp server to ...');
 				self::$ftp->quit();
 				self::$ftp = null;

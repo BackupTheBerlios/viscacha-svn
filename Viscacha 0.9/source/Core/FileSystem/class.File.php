@@ -25,8 +25,6 @@
  * @license		http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License
  */
 
-Core::loadClass('Core.FileSystem.FileSystemBaseUnit');
-
 /**
  * File handling class with optional ftp fallback if configured.
  *
@@ -35,7 +33,7 @@ Core::loadClass('Core.FileSystem.FileSystemBaseUnit');
  * @author		Matthias Mohr
  * @since 		1.0
  */
-class File extends FileSystemBaseUnit {
+class File extends FileSystemNode {
 
 	const UNICODE = 0;
 	const BINARY = 1;
@@ -129,7 +127,7 @@ class File extends FileSystemBaseUnit {
 	 * File will be created and Permissions will be set to the specified permissions.
 	 *
 	 * If the file exists just the permissions will be set.
-	 * See FileSystemBaseUnit::setPermissions() on how to specify the permissions correctly.
+	 * See FileSystemNode::setPermissions() on how to specify the permissions correctly.
 	 * This function will also return false if the chmod are not set correctly.
 	 * If the containing folder does not exist, it won't be created!
 	 *
@@ -376,7 +374,7 @@ class File extends FileSystemBaseUnit {
 	 * This function has some drawbacks as it relies on the touch() function of PHP, see the
 	 * corresponding documentation page for more information.
 	 *
-	 * @see http://www.php.net/touch
+	 * @see touch()
 	 * @param int Timestamp for Access Time
 	 * @param int Timestamp for Modification Time
 	 * @return boolean Returns TRUE on success or FALSE on failure.

@@ -25,8 +25,6 @@
  * @license		http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License
  */
 
-Core::loadClass('Core.FileSystem.File');
-
 /**
  * Implementation of the CSV specifications.
  *
@@ -37,7 +35,7 @@ Core::loadClass('Core.FileSystem.File');
  * @author		Stefan Tenhaeff
  * @author		Matthias Mohr
  * @since 		1.0
- * @see			http://tools.ietf.org/html/rfc4180
+ * @link		http://tools.ietf.org/html/rfc4180
  * @todo		What do we do when we only need to parse a string (no file)
  */
 class FileCSV extends File {

@@ -27,8 +27,6 @@
  * @license		http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License
  */
 
-Core::loadClass('Core.FileSystem.File');
-
 /**
  * Implementation of the INI file format for read ans write access.
  *
@@ -51,7 +49,7 @@ Core::loadClass('Core.FileSystem.File');
  * @author		Matthias Mohr
  * @author		Justin Frim <phpcoder@cyberpimp.pimpdomain.com>
  * @since 		0.8
- * @see			http://www.php.net/manual/function.parse-ini-file.php
+ * @see			parse_ini_file()
  * @todo		What do we do when we only need to parse a string (no file)
  */
 class FileINI extends File {

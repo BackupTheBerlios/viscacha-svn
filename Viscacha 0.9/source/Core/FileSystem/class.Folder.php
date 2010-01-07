@@ -25,8 +25,6 @@
  * @license		http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License
  */
 
-Core::loadClass('Core.FileSystem.FileSystemBaseUnit');
-
 /**
  * Folder handling class with ftp fallback if configured.
  *
@@ -37,7 +35,7 @@ Core::loadClass('Core.FileSystem.FileSystemBaseUnit');
  * @author		Matthias Mohr
  * @since 		1.0
  */
-class Folder extends FileSystemBaseUnit {
+class Folder extends FileSystemNode {
 
 	const SEPARATOR = DIRECTORY_SEPARATOR;
 
@@ -70,7 +68,7 @@ class Folder extends FileSystemBaseUnit {
 	 * Folder will be created and Permissions will be set to the specified permissions.
 	 *
 	 * If the folder exists just the permissions will be set.
-	 * See FileSystemBaseUnit::setPermissions() on how to specify the permissions correctly.
+	 * See FileSystemNode::setPermissions() on how to specify the permissions correctly.
 	 * This function will also return false if the chmod are not set correctly.
 	 * Folders are created recursively.
 	 *

@@ -36,7 +36,7 @@
  * @todo		Check whether the use of clearstatcache() could make sense
  * @abstract
  */
-abstract class FileSystemBaseUnit {
+abstract class FileSystemNode {
 
 	const PERMISSIONS_NUMBER = 0;
 	const PERMISSIONS_STRING = 1;
@@ -70,7 +70,7 @@ abstract class FileSystemBaseUnit {
 	 * Returns the file/folder path as specified in the constructor.
 	 *
 	 * @return string
-	 * @see	FileSystemBaseUnit::relPath()
+	 * @see	FileSystemNode::relPath()
 	 */
 	public function __toString() {
 		return $this->relPath();
@@ -106,7 +106,7 @@ abstract class FileSystemBaseUnit {
 	/**
 	 * Returns the path of the file/folder how it was specified before.
 	 *
-	 * @return string Returns variable FileSystemBaseUnit::$path.
+	 * @return string Returns variable FileSystemNode::$path.
 	 */
 	public function relPath() {
 		return $this->path;
@@ -173,7 +173,7 @@ abstract class FileSystemBaseUnit {
 	 *
 	 * The Chmod is returned as integer (default, e.q. 777, 755, 666, ...) or as string
 	 * (e.q. rwxrwxrwx). To choose the return type you have to set the parameter to
-	 * FileSystemBaseUnit::PERMISSIONS_NUMBER (default) or FileSystemBaseUnit::PERMISSIONS_STRING.
+	 * FileSystemNode::PERMISSIONS_NUMBER (default) or FileSystemNode::PERMISSIONS_STRING.
 	 * 
 	 * @return int|string Permissions of the file/folder as integer or string
 	 */
@@ -211,7 +211,7 @@ abstract class FileSystemBaseUnit {
 	 * Attempts to move the file/folder to the specified path.
 	 *
 	 * After executing this method successfully, this object will point to the new file/folder!
-	 * To just rename a file/folder please consider using the FileSystemBaseUnit::rename() function.
+	 * To just rename a file/folder please consider using the FileSystemNode::rename() function.
 	 * If there is already a file/folder with the name specified as parameter nothing will be done
 	 * and false will be returned.
 	 *
@@ -245,7 +245,7 @@ abstract class FileSystemBaseUnit {
 	 * Attempts to rename the file/folder to the specified name.
 	 *
 	 * The parameter newname should only consists of the pure file/folder name without a path!
-	 * To move and rename a folder use the method FileSystemBaseUnit::move(). After executing this
+	 * To move and rename a folder use the method FileSystemNode::move(). After executing this
 	 * method successfully, this object will point to the new file/folder! If there is already a
 	 * file with the name specified as parameter nothing will be done and false will be returned.
 	 *

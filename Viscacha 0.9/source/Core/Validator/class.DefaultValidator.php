@@ -26,51 +26,35 @@
  */
 
 /**
- * Validates that a number is between two numbers.
+ * Provides different basic validation rules.
  *
  * @package		Core
  * @subpackage	Security
  * @author		Matthias Mohr
  * @copyright	Copyright (c) 2004-2010, Viscacha.org
  * @since 		1.0
- * @see			http://www.php.de/software-design/50128-formular-validierung.html
  */
-class BetweenValidator extends AbstractValidator {
+class DefaultValidator extends AbstractValidator {
 
-	const NOT_BETWEEN_EXCLUSIVE = 'NOT_BETWEEN_EXCLUSIVE';
-	const NOT_BETWEEN_INCLUSIVE = 'NOT_BETWEEN_INCLUSIVE';
+	const ERROR_EXCLUSIVE = 'validator_default_between_exclusive';
+	const ERROR_INCLUSIVE = 'validator_default_between_inclusive';
 
-	protected $min;
-	protected $max;
-	protected $inclusive;
-
-	public function  __construct($min, $max, $inclusive = true) {
-		parent::__construct();
-		$this->min = $min;
-		$this->max = $max;
-		$this->inclusive = $inclusive;
-	}
-
-	public function isValid($value) {
-		$this->reset();
-		if ($this->optional == true && empty($value) == true) {
-			return true;
-		}
-		if ($this->inclusive == true) {
-			if (Numbers::isDecimal($value) == true && $this->min >= $value && $value <= $this->max) {
+	protected static function _between($value, $optional, $min, $max, $inclusive = true) {
+		if ($inclusive == true) {
+			if (Numbers::isDecimal($value) == true && $min >= $value && $value <= $max) {
 				return true;
 			}
 			else {
-				$this->setError(self::NOT_BETWEEN_INCLUSIVE);
+				self::setError(self::ERROR_INCLUSIVE);
 				return false;
 			}
 		}
 		else {
-			if (Numbers::isDecimal($value) == true && $this->min > $value && $value < $this->max) {
+			if (Numbers::isDecimal($value) == true && $min > $value && $value < $max) {
 				return true;
 			}
 			else {
-				$this->setError(self::NOT_BETWEEN_EXCLUSIVE);
+				self:setError(self::ERROR_EXCLUSIVE);
 				return false;
 			}
 		}

@@ -49,16 +49,16 @@ abstract class Singleton {
 	private static $objects = array();
 
 	// getInstance is better than getObject as this name is already used in Core class (confusing)
-	final public static function getInstance() {
+	public static final function getInstance() {
 		$class = get_called_class();
 		if (empty(self::$objects[$class])) {
-			$rc = new ReflectionClass($class);
-			self::$objects[$class] = $rc->newInstanceArgs(func_get_args());
+			Core::loadClass('Core.Util.Utility');
+			self::$objects[$class] = Utility::createClassInstance($class, func_get_args());
 		}
 		return self::$objects[$class];
 	}
 
-	final public function __clone() {
+	public final function __clone() {
 		throw new CoreException('Singleton must not be cloned.');
 	}
 }

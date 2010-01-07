@@ -25,8 +25,6 @@
  * @license		http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License
  */
 
-Core::loadClass('Core.Cache.CacheObject');
-
 /**
  * Abstract class for Cache classes that implement data retrieval (e.q. from database) instead of
  * using the CacheObject::set() method directly.
@@ -46,7 +44,7 @@ abstract class CacheItem extends CacheObject {
 	 *
 	 * @see CoreObject::set()
 	 */
-	public abstract function load();
+	protected abstract function load();
 
 	/**
 	 * Call this function to get the cached data.
@@ -58,12 +56,14 @@ abstract class CacheItem extends CacheObject {
 	 * @return mixed Cached data or null
 	 */
 	public function get() {
-		if ($this->data === null || $this->exists() == false) {
-			$this->load();
-			$this->save();
-		}
-		else {
-			$this->read();
+		if ($this->data === null) {
+			if($this->exists() == false) {
+				$this->load();
+				$this->save();
+			}
+			else {
+				$this->read();
+			}
 		}
 		return $this->data;
 	}

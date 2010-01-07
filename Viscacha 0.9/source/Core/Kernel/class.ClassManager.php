@@ -39,21 +39,20 @@ Core::loadClass('Core.Kernel.Singleton');
  * @author		Matthias Mohr
  * @copyright	Copyright (c) 2004-2010, Viscacha.org
  * @since 		1.0
- * @todo		Try to implement this native
  */
 class ClassManager extends Singleton {
 
-	/**
-	 * Array contains the class names and the location.
-	 *
-	 * @var array
-	 */
+	const FILE_PATTERN = '~[\\/](class|interface)\.([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)\.php$~i';
+
 	private $index;
+	private $cacheFile;
 
 	/**
 	 * Constructs the ClassManager and loads (or builds) the index.
 	 */
 	public function __construct() {
+		$this->index = array();
+		$this->cacheFile = VISCACHA_CACHE_DIR.'ClassManager.ser';
 		$this->loadIndex();
 	}
 
@@ -61,76 +60,156 @@ class ClassManager extends Singleton {
 	 * Loads the class with the given class name from the index.
 	 *
 	 * @param	string	Class Name
+	 * @param	boolean	Try to rebuild on failure
 	 * @return	string	Filepath
 	 * @throws	ClassManagerException
 	 */
-	public function loadFile($className) {
-		$filename = null;
+	public function loadFile($className, $rebuildOnError = true) {
 		if (array_key_exists($className, $this->index) == true) {
 			$filename = $this->index[$className];
 			if(file_exists($filename) == true) {
 				include_once($filename);
+				return $filename;
 			}
 			else {
 				// Class name is indexed, but no source file available
-				// Force a rebuild as the index seems to be outdated
-				$this->deleteIndex();
-				$e = new ClassManagerException(
+				$error = array(
 					"ClassManager index seems to be outdated. ".
 						"File for class '{$className}' not found: ".$filename,
 					1
 				);
-				$e->setIndex($this->index);
-				throw $e;
 			}
 		}
 		else {
-			// No class with this name indexed, force a rebuild
-			$this->deleteIndex();
-			$e = new ClassManagerException(
-				"ClassManager has no class with name {$className} indexed.",
-				2
-			);
+			// No class with this name indexed
+			$error = array("ClassManager has no class with name {$className} indexed.", 2);
+		}
+
+		if ($rebuildOnError == true) {
+			// Force a rebuild as the index seems to be invalid
+			$this->deleteCache();
+			$this->loadIndex();
+			$this->loadFile($className, false);
+		}
+		else {
+			// Rebuild failed, throw exception
+			Core::loadClass('Core.Kernel.ClassManagerException');
+			$e = new ClassManagerException($error[0], $error[1]);
 			$e->setIndex($this->index);
 			throw $e;
 		}
-		return $filename;
 	}
 
 	/**
-	 * Returns the array that contains the class names and the location.
-	 *
-	 * The keys are the class names and the values are the paths for the classes.
-	 *
-	 * @return	array	Array containing class names and file paths
+	 * Generates the data for the cache.
 	 */
-	public function getIndex() {
-		return $this->index;
-	}
-
-	/**
-	 * Loads the index from cache (or rebuild it and then get it from the cache).
-	 *
-	 * @param	boolean	Force to rebuild the cache (= true) or use the cache (= false).
-	 */
-	private function loadIndex($rebuild = false) {
-		$cache = CacheServer::getInstance();
-		$classesCache = $cache->load('ClassManagerCache');
-		if ($rebuild == true) {
-			$classesCache->delete();
+	private function loadIndex() {
+		if (file_exists($this->cacheFile) == false) {
+			$this->scanSourceFolder(realpath(VISCACHA_SOURCE_DIR));
+			$this->saveCache();
 		}
-		$this->index = $classesCache->get();
-		// Cache data is already saved to class property index, to save memory free the cache
-		$cache->unload('ClassManagerCache');
+		else {
+			$this->loadCache();
+		}
 	}
 
 	/**
-	 * Deletes the index cache.
+	 * Saves the index to the cache file.
 	 */
-	private function deleteIndex() {
-		$cache = CacheServer::getInstance();
-		$classesCache = $cache->load('ClassManagerCache');
-		$classesCache->delete();
+	private function saveCache() {
+		file_put_contents($this->cacheFile, serialize($this->index));
+	}
+
+	/**
+	 * Loads the index from the cache file.
+	 */
+	private function loadCache() {
+		if (file_exists($this->cacheFile) == true) {
+			$data = file_get_contents($this->cacheFile);
+			$this->index = unserialize($data);
+		}
+	}
+
+	/**
+	 * Deletes the cache file.
+	 */
+	private function deleteCache() {
+		if (file_exists($this->cacheFile) == true) {
+			unlink($this->cacheFile);
+		}
+	}
+
+	/**
+	 * Scans recursively all Source folders for classes.
+	 *
+	 * @param	string 	Directory to search in
+	 * @return	array	Array containing all files matching the pattern
+	 */
+	private function scanSourceFolder($dir) {
+		$handle = dir($dir);
+		while (false !== ($entry = $handle->read())) {
+			if ($entry != '.' && $entry != '..') {
+				$path = $dir.DIRECTORY_SEPARATOR.$entry;
+				if (is_dir($path) == true) {
+					$this->scanSourceFolder($path);
+				}
+				elseif (is_file($path)) {
+					$this->parse($path);
+				}
+			}
+		}
+		$handle->close();
+	}
+
+	/**
+	 * Retrieves the classname for a given file.
+	 *
+	 * @param string File to scan for class name.
+	 * @todo token_get_all war bei Implementierung nicht Unicode-kompatibel. Entferne Workaround...
+	 */
+	private function parse($file) {
+		$result = preg_match(self::FILE_PATTERN, $file, $match);
+
+		if (function_exists('token_get_all') == false) {
+			// use the file names as an indicator for the class name
+			if ($result > 0 && !empty($match[2])) {
+				if (isset($this->index[$match[2]]) == true) {
+					ErrorHandling::getDebug()->addText(
+						"Class with name '{$match[2]}' found more than once."
+					);
+				}
+				$this->index[$match[2]] = $file;
+			}
+		}
+		else {
+			if (file_exists($file) == true) {
+				$next = false;
+				$tokens = token_get_all(file_get_contents($file));
+				foreach ($tokens as $token) {
+					if (!isset($token[0])) {
+						continue;
+					}
+					// next T_STRING token after this one is our desired class name
+					if ($token[0] == T_CLASS || $token[0] == T_INTERFACE) {
+						$next = true;
+					}
+					if ($token[0] == T_STRING && $next === true) {
+						// Workaround for unicoede incompatible token_get_all function
+						// TODO: Remove workaround when function is unicode compatible
+						settype($token[1], 'unicode');
+						// End Workaround
+						if (isset($this->index[$token[1]]) == true) {
+							ErrorHandling::getDebug()->addText(
+								"Class with name '{$token[1]}' found more than once."
+							);
+						}
+						$this->index[$token[1]] = $file;
+						// We found what we need, stop the search
+						break;
+					}
+				}
+			}
+		}
 	}
 
 }

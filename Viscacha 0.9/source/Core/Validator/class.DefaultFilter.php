@@ -19,46 +19,25 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * @package		Core
- * @subpackage	Util
+ * @subpackage	Kernel
  * @author		Matthias Mohr
  * @copyright	Copyright (c) 2004-2010, Viscacha.org
  * @license		http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License
  */
 
 /**
- * Implementation of a temporary config.
- *
- * This config is valid only during the page request and all data will be lost afterwards.
+ * Provides different basic filters.
  *
  * @package		Core
- * @subpackage	Util
+ * @subpackage	Security
  * @author		Matthias Mohr
+ * @copyright	Copyright (c) 2004-2010, Viscacha.org
  * @since 		1.0
  */
-class TempConfig extends PHPConfig implements ConfigHandler {
+class DefaultFilter {
 
-	private $data;
-	private $hasChanged;
-
-	public function __construct() {
-		$this->data = array();
-	}
-
-	public function create() {
-		if (!is_array($this->data)) {
-			$this->data = array();
-		}
-		return true;
-	}
-
-	public function load() {
-		$this->data = array();
-		return true;
-	}
-
-	public function save() {
-		// Nothing to do for temporary data
-		return true;
+	public static function normalizeDate($value) {
+		return str_replace('-', '.', $value);
 	}
 
 }

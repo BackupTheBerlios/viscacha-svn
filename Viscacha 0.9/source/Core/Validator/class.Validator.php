@@ -28,78 +28,130 @@
 /**
  * Validator class that bundles the ValidatorElement objects.
  *
- * Validation classes base on a concept discussed at php.de, see link.
+ * Validation rules and filter can be called with a internal name. The format is a namespace and a
+ * function name. There is a default namespace (default) which you don't have to specify, just skip
+ * that. To run php functions just use the namespace php.
+ * Note: All names are case insensitive.
+ *
+ * To write your own classes with filters the class names need a special suffix: Filter.
+ * The namespace will be the part before the suffix. The methods implementing custom filters are
+ * static, and have ro return the filtered input. The restrictions on the return type for using
+ * the namespace php and the internal php functions are the same.
+ * 
+ * Validation rules can be implemented using the abstract class AbstractValidator, see it for
+ * more information. Using the namespace php and an internal php functions as validatior it needs to
+ * return a boolean. The error code/message for php functions is always a general one.
+ *
+ * Note: You need to add all elements you wish to use later as calling isValid() will remove all
+ * values without an appropriate element.
+ *
+ * Examples - Usage of namespaces and rule/filter names:
+ * <ul>
+ * <li>addRule('between', array(1,10)) will call DefaultValidator::_between($value, 1, 10)
+ * <li>addRule('php.trim', '\r\n') will call trim($value, '\r\n')
+ * <li>addRule('Forum.UserExists') will call ForumValidator::_userExists($value)
+ * <li>appendFiler('forum.bbcode', true) will call ForumFilter::_bbcode($value, true)
+ * <li>prependFiler('xss') will call DefaultFilter::_xss($value)
+ * </ul>
+ *
+ * Example - Using the Validator class:
+ * <code>
+ * $validator = new Validator($_REQUEST);
+ * $validator->setLanguage('validator.long');
+ * // Add elements
+ * $validator->addElement('test', $lang->phrase('label_test'))->addRule('between', array(1, 10));
+ * $element2 = $validator->addElement('date', $lang->phrase('label_date'));
+ * $element2->addRule('alnum');
+ * $element2->prependFilter('php.trim'); // Calls phps internal function trim
+ * $element2->appendFilter('normalizeDate', array('d.m.Y'));
+ * // Validate and filter data and handle result appropriate
+ * if ($validator->isValid() == false) {
+ *   $output = $validator->getErrors();
+ * }
+ * else {
+ *   $output = $validator->getValues();
+ * }
+ * </code>
  *
  * @package		Core
  * @subpackage	Security
  * @author		Matthias Mohr
- * @author		Andreas Wilhelm
  * @copyright	Copyright (c) 2004-2010, Viscacha.org
  * @since 		1.0
- * @see			http://www.php.de/software-design/50128-formular-validierung.html
+ * @see			AbstractValidator
  */
 class Validator {
 
-	protected $data = array();
-	protected $elements = array();
-	protected $errors = array();
+	private $elements;
+	private $data;
 
-	/**
-	 * @param array Array with data to validate
-	 */
 	public function __construct($data) {
+		$this->elements = array();
 		$this->data = $data;
 	}
+	
+	public function setLanguage($x) {
+		// Do something with language...
+	}
 
-	/**
-	 * Adds an element to the Validator.
-	 *
-	 * If you specify an Element with a name that was used by another element before, this element
-	 * won't overwrite the element specified before.
-	 *
-	 * @param ValidatorElement
-	 */
-	public function addElement(ValidatorElement $element) {
-		$name = $element->getName();
-		if (isset($this->data[$name]) == true) {
-			$element->setValue($this->data[$name]);
+	public function addElement($name, $label = null) {
+		$element = new ValidatorElement($name, $this->getData($name));
+		if ($label !== null) {
+			$element->setLabel($label);
 		}
+		$this->elements[$name] = $element;
+		return $element;
+	}
 
-		// check if entry exists
-		if(!isset($this->elements[$name])) {
-			$this->elements[$name] = $element;
+	public function addOptionalElement($name, $label = null) {
+		$element = new ValidatorElement($name, $this->getData($name), true);
+		if ($label !== null) {
+			$element->setLabel($label);
+		}
+		$this->elements[$name] = $element;
+		return $element;
+	}
+
+	public function isValid() {
+		$status = true;
+		$this->data = array();
+		foreach ($this->elements as $varname => $element) {
+			if ($element->isValid() == false) {
+				$status = false;
+			}
+			$this->data[$varname] = $element->getValue($varname);
+		}
+		return $status;
+	}
+	
+	public function getErrors($element = null) {
+		$errors = array();
+		foreach ($this->elements as $element) {
+			$errors = array_merge($errors, $element->getErrors());
+
+		}
+		return $errors;
+	}
+
+	public function getValue($varname) {
+		if (isset($this->data[$varname])) {
+			return $this->data[$varname];
 		}
 		else {
-			// Write a message to the log file as this can lead to unapplied Validators (risky)!
-			ErrorHandling::getDebug()->addText(
-				"Validation: You specified an element multiple times, this can be a security hole!"
-			);
+			return null;
 		}
 	}
 
-	/**
-	 * Checks if any errors accured in this form.
-	 *
-	 * @return boolean
-	 */
-	public function isValid() {
-		$isValid = true;
-		foreach($this->elements as $element) {
-			if($element->isValid() == false) {
-				$isValid = false;
-				$this->errors[$element->getName()] = $element->getErrors();
-			}
-		}
-		return $isValid;
+	public function getValues() {
+		return $this->data;
 	}
 
-	/**
-	 * Returns the errors accured in a validator.
-	 *
-	 * @return array
-	 */
-	public function getErrors() {
-		return $this->errors;
+	private function getData($varname) {
+		if (!isset($this->data[$varname])) {
+			$this->data[$varname] = null;
+		}
+		return $this->data[$varname];
 	}
+
 }
 ?>

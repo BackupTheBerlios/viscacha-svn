@@ -26,39 +26,25 @@
  */
 
 /**
- * Implementation of a temporary config.
- *
- * This config is valid only during the page request and all data will be lost afterwards.
+ * Utility class for everything that doesn't fit to another class.
  *
  * @package		Core
  * @subpackage	Util
  * @author		Matthias Mohr
  * @since 		1.0
+ * @abstract
  */
-class TempConfig extends PHPConfig implements ConfigHandler {
+class Utility {
 
-	private $data;
-	private $hasChanged;
-
-	public function __construct() {
-		$this->data = array();
-	}
-
-	public function create() {
-		if (!is_array($this->data)) {
-			$this->data = array();
+	public static function createClassInstance($className, $args = array()) {
+		if (count($args) > 0) {
+			return new $className();
 		}
-		return true;
-	}
-
-	public function load() {
-		$this->data = array();
-		return true;
-	}
-
-	public function save() {
-		// Nothing to do for temporary data
-		return true;
+		else {
+			// TODO : This is slow, maybe in a future version of PHP there will be a better solution
+			$rc = new ReflectionClass($className);
+			return $rc->newInstanceArgs($args);
+		}
 	}
 
 }

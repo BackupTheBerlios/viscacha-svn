@@ -45,8 +45,6 @@
  * @version		$Id: class.phpmailer.php 447 2009-05-25 01:36:38Z codeworxtech $
  */
 class PHPMailerException extends Exception {
-	public function errorMessage() {
-		return $this->getMessage();
-	}
+	// Nothing to do here...
 }
 ?>

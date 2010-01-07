@@ -25,8 +25,6 @@
  * @license		http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License
  */
 
-Core::loadInterface('Core.Util.Config.ConfigHandler');
-
 /**
  * Implementation for native php config files.
  *
@@ -39,14 +37,13 @@ Core::loadInterface('Core.Util.Config.ConfigHandler');
  */
 class PHPConfig implements ConfigHandler {
 
-	protected $data;
-	protected $hasChanged;
+	// All private, they have to be declared again in subclasses or they would be overwritten
+	private $data;
+	private $hasChanged;
 	private $file;
-	private $varname;
 
 	public function __construct($file, $varname = 'config') {
-		$this->file = new File($file);
-		$this->varname = $varname;
+		$this->file = new FilePHP($file, $varname);
 		$this->data = array();
 		$this->hasChanged = false;
 		if ($this->file->exists() == true) {
@@ -63,7 +60,7 @@ class PHPConfig implements ConfigHandler {
 	}
 
 	public function get($name) {
-		list($group, $entry) = explode('.', $name, 2);
+		list($group, $entry) = $this->parseName($name);
 		if (empty($entry) == true && isset($this->data[$group]) == true) {
 			return $this->data[$group];
 		}
@@ -76,7 +73,7 @@ class PHPConfig implements ConfigHandler {
 	}
 
 	public function set($name, $value) {
-		list($group, $entry) = explode('.', $name, 2);
+		list($group, $entry) = $this->parseName($name);
 		if (empty($entry) == true && is_array($value) == true) {
 			foreach ($value as $entry => $entryValue) {
 				$this->data[$group][$entry] = $entryValue;
@@ -113,7 +110,7 @@ class PHPConfig implements ConfigHandler {
 	}
 
 	public function delete($name) {
-		list($group, $entry) = explode('.', $name, 2);
+		list($group, $entry) = $this->parseName($name);
 		$this->hasChanged = true;
 		if (empty($entry) == true) { // Group
 			if (isset($this->data[$group])) {
@@ -135,14 +132,7 @@ class PHPConfig implements ConfigHandler {
 
 	public function load() {
 		if($this->file->exists() == true) {
-			ob_start();
-			include($this->file->relPath());
-			ob_end_clean();
-
-			if (isset(${$this->varname}) == true && is_array(${$this->varname}) == true) {
-				$this->data = ${$this->varname};
-				return true;
-			}
+			$this->data = $this->file->parse();
 		}
 		return false;
 	}
@@ -161,12 +151,17 @@ class PHPConfig implements ConfigHandler {
 			$data = $this->data;
 		}
 
-		$content = '<?php'."\n";
-		$content .= '$' . $this->varname . ' = ' . var_export($data, true) . ';' . "\n";
-		$content .= '?>';
+		return $this->file->writeArray($data);
+	}
 
-		$this->file->write($content);
-
+	/**
+	 * Parses a name into two parts.
+	 *
+	 * @param string Name
+	 * @return array
+	 */
+	protected function parseName($name) {
+		return explode('.', $name, 2) + array(null, null);
 	}
 
 }

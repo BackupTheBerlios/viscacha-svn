@@ -35,17 +35,25 @@
  */
 class CacheObject {
 
-	const DEFAULT_DIR = 'data/cache/';
-
 	protected $name;
-	protected $file;
 	protected $data;
 	protected $maxAge;
+	protected $driver;
 
-	public function __construct($name, $path = CacheObject::DEFAULT_DIR) {
+	/**
+	 * Constructs a new CacheObject
+	 *
+	 * @param string Cache name
+	 * @param string Cache driver name (e.q. Serialize)
+	 */
+	public function __construct($name, CacheDriver $driver = null) {
 		$this->name = $name;
-		$this->path = FileSystem::adjustTrailingSlash($path, true);
-		$this->file = new File($this->path.$this->name.'.ser');
+		if ($driver === null) {
+			$this->driver = CacheServer::getDriver();
+		}
+		else {
+			$this->driver = $driver;
+		}
 		$this->data = null;
 		$this->maxAge = null;
 	}
@@ -84,12 +92,10 @@ class CacheObject {
 	/**
 	 * Sets the maximum age in seconds.
 	 *
-	 * Takes any positive integer including zero.
-	 * Specify an negative integer or null (not zero!) to disable the expiry of the cache.
+	 * Takes any positive integer including zero. Specify null to disable the expiry of the cache.
 	 *
-	 * It is recommended to call this function directly after object creation.
-	 * If you use this function after you have retrieved data, this setting won't have any
-	 * effect on the loaded data.
+	 * It is recommended to call this function directly after object creation. Using this function
+	 * after working with data might have no effect on the data.
 	 *
 	 * @param int Expiry time in seconds or null
 	 */
@@ -110,12 +116,8 @@ class CacheObject {
 	 * @return boolean true on success, false on failure
 	 */
 	public function delete() {
-		if ($this->file->exists() == true) {
-			return $this->file->delete();
-		}
-		else {
-			return false;
-		}
+		$this->data = null;
+		return $this->driver->delete($this->name);
 	}
 
 	/**
@@ -138,7 +140,7 @@ class CacheObject {
 	 * @return boolean true on success, false on failure.
 	 */
 	protected function save() {
-		return $this->file->write(serialize($this->data));
+		return $this->driver->save($this->name, $this->data, $this->maxAge);
 	}
 
 	/**
@@ -149,73 +151,7 @@ class CacheObject {
 	 * @return true on success, false on failure.
 	 */
 	protected function read() {
-		if ($this->file->exists() == true) {
-			$data = $this->file->read();
-			if ($data !== false) {
-				$this->data = unserialize($data);
-				return true;
-			}
-			else {
-				$this->data = null;
-				return false;
-			}
-		}
-		else {
-			return false;
-		}
-	}
-
-	/**
-	 * Returns the age of the cache in seconds.
-	 *
-	 * This is simply the current time minus the last file modification time.
-	 *
-	 * @return int Age in seconds or -1 if the file does not exist.
-	 */
-	protected function age() {
-		if ($this->file->exists() == true) {
-			return (time() - $this->file->modTime());
-		}
-		else {
-			return -1;
-		}
-	}
-
-	/**
-	 * Returns whether the cache file is expired or not.
-	 *
-	 * Returns boolean true if file is expired or false if file is up-to-date.
-	 * If the file is expired the cache file will be automatically deleted!
-	 *
-	 * @return boolean true if expired, false if not expired.
-	 */
-	protected function isExpired() {
-		if ($this->maxAge !== null && $this->age() > $this->maxAge) {
-			$this->delete();
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
-
-	/**
-	 * Checks whether the cache exists or not.
-	 *
-	 * This function returns only true if the cache file exists in the filesystem and the file size
-	 * is greater than 0. In addition the cache has to be up to date, if the file is expired the
-	 * cache file will be deleted and false will be returned.
-	 *
-	 * @return boolean Returns boolean true if the cache file is not expired, not empty and exists
-	 * @see CacheObject::isExpired()
-	 */
-	protected function exists() {
-		if ($this->file->exists() == true && $this->file->size() > 0 && $this->isExpired() == false) {
-			return true;
-		}
-		else {
-			return false;
-		}
+		return $this->driver->read($this->name);
 	}
 }
 ?>

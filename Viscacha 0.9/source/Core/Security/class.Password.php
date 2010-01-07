@@ -35,7 +35,7 @@
  * @author		Mathias Bank
  * @copyright	Copyright (c) 2006, Mathias Bank
  * @since 		1.0
- * @see			http://www.mathias-bank.de/2006/08/18/passwort-sicherheit-ermitteln/
+ * @link		http://www.mathias-bank.de/2006/08/18/passwort-sicherheit-ermitteln/
  */
 class Password {
 

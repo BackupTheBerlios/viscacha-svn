@@ -26,99 +26,150 @@
  */
 
 /**
- * ValidatorElement class that bundles the validation rules and filters for this element.
+ * ValidatorElement class that bundles the validation rules and filters for an element.
+ *
+ * You can add filters that are applied before or affter the rule based check.
+ * These filters are applied to the values after calling the isValid()-method.
  *
  * @package		Core
  * @subpackage	Security
- * @author		Andreas Wilhelm
  * @author		Matthias Mohr
  * @copyright	Copyright (c) 2004-2010, Viscacha.org
  * @since 		1.0
- * @see			http://www.php.de/software-design/50128-formular-validierung.html
  */
 class ValidatorElement {
 
-	protected $name;
-	protected $value;
-	protected $validators;
-	protected $errors;
+	private $rules;
+	private $prependFilter;
+	private $appendFilter;
+	private $label;
+	private $originalValue;
+	private $value;
+	private $optional;
+	private $errors;
 
-	/**
-	 * @param string Element name
-	 */
-	public function __construct($name, $value = null) {
-		$this->validators = array();
+	public function  __construct($name, $value, $optional = false) {
+		$this->label = $name;
+		$this->originalValue = $value;
+		$this->value = null;
+		$this->optional = $optional;
+		$this->appendFilter = array();
+		$this->prependFilter = array();
+		$this->rules = array();
 		$this->errors = array();
-		$this->name = $name;
-		$this->value = $value;
+	}
+	
+	public function setLabel($label) {
+		$this->label = $label;
 	}
 
-	/**
-	 * Adds a validator to an element.
-	 *
-	 * @param AbstractValidator
-	 * @param boolean Make this Validator optional (true) or not (false, default).
-	 * @todo Find a better method for the in_array check (maybe a uniqueId method for validators)
-	 */
-	public function addValidator(AbstractValidator $validator, $optional = false) {
-		// Don't add a validator with the same data multiple times
-		if(in_array($validator, $this->validators) == false) {
-			$validator->setOptional($optional);
-			$this->validators[] = $validator;
+	public function setOptional($optional = true) {
+		$this->optional = $optional;
+	}
+
+	public function addRule($rule, $args = array()) {
+		if (!is_array($args)) {
+			$args = array($args);
 		}
+		$this->rules[$rule] = $args;
+		return $this;
 	}
 
-	/**
-	 * Returns the name of an element.
-	 *
-	 * @return string
-	 */
-	public function getName() {
-		return $this->name;
+	public function prependFilter($filter, $args = array()) {
+		if (!is_array($args)) {
+			$args = array($args);
+		}
+		$this->prependFilter[$filter] = $args;
+		return $this;
 	}
 
-	/**
-	 * Returns the value of an element.
-	 *
-	 * @return mixed
-	 */
+	public function appendFilter($filter, $args = array()) {
+		if (!is_array($args)) {
+			$args = array($args);
+		}
+		$this->appendFilter[$filter] = $args;
+		return $this;
+	}
+
 	public function getValue() {
 		return $this->value;
 	}
 
-	/**
-	 * Assigns a value to an element.
-	 *
-	 * @param mixed
-	 */
-	public function setValue($value) {
-		$this->value = $value;
+	public function getOriginalValue() {
+		return $this->originalValue;
 	}
 
-	/**
-	* Checks if any errrors accured in this element.
-	*
-	* @return Boolean
-	*/
 	public function isValid() {
-		$isValid = true;
-		foreach($this->validators as $validator) {
-			if($validator->isValid($this->value) == false) {
-				$isValid = false;
-				$this->errors = array_merge($this->errors, $validator->getErrors());
+		$result = true;
+		$this->value = $this->originalValue;
+		foreach ($this->prependFilter as $name => $args) {
+			$this->filter($name, $args);
+		}
+		foreach ($this->rules as $name => $args) {
+			if ($this->validate($name, $args) === false) {
+				$result = false;
 			}
 		}
-		return $isValid;
+		if ($result == false) {
+			$this->value = null;
+			// We use return after the loop to get all error messages
+			return false;
+		}
+		foreach ($this->appendFilter as $name => $args) {
+			$this->filter($name, $args);
+		}
+		return true;
 	}
 
-	/**
-	* Returns the errors occured in an element.
-	*
-	* @access public
-	* @return Array
-	*/
 	public function getErrors() {
 		return $this->errors;
 	}
+
+	private function validate($name, $args) {
+		$context = explode('.', $name, 2);
+		// Apply default validator if needed
+		if (count($context) != 2) {
+			$context = array('Default', $name);
+		}
+
+		if (strtolower($context[0]) == 'php') {
+			// Using php functions we don't have the optional feature so we use empty() for that
+			if ($this->optional == true && empty($context[1])) {
+				$status = true;
+			}
+			else {
+				array_unshift($args, $this->value);
+				$status = call_user_func_array($context[1], $args);
+			}
+		}
+		else {
+			// Add the value and the optional state to the beginning of the argument array
+			array_unshift($args, $this->value, $this->optional);
+			$className = $context[0].'Validator';
+			$status = call_user_func_array(array($className, $context[1]), $args);
+			// Request the errors
+			$errors = call_user_func(array($className, 'getErrors'));
+			$this->errors = array_merge($this->errors, $errors);
+		}
+		return $status;
+	}
+
+	private function filter($name, $args) {
+		$context = explode('.', $name, 2);
+		// Apply default filter if needed
+		if (count($context) != 2) {
+			$context = array('Default', $name);
+		}
+
+		array_unshift($args, $this->value);
+
+		if (strtolower($context[0]) == 'php') {
+			$this->value = call_user_func_array($context[1], $args);
+		}
+		else {
+			$this->value = call_user_func_array(array($context[0].'Filter', $context[1]), $args);
+		}
+	}
+
 }
 ?>

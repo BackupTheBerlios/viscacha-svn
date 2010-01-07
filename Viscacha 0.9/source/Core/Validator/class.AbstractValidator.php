@@ -26,112 +26,71 @@
  */
 
 /**
- * Abstract validator that has to be extended by all Validator rule classes.
+ * Abstract validator that has to be extended by all classes that implement methods used in the
+ * Validator and ValidatorElement classes.
+ *
+ * To write your own classes with validation rules the class names need a special suffix: Validator.
+ * The namespace to use in the Validator classes will be the part before the suffix.
+ * The methods implementing custom validators are static, protected and have to return a boolean
+ * value (true on success, false on failure). The method names need the prefix '_', but in the
+ * validator they are called without the prefix. The first parameter has to be the value to check,
+ * the second parameter is true when the check is optional.
+ * The error codes or an empty array on success are returned by the static method getErrors().
+ * The error array is cleared on every function call to a validation method.
+ *
+ * Example method signature:
+ * <code>protected static function _funcName($value, $optional, $arg1, $arg2 = true, ...)</code>
+ *
+ * More information on the validation framework and how to implement Validator and Filter classes
+ * you can find in the documentation of the Validator class.
  *
  * @package		Core
  * @subpackage	Security
  * @author		Matthias Mohr
  * @copyright	Copyright (c) 2004-2010, Viscacha.org
  * @since 		1.0
- * @see			http://www.php.de/software-design/50128-formular-validierung.html
- * @abstract
+ * @see			Validator
  */
-abstract class AbstractValidator {
+class AbstractValidator {
 
-	private $errors;
-	private $messages;
-	protected $optional;
+	protected static $errors = array();
 
 	/**
-	 * Constructs a new validator rule.
+	 * This function routes all requests to the validation methods.
+	 *
+	 * If validation method does not exist false will be returned..
+	 * 
+	 * @param string Function name
+	 * @param array Arguments for the function
 	 */
-	public function  __construct() {
-		$this->reset();
-		$this->messages = array();
-	}
+	public static function __callStatic($name, $arguments) {
+		self::$errors = array();
 
-	/**
-	 * Checks the specified parameter against the rules.
-	 *
-	 * @param mixed
-	 * @return boolean returns true if valid, false if invalid.
-	 */
-	public abstract function isValid($value);
-
-	/**
-	 * Sets whether this validator is optional or not.
-	 *
-	 * @param boolean true = optional, false = required
-	 */
-	public function setOptional($optional) {
-		$this->optional = $optional;
-	}
-
-	/**
-	 * Returns the error codes as array.
-	 *
-	 * @return array
-	 */
-	public function getErrors() {
-		return $this->errors;
-	}
-
-	/**
-	 * Returns the number of errors.
-	 *
-	 * @return int
-	 */
-	public function countErrors() {
-		return count($this->errors);
-	}
-
-	/**
-	 * Sets the human readable error messages.
-	 *
-	 * You have to specify an array with the error codes as keys and the messages itself as values.
-	 *
-	 * @param array
-	 */
-	public function setMessages(array $messages) {
-		$this->messages = $messages;
-	}
-
-	/**
-	 * Returns the error messages as array.
-	 *
-	 * The keys are the error codes and the values are the human readable messages.
-	 * You have to specify the messages before with AbstractValidator::setMessages().
-	 * If no error message is found for an error code the error code will be returned as value.
-	 *
-	 * @return array
-	 */
-	public function getMessages() {
-		$messages = array();
-		foreach ($this->errors as $code) {
-			if (isset($this->messages[$code]) == true) {
-				$messages[$code] = $this->messages[$code];
-			}
-			else {
-				$messages[$code] = $code;
-			}
+		// Use Late static binding because __CLASS__ would contain AbstractValidator
+		if (method_exists(get_called_class(), "_{$name}") == true) {
+			return call_user_func_array("static::_{$name}", $arguments);
 		}
-		return $messages;
+		else {
+			return false;
+		}
 	}
 
 	/**
-	 * Adds an error message to the error array.
+	 * Returns the error messages as array or an empty array if no errors occured.
 	 *
-	 * @param string Error code
+	 * @return array
 	 */
-	protected function setError($error) {
-		$this->errors[] = $error;
+	public static function getErrors() {
+		return self::$errors;
 	}
 
 	/**
-	 * Resets the validator to be able to validate another value.
+	 * Sets an error code to the errors array.
+	 *
+	 * @param mixed Error Code
 	 */
-	protected function reset() {
-		$this->errors = array();
+	protected static function setError($errorCode) {
+		self::$errors[] = $errorCode;
 	}
 
 }

@@ -99,7 +99,7 @@ class Config {
 	 * @see ConfigHandler::set()
 	 */
 	public static function get($name) {
-		list($namespace, $path) = explode('.', $name, 2);
+		list($namespace, $path) = self::parseName($name);
 		if (isset(self::$configHandler[$namespace]) == true) {
 			return self::$configHandler[$namespace]->get($path);
 		}
@@ -123,7 +123,7 @@ class Config {
 	 * @see Config::get()
 	 */
 	public static function set($name, $value) {
-		list($namespace, $path) = explode('.', $name, 2);
+		list($namespace, $path) = self::parseName($name);
 		if (isset(self::$configHandler[$namespace]) == true) {
 			return self::$configHandler[$namespace]->set($path, $value);
 		}
@@ -139,6 +139,16 @@ class Config {
 		foreach (self::$configHandler as $handler) {
 			$handler->save();
 		}
+	}
+
+	/**
+	 * Parses a name into two parts.
+	 *
+	 * @param string Name
+	 * @return array
+	 */
+	private static function parseName($name) {
+		return explode('.', $name, 2) + array(null, null);
 	}
 
 }

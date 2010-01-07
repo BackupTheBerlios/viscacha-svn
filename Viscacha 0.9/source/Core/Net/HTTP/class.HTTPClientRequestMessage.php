@@ -29,8 +29,6 @@
  * @license		http://www.gnu.org/licenses/lgpl-2.1.txt GNU Lesser General Public License
  */
 
-Core::loadClass('Core.Net.HTTP.HTTPClientHeader');
-
 /**
  * A HTTP client class - HTTPClientRequestMessage
  *

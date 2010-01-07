@@ -78,7 +78,7 @@ class Networking {
 		elseif (function_exists('exec') == true) {
 			@exec("nslookup -querytype=MX {$host_idna}", $output);
 			while(list($k, $line) = each($output)) {
-				# Valid records begin with host name
+				// Valid records begin with host name
 				$quote_host = preg_quote($host, '~');
 				$quote_host_idna = preg_quote($host_idna, '~');
 				if(preg_match("~^({$quote_host}|{$quote_host_idna})~i", $line) > 0) {

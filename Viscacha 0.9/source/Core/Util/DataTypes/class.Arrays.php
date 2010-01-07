@@ -113,7 +113,7 @@ abstract class Arrays {
 	 * @param	array	Array to sort
 	 * @return	boolean	true on success, false on failure
 	 * @author	sreid at sea-to-sky dot net
-	 * @see		http://www.php.net/manual/en/function.usort.php#38827
+	 * @link	http://www.php.net/manual/en/function.usort.php#38827
 	 * @todo	Implement check with class_implements() and return value false.
 	 */
 	private static function mergesort(array &$array) {

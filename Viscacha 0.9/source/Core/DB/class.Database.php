@@ -159,6 +159,16 @@ abstract class Database {
 	}
 
 	/**
+	 * Creates a new object based on the specified driver.
+	 *
+	 * @param string Driver name (case sensitive)
+	 */
+	public static function getObject($driver) {
+		$class = 'Ext'.$driver;
+		return new $class();
+	}
+
+	/**
 	 * Returns the number of rows affected by the last INSERT, UPDATE or DELETE query.
 	 *
 	 * If the last query was invalid, this function will return -1.

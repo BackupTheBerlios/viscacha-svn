@@ -25,8 +25,6 @@
  * @license		http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License
  */
 
-Core::loadClass('Core.DB.VendorMySQL');
-
 /**
  * Database driver for MySQL.
  *

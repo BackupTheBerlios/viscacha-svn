@@ -19,47 +19,27 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * @package		Core
- * @subpackage	Util
+ * @subpackage	Cache
  * @author		Matthias Mohr
  * @copyright	Copyright (c) 2004-2010, Viscacha.org
  * @license		http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License
  */
 
 /**
- * Implementation of a temporary config.
- *
- * This config is valid only during the page request and all data will be lost afterwards.
+ * Cache driver interface.
  *
  * @package		Core
- * @subpackage	Util
+ * @subpackage	Cache
  * @author		Matthias Mohr
  * @since 		1.0
  */
-class TempConfig extends PHPConfig implements ConfigHandler {
+interface CacheDriver extends Singelton {
 
-	private $data;
-	private $hasChanged;
+	public function save($name, $data, $expiry = 0);
 
-	public function __construct() {
-		$this->data = array();
-	}
+	public function load($name);
 
-	public function create() {
-		if (!is_array($this->data)) {
-			$this->data = array();
-		}
-		return true;
-	}
-
-	public function load() {
-		$this->data = array();
-		return true;
-	}
-
-	public function save() {
-		// Nothing to do for temporary data
-		return true;
-	}
+	public function delete($name);
 
 }
 ?>
