@@ -114,7 +114,6 @@ abstract class Arrays {
 	 * @return	boolean	true on success, false on failure
 	 * @author	sreid at sea-to-sky dot net
 	 * @link	http://www.php.net/manual/en/function.usort.php#38827
-	 * @todo	Implement check with class_implements() and return value false.
 	 */
 	private static function mergesort(array &$array) {
 	    // Arrays of size < 2 require no action.
@@ -131,8 +130,11 @@ abstract class Arrays {
 	    self::mergesort($array1);
 	    self::mergesort($array2);
 
+		if (is_a(end($array1), 'Comparable') == false) {
+			return false;
+		}
 	    // If all of $array 1 is <= all of $array2, just append them.
-		 // Original code: call_user_func($cmpFunction, end($array1), $array2[0])
+		// Original code: call_user_func($cmpFunction, end($array1), $array2[0])
 	    if (end($array1).compareTo($array2[0]) < 1) {
 	        $array = array_merge($array1, $array2);
 	        return true;
@@ -143,6 +145,9 @@ abstract class Arrays {
 	    $ptr1 = 0;
 		$ptr2 = 0;
 	    while ($ptr1 < count($array1) && $ptr2 < count($array2)) {
+			if (is_a($array1[$ptr1], 'Comparable') == false) {
+				return false;
+			}
 			// Original code: call_user_func($cmpFunction, $array1[$ptr1], $array2[$ptr2])
 	        if ($array1[$ptr1].compareTo($array2[$ptr2]) < 1) {
 	            $array[] = $array1[$ptr1++];
@@ -191,6 +196,29 @@ abstract class Arrays {
 			}
 		}
 		return true;
+	}
+
+	/**
+	 * Calculates the average of all elements in the array.
+	 *
+	 * This works only for one dimensional arrays only.  Returns the average as float or null when
+	 * the array contains non numeric elements or no elements at all.
+	 *
+	 * @param array Array
+	 * @return float
+	 */
+	function average(array $array, $precision = 2){
+		if (count($array) == 0) {
+			return null;
+		}
+
+		foreach($array as $value) {
+			if(is_numeric($value) == false) {
+				return null;
+			}
+		}
+
+		return (float) array_sum($array) / count($array);
 	}
 
 	/**

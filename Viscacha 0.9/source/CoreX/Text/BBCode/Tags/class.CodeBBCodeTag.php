@@ -19,25 +19,42 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * @package		Core
- * @subpackage	Validator
+ * @subpackage	Text
  * @author		Matthias Mohr
  * @copyright	Copyright (c) 2004-2010, Viscacha.org
  * @license		http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License
  */
 
 /**
- * Provides different basic filters.
+ * Code BB-Code for the BBCodeCompiler.
  *
  * @package		Core
- * @subpackage	Validator
+ * @subpackage	Text
  * @author		Matthias Mohr
  * @copyright	Copyright (c) 2004-2010, Viscacha.org
  * @since 		1.0
  */
-class DefaultFilter {
+class CodeBBCodeTag extends AbstractBlockBBCodeTag {
 
-	public static function float($value) {
-		return (float) str_replace(',', '.', $value);
+	public function getTagNames() {
+		return array('code');
+	}
+
+	public function getDisallowedChilds($tagName) {
+		return array(self::DT_ALL);
+	}
+
+	public function compile(BBCodeToken $token) {
+		$language = $token->getAttribute('code');
+		// Only if language exists...
+		if (!empty($language)) {
+			$language = $language.'-';
+		}
+		else {
+			$language = '';
+		}
+		$content = $token->toText(true);
+		return '<div><strong>'.$language.'Quelltext:</strong><pre>'.$content.'</pre></div>';
 	}
 
 }

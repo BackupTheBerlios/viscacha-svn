@@ -66,5 +66,77 @@ abstract class System {
 		}
 	}
 
+	/**
+	 * Returns the maximum possible value for post/upload requests.
+	 *
+	 * If the paramater is true (default) the maximum upload size will be returned. This takes the
+	 * max post size into account. If the parameter is false only the maximum post size is returned.
+	 *
+	 * @param boolean Whether to return max. upload size (default) or only max post size (false).
+	 * @return int Maximum post/upload size in bytes.
+	 */
+	public static function getMaxPostSize($upload = true) {
+		$keys = array('post_max_size' => 0);
+		if ($upload == true)  {
+			$keys['upload_max_filesize'] = 0;
+		}
+		
+		foreach ($keys as $key => $bytes) {
+			$val = trim(@ini_get($key));
+			$last = strtolower(substr($val, -1));
+			switch($last) {
+				case 'g':
+					$val *= 1024;
+				case 'm':
+					$val *= 1024;
+				case 'k':
+					$val *= 1024;
+			}
+			$keys[$key] = $val;
+		}
+
+		return min($keys);
+	}
+
+	/**
+	 * Returns the average server load in the last minute.
+	 *
+	 * Note: This is currently not available on windows.
+	 *
+	 * @return Load average of the last minute
+	 */
+	public static function getLoad() {
+		$serverload = -1;
+		// Not implemented on Windows
+		if(self::getOS() == self::WINDOWS) {
+			return $serverload;
+		}
+
+		if (function_exists('sys_getloadavg')) {
+			list($serverload) = sys_getloadavg();
+		}
+
+		$proc = new File('/proc/loadavg');
+		if($serverload == -1 && $proc->exists() && $proc->readable()) {
+			$load = $proc->read(File::READ_STRING, File::BINARY);
+			if ($load !== false) {
+				list($serverload) = explode(b" ", $load);
+				$serverload = trim($serverload);
+			}
+		}
+
+		if ($serverload == -1 && function_exists('exec')) {
+			$load = @exec("uptime");
+			if(preg_match("~load averages?:\s?([\d\.]+)~i", $load, $serverload)) {
+				list(,$serverload) = $serverload;
+			}
+		}
+
+		if (empty($serverload)) {
+			$serverload = -1;
+		}
+		return $serverload;
+	}
+
 }
 ?>

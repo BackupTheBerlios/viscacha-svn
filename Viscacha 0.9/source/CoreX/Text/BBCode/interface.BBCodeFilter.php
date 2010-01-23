@@ -19,26 +19,30 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * @package		Core
- * @subpackage	Validator
+ * @subpackage	Text
  * @author		Matthias Mohr
  * @copyright	Copyright (c) 2004-2010, Viscacha.org
  * @license		http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License
  */
 
 /**
- * Provides different basic filters.
+ * Interface for BB-Code filter.
  *
  * @package		Core
- * @subpackage	Validator
+ * @subpackage	Text
  * @author		Matthias Mohr
  * @copyright	Copyright (c) 2004-2010, Viscacha.org
  * @since 		1.0
  */
-class DefaultFilter {
+interface BBCodeFilter {
 
-	public static function float($value) {
-		return (float) str_replace(',', '.', $value);
-	}
+	const TEXT = 0;
+	const PRE = 1;
+	const POST = 2;
+
+	public function getType();
+
+	public function compile($text);
 
 }
 ?>

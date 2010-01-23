@@ -19,26 +19,41 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * @package		Core
- * @subpackage	Validator
+ * @subpackage	Text
  * @author		Matthias Mohr
  * @copyright	Copyright (c) 2004-2010, Viscacha.org
  * @license		http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License
  */
 
 /**
- * Provides different basic filters.
+ * Interface for BB-Code tags.
  *
  * @package		Core
- * @subpackage	Validator
+ * @subpackage	Text
  * @author		Matthias Mohr
  * @copyright	Copyright (c) 2004-2010, Viscacha.org
  * @since 		1.0
  */
-class DefaultFilter {
+interface BBCodeTag {
 
-	public static function float($value) {
-		return (float) str_replace(',', '.', $value);
-	}
+	const DT_ALL = 0;
+	const DT_TEXT = 1;
+	const DT_INLINE = 2;
+	const DT_BLOCK = 3;
+
+	public function getTagNames();
+
+	public function isStandalone($tagName);
+
+	public function compile(BBCodeToken $token);
+
+	public function getDisplayType($tagName);
+
+	public function getDisallowedChilds($tagName);
+
+	public function getDisallowedChildsExceptions($tagName);
+
+	public function setCompiler(BBCodeCompiler $compiler);
 
 }
 ?>

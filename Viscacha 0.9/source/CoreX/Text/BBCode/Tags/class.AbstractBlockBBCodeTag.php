@@ -19,25 +19,43 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * @package		Core
- * @subpackage	Validator
+ * @subpackage	Text
  * @author		Matthias Mohr
  * @copyright	Copyright (c) 2004-2010, Viscacha.org
  * @license		http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License
  */
 
 /**
- * Provides different basic filters.
+ * Abstract implementation for block BB-Codes.
  *
  * @package		Core
- * @subpackage	Validator
+ * @subpackage	Text
  * @author		Matthias Mohr
  * @copyright	Copyright (c) 2004-2010, Viscacha.org
  * @since 		1.0
  */
-class DefaultFilter {
+abstract class AbstractBlockBBCodeTag implements BBCodeTag {
 
-	public static function float($value) {
-		return (float) str_replace(',', '.', $value);
+	protected $compiler;
+
+	public function isStandalone($tagName) {
+		return false;
+	}
+
+	public function getDisplayType($tagName) {
+		return BBCodeTag::DT_BLOCK;
+	}
+
+	public function getDisallowedChilds($tagName) {
+		return array();
+	}
+
+	public function getDisallowedChildsExceptions($tagName) {
+		return array();
+	}
+
+	public function setCompiler(BBCodeCompiler $compiler) {
+		$this->compiler = $compiler;
 	}
 
 }

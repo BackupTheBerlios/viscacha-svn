@@ -19,7 +19,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * @package		Core
- * @subpackage	Kernel
+ * @subpackage	Validator
  * @author		Matthias Mohr
  * @copyright	Copyright (c) 2004-2010, Viscacha.org
  * @license		http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License
@@ -32,10 +32,11 @@
  * These filters are applied to the values after calling the isValid()-method.
  *
  * @package		Core
- * @subpackage	Security
+ * @subpackage	Validator
  * @author		Matthias Mohr
  * @copyright	Copyright (c) 2004-2010, Viscacha.org
  * @since 		1.0
+ * @todo		Implement a method to set another lang key for a error code as this could be useful for general regexp checks for example.
  */
 class ValidatorElement {
 
@@ -58,7 +59,7 @@ class ValidatorElement {
 		$this->rules = array();
 		$this->errors = array();
 	}
-	
+
 	public function setLabel($label) {
 		$this->label = $label;
 	}
@@ -143,10 +144,12 @@ class ValidatorElement {
 			}
 		}
 		else {
-			// Add the value and the optional state to the beginning of the argument array
-			array_unshift($args, $this->value, $this->optional);
+			// Add the optional state and the value to the beginning of the argument array
+			array_unshift($args, $this->optional, $this->value);
 			$className = $context[0].'Validator';
-			$status = call_user_func_array(array($className, $context[1]), $args);
+			// Preprend a _ to the method name to use AbstractValidator::__callStatic()
+			// This is needed because we have to do some work before calling the validation method
+			$status = call_user_func_array(array($className, '_'.$context[1]), $args);
 			// Request the errors
 			$errors = call_user_func(array($className, 'getErrors'));
 			$this->errors = array_merge($this->errors, $errors);

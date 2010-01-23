@@ -19,25 +19,48 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * @package		Core
- * @subpackage	Validator
+ * @subpackage	Text
  * @author		Matthias Mohr
  * @copyright	Copyright (c) 2004-2010, Viscacha.org
  * @license		http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License
  */
 
 /**
- * Provides different basic filters.
+ * Smiley filter for the BBCodeCompiler.
  *
  * @package		Core
- * @subpackage	Validator
+ * @subpackage	Text
  * @author		Matthias Mohr
  * @copyright	Copyright (c) 2004-2010, Viscacha.org
  * @since 		1.0
  */
-class DefaultFilter {
+class SmileyBBCodeFilter implements BBCodeFilter {
 
-	public static function float($value) {
-		return (float) str_replace(',', '.', $value);
+	private $smileys;
+
+	public function  __construct() {
+		$this->smileys = array(
+			':)' => 'client/images/smile.gif',
+			':(' => 'client/images/frown.gif',
+			':p' => 'client/images/tongue.gif'
+		);
+	}
+
+	public function getType() {
+		return self::POST;
+	}
+
+	public function compile($text) {
+		foreach ($this->smileys as $search => $replace) {
+			if (strpos($text, $search) !== false) {
+				$text = preg_replace(
+					'~(\r|\n|\t|\s|\>|\<|^)'.preg_quote($search, '~').'(\r|\n|\t|\s|\>|\<|$)~',
+					'\1<img src="'.$replace.'" alt="'.$search.'" />\2',
+					$text
+				);
+			}
+		}
+		return $text;
 	}
 
 }

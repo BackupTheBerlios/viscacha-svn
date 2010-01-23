@@ -19,7 +19,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * @package		Core
- * @subpackage	Kernel
+ * @subpackage	Validator
  * @author		Matthias Mohr
  * @copyright	Copyright (c) 2004-2010, Viscacha.org
  * @license		http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License
@@ -45,7 +45,7 @@
  * you can find in the documentation of the Validator class.
  *
  * @package		Core
- * @subpackage	Security
+ * @subpackage	Validator
  * @author		Matthias Mohr
  * @copyright	Copyright (c) 2004-2010, Viscacha.org
  * @since 		1.0
@@ -58,17 +58,28 @@ class AbstractValidator {
 	/**
 	 * This function routes all requests to the validation methods.
 	 *
-	 * If validation method does not exist false will be returned..
-	 * 
+	 * If validation method does not exist false will be returned.
+	 * Optional elements will return true when they are empty.
+	 * First argument should be the optional state, second state the value followed by the arguments
+	 * for the calles function.
+	 *
+	 * @see empty()
 	 * @param string Function name
 	 * @param array Arguments for the function
 	 */
 	public static function __callStatic($name, $arguments) {
 		self::$errors = array();
 
+		if ($name[0] == '_') {
+			$name = substr($name, 1);
+		}
 		// Use Late static binding because __CLASS__ would contain AbstractValidator
-		if (method_exists(get_called_class(), "_{$name}") == true) {
-			return call_user_func_array("static::_{$name}", $arguments);
+		if (method_exists(get_called_class(), $name) == true) {
+			// Optional check using empty
+			if ($optional == true && empty($value) == true) {
+				return true;
+			}
+			return call_user_func_array("static::{$name}", $arguments);
 		}
 		else {
 			return false;

@@ -192,7 +192,7 @@ abstract class Core {
 	 * @see Core::classExists()
 	 * @see Core:interfaceExists()
 	 */
-	protected static function sourceFileExists($package, $prefix) {
+	private static function sourceFileExists($package, $prefix) {
 		$packageData = explode('.', $package);
 		array_unshift($packageData, 'source');
 		$packageName = array_pop($packageData);
@@ -217,15 +217,14 @@ abstract class Core {
 	 * Example: Use Core.Util.DataTypes to load classes and interfaces in source/Core/Util/DataTypes
 	 *
 	 * @param	string	Name of package
-	 * @todo	Check usage of glob: Escape path?
 	 */
 	public static function loadPackage($package) {
-	    $path = 'source/'.str_replace('.', '/', $package);
-		$files = glob($path.'/{class,interface}.*.php', GLOB_BRACE);
-		foreach ($files as $file) {
-			$fileName = basename($file);
-			if (strpos($fileName, 'class.') === 0 || strpos($fileName, 'interface.') === 0) {
-				include_once($file);
+		$path = 'source/'.str_replace('.', '/', $package).'/';
+		$dir = dir($path);
+		while (false !== ($file = $dir->read())) {
+			$endsWith = (strripos($file, '.php') === (strlen($file) - 4));
+			if ($endsWith && (strpos($file, 'class.') === 0 || strpos($file, 'interface.') === 0)) {
+				include_once($path.$file);
 			}
 		}
 	}

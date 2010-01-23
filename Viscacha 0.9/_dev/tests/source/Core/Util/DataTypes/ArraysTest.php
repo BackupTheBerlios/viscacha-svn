@@ -220,6 +220,26 @@ class ArraysTest extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
+	 * @dataProvider providerAverage
+	 */
+	public function testAverage($array, $result) {
+		$return = Arrays::average($array, $precision);
+		$this->assertEquals($result, $return, "Expected {$result} but found {$return}");
+	}
+
+	public function providerAverage() {
+		return array(
+			array(array(1,2,3,4,5,6,7,8,9), 5),
+			array(array(1.1,1.9,3), 2, (float) 2),
+			array(array(-1, '1'), (float) 0),
+			array(array(),  null),
+			array(array(2,4,'x'),  null),
+			array(array(0.55, 77.7, 99.99), (0.55+77.7+99.99)/3),
+			array(array(10, 5, 10), (float) 8+(1/3))
+		);
+	}
+
+	/**
 	 * @dataProvider providerIsEmpty
 	 */
 	public function testIsEmpty($array, $result_first_level, $result_recursive) {

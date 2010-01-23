@@ -19,7 +19,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * @package		Core
- * @subpackage	Kernel
+ * @subpackage	Validator
  * @author		Matthias Mohr
  * @copyright	Copyright (c) 2004-2010, Viscacha.org
  * @license		http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License
@@ -28,10 +28,12 @@
 /**
  * Validator class that bundles the ValidatorElement objects.
  *
- * Validation rules and filter can be called with a internal name. The format is a namespace and a
- * function name. There is a default namespace (default) which you don't have to specify, just skip
- * that. To run php functions just use the namespace php.
- * Note: All names are case insensitive.
+ * Validation rules and filter can be called with a internal name (case insensitive). The format is
+ * a namespace and a function name. There is a default namespace (default) which you don't have to
+ * specify, just skip that. To run php functions just use the namespace php.
+ *
+ * Note: Using namespace php with php functions does not support declaring fields as optional and
+ * error messages can't be customized, it will always set a general error.
  *
  * To write your own classes with filters the class names need a special suffix: Filter.
  * The namespace will be the part before the suffix. The methods implementing custom filters are
@@ -74,7 +76,7 @@
  * </code>
  *
  * @package		Core
- * @subpackage	Security
+ * @subpackage	Validator
  * @author		Matthias Mohr
  * @copyright	Copyright (c) 2004-2010, Viscacha.org
  * @since 		1.0
@@ -89,7 +91,24 @@ class Validator {
 		$this->elements = array();
 		$this->data = $data;
 	}
-	
+
+	/**
+	 * Short form to check a value against a rule.
+	 *
+	 * The first argument of this method is the value to check. The second argument is a string,
+	 * which corresponds to the internal name of the validation class/function.
+	 *
+	 * The is() method automatically creates an instance of ValidatorElement, and applies the
+	 * isValid() method to the data input.
+
+The is() method returns a boolean value, the same as the isValid() method. When using the static is() method, validation failure messages are not available.
+
+The static usage can be convenient for invoking a validator ad hoc, but if you have the need to run a validator for multiple inputs, it's more efficient to use the non-static usage, creating an instance of the validator object and calling its isValid() method.
+	 */
+	public static function is($value, $name, $args) {
+
+	}
+
 	public function setLanguage($x) {
 		// Do something with language...
 	}
@@ -123,7 +142,7 @@ class Validator {
 		}
 		return $status;
 	}
-	
+
 	public function getErrors($element = null) {
 		$errors = array();
 		foreach ($this->elements as $element) {
