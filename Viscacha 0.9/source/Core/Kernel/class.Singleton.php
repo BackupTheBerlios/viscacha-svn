@@ -22,7 +22,7 @@
  * @subpackage	Kernel
  * @author		Matthias Mohr
  * @copyright	Copyright (c) 2004-2010, Viscacha.org
- * @license		http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License
+ * @license		http://www.gnu.org/licenses/lgpl-2.1.txt GNU Lesser General Public License
  */
 
 /**

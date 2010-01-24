@@ -4,25 +4,25 @@
  *
  * Copyright (C) 2004 - 2010 by Viscacha.org
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * any later version.
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
+ * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * @package		Core
  * @subpackage	Kernel
  * @author		Matthias Mohr
  * @copyright	Copyright (c) 2004-2010, Viscacha.org
- * @license		http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License
+ * @license		http://www.gnu.org/licenses/lgpl-2.1.txt GNU Lesser General Public License
  */
 
 Core::loadClass('Core.Kernel.Singleton');
@@ -31,8 +31,8 @@ Core::loadClass('Core.Kernel.Singleton');
  * Maps all classes to their location in the source folder.
  *
  * This class creates an index of all classes available in the Viscacha "source" directory.
- * When a class is loaded (via __autoload), it just performs simple index lookup to determine the
- * path of each class file.
+ * When a class is loaded (via __autoload for example), it just performs simple index lookup to
+ * determine the path of each class file.
  *
  * @package		Core
  * @subpackage	Kernel
@@ -40,12 +40,13 @@ Core::loadClass('Core.Kernel.Singleton');
  * @copyright	Copyright (c) 2004-2010, Viscacha.org
  * @since 		1.0
  */
-class ClassManager extends Singleton {
+class ClassManager {
 
 	const FILE_PATTERN = '~[\\/](class|interface)\.([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)\.php$~i';
 
 	private $index;
 	private $cacheFile;
+	private static $instance;
 
 	/**
 	 * Constructs the ClassManager and loads (or builds) the index.
@@ -60,8 +61,19 @@ class ClassManager extends Singleton {
 	 * Loads the class with the given class name from the index.
 	 *
 	 * @param	string	Class Name
+	 */
+	public static function autoload($className) {
+		if (self::$instance == null) {
+			self::$instance = new self();
+		}
+		self::$instance->loadFile($className);
+	}
+
+	/**
+	 * Loads the class with the given class name from the index.
+	 *
+	 * @param	string	Class Name
 	 * @param	boolean	Try to rebuild on failure
-	 * @return	string	Filepath
 	 * @throws	ClassManagerException
 	 */
 	public function loadFile($className, $rebuildOnError = true) {
@@ -69,7 +81,6 @@ class ClassManager extends Singleton {
 			$filename = $this->index[$className];
 			if(file_exists($filename) == true) {
 				include_once($filename);
-				return $filename;
 			}
 			else {
 				// Class name is indexed, but no source file available
@@ -195,7 +206,7 @@ class ClassManager extends Singleton {
 					}
 					if ($token[0] == T_STRING && $next === true) {
 						// Workaround for unicoede incompatible token_get_all function
-						// TODO: Remove workaround when function is unicode compatible
+						// Remove workaround when function is unicode compatible
 						settype($token[1], 'unicode');
 						// End Workaround
 						if (isset($this->index[$token[1]]) == true) {

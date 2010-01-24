@@ -4,25 +4,25 @@
  *
  * Copyright (C) 2004 - 2010 by Viscacha.org
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * any later version.
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
+ * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * @package		Core
  * @subpackage	Validator
  * @author		Matthias Mohr
  * @copyright	Copyright (c) 2004-2010, Viscacha.org
- * @license		http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License
+ * @license		http://www.gnu.org/licenses/lgpl-2.1.txt GNU Lesser General Public License
  */
 
 /**
@@ -75,7 +75,7 @@ class DefaultValidator extends AbstractValidator {
 	 * @param boolean Inclusive comparison (true, default) or exclusive comparison (false)
 	 * @return boolean
 	 */
-	public static function between($value, $min, $max, $inclusive = true) {
+	public static function between($value, $optional, $min, $max, $inclusive = true) {
 		if ($inclusive == true) {
 			if (Numbers::isDecimal($value) == true && $min >= $value && $value <= $max) {
 				return true;
@@ -105,7 +105,7 @@ class DefaultValidator extends AbstractValidator {
 	 * @param mixed Value to check
 	 * @return boolean
 	 */
-	public static function naturalNumber($value) {
+	public static function naturalNumber($value, $optional) {
 		if (Numbers::isNatural($value) == true) {
 			return true;
 		}
@@ -125,7 +125,7 @@ class DefaultValidator extends AbstractValidator {
 	 * @param int|float Minimum boundary value
 	 * @return boolean
 	 */
-	public static function greaterThan($value, $min) {
+	public static function greaterThan($value, $optional, $min) {
 		if ($value > $min) {
 			return true;
 		}
@@ -145,7 +145,7 @@ class DefaultValidator extends AbstractValidator {
 	 * @param int|float Maximum boundary value
 	 * @return boolean
 	 */
-	public static function lessThan($value, $max) {
+	public static function lessThan($value, $optional, $max) {
 		if ($value < $max) {
 			return true;
 		}
@@ -272,7 +272,7 @@ class DefaultValidator extends AbstractValidator {
 	 * @param boolean Loose (true, default) or strict (false) comparison.
 	 * @return boolean
 	 */
-	public static function equal($value, $anotherValue, $strict = false) {
+	public static function equal($value, $optional, $anotherValue, $strict = false) {
 		if ($value == $anotherValue && $strict == false) {
 			return true;
 		}
@@ -294,7 +294,7 @@ class DefaultValidator extends AbstractValidator {
 	 * @return boolean
 	 * @todo Implement validator for eMail
 	 */
-	public static function eMail($value, $checkBlackList = true, $checkMX = true) {
+	public static function eMail($value, $optional, $checkBlackList = true, $checkMX = true) {
 		if (true) {
 			return true;
 		}
@@ -313,7 +313,7 @@ class DefaultValidator extends AbstractValidator {
 	 * @return boolean
 	 * @todo Implement validator for IPAddress
 	 */
-	public static function IPAddress($value, $allowLocal = false) {
+	public static function IPAddress($value, $optional, $allowLocal = false) {
 		if (true) {
 			return true;
 		}
@@ -332,7 +332,7 @@ class DefaultValidator extends AbstractValidator {
 	 * @return boolean
 	 * @todo Implement validator for URL
 	 */
-	public static function URL($value) {
+	public static function URL($value, $optional) {
 		if (true) {
 			return true;
 		}
@@ -351,7 +351,7 @@ class DefaultValidator extends AbstractValidator {
 	 * @return boolean
 	 * @todo Implement validator for inArray
 	 */
-	public static function inArray($value, array $array) {
+	public static function inArray($value, $optional, array $array) {
 		if (true) {
 			return true;
 		}
@@ -371,7 +371,7 @@ class DefaultValidator extends AbstractValidator {
 	 * @return boolean
 	 * @see preg_match()
 	 */
-	public static function regExp($value, $pattern) {
+	public static function regExp($value, $optional, $pattern) {
 		if (preg_match($pattern, $value) > 0) {
 			return true;
 		}
@@ -393,7 +393,7 @@ class DefaultValidator extends AbstractValidator {
 	 * @return boolean
 	 * @see strlen()
 	 */
-	public static function length($value, $min = 0, $max = -1) {
+	public static function length($value, $optional, $min = 0, $max = -1) {
 		if (strlen($value) < $min) {
 			self::setError(self::ERROR_LENGTH_MIN);
 			return false;

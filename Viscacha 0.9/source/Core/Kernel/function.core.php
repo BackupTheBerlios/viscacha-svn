@@ -46,13 +46,4 @@ function Core($objectConst) {
 	return Core::getObject($objectConst);
 }
 
-/**
- * Loads the required classes automatically from ClassManager (only indexed classes).
- *
- * @param string Name of the requested class
- */
-function __autoload($className) {
-	$classManager = ClassManager::getInstance();
-	$classManager->loadFile($className);
-}
 ?>

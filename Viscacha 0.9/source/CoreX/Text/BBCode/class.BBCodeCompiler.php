@@ -89,8 +89,6 @@ class BBCodeCompiler {
 		$tokens = $this->executeScanner($text);
 		// Start parsing process using a root node to get a tree
 		$tokens = $this->executeParser($tokens, new BBCodeToken('', 'viscacha_root_node', true));
-		// TODO :  Remove this debugging thing
-		$GLOBALS['TOKENIZED'] = $tokens->toText();
 		// Compile the tree to text
 		$text = $this->compile($tokens, BBCodeTag::DT_ALL);
 		// Execute appending filters
@@ -145,7 +143,7 @@ class BBCodeCompiler {
 				if ($length > 0) {
 					$tokens[$tokenIndex++] = substr($text, $lastOffset, $length);
 				}
-				
+
 				// We decide what type of token it is on the number of array elements / matches
 				$type = count($match);
 				// Add token with additional information from the scanning process
@@ -169,7 +167,7 @@ class BBCodeCompiler {
 						$token->setTagObject($this->tags[$tagName]);
 						switch ($type) {
 							case 7:
-								$token->setAttribute($match[5][0],$match[6][0]);
+								$token->setAttribute($match[5][0], $match[6][0]);
 							case 5:
 								$token->setAttribute($match[3][0], $match[4][0]);
 							case 3:
@@ -359,7 +357,7 @@ class BBCodeCompiler {
 		return $currentToken;
 	}
 
-	private function executeCompiler(BBCodeToken $parent, $type) {
+	private function executeCompiler(BBCodeToken $parent) {
 		$text = '';
 		$childs = $parent->getChilds();
 		foreach ($childs as $child) {

@@ -43,7 +43,7 @@ class BBCodeToken {
 	private $attributes;
 	private $childs;
 	private $closingToken;
-	
+
 	public function __construct($text, $tagName, $isOpeningTag) {
 		$this->tagObject = null;
 		$this->text = $text;
@@ -147,11 +147,11 @@ class BBCodeToken {
 	public function isOpeningTag() {
 		return $this->openingTag;
 	}
-	
+
 	public function setAttribute($key, $value) {
 		$this->attributes[$key] = $value;
 	}
-	
+
 	public function getAttribute($key) {
 		if (isset($this->attributes[$key])) {
 			return $this->attributes[$key];
@@ -160,15 +160,15 @@ class BBCodeToken {
 			return null;
 		}
 	}
-	
+
 	public function getAttributes() {
 		return $this->attributes;
 	}
-	
+
 	public function setTagObject(BBCodeTag $tag) {
 		$this->tagObject = $tag;
 	}
-	
+
 	public function getTagObject() {
 		return $this->tagObject;
 	}

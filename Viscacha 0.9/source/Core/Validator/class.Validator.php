@@ -4,25 +4,25 @@
  *
  * Copyright (C) 2004 - 2010 by Viscacha.org
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * any later version.
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
+ * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * @package		Core
  * @subpackage	Validator
  * @author		Matthias Mohr
  * @copyright	Copyright (c) 2004-2010, Viscacha.org
- * @license		http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License
+ * @license		http://www.gnu.org/licenses/lgpl-2.1.txt GNU Lesser General Public License
  */
 
 /**
@@ -100,12 +100,19 @@ class Validator {
 	 *
 	 * The is() method automatically creates an instance of ValidatorElement, and applies the
 	 * isValid() method to the data input.
-
-The is() method returns a boolean value, the same as the isValid() method. When using the static is() method, validation failure messages are not available.
-
-The static usage can be convenient for invoking a validator ad hoc, but if you have the need to run a validator for multiple inputs, it's more efficient to use the non-static usage, creating an instance of the validator object and calling its isValid() method.
+	 *
+	 * The is() method returns a boolean value, the same as the isValid() method. When using the
+	 * static is() method, validation failure messages are not available.
+	 *
+	 * The static usage can be convenient for invoking a validator ad hoc, but if you have the need
+	 * to run a validator for multiple inputs, it's more efficient to use the non-static usage,
+	 * creating an instance of the validator object and calling its isValid() method.
+	 *
+	 * @param string Value to check
+	 * @param string Name of the Validator to check against
+	 * @param array Arguments to use with the Validator
 	 */
-	public static function is($value, $name, $args) {
+	public static function is($value, $name, $args = array()) {
 
 	}
 

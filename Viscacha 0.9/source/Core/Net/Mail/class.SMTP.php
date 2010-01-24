@@ -1,25 +1,33 @@
 <?php
 /**
- * SMTP class - PHPMailer - PHP email class
+ * SMTP Class - PHPMailer 5.1 - PHP email class
  *
  * Copyright (c) 2004-2009, Andy Prevost. All Rights Reserved.
  * Copyright (c) 2001-2003, Brent R. Matzelle
  *
- * Software: PHPMailer - PHP email class
- * Version: 5.1
- * Contact: via sourceforge.net support pages (also www.codeworxtech.com)
- * Info: http://phpmailer.sourceforge.net
- * Support: http://sourceforge.net/projects/phpmailer/
- * Admin: Andy Prevost (project admininistrator)
- * Author: Andy Prevost (codeworxtech) codeworxtech@users.sourceforge.net
- * Author: Marcus Bointon (coolbru) coolbru@users.sourceforge.net
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ *
+ * Software: PHPMailer - PHP email class<br>
+ * Version: 5.1<br>
+ * Contact: via sourceforge.net support pages (also www.codeworxtech.com)<br>
+ * Info: http://phpmailer.sourceforge.net<br>
+ * Support: http://sourceforge.net/projects/phpmailer/<br>
+ * Admin: Andy Prevost (project admininistrator)<br>
+ * Author: Andy Prevost (codeworxtech) codeworxtech@users.sourceforge.net<br>
+ * Author: Marcus Bointon (coolbru) coolbru@users.sourceforge.net<br>
  * Founder: Brent R. Matzelle (original founder)
-
- * License: Distributed under the Lesser General Public License (LGPL)
- *          http://www.gnu.org/copyleft/lesser.html
- * This program is distributed in the hope that it will be useful - WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.
  *
  * @package		Core
  * @subpackage	Net
@@ -30,7 +38,7 @@
  * @copyright	Copyright (c) 2001-2003, Brent R. Matzelle
  * @version		5.1
  * @link		http://phpmailer.sourceforge.net
- * @license		http://www.gnu.org/copyleft/lesser.html GNU Lesser General Public License
+ * @license		http://www.gnu.org/licenses/lgpl-2.1.txt GNU Lesser General Public License
  */
 
 /**

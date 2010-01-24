@@ -4,25 +4,25 @@
  *
  * Copyright (C) 2004 - 2010 by Viscacha.org
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * any later version.
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
+ * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * @package		Core
  * @subpackage	Validator
  * @author		Matthias Mohr
  * @copyright	Copyright (c) 2004-2010, Viscacha.org
- * @license		http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License
+ * @license		http://www.gnu.org/licenses/lgpl-2.1.txt GNU Lesser General Public License
  */
 
 /**
@@ -59,9 +59,13 @@ class AbstractValidator {
 	 * This function routes all requests to the validation methods.
 	 *
 	 * If validation method does not exist false will be returned.
-	 * Optional elements will return true when they are empty.
-	 * First argument should be the optional state, second state the value followed by the arguments
-	 * for the calles function.
+	 *
+	 * Optional elements will be checked before executing the validation callback.
+	 * The following values are considered as empty: false, null and an empty string or array.
+	 *
+	 * The arguments array has to be in the following order:
+	 * The First argument should be the optional state, the second state the value followed by the
+	 * arguments for the calles function.
 	 *
 	 * @see empty()
 	 * @param string Function name
@@ -75,8 +79,8 @@ class AbstractValidator {
 		}
 		// Use Late static binding because __CLASS__ would contain AbstractValidator
 		if (method_exists(get_called_class(), $name) == true) {
-			// Optional check using empty
-			if ($optional == true && empty($value) == true) {
+			// Optional check
+			if ($arguments[1] == true && ($arguments[0] === false || $arguments[0] === null || $arguments[0] === '' || $arguments[0] === array())) {
 				return true;
 			}
 			return call_user_func_array("static::{$name}", $arguments);
