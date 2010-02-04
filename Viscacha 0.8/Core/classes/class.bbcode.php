@@ -44,6 +44,7 @@ class BBCode {
 	var $author;
 	var $index;
 	var $url_regex;
+	var $url_regex2;
 	var $url_protocol;
 	var $currentCBB;
 
