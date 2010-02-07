@@ -337,33 +337,38 @@ elseif ($job == 'emailsearch2') {
 			}
 		}
 		elseif ($key == 'birthday') {
-			$value[1] = intval(trim($value[1]));
-			if ($value[1] < 1 || $value[1] > 31) {
-				$value[1] = '%';
-			}
-			$value[2] = intval(trim($value[2]));
-			if ($value[2] < 1 || $value[2] > 12) {
-				$value[2] = '%';
-			}
-			if (strlen($value[3]) == 2) {
-				if ($value[3] > 40) {
-					$value[3] += 1900;
-				}
-				else {
-					$value[3] += 2000;
-				}
-			}
-			else {
-				$value[3] = intval(trim($value[3]));
-			}
-			if ($value[3] < 1900 || $value[3] > 2100) {
-				$value[3] = '%';
-			}
-			if ($value[1] == '%' && $value[2] == '%' && $value[3] == '%') {
+			if (!isset($value[1]) || !isset($value[2]) || !isset($value[3])) {
 				$input[$key] = DONT_CARE;
 			}
 			else {
-				$input[$key] = $value[3].'-'.$value[2].'-'.$value[1];
+				$value[1] = intval(trim($value[1]));
+				if ($value[1] < 1 || $value[1] > 31) {
+					$value[1] = '%';
+				}
+				$value[2] = intval(trim($value[2]));
+				if ($value[2] < 1 || $value[2] > 12) {
+					$value[2] = '%';
+				}
+				if (strlen($value[3]) == 2) {
+					if ($value[3] > 40) {
+						$value[3] += 1900;
+					}
+					else {
+						$value[3] += 2000;
+					}
+				}
+				else {
+					$value[3] = intval(trim($value[3]));
+				}
+				if ($value[3] < 1900 || $value[3] > 2100) {
+					$value[3] = '%';
+				}
+				if ($value[1] == '%' && $value[2] == '%' && $value[3] == '%') {
+					$input[$key] = DONT_CARE;
+				}
+				else {
+					$input[$key] = $value[3].'-'.$value[2].'-'.$value[1];
+				}
 			}
 		}
 		elseif ($key == 'gender') {
@@ -376,6 +381,9 @@ elseif ($job == 'emailsearch2') {
 			else {
 				$input[$key] = $value;
 			}
+		}
+		elseif ($key == 'id' || $key == 'posts' || $key == 'lang') {
+			$input[$key] = $value;
 		}
 		else {
 			if (empty($value)) {
@@ -2634,7 +2642,11 @@ elseif ($job == 'search2') {
 		'language' => array($lang->phrase('admin_member_lang'), int),
 		'confirm' => array($lang->phrase('admin_member_status'), none)
 	);
-	$change = array('m' => $lang->phrase('admin_member_male'), 'w' => $lang->phrase('admin_member_female'), '' => '-');
+	$change = array(
+		'm' => $lang->phrase('admin_member_male'),
+		'w' => $lang->phrase('admin_member_female'),
+		'' => '-'
+	);
 
 	$loaddesign_obj = $scache->load('loaddesign');
 	$design = $loaddesign_obj->get();
@@ -2688,33 +2700,38 @@ elseif ($job == 'search2') {
 			}
 		}
 		elseif ($key == 'birthday') {
-			$value[1] = intval(trim($value[1]));
-			if ($value[1] < 1 || $value[1] > 31) {
-				$value[1] = '%';
-			}
-			$value[2] = intval(trim($value[2]));
-			if ($value[2] < 1 || $value[2] > 12) {
-				$value[2] = '%';
-			}
-			if (strlen($value[3]) == 2) {
-				if ($value[3] > 40) {
-					$value[3] += 1900;
-				}
-				else {
-					$value[3] += 2000;
-				}
-			}
-			else {
-				$value[3] = intval(trim($value[3]));
-			}
-			if ($value[3] < 1900 || $value[3] > 2100) {
-				$value[3] = '%';
-			}
-			if ($value[1] == '%' && $value[2] == '%' && $value[3] == '%') {
+			if (!isset($value[1]) || !isset($value[2]) || !isset($value[3])) {
 				$input[$key] = DONT_CARE;
 			}
 			else {
-				$input[$key] = $value[3].'-'.$value[2].'-'.$value[1];
+				$value[1] = intval(trim($value[1]));
+				if ($value[1] < 1 || $value[1] > 31) {
+					$value[1] = '%';
+				}
+				$value[2] = intval(trim($value[2]));
+				if ($value[2] < 1 || $value[2] > 12) {
+					$value[2] = '%';
+				}
+				if (strlen($value[3]) == 2) {
+					if ($value[3] > 40) {
+						$value[3] += 1900;
+					}
+					else {
+						$value[3] += 2000;
+					}
+				}
+				else {
+					$value[3] = intval(trim($value[3]));
+				}
+				if ($value[3] < 1900 || $value[3] > 2100) {
+					$value[3] = '%';
+				}
+				if ($value[1] == '%' && $value[2] == '%' && $value[3] == '%') {
+					$input[$key] = DONT_CARE;
+				}
+				else {
+					$input[$key] = $value[3].'-'.$value[2].'-'.$value[1];
+				}
 			}
 		}
 		elseif ($key == 'gender') {
@@ -2727,6 +2744,9 @@ elseif ($job == 'search2') {
 			else {
 				$input[$key] = $value;
 			}
+		}
+		elseif ($key == 'id' || $key == 'posts' || $key == 'icq' || $key == 'design' || $key == 'lang') {
+			$input[$key] = $value;
 		}
 		else {
 			if (empty($value)) {

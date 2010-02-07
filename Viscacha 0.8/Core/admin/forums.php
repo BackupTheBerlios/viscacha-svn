@@ -337,11 +337,16 @@ elseif ($job == 'manage') {
 elseif ($job == 'forum_delete') {
 	echo head();
 	$id = $gpc->get('id', int);
+	$result = $db->query("SELECT id, name FROM {$db->pre}forums WHERE id = '{$id}' LIMIT 1");
+	if ($db->num_rows($result) == 0) {
+		error('admin.php?action=forums&job=manage', $lang->phrase('admin_forum_invalid_id'));
+	}
+	$forum = $db->fetch_assoc($result);
 	?>
 	<table class="border">
 	<tr><td class="obox"><?php echo $lang->phrase('admin_forum_delete_forum'); ?></td></tr>
 	<tr><td class="mbox">
-		<p align="center"><?php echo $lang->phrase('admin_forum_really_delete_data?'); ?></p>
+		<p align="center"><?php echo $lang->phrase('admin_forum_really_delete_data'); ?></p>
 		<p align="center">
 			<a href="admin.php?action=forums&amp;job=forum_delete2&amp;id=<?php echo $id; ?>">
 				<img alt="<?php echo $lang->phrase('admin_forum_yes'); ?>" border="0" src="admin/html/images/yes.gif" /> <?php echo $lang->phrase('admin_forum_yes'); ?>
@@ -358,9 +363,15 @@ elseif ($job == 'forum_delete') {
 }
 elseif ($job == 'forum_delete2') {
 	echo head();
+
+	$result = $db->query("SELECT id FROM {$db->pre}forums WHERE id = '{$id}' LIMIT 1");
+	if ($db->num_rows($result) == 0) {
+		error('admin.php?action=forums&job=manage', $lang->phrase('admin_forum_invalid_id'));
+	}
+
 	$id = array();
 	$result = $db->query("SELECT id FROM {$db->pre}topics WHERE board = '{$_GET['id']}'");
-		if ($db->num_rows($result) > 0) {
+	if ($db->num_rows($result) > 0) {
 		while ($row = $db->fetch_assoc($result)) {
 			$id[] = $row['id'];
 		}
