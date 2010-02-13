@@ -225,7 +225,7 @@ elseif ($job == 'mods_add') {
   <tr>
    <td class="mbox" width="50%"><?php echo $lang->phrase('admin_forum_username'); ?></td>
    <td class="mbox" width="50%">
-   	<input type="text" name="name" id="name" size="50" onkeyup="ajax_searchmember(this, 'sugg');" /><br />
+   	<input type="text" name="name" id="name" size="50" onblur="ajax_searchmember(this, 'sugg')" onkeyup="ajax_searchmember(this, 'sugg', key(event));" /><br />
    	<span class="stext"><?php echo $lang->phrase('admin_forum_sugestions'); ?> <span id="sugg">-</span></span>
    </td>
   </tr>

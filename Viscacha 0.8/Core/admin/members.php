@@ -867,13 +867,13 @@ elseif ($job == 'merge') {
 <tr>
 <td class="mbox"><?php echo $lang->phrase('admin_member_basemember'); ?></td>
 <td class="mbox">
-	<input type="text" name="name1" id="name1" onkeyup="ajax_searchmember(this, 'sugg1');" size="40" /><br />
+	<input type="text" name="name1" id="name1" onblur="ajax_searchmember(this, 'sugg1')" onkeyup="ajax_searchmember(this, 'sugg1', key(event))" size="40" /><br />
 	<span class="stext"><?php echo $lang->phrase('admin_member_suggestions'); ?> <span id="sugg1"></span></span>
 </td>
 </tr>
 <td class="mbox"><?php echo $lang->phrase('admin_member_needlessmember'); ?></td>
 <td class="mbox">
-	<input type="text" name="name2" id="name2" onkeyup="ajax_searchmember(this, 'sugg2');" size="40" /><br />
+	<input type="text" name="name2" id="name2" onblur="ajax_searchmember(this, 'sugg2')" onkeyup="ajax_searchmember(this, 'sugg2', key(event))" size="40" /><br />
 	<span class="stext"><?php echo $lang->phrase('admin_member_suggestions'); ?> <span id="sugg2"></span></span>
 </td>
 </tr>
