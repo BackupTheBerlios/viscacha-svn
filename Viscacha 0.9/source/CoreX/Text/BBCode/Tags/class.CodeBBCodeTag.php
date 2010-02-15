@@ -53,8 +53,8 @@ class CodeBBCodeTag extends AbstractBlockBBCodeTag {
 		else {
 			$language = '';
 		}
-		$content = $token->toText(true);
-		return '<div><strong>'.$language.'Quelltext:</strong><pre>'.$content.'</pre></div>';
+		$content = $token->toText(true, true);
+		return '<div><strong>'.$language.'Quelltext:</strong><pre style="color: maroon;">'.$content.'</pre></div>';
 	}
 
 }

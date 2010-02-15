@@ -43,6 +43,7 @@ class BBCodeToken {
 	private $attributes;
 	private $childs;
 	private $closingToken;
+	private $lateInfix;
 
 	public function __construct($text, $tagName, $isOpeningTag) {
 		$this->tagObject = null;
@@ -52,6 +53,15 @@ class BBCodeToken {
 		$this->attributes = array();
 		$this->childs = array();
 		$this->closingToken = null;
+		$this->lateInfix = false;
+	}
+
+	public function setLateInfix($lateInfix = true) {
+		$this->lateInfix = (boolean) $lateInfix;
+	}
+
+	public function islateInfix() {
+		return $this->lateInfix;
 	}
 
 	public function isValidChild($child) {
@@ -120,28 +130,38 @@ class BBCodeToken {
 		return $this->childs;
 	}
 
-	public function toText($childsOnly = false) {
+	// ChildsOnly removes the start and end tag of the "top" token, example:
+	// "[code]a[b]c[/b]d[/code]" will be converted to "a[b]c[/b]d"
+	public function toText($childsOnly = false, $removeLateInfix = false) {
 		$text = '';
 		if ($childsOnly == false) {
-			$text .= $this->getOriginalText();
+			$text .= $this->getOriginalText($removeLateInfix);
 		}
 		foreach ($this->childs as $child) {
 			if (is_string($child)) {
 				$text .= $child;
 			}
 			elseif($child instanceof BBCodeToken) {
-				$text .= $child->toText();
+				$text .= $child->toText(
+					false, // Enable start and end token for childs
+					$removeLateInfix // Keep removeLateInfix argument
+				);
 			}
 		}
 		$closingToken = $this->getClosingToken();
 		if ($childsOnly == false && $closingToken !== null) {
-			$text .= $closingToken->getOriginalText();
+			$text .= $closingToken->getOriginalText($removeLateInfix);
 		}
 		return $text;
 	}
 
-	public function getOriginalText() {
-		return $this->text;
+	public function getOriginalText($removeLateInfix = false) {
+		if ($this->lateInfix && $removeLateInfix == true) {
+			return '';
+		}
+		else {
+			return $this->text;
+		}
 	}
 
 	public function isOpeningTag() {

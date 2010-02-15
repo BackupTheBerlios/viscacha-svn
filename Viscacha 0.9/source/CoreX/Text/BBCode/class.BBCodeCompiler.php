@@ -193,6 +193,7 @@ class BBCodeCompiler {
 								$closingTagName,
 								false
 							);
+							$element->setLateInfix(); // This is not in the original text
 							$element->setTagObject($this->tags[$closingTagName]);
 							$tokens[$tokenIndex++] = $element;
 						}
@@ -249,6 +250,7 @@ class BBCodeCompiler {
 										$closingTagName,
 										false
 									);
+									$element->setLateInfix(); // This is not in the original text
 									$element->setTagObject($this->tags[$tagName]);
 									$tokens[$tokenIndex++] = $element;
 								}
@@ -256,10 +258,12 @@ class BBCodeCompiler {
 								// set token to null so it is not added again at end of the loop...
 								$tokens[$tokenIndex++] = $token;
 								$token = null;
-								// Open the tags again as we are notbehind the current closing tag
+								// Open the tags again as we are not behind the current closing tag
 								for ($i = $lastKey; $i > $key; $i--) {
 									// We need to clone it or the childs will be duplicated too
-									$tokens[$tokenIndex++] = clone $inlineStack[$i];
+									$tokens[$tokenIndex] = clone $inlineStack[$i];
+									$tokens[$tokenIndex]->setLateInfix(); // Not an original token
+									$tokenIndex++;
 								}
 								// Opening tag found, remove it from the stack and repair the
 								// nesting if needed.
@@ -292,6 +296,7 @@ class BBCodeCompiler {
 					$closingTagName,
 					false
 				);
+				$element->setLateInfix(); // This is not in the original text
 				$element->setTagObject($this->tags[$closingTagName]);
 				$tokens[$tokenIndex++] = $element;
 			}
