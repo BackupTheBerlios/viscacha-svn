@@ -27,7 +27,7 @@
             output="HTML:frames:DOM:earthli"
             sourcecode="yes"
             title="Viscacha 1.0 API Documentation">
-      <fileset dir="./source">
+      <fileset dir="${ws}/source/source">
         <include name="**/*.php" />
       </fileset>
     </phpdoc>
