@@ -1219,8 +1219,8 @@ function Permissions ($board = 0, $groups = null, $member = null) {
 
 		$permissions2 = array();
 		$fpermissions = array_combine($boards, array_fill(0, count($boards), array()));
-		foreach ($fgroups as $gid => $trow) {
-			foreach ($trow as $bid => $row) {
+		foreach ($fgroups as $bid => $trow) {
+			foreach ($trow as $gid => $row) {
 				$fpermissions[$bid][$gid] = $row;
 			}
 		}
