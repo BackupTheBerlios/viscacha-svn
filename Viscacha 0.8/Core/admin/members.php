@@ -1671,12 +1671,16 @@ elseif ($job == 'edit2') {
 	$cache2 = $loadlanguage_obj->get();
 
 	$keys_int = array('id', 'birthday', 'birthmonth', 'birthyear', 'opt_0', 'opt_1', 'opt_2', 'opt_3', 'opt_4', 'opt_5');
-	$keys_str = array('groups', 'fullname', 'email', 'location', 'icq', 'gender', 'hp', 'aol', 'yahoo', 'msn', 'jabber', 'signature', 'pic', 'temp', 'comment', 'skype');
+	$keys_str = array('groups', 'fullname', 'location', 'icq', 'gender', 'hp', 'signature', 'temp', 'comment');
+	$keys_db = array('email', 'aol', 'yahoo', 'msn', 'jabber', 'pic', 'skype');
 	foreach ($keys_int as $val) {
 		$query[$val] = $gpc->get($val, int);
 	}
 	foreach ($keys_str as $val) {
 		$query[$val] = $gpc->get($val, str);
+	}
+	foreach ($keys_db as $val) {
+		$query[$val] = $gpc->get($val, db_esc);
 	}
 
 	$result = $db->query('SELECT * FROM '.$db->pre.'user WHERE id = '.$query['id']);

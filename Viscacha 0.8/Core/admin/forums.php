@@ -527,7 +527,7 @@ elseif ($job == 'forum_edit') {
    <td class="mbox"><input type="checkbox" name="active_topic" value="1"<?php echo iif($row['active_topic'] == '1', ' checked="checked""'); ?> /></td>
   </tr>
   <tr>
-   <td class="mbox"><?php echo $lang->phrase('admin_forum_posts_count_user'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_forum_count_posts_user_post'); ?> <a href="admin.php?action=members&amp;job=recount>" target="_blank"><?php echo $lang->phrase('admin_forum_recount_post_manually'); ?></a>.</span></td>
+   <td class="mbox"><?php echo $lang->phrase('admin_forum_posts_count_user'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_forum_count_posts_user_post'); ?> <a href="admin.php?action=members&amp;job=recount" target="_blank"><?php echo $lang->phrase('admin_forum_recount_post_manually'); ?></a>.</span></td>
    <td class="mbox"><input type="checkbox" name="count_posts" value="1"<?php echo iif($row['count_posts'] == '1', ' checked="checked""'); ?> /></td>
   </tr>
   <tr><td class="ubox" colspan="2"><?php echo $lang->phrase('admin_forum_forum_rules'); ?></td></tr>
