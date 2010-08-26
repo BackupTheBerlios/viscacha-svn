@@ -1048,19 +1048,29 @@ function sid2url($my = null) {
 }
 
 function cleanUserData($data) {
+	global $gpc;
+	$trust = array(
+		'id', 'pw', 'regdate', 'posts', 'gender', 'birthday', 'lastvisit', 'icq', 'opt_textarea', 'language',
+		'opt_pmnotify', 'opt_hidebad', 'opt_hidemail', 'opt_newsletter', 'opt_showsig', 'template', 'confirm', // from user-table
+		'ufid', // from userfields-table
+		'mid', 'active', 'wiw_id', 'last_visit', 'is_bot', 'mark', 'pwfaccess', 'settings' // from session-table
+	);
 	if (is_object($data)) {
-		global $gpc;
-		$trust = array(
-		 	'id', 'pw', 'regdate', 'posts', 'gender', 'birthday', 'lastvisit', 'icq', 'opt_textarea', 'language',
-		 	'opt_pmnotify', 'opt_hidebad', 'opt_hidemail', 'opt_newsletter', 'opt_showsig', 'template', 'confirm', // from user-table
-		 	'ufid', // from userfields-table
-		 	'mid', 'active', 'wiw_id', 'last_visit', 'is_bot', 'mark', 'pwfaccess', 'settings' // from session-table
-		);
 		foreach ($data as $key => $value) {
 			if (in_array($key, $trust) == false) {
 				$data->$key = $gpc->prepare($value);
 			}
 		}
+	}
+	else if (is_array($data)) {
+		foreach ($data as $key => $value) {
+			if (in_array($key, $trust) == false) {
+				$data[$key] = $gpc->prepare($value);
+			}
+		}
+	}
+	else {
+		trigger_error('Data passed to cleanUserData has not been not secured! Wrong data type specified.', E_WARNING);
 	}
 	return $data;
 }
