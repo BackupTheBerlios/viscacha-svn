@@ -1072,7 +1072,7 @@ function cleanUserData($data) {
 		}
 	}
 	else {
-		trigger_error('Data passed to cleanUserData has not been not secured! Wrong data type specified.', E_WARNING);
+		trigger_error('Data passed to cleanUserData has not been not secured! Wrong data type specified.', E_USER_WARNING);
 	}
 	return $data;
 }
