@@ -251,9 +251,10 @@ class lang {
 					}
 					return call_user_func_array(array($keys[0], $methodKeys[0]), $args);
 				}
-				elseif (count($methodKeys) == 1 && isset($keys[0]::${$methodKeys[0]})) { // Class property
-					return $keys[0]::${$methodKeys[0]};
-				}
+// ToDo: This is not available on all PHP 5 versions, create a woraround...
+//				elseif (count($methodKeys) == 1 && isset($keys[0]::${$methodKeys[0]})) { // Class property
+//					return $keys[0]::${$methodKeys[0]};
+//				}
 			}
 		}
 		elseif ($type == '%') { // Object property / method
