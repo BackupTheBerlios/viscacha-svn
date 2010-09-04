@@ -996,7 +996,7 @@ elseif ($job == 'forum_add2') {
 		$db->query("
 		INSERT INTO {$db->pre}forums (
 		  `name`,`description`,`parent`,`position`,`opt`,`optvalue`,`forumzahl`,`topiczahl`,`invisible`,`readonly`,`count_posts`,
-		  `auto_status`,`reply_notification`,`topic_notification`,`active_topic`,`message_active`,`message_title`,`message_text`,`post_order`,
+		  `auto_status`,`reply_notification`,`topic_notification`,`active_topic`,`message_active`,`message_title`,`message_text`,`post_order`
 		) VALUES (
 		  '{$name}','{$description}','{$parent}','{$position}','{$opt}','{$optvalue}','{$forumzahl}','{$topiczahl}','{$invisible}','{$readonly}','{$count_posts}',
 		  '{$auto_status}','{$reply_notification}','{$topic_notification}','{$active_topic}','{$message_active}','{$message_title}','{$message_text}','{$post_order}'
