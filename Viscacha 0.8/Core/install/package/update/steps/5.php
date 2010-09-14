@@ -33,6 +33,9 @@ if (!class_exists('DB')) {
 
 echo "- Database class loaded and initialized.<br />";
 
+$db->query("ALTER TABLE `{$db->pre}forums` ADD `post_order` enum('-1','0','1') NOT NULL DEFAULT '-1'");
+echo "- Database structure updated.<br />";
+
 // Config
 $c = new manageconfig();
 $c->getdata('data/config.inc.php');
