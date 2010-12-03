@@ -1972,7 +1972,7 @@ elseif ($job == 'banned') {
    <td class="mbox"><?php echo $crea; ?></td>
    <td class="mbox"><?php echo $row[2]; ?></td>
    <td class="mbox"><?php echo $diff; ?></td>
-   <td class="mbox"><?php echo htmlspecialchars($row[5]); ?></td>
+   <td class="mbox"><?php echo empty($row[5]) ? htmlspecialchars($row[5]) : ''; ?></td>
   </tr>
   <?php } ?>
   <tr>
@@ -2127,10 +2127,11 @@ elseif ($job == 'ban_delete') {
 		error('admin.php?action=members&job=banned', $lang->phrase('admin_member_nothing_selected'));
 	}
 	$banned = file('data/bannedip.php');
+	$banned = array_map('trim', $banned);
 	$file = array();
 	foreach ($banned as $line) {
 		$add = true;
-		$row = explode("\t", rtrim($line, "\r\n"), 6);
+		$row = explode("\t", $line, 6);
 		foreach ($delete as $del) {
 			$del = explode("#", $del, 3);
 			if ($del[0] == $row[0] && $del[1] == $row[1] && $del[2] == $row[4]) {
