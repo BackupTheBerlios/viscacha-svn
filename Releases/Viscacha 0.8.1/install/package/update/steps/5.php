@@ -33,7 +33,10 @@ if (!class_exists('DB')) {
 
 echo "- Database class loaded and initialized.<br />";
 
-$db->query("ALTER TABLE `{$db->pre}forums` ADD `post_order` enum('-1','0','1') NOT NULL DEFAULT '-1'");
+$fields = array_map('strtolower', $db->list_fields($db->pre.'forums'));
+if (!in_array('post_order', $fields)) {
+	$db->query("ALTER TABLE `{$db->pre}forums` ADD `post_order` enum('-1','0','1') NOT NULL DEFAULT '-1'");
+}
 echo "- Database structure updated.<br />";
 
 // Config
