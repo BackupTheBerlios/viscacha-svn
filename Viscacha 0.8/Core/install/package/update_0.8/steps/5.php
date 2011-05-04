@@ -140,11 +140,11 @@ $ini = array (
   array (
     'language_de' =>
     array (
-      'compatible_version' => '0.8.1',
+      'compatible_version' => VISCACHA_VERSION,
     ),
     'language' =>
     array (
-      'compatible_version' => '0.8.1',
+      'compatible_version' => VISCACHA_VERSION,
     ),
   )
 );
