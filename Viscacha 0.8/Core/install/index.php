@@ -43,7 +43,7 @@ if (!SCRIPT_LOCKED) {
 	else {
 		$packages[] = array(
 			'title' => 'Update',
-			'description' => 'For an update you need to download the Update-Package for Viscacha 0.8 RC7!'
+			'description' => 'For an update you need to download the Update-Package!'
 		);
 	}
 
