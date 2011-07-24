@@ -321,6 +321,7 @@ else {
 
 	($code = $plugins->load('addreply_form_start')) ? eval($code) : null;
 
+	$data['formatted_comment'] = '';
 	if (is_hash($fid)) {
 		$data = $gpc->unescape(import_error_data($fid));
 		if ($id != $data['id']) {

@@ -786,6 +786,9 @@ function ok($errormsg = null, $errorurl = null, $EOS = null) {
 
 function forum_opt($array, $check = 'forum') {
 	global $my, $lang, $tpl;
+	if (!is_array($array)) {
+		error($lang->phrase('query_string_error'));
+	}
 	extract($array, EXTR_PREFIX_ALL, 'f');
 	if ($f_opt == 'pw' && (!isset($my->pwfaccess[$f_id]) || $my->pwfaccess[$f_id] != $f_optvalue)) {
 		if (!$tpl->tplsent('header')) {

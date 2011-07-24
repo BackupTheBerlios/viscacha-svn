@@ -774,7 +774,7 @@ function sid_load() {
 		$sid_checkip = "s.sid = '{$this->sid}'";
 	}
 
-	if (!array_empty($this->cookiedata)) {
+	if (!array_empty($this->cookiedata) && count($this->cookiedata) == 2) {
 		$sql = 'u.id = "'.$this->cookiedata[0].'" AND u.pw = "'.$this->cookiedata[1].'"';
 	}
 	elseif ($this->get_robot_type() == 'b') {
@@ -830,7 +830,7 @@ function sid_new() {
 		}
 	}
 
-	if (!array_empty($this->cookiedata)) {
+	if (!array_empty($this->cookiedata) && count($this->cookiedata) == 2) {
 		$result = $db->query('SELECT u.*, f.* FROM '.$db->pre.'user AS u LEFT JOIN '.$db->pre.'userfields as f ON f.ufid = u.id WHERE u.id = "'.$this->cookiedata[0].'" AND u.pw = "'.$this->cookiedata[1].'" LIMIT 1');
 		$my = $this->cleanUserData($db->fetch_object($result));
 		$nodata = ($db->num_rows($result) == 1) ? false : true;

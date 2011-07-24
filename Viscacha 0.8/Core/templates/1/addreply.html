@@ -1,4 +1,4 @@
-<?php if ($_GET['action'] == 'preview') { ?>
+<?php if (!empty($data['formatted_comment'])) { ?>
 <div class="border">
 <h3><img src="<?php echo $tpl->img('addreply'); ?>" alt="" /> <?php echo $lang->phrase('preview_title'); ?></h3>
 <div class="bbody">
