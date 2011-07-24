@@ -160,19 +160,19 @@ while (false !== ($entry = $dir->read())) {
 		}
 		$filesystem->file_put_contents(
 			"{$path}/mails/digest_d.php",
-			file_get_contents('install/package/update/language/'.$lng_settings['lang_code'].'/digest_d.php')
+			file_get_contents('install/package/update_08/language/'.$lng_settings['lang_code'].'/digest_d.php')
 		);
 		$filesystem->file_put_contents(
 			"{$path}/mails/digest_w.php",
-			file_get_contents('install/package/update/language/'.$lng_settings['lang_code'].'/digest_w.php')
+			file_get_contents('install/package/update_08/language/'.$lng_settings['lang_code'].'/digest_w.php')
 		);
 		$filesystem->file_put_contents(
 			"{$path}/mails/digest_s.php",
-			file_get_contents('install/package/update/language/'.$lng_settings['lang_code'].'/digest_s.php')
+			file_get_contents('install/package/update_08/language/'.$lng_settings['lang_code'].'/digest_s.php')
 		);
 		$filesystem->file_put_contents(
 			"{$path}/mails/report_post.php",
-			file_get_contents('install/package/update/language/'.$lng_settings['lang_code'].'/report_post.php')
+			file_get_contents('install/package/update_08/language/'.$lng_settings['lang_code'].'/report_post.php')
 		);
 	}
 }
