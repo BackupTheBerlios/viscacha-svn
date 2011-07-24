@@ -27,6 +27,9 @@ if (defined('VISCACHA_CORE') == false) { die('Error: Hacking Attempt'); }
 // Load flood check (essential for this class)
 include_once("classes/function.flood.php");
 
+// TODO: Dieser Code sollte nicht auf $my basieren, da sonst bei der Abfrage von fremden Rechten
+// eine gefährliche Vermischung stattfindet.
+
 class slog {
 
 var $statusdata;
@@ -1114,55 +1117,82 @@ function getBoards() {
 }
 
 /**
+ * Gets the permissions of a member.
+ * This has to be optimized!
+ *
+ * @param string Komma-separated list with group-ids
+ * @param boolean Default to member permissions when no valid group is specified
+ * @return array Permissions
+ */
+function StrangerPermissions ($groups, $defaultToMemberPerms = true) {
+	global $db, $scache;
+
+	$group_cache = $scache->load('groups');
+	if (count($this->statusdata) == 0) {
+		$this->statusdata = $group_cache->status();
+	}
+
+	$groups = array_intersect(explode(',', $groups), array_keys($this->statusdata));
+	if (count($groups) == 0) {
+		$groups[] = ($defaultToMemberPerms || $my->vlogin) ? GROUP_MEMBER : GROUP_GUEST;
+	}
+
+	$keys = array_merge($this->gFields, $this->maxFields, $this->minFields);
+	$permissions = array_combine($keys, array_fill(0, count($keys), array()));
+	$groupdb = $group_cache->groups();
+	$groups = array_intersect(array_keys($groupdb), $groups);
+	if (count($groups) > 1) {
+		foreach ($groups as $gid) {
+			foreach ($groupdb[$gid] as $key => $value) {
+				$permissions[$key][] = $value;
+			}
+		}
+		foreach ($permissions as $key => $value) { // $value is an array!!
+			if (in_array($key, $this->minFields)) {
+				$permissions[$key] = (int) @min($value);
+			}
+			else {
+				$permissions[$key] = (int) @max($value); // Do the max more elegant
+			}
+		}
+	}
+	else {
+		$gid = current($groups);
+		$permissions = $groupdb[$gid];
+	}
+
+	return $permissions;
+}
+
+/**
  * Gets the permissions of a member in a specified board.
  * This has to be optimized!
  *
  * @param integer Board-ID or 0 for all boards
  * @param string Komma-separated list with group-ids
- * @param boolean Is it a member?
+ * @param boolean Default to member permissions when no valid group is specified
  * @return array Permissions
  */
-function Permissions ($board = 0, $groups = null, $member = null) {
+function Permissions ($board = 0, $groups = null, $defaultToMemberPerms = null) {
 	global $db, $my, $scache;
 
 	if ($groups == null && isset($my->groups)) {
 		$groups = $my->groups;
 	}
-	elseif ($groups != null) {
-		$groups = $groups;
-	}
-	else {
-		$groups = '';
-	}
-	if ($member == null && $groups == null) {
-		$member = $my->vlogin;
-	}
-	$this->groups = explode(',', $groups);
 
+	$group_cache = $scache->load('groups');
 	if (count($this->statusdata) == 0) {
-		$group_status = $scache->load('groups');
-		$this->statusdata = $group_status->status();
+		$this->statusdata = $group_cache->status();
 	}
 
-	$groups = array();
-	foreach ($this->groups as $gid) {
-		if (isset($this->statusdata[$gid])) {
-			$groups[] = $gid;
-		}
-	}
-	if (empty($groups)) {
-		if ($member == true) {
-			$groups[] = GROUP_MEMBER;
-		}
-		elseif ($member == false) {
-			$groups[] = GROUP_GUEST;
-		}
+	$groups = array_intersect(explode(',', $groups), array_keys($this->statusdata));
+	if (count($groups) == 0) {
+		$groups[] = ($defaultToMemberPerms || $my->vlogin) ? GROUP_MEMBER : GROUP_GUEST;
 	}
 
 	$keys = array_merge($this->gFields, $this->maxFields, $this->minFields);
 	$permissions = array_combine($keys, array_fill(0, count($keys), array()));
-	$groupdb_cache = $scache->load('groups');
-	$groupdb = $groupdb_cache->groups();
+	$groupdb = $group_cache->groups();
 	$this->groups = array_intersect(array_keys($groupdb), $groups);
 	if (count($this->groups) > 1) {
 		foreach ($this->groups as $gid) {
@@ -1171,7 +1201,7 @@ function Permissions ($board = 0, $groups = null, $member = null) {
 				$permissions[$key][] = $value;
 			}
 		}
-		foreach ($permissions as $key => $value) {
+		foreach ($permissions as $key => $value) { // $value is an array!!
 			if (in_array($key, $this->minFields)) {
 				$permissions[$key] = (int) @min($value);
 			}
