@@ -408,7 +408,8 @@ function serverload($int = false) {
 }
 
 function convert2path($path, $returnEmptyOnInvalid = false) {
-	$newPath = str_replace (array('\\', '/', '<', '>', ':', '?', '*', '"', "\0", "\r", "\n", "\t"), '_', $path);
+	$newPath = str_replace ('\\', '/', $path);
+	$newPath = str_replace (array('<', '>', ':', '?', '*', '"', "\0", "\r", "\n", "\t"), '_', $newPath);
 	// Replace multiple delimiter chars with only one char
 	$newPath = preg_replace('/_+/', '_', $newPath);
 
