@@ -3,6 +3,9 @@ var mq_cookiename = cookieprefix+'_vquote';
 
 ///////////////////////// General / Misc. /////////////////////////
 function initImg(size) {
+	if (LightBoxOnload) {
+		LightBoxOnload();
+	}
 	for(var i =0; i < document.images.length; i++) {
 		if (document.images[i].alt == 'switch') {
 			switchimg = document.images[i];
@@ -277,3 +280,126 @@ function multiquote(id) {
 
 	mqmakeCookie(newval.join(','));
 }
+
+///////////////////////// Lightbox /////////////////////////
+//By: Richard Lee - Transcendent Design - tdesignonline.com - RichardAndrewLee@yahoo.com
+//Optimization: Frédéric MADSEN - MadsenFr@laposte.net
+var llocation;
+var lbox = document.createElement('div');
+var lighterboxwrapper=document.createElement('div');
+var lc=document.createElement('div');
+var labox=document.createElement('div');
+var portimage=document.createElement('img');
+var lboxlink=document.createElement('div');
+var pi=document.createElement('span');
+var ni=document.createElement('span');
+var ci=document.createElement('span');
+var picarray=new Array();
+function lb_onload() {
+	lbox.id='lighterbox2';
+	lbox.style.height=document.body.offsetHeight+'px';
+	document.body.appendChild(lbox);
+	lighterboxwrapper.id='lighterboxwrapper2';
+	lbox.appendChild(lighterboxwrapper);
+	lc.id='lighterboxclose2';
+	lbox.appendChild(lc);
+	labox.id='lighterboxcontent2';
+	lighterboxwrapper.appendChild(labox);
+	portimage.id='lighterboxportimage2';
+	labox.appendChild(portimage);
+	lboxlink.id='lighterboxclosebutton2';
+	labox.appendChild(lboxlink);
+	pi.id='lighterboxprevimage2';
+	pi.appendChild(document.createTextNode('<'));
+	lboxlink.appendChild(pi);
+	ni.id='lighterboxnextimgage2';
+	ni.appendChild(document.createTextNode('>'));
+	lboxlink.appendChild(ni);
+	ci.id='lighterboxcloseimage2';
+	ci.appendChild(document.createTextNode('X'));
+	ci.onclick = close;
+	lboxlink.appendChild(ci);
+	piclinks=document.getElementsByTagName('a');
+	for(var z=0;z<piclinks.length;z++) {
+		if(piclinks[z].rel.toLowerCase().match('lightbox')) {
+			picarray.push(piclinks[z]);
+			piclinks[z].onclick = function(){
+				for(var i=0;i<picarray.length;i++) {
+					if(picarray[i] == this) {
+						llocation=i;
+						break;
+					}
+				}
+				setpic(this);
+				return false;
+			}
+		}
+	}
+}
+function close() {
+	portimage.src='none'
+	lbox.style.display='none'
+}
+function setpic(thispic) {
+	var isSingle = (typeof(thispic.src) != 'undefined');
+	lc.onclick = close;
+	function nif(){
+		if(llocation==picarray.length-1) {
+			llocation=-1;
+		}
+		setpic(picarray[llocation+=1]);
+	}
+	ni.onclick=nif;
+	portimage.onclick=nif;
+	pi.onclick = function(){
+		if(llocation==0) {
+			llocation=picarray.length;
+		}
+		setpic(picarray[llocation-=1]);
+	}
+	function checkKeycode(e){
+		if(lbox.style.display=='block') {
+			if(e) {
+				keycode = e.which;
+			}
+			else {
+				keycode = window.event.keyCode;
+			}
+			if(!isSingle && keycode==37) {
+				if(llocation==0) {
+					llocation=picarray.length
+				}
+				setpic(picarray[llocation-=1]);
+			}
+			else if(keycode==27) {
+				close();
+			}
+			else if(!isSingle && (keycode==39||keycode==13)) {
+				nif();
+			}
+		}
+	}
+	document.onkeydown=checkKeycode;
+	portimage.style.opacity='0';
+	portimage.style.filter='alpha(opacity=0)';
+	portimage.src = (isSingle ? thispic.src : thispic.href);
+	ni.style.display = isSingle ? 'none' : 'inline';
+	pi.style.display = isSingle ? 'none' : 'inline';
+	portimage.onload = function() {
+		lighterboxwrapper.style.width=portimage.offsetWidth+'px';
+		lighterboxwrapper.style.marginLeft='-'+labox.offsetWidth/2+'px';
+		lighterboxwrapper.style.marginTop='-'+labox.offsetHeight/2+'px';
+		for(var fd=0;fd<11;fd++) {
+			setTimeout('portimage.style.opacity="'+fd/10+'";portimage.style.filter="alpha(opacity='+(fd*10)+')";',fd*50);
+		}
+	}
+	lbox.style.display='block';
+}
+window.onscroll=function(){
+	if(lbox.style.display=='block') {
+		lbox.style.left=(document.documentElement.scrollLeft||document.body.scrollLeft)+'px';
+	}
+}
+
+LightBoxCallback = setpic;
+LightBoxOnload = lb_onload;
