@@ -740,16 +740,12 @@ function checkBan() {
 			}
 		}
 		if ($ban == true) {
-			if (empty($row[5]) == true) {
-				$reson = null;
-			}
-			else {
+			$reason = null;
+			if (!empty($row[5])) {
 				$reason = $row[5];
 			}
-			if ($row[2] == 0) {
-				$until = null;
-			}
-			else {
+			$until = null;
+			if ($row[2] != 0) {
 				$until = $row[2];
 			}
 			$this->banish($reason, $until);
