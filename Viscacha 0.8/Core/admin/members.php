@@ -1966,6 +1966,11 @@ elseif ($job == 'banned') {
   	}
 
   	$crea = gmdate('d.m.Y H:i', times($row[4]));
+
+	$reason = '';
+	if (!empty($row[5])) {
+		$reason = htmlspecialchars($row[5]);
+	}
   	?>
   <tr>
    <td class="mbox"><input type="checkbox" name="delete[]" value="<?php echo $row[0]; ?>#<?php echo $row[1]; ?>#<?php echo $row[4]; ?>" /></td>
@@ -1974,7 +1979,7 @@ elseif ($job == 'banned') {
    <td class="mbox"><?php echo $crea; ?></td>
    <td class="mbox"><?php echo $row[2]; ?></td>
    <td class="mbox"><?php echo $diff; ?></td>
-   <td class="mbox"><?php echo empty($row[5]) ? htmlspecialchars($row[5]) : ''; ?></td>
+   <td class="mbox"><?php echo $reason ?></td>
   </tr>
   <?php } ?>
   <tr>
