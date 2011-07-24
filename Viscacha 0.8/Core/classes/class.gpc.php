@@ -173,7 +173,7 @@ class GPC {
 			$keys = array_keys($var);
 			for ($i = 0; $i < $cnt; $i++){
 				$key = $this->save_int($keys[$i]);
-				if (!isset($var[$key]) || $key != $keys[$i]) { die('Error: Hacking Attempt (GPC::save_str)'); }
+				if (!isset($var[$key]) || $key != $keys[$i]) { trigger_error('Error: Hacking Attempt (GPC::save_str)', E_USER_ERROR); }
 				$var[$key] = $this->save_str($var[$key], $db_esc);
 			}
 		}
@@ -205,7 +205,7 @@ class GPC {
 			$keys = array_keys($var);
 			for ($i = 0; $i < $cnt; $i++){
 				$key = $this->save_int($keys[$i]);
-				if (!isset($var[$key]) || $key != $keys[$i]) { die('Error: Hacking Attempt (GPC::save_int)'); }
+				if (!isset($var[$key]) || $key != $keys[$i]) { trigger_error('Error: Hacking Attempt (GPC::save_int)', E_USER_ERROR); }
 				$var[$key] = $this->save_int($var[$key]);
 			}
 		}

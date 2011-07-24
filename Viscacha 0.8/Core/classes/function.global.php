@@ -470,10 +470,10 @@ function secure_path($path) {
 		trigger_error('File '.$sd.' does not exist!', E_USER_WARNING);
 	}
 	if (strpos($path, '://') !== FALSE) {
-		die('Hacking attemp (Path: Protocol)');
+		trigger_error('Hacking attemp (Path: Protocol)', E_USER_ERROR);
 	}
 	if (strpos($sd, $dr) === FALSE && file_exists($sd)) {
-		die('Hacking attemp (Path: Not in Document_Root)');
+		trigger_error('Hacking attemp (Path: Not in Document_Root)', E_USER_ERROR);
 	}
 	$sd = str_replace($dr, '', $sd);
 	if (DIRECTORY_SEPARATOR != '/') {

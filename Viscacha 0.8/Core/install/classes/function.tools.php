@@ -290,10 +290,10 @@ function GPC_unescape($var){
 @ini_set('magic_quotes_gpc',0);
 // Start - Thanks to phpBB for this code
 if (isset($_POST['GLOBALS']) || isset($_FILES['GLOBALS']) || isset($_GET['GLOBALS']) || isset($_COOKIE['GLOBALS'])) {
-	die("Hacking attempt (Globals)");
+	trigger_error("Hacking attempt (Globals)", E_USER_ERROR);
 }
 if (isset($_SESSION) && !is_array($_SESSION)) {
-	die("Hacking attempt (Session Variable)");
+	trigger_error("Hacking attempt (Session Variable)", E_USER_ERROR);
 }
 if (@ini_get('register_globals') == '1' || strtolower(@ini_get('register_globals')) == 'on') {
 	unset($not_used, $input);
