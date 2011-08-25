@@ -78,10 +78,6 @@ class BBCode {
 		$this->url_regex = "({$this->url_protocol}{$url_auth}{$url_host}{$url_path}{$url_query}{$url_fragment})";
 		$this->url_regex2 = "({$this->url_protocol}{$url_auth}{$url_host}{$url_path}(?:\?[{$url_word}ß\d=\&;\.:,\_\-\/%\+\~]*)?{$url_fragment})";
 
-		if (!class_exists('ConvertRoman')) {
-			include_once('classes/class.convertroman.php');
-		}
-
 		$this->setProfile($profile, SP_NEW);
 	}
 	function setName($name) {
@@ -114,7 +110,7 @@ class BBCode {
 			return '';
 		}
 		if (!empty($type)) {
-			if ($type == 'a' || $type == 'A' || $type == 'i' || $type == 'I') {
+			if ($type == 'a' || $type == 'A') {
 				$list = "<ol type='{$type}'>{$list}</ol>";
 			}
 			else {
@@ -284,6 +280,9 @@ class BBCode {
 
 		return $prefix.$ahref.$suffix;
 	}
+	function convertNumToLetter($a) {
+		return ($a-->26?chr(($a/26+25)%26+ord('A')):'').chr($a%26+ord('A'));
+	}
 	function cb_plain_list ($matches) {
 		list(, $type, $pattern) = $matches;
 		$liarray = preg_split('/(\n\s?-\s|\[\*\])/',$pattern);
@@ -297,17 +296,8 @@ class BBCode {
 			}
 			$i++;
 			if (!empty($type)) {
-				if ($type == 'i' || $type == 'I') {
-					$converter = new ConvertRoman($i);
-					$a = $converter->result();
-					if ($type == 'i') {
-						$a = strtolower($a);
-					}
-					$list .= $pre."{$a}. {$li}\n";
-				}
-				elseif ($type == 'a' || $type == 'A') {
-					$converter = new ConvertRoman($i, TRUE);
-					$a = $converter->result();
+				if ($type == 'a' || $type == 'A') {
+					$a = $this->convertNumToLetter(i);
 					if ($type == 'a') {
 						$a = strtolower($a);
 					}
@@ -377,8 +367,8 @@ class BBCode {
 
 		$text = preg_replace('/\[code(=\w+?)?\](.+?)\[\/code\]\n?/is', '\2', $text);
 
-		while (preg_match('/\[list(?:=(a|A|I|i|OL|ol))?\](.+?)\[\/list\]/is',$text)) {
-			$text = preg_replace('/\[list(?:=(a|A|I|i|OL|ol))?\](.+?)\[\/list\]/is', '\2', $text);
+		while (preg_match('/\[list(?:=(a|A|OL|ol))?\](.+?)\[\/list\]/is',$text)) {
+			$text = preg_replace('/\[list(?:=(a|A|OL|ol))?\](.+?)\[\/list\]/is', '\2', $text);
 		}
 		$text = preg_replace('/\[note=([^\]]+?)\](.+?)\[\/note\]/is', "\\2", $text);
 		$text = preg_replace('/\[color=(\#?[0-9A-F]{3,6})\](.+?)\[\/color\]/is', "\\2", $text);
@@ -435,8 +425,8 @@ class BBCode {
 
 			$text = empty($this->profile['disallow']['code']) ? preg_replace_callback('/\[code(=\w+?)?\](.+?)\[\/code\]/is', array(&$this, 'cb_plain_code'), $text) : $text;
 
-			while (empty($this->profile['disallow']['list']) && preg_match('/\[list(?:=(a|A|I|i|OL|ol))?\](.+?)\[\/list\]/is',$text)) {
-				$text = preg_replace_callback('/\[list(?:=(a|A|I|i|OL|ol))?\](.+?)\[\/list\]/is', array(&$this, 'cb_plain_list'), $text);
+			while (empty($this->profile['disallow']['list']) && preg_match('/\[list(?:=(a|A|OL|ol))?\](.+?)\[\/list\]/is',$text)) {
+				$text = preg_replace_callback('/\[list(?:=(a|A|OL|ol))?\](.+?)\[\/list\]/is', array(&$this, 'cb_plain_list'), $text);
 			}
 
 			$text = preg_replace('/\[note=([^\]]+?)\](.+?)\[\/note\]/is', "\\1 (\\2)", $text);
@@ -554,8 +544,8 @@ class BBCode {
 			$char = chr(5);
 			$text = str_ireplace('[/list]', '[/list]'.$char, $text);
 			$text = str_ireplace('[list', $char.'[list', $text);
-			while (preg_match('/'.$char.'\[list(?:=(a|A|I|i|OL|ol))?\]([^'.$char.']+)\[\/list\]'.$char.'/is',$text, $treffer)) {
-				$text = preg_replace_callback('/\n?'.$char.'\[list(?:=(a|A|I|i|OL|ol))?\]([^'.$char.']+)\[\/list\]'.$char.'\n?/is', array(&$this, 'cb_list'), $text);
+			while (preg_match('/'.$char.'\[list(?:=(a|A|OL|ol))?\]([^'.$char.']+)\[\/list\]'.$char.'/is',$text, $treffer)) {
+				$text = preg_replace_callback('/\n?'.$char.'\[list(?:=(a|A|OL|ol))?\]([^'.$char.']+)\[\/list\]'.$char.'\n?/is', array(&$this, 'cb_list'), $text);
 			}
 		}
 		return $text;
