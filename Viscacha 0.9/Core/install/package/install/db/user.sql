@@ -23,7 +23,6 @@ CREATE TABLE `{:=DBPREFIX=:}user` (
   `skype` varchar(128) NOT NULL default '',
   `timezone` varchar(5) default '',
   `groups` varchar(128) NOT NULL default '',
-  `opt_textarea` tinyint(1) unsigned NOT NULL default '0',
   `opt_pmnotify` enum('0','1') NOT NULL default '1',
   `opt_hidebad` enum('0','1') NOT NULL default '0',
   `opt_hidemail` enum('0','1','2') NOT NULL default '2',

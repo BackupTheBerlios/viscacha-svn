@@ -690,9 +690,6 @@ elseif ($_GET['action'] == "settings2") {
 	if (intval($_POST['location']) < -12 && intval($_POST['location']) > 12) {
 		$error[] = $lang->phrase('editprofile_settings_error').$lang->phrase('timezone');
 	}
-	if ($_POST['opt_0'] < 0 && $_POST['opt_0'] > 2) {
-		$error[] = $lang->phrase('editprofile_settings_error').$lang->phrase('editprofile_editor');
-	}
 	if ($_POST['opt_1'] != 0 && $_POST['opt_1'] != 1) {
 		$error[] = $lang->phrase('editprofile_settings_error').$lang->phrase('editprofile_emailpn');
 	}
@@ -742,7 +739,6 @@ elseif ($_GET['action'] == "settings2") {
 			iif(($config['hidelanguage'] == 0 && $_POST['opt_5'] > 0), "language = '{$_POST['opt_5']}',")
 			."
 			timezone = '{$_POST['location']}',
-			opt_textarea = '{$_POST['opt_0']}',
 			opt_pmnotify = '{$_POST['opt_1']}',
 			opt_hidebad = '{$_POST['opt_2']}',
 			opt_hidemail = '{$_POST['opt_3']}',

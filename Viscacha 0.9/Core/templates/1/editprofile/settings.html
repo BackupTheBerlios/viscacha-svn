@@ -41,12 +41,6 @@
 				<option value="+12"<?php selectTZ($my->timezone, 12); ?>><?php echo $lang->phrase('timezone_p12'); ?></option>
 			</select>
 		<br class="newinput" /><hr class="formsep" />
-		<label for="opt_0"><?php echo $lang->phrase('editprofile_editor'); ?></label>
-		<select id="opt_0" class="label" name="opt_0">
-		<option<?php echo iif($my->opt_textarea == 0,' selected="selected"'); ?> value="0"><?php echo $lang->phrase('editprofile_editor_simple'); ?></option>
-		<option<?php echo iif($my->opt_textarea == 1,' selected="selected"'); ?> value="1"><?php echo $lang->phrase('editprofile_editor_extended'); ?></option>
-		</select>
-		<br class="newinput" /><hr class="formsep" />
 		<label for="opt_1"><?php echo $lang->phrase('editprofile_emailpn'); ?></label>
 		<input type="checkbox" name="opt_1" id="opt_1" <?php echo iif($my->opt_pmnotify == 1,' checked="checked"'); ?> value="1" />
 		<br class="newinput" /><hr class="formsep" />
