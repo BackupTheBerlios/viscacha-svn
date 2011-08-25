@@ -41,7 +41,6 @@ $lang['admin_moderator_manager'] = 'Moderatoren';
 $lang['admin_navigationtitle'] = '{@config->fname}: Administrationsbereich';
 $lang['admin_navigation_manager'] = 'Navigation';
 $lang['admin_newsletter_manager'] = 'Newsletter- & E-Mail-Verwaltung';
-$lang['admin_onlinestatus_indication'] = 'Online-Status-Anzeige';
 $lang['admin_optimize_tables'] = 'Tabellen optimieren & reparieren';
 $lang['admin_packages'] = 'Pakete';
 $lang['admin_package_browser'] = 'Paket-Datenbank';
