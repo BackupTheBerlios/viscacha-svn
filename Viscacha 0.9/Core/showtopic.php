@@ -286,19 +286,17 @@ if ($speeder > $last['topiczahl']) {
 else {
 	$sql_limit = " LIMIT {$speeder}";
 }
-$sql_select = iif($config['pm_user_status'] == 1, ", IF (s.mid > 0, 1, 0) AS online");
-$sql_join = iif($config['pm_user_status'] == 1, "LEFT JOIN {$db->pre}session AS s ON s.mid = u.id");
 $sql_order = iif($last['post_order'] == 1, 'DESC', 'ASC');
 ($code = $plugins->load('showtopic_query')) ? eval($code) : null;
 $result = $db->query("
 SELECT
 	r.id, r.edit, r.dosmileys, r.dowords, r.topic, r.comment, r.date, r.email as gmail, r.guest, r.name as gname, r.report, r.tstart,
 	u.id as mid, u.name as uname, u.mail, u.regdate, u.posts, u.fullname, u.hp, u.signature, u.location, u.gender, u.birthday, u.pic, u.lastvisit, u.icq, u.yahoo, u.aol, u.msn, u.jabber, u.skype, u.groups,
-	f.* {$sql_select}
+	f.*, IF (s.mid > 0, 1, 0) AS online
 FROM {$db->pre}replies AS r
 	LEFT JOIN {$db->pre}user AS u ON r.name = u.id AND r.guest = '0'
 	LEFT JOIN {$db->pre}userfields AS f ON u.id = f.ufid AND r.guest = '0'
-	{$sql_join}
+	LEFT JOIN {$db->pre}session AS s ON s.mid = u.id
 WHERE r.topic_id = '{$info['id']}'
 ORDER BY date {$sql_order}
 {$sql_limit}
@@ -380,9 +378,7 @@ while ($row = $db->fetch_object($result)) {
 		$row->signature = $bbcode->parse($row->signature);
 	}
 
-	if ($config['post_user_status'] == 1) {
-		$row->lang_online = $lang->phrase('profile_'.iif($row->online == 1, 'online', 'offline'));
-	}
+	$row->lang_online = $lang->phrase('profile_'.iif($row->online == 1, 'online', 'offline'));
 	$row->date = str_date($lang->phrase('dformat1'), times($row->date));
 	$row->regdate = gmdate($lang->phrase('dformat2'), times($row->regdate));
 	$row->level = $slog->getStatus($row->groups, ', ');

@@ -219,17 +219,12 @@ elseif ($is_member) {
 			$bday[1] = $lang->phrase('months_'.intval($bday[1]));
 		}
 
-		$osi = '';
-		if ($config['osi_profile'] == 1) {
-			$result = $db->query('SELECT mid, active FROM '.$db->pre.'session WHERE mid = '.$_GET['id']);
-			$wwo = $db->fetch_num($result);
-			if ($wwo[0] > 0) {
-				$wwo[1] = gmdate($lang->phrase('dformat3'),times($wwo[1]));
-				$osi = 1;
-			}
-			else {
-				$osi = 0;
-			}
+		$result = $db->query('SELECT mid, active FROM '.$db->pre.'session WHERE mid = '.$_GET['id']);
+		$wwo = $db->fetch_num($result);
+		$osi = false;
+		if ($wwo[0] > 0) {
+			$wwo[1] = gmdate($lang->phrase('dformat3'),times($wwo[1]));
+			$osi = true;
 		}
 
 		// Custom Profile Fields

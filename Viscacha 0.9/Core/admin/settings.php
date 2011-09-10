@@ -309,10 +309,6 @@ elseif ($job == 'posts') {
 	   <td class="mbox" width="50%"><input type="checkbox" name="fullname_posts" value="1"<?php echo iif($config['fullname_posts'] == 1,' checked="checked"'); ?>></td>
 	  </tr>
 	  <tr>
-	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_show_online_status_post'); ?></td>
-	   <td class="mbox" width="50%"><input type="checkbox" name="post_user_status" value="1"<?php echo iif($config['post_user_status'] == 1, ' checked="checked"'); ?> /></td>
-	  </tr>
-	  <tr>
 	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_enable_change_vote'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_enable_change_vote_info'); ?></span></td>
 	   <td class="mbox" width="50%"><input type="checkbox" name="vote_change" value="1"<?php echo iif($config['vote_change'] == 1, ' checked="checked"'); ?> /></td>
 	  </tr>
@@ -380,7 +376,6 @@ elseif ($job == 'posts2') {
 	$c->updateconfig('abozahl', int);
 	$c->updateconfig('multiple_instant_notifications', int);
 	$c->updateconfig('fullname_posts', int);
-	$c->updateconfig('post_user_status', int);
 	$c->updateconfig('vote_change', int);
 	$c->updateconfig('post_order', int);
 	$c->savedata();
@@ -419,10 +414,6 @@ elseif ($job == 'profile') {
 	  <tr>
 	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_mylast_numer_of_posts'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_mylast_numer_of_posts_info'); ?> &quot;<a href="editprofile.php?action=mylast" target="_blank"><?php echo $lang->phrase('admin_mylast_numer_of_posts_info2'); ?></a>&quot;</span></td>
 	   <td class="mbox" width="50%"><input type="text" name="mylastzahl" value="<?php echo $config['mylastzahl']; ?>" size="5"></td>
-	  </tr>
-	  <tr>
-	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_onlinetstatus_profile'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_onlinetstatus_profile_info'); ?></span></td>
-	   <td class="mbox" width="50%"><input type="checkbox" name="osi_profile" value="1"<?php echo iif($config['osi_profile'] == 1,' checked="checked"'); ?>></td>
 	  </tr>
 	  <tr>
 	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_allow_change_name'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_allow_change_name_info'); ?></span></td>
@@ -464,7 +455,6 @@ elseif ($job == 'profile2') {
 	echo head();
 
 	$c->getdata();
-	$c->updateconfig('osi_profile', int);
 	$c->updateconfig('changename_allowed', int);
 	$c->updateconfig('showpostcounter', int);
 	$c->updateconfig('maxnamelength', int);
@@ -961,10 +951,6 @@ elseif ($job == 'pm') {
 	   <td class="mbox" width="50%"><input type="text" name="pmzahl" value="<?php echo $config['pmzahl']; ?>" size="4" /></td>
 	  </tr>
 	  <tr>
-	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_online_status_in_pm'); ?></td>
-	   <td class="mbox" width="50%"><input type="checkbox" name="pm_user_status" value="1"<?php echo iif($config['pm_user_status'] == 1, ' checked="checked"'); ?> /></td>
-	  </tr>
-	  <tr>
 	   <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="<?php echo $lang->phrase('admin_form_submit'); ?>"></td>
 	  </tr>
 	 </table>
@@ -977,7 +963,6 @@ elseif ($job == 'pm2') {
 
 	$c->getdata();
 	$c->updateconfig('pmzahl', int);
-	$c->updateconfig('pm_user_status', int);
 	$c->savedata();
 
 	ok('admin.php?action=settings&job=settings');
