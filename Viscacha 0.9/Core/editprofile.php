@@ -258,54 +258,6 @@ elseif ($_GET['action'] == "pw") {
 	echo $tpl->parse("editprofile/pw");
 	($code = $plugins->load('editprofile_pw_end')) ? eval($code) : null;
 }
-elseif ($_GET['action'] == "notice2") {
-
-	$notes = array();
-	foreach ($_POST['notice'] as $note) {
-		if (!empty($note) && strxlen($note) > 2) {
-			$notes[] = str_replace('[VSEP]','&#91;VSEP&#93;',$note);
-		}
-	}
-
-	if (strxlen(implode('',$notes)) > $config['maxnoticelength']) {
-		error($lang->phrase('notices_too_long'));
-	}
-	else {
-		$sqlnotes = implode('[VSEP]',$notes);
-		($code = $plugins->load('editprofile_notice2_query')) ? eval($code) : null;
-		$db->query("UPDATE {$db->pre}user SET notice = '{$sqlnotes}' WHERE id = '{$my->id}' LIMIT 1");
-		ok($lang->phrase('text_to_notice_success'), 'editprofile.php?action=notice'.SID2URL_x);
-	}
-
-}
-elseif ($_GET['action'] == "notice") {
-	$breadcrumb->Add($lang->phrase('editprofile_notice'));
-	echo $tpl->parse("header");
-	echo $tpl->parse("menu");
-	if (empty($my->notice)) {
-		$notices = array();
-	}
-	else {
-		$notices = explode('[VSEP]',$my->notice);
-		if (!is_array($notices)) {
-			$notices = array($notices);
-		}
-	}
-	foreach ($notices as $key => $note) {
-		$notices[$key] = array(
-			'length' => numbers(strxlen($note)),
-			'text' => $note,
-			'rows' => count_nl($note, 15)+1
-		);
-	}
-	$notes = count($notices);
-	$used_chars = numbers(strxlen(str_replace('[VSEP]', '', $my->notice)));
-	$chars = numbers($config['maxnoticelength']);
-
-	($code = $plugins->load('editprofile_prepared')) ? eval($code) : null;
-	echo $tpl->parse("editprofile/notice");
-	($code = $plugins->load('editprofile_end')) ? eval($code) : null;
-}
 elseif ($_GET['action'] == "signature") {
 	if (!empty($_POST['Submit'])) {
 		$error = array();

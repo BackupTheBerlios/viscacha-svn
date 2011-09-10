@@ -983,15 +983,6 @@ elseif ($job == 'merge2') {
 	if (empty($base['about']) && !empty($old['about'])) {
 		$newdata[] ="about = '{$old['about']}'";
 	}
-	if (!empty($old['notice'])) {
-		if (empty($base['notice'])) {
-			$notice = $old['notice'];
-		}
-		else {
-			$notice = $base['notice'].'[VSEP]'.$old['notice'];
-		}
-		$newdata[] ="notice = '{$notice}'";
-	}
 	if (empty($base['location']) && !empty($old['location'])) {
 		$newdata[] ="location = '{$old['location']}'";
 	}
@@ -1401,7 +1392,7 @@ elseif ($job == 'register2') {
 		$reg = time();
 		$pw_md5 = md5($pwx);
 
-		$db->query("INSERT INTO {$db->pre}user (name, pw, mail, regdate, confirm, groups, signature, about, notice) VALUES ('{$name}', '{$pw_md5}', '{$email}', '{$reg}', '11', '".GROUP_MEMBER."', '', '', '')");
+		$db->query("INSERT INTO {$db->pre}user (name, pw, mail, regdate, confirm, groups, signature, about) VALUES ('{$name}', '{$pw_md5}', '{$email}', '{$reg}', '11', '".GROUP_MEMBER."', '', '')");
 		$redirect = $db->insert_id();
 
 		addprofile_customsave($custom['data'], $redirect);

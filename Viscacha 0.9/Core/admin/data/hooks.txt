@@ -103,7 +103,6 @@ editprofile.php
 -editprofile_abos2_end
 -editprofile_pw_start
 -editprofile_pw_end
--editprofile_notice2_query
 -editprofile_prepared
 -editprofile_end
 -editprofile_about2_start

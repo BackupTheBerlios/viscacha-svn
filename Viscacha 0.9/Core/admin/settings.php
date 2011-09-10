@@ -417,10 +417,6 @@ elseif ($job == 'profile') {
 	   <td class="mbox" width="50%"><input type="text" name="maxaboutlength" value="<?php echo $config['maxaboutlength']; ?>" size="8"></td>
 	  </tr>
 	  <tr>
-	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_notice_length'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_notice_length_info'); ?></span></td>
-	   <td class="mbox" width="50%"><input type="text" name="maxnoticelength" value="<?php echo $config['maxnoticelength']; ?>" size="8"></td>
-	  </tr>
-	  <tr>
 	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_mylast_numer_of_posts'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_mylast_numer_of_posts_info'); ?> &quot;<a href="editprofile.php?action=mylast" target="_blank"><?php echo $lang->phrase('admin_mylast_numer_of_posts_info2'); ?></a>&quot;</span></td>
 	   <td class="mbox" width="50%"><input type="text" name="mylastzahl" value="<?php echo $config['mylastzahl']; ?>" size="5"></td>
 	  </tr>
@@ -476,7 +472,6 @@ elseif ($job == 'profile2') {
 	$c->updateconfig('minpwlength', int);
 	$c->updateconfig('maxpwlength', int);
 	$c->updateconfig('maxaboutlength', int);
-	$c->updateconfig('maxnoticelength', int);
 	$c->updateconfig('memberrating', int);
 	$c->updateconfig('memberrating_counter', int);
 	$c->updateconfig('hidedesign', int);

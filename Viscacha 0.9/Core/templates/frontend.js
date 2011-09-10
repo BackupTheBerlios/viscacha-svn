@@ -38,18 +38,6 @@ function ReloadCountdown(iv) {
 		setTimeout("ReloadCountdown("+iv+")", 1000);
 	}
 }
-function deletenotice(id) {
-	input = confirm(lng['js_confirm_ndelete']);
-	if (input == true) {
-		notices = document.getElementsByName("notice[]");
-		notices[id].value = '';
-		noticeArea = FetchElement("notice_"+id);
-		noticeArea.style.display = 'none';
-		Form = FetchElement('notice');
-		Form.submit();
-		return;
-	}
-}
 function confirmdelete(box) {
 	if (box.checked == true) {
 		input = confirm(lng['js_confirm_pdelete']);

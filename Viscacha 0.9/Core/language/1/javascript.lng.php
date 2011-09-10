@@ -14,7 +14,6 @@ $lang['bbcodes_note_prompt2'] = 'Bitte das zu erklärende Wort eingeben';
 $lang['bbcodes_url_prompt1'] = 'Bitte geben Sie die URL (mit http://) an';
 $lang['bbcodes_url_prompt2'] = 'Bitte geben Sie den Linktext an';
 $lang['imgtitle'] = 'Dieses Bild wurde verkleinert. Klicken Sie auf das Bild, um es zu vergrößern';
-$lang['js_confirm_ndelete'] = 'Möchten Sie diese Notiz wirklich löschen?';
 $lang['js_confirm_pdelete'] = 'Möchten Sie diesen Beitrag wirklich löschen?';
 $lang['js_listpompt1'] = 'Bitte geben Sie den ';
 $lang['js_listpompt2'] = '. Listenpunkt an.\\n"Abbrechen" klicken zum Beenden.';

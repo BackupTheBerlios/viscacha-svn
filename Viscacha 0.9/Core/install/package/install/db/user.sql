@@ -9,7 +9,6 @@ CREATE TABLE `{:=DBPREFIX=:}user` (
   `hp` varchar(255) NOT NULL default '',
   `signature` text NOT NULL,
   `about` mediumtext NOT NULL,
-  `notice` longtext NOT NULL,
   `location` varchar(200) NOT NULL default '',
   `gender` enum('','m','w') NOT NULL default '',
   `birthday` date NOT NULL default '0000-00-00',

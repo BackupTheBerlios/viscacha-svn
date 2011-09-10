@@ -14,7 +14,6 @@ $lang['bbcodes_note_prompt2'] = 'Please enter the word to be defined';
 $lang['bbcodes_url_prompt1'] = 'Please provide URL (with http://)';
 $lang['bbcodes_url_prompt2'] = 'Please provide text for the link';
 $lang['imgtitle'] = 'This image has been scaled down. Click on the image to view fullsize.';
-$lang['js_confirm_ndelete'] = 'Do you really want to delete this note?';
 $lang['js_confirm_pdelete'] = 'Do you really want to delete this post?';
 $lang['js_listpompt1'] = 'please provide the ';
 $lang['js_listpompt2'] = '. listpoint on.\\nclick "cancel" to quit.';

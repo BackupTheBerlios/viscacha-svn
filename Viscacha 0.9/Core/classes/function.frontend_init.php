@@ -110,7 +110,6 @@ $http_vars = array(
 	'opt_5' => int,
 	'opt_6' => int,
 	'opt_7' => int,
-	'notice' => arr_str,
 	'delete' => arr_int
 );
 
