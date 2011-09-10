@@ -181,8 +181,6 @@ $lang['admin_length_of_post_text'] = 'Länge von Beiträgen:';
 $lang['admin_length_of_post_title'] = 'Länge von Titeln:';
 $lang['admin_length_of_topic'] = 'Maximale Länge von Thementitel in der "Letzte Themen"-Spalte:';
 $lang['admin_length_of_topic_info'] = 'Hier können Sie die maximale Länge eingeben, nach der die Titel der Themen in der Spalte "Letztes Thema" (Forenübersicht) abgeschnittwn wird.';
-$lang['admin_limit_downloadspeed'] = 'Downloadgeschwindigkeit beschränken:';
-$lang['admin_limit_downloadspeed_info'] = 'Hier können Sie die maximale Downloadgeschwindigkeit von Themen-Anhängen angeben. Geben Sie die Begrenzung in KiloByte an. 0 = Keine Beschränkung';
 $lang['admin_limit_punctuation'] = 'Interpunktion regulieren:';
 $lang['admin_limit_punctuation_info'] = 'Übertriebene Interpunkten (mehr als zwei Fragezeichen, zwei Ausrufezeichen oder vier Punkte) werden reduziert auf ein erträgliches Maß.';
 $lang['admin_login_attempts'] = 'Anmeldeversuche beschränken';

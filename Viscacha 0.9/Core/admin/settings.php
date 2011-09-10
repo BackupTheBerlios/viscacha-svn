@@ -1343,10 +1343,6 @@ elseif ($job == 'attupload') {
 	   <td class="mbox" width="50%"><input type="text" name="tpcmaxuploads" value="<?php echo $config['tpcmaxuploads']; ?>" size="4"></td>
 	  </tr>
 	  <tr>
-	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_limit_downloadspeed'); ?><br /><font class="stext"><?php echo $lang->phrase('admin_limit_downloadspeed_info'); ?></font></td>
-	   <td class="mbox" width="50%"><input type="text" name="tpcdownloadspeed" value="<?php echo $config['tpcdownloadspeed']; ?>" size="4"></td>
-	  </tr>
-	  <tr>
 	   <td class="ubox" width="100%" colspan="2" align="center"><input type="submit" name="Submit" value="<?php echo $lang->phrase('admin_form_submit'); ?>"></td>
 	  </tr>
 	 </table>
@@ -1366,7 +1362,6 @@ elseif ($job == 'attupload2') {
 	$list = implode(',',$arraylist);
 
 	$c->updateconfig('tpcallow',int);
-	$c->updateconfig('tpcdownloadspeed',int);
 	$c->updateconfig('tpcmaxuploads',int);
 	$c->updateconfig('tpcheight',int);
 	$c->updateconfig('tpcwidth',int);

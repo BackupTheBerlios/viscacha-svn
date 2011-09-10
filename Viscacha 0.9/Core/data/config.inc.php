@@ -154,7 +154,6 @@ $config['timezone'] = '+1';
 $config['topicuppercase'] = 1;
 $config['topiczahl'] = 10;
 $config['tpcallow'] = 1;
-$config['tpcdownloadspeed'] = 0;
 $config['tpcfilesize'] = 512000;
 $config['tpcfiletypes'] = 'gif,jpeg,jpg,jpe,png,doc,txt,rtf,zip,rar,tar,gz,pdf,htm,html,css,js,bmp';
 $config['tpcheight'] = 2048;

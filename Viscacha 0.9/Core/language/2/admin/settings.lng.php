@@ -181,8 +181,6 @@ $lang['admin_length_of_post_text'] = 'Length of Posts:';
 $lang['admin_length_of_post_title'] = 'Length of Titles:';
 $lang['admin_length_of_topic'] = 'Length of titles in the "Last Topic"-column:';
 $lang['admin_length_of_topic_info'] = 'Here you can specifiy a length after that the title in the last topic column in the board overview will be cutted.';
-$lang['admin_limit_downloadspeed'] = 'Limit Downloadspeed:';
-$lang['admin_limit_downloadspeed_info'] = 'Here you can throttle the Downloadspeed for Post Uploads! Indicate the max. Dowloadspeed <b> in KB </b> . 0 = No Limit';
 $lang['admin_limit_punctuation'] = 'Limit punctuation:';
 $lang['admin_limit_punctuation_info'] = 'Excessive punctuation (more than 2 question marks, 2 exclamation marks or 4 periods) will be reduced.';
 $lang['admin_login_attempts'] = 'Limit login attempts';
