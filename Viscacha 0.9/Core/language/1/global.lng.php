@@ -611,7 +611,6 @@ $lang['search_sortby_posts'] = 'Anzahl an Antworten';
 $lang['search_sortby_topic'] = 'Titel';
 $lang['search_username'] = 'Benutzername:';
 $lang['search_x_results'] = '{$count} Suchergebnisse bei der Suche nach:';
-$lang['showpost_show_topic'] = 'Komplettes Thema anzeigen';
 $lang['showtopic_na'] = '-';
 $lang['showtopic_options'] = 'Themenoptionen';
 $lang['showtopic_options_abo'] = 'Thema abonnieren';

@@ -30,8 +30,13 @@ define('VISCACHA_CORE', '1');
 include ("data/config.inc.php");
 include ("classes/function.viscacha_frontend.php");
 
+if (!is_id($_GET['id']) && is_id($_GET['topic_id'])) {
+	$result = $db->query("SELECT topic_id FROM {$db->pre}replies WHERE id = '{$_GET['topic_id']}'");
+	$_GET['id'] = $db->fetch_one($result);
+}
+
 ($code = $plugins->load('showtopic_topic_query')) ? eval($code) : null;
-$result = $db->query("SELECT id, topic, posts, sticky, status, last, board, vquestion, prefix FROM {$db->pre}topics WHERE id = '{$_GET['id']}' LIMIT 1");
+$result = $db->query("SELECT id, topic, posts, sticky, status, last, board, vquestion, prefix FROM {$db->pre}topics WHERE id = '{$_GET['id']}'");
 $info = $gpc->prepare($db->fetch_assoc($result));
 
 $my->p = $slog->Permissions($info['board']);

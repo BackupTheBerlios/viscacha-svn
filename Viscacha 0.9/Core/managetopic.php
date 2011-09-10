@@ -199,7 +199,7 @@ elseif ($action == "reports") {
 		error($lang->phrase('query_string_error'), 'showtopic.php?id='.$info['id'].SID2URL_x);
 	}
 	if (empty($data['report'])) {
-		error($lang->phrase('admin_report_not_found'), "showtopic.php?action=jumpto&id={$data['topic_id']}&topic_id={$data['id']}".SID2URL_x);
+		error($lang->phrase('admin_report_not_found'), "showtopic.php?action=jumpto&topic_id={$data['id']}".SID2URL_x);
 	}
 
 	echo $tpl->parse("admin/topic/reports");
@@ -207,7 +207,7 @@ elseif ($action == "reports") {
 elseif ($action == "reports2") {
 	if ($_POST['temp'] == 1) {
 		$db->query("UPDATE {$db->pre}replies SET report = '' WHERE id = '{$_GET['topic_id']}' LIMIT 1");
-		ok($lang->phrase('admin_report_reset_success'), "showtopic.php?action=jumpto&id={$info['id']}&topic_id={$_GET['topic_id']}".SID2URL_x);
+		ok($lang->phrase('admin_report_reset_success'), "showtopic.php?action=jumpto&topic_id={$_GET['topic_id']}".SID2URL_x);
 	}
 	else {
 		error($lang->phrase('admin_failed'), 'managetopic.php?action=reports&id='.$info['id'].'&topic_id='.$_GET['topic_id'].SID2URL_x);
@@ -637,7 +637,7 @@ elseif ($action == "pmerge2") {
 		}
 
 		$anz = count($ids);
-		ok($lang->phrase('x_entries_merged'),"showtopic.php?topic_id=".$base['id']."&action=jumpto&id=".$base['topic_id'].SID2URL_x);
+		ok($lang->phrase('x_entries_merged'),"showtopic.php?action=jumpto&topic_id=".$base['id'].SID2URL_x);
 	}
 }
 

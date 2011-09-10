@@ -67,6 +67,10 @@ function jumptopage(url) {
 		document.location.href = url.replace(/&amp;/g, '&') + 'page=' + page + sidx;
 	}
 }
+function showpost(Link) {
+	prompt(lng['js_permalink_prompt'], Link.href.replace(sidx, ''));
+	return false;
+}
 
 ///////////////////////// AJAX /////////////////////////
 

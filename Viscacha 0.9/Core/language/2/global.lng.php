@@ -611,7 +611,6 @@ $lang['search_sortby_posts'] = 'Number of replies';
 $lang['search_sortby_topic'] = 'Subject';
 $lang['search_username'] = 'User Name:';
 $lang['search_x_results'] = '{$count} search results for:';
-$lang['showpost_show_topic'] = 'Show whole topic';
 $lang['showtopic_na'] = '-';
 $lang['showtopic_options'] = 'Topic Options';
 $lang['showtopic_options_abo'] = 'Subscribe Topic';

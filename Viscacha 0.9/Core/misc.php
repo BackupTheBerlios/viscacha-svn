@@ -116,14 +116,14 @@ elseif ($_GET['action'] == "report_post" || $_GET['action'] == "report_post2") {
 	$breadcrumb->Add($last['name'], "showforum.php?id=".$info['board'].SID2URL_x);
 	$breadcrumb->Add($prefix.$info['topic'], "showtopic.php?id={$info['topic_id']}".SID2URL_x);
 	if ($info['tstart'] == '0') {
-		$breadcrumb->Add($info['title'], "showtopic.php?action=jumpto&id={$info['topic_id']}&topic_id={$info['id']}".SID2URL_x);
+		$breadcrumb->Add($info['title'], "showtopic.php?action=jumpto&topic_id={$info['id']}".SID2URL_x);
 	}
 	$breadcrumb->Add($lang->phrase('report_post'));
 
 	forum_opt($last);
 
 	if (empty($info['report']) == false) {
-		error($lang->phrase('report_post_locked'), "showtopic.php?action=jumpto&id={$info['topic_id']}&topic_id={$info['id']}".SID2URL_x);
+		error($lang->phrase('report_post_locked'), "showtopic.php?action=jumpto&topic_id={$info['id']}".SID2URL_x);
 	}
 
 	if ($_GET['action'] == "report_post2") {
@@ -172,7 +172,7 @@ elseif ($_GET['action'] == "report_post" || $_GET['action'] == "report_post2") {
 			}
 			$lang->setdir($lang_dir);
 
-			ok($lang->phrase('report_post_success'), "showtopic.php?action=jumpto&id={$info['topic_id']}&topic_id={$info['id']}".SID2URL_x);
+			ok($lang->phrase('report_post_success'), "showtopic.php?action=jumpto&topic_id={$info['id']}".SID2URL_x);
 		}
 	}
 	else {
@@ -327,30 +327,6 @@ elseif ($_GET['action'] == "wwo") {
 		case 'popup':
 			if ($row->wiw_action == 'filetypes') {
 				$loc = $lang->phrase('wwo_popup_filetypes');
-			}
-			elseif ($row->wiw_action == 'showpost') {// Todo: Auf eine Query begrenzen (alle IDs auf einmal auslesen am Anfang)
-				$id = $row->wiw_id;
-
-				if (!isset($cache['p'.$id])) {
-					$result2 = $db->query("
-						SELECT t.topic, t.board, r.topic as post
-						FROM {$db->pre}replies AS r
-							LEFT JOIN {$db->pre}topics AS t ON r.topic_id = t.id
-						WHERE r.id = '{$id}'
-						LIMIT 1
-					");
-					if ($db->num_rows($result2) == 1) {
-						$nfo = $db->fetch_assoc($result2);
-						$cache['p'.$id] = $nfo;
-					}
-				}
-				if (!isset($cache['p'.$id]) || (($cat_cache[$cache['p'.$id]['board']]['opt'] == 'pw' && (!isset($my->pwfaccess[$cache['p'.$id]['board']]) || $my->pwfaccess[$cache['p'.$id]['board']] != $cat_cache[$cache['p'.$id]['board']]['optvalue'])) || $my->pb[$cache['p'.$id]['board']]['forum'] == 0)) {
-					$loc = $lang->phrase('wwo_popup_showpost_fallback');
-				}
-				else {
-					$title = $gpc->prepare($cache['p'.$id]['post']);
-					$loc = $lang->phrase('wwo_popup_showpost');
-				}
 			}
 			else {
 				$loc = $lang->phrase('wwo_popup');
