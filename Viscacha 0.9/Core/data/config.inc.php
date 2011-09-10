@@ -128,7 +128,6 @@ $config['sessionsave'] = 15;
 $config['session_checkip'] = 3;
 $config['showpostcounter'] = 1;
 $config['showsubfs'] = 1;
-$config['sid_length'] = 32;
 $config['sig_bbcode'] = 0;
 $config['sig_bbedit'] = 0;
 $config['sig_bbh'] = 0;

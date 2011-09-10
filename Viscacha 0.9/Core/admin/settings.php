@@ -679,15 +679,6 @@ elseif ($job == 'session') {
 	   <td class="obox" colspan="2"><?php echo $lang->phrase('admin_session_edit'); ?></td>
 	  </tr>
 	  <tr>
-	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_session_id_length'); ?><br /><span class="stext"></span></td>
-	   <td class="mbox" width="50%"><select name="sid_length">
-	   <option value="32"<?php echo iif($config['sid_length'] == '32', ' selected="selected"'); ?>><?php echo $lang->phrase('admin_session_32_charackters'); ?></option>
-	   <option value="64"<?php echo iif($config['sid_length'] == '64', ' selected="selected"'); ?>><?php echo $lang->phrase('admin_session_64_charackters'); ?></option>
-	   <option value="96"<?php echo iif($config['sid_length'] == '96', ' selected="selected"'); ?>><?php echo $lang->phrase('admin_session_96_charackters'); ?></option>
-	   <option value="128"<?php echo iif($config['sid_length'] == '128', ' selected="selected"'); ?>><?php echo $lang->phrase('admin_session_128_charackters'); ?></option>
-	   </select></td>
-	  </tr>
-	  <tr>
 	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_time_check_inactive_users'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_time_check_inactive_users_info'); ?></span></td>
 	   <td class="mbox" width="50%"><input type="text" name="sessionrefresh" value="<?php echo $config['sessionrefresh']; ?>" size="4"></td>
 	  </tr>
@@ -741,7 +732,6 @@ elseif ($job == 'session2') {
 	echo head();
 
 	$c->getdata();
-	$c->updateconfig('sid_length', int);
 	$c->updateconfig('sessionrefresh', int);
 	$c->updateconfig('sessionsave', int);
 	$c->updateconfig('enableflood', int);
