@@ -1877,14 +1877,6 @@ elseif ($job == 'syndication') {
 	   <td class="mbox" width="50%"><input type="text" name="rssttl" value="<?php echo $config['rssttl']; ?>" size="4"></td>
 	  </tr>
 	  <tr>
-	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_newsfeed_icon'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_newsfeed_icon_info'); ?></span></td>
-	   <td class="mbox" width="50%"><input type="text" name="syndication_klipfolio_icon" value="<?php echo $config['syndication_klipfolio_icon']; ?>" size="50"></td>
-	  </tr>
-	  <tr>
-	   <td class="mbox" width="50%"><?php echo $lang->phrase('admin_klipfolio_newsfeed_banner'); ?><br /><span class="stext"><?php echo $lang->phrase('admin_klipfolio_newsfeed_banner_info'); ?></span></td>
-	   <td class="mbox" width="50%"><input type="text" name="syndication_klipfolio_banner" value="<?php echo $config['syndication_klipfolio_banner']; ?>" size="50"></td>
-	  </tr>
-	  <tr>
 	   <td class="ubox" width="100%" colspan="2" align="center"><input type="submit" name="Submit" value="<?php echo $lang->phrase('admin_form_submit'); ?>"></td>
 	  </tr>
 	 </table>
