@@ -1052,10 +1052,10 @@ class BBCode {
 		return $tpl->parse("main/bbhtml");
 	}
 
-	function replaceTextOnce($original, $newindex) {
+	function ReplaceTextOnce($original, $newindex) {
 		global $lang;
 		$lang->assign('originalid', $original);
-		return $lang->get_text($newindex);
+		return $lang->phrase($newindex);
 	}
 }
 

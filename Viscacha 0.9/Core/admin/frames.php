@@ -30,7 +30,7 @@ if ($job == 'menu') {
 	  <h3><img id="img_admin_menu1" src="admin/html/images/plus.gif" alt="collapse" /> <?php echo $lang->phrase("admin_settings");?></h3>
 	  <ul id="part_admin_menu1">
 		<li>&raquo; <a href="admin.php?action=settings" target="Main"><?php echo $lang->phrase("admin_viscacha_settings");?></a></li>
-		<li>&raquo; <a href="admin.php?action=misc&amp;job=phpinfo" target="Main"><?php echo $lang->phrase("admin_php_info");?></a></li>
+		<li>&raquo; <a href="admin.php?action=language&amp;job=manage" target="Main"><?php echo $lang->phrase("admin_lang_manager");?></a></li>
 		<li>&raquo; <a href="admin.php?action=settings&amp;job=version" target="Main"><?php echo $lang->phrase("admin_version_check");?></a></li>
 	  </ul>
 	 </div>
@@ -95,13 +95,6 @@ if ($job == 'menu') {
 	  </ul>
 	 </div>
 	 <div class="border">
-	   <h3><img id="img_admin_menu8" src="admin/html/images/plus.gif" alt="collapse" /> <?php echo $lang->phrase("admin_lang");?></h3>
-	  <ul id="part_admin_menu8">
-	   <li>&raquo; <a href="admin.php?action=language&amp;job=manage" target="Main"><?php echo $lang->phrase("admin_lang_manager");?></a></li>
-	   <li>&raquo; <a href="admin.php?action=language&amp;job=phrase" target="Main"><?php echo $lang->phrase("admin_phrase_manager");?></a></li>
-	  </ul>
-	 </div>
-	 <div class="border">
 	   <h3><img id="img_admin_menu9" src="admin/html/images/plus.gif" alt="collapse" /> <?php echo $lang->phrase("admin_txtprocessing");?></h3>
 	  <ul id="part_admin_menu9">
 	   <li>&raquo; <a href="admin.php?action=bbcodes&amp;job=smileys" target="Main"><?php echo $lang->phrase("admin_smiley_manager");?></a></li>
@@ -137,6 +130,7 @@ if ($job == 'menu') {
 	   <li>&raquo; <a href="admin.php?action=filetypes&amp;job=manage" target="Main"><?php echo $lang->phrase("admin_filetype_manager");?></a></li>
 	   <li>&raquo; <a href="admin.php?action=cron&amp;job=manage" target="Main"><?php echo $lang->phrase("admin_scheduler");?></a></li>
 	   <li>&raquo; <a href="admin.php?action=misc&amp;job=sessionmails" target="Main"><?php echo $lang->phrase("admin_trashmail");?></a></li>
+		<li>&raquo; <a href="admin.php?action=misc&amp;job=phpinfo" target="Main"><?php echo $lang->phrase("admin_php_info");?></a></li>
 	  </ul>
 	 </div>
 	 <div class="border">
@@ -213,6 +207,7 @@ if ($job == 'menu') {
 	   <li>&raquo; <a href="admin.php?action=filetypes&amp;job=manage" target="Main"><?php echo $lang->phrase("admin_filetype_manager");?></a></li>
 	   <li>&raquo; <a href="admin.php?action=slog&amp;job=s_general" target="Main"><?php echo $lang->phrase("admin_statistics");?></a></li>
 	   <li>&raquo; <a href="admin.php?action=misc&amp;job=cache" target="Main"><?php echo $lang->phrase("admin_cache_manager");?></a></li>
+	   <li>&raquo; <a href="admin.php?action=misc&amp;job=phpinfo" target="Main"><?php echo $lang->phrase("admin_php_info");?></a></li>
 	  </ul>
 	 </div>
 	 <?php ($code = $plugins->load('admin_navigation_simple')) ? eval($code) : null; ?>
@@ -220,7 +215,6 @@ if ($job == 'menu') {
 	   <h3><img id="img_admin_menu7_simple" src="admin/html/images/plus.gif" alt="collapse" /> <?php echo $lang->phrase("admin_useful_links");?></h3>
 	  <ul id="part_admin_menu7_simple">
 	   <li>&raquo; <a href="index.php<?php echo SID2URL_1; ?>" target="_blank"><?php echo $lang->phrase("admin_goto_forum");?></a></li>
-	   <li>&raquo; <a href="admin.php?action=misc&amp;job=phpinfo" target="Main"><?php echo $lang->phrase("admin_php_info");?></a></li>
 	   <li>&raquo; <a href="admin.php?action=logout<?php echo SID2URL_x; ?>" target="_top"><?php echo $lang->phrase("admin_signoff");?></a></li>
 	   <li>&raquo; <a href="http://www.viscacha.org" target="_blank"><?php echo $lang->phrase("admin_supportlink");?></a></li>
 	  </ul>

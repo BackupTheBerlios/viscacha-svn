@@ -393,6 +393,7 @@ $lang['months_9'] = 'September';
 $lang['months_10'] = 'Oktober';
 $lang['months_11'] = 'November';
 $lang['months_12'] = 'Dezember';
+$lang['moved'] = 'Das Thema wurde verschoben. Sie können es ab sofort [url={@config->furl}/showtopic.php?id={$originalid}]hier[/url] finden.';
 $lang['move_form'] = 'Verschieben';
 $lang['move_title'] = 'Verschieben';
 $lang['move_to_first_new_post'] = 'Zum ersten ungelesenen Beitrag springen';

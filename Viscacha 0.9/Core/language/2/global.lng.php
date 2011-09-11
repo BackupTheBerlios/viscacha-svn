@@ -393,6 +393,7 @@ $lang['months_9'] = 'September';
 $lang['months_10'] = 'October';
 $lang['months_11'] = 'November';
 $lang['months_12'] = 'December';
+$lang['moved'] = 'The topic has been moved to another forum. From now on you can find it [url={@config->furl}/showtopic.php?id={$originalid}]here[/url].';
 $lang['move_form'] = 'Move';
 $lang['move_title'] = 'Move';
 $lang['move_to_first_new_post'] = 'View first unread Post';
