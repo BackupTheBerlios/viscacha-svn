@@ -30,6 +30,7 @@ if ($job == 'menu') {
 	  <h3><img id="img_admin_menu1" src="admin/html/images/plus.gif" alt="collapse" /> <?php echo $lang->phrase("admin_settings");?></h3>
 	  <ul id="part_admin_menu1">
 		<li>&raquo; <a href="admin.php?action=settings" target="Main"><?php echo $lang->phrase("admin_viscacha_settings");?></a></li>
+		<li>&raquo; <a href="admin.php?action=designs&amp;job=design" target="Main"><?php echo $lang->phrase("admin_design_manager");?></a></li>
 		<li>&raquo; <a href="admin.php?action=language&amp;job=manage" target="Main"><?php echo $lang->phrase("admin_lang_manager");?></a></li>
 		<li>&raquo; <a href="admin.php?action=settings&amp;job=version" target="Main"><?php echo $lang->phrase("admin_version_check");?></a></li>
 	  </ul>
@@ -83,15 +84,6 @@ if ($job == 'menu') {
 	  <ul id="part_admin_menu6">
 	   <li>&raquo; <a href="admin.php?action=cms&amp;job=feed" target="Main"><?php echo $lang->phrase("admin_import_feeds");?></a></li>
 	   <li>&raquo; <a href="admin.php?action=misc&amp;job=feedcreator" target="Main"><?php echo $lang->phrase("admin_export_feeds");?></a></li>
-	  </ul>
-	 </div>
-	 <div class="border">
-	   <h3><img id="img_admin_menu7" src="admin/html/images/plus.gif" alt="collapse" /> <?php echo $lang->phrase("admin_templates");?></h3>
-	  <ul id="part_admin_menu7">
-	   <li>&raquo; <a href="admin.php?action=designs&amp;job=design" target="Main"><?php echo $lang->phrase("admin_design_manager");?></a></li>
-	   <li>&raquo; <a href="admin.php?action=designs&amp;job=templates" target="Main"><?php echo $lang->phrase("admin_template_manager");?></a></li>
-	   <li>&raquo; <a href="admin.php?action=designs&amp;job=css" target="Main"><?php echo $lang->phrase("admin_css_manager");?></a></li>
-	   <li>&raquo; <a href="admin.php?action=designs&amp;job=images" target="Main"><?php echo $lang->phrase("admin_img_manager");?></a></li>
 	  </ul>
 	 </div>
 	 <div class="border">
@@ -153,7 +145,7 @@ if ($job == 'menu') {
 	  <h3><img id="img_admin_menu1_simple" src="admin/html/images/plus.gif" alt="collapse" /> <?php echo $lang->phrase("admin_settings");?></h3>
 	  <ul id="part_admin_menu1_simple">
 		<li>&raquo; <a href="admin.php?action=settings" target="Main"><?php echo $lang->phrase("admin_viscacha_settings");?></a></li>
-		<li>&raquo; <a href="admin.php?action=designs&amp;job=design&amp;interface=1" target="Main"><?php echo $lang->phrase("admin_design_manager");?></a></li>
+		<li>&raquo; <a href="admin.php?action=designs&amp;job=design" target="Main"><?php echo $lang->phrase("admin_design_manager");?></a></li>
 		<li>&raquo; <a href="admin.php?action=language&amp;job=manage" target="Main"><?php echo $lang->phrase("admin_lang_manager");?></a></li>
 		<li>&raquo; <a href="admin.php?action=settings&amp;job=version" target="Main"><?php echo $lang->phrase("admin_version_check");?></a></li>
 	  </ul>
