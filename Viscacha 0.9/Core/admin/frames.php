@@ -117,9 +117,7 @@ if ($job == 'menu') {
 	  <ul id="part_admin_menu11">
 		<li>&raquo; <a href="admin.php?action=db&amp;job=backup" target="Main"><?php echo $lang->phrase("admin_backup");?></a></li>
 		<li>&raquo; <a href="admin.php?action=db&amp;job=restore" target="Main"><?php echo $lang->phrase("admin_restore");?></a></li>
-		<li>&raquo; <a href="admin.php?action=db&amp;job=optimize" target="Main"><?php echo $lang->phrase("admin_optimize_tables");?></a></li>
 		<li>&raquo; <a href="admin.php?action=db&amp;job=query" target="Main"><?php echo $lang->phrase("admin_execute_sql_queries");?></a></li>
-		<li>&raquo; <a href="admin.php?action=db&amp;job=status" target="Main"><?php echo $lang->phrase("admin_status_database");?></a></li>
 	   </ul>
 	 </div>
 	 <div class="border">
@@ -251,17 +249,7 @@ else {
   <noframes>
    <body>
 	<p>Your browser does not seem to support frames or frame support has been disabled.</p>
-	What do you want to do?
-	 <ul>
-	  <li><a href="admin.php?action=frames&amp;job=menu">Viscacha Admin Control Panel Navigation</a></li>
-	 </ul>
-	<br />
-	 Download a &quot;modern&quot; Browser:
-	 <ul>
-	  <li><a href="http://www.mozilla.com">Mozilla Firefox</a></li>
-	  <li><a href="http://www.opera.com">Opera</a></li>
-	  <li><a href="http://www.apple.com/safari">Safari (Only Mac)</a></li>
-	 </ul>
+	<p>Go to <a href="admin.php?action=frames&amp;job=menu">Viscacha Admin Control Panel Navigation</a>.</p>
    </body>
   </noframes>
  </frameset>
