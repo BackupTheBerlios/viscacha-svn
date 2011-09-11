@@ -760,14 +760,17 @@ elseif ($job == 'lang_array') {
 	$page = $gpc->get('page', int, 1);
 	$file = $gpc->get('file', path);
 	$lng = return_array($file, $id);
-	$lng = array_map('htmlspecialchars', $lng);
-	$lng = array_map('nl2whitespace', $lng);
-	ksort($lng);
-	$lng = array_chunk($lng, 50, true);
-	if (isset($lng[$page-1]) == false) {
-		error('admin.php?action=language&job=lang_edit&id='.$id, $lang->phrase('admin_lang_page_not_found'));
+	$pages = 1;
+	if (count($lng) > 0) {
+		$lng = array_map('htmlspecialchars', $lng);
+		$lng = array_map('nl2whitespace', $lng);
+		ksort($lng);
+		$lng = array_chunk($lng, 50, true);
+		if (isset($lng[$page-1]) == false) {
+			error('admin.php?action=language&job=lang_edit&id='.$id, $lang->phrase('admin_lang_page_not_found'));
+		}
+		$pages = count($lng);
 	}
-	$pages = count($lng);
 	$pages_html = "Seiten ({$pages}):";
 	// Ersetzen durch Buchstaben (?) -> [A] [B] ...
 	for($i=1;$i<=$pages;$i++) {
@@ -781,6 +784,25 @@ elseif ($job == 'lang_array') {
    <td class="obox" colspan="2">
    <span style="float: right;">
 	<a class="button" href="admin.php?action=language&amp;job=phrase_add&amp;file=<?php echo $file; ?>&amp;id=<?php echo $id; ?>"><?php echo $lang->phrase('admin_lang_add_new_phrase'); ?></a>
+	<a class="button" href="#" id="menu_acp_switchlang" onmouseover="RegisterMenu('acp_switchlang');"><?php echo $lang->phrase('admin_lang_switch_to_lang'); ?> &#8628;</a>
+	<div class="popup" id="popup_acp_switchlang"><ul>
+	<?php
+	$result = $db->query('SELECT id, language FROM '.$db->pre.'language ORDER BY language');
+	while($row = $db->fetch_assoc($result)) {
+		if ($row['id'] == $id) {
+			continue;
+		}
+		echo "<li><a href=\"admin.php?action=language&amp;job=lang_array&amp;file={$file}&amp;id={$row['id']}\">";
+		if (file_exists("language/{$row['id']}/{$file}.lng.php")) {
+			echo $row['language'];
+		}
+		else {
+			echo "<s>{$row['language']}</s>";
+		}
+		echo "</a></li>";
+	}
+	?>
+	</ul></div>
    </span>
 	<?php echo $lang->phrase('admin_lang_edit_langfile'); ?> &raquo; <?php echo isset($langbase[$file]) ? $langbase[$file] : ucfirst($file); ?>
    </td>
@@ -791,9 +813,7 @@ elseif ($job == 'lang_array') {
   <tr>
    <td class="ubox" colspan="2"><?php echo $pages_html; ?></td>
   </tr>
-  <?php
-  foreach ($lng[$page-1] as $key => $value) {
-  ?>
+  <?php if (isset($lng[$page-1])) { foreach ($lng[$page-1] as $key => $value) { ?>
   <tr>
    <td class="mbox" width="50%"><img align="absmiddle" name="c" id="img_lang_<?php echo $key; ?>" src="admin/html/images/plus.gif" alt=""> <?php echo $key; ?>
    <div id="part_lang_<?php echo $key; ?>" class="stext">
@@ -812,6 +832,7 @@ elseif ($job == 'lang_array') {
   <tr>
    <td class="ubox" colspan="2" align="center"><input type="submit" name="Submit" value="<?php echo $lang->phrase('admin_lang_form_save'); ?>" /></td>
   </tr>
+  <?php } ?>
  </table>
 </form>
 	<?php
