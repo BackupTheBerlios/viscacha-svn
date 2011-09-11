@@ -2415,7 +2415,7 @@ else {
 		  	  <option value="admin.php?action=db&amp;job=backup"><?php echo $lang->phrase('admin_select_backup'); ?></option>
 		  	  <option value="admin.php?action=db&amp;job=restore"><?php echo $lang->phrase('admin_select_restore'); ?></option>
 		  	  <option value="admin.php?action=db&amp;job=execute"><?php echo $lang->phrase('admin_select_execute_slq'); ?></option>
-		  	  <option value="admin.php?action=slog&amp;job=l_mysqlerror"><?php echo $lang->phrase('admin_select_sys_error_log'); ?></option>
+		  	  <option value="admin.php?action=slog&amp;job=errorlogs"><?php echo $lang->phrase('admin_select_sys_error_log'); ?></option>
 	        </select> <input style="width: 18%" type="submit" value="<?php echo $lang->phrase('admin_form_go'); ?>">
 		  </form>
 		</td>

@@ -135,8 +135,7 @@ if ($job == 'menu') {
 	   <h3><img id="img_admin_menu13" src="admin/html/images/plus.gif" alt="collapse" /> <?php echo $lang->phrase("admin_stats_logs");?></h3>
 	  <ul id="part_admin_menu13">
 		<li>&raquo; <a href="admin.php?action=slog&amp;job=s_general" target="Main"><?php echo $lang->phrase("admin_statistics");?></a></li>
-		<li>&raquo; <a href="admin.php?action=slog&amp;job=l_cron" target="Main"><?php echo $lang->phrase("admin_scheduler_log");?></a></li>
-		<li>&raquo; <a href="admin.php?action=slog&amp;job=l_mysqlerror" target="Main"><?php echo $lang->phrase("admin_sqlerror_log");?></a></li>
+		<li>&raquo; <a href="admin.php?action=slog&amp;job=errorlogs" target="Main"><?php echo $lang->phrase("admin_sqlerror_log");?></a></li>
 	   </ul>
 	 </div>
 	 <?php ($code = $plugins->load('admin_navigation_extended')) ? eval($code) : null; ?>
@@ -243,7 +242,7 @@ else {
   <meta http-equiv="pragma" content="no-cache" />
   <link rel="copyright" href="http://www.viscacha.org" />
  </head>
- <frameset cols="200,*" frameborder="0" framespacing="0" border="0">
+ <frameset cols="250,*" frameborder="0" framespacing="0" border="0">
   <frame name="Menu" src="admin.php?action=frames&amp;job=menu" scrolling="auto" noresize="noresize" />
   <frame name="Main" src="<?php echo $addr; ?>" scrolling="auto" noresize="noresize" />
   <noframes>
