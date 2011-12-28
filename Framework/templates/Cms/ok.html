@@ -1,0 +1,11 @@
+<div class="ok">
+	<strong>Best&auml;tigung:</strong>
+	<ul>
+	<?php foreach ($message as $ok) { ?>
+		<li><?php echo $ok; ?></li>
+	<?php } ?>
+	</ul>
+	<?php if (!empty($url)) { ?>
+	<p class="button"><a href="<?php echo $url; ?>">Weiter</a></p>
+	<?php } ?>
+</div>

@@ -1,0 +1,25 @@
+<h2>Profil von <?php echo $data['name']; ?></h2>
+<div>
+	<?php if (Me::get()->loggedIn()) { ?>
+	<strong>Pers&ouml;nliche Daten</strong>
+	<hr class="formsep" />
+	<label>Geschlecht:</label><?php echo $data['gender']; ?>
+	<br class="newinput" /><br class="minibr" />
+	<label>Geburtstag:</label><?php echo $data['birthday']; ?>
+	<br class="newinput" /><br class="minibr" />
+	<label>Wohnort:</label><?php echo $data['city']; ?>, <?php echo $data['country']; ?>
+	<br class="newinput" />
+	<br /><br />
+	<?php } ?>
+	<strong>Sonstige Daten</strong>
+	<hr class="formsep" />
+	<label>Online-Status:</label>
+	<?php if ($status) { ?>
+	<span style="color: green;">Zur Zeit anwesend!</span>
+	<?php } else { ?>
+	<span style="color: maroon;">Zur Zeit abwesend!</span>
+	<?php } ?>
+	<br class="newinput" /><br class="minibr" />
+	<label>Registriert seit:</label><?php echo $data['regdate']; ?>
+	<br class="newinput" />
+</div>

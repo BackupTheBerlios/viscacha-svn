@@ -1,0 +1,72 @@
+<h2>Registrieren</h2>
+<form action="<?php echo URI::build('cms/user/register/send'); ?>" method="post">
+	<fieldset>
+		<legend>Anmeldedaten</legend>
+		<label for="email">E-Mail-Adresse:</label>
+		<input type="text" class="label" id="email" name="email" value="<?php echo $data['email']; ?>" />
+		<br class="newinput" /><hr class="formsep" />
+		<label for="pw1">Passwort:</label>
+		<input type="password" class="label" id="pw1" name="pw1" />
+		<br class="newinput" /><hr class="formsep" />
+		<label for="pw2">Passwort wiederholen:</label>
+		<input type="password" class="label" id="pw2" name="pw2" />
+		<br class="newinput" />
+	</fieldset>
+	<fieldset>
+		<legend>Persönliche Daten</legend>
+		<label for="forename">Vorname:</label>
+		<input type="text" class="label" id="forename" name="forename" value="<?php echo $data['forename']; ?>" />
+		<br class="newinput" /><hr class="formsep" />
+		<label for="surname">Nachname:</label>
+		<input type="text" class="label" id="surname" name="surname" value="<?php echo $data['surname']; ?>" />
+		<br class="newinput" /><hr class="formsep" />
+		<label for="city">Stadt:</label>
+		<input type="text" class="label" id="city" name="city" value="<?php echo $data['city']; ?>" />
+		<br class="newinput" /><hr class="formsep" />
+		<label for="country">Land:</label>
+		<select id="country" name="country" class="label">
+			<?php foreach ($countries as $c) { ?>
+			<option value="<?php echo $c; ?>"<?php echo iif($c == $data['country'], ' selected="selected"'); ?>><?php echo $c; ?></option>
+			<?php } ?>
+		</select>
+		<br class="newinput" /><hr class="formsep" />
+		<label for="gender">Geschlecht:</label>
+		<select name="gender" id="gender" class="label">
+			<option value="m"<?php echo iif($data['gender'] == 'm', ' selected="selected"'); ?>>M&auml;nnlich</option>
+			<option value="w"<?php echo iif($data['gender'] == 'w', ' selected="selected"'); ?>>Weiblich</option>
+		</select>
+		<br class="newinput" /><hr class="formsep" />
+		<label>Geburtstag (TT. MM. JJJJ):</label>
+		<div class="label">
+		  <select name="birthday">
+		  <option value="0">Tag</option>
+			<?php foreach ($r_birthday as $i) { ?>
+				<option value="<?php echo $i; ?>"<?php echo iif($data['birthday'] == $i, ' selected="selected"'); ?>><?php echo $i; ?></option>
+			<?php } ?>
+		  </select>.
+		  <select name="birthmonth">
+		  <option value="0">Monat</option>
+			<?php foreach ($r_birthmonth as $i) { ?>
+				<option value="<?php echo $i; ?>"<?php echo iif($data['birthmonth'] == $i, ' selected="selected"'); ?>><?php echo $i; ?></option>
+			<?php } ?>
+		  </select>.
+		  <select name="birthyear">
+		  <option value="0">Jahr</option>
+			<?php foreach ($r_birthyear as $i) { ?>
+				<option value="<?php echo $i; ?>"<?php echo iif($data['birthyear'] == $i, ' selected="selected"'); ?>><?php echo $i; ?></option>
+			<?php } ?>
+			?>
+		  </select>
+		</div>
+		<br class="newinput" />
+	</fieldset>
+	<?php if (Config::get('captcha.enable')) { ?>
+	<fieldset>
+		<legend>Sicherheitsprüfung</legend>
+		<label>Sicherheitscode eingeben:</label>
+		<div class="label"><?php echo $captcha; ?></div>
+		<br class="newinput" />
+	</fieldset>
+	<?php } ?>
+	<input type="submit" />
+</form>

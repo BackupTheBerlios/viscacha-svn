@@ -1,0 +1,7 @@
+RewriteEngine on
+
+RewriteCond %{REQUEST_URI} !^/client(/.*)?$
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+RewriteRule ^([\w\d-]+)(/.*)?$ index.php/$1$2

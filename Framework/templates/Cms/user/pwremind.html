@@ -1,0 +1,8 @@
+<h2>Passwort vergessen?</h2>
+<p>Nicht so schlimm. Wir senden Ihnen gerne ein Neues zu. Nach Eingabe Ihrer E-Mail-Adresse erhalten Sie aus Sicherheitsgründen zu erst eine E-Mail, mit der Sie bestätigen, dass Sie wirklich ein neues Passwort angefordert haben. Anschließend senden wir Ihnen ein zufällig generiertes Passwort per E-Mail. Ihr neues Passwort können Sie jederzeit wieder ändern.</p>
+<form method="post" action="<?php echo URI::build('cms/user/pwremind/send'); ?>">
+	<label>E-Mail-Adresse:</label>
+	<input type="text" class="label" name="email" />
+	<br class="newinput" /><br />
+	<input type="submit" />
+</form>

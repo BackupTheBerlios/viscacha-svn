@@ -1,0 +1,78 @@
+/* General page layout */
+#admin_menu {
+	float:left;
+	text-align: center;
+	width: 20%;
+	padding-right: 2%;
+}
+
+#admin_content {
+	width: 78%;
+	float: right;
+	font-size: 11px;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+}
+
+.border {
+	border-collapse: collapse;
+	width: 100%;
+}
+.border td, .border th {
+	padding: 4px;
+	border: 1px solid #cccccc;
+}
+.border th {
+	background-color: #3b310e;
+	color: #ffffff;
+	text-align: center;
+}
+
+/* Menu boxes */
+.dropdown {
+	margin: 0 auto 0.5em auto;
+	text-align: left;
+	display: block;
+}
+
+.dropdown dt {
+	border:1px solid #000000;
+	padding: 3px;
+	text-align: center;
+	cursor:pointer;
+	background-color: #3b310e;
+	color: #ffffff;
+}
+.dropdown dt:hover {
+	text-decoration: underline;
+}
+.dropdown dd {
+	overflow:hidden;
+	margin: 0;
+	padding: 0;
+}
+.dropdown ul, .dropdown a {
+	border-style: solid;
+	border-color: #000000;
+}
+
+.dropdown ul {
+	border-width: 0 1px;
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+.dropdown li {
+	margin: 0;
+	padding: 0;
+	display:inline;
+}
+.dropdown a {
+	color: #777777;
+	display:block;
+	padding:3px;
+	text-decoration:none;
+	border-width: 0 0 1px 0;
+}
+.dropdown a:hover {
+	color: #000000;
+}

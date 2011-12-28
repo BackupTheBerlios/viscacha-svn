@@ -1,0 +1,31 @@
+<?php
+$config = array();
+$config['captcha.enable'] = 0;
+$config['captcha.private_key'] = '';
+$config['captcha.public_key'] = '';
+$config['captcha.language'] = 'de';
+$config['captcha.theme'] = 'clean';
+$config['core.debug'] = 1;
+$config['db.database'] = 'bp';
+$config['db.driver'] = 'MySQL';
+$config['db.host'] = 'localhost';
+$config['db.password'] = '';
+$config['db.port'] = '3306';
+$config['db.prefix'] = 'ac_';
+$config['db.socket'] = '';
+$config['db.username'] = 'root';
+$config['general.email'] = '';
+$config['general.path'] = '';
+$config['general.title'] = 'Bewertungsportal';
+$config['general.url'] = '';
+$config['http.gzip'] = -1;
+$config['http.cookie_prefix'] = 'ac_';
+$config['intl.charset'] = 'ISO-8859-15';
+$config['mail.check_mx'] = 0;
+$config['security.validate_registered_email'] = 1;
+$config['security.hashalgo'] = 'md5';
+$config['security.hashsalt'] = '';
+$config['security.pwcheck'] = '40';
+$config['security.session_lifetime'] = 30;
+$config['system.expose_php'] = 1;
+?>

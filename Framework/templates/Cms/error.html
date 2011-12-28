@@ -1,0 +1,12 @@
+<div class="error">
+	<strong>Fehlermeldung(en):</strong>
+	<ul>
+	<?php foreach ($message as $e) { ?>
+		<li><?php echo $e; ?></li>
+	<?php } ?>
+	</ul>
+	<?php if (!empty($url)) { ?>
+	<p class="button"><a href="<?php echo $url; ?>">Zurück</a></p>
+	<?php } ?>
+</div>
+

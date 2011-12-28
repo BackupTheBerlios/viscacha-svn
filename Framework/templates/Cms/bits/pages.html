@@ -1,0 +1,16 @@
+<span class="pagination">Seiten (<?php echo $anz; ?>):&nbsp;<?php
+foreach ($pages as $page => $row) {
+	if ($row['type'] == CmsTools::PAGES_CURRENT) {
+		echo "<strong class='page_number_current'>{$page}</strong>";
+	}
+	elseif ($row['type'] == CmsTools::PAGES_SEPARATOR) {
+		echo " <span class='page_more'>...</span> ";
+	}
+	elseif ($row['type'] == CmsTools::PAGES_NUM) {
+		echo "<a class='page_number' href='{$row['url']}'>{$page}</a>";
+	}
+	if ($row['separator']) {
+		echo "<span class='page_separator'>, </span>";
+	}
+}
+?></span>

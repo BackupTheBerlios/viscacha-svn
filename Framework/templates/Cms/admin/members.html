@@ -1,0 +1,20 @@
+<table class="border">
+	<tr>
+		<th>Name</th>
+		<th>Gruppe</th>
+		<th>E-Mail</th>
+		<th>Operationen</th>
+	</tr>
+	<?php foreach($data as $row) { ?>
+	<tr>
+		<td><?php echo $row['surname']; ?>, <?php echo $row['forename']; ?></td>
+		<td><?php echo $row['group']; ?></td>
+		<td><?php echo $row['email']; ?></td>
+		<td>
+			[<a href="user.php?action=about&amp;id=<?php echo $row['id']; ?>">Profil ansehen</a>]
+			[<a href="admin.php?action=members_edit&amp;id=<?php echo $row['id']; ?>">&Auml;ndern</a>]
+			[<a href="admin.php?action=members_delete&amp;id=<?php echo $row['id']; ?>">L&ouml;schen</a>]
+		</td>
+	</tr>
+	<?php } ?>
+</table>

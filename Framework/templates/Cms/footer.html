@@ -1,0 +1,53 @@
+			</div>
+			<p><small>&nbsp;&raquo;&nbsp;<?php echo $breadcrumb->outputHTML(); ?></small></p>
+			<div class="linkpool">
+				<h3>Bewerten</h3>
+				<ul>
+					<li><a href="<?php echo URI::build('cms/airlines/evaluate'); ?>">Airline bewerten</a></li>
+					<li><a href="<?php echo URI::build('cms/airlines'); ?>">Bewertungen anschauen</a></li>
+					<li><a href="<?php echo URI::build('cms/airlines/search'); ?>">Suchen</a></li>
+				</ul>
+			</div>
+			<div class="linkpool">
+				<h3>Neuigkeiten</h3>
+				<ul>
+					<li><a href="<?php echo URI::build('cms/page/news'); ?>">Aktuelles</a></li>
+					<li><a href="<?php echo URI::build('cms/page/partner'); ?>">Partner</a></li>
+					<li><a href="<?php echo URI::build('cms/page/media'); ?>">Medien</a></li>
+				</ul>
+				<h3>Vielflieger?</h3>
+				<ul>
+					<?php if (Me::get()->loggedIn()) { ?>
+					<li><a href="<?php echo URI::build('cms/user/settings'); ?>">Ihr Kontrollzentrum</a></li>
+					<li><a href="<?php echo URI::build('cms/user/logout'); ?>">Abmelden</a></li>
+					<?php if (Me::get()->isAllowed('admin')) { ?>
+					<li><a href="<?php echo URI::build('cms/admin/'); ?>">Administration</a></li>
+					<?php } ?>
+					<?php } else { ?>
+					<li><a href="<?php echo URI::build('cms/user/register'); ?>">Registrieren</a></li>
+					<li><a href="<?php echo URI::build('cms/user/login'); ?>">Anmelden</a></li>
+					<li><a href="<?php echo URI::build('cms/user/pwremind'); ?>">Passwort vergessen?</a></li>
+					<?php } ?>
+				</ul>
+			</div>
+			<div class="linkpool">
+				<h3>AirlineCheck</h3>
+				<ul>
+					<li><a href="<?php echo URI::build('cms/page/about'); ?>">Über uns</a></li>
+					<li><a href="<?php echo URI::build('cms/contact'); ?>">Kontakt</a></li>
+					<li><a href="<?php echo URI::build('cms/page/faq'); ?>">Hilfe & FAQ</a></li>
+					<li><a href="<?php echo URI::build('cms/page/impressum'); ?>">Impressum</a></li>
+					<li><a href="<?php echo URI::build('cms/page/rules'); ?>">Nutzungsbedingungen</a></li>
+					<li><a href="<?php echo URI::build('cms/page/disclaimer'); ?>">Datenschutz</a></li>
+				</ul>
+			</div>
+			<div class="linkpool">
+				<h3>Im Fokus</h3>
+				<ul>
+					<li><a href="<?php echo URI::build('airlines/LX-Swiss'); ?>">Swiss</a></li>
+				</ul>
+			</div>
+			<br style="clear: left;" />
+		</div>
+	</body>
+</html>

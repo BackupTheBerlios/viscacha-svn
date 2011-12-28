@@ -1,0 +1,238 @@
+Schweiz
+Deutschland
+Österreich
+Afghanistan
+Ägypten
+Albanien
+Algerien
+Amerikanisch-Samoa
+Andorra
+Angola
+Anguilla
+Antarktis
+Antigua und Barbuda
+Äquatorial-Guinea
+Argentinien
+Armenien
+Aruba
+Aserbaidschan
+Äthiopien
+Australien
+Bahamas
+Bahrain
+Bangladesh
+Barbados
+Belarus
+Belgien
+Belize
+Benin
+Bermuda
+Bhutan
+Bolivien
+Bosnien und Herzegowina
+Botswana
+Bouvet Island
+Brasilien
+Britische Territorien im Indischen Ozean
+Brunei
+Bulgarien
+Burkina Faso
+Burundi
+Cayman-Inseln
+Chile
+China
+Cook-Inseln
+Dänemark
+Djibouti
+Dominica
+Dominikanische Republik
+Ecuador
+El Salvador
+Elfenbeinküste
+Eritrea
+Estland
+Faeroeer
+Falkland-Inseln (Malvinen)
+Fidschi
+Finnland
+Frankreich
+Französische Südterritorien
+Französisch-Guyana
+Französisch-Polynesien
+Gabon
+Gambia
+Georgien
+Ghana
+Gibraltar
+Grenada
+Griechenland
+Grönland
+Grossbritannien
+Guadeloupe
+Guam
+Guatemala
+Guinea
+Guinea-Bissau
+Guyana
+Haiti
+Heard and Mc Donald Islands
+Honduras
+Hong Kong
+Indien
+Indonesien
+Irak
+Iran
+Irland
+Island
+Israel
+Italien
+Jamaika
+Japan
+Jemen
+Jordanien
+Jugoslawien
+Jungferninseln
+Kambodscha
+Kamerun
+Kanada
+Kapverden
+Kasachstan
+Kenia
+Kirgisien
+Kiribati
+Kokosinseln
+Kolumbien
+Komoren
+Kongo
+Kostarika
+Kroatien
+Kuba
+Kuwait
+Laos
+Lesotho
+Lettland
+Libanon
+Liberia
+Libyen
+Liechtenstein
+Litauen
+Luxemburg
+Macau
+Madagaskar
+Malawi
+Malaysia
+Malediven
+Mali
+Malta
+Marokko
+Marshall-Inseln
+Martinique
+Mauritanien
+Mauritius
+Mayotte
+Mazedonien
+Mexiko
+Mikronesien
+Moldawien
+Monaco
+Mongolei
+Montserrat
+Mosambique
+Myanmar
+Namibia
+Nauru
+Nepal
+Neukaledonien
+Neuseeland
+Niederlande
+Niederländische Antillen
+Niger
+Nigeria
+Nikaragua
+Niue
+Nordkorea
+Nördliche Marianen
+Norfolk Inseln
+Norwegen
+Oman
+Ost-Timor
+Pakistan
+Palau
+Panama
+Papua-Neuguinea
+Paraguay
+Peru
+Philippinen
+Pitcairn
+Polen
+Portugal
+Puerto Rico
+Qatar
+Reunion
+Rumänien
+Russland
+Rwanda
+Saint Kitts and Nevis
+Saint Lucia
+Saint Vincent und die Grenadinen
+Sambia
+Samoa
+San Marino
+Sao Tome and Principe
+Saudi-Arabien
+Schweden
+Senegal
+Seychellen
+Sierra Leone
+Simbabwe
+Singapur
+Slowakei
+Slowenien
+Solomon-Inseln
+Somalia
+South Georgia und die Südlichen Sandwich-Inseln
+Spanien
+Sri Lanka
+St. Helena
+St. Pierre and Miquelon
+Südafrika
+Sudan
+Südkorea
+Surinam
+Svalbard und Jan Mayen Inseln
+Swaziland
+Syrien
+Tadschikistan
+Taiwan
+Tansania
+Thailand
+Togo
+Tokelau
+Tonga
+Trinidad und Tobago
+Tschad
+Tschechische Republik
+Tunesien
+Türkei
+Turkmenistan
+Turks und Caicos Inseln
+Tuvalu
+Überseeinseln der USA
+Uganda
+Ukraine
+Ungarn
+Uruguay
+Usbekistan
+Vanuatu
+Vatikan
+Venezuela
+Vereinigte Arabische Emirate
+Vereinigte Staaten (USA)
+Vietnam
+Wallis und Futuna
+Weihnachtsinseln
+Weissrussland 
+Westsahara
+Zaire
+Zentralafrika
+Zypern

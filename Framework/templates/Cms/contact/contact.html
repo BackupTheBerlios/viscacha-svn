@@ -1,0 +1,24 @@
+<h2>Kontakt</h2>
+<form action="<?php echo URI::build('cms/contact/send'); ?>" method="post">
+	<label>E-Mail-Adresse:</label>
+	<span class="label"><?php echo Config::get('general.email'); ?></span>
+	<br class="newinput" /><hr class="formsep" />
+	<label for="name">Ihr Name:</label>
+	<input type="text" class="label" id="name" name="name" value="<?php echo $data['name']; ?>" />
+	<br class="newinput" /><hr class="formsep" />
+	<label for="email">Ihre E-Mail-Adresse:</label>
+	<input type="text" class="label" id="email" name="email" value="<?php echo $data['email']; ?>" />
+	<br class="newinput" /><hr class="formsep" />
+	<label for="title">Titel der Nachricht:</label>
+	<input type="text" class="label" id="title" name="title" value="<?php echo $data['title']; ?>" />
+	<br class="newinput" /><hr class="formsep" />
+	<label for="message">Nachricht:</label>
+	<textarea class="label" name="message" id="message" cols="50" rows="15"><?php echo $data['message']; ?></textarea>
+	<?php if (Config::get('captcha.enable')) { ?>
+	<br class="newinput" /><hr class="formsep" />
+	<label>Sicherheitscode:</label>
+	<div class="label"><?php echo $captcha; ?></div>
+	<?php } ?>
+	<br class="newinput" /><br />
+	<input type="submit" />
+</form>

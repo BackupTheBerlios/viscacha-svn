@@ -1,0 +1,24 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+	<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=<?php echo Config::get('intl.charset'); ?>" />
+<?php foreach ($scriptFiles as $_file => $_type) { ?>
+	<script type="<?php echo $_type; ?>" src="<?php echo $_file; ?>"></script>
+<?php } foreach ($cssFiles as $_file => $_media) { ?>
+	<link rel="stylesheet" type="text/css" href="<?php echo $_file; ?>" media="<?php echo $_media; ?>" />
+<?php } ?>
+	<title><?php echo $breadcrumb->outputPlain(' &raquo; '); ?></title>
+</head>
+<body>
+	<div id="container">
+		<h1><a href="<?php echo URI::frontPage(); ?>"><?php echo Config::get('general.title'); ?></a></h1>
+		<ul id="navi">
+			<li><a href="<?php echo URI::build('cms/airlines/evaluate'); ?>">Airline bewerten</a></li>
+			<li><a href="<?php echo URI::build('cms/airlines'); ?>">Bewertungen anschauen</a></li>
+			<li><a href="<?php echo URI::build('cms/airlines/search'); ?>">Suchen</a></li>
+			<li><a href="<?php echo URI::build('cms/airlines/top'); ?>">Rating</a></li>
+			<li><a href="<?php echo URI::build('cms/page/partner'); ?>">Partner</a></li>
+			<li><a href="<?php echo URI::build('cms/page/about'); ?>">Über AirlineCheck</a></li>
+			<li><a href="<?php echo URI::build('cms/contact'); ?>">Kontakt</a></li>
+		</ul>
+		<div id="content">

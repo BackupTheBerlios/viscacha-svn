@@ -1,0 +1,14 @@
+Sehr geehrte(r) <?php echo $name; ?>,
+
+Sie haben sich soeben erfolgreich bei <?php echo Config::get('general.title'); ?> registriert.
+
+Zur Bestätigung Ihrer Anmeldung klicken Sie bitte auf folgenden Link:
+<?php echo URI::build('cms/user/validate/'.$mid.'/'.$data['verification'], true).NL; ?>
+
+Zur Erinnerung noch einmal Ihre Daten für die Anmeldung:
+E-Mail-Adresse: <?php echo $data['email'].NL; ?>
+Passwort: <?php echo $data['pw2'].NL; ?>
+
+Mit freundlichen Grüßen,
+Ihr Team von <?php echo Config::get('general.title').NL; ?>
+<?php echo Config::get('general.url'); ?>

@@ -1,0 +1,26 @@
+<script type="text/javascript">
+jQuery(function() {
+	jQuery('#data').wymeditor({
+		lang: 'de',
+		logoHtml: '',
+		skin: 'compact',
+		postInit: function(wym) {
+			wym.fullscreen();
+		}
+	});
+});
+</script>
+<form action="<?php echo URI::build('cms/admin/documents/write/'.$data['id']); ?>/send" method="post">
+	<label for="title">Titel:</label>
+	<input class="label" type="text" name="title" id="title" value="<?php echo $data['title']; ?>"<?php echo iif(empty($data['id']), " onkeyup=\"buildUri('title', 'uri')\""); ?> />
+	<br class="newinput" /><hr class="formsep" />
+	<label for="uri">
+		URI:<br>
+		<small>Erlaubte Zeichen: a-z, 0-9, _, -</small>
+	</label>
+	<input class="label" type="text" name="uri" id="uri" value="<?php echo $data['uri']; ?>" />
+	<br class="newinput" /><hr class="formsep" />
+	<textarea class="label" name="content" id="data" rows="20"><?php echo $data['content']; ?></textarea>
+	<br class="newinput" /><br />
+	<input type="submit" />
+</form>

@@ -1,0 +1,16 @@
+<h2>Anmelden</h2>
+<form method="post" action="<?php echo URI::build('cms/user/login/send'); ?>">
+	<label>
+		E-Mail-Adresse:<br />
+		<small><a href="<?php echo URI::build('cms/user/register'); ?>">Noch kein Account?</a></small>
+	</label>
+	<input type="text" class="label" name="email" />
+	<br class="newinput" /><hr class="formsep" />
+	<label>
+		Passwort:<br />
+		<small><a href="<?php echo URI::build('cms/user/pwremind'); ?>">Passwort vergessen?</a></small>
+	</label>
+	<input type="password" class="label" name="pw" />
+	<br class="newinput" /><br />
+	<input type="submit" />
+</form>

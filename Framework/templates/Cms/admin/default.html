@@ -1,0 +1,9 @@
+<p align="center"><strong>Willkommen im Administrationsbereich der Software!</strong></p>
+<?php if (Config::get('core.debug') == 1) { ?>
+<p class="error">Der Entwicklungs-Modus ist aktiviert. Bitte deaktivieren Sie diesen Modus in dem Sie die Konfigurationsvariable core.debug auf 0 setzen.</p>
+<?php } ?>
+<p>
+<em><b>Systeminformationen:</b></em><br />
+PHP-Version: <?php echo PHP_VERSION; ?> (empfohlen ab PHP 5.3)<br />
+MySQL-Version: <?php echo $mysql_version; ?>
+</p>
