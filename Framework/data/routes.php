@@ -1,19 +1,29 @@
 <?php
 $config = array(
 	'DefaultPackage' => 'Cms',
-	'DefaultModule' => 'ContentPages',
 	'Routable' => array(
 		'Cms' => array(
+			'!' => 'ContentPages',
 			'page' => 'ContentPages',
 			'contact' => 'ContactPages',
 			'user' => 'UserPages',
 			'admin' => array(
-				'' => 'AdminDefaultPages',
+				'!' => 'AdminDefaultPages',
+				'sys' => 'AdminDefaultPages',
 				'members' => 'AdminMemberPages',
 				'documents' => 'AdminDocPages'
 			)
 		),
-		'Core' => array() // Empty packages are NOT routable
+		'Airlines' => array(
+			'evaluate' => 'AddEvaluationPages',
+			'admin' => 'AdminAirlinesPages'
+		),
+		'Restaurants' => array(
+			'evaluate' => 'AddEvaluationPages',
+			'admin' => 'AdminRestaurantsPages'
+		),
+		'Core' => array(), // Empty packages are NOT routable
+		'Evaluation' => array()
 	)
 );
 ?>

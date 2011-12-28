@@ -28,13 +28,13 @@ class AdminCmsMenu extends AdminMenuObject {
 				);
 			case 'Cms.Modules.AdminMemberPages':
 				return array(
-					URI::build('cms/admin/members/') => 'Übersicht',
+					URI::build('cms/admin/members') => 'Übersicht',
 					URI::build('cms/admin/members/emailexport') => 'E-Mail-Adressen exportieren'
 				);
 			default:
 				return array(
-					URI::build('cms/admin/') => 'Startseite',
-					URI::build('cms/admin/serverinfo') => 'Server-Info'
+					URI::build('cms/admin/sys') => 'Startseite',
+					URI::build('cms/admin/sys/serverinfo') => 'Server-Info'
 				);
 		}
 	}

@@ -32,21 +32,62 @@ final class Request {
 
 	private function __clone() {}
 
-	public function normalizeURI($uri) {
-		// Remove default package from URI
-		$package = preg_quote($this->routes['DefaultPackage'], '~');
-		$uri = preg_replace("~^/?{$package}(/|$)~i", '', $uri);
+	public function getDefaultModule() {
+		if (!empty($this->routes['Routable'][$this->routes['DefaultPackage']]['!'])) {
+			return $this->routes['Routable'][$this->routes['DefaultPackage']]['!'];
+		}
+		else {
+			return null;
+		}
+	}
 
-		// Remove default module from URI
-		if (isset($this->routes['Routable'][$package])) {
-			$key = array_search($this->routes['DefaultModule'], $this->routes['Routable'][$package]);
-			if ($key !== null) {
-				$key = preg_quote($key, '~');
-				$uri = preg_replace("~^/?{$key}(/|$)~i", '', $uri);
-			}
+	public function normalizeURI($uri) {
+		// A dot indicates a normal file so skip normalisation to spped the whole thing up
+		if (strpos($uri, '.') !== false) {
+			return $uri;
 		}
 		
-		return $uri;
+		$shortened = '';
+		$default = $this->routes['DefaultPackage'];
+		$level = $this->routes['Routable'];
+		$parts = explode('/', $uri);
+		foreach ($parts as $part) {
+			if (empty($part)) {
+				// Empty parts are somehow useless...
+				continue;
+			}
+
+			if ($default === null || strcasecmp($part, $default) != 0) {
+				// It's not a default, append it to our new and shortened uri
+				$shortened .= $part . '/';
+			}
+
+			$onlyAppend = false;
+			if (!$onlyAppend) {
+				$onlyAppend = true;
+				foreach($level as $l1 => $l2) {
+					if (is_array($l2) && strcasecmp($l1, $part) == 0) {
+						$level = $l2; // Go a level deeper
+						$onlyAppend = false;
+					}
+				}
+
+				if (isset($level['!'])) {
+					// Find "uri" of default module
+					foreach ($level as $l1 => $l2) {
+						if ($l1 != '!' && strcasecmp($l2, $level['!']) == 0) {
+							$default = $l1;
+							break;
+						}
+					}
+				}
+				else {
+					$default = null; // No default specified
+				}
+			}
+		}
+
+		return trim($shortened, '/');
 	}
 
 	public function getRequestedClass() {
@@ -74,13 +115,13 @@ final class Request {
 		if (empty($this->routes['DefaultPackage'])) {
 			Core::throwError("No default package in routing table found.", INTERNAL_ERROR);
 		}
-		if (empty($this->routes['DefaultModule'])) {
-			Core::throwError("No default module in routing table found.", INTERNAL_ERROR);
-		}
 		if (empty($this->routes['Routable'])) {
 			Core::throwError("No routes in routing table found.", INTERNAL_ERROR);
 		}
-		if (!Core::classExists($this->convertModuleToClass($this->routes['DefaultPackage'], $this->routes['DefaultModule']))) {
+		if ($this->getDefaultModule() === null) {
+			Core::throwError("No default module in routing table found.", INTERNAL_ERROR);
+		}
+		if (!Core::classExists($this->convertModuleToClass($this->routes['DefaultPackage'], $this->getDefaultModule()))) {
 			Core::throwError("Default route is invalid", INTERNAL_ERROR);
 		}
 	}
@@ -92,7 +133,7 @@ final class Request {
 		}
 
 		$package = $this->routes['DefaultPackage'];
-		$this->originalModule = $this->routes['DefaultModule'];
+		$this->originalModule = $this->getDefaultModule();
 		$this->requestedClass = $this->convertModuleToClass($package, $this->originalModule);
 		$this->args = array();
 
@@ -108,11 +149,12 @@ final class Request {
 			}
 
 			$this->args = $query;
+			var_dump($this->args);
 		}
 	}
 
 	protected function transformPathToModule($modules, $package, &$query) {
-		$uriToUse = '';
+		$uriToUse = '!';
 		foreach ($modules as $uri => $className) {
 			if (count($query) > 0) {
 				if (strcasecmp($uri, $query[0]) == 0) {
