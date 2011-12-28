@@ -1,19 +1,21 @@
 <table class="border">
 	<tr>
-		<th>Name</th>
-		<th>Gruppe</th>
-		<th>E-Mail</th>
-		<th>Operationen</th>
+		<th width="30%">Name</th>
+		<th width="20%">Gruppe</th>
+		<th width="10%">Aktiv</th>
+		<th width="40%">Aktion</th>
 	</tr>
 	<?php foreach($data as $row) { ?>
 	<tr>
 		<td><?php echo $row['surname']; ?>, <?php echo $row['forename']; ?></td>
 		<td><?php echo $row['group']; ?></td>
-		<td><?php echo $row['email']; ?></td>
+		<td class="tcenter"><?php echo iif($row['active'], 'Ja', 'Nein'); ?></td>
 		<td>
-			[<a href="user.php?action=about&amp;id=<?php echo $row['id']; ?>">Profil ansehen</a>]
-			[<a href="admin.php?action=members_edit&amp;id=<?php echo $row['id']; ?>">&Auml;ndern</a>]
-			[<a href="admin.php?action=members_delete&amp;id=<?php echo $row['id']; ?>">L&ouml;schen</a>]
+			<a href="<?php echo URI::build('cms/admin/members/edit/' . $row['id']); ?>" class="btn edit">Bearbeiten</a>
+			<?php if (Me::get()->getId() != $row['id']) { ?>
+			<a href="<?php echo URI::build('cms/admin/members/delete/' . $row['id']); ?>" class="btn delete">Löschen</a>
+			<?php } ?>
+			<a href="<?php echo URI::build('cms/user/about/' . $row['id']); ?>" class="btn view">Profil ansehen</a>
 		</td>
 	</tr>
 	<?php } ?>

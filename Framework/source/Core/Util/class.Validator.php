@@ -66,6 +66,10 @@ class Validator {
 	 * Declares multiple check with different error messages per field
 	 */
 	const MULTIPLE = 12;
+	/**
+	 * Compares for equality
+	 */
+	const EQUALS = 13;
 
 	/**
 	 * Callback: Passwort-Prüfung
@@ -130,7 +134,6 @@ class Validator {
 			if (!isset($data[$key])) {
 				$data[$key] = null;
 			}
-
 
 			$checks = array();
 			if (isset($options[Validator::MULTIPLE])) {
@@ -198,6 +201,9 @@ class Validator {
 				break;
 				case Validator::MIN_VALUE:
 					$return = ($value >= $option);
+				break;
+				case Validator::EQUALS:
+					$return = ($value == $option);
 				break;
 				case Validator::REGEXP:
 					$match = preg_match($option, $value);

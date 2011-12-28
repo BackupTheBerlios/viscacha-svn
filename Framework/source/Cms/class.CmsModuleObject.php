@@ -80,6 +80,11 @@ abstract class CmsModuleObject extends CoreModuleObject {
 		$this->tpl->output('yes_no');
 	}
 
+	protected function notice($message) {
+		$this->tpl->assign('message', $message);
+		$this->tpl->output('notice');
+	}
+
 	protected function ok($message, $url = null) {
 		if (!is_array($message)) {
 			$message = array($message);

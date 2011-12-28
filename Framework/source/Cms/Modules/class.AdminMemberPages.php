@@ -11,7 +11,7 @@ class AdminMemberPages extends AdminModuleObject {
 
 	public function __construct() {
 		$this->version = '1.0.0';
-		$this->module = 'Admin CP';
+		$this->module = 'Admin CP: Members';
 		parent::__construct();
 	}
 
@@ -20,217 +20,171 @@ class AdminMemberPages extends AdminModuleObject {
 	}
 
 	public function main(){
-		$action = Request::get('action', VAR_URI);
-		switch($action) {
-			case 'members':
-			case 'members_delete':
-				$this->members($action);
-				break;
-			case 'members_edit':
-			case 'members_edit2':
-				$this->members_edit($action);
-				break;
-			default:
-				$this->defaultPage();
-				break;
-		}
+		$this->breadcrumb->add("Mitglieder");
+		$this->header();
+		$this->members();
+		$this->footer();
 	}
 
-	private function members_edit($action) {
-		$id = Request::get('id', VAR_INT);
+	public function emailexport() {
+		$this->breadcrumb->add("E-Mail-Adressen exportieren");
+		$this->header();
+		$this->tpl->output("admin/emailexport");
+		$this->footer();
+	}
 
-		$this->breadcrumb->add("Mitglieder");
-		$this->breadcrumb->add("Mitglied editieren");
+	public function emailexport2() {
+		$this->breadcrumb->add("E-Mail-Adressen exportieren");
 		$this->header();
 
 		$db = Core::_(DB);
-		$db->query("SELECT * FROM <p>user WHERE id = <id:int> AND active = '1'", compact("id"));
-		if ($db->numRows() == 0) {
-			$this->error("Es wurde leider kein Benutzer gefunden.");
-			return;
-		}
-		$udata = $db->fetchAssoc();
-		if (!isset($udata['birthyear']) && !isset($udata['birthmonth'])) {
-			 $bday = explode('-', $udata['birthday']);
-			 $udata['birthday'] = (int) $bday[2];
-			 $udata['birthmonth'] = (int) $bday[1];
-			 $udata['birthyear'] = (int) $bday[0];
+		$sep = Request::get('sep', VAR_HTML);
+
+		$emails = array();
+		$result = $db->query('SELECT email FROM <p>user WHERE active');
+		while ($row = $db->fetchAssoc($result)) {
+			$emails[] = $row['email'];
 		}
 
-		$error_status = false;
-		$min_year = date('Y')-110;
-		$max_year = date('Y')-8;
-		$options = array(
-			'forename' => array(
-				Validator::MESSAGE => 'Der Vorname muss mindestens 2 und darf maximal 100 Zeichen lang sein.',
-				Validator::MIN_LENGTH => 2,
-				Validator::MAX_LENGTH => 100
-			),
-			'surname' => array(
-				Validator::MESSAGE => 'Der Nachname muss mindestens 2 und darf maximal 100 Zeichen lang sein.',
-				Validator::MIN_LENGTH => 2,
-				Validator::MAX_LENGTH => 100
-			),
-			'street' => array(
-				Validator::MESSAGE => 'Die Straße und Hausnummer muss angegeben werden.',
-				Validator::MIN_LENGTH => 6
-			),
-			'plz' => array(
-				Validator::MESSAGE => 'Die Postleitzahl muss angegeben werden.',
-				Validator::MIN_LENGTH => 3,
-				Validator::MAX_LENGTH => 8,
-				Validator::CALLBACK => Validator::CB_NUM
-			),
-			'city' => array(
-				Validator::MESSAGE => 'Die Stadt muss mindestens 2 und darf maximal 100 Zeichen lang sein.',
-				Validator::MIN_LENGTH => 2,
-				Validator::MAX_LENGTH => 100
-			),
-			'country' => array(
-				Validator::MESSAGE => 'Das Land / der Staat muss mindestens 2 und darf maximal 100 Zeichen lang sein.',
-				Validator::MIN_LENGTH => 2,
-				Validator::MAX_LENGTH => 100
-			),
-			'company' => array(
-				Validator::MESSAGE => 'Die Firma darf maximal 100 Zeichen lang sein.',
-				Validator::MAX_LENGTH => 100
-			),
-			'taxid' => array(),
-			'email' => array(
+		$this->tpl->assign('data', implode($sep, $emails));
+		$this->tpl->output("admin/emailexport2");
+		$this->footer();
+	}
+
+	public function edit() {
+		$id = Request::get(1, VAR_INT);
+		$action = Request::get(2, VAR_URI);
+
+		$this->breadcrumb->add('Bearbeiten');
+		$this->header();
+		$member = UserUtils::getById($id);
+		if ($member === null) {
+			$this->error('Das angeforderte Mitglied wurde leider nicht gefunden.');
+			$this->members();
+		}
+		else {
+			$min_year = date('Y')-110;
+			$max_year = date('Y')-8;
+			$countries = CmsTools::getCountries();
+
+			$db = Core::_(DB);
+			$db->query("SELECT id, title FROM <p>group WHERE registered = 1 ORDER BY admin ASC, editor ASC, title");
+			$groups = array();
+			while ($row = $db->fetchAssoc()) {
+				$groups[$row['id']] = $row['title'];
+			}
+
+			$options = UserPages::getFieldValidation($countries, $min_year, $max_year);
+			$options['pw1'][Validator::OPTIONAL] = true;
+			$options['email'] = array(
 				Validator::MESSAGE => 'Deie E-Mail-Adresse ist nicht korrekt.',
 				Validator::CALLBACK => Validator::CB_MAIL
-			),
-			'phone' => array(
-				Validator::MESSAGE => 'Die Telefonnummer darf maximal 30 Zeichen lang sein.',
-				Validator::MAX_LENGTH => 30
-			),
-			'gender' => array(
-				Validator::MESSAGE => 'Kein gültiges Geschlecht angegeben.',
-				Validator::LIST_CS => array('m', 'w')
-			),
-			'birthday' => array(
-				Validator::MESSAGE => 'Der Tag der Geburt ist nicht korrekt.',
-				Validator::MIN_VALUE => 1,
-				Validator::MAX_VALUE => 31,
-				Validator::CALLBACK => Validator::CB_NUM
-			),
-			'birthmonth' => array(
-				Validator::MESSAGE => 'Der Monat der Geburt ist nicht korrekt.',
-				Validator::MIN_VALUE => 1,
-				Validator::MAX_VALUE => 12,
-				Validator::CALLBACK => Validator::CB_NUM
-			),
-			'birthyear' => array(
-				Validator::MESSAGE => 'Das Jahr der Geburt ist nicht korrekt.',
-				Validator::MIN_VALUE => $min_year,
-				Validator::MAX_VALUE => $max_year,
-				Validator::CALLBACK => Validator::CB_NUM
-			),
-			'alt_contact' => array(),
-			'homepage' => array(
-				Validator::OPTIONAL => true,
-				Validator::CALLBACK => Validator::CB_URL
-			),
-			'new_pw' => array(
-				Validator::OPTIONAL => true,
-				Validator::MESSAGE => 'Das neue Passwort ist nicht sicher genug.',
-				Validator::CALLBACK => Validator::CB_PW
-			),
-			'new_pwx' => array(
-				Validator::OPTIONAL => true,
-				Validator::MESSAGE => 'Die beiden neuen Passwörter stimmen nicht überein.',
-				Validator::COMPARE_EQUAL => 'new_pw'
-			),
-			'usage_price' => array(
-				Validator::OPTIONAL => true,
-				Validator::MESSAGE => 'Die Angabe des monatlichen Nutzungs-Preises ist nicht korrekt (Beispiel: 22,50)',
-				Validator::CALLBACK => 'CmsPages::checkPrice'
-			),
-			'about' => array(),
-			'group_id' => array()
-		);
-
-		if ($action == 'members_edit2') {
-			extract(Validator::checkRequest($options));
-
-			if (count($error) > 0) {
-				$error_status = true;
-				$this->error($error);
-			}
-			else {
-				// Update data
-				$data['birthday'] = $data['birthyear'].'-'.CmsTools::leadingZero($data['birthmonth']).'-'.CmsTools::leadingZero($data['birthday']);
-
-				$fields = array(
-					'forename', 'surname', 'email', 'gender', 'birthday', 'street', 'plz', 'city', 'country',
-					'phone', 'homepage', 'alt_contact', 'phone', 'company', 'taxid', 'group_id'
+			);
+			if (Me::get()->getId() != $id) {
+				$options['group_id'] = array(
+					Validator::MESSAGE => 'Deie Gruppe ist nicht gültig.',
+					Validator::LIST_CS => array_keys($groups)
 				);
-				$fields = array_combine($fields, $fields);
-
-				if (!empty($data['new_pw']) && !empty($data['new_pwx'])) {
-					$data['new_pw'] = Hash::generate($data['new_pw']);
-					$fields['pw'] = 'new_pw';
-				}
-				if ($avatar !== false) {
-					$fields['avatar'] = 'new_avatar';
-					$data['new_avatar'] = $avatar;
-				}
-
-				$update = array();
-				foreach ($fields as $field => $var) {
-					$update[] = "{$field} = <{$var}>";
-				}
-				$update = implode(', ', $update);
-
-				$data['id'] = $id;
-				$db = Core::_(DB);
-				$db->query("UPDATE <p>user SET {$update} WHERE id = <id:int>", $data);
-
-				$this->ok("Ihre Angaben wurden erfolgreich verarbeitet und gespeichert.");
-			}
-		}
-		if ($action == 'members_edit' || $error_status == true) {
-			if ($error_status == true) {
-				foreach ($data as $key => $value) {
-					$udata[$key] = $value;
-				}
+				$options['active'] = array(
+					Validator::OPTIONAL => true,
+					Validator::EQUALS => 1,
+					Validator::VAR_TYPE => VAR_INT
+				);
 			}
 
-			$cache = Core::getObject('Core.Cache.CacheServer');
-			$gCache = $cache->load('permissions');
+			$error = array();
+			$data = array();
+			if ($action == 'send') {
+				extract(Validator::checkRequest($options));
 
-			$this->tpl->assign('my', Sanitize::saveHTML($udata));
+				// Check whether email exists, validator is not flexible enough for that
+				$other = UserUtils::getByEmail($data['email']);
+				if ($other !== null && $id != $other->getId()) {
+					$error[] = 'Diese E-Mail-Adresse ist bereits registriert.';
+				}
+
+				if (count($error) > 0) {
+					$this->error($error);
+				}
+				else {
+					// Update data
+					if (!empty($data['pw1']) && !empty($data['pw2'])) {
+						$data['pw'] = Hash::generate($data['pw1']);
+					}
+
+					// prepare SQL update
+					$sql = $data;
+					unset($sql['pw1'], $sql['pw2'], $sql['birthmonth'], $sql['birthyear']);
+					if (Me::get()->getId() == $id) {
+						unset($sql['group_id'], $sql['active']); // Don't allow to change own group or active state
+					}
+					$sql['birthday'] = $data['birthyear'].'-'.CmsTools::leadingZero($data['birthmonth']).'-'.CmsTools::leadingZero($data['birthday']);
+
+					$update = array();
+					foreach ($sql as $field => $value) {
+						$update[] = "{$field} = <{$field}>";
+					}
+					$update = implode(', ', $update);
+
+					$sql['id'] = $id;
+					$db->query("UPDATE <p>user SET {$update} WHERE id = <id:int>", $sql);
+
+					// Update global data about me
+					Session::getObject()->refreshMe();
+
+					$this->ok("Ihre Angaben wurden erfolgreich gespeichert.");
+				}
+			}
+
+			$user = $member->getArray();
+			$user = array_merge($user, $data);
+
+			$this->tpl->assign('user', Sanitize::saveHTML($user));
 			$this->tpl->assign('r_birthday', range(1, 31));
 			$this->tpl->assign('r_birthmonth', range(1, 12));
-			$this->tpl->assign('r_birthyear', range(date('Y')-110, date('Y')-8));
-			$this->tpl->assign('groups', $gCache->getTitles(false));
+			$this->tpl->assign('r_birthyear', range($min_year, $max_year));
+			$this->tpl->assign('countries', Sanitize::saveHTML($countries));
+			$this->tpl->assign('groups', Sanitize::saveHTML($groups));
 			$this->tpl->output('admin/members_edit');
 		}
 		$this->footer();
 	}
 
-	/**
-	 * @todo Echtes Löschen ermöglichen, nicht nur sperren
-	 */
-	private function members($action) {
-		$this->breadcrumb->add("Mitglieder");
-		$this->breadcrumb->add("Übersicht");
+	public function delete() {
+		$this->breadcrumb->add("Löschen");
 		$this->header();
-		$db = Core::_(DB);
-		if ($action == 'members_delete') {
-			$id = Request::get('id', VAR_INT);
-			$db->query("UPDATE <p>user SET active = '0' WHERE id = <id:int>", compact("id"));
-			$this->ok('Der Benutzer wurde (wiederherstellbar) gelöscht.');
+		$id = Request::get(1, VAR_INT);
+		if (Request::get(2) == 'yes') {
+			$db = Core::_(DB);
+
+			try {
+				$db->query("DELETE FROM <p>user WHERE id = <id:int>", compact("id"));
+				$this->ok("Das gewählte Mitglied wurde gelöscht.");
+			} catch (QueryException $e) {
+				$this->error("Das gewählte Mitglied konnte leider nicht gelöscht werden. Möglicherweise referenzieren noch Daten auf dieses Mitglied.");
+			}
+			$this->members();
 		}
-		$db->query("SELECT id, forename, surname, group_id, email FROM <p>user WHERE active = '1' ORDER BY surname, forename");
+		else {
+			$this->yesNo(
+				"Möchten Sie das gewählte Mitglied wirklich löschen?",
+				URI::build('cms/admin/members/delete/'.$id.'/yes'),
+				URI::build('cms/admin/members')
+			);
+		}
+		$this->footer();
+	}
+
+	protected function members() {
+		$db = Core::_(DB);
+		$db->query("SELECT * FROM <p>user ORDER BY surname, forename");
 		$data = array();
 		while($row = $db->fetchAssoc()){
-			$row['group'] = UserInfo::getGroupName($row['group_id']);
+			$row['group'] = UserUtils::getGroupName($row['group_id']);
 			$data[] = Sanitize::saveHTML($row);
 		}
 		$this->tpl->assign("data", $data);
 		$this->tpl->output("admin/members");
-		$this->footer();
 	}
 
 }

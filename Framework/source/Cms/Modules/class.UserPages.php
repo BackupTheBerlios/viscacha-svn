@@ -27,7 +27,7 @@ class UserPages extends CmsModuleObject {
 
 		$this->breadcrumb->add('Mitglieder');
 
-		if ($user !== null && $user->isActive()) {
+		if ($user !== null && ($user->isActive() || Me::get()->isAllowed('admin'))) {
 			$this->breadcrumb->add($user->getName());
 			$this->header();
 
@@ -46,6 +46,9 @@ class UserPages extends CmsModuleObject {
 			$db->query("SELECT user_id FROM <p>session WHERE user_id = <id:int> LIMIT 1", compact("id"));
 			$status = ($db->numRows() > 0);
 
+			if (!$user->isActive()) {
+				$this->notice("Dieser Benutzer ist noch nicht freigschaltet und das Profil nur den Administratoren dieser Seite zugänglich.");
+			}
 			$this->tpl->assign('status', $status);
 			$this->tpl->assign('data', Sanitize::saveHTML($data));
 			$this->tpl->output('user/about');
@@ -358,7 +361,7 @@ class UserPages extends CmsModuleObject {
 	}
 
 	// Validation
-	private function getFieldValidation($countries, $bdayMinYear, $bdayMaxYear) {
+	public static function getFieldValidation($countries, $bdayMinYear, $bdayMaxYear) {
 		return array(
 			'forename' => array(
 				Validator::MESSAGE => 'Der Vorname muss mindestens 2 und darf maximal 100 Zeichen lang sein.',
@@ -382,11 +385,11 @@ class UserPages extends CmsModuleObject {
 			'email' => array(
 				Validator::MULTIPLE => array(
 					array(
-						Validator::MESSAGE => 'Deie E-Mail-Adresse ist nicht korrekt.',
+						Validator::MESSAGE => 'Die E-Mail-Adresse ist nicht korrekt.',
 						Validator::CALLBACK => Validator::CB_MAIL
 					),
 					array(
-						Validator::MESSAGE => 'Deie E-Mail-Adresse ist bereits registriert.',
+						Validator::MESSAGE => 'Diese E-Mail-Adresse ist bereits registriert.',
 						Validator::CALLBACK => 'UserPages::isMyMailNotDuplicate'
 					)
 				)

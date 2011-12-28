@@ -1,100 +1,80 @@
-<script type="text/javascript" src="client/scripts/tabber.js"></script>
-<form action="admin.php?action=members_edit2&amp;id=<?php echo $my['id']; ?>" method="post" enctype="multipart/form-data">
-<div class="tabber">
-	<div class="tabbertab">
-		<h3>Adresse</h3>
-		<label for="forename">Vorname*:</label>
-		<input type="text" class="label" id="forename" name="forename" value="<?php echo $my['forename']; ?>" />
+<form action="<?php echo URI::build('cms/admin/members/edit/' . $user['id'] . '/send'); ?>" method="post">
+	<fieldset>
+		<legend>Anmeldedaten</legend>
+		<label for="email">E-Mail-Adresse:</label>
+		<input type="text" class="label" id="email" name="email" value="<?php echo $user['email']; ?>" />
 		<br class="newinput" /><hr class="formsep" />
-		<label for="surname">Nachname*:</label>
-		<input type="text" class="label" id="surname" name="surname" value="<?php echo $my['surname']; ?>" />
-		<br class="newinput" /><hr class="formsep" />
-		<label for="street">Straße und Hausnummer*:</label>
-		<input type="text" class="label" id="street" name="street" value="<?php echo $my['street']; ?>" />
-		<br class="newinput" /><hr class="formsep" />
-		<label for="plz">Postleitzahl*:</label>
-		<input type="text" class="label" id="plz" name="plz" value="<?php echo $my['plz']; ?>" />
-		<br class="newinput" /><hr class="formsep" />
-		<label for="city">Stadt*:</label>
-		<input type="text" class="label" id="city" name="city" value="<?php echo $my['city']; ?>" />
-		<br class="newinput" /><hr class="formsep" />
-		<label for="country">Staat bzw. Land*:</label>
-		<input type="text" class="label" id="country" name="country" value="<?php echo $my['country']; ?>" />
-		<br class="newinput" />
-	</div>
-	<div class="tabbertab">
-		<h3>Firma</h3>
-		<label for="company">Firma:</label>
-		<input type="text" class="label" id="company" name="company" value="<?php echo $my['company']; ?>" />
-		<br class="newinput" /><hr class="formsep" />
-		<label for="taxid">Umsatzsteuer-ID:<br /><span>Nur in Deutschland und der EU.</span></label>
-		<input type="text" class="label" id="taxid" name="taxid" value="<?php echo $my['taxid']; ?>" />
-		<br class="newinput" />
-	</div>
-	<div class="tabbertab">
-		<h3>Sonstiges</h3>
-		<label for="email">E-Mail-Adresse*:</label>
-		<input type="text" class="label" id="email" name="email" value="<?php echo $my['email']; ?>" />
-		<br class="newinput" /><hr class="formsep" />
-		<label for="group_id">Benutzergruppe:</label>
-		<select class="label" id="group_id" name="group_id">
+		<label for="group_id">Gruppe:</label>
+		<?php if (Me::get()->getId() == $user['id']) { ?>
+		<div class="label"><?php echo $groups[$user['group_id']]; ?></div>
+		<?php } else { ?>
+		<select id="group_id" name="group_id" class="label">
 			<?php foreach ($groups as $gid => $title) { ?>
-			<option value="<?php echo $gid; ?>"<?php echo iif($gid == $my['group_id'], ' selected="selected"'); ?>><?php echo $title; ?></option>
+			<option value="<?php echo $gid; ?>"<?php echo iif($gid == $user['group_id'], ' selected="selected"'); ?>><?php echo $title; ?></option>
+			<?php } ?>
+		</select>
+		<?php } ?>
+		<br class="newinput" /><hr class="formsep" />
+		<label for="active">Aktiv:</label>
+		<input type="checkbox" id="active" name="active" value="1"<?php echo iif($user['active'] == 1, ' checked="checked"').iif(Me::get()->getId() == $user['id'], ' disabled="disabled"'); ?> />
+		<br class="newinput" />
+	</fieldset>
+	<fieldset>
+		<legend>Pers&ouml;nliche Daten</legend>
+		<label for="forename">Vorname:</label>
+		<input type="text" class="label" id="forename" name="forename" value="<?php echo $user['forename']; ?>" />
+		<br class="newinput" /><hr class="formsep" />
+		<label for="surname">Nachname:</label>
+		<input type="text" class="label" id="surname" name="surname" value="<?php echo $user['surname']; ?>" />
+		<br class="newinput" /><hr class="formsep" />
+		<label for="city">Stadt:</label>
+		<input type="text" class="label" id="city" name="city" value="<?php echo $user['city']; ?>" />
+		<br class="newinput" /><hr class="formsep" />
+		<label for="country">Land:</label>
+		<select id="country" name="country" class="label">
+			<?php foreach ($countries as $c) { ?>
+			<option value="<?php echo $c; ?>"<?php echo iif($c == $user['country'], ' selected="selected"'); ?>><?php echo $c; ?></option>
 			<?php } ?>
 		</select>
 		<br class="newinput" /><hr class="formsep" />
-		<label for="usage_price">Monatlicher Nutzungspreis:<br /><span>Nur bei Künstlern bzw. Administratoren.</span></label>
-		<div class="label"><input type="text" id="usage_price" name="usage_price" size="12" value="<?php echo $my['usage_price']; ?>" /> EUR</div>
-		<br class="newinput" /><hr class="formsep" />
-		<label for="phone">Telefon:</label>
-		<input type="text" class="label" id="phone" name="phone" value="<?php echo $my['phone']; ?>" />
-		<br class="newinput" /><hr class="formsep" />
-		<label for="alt_contact">Alternative Kontaktmöglichkeiten:<br /><span>z.B. ICQ, MSN, Jabber, Skype, ...</span></label>
-		<textarea class="label" id="alt_contact" name="alt_contact" cols="50" rows="5"><?php echo $my['alt_contact']; ?></textarea>
-		<br class="newinput" /><hr class="formsep" />
-		<label for="homepage">Homepage:</label>
-		<input type="text" class="label" id="homepage" name="homepage" value="<?php echo $my['homepage']; ?>" />
-		<br class="newinput" /><hr class="formsep" />
-		<label for="gender">Geschlecht*:</label>
+		<label for="gender">Geschlecht:</label>
 		<select name="gender" id="gender" class="label">
-			<option value="m"<?php echo iif($my['gender'] == 'm', ' selected="selected"'); ?>>M&auml;nnlich</option>
-			<option value="w"<?php echo iif($my['gender'] == 'w', ' selected="selected"'); ?>>Weiblich</option>
+			<option value="m"<?php echo iif($user['gender'] == 'm', ' selected="selected"'); ?>>M&auml;nnlich</option>
+			<option value="w"<?php echo iif($user['gender'] == 'w', ' selected="selected"'); ?>>Weiblich</option>
 		</select>
 		<br class="newinput" /><hr class="formsep" />
-		<label>Geburtstag* (TT. MM. JJJJ):</label>
+		<label>Geburtstag (TT. MM. JJJJ):</label>
 		<div class="label">
-		  <select name="birthday" style="width: 31%;">
+		  <select name="birthday">
 		  <option value="0">Tag</option>
 			<?php foreach ($r_birthday as $i) { ?>
-				<option value="<?php echo $i; ?>"<?php echo iif($my['birthday'] == $i, ' selected="selected"'); ?>><?php echo $i; ?></option>
+				<option value="<?php echo $i; ?>"<?php echo iif($user['birthday'] == $i, ' selected="selected"'); ?>><?php echo $i; ?></option>
 			<?php } ?>
 		  </select>.
-		  <select name="birthmonth" style="width: 31%;">
+		  <select name="birthmonth">
 		  <option value="0">Monat</option>
 			<?php foreach ($r_birthmonth as $i) { ?>
-				<option value="<?php echo $i; ?>"<?php echo iif($my['birthmonth'] == $i, ' selected="selected"'); ?>><?php echo $i; ?></option>
+				<option value="<?php echo $i; ?>"<?php echo iif($user['birthmonth'] == $i, ' selected="selected"'); ?>><?php echo $i; ?></option>
 			<?php } ?>
 		  </select>.
-		  <select name="birthyear" style="width: 31%;">
+		  <select name="birthyear">
 		  <option value="0">Jahr</option>
 			<?php foreach ($r_birthyear as $i) { ?>
-				<option value="<?php echo $i; ?>"<?php echo iif($my['birthyear'] == $i, ' selected="selected"'); ?>><?php echo $i; ?></option>
+				<option value="<?php echo $i; ?>"<?php echo iif($user['birthyear'] == $i, ' selected="selected"'); ?>><?php echo $i; ?></option>
 			<?php } ?>
 			?>
 		  </select>
 		</div>
 		<br class="newinput" />
-	</div>
-	<div class="tabbertab">
-		<h3>Passwort</h3>
-		<label for="new_pw">Neues Passwort:</label>
-		<input type="password" class="label" id="new_pw" name="new_pw" value="" />
+	</fieldset>
+	<fieldset>
+		<legend>Passwort ändern (optional)</legend>
+		<label for="pw1">Neues Passwort:</label>
+		<input type="password" class="label" id="pw1" name="pw1" value="" />
 		<br class="newinput" /><hr class="formsep" />
-		<label for="new_pwx">Neues Passwort wiederholen:</label>
-		<input type="password" class="label" id="new_pwx" name="new_pwx" value="" />
+		<label for="pw2">Neues Passwort wiederholen:</label>
+		<input type="password" class="label" id="pw2" name="pw2" value="" />
 		<br class="newinput" />
-	</div>
-</div>
-<p align="right"><input type="submit" value="Speichern" /></p>
+	</fieldset>
+	<input type="submit" />
 </form>
-<br />

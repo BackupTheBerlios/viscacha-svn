@@ -33,7 +33,7 @@ class AdminDocPages extends AdminModuleObject {
 		$id = Request::get(1, VAR_INT);
 		if (Request::get(2) == 'yes') {
 			$db = Core::_(DB);
-			$db->query("DELETE FROM <p>page WHERE id = <id:int>'", compact("id"));
+			$db->query("DELETE FROM <p>page WHERE id = <id:int>", compact("id"));
 			if ($db->affectedRows() == 1) {
 				$this->ok("Die gewählte Seite wurde gelöscht.");
 			}
@@ -105,7 +105,8 @@ class AdminDocPages extends AdminModuleObject {
 					$db->query("UPDATE <p>page SET title = <title>, uri = <uri>, content = <content> WHERE id = <id:int>", $data);
 				}
 				else {
-					Core::_(DB)->query("INSERT INTO <p>page SET title = <title>, uri = <uri>, content = <content>", $data);
+					$db->query("INSERT INTO <p>page SET title = <title>, uri = <uri>, content = <content>", $data);
+					$data['id'] = $db->insertId();
 				}
 				$this->ok("Die Seite wurde erfolgreich gespeichert.");
 			}
