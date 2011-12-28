@@ -39,7 +39,7 @@ class MySQL extends Database implements DbDriver {
 	 * @return int Affected rows by the last query
 	 **/
 	public function affectedRows() {
-		$id = @mysql_affected_rows($this->connection);
+		$id = mysqli_affected_rows($this->connection);
 		return iif(is_numeric($id), $id, -1);
 	}
 
@@ -81,7 +81,7 @@ class MySQL extends Database implements DbDriver {
 		}
 
 		$host = $this->host.iif(is_id($port), ":{$this->port}").iif(!is_null($this->socket), ":{$this->socket}");
-		$this->connection = @mysql_connect($host, $this->username, $this->password);
+		$this->connection = mysqli_connect($host, $this->username, $this->password);
 
 		if ($this->hasConnection() == false) {
 			Core::throwError('Could not connect to database! Pleasy try again later or check the database settings!', INTERNAL_ERROR);
@@ -99,7 +99,7 @@ class MySQL extends Database implements DbDriver {
 		if ($this->hasConnection() == false) {
 			return true;
 		}
-		return mysql_close($this->connection);
+		return mysqli_close($this->connection);
 	}
 
 	/**
@@ -108,10 +108,12 @@ class MySQL extends Database implements DbDriver {
 	 * @return string Error message
 	 **/
 	public function error() {
-		if ($this->hasConnection() == false) {
-			return null;
+		if ($this->hasConnection()) {
+			return mysqli_error($this->connection);
 		}
-		return @mysql_error($this->connection);
+		else {
+			return mysqli_connect_error();
+		}
 	}
 
 	/**
@@ -120,10 +122,12 @@ class MySQL extends Database implements DbDriver {
 	 * @return int Error number
 	 **/
 	public function errno() {
-		if ($this->hasConnection() == false) {
-			return 0;
+		if ($this->hasConnection()) {
+			return mysqli_errno($this->connection);
 		}
-		return @mysql_errno($this->connection);
+		else {
+			return mysqli_connect_errno();
+		}
 	}
 
 	/**
@@ -142,7 +146,7 @@ class MySQL extends Database implements DbDriver {
 			}
 		}
 		else {
-			$data = mysql_real_escape_string($data, $this->connection);
+			$data = mysqli_real_escape_string($this->connection, $data);
 		}
 		return $data;
 	}
@@ -166,7 +170,7 @@ class MySQL extends Database implements DbDriver {
 		if ($result == null) {
 			$result = $this->result;
 		}
-		return mysql_fetch_assoc($result);
+		return mysqli_fetch_assoc($result);
 	}
 
 	/**
@@ -185,7 +189,7 @@ class MySQL extends Database implements DbDriver {
 		if ($result == null) {
 			$result = $this->result;
 		}
-		return mysql_fetch_row($result);
+		return mysqli_fetch_row($result);
 	}
 
 	/**
@@ -204,7 +208,7 @@ class MySQL extends Database implements DbDriver {
 		if ($result == null) {
 			$result = $this->result;
 		}
-		return mysql_fetch_object($result);
+		return mysqli_fetch_object($result);
 	}
 
 	/**
@@ -219,7 +223,7 @@ class MySQL extends Database implements DbDriver {
 			$result = $this->result;
 		}
 		if ($this->isResultSet($result) == true) {
-			mysql_free_result($result);
+			mysqli_free_result($result);
 		}
 	}
 
@@ -298,7 +302,7 @@ class MySQL extends Database implements DbDriver {
 	 * @return int ID or null
 	 **/
 	public function insertID() {
-		$id = mysql_insert_id($this->connection);
+		$id = mysqli_insert_id($this->connection);
 		return is_id($id) ? $id : null;
 	}
 
@@ -308,7 +312,7 @@ class MySQL extends Database implements DbDriver {
 	 * @return boolean
 	 */
 	function hasConnection(){
-		return is_resource($this->connection);
+		return is_object($this->connection);
 	}
 
 	/**
@@ -317,7 +321,10 @@ class MySQL extends Database implements DbDriver {
 	 * @return boolean
 	 */
 	function isResultSet($result){
-		return is_resource($result);
+		if (!is_object($result)) {
+	    	$result = $this->result;
+	    }
+		return is_object($result);
 	}
 
 	/**
@@ -334,7 +341,7 @@ class MySQL extends Database implements DbDriver {
 		if ($result == null) {
 	    	$result = $this->result;
 	    }
-	    return mysql_num_rows($result);
+	    return mysqli_num_rows($result);
 	}
 
 	/**
@@ -350,13 +357,12 @@ class MySQL extends Database implements DbDriver {
 		$this->benchmark['count']++;
 
 		$this->debug->startClock($query);
+		$this->result = @mysqli_query($this->connection, $query);
+		$time = $this->debug->stopClock($query);
 
-		$this->result = @mysql_query($query, $this->connection);
 		if ($this->result === false) {
 			$this->queryError($query);
 		}
-
-		$time = $this->debug->stopClock($query);
 
 		$this->benchmark['time'] += $time;
 		$this->benchmark['queries'][] = array('query' => $query, 'time' => $time);
@@ -374,7 +380,7 @@ class MySQL extends Database implements DbDriver {
 		if ($result == null) {
 			$result = $this->result;
 		}
-		return mysql_data_seek($result, 0);
+		return mysqli_data_seek($result, 0);
 	}
 
 	/**
@@ -387,7 +393,7 @@ class MySQL extends Database implements DbDriver {
 	public function selectDB($database, $prefix = '') {
 		$this->database = $database;
 		$this->pre = $prefix;
-		return @mysql_select_db($this->database, $this->connection);
+		return mysqli_select_db($this->connection, $this->database);
 	}
 
 	/**
@@ -396,7 +402,7 @@ class MySQL extends Database implements DbDriver {
 	 * @return string Version or an empty string on failure
 	 **/
 	public function version() {
-		$version = @mysql_get_server_info();
+		$version = mysqli_get_server_info($this->connection);
 		return empty($version) ? '' : $version;
 	}
 
@@ -409,7 +415,7 @@ class MySQL extends Database implements DbDriver {
 	 **/
 	public function begin() {
 		$this->inProgress = true;
-		return $this->rawQuery("BEGIN");
+		return $this->rawQuery("START TRANSACTION");
 	}
 
 	/**
@@ -441,7 +447,6 @@ class MySQL extends Database implements DbDriver {
 	 * @return boolean Returns TRUE on success or FALSE on failure.
 	 **/
 	public function autocommit($status) {
-
 		if ($status == true) {
 			if ($this->inProgress == true) {
 				$this->commit();
