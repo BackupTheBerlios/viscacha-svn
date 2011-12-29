@@ -56,6 +56,7 @@ abstract class AdminFieldPages extends AdminModuleObject {
 		$data = array(
 			'name' => '',
 			'description' => '',
+			'internal' => '',
 			'priority' => 0,
 			'position' => reset($_positions),
 			'type' => reset($_fieldTypes),
@@ -66,6 +67,19 @@ abstract class AdminFieldPages extends AdminModuleObject {
 			$options = array_merge(
 				$this->getValidator(),
 				array(
+					'internal' => array(
+						Validator::OPTIONAL => true,
+						Validator::MULTIPLE => array(
+							array(
+								Validator::MESSAGE => 'Der interne Name enthält Zeichen die nicht erlaubt sind. Erlaubt sind: a-z, 0-9, _, -',
+								Validator::REGEXP => '/^[\w\d\-]*$/i'
+							),
+							array(
+								Validator::MESSAGE => 'Der interne Name darf maximal 32 Zeichen lang sein.',
+								Validator::MAX_LENGTH => 32
+							)
+						)
+					),
 					'position' => array(
 						Validator::MESSAGE => 'Der Anzeigeort ist ungültig.',
 						Validator::LIST_CS => $_positions
@@ -83,6 +97,21 @@ abstract class AdminFieldPages extends AdminModuleObject {
 			}
 
 			extract(Validator::checkRequest($options));
+
+			$pos = Request::get('position');
+			if (!empty($data['internal']) && isset($positions[$pos])) {
+				// Check whether internal name exists, validator is not flexible enough for that
+				$check = array(
+					'table' => $positions[$pos]->getDbTable(),
+					'field' => $data['internal']
+				);
+				$db = Core::_(DB);
+				$db->query("SHOW COLUMNS FROM <p><table:noquote> LIKE <field>", $check);
+				if ($db->numRows() > 0) {
+					$error[] = 'Der interne Name existiert bereits für eine anderes Feld der Tabelle.';
+				}
+			}
+
 			if (count($error) == 0) {
 				$field = $fieldTypes[$data['type']];
 				$field->injectData($data);

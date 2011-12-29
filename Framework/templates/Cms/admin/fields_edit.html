@@ -4,6 +4,9 @@
 	<label for="name">Titel:</label>
 	<input class="label" type="text" name="name" id="name" value="<?php echo $data['name']; ?>" />
 	<br class="newinput" /><hr class="formsep" />
+	<label for="internal">Interner Feldname:</label>
+	<div class="label"><?php echo $field->getFieldName(); ?></div>
+	<br class="newinput" /><hr class="formsep" />
 	<label for="description">Beschreibung</label>
 	<textarea class="label" name="description" id="description" rows="4" cols="40"><?php echo $data['description']; ?></textarea>
 	<br class="newinput" /><hr class="formsep" />

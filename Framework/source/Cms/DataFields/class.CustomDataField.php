@@ -10,6 +10,7 @@
 abstract class CustomDataField {
 
 	protected $id;
+	protected $internal;
 	protected $name;
 	protected $description;
 	protected $priority;
@@ -52,7 +53,12 @@ abstract class CustomDataField {
 		return $this->id;
 	}
 	public function getFieldName() {
-		return 'field' . $this->id;
+		if (empty($this->internal)) {
+			return 'field' . $this->id;
+		}
+		else {
+			return $this->internal;
+		}
 	}
 	public function getName() {
 		return $this->name;
@@ -126,14 +132,15 @@ abstract class CustomDataField {
 			$insert = array(
 				'name' => $this->name,
 				'desc' => $this->description,
+				'internal' => $this->getFieldName(),
 				'type' => $this->getClassPath(),
 				'pos' => $this->position->getClassPath(),
 				'prio' => $this->priority,
 				'params' => serialize($this->getParamsData())
 			);
 			$db->query("
-				INSERT INTO <p>fields (name, description, type, position, priority, params)
-				VALUES (<name>, <desc>, <type>, <pos>, <prio:int>, <params>)", $insert);
+				INSERT INTO <p>fields (internal, name, description, type, position, priority, params)
+				VALUES (<internal>, <name>, <desc>, <type>, <pos>, <prio:int>, <params>)", $insert);
 			// Save generated id to have it for the field name
 			$this->id = $db->insertId();
 

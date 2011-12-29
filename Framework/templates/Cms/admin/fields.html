@@ -3,15 +3,17 @@
 		<th width="40%">Titel</th>
 		<th width="40%">Aktion</th>
 	</tr>
-	<?php foreach ($data as $row) { ?>
+<?php foreach ($data as $row) { ?>
 	<tr>
 		<td><?php echo $row->getName(); ?></td>
 		<td>
 			<a href="<?php echo URI::build($baseUri.'/edit/' . $row->getId()); ?>" class="btn edit">Bearbeiten</a>
+<?php if (!$row->isImplemented()) { ?>
 			<a href="<?php echo URI::build($baseUri.'/remove/' . $row->getId()); ?>" class="btn delete">Löschen</a>
+<?php } ?>
 		</td>
 	</tr>
-	<?php } ?>
+<?php } ?>
 </table>
 <p class="tright">
 	<a href="<?php echo URI::build($baseUri.'/add'); ?>" class="btn add">Neues Feld hinzufügen</a>

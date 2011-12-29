@@ -8,7 +8,13 @@ $(function() {
 <fieldset>
 	<legend>Grunddaten</legend>
 	<label for="name">Titel:</label>
-	<input class="label" type="text" name="name" id="name" value="<?php echo $data['name']; ?>" />
+	<input class="label" type="text" name="name" id="name" value="<?php echo $data['name']; ?>" onkeyup="buildUri('name', 'internal')" />
+	<br class="newinput" /><hr class="formsep" />
+	<label for="internal">
+		Interner Feldname:<br>
+		<small>Optional, ggf. einmalig!<br />Verfügbare Zeichen: a-z, 0-9, _, -</small>
+	</label>
+	<input class="label" type="text" name="internal" id="internal" value="<?php echo $data['internal']; ?>" />
 	<br class="newinput" /><hr class="formsep" />
 	<label for="description">Beschreibung</label>
 	<textarea class="label" name="description" id="description" rows="4" cols="40"><?php echo $data['description']; ?></textarea>

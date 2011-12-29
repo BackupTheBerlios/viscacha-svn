@@ -48,7 +48,7 @@ class CustomTextField extends CustomDataField {
 				Validator::VAR_TYPE => VAR_INT
 			),
 			'max_length' => array(
-				Validator::MESSAGE => 'Die maximale Länge des Feldes darf nur zwischen 1 und 255 liegen.',
+				Validator::MESSAGE => 'Die "Maximale Länge" des Feldes darf nur zwischen 1 und 255 liegen.',
 				Validator::VAR_TYPE => VAR_INT,
 				Validator::MIN_VALUE => 1,
 				Validator::MAX_VALUE => 255
