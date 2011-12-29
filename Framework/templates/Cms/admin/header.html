@@ -1,14 +1,24 @@
 <div id="admin_menu">
 <?php foreach ($menu['Pages'] as $key => $submenu) { ?>
 <dl class="dropdown">
-  <dt id="<?php echo $key ?>-ddheader" onclick="ddMenu('<?php echo $key ?>')"><?php echo $submenu->getHeader($key); ?></dt>
-  <dd id="<?php echo $key ?>-ddcontent"<?php echo iif($key != Request::getObject()->getRequestedClass(), ' style="display: none;"'); ?>>
-    <ul>
+	<dt id="<?php echo $key ?>-ddheader" onclick="ddMenu('<?php echo $key ?>')"><?php echo $submenu->getHeader($key); ?></dt>
+	<dd id="<?php echo $key ?>-ddcontent">
+		<ul>
 <?php foreach ($submenu->getMenu($key) as $url => $name) { ?>
+<?php if (is_array($name)) { ?>
+			<li>
+			<ul>
+				<li class="subheader"><?php echo $url; ?></li>
+				<?php foreach ($name as $url2 => $name2) { ?>
+				<li><a href="<?php echo $url2; ?>"><?php echo $name2; ?></a></li>
+				<?php } ?>
+			</ul>
+			</li>
+<?php } else { ?>
       <li><a href="<?php echo $url; ?>"><?php echo $name; ?></a></li>
-<?php } ?>
-    </ul>
-  </dd>
+<?php } } ?>
+		</ul>
+	</dd>
 </dl>
 <?php } ?>
 </div>
