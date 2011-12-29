@@ -70,10 +70,10 @@ class Session {
 			return -1;
 		}
 
-		$ip = Sanitize::saveDb($this->ip->getIP(3));
+		$ip = $this->ip->getIP(3);
 		$db = Core::_(DB);
 		$db->query(
-			"SELECT user_id, settings FROM <p>session WHERE sid = <sid> AND ip LIKE '<ip:raw>%'",
+			"SELECT user_id, settings FROM <p>session WHERE sid = <sid> AND ip LIKE '<ip:noquote>%'",
 			compact("sid", "ip")
 		);
 		if ($db->numRows() == 1) {
@@ -94,11 +94,11 @@ class Session {
 		$data = array(
 			'sid' => $sid,
 			'time' => time(),
-			'ip' => Sanitize::saveDb($this->ip->getIP()),
+			'ip' => $this->ip->getIP(),
 			'settings' => serialize($this->settings),
 			'uid' => $uid
 		);
-		Core::_(DB)->query("INSERT INTO <p>session SET user_id = <uid:int>, sid = <sid>, visit = <time:int>, ip = '<ip:raw>', settings = <settings>", $data);
+		Core::_(DB)->query("INSERT INTO <p>session SET user_id = <uid:int>, sid = <sid>, visit = <time:int>, ip = '<ip:noquote>', settings = <settings>", $data);
 		return $sid;
 	}
 

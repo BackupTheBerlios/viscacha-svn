@@ -20,8 +20,7 @@ class UserUtils {
 	private static function getByField($field, $data) {
 		$user = null;
 		$db = Core::_(DB);
-		$field = Sanitize::saveDb($field);
-		$db->query("SELECT * FROM <p>user WHERE <field:raw> = <data>", compact("field", "data"));
+		$db->query("SELECT * FROM <p>user WHERE <field:noquote> = <data>", compact("field", "data"));
 		if ($db->numRows() == 1) {
 			$user = new User($db->fetchAssoc());
 		}

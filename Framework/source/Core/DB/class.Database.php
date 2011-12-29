@@ -316,6 +316,9 @@ abstract class Database {
 					case 'raw':
 						return $data;
 					break;
+					case 'noquote':
+						return $this->escapeString($data);
+					break;
 					case 'float':
 						return $this->parseFloat($data);
 					break;
