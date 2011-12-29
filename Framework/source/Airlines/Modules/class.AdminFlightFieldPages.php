@@ -7,15 +7,14 @@
  * @author		Matthias Mohr
  * @since 		1.0
  */
-class AdminAirlinesFieldPages extends AdminFieldPages {
+class AdminFlightFieldPages extends AdminFieldPages {
 
 	public function __construct() {
 		$this->version = '1.0.0';
-		$this->module = 'Admin CP: Airline-Fields';
+		$this->module = 'Admin CP: Flight-Fields';
 		parent::__construct();
 		$this->breadcrumb->add('Bewertungen', URI::build('airlines/admin/evals'));
-		$this->breadcrumb->add('Kategorien', URI::build('airlines/admin/categories'));
-		$this->breadcrumb->add('Felder', URI::build('airlines/admin/cfields'));
+		$this->breadcrumb->add('Flug-Felder', URI::build('airlines/admin/efields'));
 	}
 
 	public function __destruct() {
@@ -23,7 +22,7 @@ class AdminAirlinesFieldPages extends AdminFieldPages {
 	}
 
 	protected function getPositions() {
-		return array('Airlines.DataFields.Positions.AirlinesCategoryPosition');
+		return array('Airlines.DataFields.Positions.AirlinesFlightPosition');
 	}
 
 	protected function getFieldTypes() {
@@ -31,7 +30,7 @@ class AdminAirlinesFieldPages extends AdminFieldPages {
 	}
 
 	protected function getBaseURI() {
-		return 'airlines/admin/cfields';
+		return 'airlines/admin/efields';
 	}
 
 }

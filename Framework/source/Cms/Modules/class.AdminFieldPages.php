@@ -11,6 +11,7 @@ abstract class AdminFieldPages extends AdminModuleObject {
 
 	protected abstract function getPositions();
 	protected abstract function getFieldTypes();
+	protected abstract function getBaseURI();
 
 	public function main() {
 		$this->breadcrumb->resetUrl();
@@ -100,6 +101,7 @@ abstract class AdminFieldPages extends AdminModuleObject {
 			$this->tpl->assign('positions', $positions);
 			$this->tpl->assign('types', $fieldTypes);
 			$this->tpl->assign('data', $data);
+			$this->tpl->assign('baseUri', $this->getBaseURI());
 			$this->tpl->output("/cms/admin/fields_add");
 		}
 		$this->footer();
@@ -128,8 +130,8 @@ abstract class AdminFieldPages extends AdminModuleObject {
 			else {
 				$this->yesNo(
 					"Möchten Sie das gewählte Feld inkl. aller verknüpften Daten wirklich löschen? Eine vorherige Datensicherung wird dringend empfohlen!",
-					URI::build('airlines/admin/cfields/remove/'.$id.'/yes'),
-					URI::build('airlines/admin/cfields')
+					URI::build($this->getBaseURI().'/remove/'.$id.'/yes'),
+					URI::build($this->getBaseURI())
 				);
 			}
 		}
@@ -198,6 +200,7 @@ abstract class AdminFieldPages extends AdminModuleObject {
 			$this->tpl->assign('field', $field);
 			$this->tpl->assign('positions', $positions);
 			$this->tpl->assign('data', Sanitize::saveHTML($data));
+			$this->tpl->assign('baseUri', $this->getBaseURI());
 			$this->tpl->output("/cms/admin/fields_edit");
 		}
 		$this->footer();
@@ -212,6 +215,7 @@ abstract class AdminFieldPages extends AdminModuleObject {
 			$fields[] = CustomDataField::constructObject($row);
 		}
 		$this->tpl->assign("data", $fields);
+		$this->tpl->assign('baseUri', $this->getBaseURI());
 		$this->tpl->output("/cms/admin/fields");
 	}
 

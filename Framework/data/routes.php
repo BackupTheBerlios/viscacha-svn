@@ -18,7 +18,8 @@ $config = array(
 			'admin' => array(
 				'!' => 'AdminAirlinesPages',
 				'default' => 'AdminAirlinesPages',
-				'cfields' => 'AdminAirlinesFieldPages'
+				'cfields' => 'AdminAirlinesFieldPages',
+				'efields' => 'AdminFlightFieldPages'
 			)
 		),
 		'Core' => array() // Empty packages are NOT routable

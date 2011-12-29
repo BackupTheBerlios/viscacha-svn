@@ -1,10 +1,10 @@
 <script type="text/javascript">
-var url = '<?php echo URI::build('airlines/admin/cfields/_fieldcode'); ?>';
+var url = '<?php echo URI::build($baseUri.'/_fieldcode'); ?>';
 $(function() {
 	loadFieldParams(url);
 });
 </script>
-<form action="<?php echo URI::build('airlines/admin/cfields/add/send'); ?>" method="post">
+<form action="<?php echo URI::build($baseUri.'/add/send'); ?>" method="post">
 <fieldset>
 	<legend>Grunddaten</legend>
 	<label for="name">Titel:</label>
