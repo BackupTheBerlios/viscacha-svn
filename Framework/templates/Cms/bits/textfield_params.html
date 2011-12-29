@@ -1,0 +1,6 @@
+<label for="max_length">Maximale Länge (max. 255):</label>
+<input class="label" type="text" name="max_length" id="max_length" value="<?php echo $params['max_length']; ?>" />
+<br class="newinput" /><hr class="formsep" />
+<label for="optional">Optional:</label>
+<input type="checkbox" name="optional" id="optional" value="1"<?php echo iif($params['optional'], ' checked="checked"'); ?> />
+<br class="newinput" />
