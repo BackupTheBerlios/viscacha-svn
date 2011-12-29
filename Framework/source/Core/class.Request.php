@@ -149,7 +149,6 @@ final class Request {
 			}
 
 			$this->args = $query;
-			var_dump($this->args);
 		}
 	}
 
@@ -225,46 +224,7 @@ final class Request {
 			$value = $_REQUEST[$index];
 		}
 
-		if ($value !== null) {
-			if ($type == VAR_DB || $type == VAR_ARR_DB) {
-				$var = Sanitize::saveDb($value);
-			}
-			elseif ($type == VAR_HTML || $type == VAR_ARR_HTML) {
-				$var = Sanitize::saveHTML($value);
-			}
-			elseif ($type == VAR_INT || $type == VAR_ARR_INT) {
-				$var = Sanitize::saveInt($value);
-			}
-			elseif ($type == VAR_ALNUM || $type == VAR_ARR_ALNUM) {
-				$var = Sanitize::saveAlNum($value, true);
-			}
-			elseif ($type == VAR_URI || $type == VAR_ARR_URI) {
-				$var = Sanitize::saveAlNum($value, false);
-			}
-			else {
-				$var = Sanitize::removeNullByte($value);
-			}
-		}
-		else {
-			if ($standard == null) {
-				if ($type == VAR_DB || $type == VAR_ALNUM || $type == VAR_HTML || $type == VAR_URI) {
-					$var = '';
-				}
-				elseif ($type == VAR_INT) {
-					$var = 0;
-				}
-				elseif ($type == VAR_ARR_INT || $type == VAR_ARR_DB || $type == VAR_ARR_ALNUM || $type == VAR_ARR_NONE || $type == VAR_ARR_HTML || $type == VAR_ARR_URI) {
-					$var = array();
-				}
-				else {
-					$var = null;
-				}
-			}
-			else {
-				$var = $standard;
-			}
-		}
-		return $var;
+		return Sanitize::save($value, $type, $standard);
 	}
 	
 }
