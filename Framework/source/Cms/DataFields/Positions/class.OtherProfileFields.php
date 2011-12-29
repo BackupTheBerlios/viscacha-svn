@@ -1,4 +1,6 @@
 <?php
+Core::loadInterface('Cms.DataFields.Positions.CustomDataPosition');
+
 /**
  * Position for custom profile fields.
  *

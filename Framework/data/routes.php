@@ -15,15 +15,13 @@ $config = array(
 			)
 		),
 		'Airlines' => array(
-			'evaluate' => 'AddEvaluationPages',
-			'admin' => 'AdminAirlinesPages'
+			'admin' => array(
+				'!' => 'AdminAirlinesPages',
+				'default' => 'AdminAirlinesPages',
+				'cfields' => 'AdminAirlinesFieldPages'
+			)
 		),
-		'Restaurants' => array(
-			'evaluate' => 'AddEvaluationPages',
-			'admin' => 'AdminRestaurantsPages'
-		),
-		'Core' => array(), // Empty packages are NOT routable
-		'Evaluation' => array()
+		'Core' => array() // Empty packages are NOT routable
 	)
 );
 ?>

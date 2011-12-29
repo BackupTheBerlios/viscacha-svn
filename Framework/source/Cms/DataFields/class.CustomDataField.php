@@ -14,11 +14,28 @@ abstract class CustomDataField {
 	protected $description;
 	protected $priority;
 	protected $position;
+	protected $implemented;
 
 	protected $data;
 	protected $params;
 
-	public function __construct() {
+	public static function constructObject($data) {
+		$obj = Core::constructObject($data['type']);
+		foreach ($data as $key => $value) {
+			switch ($key) {
+				case 'position':
+					$obj->position = Core::constructObject($value);
+					break;
+				case 'type':
+					break;
+				case 'params':
+					$obj->params = empty($data['params']) ? array() : unserialize($data['params']);
+					break;
+				default:
+					$obj->$key = $value;
+			}
+		}
+		return $obj;
 	}
 
 	public function getId() {
@@ -51,12 +68,18 @@ abstract class CustomDataField {
 	public function setPosition(CustomDataPosition $pos) {
 		$this->position = $pos;
 	}
+	public function isImplemented() {
+		return !empty($this->implemented);
+	}
 
 	public abstract function getTypeName();
 	public abstract function getClassPath(); // Example: Cms.DataFields.CustomDataField
 
 	public function getData() {
 		return $this->data;
+	}
+	public function setData($data) {
+		$this->data = $data;
 	}
 	public abstract function getDataType(); // Example: VAR_INT
 	public abstract function getDbDataType(); // Example: INT(10)
@@ -104,11 +127,13 @@ abstract class CustomDataField {
 				'field' => $this->getFieldName(),
 				'datatype' => $this->getDbDataType()
 			);
-			$db->query("ALTER TABLE <p><table> ADD <field> <datatype> NULL DEFAULT NULL", $alter);
+			$db->query("ALTER TABLE <p><table:noquote> ADD <field:noquote> <datatype:noquote> NULL DEFAULT NULL", $alter);
 
 			$db->commit();
+			return true;
 		} catch(QueryException $e) {
 			$db->rollback();
+			return false;
 		}
 	}
 
@@ -138,17 +163,14 @@ abstract class CustomDataField {
 				'table' => $this->position->getDbTable(),
 				'field' => $this->getFieldName()
 			);
-			$db->query("ALTER TABLE <p><table> DROP <field>", $alter); // Default value?
+			$db->query("ALTER TABLE <p><table:noquote> DROP <field:noquote>", $alter); // Default value?
 
 			$db->commit();
+			return true;
 		} catch(QueryException $e) {
 			$db->rollback();
+			return false;
 		}
-	}
-
-	public function save() {
-		$db = Core::_(DB);
-		// Speichern in Daten-Tabelle (einzelnd unsinnig????)
 	}
 
 }

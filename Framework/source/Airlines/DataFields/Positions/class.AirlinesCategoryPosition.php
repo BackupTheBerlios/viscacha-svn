@@ -9,16 +9,16 @@ Core::loadInterface('Cms.DataFields.Positions.CustomDataPosition');
  * @since 		1.0
  */
 
-class PersonalProfileFields implements CustomDataPosition {
+class AirlinesCategoryPosition implements CustomDataPosition {
 
 	public function getDbTable() {
-		return 'user';
+		return 'categories';
 	}
 	public function getName() {
-		return 'Persönliche Daten';
+		return 'Kategorien';
 	}
 	public function getClassPath() {
-		return 'Cms.DataFields.Positions.PersonalProfileFields';
+		return 'Airlines.DataFields.Positions.AirlinesCategoryFields';
 	}
 
 }
