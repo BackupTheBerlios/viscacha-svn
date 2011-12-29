@@ -10,6 +10,7 @@
 
 class Template {
 
+	const BASEDIR = 'templates/';
 	private $dir;
 	private $ext;
 	private $benchmark;
@@ -17,7 +18,7 @@ class Template {
 	private $sent;
 
 	public function __construct($package) {
-		$this->setDir('templates/' . $package . '/');
+		$this->setDir(self::BASEDIR . $package);
 		$this->ext = '.html';
 		$this->benchmark = array(
 			'all' => 0,
@@ -39,12 +40,7 @@ class Template {
     }
 
     public function exists($file) {
-		if (file_exists($this->dir.$file.$this->ext)) {
-			return true;
-		}
-		else {
-			return false;
-		}
+		return file_exists($this->getFilePath($file));
     }
 
     public function output($file) {
@@ -53,7 +49,7 @@ class Template {
 
 	public function parse($__file) {
 		$this->benchmark['all']++;
-		$__file = $this->dir.$__file.$this->ext;
+		$__file = $this->getFilePath($__file);
 
 		if (!file_exists($__file)) {
 		    $this->benchmark['error']++;
@@ -94,14 +90,17 @@ class Template {
 		return $this->dir;
 	}
 
-	public function alreadyParsed($file) {
-		$file = $this->dir.$file.$this->ext;
-		if(in_array($file, $this->sent)) {
-			return true;
+	public function getFilePath($file) {
+		if (strpos($file, '/') === 0) {
+			return FileSystem::realPath(self::BASEDIR).$file.$this->ext;
 		}
 		else {
-			return false;
+			return $this->dir.$file.$this->ext;
 		}
+	}
+
+	public function alreadyParsed($file) {
+		return in_array($this->getFilePath($file), $this->sent);
 	}
 
 }
