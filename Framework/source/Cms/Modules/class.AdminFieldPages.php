@@ -19,12 +19,29 @@ abstract class AdminFieldPages extends AdminModuleObject {
 		$this->footer();
 	}
 
-	public function _fieldcode() {
+	public function _fieldcode() { // AJAX
 		$type = Request::get('type');
 		if (!empty($type) && Core::classExists($type)) {
 			$type = Core::constructObject($type);
 			echo $type->getParamsCode(true);
 		}
+	}
+
+	protected function getValidator() {
+		return array(
+			'name' => array(
+				Validator::MESSAGE => 'Der Name muss mindestens 2 und darf maximal 100 Zeichen lang sein.',
+				Validator::MIN_LENGTH => 2,
+				Validator::MAX_LENGTH => 100
+			),
+			'description' => array(
+				Validator::OPTIONAL => true
+			),
+			'priority' => array(
+				Validator::OPTIONAL => true,
+				Validator::VAR_TYPE => VAR_INT
+			)
+		);
 	}
 
 	public function add() {
@@ -45,30 +62,23 @@ abstract class AdminFieldPages extends AdminModuleObject {
 		$error = array();
 		if ($isSent) {
 			// Base options for every field
-			$options = array(
-				'name' => array(
-					Validator::MESSAGE => 'Der Name muss mindestens 2 und darf maximal 100 Zeichen lang sein.',
-					Validator::MIN_LENGTH => 2,
-					Validator::MAX_LENGTH => 100
-				),
-				'description' => array(
-					Validator::OPTIONAL => true
-				),
-				'priority' => array(
-					Validator::OPTIONAL => true,
-					Validator::VAR_TYPE => VAR_INT
-				),
-				'position' => array(
-					Validator::LIST_CS => $_positions
-				),
-				'type' => array(
-					Validator::LIST_CS => $_fieldTypes
+			$options = array_merge(
+				$this->getValidator(),
+				array(
+					'position' => array(
+						Validator::MESSAGE => 'Der Anzeigeort ist ungültig.',
+						Validator::LIST_CS => $_positions
+					),
+					'type' => array(
+						Validator::MESSAGE => 'Der Feldtyp ist ungültig.',
+						Validator::LIST_CS => $_fieldTypes
+					)
 				)
 			);
 			// get additional options for the specified field
 			$type = Request::get('type');
 			if (isset($fieldTypes[$type])) {
-				$options = array_merge($options, $fieldTypes[$type]->validateParams(true));
+				$options = array_merge($options, $fieldTypes[$type]->getValidationParams(true));
 			}
 
 			extract(Validator::checkRequest($options));
@@ -130,8 +140,66 @@ abstract class AdminFieldPages extends AdminModuleObject {
 	}
 
 	public function edit() {
+		$id = Request::get(1, VAR_INT);
+		$isSent = Request::get(2, VAR_URI) == 'send';
 		$this->breadcrumb->add('Bearbeiten');
 		$this->header();
+
+		$db = Core::_(DB);
+		$db->query("SELECT * FROM <p>fields WHERE id = <id:int>", compact("id"));
+		if ($db->numRows() == 0) {
+			$this->error('Das Feld wurde leider nicht gefunden.');
+			$this->overview();
+		}
+		else {
+			$field = CustomDataField::constructObject($db->fetchAssoc());
+			$_positions = $this->getPositions();
+			$positions = Core::constructObjectArray($_positions);
+			// Fill data array with the default (currently saved) data
+			$data = array(
+				'name' => $field->getName(),
+				'description' => $field->getDescription(),
+				'priority' => $field->getPriority(),
+				'position' => $field->getPosition()->getClassPath(),
+				'type' => $field->getClassPath()
+			);
+			foreach ($field->getParamsData() as $key => $value) {
+				$data[$key] = $value;
+			}
+
+			$error = array();
+			if ($isSent) {
+				// Base options for every field
+				$options = array_merge(
+					$this->getValidator(),
+					array(
+						'position' => array(
+							Validator::MESSAGE => 'Der Anzeigeort ist ungültig.',
+							Validator::LIST_CS => $_positions
+						)
+					),
+					$field->getValidationParams(false)
+				);
+				extract(Validator::checkRequest($options));
+				if (count($error) == 0) {
+					$field->injectData($data);
+					if ($field->update()) {
+						$this->ok("Das Feld wurde erfolgreich aktualisiert.");
+					}
+					else {
+						$error[] = 'Das Feld konnt leider nicht aktualisiert werden.';
+					}
+				}
+				if (count($error) > 0) {
+					$this->error($error);
+				}
+			}
+
+			$this->tpl->assign('field', $field);
+			$this->tpl->assign('positions', $positions);
+			$this->tpl->assign('data', Sanitize::saveHTML($data));
+			$this->tpl->output("/cms/admin/fields_edit");
+		}
 		$this->footer();
 	}
 

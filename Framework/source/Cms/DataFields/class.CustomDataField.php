@@ -95,7 +95,7 @@ abstract class CustomDataField {
 	public abstract function getDbDataType(); // Example: INT(10)
 	public abstract function getInputCode();
 	public abstract function getOutputCode();
-	public abstract function validate();
+	public abstract function getValidation();
 
 	public abstract function getParamNames($add = false);
 	public function getParamsData($add = false) {
@@ -108,14 +108,14 @@ abstract class CustomDataField {
 		);
 	}
 	public abstract function getParamsCode($add = false);
-	public abstract function validateParams($add = false);
+	public abstract function getValidationParams($add = false);
 
 	protected function getCodeImpl($file) {
 		$tpl = Core::_(TPL);
 		$tpl->assign('field', $this->getFieldName());
 		$tpl->assign('data', Sanitize::saveHTML($this->data));
 		$tpl->assign('params', Sanitize::saveHTML($this->getParamsData()));
-		return $tpl->output($file);
+		return $tpl->parse($file);
 	}
 
 	public function create() {
@@ -129,7 +129,7 @@ abstract class CustomDataField {
 				'type' => $this->getClassPath(),
 				'pos' => $this->position->getClassPath(),
 				'prio' => $this->priority,
-				'params' => serialize($this->params)
+				'params' => serialize($this->getParamsData())
 			);
 			$db->query("
 				INSERT INTO <p>fields (name, description, type, position, priority, params)
@@ -161,10 +161,11 @@ abstract class CustomDataField {
 			'name' => $this->name,
 			'desc' => $this->description,
 			'prio' => $this->priority,
-			'params' => serialize($this->params),
+			'params' => serialize($this->getParamsData()),
+			'position' => $this->position->getClassPath(),
 			'id' => $this->id
 		);
-		$db->query("UPDATE <p>fields SET name = <name>, description = <desc>, priority = <prio:int>, params = <params> WHERE id = <id:int>", $update);
+		return $db->query("UPDATE <p>fields SET name = <name>, description = <desc>, priority = <prio:int>, params = <params>, position = <position> WHERE id = <id:int>", $update);
 	}
 
 	public function remove() {

@@ -28,7 +28,7 @@ class CustomTextField extends CustomDataField {
 	public function getOutputCode() {
 		return $this->getCodeImpl('bits/textfield_output');
 	}
-	public function validate() {
+	public function getValidation() {
 		return array(
 			Validator::MESSAGE => 'Die angegebenen Daten im Feld "'.$this->getName().'" sind zu lang (max. 255 Zeichen).',
 			Validator::MAX_LENGTH => $this->params['max_length'],
@@ -42,7 +42,7 @@ class CustomTextField extends CustomDataField {
 	public function getParamsCode($add = false) {
 		return $this->getCodeImpl('bits/textfield_params');
 	}
-	public function validateParams($add = false) {
+	public function getValidationParams($add = false) {
 		return array(
 			'optional' => array(
 				Validator::VAR_TYPE => VAR_INT

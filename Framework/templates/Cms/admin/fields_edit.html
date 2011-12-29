@@ -1,10 +1,4 @@
-<script type="text/javascript">
-var url = '<?php echo URI::build('airlines/admin/cfields/_fieldcode'); ?>';
-$(function() {
-	loadFieldParams(url);
-});
-</script>
-<form action="<?php echo URI::build('airlines/admin/cfields/add/send'); ?>" method="post">
+<form action="<?php echo URI::build('airlines/admin/cfields/edit/'.$field->getId().'/send'); ?>" method="post">
 <fieldset>
 	<legend>Grunddaten</legend>
 	<label for="name">Titel:</label>
@@ -28,17 +22,12 @@ $(function() {
 	</select>
 	<br class="newinput" /><hr class="formsep" />
 	<label for="type">Feldtyp:</label>
-	<select class="label" name="type" id="type" onchange="loadFieldParams(url)">
-		<option value="">Bitte wählen</option>
-		<?php foreach ($types as $class => $type) { ?>
-		<option value="<?php echo $class; ?>"<?php echo iif($class == $data['position'], ' selected="selected"'); ?>><?php echo $type->getTypeName(); ?></option>
-		<?php } ?>
-	</select>
+	<div class="label"><?php echo $field->getTypeName(); ?></div>
 	<br class="newinput" />
 </fieldset>
 <fieldset>
 	<legend>Spezielle Eigenschaften</legend>
-	<div id="params">Bitte Feldtyp wählen...</div>
+	<?php echo $field->getParamsCode(false); ?>
 </fieldset>
-<input type="submit" id="submit" disabled="disabled" />
+<input type="submit" id="submit" />
 </form>
