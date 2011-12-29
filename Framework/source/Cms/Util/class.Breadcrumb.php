@@ -45,7 +45,7 @@ class Breadcrumb {
     public function outputHTML($seperator = ' &raquo; ') {
         $cache = array();
         foreach ($this->content as $key => $row) {
-        	$row['title'] = htmlspecialchars($row['title']);
+        	$row['title'] = Sanitize::saveHtml($row['title']);
             if (!empty($row['url'])) {
                 $cache[$key] = '<a href="'.$row['url'].'">'.$row['title'].'</a>';
             }
@@ -61,7 +61,7 @@ class Breadcrumb {
         foreach ($this->content as $key => $row) {
         	$row['title'] = strip_tags($row['title']);
         	if ($entities) {
-        		$row['title'] = htmlspecialchars($row['title']);
+        		$row['title'] = Sanitize::saveHtml($row['title']);
         	}
             $cache[$key] = $row['title'];
         }
@@ -71,7 +71,7 @@ class Breadcrumb {
     public function getCurrentTitle() {
     	$last = array_pop($this->content);
     	if ($last != null) {
-    		return $last['title'];
+    		return Sanitize::saveHtml($last['title']);
     	}
     	else {
     		return '';
@@ -79,7 +79,7 @@ class Breadcrumb {
     }
 
     public function getArray() {
-        return $content;
+        return $this->content;
     }
 }
 ?>

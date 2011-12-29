@@ -4,7 +4,8 @@ Core::loadInterface('Cms.DataFields.Positions.CustomDataPosition');
 /**
  * Position for custom profile fields.
  *
- * @package		Cms
+ * @package		Airlines
+ * @subpackage	DataFields
  * @author		Matthias Mohr
  * @since 		1.0
  */

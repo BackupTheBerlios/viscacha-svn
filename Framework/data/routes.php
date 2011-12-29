@@ -15,6 +15,8 @@ $config = array(
 			)
 		),
 		'Airlines' => array(
+			'!' => 'AirlinePages',
+			'airlines' => 'AirlinePages',
 			'admin' => array(
 				'!' => 'AdminAirlinesPages',
 				'default' => 'AdminAirlinesPages',

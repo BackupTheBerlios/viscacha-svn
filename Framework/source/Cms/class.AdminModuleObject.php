@@ -15,8 +15,8 @@ abstract class AdminModuleObject extends CmsModuleObject {
 
 	protected $menu;
 
-	public function __construct() {
-		parent::__construct();
+	public function __construct($package = 'Cms') {
+		parent::__construct($package);
 		$this->scriptFiles[URI::build('client/scripts/jquery/jquery.js')] = 'text/javascript';
 		$this->scriptFiles[URI::build('client/scripts/admin.js')] = 'text/javascript';
 		$this->cssFiles[URI::build('client/styles/admin.css')] = 'all';
@@ -31,12 +31,12 @@ abstract class AdminModuleObject extends CmsModuleObject {
 	protected function header() {
 		parent::header();
 		$this->tpl->assign('menu', $this->menu);
-		$this->tpl->output("admin/header");
+		$this->tpl->output("/cms/admin/header");
 	}
 
 	protected function footer() {
 		$this->tpl->assign('menu', $this->menu);
-		$this->tpl->output("admin/footer");
+		$this->tpl->output("/cms/admin/footer");
 		parent::footer();
 	}
 

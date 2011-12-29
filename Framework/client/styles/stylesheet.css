@@ -22,6 +22,13 @@ h2 {
 	font-size: 18px;
 	text-decoration: underline;
 }
+h3 {
+    color: #99CC00;
+    font-family: Georgia, Helvetica, sans-serif;
+    font-size: 14px;
+    text-decoration: underline;
+	padding-top: 1em;
+}
 small {
 	font-weight: normal;
 }

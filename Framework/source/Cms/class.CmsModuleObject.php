@@ -19,8 +19,8 @@ abstract class CmsModuleObject extends CoreModuleObject {
 	protected $cssFiles;
 	protected $scriptFiles;
 
-	public function __construct() {
-		parent::__construct("Cms");
+	public function __construct($package = 'Cms') {
+		parent::__construct($package);
 
 		$cache = Core::getObject('Core.Cache.CacheServer');
 		$cache->setSourceDir('Cms.Cache.Items');
@@ -56,12 +56,12 @@ abstract class CmsModuleObject extends CoreModuleObject {
 		$this->tpl->assign('breadcrumb', $this->breadcrumb);
 		$this->tpl->assign('cssFiles', $this->cssFiles);
 		$this->tpl->assign('scriptFiles', $this->scriptFiles);
-		$this->tpl->output('header');
+		$this->tpl->output('/cms/header');
 	}
 
 	protected function footer() {
 		$this->tpl->assign('breadcrumb', $this->breadcrumb);
-		$this->tpl->output('footer');
+		$this->tpl->output('/cms/footer');
 	}
 
 	protected function error($message, $url = null) {
@@ -70,19 +70,19 @@ abstract class CmsModuleObject extends CoreModuleObject {
 		}
 		$this->tpl->assign('url', $url);
 		$this->tpl->assign('message', $message);
-		$this->tpl->output('error');
+		$this->tpl->output('/cms/error');
 	}
 
 	protected function yesNo($question, $yesUrl, $noUrl) {
 		$this->tpl->assign('yesUrl', $yesUrl);
 		$this->tpl->assign('noUrl', $noUrl);
 		$this->tpl->assign('question', $question);
-		$this->tpl->output('yes_no');
+		$this->tpl->output('/cms/yes_no');
 	}
 
 	protected function notice($message) {
 		$this->tpl->assign('message', $message);
-		$this->tpl->output('notice');
+		$this->tpl->output('/cms/notice');
 	}
 
 	protected function ok($message, $url = null) {
@@ -91,7 +91,7 @@ abstract class CmsModuleObject extends CoreModuleObject {
 		}
 		$this->tpl->assign('url', $url);
 		$this->tpl->assign('message', $message);
-		$this->tpl->output('ok');
+		$this->tpl->output('/cms/ok');
 	}
 
 }

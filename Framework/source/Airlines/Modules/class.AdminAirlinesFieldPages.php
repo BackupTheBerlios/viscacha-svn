@@ -2,7 +2,7 @@
 /**
  * This is the admin control panel.
  *
- * @package		Cms
+ * @package		Airlines
  * @subpackage	Modules
  * @author		Matthias Mohr
  * @since 		1.0
