@@ -18,7 +18,7 @@ class AirlinesCategoryPosition implements CustomDataPosition {
 		return 'Kategorien';
 	}
 	public function getClassPath() {
-		return 'Airlines.DataFields.Positions.AirlinesCategoryFields';
+		return 'Airlines.DataFields.Positions.AirlinesCategoryPosition';
 	}
 
 }

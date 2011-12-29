@@ -24,7 +24,7 @@ class AdminAirlinesFieldPages extends AdminFieldPages {
 	protected function getPositions() {
 		return array('Airlines.DataFields.Positions.AirlinesCategoryPosition');
 	}
-	protected function getFields() {
+	protected function getFieldTypes() {
 		return array('Cms.DataFields.CustomTextField');
 	}
 

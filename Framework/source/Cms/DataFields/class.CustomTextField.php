@@ -36,13 +36,13 @@ class CustomTextField extends CustomDataField {
 		);
 	}
 
-	public function getParamNames() {
+	public function getParamNames($add = false) {
 		return array('max_length', 'optional');
 	}
-	public function getParamsCode() {
+	public function getParamsCode($add = false) {
 		return $this->getCodeImpl('bits/textfield_params');
 	}
-	public function validateParams() {
+	public function validateParams($add = false) {
 		return array(
 			'optional' => array(
 				Validator::VAR_TYPE => VAR_INT

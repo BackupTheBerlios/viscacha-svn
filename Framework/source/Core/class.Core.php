@@ -219,6 +219,14 @@ class Core {
 		}
 	}
 
+	public static function constructObjectArray(array $objectNames) {
+		$objects = array();
+		foreach ($objectNames as $name) {
+			$objects[$name] = self::constructObject($name);
+		}
+		return $objects;
+	}
+
 	/**
 	 * Updates or sets an instance of an object to the internal object array.
 	 *

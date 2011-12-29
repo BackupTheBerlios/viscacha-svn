@@ -1,3 +1,26 @@
+var lastTypeName = '';
+
+function loadFieldParams(url) {
+	var typeName = $('#type').val();
+	if (lastTypeName != typeName) {
+		$('#params').html('Lade Daten...');
+		$('#submit').attr("disabled", "disabled");
+		$.ajax({
+			url: url,
+			data: {type: typeName},
+			success: function(data){
+				if (data == '') {
+					$('#params').html('Bitte Feldtyp wählen...');
+				}
+				else {
+					$('#params').html(data);
+					$('#submit').removeAttr("disabled");
+				}
+			}
+		});
+	}
+	lastTypeName = typeName;
+}
 
 function buildUri(baseId, targetId) {
 	var base = document.getElementById(baseId);

@@ -21,21 +21,31 @@ abstract class CustomDataField {
 
 	public static function constructObject($data) {
 		$obj = Core::constructObject($data['type']);
+		$obj->injectData($data);
+		return $obj;
+	}
+
+	public function injectData($data) {
+		$params = $this->getParamNames();
 		foreach ($data as $key => $value) {
 			switch ($key) {
 				case 'position':
-					$obj->position = Core::constructObject($value);
+					$this->position = Core::constructObject($value);
 					break;
 				case 'type':
 					break;
 				case 'params':
-					$obj->params = empty($data['params']) ? array() : unserialize($data['params']);
+					$this->params = empty($data['params']) ? array() : unserialize($data['params']);
 					break;
 				default:
-					$obj->$key = $value;
+					if (in_array($key, $params)) {
+						$this->params[$key] = $value;
+					}
+					else {
+						$this->$key = $value;
+					}
 			}
 		}
-		return $obj;
 	}
 
 	public function getId() {
@@ -87,18 +97,24 @@ abstract class CustomDataField {
 	public abstract function getOutputCode();
 	public abstract function validate();
 
-	public abstract function getParamNames();
-	public function getParamsData() {
-		return $this->params;
+	public abstract function getParamNames($add = false);
+	public function getParamsData($add = false) {
+		if (!is_array($this->params)) {
+			$this->params = array();
+		}
+		return array_merge(
+			array_fill_keys($this->getParamNames(), null),
+			$this->params
+		);
 	}
-	public abstract function getParamsCode();
-	public abstract function validateParams();
+	public abstract function getParamsCode($add = false);
+	public abstract function validateParams($add = false);
 
 	protected function getCodeImpl($file) {
 		$tpl = Core::_(TPL);
 		$tpl->assign('field', $this->getFieldName());
 		$tpl->assign('data', Sanitize::saveHTML($this->data));
-		$tpl->assign('params', Sanitize::saveHTML($this->params));
+		$tpl->assign('params', Sanitize::saveHTML($this->getParamsData()));
 		return $tpl->output($file);
 	}
 

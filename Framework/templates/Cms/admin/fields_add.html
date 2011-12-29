@@ -1,0 +1,44 @@
+<script type="text/javascript">
+var url = '<?php echo URI::build('airlines/admin/cfields/_fieldcode'); ?>';
+$(function() {
+	loadFieldParams(url);
+});
+</script>
+<form action="<?php echo URI::build('airlines/admin/cfields/add/send'); ?>/send" method="post">
+<fieldset>
+	<legend>Grunddaten</legend>
+	<label for="name">Titel:</label>
+	<input class="label" type="text" name="name" id="name" value="<?php echo $data['name']; ?>" />
+	<br class="newinput" /><hr class="formsep" />
+	<label for="description">Beschreibung</label>
+	<textarea class="label" name="description" id="description" rows="4" cols="40"><?php echo $data['description']; ?></textarea>
+	<br class="newinput" /><hr class="formsep" />
+	<label for="priority">Anzeigenreihenfolge:</label>
+	<select class="label" name="priority" id="priority">
+		<?php for($i = -100; $i <= 100; $i++) { ?>
+		<option value="<?php echo $i; ?>"<?php echo iif($i == $data['priority'], ' selected="selected"'); ?>><?php echo $i; ?></option>
+		<?php } ?>
+	</select>
+	<br class="newinput" /><hr class="formsep" />
+	<label for="position">Anzeigeort:</label>
+	<select class="label" name="position" id="position">
+		<?php foreach ($positions as $class => $pos) { ?>
+		<option value="<?php echo $class; ?>"<?php echo iif($class == $data['position'], ' selected="selected"'); ?>><?php echo $pos->getName(); ?></option>
+		<?php } ?>
+	</select>
+	<br class="newinput" /><hr class="formsep" />
+	<label for="type">Feldtyp:</label>
+	<select class="label" name="type" id="type" onchange="loadFieldParams(url)">
+		<option value="">Bitte wählen</option>
+		<?php foreach ($types as $class => $type) { ?>
+		<option value="<?php echo $class; ?>"<?php echo iif($class == $data['position'], ' selected="selected"'); ?>><?php echo $type->getTypeName(); ?></option>
+		<?php } ?>
+	</select>
+	<br class="newinput" />
+</fieldset>
+<fieldset>
+	<legend>Spezielle Eigenschaften</legend>
+	<div id="params">Bitte Feldtyp wählen...</div>
+</fieldset>
+<input type="submit" id="submit" disabled="disabled" />
+</form>
