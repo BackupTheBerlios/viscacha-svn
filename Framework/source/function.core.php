@@ -39,7 +39,7 @@ function __autoload($className) {
 // Load class Config
 Core::loadClass('Core.Util.Config');
 // Load class validator (for SystemEnvironment)
-Core::loadClass('Core.Util.Validator');
+Core::loadClass('Core.Security.Validator');
 // Load class SystemEnvironment
 Core::loadClass('Core.System.SystemEnvironment');
 // Load classes for Files and Folders (often used)
