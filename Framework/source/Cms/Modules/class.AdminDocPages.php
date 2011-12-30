@@ -80,6 +80,13 @@ class AdminDocPages extends AdminModuleObject {
 							// Mindestlänge wird geprüft, da es keine doppelten URIs geben darf, aber die Startseite keine URI hat.
 							Validator::MESSAGE => 'Die URI muss mindestens 1 und darf maximal 100 Zeichen lang sein.',
 							Validator::MAX_LENGTH => 100
+						),
+						array(
+							Validator::MESSAGE => 'Die angegebene URI existiert bereits für eine andere Seite.',
+							Validator::CLOSURE => function ($uri) use ($db, $id) {
+								$db->query("SELECT uri FROM <p>page WHERE id != <id:int> AND uri = <uri>", compact("id", "uri"));
+								return ($db->numRows() == 0);
+							}
 						)
 					)
 				),
@@ -90,12 +97,6 @@ class AdminDocPages extends AdminModuleObject {
 
 			extract(Validator::checkRequest($options));
 			$data['id'] = $id;
-
-			// Check whether URI exists, validator is not flexible enough for that
-			$db->query("SELECT uri FROM <p>page WHERE id != <id:int> AND uri = <uri>", $data);
-			if ($db->numRows() > 0) {
-				$error[] = 'Die angegebene URI existiert bereits für eine andere Seite.';
-			}
 
 			if (count($error) > 0) {
 				$this->error($error);

@@ -27,6 +27,11 @@ define('NL', "\r\n");
  * @param string Class Name
  */
 function __autoload($className) {
+	if ($className === 'parent') {
+		// Avoid calling parent when using callback function.
+		// See: http://www.php.net/manual/de/function.call-user-func.php#106391
+		return; 
+	}
 	$classManager = Core::getObject('Core.System.ClassManager');
 	if (Config::get('core.debug')) {
 		Core::throwError("Autoloaded class with name '{$className}'", INTERNAL_DEBUG);

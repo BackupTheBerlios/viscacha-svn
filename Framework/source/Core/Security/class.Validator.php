@@ -74,6 +74,10 @@ class Validator {
 	 * Compares for length
 	 */
 	const LENGTH = 14;
+	/**
+	 * Callback for anonymous functions / closures
+	 */
+	const CLOSURE = 15;
 
 	/**
 	 * Callback: Passwort-Prüfung
@@ -216,6 +220,9 @@ class Validator {
 				case Validator::REGEXP:
 					$match = preg_match($option, $value);
 					$return = ($match > 0);
+				break;
+				case Validator::CLOSURE:
+					$return = $option($value);
 				break;
 				// Don't know what you want me to do?! (VAR_TYPE, MESSAGE, ...)
 			}

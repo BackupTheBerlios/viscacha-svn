@@ -74,12 +74,23 @@ class AdminMemberPages extends AdminModuleObject {
 			$options = UserPages::getFieldValidation($countries, $min_year, $max_year);
 			$options['pw1'][Validator::OPTIONAL] = true;
 			$options['email'] = array(
-				Validator::MESSAGE => 'Deie E-Mail-Adresse ist nicht korrekt.',
-				Validator::CALLBACK => Validator::CB_MAIL
+				Validator::MULTIPLE => array(
+					array(
+						Validator::MESSAGE => 'Die E-Mail-Adresse ist nicht korrekt.',
+						Validator::CALLBACK => Validator::CB_MAIL
+					),
+					array(
+						Validator::MESSAGE => 'Diese E-Mail-Adresse ist bereits registriert.',
+						Validator::CLOSURE => function ($mail) use ($id) {
+							$other = UserUtils::getByEmail($mail);
+							return !($other !== null && $id != $other->getId());
+						}
+					)
+				)
 			);
 			if (Me::get()->getId() != $id) {
 				$options['group_id'] = array(
-					Validator::MESSAGE => 'Deie Gruppe ist nicht gültig.',
+					Validator::MESSAGE => 'Die Gruppe ist nicht gültig.',
 					Validator::LIST_CS => array_keys($groups)
 				);
 				$options['active'] = array(
@@ -93,12 +104,6 @@ class AdminMemberPages extends AdminModuleObject {
 			$data = array();
 			if ($action == 'send') {
 				extract(Validator::checkRequest($options));
-
-				// Check whether email exists, validator is not flexible enough for that
-				$other = UserUtils::getByEmail($data['email']);
-				if ($other !== null && $id != $other->getId()) {
-					$error[] = 'Diese E-Mail-Adresse ist bereits registriert.';
-				}
 
 				if (count($error) > 0) {
 					$this->error($error);

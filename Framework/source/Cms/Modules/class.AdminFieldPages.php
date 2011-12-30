@@ -78,6 +78,20 @@ abstract class AdminFieldPages extends AdminModuleObject {
 							array(
 								Validator::MESSAGE => 'Der interne Name darf maximal 32 Zeichen lang sein.',
 								Validator::MAX_LENGTH => 32
+							),
+							// Check whether internal name exists for the table targeted
+							array(
+								Validator::MESSAGE => 'Der interne Name existiert bereits für eine anderes Feld der Tabelle.',
+								Validator::CLOSURE => function ($internal) use (&$positions) {
+									$pos = Request::get('position');
+									if (!empty($internal) && isset($positions[$pos])) {
+										$table = $positions[$pos]->getDbTable();
+										$db = Core::_(DB);
+										$db->query("SHOW COLUMNS FROM <p><table:noquote> LIKE <internal>", compact("internal", "table"));
+										return ($db->numRows() == 0);
+									}
+									return true; // If nothing is specified we will generate a valid name
+								}
 							)
 						)
 					),
@@ -98,20 +112,6 @@ abstract class AdminFieldPages extends AdminModuleObject {
 			}
 
 			extract(Validator::checkRequest($options));
-
-			$pos = Request::get('position');
-			if (!empty($data['internal']) && isset($positions[$pos])) {
-				// Check whether internal name exists, validator is not flexible enough for that
-				$check = array(
-					'table' => $positions[$pos]->getDbTable(),
-					'field' => $data['internal']
-				);
-				$db = Core::_(DB);
-				$db->query("SHOW COLUMNS FROM <p><table:noquote> LIKE <field>", $check);
-				if ($db->numRows() > 0) {
-					$error[] = 'Der interne Name existiert bereits für eine anderes Feld der Tabelle.';
-				}
-			}
 
 			if (count($error) == 0) {
 				$field = $fieldTypes[$data['type']];
