@@ -70,6 +70,10 @@ class Validator {
 	 * Compares for equality
 	 */
 	const EQUALS = 13;
+	/**
+	 * Compares for length
+	 */
+	const LENGTH = 14;
 
 	/**
 	 * Callback: Passwort-Prüfung
@@ -195,6 +199,10 @@ class Validator {
 				case Validator::MIN_LENGTH:
 					$len = strlen($value);
 					$return = ($len >= $option);
+				break;
+				case Validator::LENGTH:
+					$len = strlen($value);
+					$return = ($len == $option);
 				break;
 				case Validator::MAX_VALUE:
 					$return = ($value <= $option);

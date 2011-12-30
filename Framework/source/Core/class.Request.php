@@ -52,7 +52,7 @@ final class Request {
 		$level = $this->routes['Routable'];
 		$parts = explode('/', $uri);
 		foreach ($parts as $part) {
-			if (empty($part)) {
+			if ($part === '') {
 				// Empty parts are somehow useless...
 				continue;
 			}

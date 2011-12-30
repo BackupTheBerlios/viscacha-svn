@@ -10,7 +10,7 @@ jQuery(function() {
 	});
 });
 </script>
-<form action="<?php echo URI::build('cms/admin/documents/write/'.$data['id']); ?>/send" method="post">
+<form action="<?php echo URI::build('cms/admin/documents/write/'.$data['id'].'/send'); ?>" method="post">
 	<label for="title">Titel:</label>
 	<input class="label" type="text" name="title" id="title" value="<?php echo $data['title']; ?>"<?php echo iif(empty($data['id']), " onkeyup=\"buildUri('title', 'uri')\""); ?> />
 	<br class="newinput" /><hr class="formsep" />

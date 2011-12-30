@@ -1,0 +1,53 @@
+<div id="airports">
+	<form action="<?php echo URI::build('airlines/admin/airports'); ?>" method="get" id="chooser">
+		<p class="tright">
+			<span style="float: left;">
+				<select name="country" onchange="document.forms['chooser'].submit();">
+					<option value="">Alle</option>
+					<?php foreach ($countries as $c) { ?>
+					<option value="<?php echo $c; ?>"<?php echo iif(strcasecmp($c, $country) == 0, ' selected="selected"'); ?>><?php echo $c; ?></option>
+					<?php } ?>
+				</select>
+				<input class="filter" type="text" value="" />
+			</span>
+			<a style="float: right;" href="<?php echo URI::build('airlines/admin/airports/edit'); ?>" class="btn add">Neuen Airport hinzufügen</a>
+			<br class="newinput" />
+		</p>
+	</form>
+	<table class="border">
+		<thead>
+		<tr>
+			<th width="30%">Flughafen</th>
+			<th width="5%">Code</th>
+			<th width="20%">Land</th>
+			<th width="20%">Stadt</th>
+			<th width="25%">Aktion</th>
+		</tr>
+		</thead>
+		<tbody>
+		<?php foreach ($data as $row) { ?>
+		<tr>
+			<td><?php echo $row['flughafen']; ?></td>
+			<td><?php echo $row['code']; ?></td>
+			<td><?php echo $row['land']; ?></td>
+			<td><?php echo $row['stadt']; ?></td>
+			<td>
+				<a href="<?php echo URI::build('airlines/admin/airports/edit/' . $row['id']); ?>" class="btn edit">Bearbeiten</a>
+				<a href="<?php echo URI::build('airlines/admin/airports/delete/' . $row['id']); ?>" class="btn delete">Löschen</a>
+			</td>
+		</tr>
+		<?php } ?>
+		</tbody>
+	</table>
+</div>
+<p class="tright">
+	<a href="<?php echo URI::build('airlines/admin/airports/edit'); ?>" class="btn add">Neuen Airport hinzufügen</a>
+</p>
+<script type="text/javascript">
+$(document).ready(function() {
+	$('#airports').liveFilter({
+		delay: 300,
+		defaultText: 'Filter...'
+	});
+});
+</script>

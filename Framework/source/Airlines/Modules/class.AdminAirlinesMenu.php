@@ -14,8 +14,8 @@ class AdminAirlinesMenu extends AdminMenuObject {
 
 	public function getMenu($class) {
 		return array(
-			URI::build('airlines/admin/evals/') => 'Übersicht',
-			URI::build('airlines/admin/evals/activate') => 'Freischalten',
+			URI::build('airlines/admin/flights/evals/') => 'Übersicht',
+			URI::build('airlines/admin/flights/evals/activate') => 'Freischalten',
 			URI::build('airlines/admin/efields') => 'Felder',
 			URI::build('airlines/admin/airports/') => 'Flughäfen',
 			'Kategorien' => array(

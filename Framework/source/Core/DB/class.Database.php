@@ -165,25 +165,31 @@ abstract class Database {
 	 * @param string Field to use for the keys or null to get an enumerated array
 	 * @return array All results in a multimensional associative array
 	 **/
-	public function fetchAll($result = null, $key = null) {
+	public function fetchAll($result = null, $key = null, $value = null) {
 		$cache = array();
-		$error = false;
 		while($row = $this->fetchAssoc($result)){
-			if ($key != null) {
-				if (isset($row[$key]) == false) {
+			if ($key !== null || $value != null) {
+				if ($key !== null && !isset($row[$key])) {
 					Core::throwError("Key assigned in fetchAll() was not found in result set. The keys will be enumerated.", INTERNAL_NOTICE);
-					$error = true;
 				}
-				$cache[$row[$key]] = $row;
+				if ($value !== null && !isset($row[$value])) {
+					Core::throwError("Key assigned in fetchAll() was not found in result set. The keys will be enumerated.", INTERNAL_NOTICE);
+				}
+				if ($key !== null && $value === null) {
+					$cache[$row[$key]] = $row;
+				}
+				else if ($key === null && $value !== null) {
+					$cache[] = $row[$value];
+				}
+				else {
+					$cache[$row[$key]] = $row[$value];
+				}
 			}
 			else {
 				$cache[] = $row;
 			}
 		}
 		$this->freeResults($result);
-		if ($error == true) {
-			$cache = array_map('array_values', $cache);
-		}
 		return $cache;
 	}
 

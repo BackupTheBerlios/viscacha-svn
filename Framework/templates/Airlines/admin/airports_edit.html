@@ -1,0 +1,15 @@
+<form action="<?php echo URI::build('airlines/admin/airports/edit/'.$data['id'].'/send'); ?>" method="post">
+	<label for="flughafen">Flughafen:</label>
+	<input class="label" type="text" name="flughafen" id="flughafen" value="<?php echo $data['flughafen']; ?>" />
+	<br class="newinput" /><hr class="formsep" />
+	<label for="code">Code:</label>
+	<input class="label" type="text" name="code" id="code" value="<?php echo $data['code']; ?>" />
+	<br class="newinput" /><hr class="formsep" />
+	<label for="land">Land:</label>
+	<input class="label" type="text" name="land" id="land" value="<?php echo $data['land']; ?>" />
+	<br class="newinput" /><hr class="formsep" />
+	<label for="stadt">Stadt:</label>
+	<input class="label" type="text" name="stadt" id="stadt" value="<?php echo $data['stadt']; ?>" />
+	<br class="newinput" /><br />
+	<input type="submit" />
+</form>

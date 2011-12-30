@@ -40,11 +40,8 @@ class AdminMemberPages extends AdminModuleObject {
 		$db = Core::_(DB);
 		$sep = Request::get('sep', VAR_HTML);
 
-		$emails = array();
-		$result = $db->query('SELECT email FROM <p>user WHERE active');
-		while ($row = $db->fetchAssoc($result)) {
-			$emails[] = $row['email'];
-		}
+		$db->query('SELECT email FROM <p>user WHERE active');
+		$emails = $db->fetchAll(null, null, 'email');
 
 		$this->tpl->assign('data', implode($sep, $emails));
 		$this->tpl->output("admin/emailexport2");

@@ -18,8 +18,10 @@ $config = array(
 			'!' => 'AirlinePages',
 			'airlines' => 'AirlinePages',
 			'admin' => array(
-				'!' => 'AdminAirlinesPages',
-				'default' => 'AdminAirlinesPages',
+				'!' => 'AdminFlightPages',
+				'flights' => 'AdminFlightPages',
+				'categories' => 'AdminAirlinesPages',
+				'airports' => 'AdminAirportPages',
 				'cfields' => 'AdminAirlinesFieldPages',
 				'efields' => 'AdminFlightFieldPages'
 			)

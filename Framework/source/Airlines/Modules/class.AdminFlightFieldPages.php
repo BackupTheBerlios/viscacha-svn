@@ -13,7 +13,7 @@ class AdminFlightFieldPages extends AdminFieldPages {
 		$this->version = '1.0.0';
 		$this->module = 'Admin CP: Flight-Fields';
 		parent::__construct();
-		$this->breadcrumb->add('Bewertungen', URI::build('airlines/admin/evals'));
+		$this->breadcrumb->add('Bewertungen', URI::build('airlines/admin/flights/evals'));
 		$this->breadcrumb->add('Flug-Felder', URI::build('airlines/admin/efields'));
 	}
 
