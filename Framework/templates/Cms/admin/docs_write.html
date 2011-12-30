@@ -8,6 +8,7 @@ jQuery(function() {
 			wym.fullscreen();
 		}
 	});
+	$('#uri').keyfilter(/[\w\d-]/);
 });
 </script>
 <form action="<?php echo URI::build('cms/admin/documents/write/'.$data['id'].'/send'); ?>" method="post">

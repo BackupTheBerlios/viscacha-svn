@@ -2,6 +2,7 @@
 var url = '<?php echo URI::build($baseUri.'/_fieldcode'); ?>';
 $(function() {
 	loadFieldParams(url);
+	$('#internal').keyfilter(/[\w\d-]/);
 });
 </script>
 <form action="<?php echo URI::build($baseUri.'/add/send'); ?>" method="post">
