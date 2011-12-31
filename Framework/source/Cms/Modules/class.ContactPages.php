@@ -46,6 +46,8 @@ class ContactPages extends CmsModuleObject {
 				Validator::MAX_LENGTH => 100
 			)
 		);
+		$this->enableClientFormValidation($options);
+		// Don't validate the captcha as the session would end
 		if (Config::get('captcha.enable')) {
 			Core::loadClass('Core.Security.ReCaptcha');
 			$options['recaptcha_response_field'] = array(

@@ -32,7 +32,10 @@ abstract class CmsModuleObject extends CoreModuleObject {
 		);
 
 		// URL => content for type-attribute
-		$this->scriptFiles = array();
+		$this->scriptFiles = array(
+			URI::build('client/scripts/jquery/jquery.js') => 'text/javascript'
+		);
+
 		// Html to be placed into the head tag of the page (at last)
 		$this->headHtml = array();
 
@@ -95,7 +98,7 @@ abstract class CmsModuleObject extends CoreModuleObject {
 			}
 		}
 
-//		Core::_(HTTPHEADER)->rawHeader('Content-Type: text/javascript; charset=utf8');
+		Core::_(HTTPHEADER)->rawHeader('Content-Type: text/javascript; charset=utf8');
 		echo json_encode($data);
 		// Terminates the execution ot the script.
 		// Shutdown functions and object destructors will always be executed.

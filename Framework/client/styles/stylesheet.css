@@ -48,18 +48,37 @@ form {
 	min-height: 400px;
 }
 
-input, textarea, select {
-	border-width: 1px;
-	border-style: solid;
-	background-color: #ffffff;
-	color: #777777;
-	border-color: #D9D7D0;
+.input_error {
+	color: #C32727;
+}
+.input_ok {
+	color: #688006;
 }
 
-input:hover, textarea:hover, select:hover, input:focus, textarea:focus, select:focus {
-	color: #000000;
-	border-color: #3b310e;
+#input_msg {
+    display: none;
+    position: absolute;
 }
+#input_msg_img {
+	background-image: url(../images/tip_arrow.png);
+	background-repeat: no-repeat;
+	background-position: top center;
+	height: 11px;
+    position: relative;
+	z-index: 10000;
+}
+#input_msg_txt {
+    position: relative;
+	z-index: 9999;
+	margin-top: -1px;
+    padding: 5px;
+	font-size: 11px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+	border-width: 1px;
+	border-style: solid;
+}
+
 
 /* Action buttons */
 .btn {
@@ -89,12 +108,12 @@ input:hover, textarea:hover, select:hover, input:focus, textarea:focus, select:f
 	color: #74655F;
 	border-color: #C2BEB1;
 }
-.delete, .error, .input_error {
+.delete, .error, #input_msg_txt {
 	background-color: #F6B9B9;
 	color: #C32727;
 	border-color: #E18484;
 }
-.add, .ok, .input_ok {
+.add, .ok {
 	background-color: #E5F993;
 	color: #688006;
 	border-color: #9BAC55;
