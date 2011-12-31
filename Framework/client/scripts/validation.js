@@ -6,15 +6,25 @@ $(document).ready(function() {
 				checkField($(this));
 			})
 			.focus(function(){
-				$(this).removeClass('input_ok');
-				$(this).removeClass('input_error');
+				hideTip();
+				resetField($(this));
 			});
 		}
 	}
 });
 
+function resetField(field) {
+	field.removeClass('input_ok');
+	field.removeClass('input_error');
+}
+
+function hideTip() {
+	$('#input_msg').fadeOut("slow");
+}
+
 function checkField(field) {
-	$('#input_msg').fadeOut("slow").remove();
+	hideTip(field);
+	resetField(field);
 	// Start new request
 	var url = field.closest('form').attr('action');
 	var name = encodeURIComponent(field.attr('name'));
@@ -37,9 +47,10 @@ function checkField(field) {
 			// Show error message
 			if (data.hasOwnProperty('messages')) {
 				if (data['messages'].length > 0) {
-					var top = field.position().top + field.outerHeight();
-					$('body').append( '<div id="input_msg"><div id="input_msg_img"></div><div id="input_msg_txt">' + data['messages'].join("<br />") + '</div></div>' );
-					$('#input_msg').css("top", top+"px").css("left", field.position().left+"px").fadeIn("slow");
+					$('#input_msg').remove();
+					$('body').append( '<div id="input_msg"><div id="input_msg_txt">' + data['messages'].join("<br />") + '</div><div id="input_msg_img"></div></div>' );
+					$('#input_msg').mouseover(function(){ hideTip(); });
+					$('#input_msg').css("top", (field.position().top - $('#input_msg').height())+"px").css("left", field.position().left+"px").fadeIn("slow");
 				}
 			}
 		}

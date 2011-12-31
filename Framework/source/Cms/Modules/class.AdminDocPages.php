@@ -87,7 +87,6 @@ class AdminDocPages extends AdminModuleObject {
 				Validator::OPTIONAL => true
 			)
 		);
-		$this->enableClientFormValidation($options);
 
 		$this->breadcrumb->add(iif($id > 0, "Bearbeiten", "Hinzufügen"));
 		$this->scriptFiles[URI::build('client/scripts/wymeditor/jquery.wymeditor.js')] = 'text/javascript';

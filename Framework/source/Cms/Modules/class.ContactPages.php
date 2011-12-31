@@ -47,7 +47,7 @@ class ContactPages extends CmsModuleObject {
 			)
 		);
 		$this->enableClientFormValidation($options);
-		// Don't validate the captcha as the session would end
+		// Don't validate the captcha via ajax as the session would end
 		if (Config::get('captcha.enable')) {
 			Core::loadClass('Core.Security.ReCaptcha');
 			$options['recaptcha_response_field'] = array(

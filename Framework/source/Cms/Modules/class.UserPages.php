@@ -63,24 +63,30 @@ class UserPages extends CmsModuleObject {
 	public function settings() {
 		$action = Request::get(1, VAR_URI);
 
+		$min_year = date('Y')-110;
+		$max_year = date('Y')-8;
+		$countries = CmsTools::getCountries();
+
+		$options = $this->getFieldValidation($countries, $min_year, $max_year);
+		$options['pw1'][Validator::OPTIONAL] = true;
+		$options['old_pw'] = array(
+			Validator::OPTIONAL => true,
+			Validator::MESSAGE => 'Das derzeitige Passwort ist nicht korrekt.',
+			Validator::CALLBACK => 'UserPages::checkPW'
+		);
+		if (Me::get()->loggedIn()) {
+			$this->enableClientFormValidation($options);
+		}
+		else {
+			$this->enableClientFormValidationOnError();
+		}
+
 		$this->breadcrumb->add('Einstellungen');
 		$this->header();
 		if (!Me::get()->loggedIn()) {
 			$this->error('Sie müssen sich erst anmelden, bevor Sie auf diese Seite zugreifen können!');
 		}
 		else {
-			$min_year = date('Y')-110;
-			$max_year = date('Y')-8;
-			$countries = CmsTools::getCountries();
-
-			$options = $this->getFieldValidation($countries, $min_year, $max_year);
-			$options['pw1'][Validator::OPTIONAL] = true;
-			$options['old_pw'] = array(
-				Validator::OPTIONAL => true,
-				Validator::MESSAGE => 'Das derzeitige Passwort ist nicht korrekt.',
-				Validator::CALLBACK => 'UserPages::checkPW'
-			);
-
 			$error = array();
 			$db = Core::_(DB);
 			
@@ -171,17 +177,19 @@ class UserPages extends CmsModuleObject {
 	public function register() {
 		$action = Request::get(1, VAR_URI);
 
+		$min_year = date('Y')-110;
+		$max_year = date('Y')-8;
+		$countries = CmsTools::getCountries();
+		$options = $this->getFieldValidation($countries, $min_year, $max_year);
+		$this->enableClientFormValidation($options);
+		
 		$this->breadcrumb->add('Registrieren');
 		$this->header();
 		if (Me::get()->loggedIn()) {
 			$this->error('Sie sind bereits registriert!');
 		}
 		else {
-			$min_year = date('Y')-110;
-			$max_year = date('Y')-8;
-			$countries = CmsTools::getCountries();
-
-			$options = $this->getFieldValidation($countries, $min_year, $max_year);
+			// Don't validate the captcha via ajax as the session would end
 			if (Config::get('captcha.enable')) {
 				Core::loadClass('Core.Security.ReCaptcha');
 				$options['recaptcha_response_field'] = array(
