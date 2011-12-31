@@ -55,7 +55,6 @@ class AdminAirportPages extends AdminModuleObject {
 	public function edit() {
 		$id = Request::get(1, VAR_INT, 0);
 		$action = Request::get(2, VAR_URI);
-		var_dump($id, $action);
 
 		$this->breadcrumb->add(iif($id > 0, "Bearbeiten", "Hinzufügen"));
 		$this->header();

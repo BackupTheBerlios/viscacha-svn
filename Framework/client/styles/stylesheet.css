@@ -48,6 +48,19 @@ form {
 	min-height: 400px;
 }
 
+input, textarea, select {
+	border-width: 1px;
+	border-style: solid;
+	background-color: #ffffff;
+	color: #777777;
+	border-color: #D9D7D0;
+}
+
+input:hover, textarea:hover, select:hover, input:focus, textarea:focus, select:focus {
+	color: #000000;
+	border-color: #3b310e;
+}
+
 /* Action buttons */
 .btn {
 	padding: 1px 3px;
@@ -76,12 +89,12 @@ form {
 	color: #74655F;
 	border-color: #C2BEB1;
 }
-.delete, .error {
+.delete, .error, .input_error {
 	background-color: #F6B9B9;
 	color: #C32727;
 	border-color: #E18484;
 }
-.add, .ok {
+.add, .ok, .input_ok {
 	background-color: #E5F993;
 	color: #688006;
 	border-color: #9BAC55;
@@ -129,7 +142,7 @@ form {
 .linkpool {
 	width: 225px;
 	float: left;
-	border-top: 1px dashed #c0c0c0;
+	border-top: 1px dashed #D9D7D0;
 }
 .linkpool h3 {
 	color: #767475;
@@ -221,7 +234,7 @@ label span {
 	height: 1px;
 	line-height: 1px;
 	border: 0;
-	border-bottom: 1px #E6E2C5 dotted;
+	border-bottom: 1px #D9D7D0 dotted;
 	margin: 5px 0px 5px 0px;
 }
 .groupsep {

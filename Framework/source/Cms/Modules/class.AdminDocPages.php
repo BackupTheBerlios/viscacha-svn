@@ -53,48 +53,49 @@ class AdminDocPages extends AdminModuleObject {
 	}
 
 	public function write() {
+		$db = Core::_(DB);
 		$id = Request::get(1, VAR_INT);
 		$action = Request::get(2, VAR_URI);
+
+		$options = array(
+			'title' => array(
+				Validator::MESSAGE => 'Der Name muss mindestens 2 und darf maximal 255 Zeichen lang sein.',
+				Validator::MIN_LENGTH => 2,
+				Validator::MAX_LENGTH => 255
+			),
+			'uri' => array(
+				Validator::MULTIPLE => array(
+					array(
+						Validator::MESSAGE => 'Die URI enthält Zeichen die nicht erlaubt sind. Erlaubt sind: a-z, 0-9, _, -',
+						Validator::REGEXP => '/^[\w\d\-]*$/i'
+					),
+					array(
+						// Mindestlänge wird geprüft, da es keine doppelten URIs geben darf, aber die Startseite keine URI hat.
+						Validator::MESSAGE => 'Die URI muss mindestens 1 und darf maximal 100 Zeichen lang sein.',
+						Validator::MAX_LENGTH => 100
+					),
+					array(
+						Validator::MESSAGE => 'Die angegebene URI existiert bereits für eine andere Seite.',
+						Validator::CLOSURE => function ($uri) use ($db, $id) {
+							$db->query("SELECT uri FROM <p>page WHERE id != <id:int> AND uri = <uri>", compact("id", "uri"));
+							return ($db->numRows() == 0);
+						}
+					)
+				)
+			),
+			'content' => array(
+				Validator::OPTIONAL => true
+			)
+		);
+		$this->enableClientFormValidation($options);
 
 		$this->breadcrumb->add(iif($id > 0, "Bearbeiten", "Hinzufügen"));
 		$this->scriptFiles[URI::build('client/scripts/wymeditor/jquery.wymeditor.js')] = 'text/javascript';
 		$this->scriptFiles[URI::build('client/scripts/jquery/jquery.keyfilter.js')] = 'text/javascript';
 		$this->header();
 
-		$db = Core::_(DB);
 		$data = array('id' => $id, 'title' => '', 'uri' => '', 'content' => '');
 		if ($action == 'send') {
-			$options = array(
-				'title' => array(
-					Validator::MESSAGE => 'Der Name muss mindestens 2 und darf maximal 255 Zeichen lang sein.',
-					Validator::MIN_LENGTH => 2,
-					Validator::MAX_LENGTH => 255
-				),
-				'uri' => array(
-					Validator::MULTIPLE => array(
-						array(
-							Validator::MESSAGE => 'Die URI enthält Zeichen die nicht erlaubt sind. Erlaubt sind: a-z, 0-9, _, -',
-							Validator::REGEXP => '/^[\w\d\-]*$/i'
-						),
-						array(
-							// Mindestlänge wird geprüft, da es keine doppelten URIs geben darf, aber die Startseite keine URI hat.
-							Validator::MESSAGE => 'Die URI muss mindestens 1 und darf maximal 100 Zeichen lang sein.',
-							Validator::MAX_LENGTH => 100
-						),
-						array(
-							Validator::MESSAGE => 'Die angegebene URI existiert bereits für eine andere Seite.',
-							Validator::CLOSURE => function ($uri) use ($db, $id) {
-								$db->query("SELECT uri FROM <p>page WHERE id != <id:int> AND uri = <uri>", compact("id", "uri"));
-								return ($db->numRows() == 0);
-							}
-						)
-					)
-				),
-				'content' => array(
-					Validator::OPTIONAL => true
-				)
-			);
-
 			extract(Validator::checkRequest($options));
 			$data['id'] = $id;
 

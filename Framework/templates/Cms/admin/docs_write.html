@@ -3,10 +3,7 @@ jQuery(function() {
 	jQuery('#data').wymeditor({
 		lang: 'de',
 		logoHtml: '',
-		skin: 'compact',
-		postInit: function(wym) {
-			wym.fullscreen();
-		}
+		skin: 'compact'
 	});
 	$('#uri').keyfilter(/[\w\d-]/);
 });
