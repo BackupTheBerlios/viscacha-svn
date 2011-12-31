@@ -23,6 +23,12 @@ class ContentPages extends CmsModuleObject {
 		$this->custom_pages();
 	}
 
+	private function parse($page) {
+		// URI conversion, example: [@uri:/cms/contact]
+		$page = preg_replace_callback('~\[@uri:([^]]+)\]~i', function($m) { return URI::build($m[1]); }, $page);
+		return $page;
+	}
+
 	private function custom_pages() {
 		$uri = Request::get(0, VAR_URI);
 		$db = Core::_(DB);
@@ -35,7 +41,7 @@ class ContentPages extends CmsModuleObject {
 			$data = $db->fetchAssoc();
 			$this->breadcrumb->add($data['title']);
 			$this->header();
-			echo $data['content'];
+			echo $this->parse($data['content']);
 		}
 		$this->footer();
 	}
