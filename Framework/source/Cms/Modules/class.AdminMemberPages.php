@@ -38,12 +38,12 @@ class AdminMemberPages extends AdminModuleObject {
 		$this->header();
 
 		$db = Core::_(DB);
-		$sep = Request::get('sep', VAR_HTML);
+		$sep = Request::get('sep');
 
 		$db->query('SELECT email FROM <p>user WHERE active');
 		$emails = $db->fetchAll(null, null, 'email');
 
-		$this->tpl->assign('data', implode($sep, $emails));
+		$this->tpl->assign('data', Sanitize::saveHtml(implode($sep, $emails)));
 		$this->tpl->output("admin/emailexport2");
 		$this->footer();
 	}

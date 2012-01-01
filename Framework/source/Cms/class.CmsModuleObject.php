@@ -81,7 +81,7 @@ abstract class CmsModuleObject extends CoreModuleObject {
 		else {
 			$this->scriptFiles[URI::build('client/scripts/validation.js')] = 'text/javascript';
 			$this->tpl->assign('json', json_encode(array_keys($options)));
-			$this->headHtml[] = $this->tpl->parse('/cms/bits/client_validation');
+			$this->headHtml[] = $this->tpl->parse('/Cms/bits/client_validation');
 		}
 	}
 
@@ -124,12 +124,12 @@ abstract class CmsModuleObject extends CoreModuleObject {
 		$this->tpl->assign('cssFiles', $this->cssFiles);
 		$this->tpl->assign('scriptFiles', $this->scriptFiles);
 		$this->tpl->assign('headHtml', implode(NL, $this->headHtml));
-		$this->tpl->output('/cms/header');
+		$this->tpl->output('/Cms/header');
 	}
 
 	protected function footer() {
 		$this->tpl->assign('breadcrumb', $this->breadcrumb);
-		$this->tpl->output('/cms/footer');
+		$this->tpl->output('/Cms/footer');
 	}
 
 	protected function error($message, $url = null) {
@@ -138,19 +138,19 @@ abstract class CmsModuleObject extends CoreModuleObject {
 		}
 		$this->tpl->assign('url', $url);
 		$this->tpl->assign('message', $message);
-		$this->tpl->output('/cms/error');
+		$this->tpl->output('/Cms/error');
 	}
 
 	protected function yesNo($question, $yesUrl, $noUrl) {
 		$this->tpl->assign('yesUrl', $yesUrl);
 		$this->tpl->assign('noUrl', $noUrl);
 		$this->tpl->assign('question', $question);
-		$this->tpl->output('/cms/yes_no');
+		$this->tpl->output('/Cms/yes_no');
 	}
 
 	protected function notice($message) {
 		$this->tpl->assign('message', $message);
-		$this->tpl->output('/cms/notice');
+		$this->tpl->output('/Cms/notice');
 	}
 
 	protected function ok($message, $url = null) {
@@ -159,7 +159,7 @@ abstract class CmsModuleObject extends CoreModuleObject {
 		}
 		$this->tpl->assign('url', $url);
 		$this->tpl->assign('message', $message);
-		$this->tpl->output('/cms/ok');
+		$this->tpl->output('/Cms/ok');
 	}
 
 }

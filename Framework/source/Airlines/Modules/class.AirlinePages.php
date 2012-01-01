@@ -46,19 +46,17 @@ class AirlinePages extends CmsModuleObject {
 	protected function airline () {
 		list($id,) = explode('-', Request::get(0, VAR_URI), 2);
 
-		$db = Core::_(DB);
-		$db->query("SELECT * FROM <p>categories WHERE id = <id:int>", compact("id"));
-		$data = null;
-		if ($db->numRows() > 0) {
-			$data = $db->fetchAssoc();
-			$this->breadcrumb->add($data['name']);
+		$airline = new AirlinesCategoryPosition();
+		if ($airline->load($id)) {
+			$name = $airline->getField('name');
+			$this->breadcrumb->add($name->getData());
 			$this->header();
-			$this->tpl->assign("data", $data);
+			$this->tpl->assign('airline', $airline);
 			$this->tpl->output('airline');
 		}
 		else {
 			$this->header();
-			$this->error('Die angegebene Airline wurde leider nicht gefunden.');
+			$this->error('Die Airline wurde leider nicht gefunden.');
 		}
 		$this->footer();
 	}

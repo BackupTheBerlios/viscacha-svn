@@ -38,11 +38,16 @@ class URI {
 
 	public static function build($uri, $host = false) {
 		$uri = Request::getObject()->normalizeURI($uri);
-		$root = Config::get("general.url");
-		if ($host == false) {
-			$root = parse_url($root, PHP_URL_PATH);
+		if (strpos($uri, '://') === false) {
+			$root = Config::get("general.url");
+			if ($host == false) {
+				$root = parse_url($root, PHP_URL_PATH);
+			}
+			return $root . $uri;
 		}
-		return $root . $uri;
+		else {
+			return $uri;
+		}
 	}
 
 	public static function frontPage() {

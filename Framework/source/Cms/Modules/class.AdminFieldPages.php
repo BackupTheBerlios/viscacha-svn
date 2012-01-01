@@ -160,7 +160,7 @@ abstract class AdminFieldPages extends AdminModuleObject {
 			$this->tpl->assign('types', $fieldTypes);
 			$this->tpl->assign('data', $data);
 			$this->tpl->assign('baseUri', $this->getBaseURI());
-			$this->tpl->output("/cms/admin/fields_add");
+			$this->tpl->output("/Cms/admin/fields_add");
 		}
 		$this->footer();
 	}
@@ -262,7 +262,7 @@ abstract class AdminFieldPages extends AdminModuleObject {
 			$this->tpl->assign('positions', $positions);
 			$this->tpl->assign('data', Sanitize::saveHTML($data));
 			$this->tpl->assign('baseUri', $this->getBaseURI());
-			$this->tpl->output("/cms/admin/fields_edit");
+			$this->tpl->output("/Cms/admin/fields_edit");
 		}
 		$this->footer();
 	}
@@ -277,7 +277,7 @@ abstract class AdminFieldPages extends AdminModuleObject {
 		}
 		$this->tpl->assign("data", $fields);
 		$this->tpl->assign('baseUri', $this->getBaseURI());
-		$this->tpl->output("/cms/admin/fields");
+		$this->tpl->output("/Cms/admin/fields");
 	}
 
 	private function injectDataToField($field, $data) {

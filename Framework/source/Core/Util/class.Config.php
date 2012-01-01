@@ -73,7 +73,7 @@ class Config {
      * @param int Type of variable (one of the standard types that are accepted by Request::get().
      * @param mixed Value to change to specified config key.
 	 **/
-	public static function set($key, $type = VAR_HTML, $value = null) {
+	public static function set($key, $type = VAR_NONE, $value = null) {
 		if (self::$data == null) {
 			self::baseConfig();
 		}

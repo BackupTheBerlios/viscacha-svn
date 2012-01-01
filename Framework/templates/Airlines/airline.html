@@ -1,2 +1,5 @@
-<h2><?php echo $data['name']; ?></h2>
-...
+<h2><?php echo $airline->getField('name')->getData(); ?></h2>
+<div style="padding: 20px; border: dashed 1px #9c0;">
+	<?php echo $airline->outputFields(array('logo', 'description'), false); ?>
+	<?php echo $airline->outputFieldsExcept(array('name', 'logo', 'description')); ?>
+</div>

@@ -17,7 +17,7 @@ class CustomImageView extends CustomTextField {
 	}
 
 	public function getOutputCode() {
-		return $this->getCodeImpl('bits/image/output');
+		return $this->getCodeImpl('/Cms/bits/image/output');
 	}
 	public function getValidation() {
 		return array(
@@ -31,16 +31,14 @@ class CustomImageView extends CustomTextField {
 		return array('alt', 'optional');
 	}
 	public function getParamsCode($add = false) {
-		return $this->getCodeImpl('bits/image/params');
+		return $this->getCodeImpl('/Cms/bits/image/params');
 	}
 	public function getValidationParams($add = false) {
 		return array(
 			'optional' => array(
 				Validator::VAR_TYPE => VAR_INT
 			),
-			'alt' => array(
-				Validator::VAR_TYPE => VAR_HTML
-			)
+			'alt' => array()
 		);
 	}
 

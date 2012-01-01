@@ -16,17 +16,14 @@ class CustomCheckBox extends CustomDataField {
 		return 'Cms.DataFields.CustomCheckBox';
 	}
 
-	public function getDataType() {
-		return VAR_INT;
-	}
 	public function getDbDataType() {
 		return 'BOOLEAN';
 	}
 	public function getInputCode() {
-		return $this->getCodeImpl('bits/checkbox/input');
+		return $this->getCodeImpl('/Cms/bits/checkbox/input');
 	}
 	public function getOutputCode() {
-		return $this->getCodeImpl('bits/checkbox/output');
+		return $this->getCodeImpl('/Cms/bits/checkbox/output');
 	}
 	public function getValidation() {
 		return array(

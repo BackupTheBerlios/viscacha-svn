@@ -22,7 +22,7 @@ class CustomMultilineTextField extends CustomTextField {
 		return 'MEDIUMTEXT';
 	}
 	public function getInputCode() {
-		return $this->getCodeImpl('bits/textfield/ml_input');
+		return $this->getCodeImpl('/Cms/bits/textfield/ml_input');
 	}
 
 }

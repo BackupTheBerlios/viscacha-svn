@@ -1,6 +1,4 @@
 <?php
-Core::loadInterface('Cms.DataFields.Positions.CustomDataPosition');
-
 /**
  * Position for custom profile fields.
  *
@@ -10,7 +8,7 @@ Core::loadInterface('Cms.DataFields.Positions.CustomDataPosition');
  * @since 		1.0
  */
 
-class AirlinesCategoryPosition implements CustomDataPosition {
+class AirlinesCategoryPosition extends BaseDataPosition {
 
 	public function getDbTable() {
 		return 'categories';

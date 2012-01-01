@@ -19,17 +19,14 @@ class CustomTextField extends CustomDataField {
 		return 'Cms.DataFields.CustomTextField';
 	}
 
-	public function getDataType() {
-		return VAR_HTML;
-	}
 	public function getDbDataType() {
 		return 'VARCHAR('.$this->getMaxPossibleLength().')';
 	}
 	public function getInputCode() {
-		return $this->getCodeImpl('bits/textfield/input');
+		return $this->getCodeImpl('/Cms/bits/textfield/input');
 	}
 	public function getOutputCode() {
-		return $this->getCodeImpl('bits/textfield/output');
+		return $this->getCodeImpl('/Cms/bits/textfield/output');
 	}
 	public function getValidation() {
 		return array(
@@ -43,7 +40,7 @@ class CustomTextField extends CustomDataField {
 		return array('max_length', 'optional');
 	}
 	public function getParamsCode($add = false) {
-		return $this->getCodeImpl('bits/textfield/params');
+		return $this->getCodeImpl('/Cms/bits/textfield/params');
 	}
 	public function getValidationParams($add = false) {
 		return array(

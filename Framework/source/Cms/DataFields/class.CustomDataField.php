@@ -146,7 +146,6 @@ abstract class CustomDataField {
 	public function setData($data) {
 		$this->data = $data;
 	}
-	public abstract function getDataType(); // Example: VAR_INT
 	public abstract function getDbDataType(); // Example: INT(10)
 	public abstract function getInputCode();
 	public abstract function getOutputCode();
@@ -165,7 +164,7 @@ abstract class CustomDataField {
 		);
 	}
 	public function getParamsCode($add = false) {
-		return $this->getCodeImpl('bits/no_params');
+		return $this->getCodeImpl('/Cms/bits/no_params');
 	}
 	public function getValidationParams($add = false) {
 		return array();

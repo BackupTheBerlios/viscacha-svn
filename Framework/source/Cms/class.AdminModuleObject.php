@@ -30,12 +30,12 @@ abstract class AdminModuleObject extends CmsModuleObject {
 	protected function header() {
 		parent::header();
 		$this->tpl->assign('menu', $this->menu);
-		$this->tpl->output("/cms/admin/header");
+		$this->tpl->output("/Cms/admin/header");
 	}
 
 	protected function footer() {
 		$this->tpl->assign('menu', $this->menu);
-		$this->tpl->output("/cms/admin/footer");
+		$this->tpl->output("/Cms/admin/footer");
 		parent::footer();
 	}
 

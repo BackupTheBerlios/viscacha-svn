@@ -17,7 +17,7 @@ class CustomUrlField extends CustomTextField {
 	}
 
 	public function getOutputCode() {
-		return $this->getCodeImpl('bits/url/output');
+		return $this->getCodeImpl('/Cms/bits/url/output');
 	}
 	public function getValidation() {
 		return array(
@@ -39,13 +39,11 @@ class CustomUrlField extends CustomTextField {
 		return array('caption', 'target', 'optional');
 	}
 	public function getParamsCode($add = false) {
-		return $this->getCodeImpl('bits/url/params');
+		return $this->getCodeImpl('/Cms/bits/url/params');
 	}
 	public function getValidationParams($add = false) {
 		return array(
-			'caption' => array(
-				Validator::VAR_TYPE => VAR_HTML
-			),
+			'caption' => array(),
 			'target' => array(
 				Validator::MESSAGE => 'Das Zielfenster darf nur folgende Zeichen enthalten: a-z, 0-9, _, -',
 				Validator::REGEXP => Validator::RE_URI,

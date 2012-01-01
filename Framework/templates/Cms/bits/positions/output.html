@@ -1,0 +1,7 @@
+<?php if ($label) { ?>
+<label><?php echo Sanitize::saveHtml($field->getName()); ?>:</label>
+<div class="label"><?php echo $output; ?></div>
+<br class="newinput" />
+<?php } else { ?>
+<p><?php echo $output; ?></p>
+<?php } ?>
