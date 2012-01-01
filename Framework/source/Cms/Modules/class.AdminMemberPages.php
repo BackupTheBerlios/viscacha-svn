@@ -177,6 +177,16 @@ class AdminMemberPages extends AdminModuleObject {
 		$this->footer();
 	}
 
+	public function groups() {
+		$this->breadcrumb->add("Gruppen");
+		$this->header();
+		$db = Core::_(DB);
+		$db->query("SELECT * FROM <p>group");
+		$this->tpl->assign("data", Sanitize::saveHTML($db->fetchAll()));
+		$this->tpl->output("admin/groups");
+		$this->footer();
+	}
+
 	protected function members() {
 		$db = Core::_(DB);
 		$db->query("SELECT * FROM <p>user ORDER BY surname, forename");

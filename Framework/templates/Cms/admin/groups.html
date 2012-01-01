@@ -1,0 +1,16 @@
+<table class="border">
+	<tr>
+		<th width="70%">Gruppe</th>
+		<th width="10%">Administrator</th>
+		<th width="10%">Redakteur</th>
+		<th width="10%">Registriert</th>
+	</tr>
+	<?php foreach($data as $row) { ?>
+	<tr>
+		<td><?php echo $row['title']; ?></td>
+		<td class="tcenter"><?php echo iif($row['admin'], 'Ja', 'Nein'); ?></td>
+		<td class="tcenter"><?php echo iif($row['editor'], 'Ja', 'Nein'); ?></td>
+		<td class="tcenter"><?php echo iif($row['registered'], 'Ja', 'Nein'); ?></td>
+	</tr>
+	<?php } ?>
+</table>

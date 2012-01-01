@@ -29,6 +29,7 @@ class AdminCmsMenu extends AdminMenuObject {
 			case 'Cms.Modules.AdminMemberPages':
 				return array(
 					URI::build('cms/admin/members') => 'Übersicht',
+					URI::build('cms/admin/members/groups') => 'Gruppen',
 					URI::build('cms/admin/members/emailexport') => 'E-Mail-Adressen exportieren'
 				);
 			default:
