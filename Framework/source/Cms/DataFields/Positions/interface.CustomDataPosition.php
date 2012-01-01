@@ -11,6 +11,7 @@
 interface CustomDataPosition {
 
 	public function getDbTable(); // Database table name for the data, without prefix
+	public function getPrimaryKey(); // Primary key column name of the specified db table
 	public function getName();
 	public function getClassPath(); // Example: Cms.DataFields.CustomDataPosition
 

@@ -1,4 +1,6 @@
 <?php
+Core::loadInterface('Cms.DataFields.Positions.CustomDataPosition');
+
 /**
  * Position for custom profile fields.
  *
@@ -8,10 +10,13 @@
  * @since 		1.0
  */
 
-class PersonalProfileFields extends BaseDataPosition {
+class PersonalProfileFields implements CustomDataPosition {
 
 	public function getDbTable() {
 		return 'user';
+	}
+	public function getPrimaryKey() {
+		return 'id';
 	}
 	public function getName() {
 		return 'Persönliche Daten';

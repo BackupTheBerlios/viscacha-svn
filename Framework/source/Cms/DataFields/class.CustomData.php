@@ -10,15 +10,18 @@ Core::loadInterface('Cms.DataFields.Positions.CustomDataPosition');
  * @since 		1.0
  */
 
-abstract class BaseDataPosition implements CustomDataPosition {
+class CustomData {
 
+	private $position;
 	private $fields;
 	private $template;
 
-	protected function getPrimaryKey() {
-		return 'id';
+	public function __construct(CustomDataPosition $position) {
+		$this->position = $position;
+		$this->fields = null;
+		$this->template = null;
 	}
-	
+
 	public function getOutputTemplate() {
 		if (empty($this->template)) {
 			return '/Cms/bits/positions/output';
@@ -26,18 +29,18 @@ abstract class BaseDataPosition implements CustomDataPosition {
 		return $this->template;
 	}
 
-	public function setOutputTemplate($path) {
+	public function setOutputTemplate($path = null) {
 		$this->template = $path;
 	}
 
 	public function load($pkValue) {
-		return $this->loadByField($this->getPrimaryKey(), $pkValue);
+		return $this->loadByField($this->position->getPrimaryKey(), $pkValue);
 	}
 
 	public function loadByField($field, $value) {
 		$this->cacheFields();
 		$sql = compact("field", "value");
-		$sql['table'] = $this->getDbTable();
+		$sql['table'] = $this->position->getDbTable();
 		$db = Core::_(DB);
 		$db->query("SELECT * FROM <p><table:noquote> WHERE <field:noquote> = <value> LIMIT 1", $sql);
 		if ($db->numRows() == 1 && $row = $db->fetchAssoc()) {
@@ -114,7 +117,7 @@ abstract class BaseDataPosition implements CustomDataPosition {
 	// Lazy loading...
 	protected function cacheFields() {
 		if (!is_array($this->fields)) {
-			$pos = $this->getClassPath();
+			$pos = $this->position->getClassPath();
 			$db = Core::_(DB);
 			$db->query("SELECT * FROM <p>fields WHERE position = <pos> ORDER BY priority", compact("pos"));
 			$this->fields = array();

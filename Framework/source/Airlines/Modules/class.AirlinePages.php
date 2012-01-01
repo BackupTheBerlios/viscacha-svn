@@ -46,7 +46,7 @@ class AirlinePages extends CmsModuleObject {
 	protected function airline () {
 		list($id,) = explode('-', Request::get(0, VAR_URI), 2);
 
-		$airline = new AirlinesCategoryPosition();
+		$airline = new CustomData(new AirlinesCategoryPosition());
 		if ($airline->load($id)) {
 			$name = $airline->getField('name');
 			$this->breadcrumb->add($name->getData());
