@@ -34,6 +34,30 @@ $(function() {
 		<?php } ?>
 	</select>
 	<br class="newinput" /><hr class="formsep" />
+	<label>Rechte (Daten):</label>
+	<div class="label">
+		<table class="border">
+			<tr>
+				<th></th>
+				<?php foreach (CustomDataField::getRights() as $right) { ?>
+				<th><?php echo Authentication::getRightName($right); ?></th>
+				<?php } ?>
+			</tr>
+			<tr>
+				<td>Sehen</td>
+				<?php foreach (CustomDataField::getRights() as $right) { ?>
+				<td class="tcenter"><input type="checkbox" name="read[<?php echo $right; ?>]" value="1"<?php echo iif(!empty($data['read'][$right]), ' checked="checked"'); ?> /></td>
+				<?php } ?>
+			</tr>
+			<tr>
+				<td>&Auml;ndern</td>
+				<?php foreach (CustomDataField::getRights() as $right) { ?>
+				<td class="tcenter"><input type="checkbox" name="write[<?php echo $right; ?>]" value="1"<?php echo iif(!empty($data['write'][$right]), ' checked="checked"'); ?> /></td>
+				<?php } ?>
+			</tr>
+		</table>
+	</div>
+	<br class="newinput" /><hr class="formsep" />
 	<label for="type">Feldtyp:</label>
 	<select class="label" name="type" id="type" onchange="loadFieldParams(url)">
 		<option value="">Bitte wählen</option>

@@ -16,6 +16,7 @@ abstract class CustomDataField {
 	protected $priority;
 	protected $position;
 	protected $implemented;
+	protected $permissions;
 
 	protected $data;
 	protected $params;
@@ -24,6 +25,10 @@ abstract class CustomDataField {
 		$obj = Core::constructObject($data['type']);
 		$obj->injectData($data);
 		return $obj;
+	}
+
+	public static function getRights() {
+		return array('admin', 'editor', 'registered');
 	}
 
 	public function injectData($data) {
@@ -36,7 +41,16 @@ abstract class CustomDataField {
 				case 'type':
 					break;
 				case 'params':
-					$this->params = empty($data['params']) ? array() : unserialize($data['params']);
+				case 'permissions':
+					if (empty($data[$key])) {
+						$this->$key = array();
+					}
+					else if (is_array($data[$key])) {
+						$this->$key = $data[$key];
+					}
+					else {
+						$this->$key = unserialize($data[$key]);
+					}
 					break;
 				default:
 					if (in_array($key, $params)) {
@@ -86,6 +100,41 @@ abstract class CustomDataField {
 	}
 	public function isImplemented() {
 		return !empty($this->implemented);
+	}
+
+	public static function ensurePermissionsValid($permissions) {
+		$data = array();
+		foreach(CustomDataField::getRights() as $right) {
+			foreach (array('read', 'write') as $type) {
+				if (empty($permissions[$type][$right])) {
+					$data[$type][$right] = 0;
+				}
+				else {
+					$data[$type][$right] = 1;
+				}
+			}
+		}
+		return $data;
+	}
+	public function getPermissions() {
+		return self::ensurePermissionsValid($this->permissions);
+	}
+	public function canRead(User $user = null) {
+		$this->hasPermission('read', $user);
+	}
+	public function canWrite(User $user = null) {
+		$this->hasPermission('write', $user);
+	}
+	protected function hasPermission($type, $user = null) {
+		if ($user === null) {
+			$user = Me::get();
+		}
+		foreach (self::getRights() as $right) {
+			if ($user->isAllowed($right) && !empty($this->permissions[$type][$right])) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public abstract function getTypeName();
@@ -142,11 +191,12 @@ abstract class CustomDataField {
 				'type' => $this->getClassPath(),
 				'pos' => $this->position->getClassPath(),
 				'prio' => $this->priority,
-				'params' => serialize($this->getParamsData())
+				'params' => serialize($this->getParamsData()),
+				'permissions' => serialize($this->permissions)
 			);
 			$db->query("
-				INSERT INTO <p>fields (internal, name, description, type, position, priority, params)
-				VALUES (<internal>, <name>, <desc>, <type>, <pos>, <prio:int>, <params>)", $insert);
+				INSERT INTO <p>fields (internal, name, description, type, position, priority, params, permissions)
+				VALUES (<internal>, <name>, <desc>, <type>, <pos>, <prio:int>, <params>, <permissions>)", $insert);
 			// Save generated id to have it for the field name
 			$this->id = $db->insertId();
 
@@ -175,10 +225,11 @@ abstract class CustomDataField {
 			'desc' => $this->description,
 			'prio' => $this->priority,
 			'params' => serialize($this->getParamsData()),
+			'permissions' => serialize($this->permissions),
 			'position' => $this->position->getClassPath(),
 			'id' => $this->id
 		);
-		return $db->query("UPDATE <p>fields SET name = <name>, description = <desc>, priority = <prio:int>, params = <params>, position = <position> WHERE id = <id:int>", $update);
+		return $db->query("UPDATE <p>fields SET name = <name>, description = <desc>, priority = <prio:int>, params = <params>, position = <position>, permissions = <permissions> WHERE id = <id:int>", $update);
 	}
 
 	public function remove() {

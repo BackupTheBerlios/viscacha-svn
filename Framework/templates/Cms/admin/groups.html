@@ -1,9 +1,9 @@
 <table class="border">
 	<tr>
 		<th width="70%">Gruppe</th>
-		<th width="10%">Administrator</th>
-		<th width="10%">Redakteur</th>
-		<th width="10%">Registriert</th>
+		<th width="10%"><?php echo Authentication::getRightName('admin'); ?></th>
+		<th width="10%"><?php echo Authentication::getRightName('editor'); ?></th>
+		<th width="10%"><?php echo Authentication::getRightName('registered'); ?></th>
 	</tr>
 	<?php foreach($data as $row) { ?>
 	<tr>

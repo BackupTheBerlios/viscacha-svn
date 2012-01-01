@@ -48,6 +48,14 @@ abstract class AdminFieldPages extends AdminModuleObject {
 			'priority' => array(
 				Validator::OPTIONAL => true,
 				Validator::VAR_TYPE => VAR_INT
+			),
+			'read' => array(
+				Validator::OPTIONAL => true,
+				Validator::VAR_TYPE => VAR_ARR_INT
+			),
+			'write' => array(
+				Validator::OPTIONAL => true,
+				Validator::VAR_TYPE => VAR_ARR_INT
 			)
 		);
 	}
@@ -57,10 +65,12 @@ abstract class AdminFieldPages extends AdminModuleObject {
 		$this->breadcrumb->add('Hinzufügen');
 		$this->scriptFiles[URI::build('client/scripts/jquery/jquery.keyfilter.js')] = 'text/javascript';
 		$this->header();
+
 		$_positions = $this->getPositions();
 		$positions = Core::constructObjectArray($_positions);
 		$_fieldTypes = $this->getFieldTypes();
 		$fieldTypes = Core::constructObjectArray($_fieldTypes);
+
 		$data = array(
 			'name' => '',
 			'description' => '',
@@ -68,7 +78,15 @@ abstract class AdminFieldPages extends AdminModuleObject {
 			'priority' => 0,
 			'position' => reset($_positions),
 			'type' => reset($_fieldTypes),
+			'read' => array(),
+			'write' => array()
 		);
+		foreach(CustomDataField::getRights() as $right) {
+			foreach (array('read', 'write') as $type) {
+				$data[$type][$right] = 1;
+			}
+		}
+
 		$error = array();
 		if ($isSent) {
 			// Base options for every field
@@ -122,7 +140,7 @@ abstract class AdminFieldPages extends AdminModuleObject {
 
 			if (count($error) == 0) {
 				$field = $fieldTypes[$data['type']];
-				$field->injectData($data);
+				$this->injectDataToField($field, $data);
 				if ($field->create()) {
 					$this->ok("Das Feld wurde erfolgreich angelegt.");
 				}
@@ -195,12 +213,15 @@ abstract class AdminFieldPages extends AdminModuleObject {
 			$_positions = $this->getPositions();
 			$positions = Core::constructObjectArray($_positions);
 			// Fill data array with the default (currently saved) data
+			$permissions = $field->getPermissions();
 			$data = array(
 				'name' => $field->getName(),
 				'description' => $field->getDescription(),
 				'priority' => $field->getPriority(),
 				'position' => $field->getPosition()->getClassPath(),
-				'type' => $field->getClassPath()
+				'type' => $field->getClassPath(),
+				'read' => $permissions['read'],
+				'write' => $permissions['write']
 			);
 			foreach ($field->getParamsData() as $key => $value) {
 				$data[$key] = $value;
@@ -221,7 +242,7 @@ abstract class AdminFieldPages extends AdminModuleObject {
 				);
 				extract(Validator::checkRequest($options));
 				if (count($error) == 0) {
-					$field->injectData($data);
+					$this->injectDataToField($field, $data);
 					if ($field->update()) {
 						$this->ok("Das Feld wurde erfolgreich aktualisiert.");
 					}
@@ -254,6 +275,12 @@ abstract class AdminFieldPages extends AdminModuleObject {
 		$this->tpl->assign("data", $fields);
 		$this->tpl->assign('baseUri', $this->getBaseURI());
 		$this->tpl->output("/cms/admin/fields");
+	}
+
+	private function injectDataToField($field, $data) {
+		$data['permissions']['read'] = $data['read'];
+		$data['permissions']['write'] = $data['write'];
+		$field->injectData($data);
 	}
 
 }

@@ -76,5 +76,18 @@ class Authentication {
 		return $this->loginAsGuest();
 	}
 
+	public static function getRightName($field) {
+		switch ($field) {
+			case 'admin':
+				return 'Administrator';
+			case 'editor':
+				return 'Redakteur';
+			case 'registered':
+				return 'Mitglied';
+			default:
+				return '';
+		}
+	}
+
 }
 ?>
