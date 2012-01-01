@@ -1,0 +1,9 @@
+<div class="label">
+<?php if (!empty($data)) { ?>
+	<a href="<?php echo URI::build($data); ?>" target="<?php echo $params['target']; ?>">
+		<?php echo iif(empty($params['caption']), URI::build($data), $params['caption']); ?>
+	</a>
+<?php } else { ?>
+	Keine Angabe
+<?php } ?>
+</div>

@@ -16,7 +16,9 @@ abstract class AdminFieldPages extends AdminModuleObject {
 		return array(
 			'Cms.DataFields.CustomTextField',
 			'Cms.DataFields.CustomMultilineTextField',
-			'Cms.DataFields.CustomCheckBox'
+			'Cms.DataFields.CustomCheckBox',
+			'Cms.DataFields.CustomImageView',
+			'Cms.DataFields.CustomUrlField'
 		);
 	}
 
@@ -98,7 +100,8 @@ abstract class AdminFieldPages extends AdminModuleObject {
 						Validator::MULTIPLE => array(
 							array(
 								Validator::MESSAGE => 'Der interne Name enthält Zeichen die nicht erlaubt sind. Erlaubt sind: a-z, 0-9, _, -',
-								Validator::REGEXP => '/^[\w\d\-]*$/i'
+								Validator::REGEXP => Validator::RE_URI,
+								Validator::OPTIONAL => true
 							),
 							array(
 								Validator::MESSAGE => 'Der interne Name darf maximal 32 Zeichen lang sein.',

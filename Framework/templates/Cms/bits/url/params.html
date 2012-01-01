@@ -1,0 +1,9 @@
+<label for="caption">Link-Titel:<br /><small>Die URL wird als Titel genutzt, wenn dieses Feld leer bleibt.</small></label>
+<input class="label" type="text" name="caption" id="caption" value="<?php echo $params['caption']; ?>" />
+<br class="newinput" /><hr class="formsep" />
+<label for="target">Zielfenster:<br /><small>z.B. "_blank" um bei Klick ein neues Fenster zu &ouml;ffnen.</small></label>
+<input class="label" type="text" name="target" id="target" value="<?php echo $params['target']; ?>" />
+<br class="newinput" /><hr class="formsep" />
+<label for="optional">Optional:</label>
+<input type="checkbox" name="optional" id="optional" value="1"<?php echo iif($params['optional'], ' checked="checked"'); ?> />
+<br class="newinput" />

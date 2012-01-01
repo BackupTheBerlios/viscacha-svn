@@ -119,6 +119,10 @@ class Validator {
 	 * Regular Expression: Checks for unsigned id (int > 0)
 	 */
 	const RE_ID = '~^[1-9]{1}[\d]*$~';
+	/**
+	 * Regular Expression: Checks for unsigned id (int > 0)
+	 */
+	const RE_URI = '~^[\w\d-]+$~i';
 
 
 	public static function checkRequest($options) {
