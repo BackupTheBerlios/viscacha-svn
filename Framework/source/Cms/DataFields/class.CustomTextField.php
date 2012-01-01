@@ -9,6 +9,9 @@
 
 class CustomTextField extends CustomDataField {
 
+	protected function getMaxPossibleLength() {
+		return 255;
+	}
 	public function getTypeName() {
 		return 'Einzeiliges Textfeld';
 	}
@@ -20,7 +23,7 @@ class CustomTextField extends CustomDataField {
 		return VAR_HTML;
 	}
 	public function getDbDataType() {
-		return 'VARCHAR(255)';
+		return 'VARCHAR('.$this->getMaxPossibleLength().')';
 	}
 	public function getInputCode() {
 		return $this->getCodeImpl('bits/textfield/input');
@@ -30,7 +33,7 @@ class CustomTextField extends CustomDataField {
 	}
 	public function getValidation() {
 		return array(
-			Validator::MESSAGE => 'Die angegebenen Daten im Feld "'.$this->getName().'" sind zu lang (max. 255 Zeichen).',
+			Validator::MESSAGE => 'Die angegebenen Daten im Feld "'.$this->getName().'" sind zu lang (max. '.$this->params['max_length'].' Zeichen).',
 			Validator::MAX_LENGTH => $this->params['max_length'],
 			Validator::OPTIONAL => $this->params['optional']
 		);
@@ -48,10 +51,10 @@ class CustomTextField extends CustomDataField {
 				Validator::VAR_TYPE => VAR_INT
 			),
 			'max_length' => array(
-				Validator::MESSAGE => 'Die "Maximale Länge" des Feldes darf nur zwischen 1 und 255 liegen.',
+				Validator::MESSAGE => 'Die "Maximale Länge" des Feldes darf nur zwischen 1 und '.$this->getMaxPossibleLength().' liegen.',
 				Validator::VAR_TYPE => VAR_INT,
 				Validator::MIN_VALUE => 1,
-				Validator::MAX_VALUE => 255
+				Validator::MAX_VALUE => $this->getMaxPossibleLength()
 			)
 		);
 	}

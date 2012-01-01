@@ -13,7 +13,11 @@ abstract class AdminFieldPages extends AdminModuleObject {
 	protected abstract function getBaseURI();
 
 	protected function getFieldTypes() {
-		return array('Cms.DataFields.CustomTextField', 'Cms.DataFields.CustomCheckBox');
+		return array(
+			'Cms.DataFields.CustomTextField',
+			'Cms.DataFields.CustomMultilineTextField',
+			'Cms.DataFields.CustomCheckBox'
+		);
 	}
 
 	public function main() {
