@@ -11,7 +11,7 @@ a:hover {
 	text-decoration:underline;
 }
 h1 {
-	margin: 20px 0 20px 0;
+	margin: 0;
 	padding: 0;
 }
 h2 {
@@ -28,6 +28,9 @@ h3 {
     font-size: 14px;
     text-decoration: underline;
 	padding-top: 1em;
+}
+img {
+	border-width: 0;
 }
 small {
 	font-weight: normal;
@@ -47,6 +50,8 @@ form {
 	padding: 20px 0px 20px 0px;
 	min-height: 400px;
 }
+
+/* Form field validation */
 
 .input_error {
 	color: #C32727;
@@ -132,7 +137,7 @@ form {
 	padding: 0;
 }
  
-/* Top Navigation */
+/* Top Navigation & Breadcrumb */
 #navi {
 	font-size: 11px;
 	font-family: Verdana, Arial, Helvetica, sans-serif;
@@ -142,6 +147,19 @@ form {
 	height: 16px;
 	margin: 0;
 	padding: 12px 0;
+	color: white;
+}
+#breadcrumb {
+	font-size: 11px;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	height: 16px;
+	border: 1px solid #3b310e;
+	background-color: #D9D7D0;
+	color: black;
+	padding: 11px 15px;
+	width: 868px;
+	border-bottom-left-radius: 5px;
+	border-bottom-right-radius: 5px;
 }
 #navi li {
 	display: inline;
@@ -152,8 +170,11 @@ form {
 	margin: 0;
 	padding: 0 15px;
 }
-#navi a:hover {
-	text-decoration:underline;
+#breadcrumb a {
+	color: black;
+}
+#navi a:hover, #breadcrumb a:hover {
+	text-decoration: underline;
 }
 
 /* Linkpool */

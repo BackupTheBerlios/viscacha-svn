@@ -1,6 +1,6 @@
 <script type="text/javascript">
-jQuery(function() {
-	jQuery('#data').wymeditor({
+$(function() {
+	$('.wymeditor').wymeditor({
 		lang: 'de',
 		logoHtml: '',
 		skin: 'compact'
@@ -18,7 +18,7 @@ jQuery(function() {
 	</label>
 	<input class="label" type="text" name="uri" id="uri" value="<?php echo $data['uri']; ?>" />
 	<br class="newinput" /><hr class="formsep" />
-	<textarea class="label" name="content" id="data" rows="20"><?php echo $data['content']; ?></textarea>
+	<textarea class="label wymeditor" name="content" id="data" rows="20"><?php echo $data['content']; ?></textarea>
 	<br class="newinput" /><br />
-	<input type="submit" />
+	<input type="submit" class="wymupdate" />
 </form>
