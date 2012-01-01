@@ -103,7 +103,9 @@ abstract class CustomDataField {
 	public abstract function getOutputCode();
 	public abstract function getValidation();
 
-	public abstract function getParamNames($add = false);
+	public function getParamNames($add = false) {
+		return array();
+	}
 	public function getParamsData($add = false) {
 		if (!is_array($this->params)) {
 			$this->params = array();
@@ -113,8 +115,12 @@ abstract class CustomDataField {
 			$this->params
 		);
 	}
-	public abstract function getParamsCode($add = false);
-	public abstract function getValidationParams($add = false);
+	public function getParamsCode($add = false) {
+		return $this->getCodeImpl('bits/no_params');
+	}
+	public function getValidationParams($add = false) {
+		return array();
+	}
 
 	protected function getCodeImpl($file) {
 		$tpl = Core::_(TPL);

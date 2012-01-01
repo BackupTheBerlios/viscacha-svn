@@ -10,8 +10,11 @@
 abstract class AdminFieldPages extends AdminModuleObject {
 
 	protected abstract function getPositions();
-	protected abstract function getFieldTypes();
 	protected abstract function getBaseURI();
+
+	protected function getFieldTypes() {
+		return array('Cms.DataFields.CustomTextField', 'Cms.DataFields.CustomCheckBox');
+	}
 
 	public function main() {
 		$this->breadcrumb->resetUrl();

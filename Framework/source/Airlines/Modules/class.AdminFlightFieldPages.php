@@ -25,10 +25,6 @@ class AdminFlightFieldPages extends AdminFieldPages {
 		return array('Airlines.DataFields.Positions.AirlinesFlightPosition');
 	}
 
-	protected function getFieldTypes() {
-		return array('Cms.DataFields.CustomTextField');
-	}
-
 	protected function getBaseURI() {
 		return 'airlines/admin/efields';
 	}

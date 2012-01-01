@@ -23,10 +23,10 @@ class CustomTextField extends CustomDataField {
 		return 'VARCHAR(255)';
 	}
 	public function getInputCode() {
-		return $this->getCodeImpl('bits/textfield_input');
+		return $this->getCodeImpl('bits/textfield/input');
 	}
 	public function getOutputCode() {
-		return $this->getCodeImpl('bits/textfield_output');
+		return $this->getCodeImpl('bits/textfield/output');
 	}
 	public function getValidation() {
 		return array(
@@ -40,7 +40,7 @@ class CustomTextField extends CustomDataField {
 		return array('max_length', 'optional');
 	}
 	public function getParamsCode($add = false) {
-		return $this->getCodeImpl('bits/textfield_params');
+		return $this->getCodeImpl('bits/textfield/params');
 	}
 	public function getValidationParams($add = false) {
 		return array(
