@@ -168,16 +168,8 @@ class CustomData {
 	// Lazy loading...
 	protected function cacheFields() {
 		if (!is_array($this->fields)) {
-			$pos = $this->position->getClassPath();
-			$db = Core::_(DB);
-			$db->query("SELECT * FROM <p>fields WHERE position = <pos> ORDER BY priority", compact("pos"));
-			$this->fields = array();
-			while ($row = $db->fetchAssoc()) {
-				$field = CustomDataField::constructObject($row);
-				if ($field != null) {
-					$this->fields[$field->getFieldName()] = $field;
-				}
-			}
+			$cache = Core::getObject('Core.Cache.CacheServer')->load('fields');
+			$this->fields = $cache->getFields($this->position->getClassPath());
 		}
 	}
 

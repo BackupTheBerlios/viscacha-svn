@@ -18,6 +18,7 @@ abstract class AdminFieldDataPages extends AdminModuleObject {
 	public function  __construct(array $positions, $baseUri, array $mainFields, $package) {
 		parent::__construct($package);
 		$this->positions = Core::constructObjectArray($positions);
+
 		// Check that every position has the same table and primary key or this won't work very well
 		$table = null;
 		$pk = null;
@@ -31,6 +32,10 @@ abstract class AdminFieldDataPages extends AdminModuleObject {
 			$table = $p->getDbTable();
 			$pk = $p->getPrimaryKey();
 		}
+		if (count($mainFields) == 0) {
+			Core::throwError('Please provide fields to show.', INTERNAL_ERROR);
+		}
+
 		$this->dbTable = $table;
 		$this->dbPk = $pk;
 		$this->baseUri = $baseUri;
@@ -157,7 +162,10 @@ abstract class AdminFieldDataPages extends AdminModuleObject {
 		}
 
 		$db = Core::_(DB);
-		$db->query("SELECT * FROM <p><table:noquote>", array('table' => $this->dbTable));
+		$db->query(
+			"SELECT * FROM <p><table:noquote> ORDER BY <field:noquote>",
+			array('table' => $this->dbTable, 'field' => reset($this->mainFields))
+		);
 		$this->tpl->assign('data', $db->fetchAll());
 		$this->tpl->assign('baseUri', $this->baseUri);
 		$this->tpl->assign('visible', $visible);

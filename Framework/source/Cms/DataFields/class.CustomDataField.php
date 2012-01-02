@@ -208,6 +208,7 @@ abstract class CustomDataField {
 			$db->query("ALTER TABLE <p><table:noquote> ADD <field:noquote> <datatype:noquote> NULL DEFAULT NULL", $alter);
 
 			$db->commit();
+			$this->invalidateCache();
 			return true;
 		} catch(QueryException $e) {
 			$db->rollback();
@@ -228,7 +229,9 @@ abstract class CustomDataField {
 			'position' => $this->position->getClassPath(),
 			'id' => $this->id
 		);
-		return $db->query("UPDATE <p>fields SET name = <name>, description = <desc>, priority = <prio:int>, params = <params>, position = <position>, permissions = <permissions> WHERE id = <id:int>", $update);
+		$result = $db->query("UPDATE <p>fields SET name = <name>, description = <desc>, priority = <prio:int>, params = <params>, position = <position>, permissions = <permissions> WHERE id = <id:int>", $update);
+		$this->invalidateCache();
+		return $result;
 	}
 
 	public function remove() {
@@ -246,10 +249,21 @@ abstract class CustomDataField {
 			$db->query("ALTER TABLE <p><table:noquote> DROP <field:noquote>", $alter); // Default value?
 
 			$db->commit();
+			$this->invalidateCache();
 			return true;
 		} catch(QueryException $e) {
 			$db->rollback();
 			return false;
+		}
+	}
+
+	protected function invalidateCache() {
+		$server = Core::getObject('Core.Cache.CacheServer');
+		if ($server != null) {
+			$cache = $server->load('fields');
+			if ($cache != null) {
+				$cache->delete();
+			}
 		}
 	}
 

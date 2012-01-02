@@ -9,9 +9,8 @@ Core::loadClass('Core.FileSystem.File');
  * @subpackage	Cache
  * @author		Matthias Mohr
  * @since 		1.0
- * @todo 		Prüfen der Methode rebuildable()
  */
-class CacheItem implements CacheObject {
+abstract class CacheItem implements CacheObject {
 
 	protected $name;
 	protected $file;
@@ -37,7 +36,6 @@ class CacheItem implements CacheObject {
 	    else {
 	        return false;
 	    }
-
 	}
 
 	public function expired($max_age) {
@@ -87,12 +85,8 @@ class CacheItem implements CacheObject {
 	    }
 	}
 
-	public function load() {
-		// Implement in sub-class
-	}
-
 	public function rebuildable() {
-		return (get_class() != 'CacheItem'); // Prüfen ob verhalten korrekt: true bei Klassen die CacheItem erweitert haben, sonst false
+		return true;
 	}
 
 	public function get($max_age = null) {

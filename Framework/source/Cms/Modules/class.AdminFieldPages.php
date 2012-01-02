@@ -269,16 +269,12 @@ abstract class AdminFieldPages extends AdminModuleObject {
 	}
 
 	protected function overview() {
-		$db = Core::_(DB);
-		$pos = $this->getPositions();
-		$db->query("SELECT * FROM <p>fields WHERE position IN(<pos:string[]>) ORDER BY position, priority", compact("pos"));
-		$fields = array();
-		while ($row = $db->fetchAssoc()) {
-			$fields[] = CustomDataField::constructObject($row);
+		foreach ($this->getPositions() as $p) {
+			$cache = Core::getObject('Core.Cache.CacheServer')->load('fields');
+			$this->tpl->assign("data", $cache->getFields($p));
+			$this->tpl->assign('baseUri', $this->getBaseURI());
+			$this->tpl->output("/Cms/admin/fields");
 		}
-		$this->tpl->assign("data", $fields);
-		$this->tpl->assign('baseUri', $this->getBaseURI());
-		$this->tpl->output("/Cms/admin/fields");
 	}
 
 	private function injectDataToField($field, $data) {
