@@ -7,31 +7,18 @@
  * @author		Matthias Mohr
  * @since 		1.0
  */
-class AdminAirlinesPages extends AdminModuleObject {
+class AdminAirlinesPages extends AdminFieldDataPages {
 
 	public function __construct() {
 		$this->version = '1.0.0';
 		$this->module = 'Admin CP: Airlines';
-		parent::__construct('Airlines');
-	}
-
-	public function __destruct() {
-		parent::__destruct();
-	}
-
-	public function main() {
-		$this->header();
-		echo "Not implemented yet, sorry! :-(";
-		$this->footer();
-	}
-
-	public function categories() {
-		$this->header();
-		$db = Core::_(DB);
-		$db->query("SELECT * FROM <p>categories ORDER BY name");
-		$this->tpl->assign("data", $db->fetchAll());
-		$this->tpl->output("admin/categories");
-		$this->footer();
+		parent::__construct(
+			array('Airlines.DataFields.Positions.AirlinesCategoryPosition'),
+			'airlines/admin/categories',
+			'Airlines'
+		);
+		$this->breadcrumb->add('Bewertungen', URI::build('airlines/admin/flights/evals'));
+		$this->breadcrumb->add('Kategorien', URI::build('airlines/admin/categories'));
 	}
 
 }

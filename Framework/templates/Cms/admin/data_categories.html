@@ -1,0 +1,22 @@
+<p class="tright">
+	<a href="<?php echo URI::build($baseUri.'/write'); ?>" class="btn add">Neue Kategorie hinzufügen</a>
+</p>
+<table class="border">
+	<tr>
+		<th width="50%">Name</th>
+		<th width="50%">Aktion</th>
+	</tr>
+	<?php foreach ($data as $row) { ?>
+	<tr>
+		<td><?php echo $row['name']; ?></td>
+		<td>
+			<a href="<?php echo URI::build($baseUri.'/write/' . $row['id']); ?>" class="btn edit">Bearbeiten</a>
+			<a href="<?php echo URI::build($baseUri.'/remove/' . $row['id']); ?>" class="btn delete">Löschen</a>
+<!--			<a href="<?php echo AirlineTools::buildUri($row); ?>" class="btn view">Ansehen</a> -->
+		</td>
+	</tr>
+	<?php } ?>
+</table>
+<p class="tright">
+	<a href="<?php echo URI::build($baseUri.'/write'); ?>" class="btn add">Neue Kategorie hinzufügen</a>
+</p>

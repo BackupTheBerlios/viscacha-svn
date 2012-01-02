@@ -56,6 +56,57 @@ class CustomData {
 		}
 	}
 
+	public function remove($pkValue) {
+		$data = array(
+			'id' => $pkValue,
+			'table' => $this->position->getDbTable(),
+			'pk' => $this->position->getPrimaryKey()
+		);
+		return Core::_(DB)->query("DELETE FROM <p><table:noquote> WHERE <pk:noquote> = <id:int>", $data);
+	}
+
+	public function edit($pkValue) {
+		$sql = array();
+		$data = array(
+			'id' => $pkValue,
+			'table' => $this->position->getDbTable(),
+			'pk' => $this->position->getPrimaryKey()
+		);
+		foreach ($this->fields as $field) {
+			$name = $field->getFieldName();
+			$sql[] = "{$name} = <{$name}>";
+			$data[$name] = $field->getData();
+		}
+		$sql = implode(', ', $sql);
+		$db = Core::_(DB);
+		if ($pkValue > 0) {
+			return $db->query("UPDATE <p><table:noquote> SET {$sql} WHERE <pk:noquote> = <id:int>", $data);
+		}
+		else {
+			return $db->query("INSERT INTO <p><table:noquote> SET {$sql}", $data);
+		}
+	}
+
+	public function add() {
+		if ($this->edit(0)) {
+			$id = Core::_(DB)->insertId();
+			return iif($id > 0, $id, 0);
+		}
+		else {
+			return 0;
+		}
+	}
+
+	public function setFields($fields) {
+		foreach($fields as $field) {
+			$this->setField($field);
+		}
+	}
+
+	public function setField($field) {
+		$this->fields[$field->getFieldName()] = $field;
+	}
+
 	public function getField($internal) {
 		$this->cacheFields();
 		if (isset($this->fields[$internal])) {
