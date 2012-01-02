@@ -1,8 +1,9 @@
 <?php
 /**
- * Simple Text field implementation for custom fields.
+ * Simple check box implementation for custom fields.
  *
  * @package		Cms
+ * @subpackage	DataFields
  * @author		Matthias Mohr
  * @since 		1.0
  */

@@ -1,8 +1,9 @@
 <?php
 /**
- * Simple Text field implementation for custom fields.
+ * Simple url/link field implementation for custom fields.
  *
  * @package		Cms
+ * @subpackage	DataFields
  * @author		Matthias Mohr
  * @since 		1.0
  */
@@ -10,7 +11,7 @@
 class CustomUrlField extends CustomTextField {
 
 	public function getTypeName() {
-		return 'Link / URL';
+		return 'Link';
 	}
 	public function getClassPath() {
 		return 'Cms.DataFields.CustomUrlField';

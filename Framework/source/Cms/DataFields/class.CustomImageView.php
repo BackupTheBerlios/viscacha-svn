@@ -1,8 +1,9 @@
 <?php
 /**
- * Simple Text field implementation for custom fields.
+ * Simple image view implementation for custom fields.
  *
  * @package		Cms
+ * @subpackage	DataFields
  * @author		Matthias Mohr
  * @since 		1.0
  */
@@ -10,7 +11,7 @@
 class CustomImageView extends CustomTextField {
 
 	public function getTypeName() {
-		return 'Bild-Ansicht';
+		return 'Bild';
 	}
 	public function getClassPath() {
 		return 'Cms.DataFields.CustomImageView';

@@ -3,6 +3,7 @@
  * Simple Text field implementation for custom fields.
  *
  * @package		Cms
+ * @subpackage	DataFields
  * @author		Matthias Mohr
  * @since 		1.0
  */
@@ -13,7 +14,7 @@ class CustomTextField extends CustomDataField {
 		return 255;
 	}
 	public function getTypeName() {
-		return 'Einzeiliges Textfeld';
+		return 'Text, einzeilig';
 	}
 	public function getClassPath() {
 		return 'Cms.DataFields.CustomTextField';

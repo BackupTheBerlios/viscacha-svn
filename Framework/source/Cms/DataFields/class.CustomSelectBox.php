@@ -3,6 +3,7 @@
  * Simple select box implementation for custom fields.
  *
  * @package		Cms
+ * @subpackage	DataFields
  * @author		Matthias Mohr
  * @since 		1.0
  */
@@ -12,7 +13,7 @@ class CustomSelectBox extends CustomDataField {
 	const MAX_KEY_LENGTH = 50;
 
 	public function getTypeName() {
-		return 'Select-Box';
+		return 'Auswahlliste';
 	}
 	public function getClassPath() {
 		return 'Cms.DataFields.CustomSelectBox';

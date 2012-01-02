@@ -21,6 +21,7 @@ $config['general.url'] = '';
 $config['http.gzip'] = -1;
 $config['http.cookie_prefix'] = 'ac_';
 $config['intl.charset'] = 'ISO-8859-15';
+$config['intl.date_format'] = 'd.m.Y';
 $config['mail.check_mx'] = 0;
 $config['security.validate_registered_email'] = 1;
 $config['security.hashalgo'] = 'md5';

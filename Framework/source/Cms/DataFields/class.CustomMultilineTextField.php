@@ -1,8 +1,9 @@
 <?php
 /**
- * Simple Text field implementation for custom fields.
+ * Simple multiline text field implementation for custom fields.
  *
  * @package		Cms
+ * @subpackage	DataFields
  * @author		Matthias Mohr
  * @since 		1.0
  */
@@ -13,7 +14,7 @@ class CustomMultilineTextField extends CustomTextField {
 		return 16777215;
 	}
 	public function getTypeName() {
-		return 'Mehrzeiliges Textfeld';
+		return 'Text, mehrzeilig';
 	}
 	public function getClassPath() {
 		return 'Cms.DataFields.CustomMultilineTextField';

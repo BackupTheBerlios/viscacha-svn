@@ -35,12 +35,12 @@ class UserPages extends CmsModuleObject {
 			$data['name'] = $user->getName();
 			$data['gender'] = UserUtils::getGender($data['gender']);
 			if ($user->hasValidBirthday()) {
-				$data['birthday'] = date('d.m.Y', mktime(0, 0, 0, $user->getBirthMonth(), $user->getBirthDay(), $user->getBirthYear()));
+				$data['birthday'] = date(Config::get('intl.date_format'), mktime(0, 0, 0, $user->getBirthMonth(), $user->getBirthDay(), $user->getBirthYear()));
 			}
 			else {
 				$data['birthday'] = '-';
 			}
-			$data['regdate'] = date('d.m.Y', $data['regdate']);
+			$data['regdate'] = date(Config::get('intl.date_format'), $data['regdate']);
 
 			$db = Core::_(DB);
 			$db->query("SELECT user_id FROM <p>session WHERE user_id = <id:int> LIMIT 1", compact("id"));
