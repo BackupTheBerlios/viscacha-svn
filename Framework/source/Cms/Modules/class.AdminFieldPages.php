@@ -17,6 +17,7 @@ abstract class AdminFieldPages extends AdminModuleObject {
 			'Cms.DataFields.CustomTextField',
 			'Cms.DataFields.CustomMultilineTextField',
 			'Cms.DataFields.CustomCheckBox',
+			'Cms.DataFields.CustomSelectBox',
 			'Cms.DataFields.CustomImageView',
 			'Cms.DataFields.CustomUrlField'
 		);
