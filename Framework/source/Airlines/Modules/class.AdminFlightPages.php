@@ -21,9 +21,5 @@ class AdminFlightPages extends AdminFieldDataPages {
 		$this->breadcrumb->add('Bewertungen', URI::build('airlines/admin/evals'));
 	}
 
-	public function activate() {
-		$this->main();
-	}
-
 }
 ?>

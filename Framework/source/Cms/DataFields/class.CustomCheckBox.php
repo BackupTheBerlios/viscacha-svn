@@ -33,5 +33,25 @@ class CustomCheckBox extends CustomDataField {
 			Validator::EQUALS => 1
 		);
 	}
+
+	public function getParamNames($add = false) {
+		return array('yes', 'no');
+	}
+	public function getParamsCode($add = false) {
+		return $this->getCodeImpl('/Cms/bits/checkbox/params');
+	}
+	public function getValidationParams($add = false) {
+		return array(
+			'yes' => array(
+				Validator::MESSAGE => '"Ausgabe für selektierte Box" ist leer.',
+				Validator::MIN_LENGTH => 1
+			),
+			'no' => array(
+				Validator::MESSAGE => '"Ausgabe für nicht selektierte Box" ist leer.',
+				Validator::MIN_LENGTH => 1
+			)
+		);
+	}
+
 }
 ?>
