@@ -4,11 +4,13 @@
 <table class="border">
 	<tr>
 		<th width="40%">Titel</th>
+		<th width="20%">Prio.</th>
 		<th width="40%">Aktion</th>
 	</tr>
 <?php foreach ($data as $row) { ?>
 	<tr>
 		<td><?php echo $row->getName(); ?></td>
+		<td class="tright"><?php echo $row->getPriority(); ?></td>
 		<td>
 			<a href="<?php echo URI::build($baseUri.'/edit/' . $row->getId()); ?>" class="btn edit">Bearbeiten</a>
 <?php if (!$row->isImplemented()) { ?>

@@ -150,10 +150,17 @@ abstract class AdminFieldDataPages extends AdminModuleObject {
 	}
 
 	protected function overview() {
+		$fields = new CustomData(reset($this->positions));
+		$visible = array();
+		foreach ($this->mainFields as $fieldName) {
+			$visible[$fieldName] = $fields->getField($fieldName);
+		}
+
 		$db = Core::_(DB);
 		$db->query("SELECT * FROM <p><table:noquote>", array('table' => $this->dbTable));
-		$this->tpl->assign("data", $db->fetchAll());
+		$this->tpl->assign('data', $db->fetchAll());
 		$this->tpl->assign('baseUri', $this->baseUri);
+		$this->tpl->assign('visible', $visible);
 		$this->tpl->output("/Cms/admin/data_categories");
 	}
 
