@@ -108,7 +108,7 @@ class UserPages extends CmsModuleObject {
 					unset($sql['old_pw'], $sql['pw1'], $sql['pw2'], $sql['birthday'], $sql['birthmonth'], $sql['birthyear']);
 					$dt = new DT();
 					$dt->setDate($data['birthyear'], $data['birthmonth'], $data['birthday']);
-					$sql['birth'] = $dt->format('Y-m-d');
+					$sql['birth'] = $dt->dbDate();
 
 					$update = array();
 					foreach ($sql as $field => $value) {
@@ -213,7 +213,7 @@ class UserPages extends CmsModuleObject {
 					// Insert data
 					$dt = new DT();
 					$dt->setDate($data['birthyear'], $data['birthmonth'], $data['birthday']);
-					$data['birth'] = $dt->format('Y-m-d');
+					$data['birth'] = $dt->dbDate();
 					$data['pw1'] = Hash::generate($data['pw1']);
 					$data['group_id'] = UserPages::DEFAULT_MEMBER_GID;
 					$data['regdate'] = time();

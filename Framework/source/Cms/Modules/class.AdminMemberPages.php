@@ -123,7 +123,7 @@ class AdminMemberPages extends AdminModuleObject {
 
 					$dt = new DT();
 					$dt->setDate($data['birthyear'], $data['birthmonth'], $data['birthday']);
-					$sql['birthday'] = $dt->format('Y-m-d');
+					$sql['birthday'] = $dt->dbDate();
 
 					$update = array();
 					foreach ($sql as $field => $value) {

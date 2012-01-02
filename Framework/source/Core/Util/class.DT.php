@@ -9,8 +9,26 @@
  */
 class DT extends DateTime {
 
-	public static function fromTimestamp($ts) {
-		return new DT('@' . $ts);
+	public static function fromTimestamp($ts, $tz = null) {
+		$dt = new DT('@' . $ts);
+		if ($tz == null) {
+			$tz = new DateTimeZone(Config::get('intl.timezone'));
+		}
+		$dt->setTimezone($tz);
+		return $dt;
+	}
+
+	public static function createFromFormat($format, $dateTime, $tz = null) {
+		if ($tz == null) {
+			$tz = new DateTimeZone(Config::get('intl.timezone'));
+		}
+		$php = DateTime::createFromFormat($format, $dateTime, $tz);
+		if ($php instanceof DateTime) {
+			return self::fromTimestamp($php->format('U'));
+		}
+		else {
+			return null;
+		}
 	}
 
 	public function  __construct($time = 'now', DateTimeZone $timezone = null) {
@@ -30,6 +48,10 @@ class DT extends DateTime {
 
 	public function dateTime() {
 		return $this->format(Config::get('intl.datetime_format'));
+	}
+
+	public function dbDate() {
+		return $this->format('Y-m-d');
 	}
 
 }

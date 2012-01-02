@@ -75,7 +75,7 @@ class CustomData {
 		foreach ($this->fields as $field) {
 			$name = $field->getFieldName();
 			$sql[] = "{$name} = <{$name}>";
-			$data[$name] = $field->getData();
+			$data[$name] = $field->getDataForDb();
 		}
 		$sql = implode(', ', $sql);
 		$db = Core::_(DB);

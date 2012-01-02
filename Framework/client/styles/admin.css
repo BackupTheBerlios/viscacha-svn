@@ -14,7 +14,6 @@
 }
 
 .border {
-	border-collapse: collapse;
 	width: 100%;
 }
 .border td, .border th {

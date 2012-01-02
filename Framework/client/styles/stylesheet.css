@@ -39,6 +39,10 @@ form {
 	margin: 0;
 	padding: 0;
 }
+table {
+	border-collapse: collapse;
+}
+
 #container {
 	width: 900px;
 	margin: auto;
@@ -262,10 +266,6 @@ label {
 	padding-right: 1%;
 	font-weight: bold;
 }
-label span {
-	font-weight: normal;
-	font-size: 0.8em;
-}
 .newinput {
 	clear: left;
 }
@@ -276,10 +276,88 @@ label span {
 	border-bottom: 1px #D9D7D0 dotted;
 	margin: 5px 0px 5px 0px;
 }
-.groupsep {
-	height: 3px;
-	line-height: 3px;
-	border: 0;
-	border-bottom: 3px #E6E2C5 double;
-	margin: 5px 0px 5px 0px;
+
+/* Datepicker */
+.datepickerContainer {
+	padding: 10px;
+	font-size: 12px;
+	width: 160px;
+	height: 135px;
+	position: absolute;
+	top: 0;
+	left: 0;
+	display: none;
+	background: #D9D7D0;
+	border: 1px solid #3B310E;
+	border-radius: 5px;
+}
+
+.datepickerContainer table {
+	margin: auto;
+	cursor: default;
+}
+
+.datepickerContainer a {
+	display: block;
+	text-decoration: none;
+	color: black;
+	cursor: hand;
+}
+.datepickerContainer a:hover {
+	color: #229ACB;
+}
+
+.datepickerGoNext a,
+.datepickerGoPrev a,
+.datepickerMonth a {
+	text-align: center;
+	padding-bottom: 5px;
+}
+.datepickerMonth a:hover {
+	text-decoration: unterline;
+}
+
+.datepickerDays a {
+	width: 20px;
+	line-height: 16px;
+	height: 16px;
+	padding-right: 2px;
+	text-align: right;
+}
+
+.datepickerYears a,
+.datepickerMonths a {
+	width: 39px;
+	line-height: 36px;
+	height: 36px;
+	text-align: center;
+}
+
+.datepickerDoW span {
+	color: #3B310E;
+	padding-bottom: 1px;
+	margin-bottom: 4px;
+	display: block;
+	border-bottom: 1px dotted #3B310E;
+	font-weight: normal;
+}
+
+.datepickerSelected a {
+	border: 1px solid #3B310E;
+	border-radius: 3px;
+}
+
+.datepickerNotInMonth a {
+	color: #777777;
+}
+
+table.datepickerViewDays tbody.datepickerMonths,
+table.datepickerViewDays tbody.datepickerYears,
+table.datepickerViewMonths tbody.datepickerDays,
+table.datepickerViewMonths tbody.datepickerYears,
+table.datepickerViewMonths tr.datepickerDoW,
+table.datepickerViewYears tbody.datepickerDays,
+table.datepickerViewYears tbody.datepickerMonths,
+table.datepickerViewYears tr.datepickerDoW {
+	display: none;
 }

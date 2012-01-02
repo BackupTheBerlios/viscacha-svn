@@ -1,0 +1,20 @@
+<input class="label" type="text" name="<?php echo $field; ?>" id="datepicker" value="<?php echo $data; ?>"  />
+<script type="text/javascript">
+$.getScript(
+	'<?php echo URI::build("client/scripts/jquery/jquery.datepicker.js"); ?>',
+	function() {
+		$('#datepicker').DatePicker({
+			format:'<?php echo Config::get("intl.date_format"); ?>',
+			date: $('#datepicker').val(),
+			current: $('#datepicker').val(),
+			onBeforeShow: function(){
+				$('#datepicker').DatePickerSetDate($('#datepicker').val(), true);
+			},
+			onChange: function(formated){
+				$('#datepicker').val(formated);
+				$('#datepicker').DatePickerHide();
+			}
+		});
+	}
+);
+</script>

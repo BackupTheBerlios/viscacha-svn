@@ -3,6 +3,7 @@
  * Base implementation for custom fields.
  *
  * @package		Cms
+ * @subpackage	DataFields
  * @author		Matthias Mohr
  * @since 		1.0
  */
@@ -141,6 +142,9 @@ abstract class CustomDataField {
 	public abstract function getClassPath(); // Example: Cms.DataFields.CustomDataField
 
 	public function getData() {
+		return $this->data;
+	}
+	public function getDataForDb() {
 		return $this->data;
 	}
 	public function setData($data) {
