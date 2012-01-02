@@ -11,10 +11,11 @@ abstract class AdminFieldDataPages extends AdminModuleObject {
 
 	protected $positions;
 	protected $baseUri;
+	protected $mainFields;
 	protected $dbTable;
 	protected $dbPk;
 
-	public function  __construct(array $positions, $baseUri, $package) {
+	public function  __construct(array $positions, $baseUri, array $mainFields, $package) {
 		parent::__construct($package);
 		$this->positions = Core::constructObjectArray($positions);
 		// Check that every position has the same table and primary key or this won't work very well
@@ -33,6 +34,7 @@ abstract class AdminFieldDataPages extends AdminModuleObject {
 		$this->dbTable = $table;
 		$this->dbPk = $pk;
 		$this->baseUri = $baseUri;
+		$this->mainFields = $mainFields;
 	}
 
 	public function main() {

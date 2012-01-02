@@ -15,9 +15,10 @@ class AdminAirlinesPages extends AdminFieldDataPages {
 		parent::__construct(
 			array('Airlines.DataFields.Positions.AirlinesCategoryPosition'),
 			'airlines/admin/categories',
+			array('name'),
 			'Airlines'
 		);
-		$this->breadcrumb->add('Bewertungen', URI::build('airlines/admin/flights/evals'));
+		$this->breadcrumb->add('Bewertungen', URI::build('airlines/admin/evals'));
 		$this->breadcrumb->add('Kategorien', URI::build('airlines/admin/categories'));
 	}
 
