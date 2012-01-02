@@ -21,8 +21,8 @@ class CustomImageView extends CustomTextField {
 	}
 	public function getValidation() {
 		return array(
-			Validator::MESSAGE => 'Die angegebenen Daten im Feld "'.$this->getName().'" sind zu lang (max. 255 Zeichen).',
-			Validator::MAX_LENGTH => 255,
+			Validator::MESSAGE => 'Die angegebenen Daten im Feld "'.$this->getName().'" sind zu lang (max. '.$this->getMaxPossibleLength().' Zeichen).',
+			Validator::MAX_LENGTH => $this->getMaxPossibleLength(),
 			Validator::OPTIONAL => $this->params['optional']
 		);
 	}

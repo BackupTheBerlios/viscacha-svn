@@ -23,8 +23,8 @@ class CustomUrlField extends CustomTextField {
 		return array(
 			Validator::MULTIPLE => array(
 				array(
-					Validator::MESSAGE => 'Die angegebenen Daten im Feld "'.$this->getName().'" sind zu lang (max. '.$this->params['max_length'].' Zeichen).',
-					Validator::MAX_LENGTH => $this->params['max_length']
+					Validator::MESSAGE => 'Die angegebenen Daten im Feld "'.$this->getName().'" sind zu lang (max. '.$this->getMaxPossibleLength().' Zeichen).',
+					Validator::MAX_LENGTH => $this->getMaxPossibleLength()
 				),
 				array(
 					Validator::MESSAGE => 'Die Eingabe im Feld "'.$this->getName().'" ist keine gültige URL.',
