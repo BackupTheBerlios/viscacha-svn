@@ -35,12 +35,13 @@ class UserPages extends CmsModuleObject {
 			$data['name'] = $user->getName();
 			$data['gender'] = UserUtils::getGender($data['gender']);
 			if ($user->hasValidBirthday()) {
-				$data['birthday'] = date(Config::get('intl.date_format'), mktime(0, 0, 0, $user->getBirthMonth(), $user->getBirthDay(), $user->getBirthYear()));
+				$dt = new DT($user->getBirth());
+				$data['birth'] = $dt->date();
 			}
 			else {
-				$data['birthday'] = '-';
+				$data['birth'] = '-';
 			}
-			$data['regdate'] = date(Config::get('intl.date_format'), $data['regdate']);
+			$data['regdate'] = DT::fromTimestamp($data['regdate'])->date();
 
 			$db = Core::_(DB);
 			$db->query("SELECT user_id FROM <p>session WHERE user_id = <id:int> LIMIT 1", compact("id"));
@@ -104,8 +105,10 @@ class UserPages extends CmsModuleObject {
 					
 					// prepare SQL update
 					$sql = $data;
-					unset($sql['old_pw'], $sql['pw1'], $sql['pw2'], $sql['birthmonth'], $sql['birthyear']);
-					$sql['birthday'] = $data['birthyear'].'-'.CmsTools::leadingZero($data['birthmonth']).'-'.CmsTools::leadingZero($data['birthday']);
+					unset($sql['old_pw'], $sql['pw1'], $sql['pw2'], $sql['birthday'], $sql['birthmonth'], $sql['birthyear']);
+					$dt = new DT();
+					$dt->setDate($data['birthyear'], $data['birthmonth'], $data['birthday']);
+					$sql['birth'] = $dt->format('Y-m-d');
 
 					$update = array();
 					foreach ($sql as $field => $value) {
@@ -208,8 +211,10 @@ class UserPages extends CmsModuleObject {
 				}
 				else {
 					// Insert data
+					$dt = new DT();
+					$dt->setDate($data['birthyear'], $data['birthmonth'], $data['birthday']);
+					$data['birth'] = $dt->format('Y-m-d');
 					$data['pw1'] = Hash::generate($data['pw1']);
-					$data['birthday'] = $data['birthyear'].'-'.CmsTools::leadingZero($data['birthmonth']).'-'.CmsTools::leadingZero($data['birthday']);
 					$data['group_id'] = UserPages::DEFAULT_MEMBER_GID;
 					$data['regdate'] = time();
 					if (Config::get('security.validate_registered_email') == 1) {
@@ -220,14 +225,13 @@ class UserPages extends CmsModuleObject {
 						$data['active'] = 1;
 						$data['verification'] = '';
 					}
-					unset($data['birthmonth'], $data['birthyear']);
 
 					$db = Core::_(DB);
 					$db->query("
 						INSERT INTO <p>user
-						(forename, surname, pw, group_id, email, gender, birthday, city, country, regdate, active, verification)
+						(forename, surname, pw, group_id, email, gender, birth, city, country, regdate, active, verification)
 						VALUES
-						(<forename>, <surname>, <pw1>, <group_id:int>, <email>, <gender>, <birthday>, <city>, <country>, <regdate:int>, <active:int>, <verification>)
+						(<forename>, <surname>, <pw1>, <group_id:int>, <email>, <gender>, <birth>, <city>, <country>, <regdate:int>, <active:int>, <verification>)
 					", $data);
 					$mid = $db->insertID();
 

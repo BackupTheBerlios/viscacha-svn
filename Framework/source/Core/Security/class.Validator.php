@@ -100,6 +100,11 @@ class Validator {
 	 */
 	const CB_MAIL = 'Validator::checkMail';
 	/**
+	 * Callback: Datumsangabe-Prüfung
+	 * @see Validator::checkDate()
+	 */
+	const CB_DATE = 'Validator::checkDate';
+	/**
 	 * Callback: Only alphanumerical chars
 	 * @see ctype_alnum()
 	 */
@@ -339,6 +344,16 @@ class Validator {
 	 **/
 	public static function checkIP($ip) {
 		return IPv4::check($ip);
+	}
+
+	/**
+	 * Validate the syntax of the given date.
+	 *
+	 * @param string Date
+	 * @return boolean true if syntax is valid, otherwise false
+	 **/
+	public static function checkDate($date) {
+		return (DateTime::createFromFormat(Config::get('intl.date_format'), $date) !== false);
 	}
 
 	/**

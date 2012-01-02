@@ -72,7 +72,7 @@ class UserUtils {
 			'group_id' => 0,
 			'email' => '',
 			'gender' => '',
-			'birthday' => '0000-00-00',
+			'birth' => '0000-00-00',
 			'city' => '',
 			'country' => '',
 			'regdate' => 0,

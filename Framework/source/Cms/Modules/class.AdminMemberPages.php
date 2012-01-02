@@ -120,7 +120,10 @@ class AdminMemberPages extends AdminModuleObject {
 					if (Me::get()->getId() == $id) {
 						unset($sql['group_id'], $sql['active']); // Don't allow to change own group or active state
 					}
-					$sql['birthday'] = $data['birthyear'].'-'.CmsTools::leadingZero($data['birthmonth']).'-'.CmsTools::leadingZero($data['birthday']);
+
+					$dt = new DT();
+					$dt->setDate($data['birthyear'], $data['birthmonth'], $data['birthday']);
+					$sql['birthday'] = $dt->format('Y-m-d');
 
 					$update = array();
 					foreach ($sql as $field => $value) {

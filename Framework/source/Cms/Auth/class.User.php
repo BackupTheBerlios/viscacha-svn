@@ -23,10 +23,10 @@ class User {
 		}
 
 		// Special case: Birthday -> Parse it into chunks
-		if (strpos($data['birthday'], '-') === false) {
-			$data['birthday'] = '0000-00-00';
+		if (strpos($data['birth'], '-') === false) {
+			$data['birth'] = '0000-00-00';
 		}
-		$bday = explode('-', $data['birthday']);
+		$bday = explode('-', $data['birth']);
 		$data['birthday'] = intval($bday[2]);
 		$data['birthmonth'] = intval($bday[1]);
 		$data['birthyear'] = intval($bday[0]);
@@ -97,6 +97,10 @@ class User {
 		return $this->data['verification'];
 	}
 
+	public function getBirth() {
+		return $this->data['birth'];
+	}
+
 	public function getBirthYear() {
 		return $this->data['birthyear'];
 	}
@@ -110,7 +114,7 @@ class User {
 	}
 
 	public function hasValidBirthday() {
-		return ($this->data['birthmonth'] > 0 && $this->data['birthday'] > 0);
+		return ($this->data['birthmonth'] > 0 && $this->data['birthday'] > 0 && $this->data['birthyear'] > 0);
 	}
 
 	public function getArray() {
