@@ -29,6 +29,10 @@ h3 {
     text-decoration: underline;
 	padding-top: 1em;
 }
+.freeform h3 {
+	margin: 0px;
+	padding: 0px;
+}
 img {
 	border-width: 0;
 }
@@ -276,6 +280,9 @@ label {
 	border-bottom: 1px #D9D7D0 dotted;
 	margin: 5px 0px 5px 0px;
 }
+.freeform .formsep {
+	border-color: transparent;
+}
 
 /* Datepicker */
 .datepickerContainer {
@@ -314,7 +321,7 @@ label {
 	padding-bottom: 5px;
 }
 .datepickerMonth a:hover {
-	text-decoration: unterline;
+	text-decoration: underline;
 }
 
 .datepickerDays a {

@@ -1,11 +1,13 @@
-<form action="<?php echo URI::build($baseUri.'/write/'.$id.'/send'); ?>" method="post">
+<form class="freeform" action="<?php echo URI::build($baseUri.'/write/'.$id.'/send'); ?>" method="post">
 	<?php foreach ($fields as $field) { ?>
+	<?php if ($field['label']) { ?>
 	<label>
 		<?php echo $field['name']; ?>:
 		<?php if (!empty($field['description'])) { ?>
 		<br><small><?php echo $field['description']; ?></small>
 		<?php } ?>
 	</label>
+	<?php } ?>
 	<?php echo $field['code']; ?>
 	<br class="newinput" /><hr class="formsep" />
 	<?php } ?>

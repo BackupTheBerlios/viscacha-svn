@@ -73,9 +73,11 @@ class CustomData {
 			'pk' => $this->position->getPrimaryKey()
 		);
 		foreach ($this->fields as $field) {
-			$name = $field->getFieldName();
-			$sql[] = "{$name} = <{$name}>";
-			$data[$name] = $field->getDataForDb();
+			if ($field->getDbDataType() != null) {
+				$name = $field->getFieldName();
+				$sql[] = "{$name} = <{$name}>";
+				$data[$name] = $field->getDataForDb();
+			}
 		}
 		$sql = implode(', ', $sql);
 		$db = Core::_(DB);

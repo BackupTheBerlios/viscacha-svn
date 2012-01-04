@@ -68,7 +68,7 @@ class CustomSelectBox extends CustomDataField {
 			return false;
 		}
 		foreach ($list as $key => $value) {
-			if (strlen($key) > MAX_KEY_LENGTH) {
+			if (strlen($key) > self::MAX_KEY_LENGTH) {
 				return false;
 			}
 		}

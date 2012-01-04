@@ -112,7 +112,8 @@ abstract class AdminFieldDataPages extends AdminModuleObject {
 					'field' => Sanitize::saveHTML($field->getFieldName()),
 					'name' => Sanitize::saveHTML($field->getName()),
 					'description' => Sanitize::saveHTML($field->getDescription()),
-					'code' => $field->getInputCode()
+					'code' => $field->getInputCode(),
+					'label' => !$field->noLabel()
 				);
 			}
 			$this->tpl->assign('fields', $html);

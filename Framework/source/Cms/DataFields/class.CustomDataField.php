@@ -102,6 +102,9 @@ abstract class CustomDataField {
 	public function isImplemented() {
 		return !empty($this->implemented);
 	}
+	public function noLabel() {
+		return false;
+	}
 
 	public static function ensurePermissionsValid($permissions) {
 		$data = array();
@@ -153,7 +156,9 @@ abstract class CustomDataField {
 	public abstract function getDbDataType(); // Example: INT(10)
 	public abstract function getInputCode();
 	public abstract function getOutputCode();
-	public abstract function getValidation();
+	public function getValidation() {
+		return array();
+	}
 
 	public function getParamNames($add = false) {
 		return array();
@@ -177,6 +182,8 @@ abstract class CustomDataField {
 	protected function getCodeImpl($file) {
 		$tpl = Core::_(TPL);
 		$tpl->assign('field', $this->getFieldName());
+		$tpl->assign('title', Sanitize::saveHTML($this->getName()));
+		$tpl->assign('description', Sanitize::saveHTML($this->getDescription()));
 		$tpl->assign('data', Sanitize::saveHTML($this->data));
 		$tpl->assign('params', Sanitize::saveHTML($this->getParamsData()));
 		return $tpl->parse($file);
@@ -203,13 +210,15 @@ abstract class CustomDataField {
 			// Save generated id to have it for the field name
 			$this->id = $db->insertId();
 
-			// Spalte erstellen in Daten-Tabelle
-			$alter = array(
-				'table' => $this->position->getDbTable(),
-				'field' => $this->getFieldName(),
-				'datatype' => $this->getDbDataType()
-			);
-			$db->query("ALTER TABLE <p><table:noquote> ADD <field:noquote> <datatype:noquote> NULL DEFAULT NULL", $alter);
+			if ($this->getDbDataType() != null) {
+				// Spalte erstellen in Daten-Tabelle
+				$alter = array(
+					'table' => $this->position->getDbTable(),
+					'field' => $this->getFieldName(),
+					'datatype' => $this->getDbDataType()
+				);
+				$db->query("ALTER TABLE <p><table:noquote> ADD <field:noquote> <datatype:noquote> NULL DEFAULT NULL", $alter);
+			}
 
 			$db->commit();
 			$this->invalidateCache();
@@ -245,12 +254,14 @@ abstract class CustomDataField {
 			// Löschen in Felder-Tabelle
 			$db->query("DELETE FROM <p>fields WHERE id = <id:int>", array('id' => $this->id));
 
-			// Spalte löschen aus Daten-Tabelle
-			$alter = array(
-				'table' => $this->position->getDbTable(),
-				'field' => $this->getFieldName()
-			);
-			$db->query("ALTER TABLE <p><table:noquote> DROP <field:noquote>", $alter); // Default value?
+			if ($this->getDbDataType() != null) {
+				// Spalte löschen aus Daten-Tabelle
+				$alter = array(
+					'table' => $this->position->getDbTable(),
+					'field' => $this->getFieldName()
+				);
+				$db->query("ALTER TABLE <p><table:noquote> DROP <field:noquote>", $alter); // Default value?
+			}
 
 			$db->commit();
 			$this->invalidateCache();

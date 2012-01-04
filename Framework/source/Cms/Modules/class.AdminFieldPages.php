@@ -22,6 +22,8 @@ abstract class AdminFieldPages extends AdminModuleObject {
 			'Cms.DataFields.CustomUrlField',
 			'Cms.DataFields.CustomDatePicker',
 			'Cms.DataFields.CustomRating',
+			'Cms.DataFields.CustomHeader',
+			'Cms.DataFields.CustomText',
 		);
 	}
 
@@ -113,12 +115,10 @@ abstract class AdminFieldPages extends AdminModuleObject {
 							// Check whether internal name exists for the table targeted
 							array(
 								Validator::MESSAGE => 'Der interne Name existiert bereits für eine anderes Feld der Tabelle.',
-								Validator::CLOSURE => function ($internal) use (&$positions) {
-									$pos = Request::get('position');
-									if (!empty($internal) && isset($positions[$pos])) {
-										$table = $positions[$pos]->getDbTable();
+								Validator::CLOSURE => function ($internal) use (&$_positions) {
+									if (!empty($internal)) {
 										$db = Core::_(DB);
-										$db->query("SHOW COLUMNS FROM <p><table:noquote> LIKE <internal>", compact("internal", "table"));
+										$db->query("SELECT id FROM <p>fields WHERE internal = <internal> AND position IN(<_positions:string[]>)", compact("internal", "_positions"));
 										return ($db->numRows() == 0);
 									}
 									return true; // If nothing is specified we will generate a valid name
