@@ -1,0 +1,6 @@
+<label for="max">Anzahl der Bewertungsstufen (max. 99):</label>
+<input class="label" type="text" name="max" id="max" value="<?php echo $params['max']; ?>" />
+<br class="newinput" /><hr class="formsep" />
+<label for="optional">Optional:</label>
+<input type="checkbox" name="optional" id="optional" value="1"<?php echo iif($params['optional'], ' checked="checked"'); ?> />
+<br class="newinput" />

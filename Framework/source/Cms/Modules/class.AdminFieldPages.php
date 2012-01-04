@@ -21,6 +21,7 @@ abstract class AdminFieldPages extends AdminModuleObject {
 			'Cms.DataFields.CustomImageView',
 			'Cms.DataFields.CustomUrlField',
 			'Cms.DataFields.CustomDatePicker',
+			'Cms.DataFields.CustomRating',
 		);
 	}
 
