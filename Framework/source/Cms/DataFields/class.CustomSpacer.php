@@ -1,6 +1,6 @@
 <?php
 /**
- * Simple header implementation for custom fields.
+ * Simple spacer implementation for custom fields.
  *
  * @package		Cms
  * @subpackage	DataFields
@@ -8,16 +8,17 @@
  * @since 		1.0
  */
 
-class CustomHeader extends CustomText {
+class CustomSpacer extends CustomText {
 
 	public function getTypeName() {
-		return 'Überschrift';
+		return 'Abstandshalter';
 	}
 	public function getClassPath() {
-		return 'Cms.DataFields.CustomHeader';
+		return 'Cms.DataFields.CustomSpacer';
 	}
 	public function getInputCode() {
-		return $this->getCodeImpl('/Cms/bits/text/header');
+		return $this->getCodeImpl('/Cms/bits/text/spacer');
 	}
+
 }
 ?>

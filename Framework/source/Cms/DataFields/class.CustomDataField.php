@@ -69,7 +69,12 @@ abstract class CustomDataField {
 	}
 	public function getFieldName() {
 		if (empty($this->internal)) {
-			return 'field' . $this->id;
+			if (empty($this->id)) {
+				return '';
+			}
+			else {
+				return 'field' . $this->id;
+			}
 		}
 		else {
 			return $this->internal;
@@ -209,6 +214,15 @@ abstract class CustomDataField {
 				VALUES (<internal>, <name>, <desc>, <type>, <pos>, <prio:int>, <params>, <permissions>)", $insert);
 			// Save generated id to have it for the field name
 			$this->id = $db->insertId();
+
+			if (empty($insert['internal']))
+			{
+				$update = array(
+					'internal' => $this->getFieldName(),
+					'id' => $this->id
+				);
+				$db->query("UPDATE <p>fields SET internal = <internal> WHERE id = <id:int>", $update);
+			}
 
 			if ($this->getDbDataType() != null) {
 				// Spalte erstellen in Daten-Tabelle

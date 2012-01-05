@@ -29,10 +29,6 @@ h3 {
     text-decoration: underline;
 	padding-top: 1em;
 }
-.freeform h3 {
-	margin: 0px;
-	padding: 0px;
-}
 img {
 	border-width: 0;
 }
@@ -278,10 +274,13 @@ label {
 	line-height: 1px;
 	border: 0;
 	border-bottom: 1px #D9D7D0 dotted;
-	margin: 5px 0px 5px 0px;
+	margin: 5px 0;
 }
 .freeform .formsep {
 	border-color: transparent;
+}
+.freeform h3 {
+	margin-bottom: 0px;
 }
 
 /* Datepicker */
