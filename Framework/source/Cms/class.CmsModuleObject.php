@@ -79,7 +79,7 @@ abstract class CmsModuleObject extends CoreModuleObject {
 			$this->executeClientFormValidation($options);
 		}
 		else {
-			$this->scriptFiles[URI::build('client/scripts/validation.js')] = 'text/javascript';
+			$this->scriptFiles[URI::build('client/scripts/jquery/jquery.autovalidation.js')] = 'text/javascript';
 			$this->tpl->assign('json', json_encode(array_keys($options)));
 			$this->headHtml[] = $this->tpl->parse('/Cms/bits/client_validation');
 		}
