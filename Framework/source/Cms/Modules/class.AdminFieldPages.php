@@ -71,7 +71,6 @@ abstract class AdminFieldPages extends AdminModuleObject {
 	public function add() {
 		$isSent = Request::get(1, VAR_URI) == 'send';
 		$this->breadcrumb->add('Hinzufügen');
-		$this->scriptFiles[URI::build('client/scripts/jquery/jquery.keyfilter.js')] = 'text/javascript';
 		$this->header();
 
 		$_positions = $this->getPositions();

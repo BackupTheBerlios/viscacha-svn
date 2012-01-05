@@ -14,7 +14,6 @@ class AdminAirportPages extends AdminModuleObject {
 		$this->module = 'Admin CP: Airports';
 		parent::__construct('Airlines');
 		$this->breadcrumb->add('Airports', URI::build('airlines/admin/airports'));
-		$this->scriptFiles[URI::build('client/scripts/jquery/jquery.liveFilter.js')] = 'text/javascript';
 	}
 
 	public function __destruct() {

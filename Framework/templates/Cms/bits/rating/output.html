@@ -5,14 +5,5 @@
 	<option value="">
 </select>
 <script type="text/javascript">
-$.ajaxSetup({ cache: true });
-$.getScript(
-	'<?php echo URI::build("client/scripts/jquery/jquery.rating.js"); ?>',
-	function() {
-		$("#rating_<?php echo $field; ?>").rating({
-			showCancel: false
-		});
-	}
-);
-$.ajaxSetup({ cache: false });
+$("#rating_<?php echo $field; ?>").rating({ showCancel: false });
 </script>

@@ -1,23 +1,16 @@
 <input class="label" type="text" name="<?php echo $field; ?>" id="datepicker_<?php echo $field; ?>" value="<?php echo $data; ?>"  />
 <script type="text/javascript">
-$.ajaxSetup({ cache: true });
-$.getScript(
-	'<?php echo URI::build("client/scripts/jquery/jquery.datepicker.js"); ?>',
-	function() {
-		var field = '#datepicker_<?php echo $field; ?>';
-		$(field).DatePicker({
-			format:'<?php echo Config::get("intl.date_format"); ?>',
-			date: $(field).val(),
-			current: $(field).val(),
-			onBeforeShow: function(){
-				$(field).DatePickerSetDate($(field).val(), true);
-			},
-			onChange: function(formated){
-				$(field).val(formated);
-				$(field).DatePickerHide();
-			}
-		});
+var field = '#datepicker_<?php echo $field; ?>';
+$(field).DatePicker({
+	format:'<?php echo Config::get("intl.date_format"); ?>',
+	date: $(field).val(),
+	current: $(field).val(),
+	onBeforeShow: function(){
+		$(field).DatePickerSetDate($(field).val(), true);
+	},
+	onChange: function(formated){
+		$(field).val(formated);
+		$(field).DatePickerHide();
 	}
-);
-$.ajaxSetup({ cache: false });
+});
 </script>

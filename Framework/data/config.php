@@ -26,6 +26,7 @@ $config['intl.time_format'] = 'H:i';
 $config['intl.datetime_format'] = 'd.m.Y, H:i';
 $config['intl.timezone'] = 'Europe/Berlin';
 $config['mail.check_mx'] = 0;
+$config['ui.jquery_cdn'] = 'http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js';
 $config['security.validate_registered_email'] = 1;
 $config['security.hashalgo'] = 'md5';
 $config['security.hashsalt'] = '';

@@ -90,7 +90,6 @@ class AdminDocPages extends AdminModuleObject {
 
 		$this->breadcrumb->add(iif($id > 0, "Bearbeiten", "Hinzufügen"));
 		$this->scriptFiles[URI::build('client/scripts/wymeditor/jquery.wymeditor.js')] = 'text/javascript';
-		$this->scriptFiles[URI::build('client/scripts/jquery/jquery.keyfilter.js')] = 'text/javascript';
 		$this->header();
 
 		$data = array('id' => $id, 'title' => '', 'uri' => '', 'content' => '');

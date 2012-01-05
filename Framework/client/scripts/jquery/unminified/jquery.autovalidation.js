@@ -44,10 +44,10 @@
 		}
 	};
 
-	$.fn.AutoValidator = function() {
-		for (var key in clientValidation) {
-			if (clientValidation.hasOwnProperty(key)) {
-				$('*[name=' + clientValidation[key] + ']')
+	$.fn.AutoValidator = function(fields) {
+		for (var key in fields) {
+			if (fields.hasOwnProperty(key)) {
+				$('*[name=' + fields[key] + ']')
 				.blur(function(){
 					methods.check($(this));
 				})
@@ -60,5 +60,3 @@
 	};
 
 })(jQuery);
-
-$(document).ready( function () { $().AutoValidator(); } );

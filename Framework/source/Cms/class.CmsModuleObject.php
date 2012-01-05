@@ -32,8 +32,10 @@ abstract class CmsModuleObject extends CoreModuleObject {
 		);
 
 		// URL => content for type-attribute
+		$cdn = Config::get('ui.jquery_cdn');
 		$this->scriptFiles = array(
-			URI::build('client/scripts/jquery/jquery.js') => 'text/javascript'
+			URI::build($cdn ? $cdn : 'client/scripts/jquery/jquery.js') => 'text/javascript',
+			URI::build('client/scripts/jquery/jquery.plugins.js') => 'text/javascript'
 		);
 
 		// Html to be placed into the head tag of the page (at last)
@@ -79,7 +81,6 @@ abstract class CmsModuleObject extends CoreModuleObject {
 			$this->executeClientFormValidation($options);
 		}
 		else {
-			$this->scriptFiles[URI::build('client/scripts/jquery/jquery.autovalidation.js')] = 'text/javascript';
 			$this->tpl->assign('json', json_encode(array_keys($options)));
 			$this->headHtml[] = $this->tpl->parse('/Cms/bits/client_validation');
 		}

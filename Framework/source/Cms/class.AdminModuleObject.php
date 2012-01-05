@@ -17,6 +17,7 @@ abstract class AdminModuleObject extends CmsModuleObject {
 
 	public function __construct($package = 'Cms') {
 		parent::__construct($package);
+		$this->scriptFiles[URI::build('client/scripts/jquery/jquery.admin.js')] = 'text/javascript';
 		$this->scriptFiles[URI::build('client/scripts/admin.js')] = 'text/javascript';
 		$this->cssFiles[URI::build('client/styles/admin.css')] = 'all';
 		$this->loadMenu();
