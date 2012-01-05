@@ -1,15 +1,15 @@
 <script type="text/javascript">
-var url = '<?php echo URI::build($baseUri.'/_fieldcode'); ?>';
 $(function() {
-	loadFieldParams(url);
+	$('#name').UriCreator('#internal');
 	$('#internal').keyfilter(/[\w\d-]/);
+	$('#type').FieldParamLoader('<?php echo URI::build("{$baseUri}/_fieldcode"); ?>');
 });
 </script>
 <form action="<?php echo URI::build($baseUri.'/add/send'); ?>" method="post">
 <fieldset>
 	<legend>Grunddaten</legend>
 	<label for="name">Titel:</label>
-	<input class="label" type="text" name="name" id="name" value="<?php echo $data['name']; ?>" onkeyup="buildUri('name', 'internal')" />
+	<input class="label" type="text" name="name" id="name" value="<?php echo $data['name']; ?>" />
 	<br class="newinput" /><hr class="formsep" />
 	<label for="internal">
 		Interner Feldname:<br>
@@ -59,7 +59,7 @@ $(function() {
 	</div>
 	<br class="newinput" /><hr class="formsep" />
 	<label for="type">Feldtyp:</label>
-	<select class="label" name="type" id="type" onchange="loadFieldParams(url)">
+	<select class="label" name="type" id="type">
 		<option value="">Bitte wählen</option>
 		<?php foreach ($types as $class => $type) { ?>
 		<option value="<?php echo $class; ?>"<?php echo iif($class == $data['position'], ' selected="selected"'); ?>><?php echo $type->getTypeName(); ?></option>

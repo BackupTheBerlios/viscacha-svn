@@ -1,8 +1,8 @@
 <div id="admin_menu">
 <?php foreach ($menu['Pages'] as $key => $submenu) { ?>
 <dl class="dropdown">
-	<dt id="<?php echo $key ?>-ddheader" onclick="ddMenu('<?php echo $key ?>')"><?php echo $submenu->getHeader($key); ?></dt>
-	<dd id="<?php echo $key ?>-ddcontent">
+	<dt><?php echo $submenu->getHeader($key); ?></dt>
+	<dd title="<?php echo $key; ?>">
 		<ul>
 <?php foreach ($submenu->getMenu($key) as $url => $name) { ?>
 <?php if (is_array($name)) { ?>
@@ -22,4 +22,5 @@
 </dl>
 <?php } ?>
 </div>
+<script type="text/javascript"> $(document).ready(function() { $('.dropdown').AdminMenu(); }); </script>
 <div id="admin_content">

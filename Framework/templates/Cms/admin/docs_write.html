@@ -6,11 +6,14 @@ $(function() {
 		skin: 'compact'
 	});
 	$('#uri').keyfilter(/[\w\d-]/);
+<?php if (empty($data['id'])) { ?>
+	$('#title').UriCreator('#uri');
+<?php } ?>
 });
 </script>
 <form action="<?php echo URI::build('cms/admin/documents/write/'.$data['id'].'/send'); ?>" method="post">
 	<label for="title">Titel:</label>
-	<input class="label" type="text" name="title" id="title" value="<?php echo $data['title']; ?>"<?php echo iif(empty($data['id']), " onkeyup=\"buildUri('title', 'uri')\""); ?> />
+	<input class="label" type="text" name="title" id="title" value="<?php echo $data['title']; ?>" />
 	<br class="newinput" /><hr class="formsep" />
 	<label for="uri">
 		URI:<br>
@@ -18,7 +21,7 @@ $(function() {
 	</label>
 	<input class="label" type="text" name="uri" id="uri" value="<?php echo $data['uri']; ?>" />
 	<br class="newinput" /><hr class="formsep" />
-	<textarea class="label wymeditor" name="content" id="data" rows="20"><?php echo $data['content']; ?></textarea>
+	<textarea class="label wymeditor" name="content" id="data" rows="20" cols="80"><?php echo $data['content']; ?></textarea>
 	<br class="newinput" /><br />
 	<input type="submit" class="wymupdate" />
 </form>
