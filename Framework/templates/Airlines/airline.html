@@ -1,5 +1,5 @@
-<h2><?php echo $airline->getField('name')->getData(); ?></h2>
+<h2><?php echo Sanitize::saveHTML($data->getField('name')->getData()); ?></h2>
 <div style="padding: 20px; border: dashed 1px #9c0;">
-	<?php echo $airline->outputFields(array('logo', 'description'), false); ?>
-	<?php echo $airline->outputFieldsExcept(array('name', 'logo', 'description')); ?>
+	<?php echo $data->outputFields(array('logo', 'description'), false); ?>
+	<?php echo $data->outputFieldsExcept(array('name', 'logo', 'description')); ?>
 </div>

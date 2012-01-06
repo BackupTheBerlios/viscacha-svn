@@ -61,6 +61,13 @@ abstract class CmsModuleObject extends CoreModuleObject {
 	}
 
 	/**
+	 * Default page
+	 **/
+	public function main() {
+		$this->notFoundError();
+	}
+
+	/**
 	 * Activates (and executes) the client form validation feature.
 	 *
 	 * This is an ajax based validation for form fields. The validation rules are based on the
@@ -140,6 +147,12 @@ abstract class CmsModuleObject extends CoreModuleObject {
 		$this->tpl->assign('url', $url);
 		$this->tpl->assign('message', $message);
 		$this->tpl->output('/Cms/error');
+	}
+	
+	protected function notFoundError() {
+		$this->header();
+		$this->error('Die angeforderte Seite konnte leider nicht gefunden werden!');
+		$this->footer();
 	}
 
 	protected function yesNo($question, $yesUrl, $noUrl) {

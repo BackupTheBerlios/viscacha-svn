@@ -53,14 +53,5 @@ abstract class CoreModuleObject extends ModuleObject {
 		Core::unsetNObject('HTTPHeader');
 	}
 
-	/**
-	 * Default page
-	 **/
-	public function main() {
-		$this->header();
-		$this->error('Die angeforderte Seite konnte leider nicht gefunden werden!');
-		$this->footer();
-	}
-
 }
 ?>

@@ -1,13 +1,13 @@
 <?php
 /**
- * This is the admin control panel.
+ * This is the field data frontend.
  *
  * @package		Cms
  * @subpackage	Modules
  * @author		Matthias Mohr
  * @since 		1.0
  */
-abstract class AdminFieldDataPages extends AdminModuleObject {
+abstract class FieldDataPages extends CmsModuleObject {
 
 	protected $positions;
 	protected $baseUri;
@@ -51,6 +51,39 @@ abstract class AdminFieldDataPages extends AdminModuleObject {
 	
 	public function getTemplateFile($file) {
 		return $file;
+	}
+	
+	public function detail($id = null) {
+		if ($id === null) {
+			$id = Request::get(1, VAR_INT);
+		}
+		$data = new CustomData(reset($this->positions));
+		if ($id > 0 && !$data->load($id)) {
+			$this->notFoundError();
+		}
+		else {
+			$caption = $data->getField(reset($this->mainFields));
+			$this->breadcrumb->add($caption->getData());
+			$this->header();
+
+			$html = array();
+			$fields = $data->getFields();
+			foreach ($fields as $field) {
+				$html[] = array(
+					'field' => Sanitize::saveHTML($field->getFieldName()),
+					'name' => Sanitize::saveHTML($field->getName()),
+					'description' => Sanitize::saveHTML($field->getDescription()),
+					'code' => $field->getOutputCode(),
+					'label' => !$field->noLabel()
+				);
+			}
+			$this->tpl->assign('data', $data);
+			$this->tpl->assign('fields', $html);
+			$this->tpl->assign('id', $id);
+			$this->tpl->assign('baseUri', $this->baseUri);
+			$this->tpl->output($this->getTemplateFile('/Cms/fields/data_categories_detail'));
+			$this->footer();
+		}
 	}
 
 	public function write() {
@@ -123,7 +156,7 @@ abstract class AdminFieldDataPages extends AdminModuleObject {
 			$this->tpl->assign('fields', $html);
 			$this->tpl->assign('id', $id);
 			$this->tpl->assign('baseUri', $this->baseUri);
-			$this->tpl->output($this->getTemplateFile('/Cms/admin/data_categories_write'));
+			$this->tpl->output($this->getTemplateFile('/Cms/fields/data_categories_write'));
 		}
 
 		$this->footer();
@@ -174,7 +207,7 @@ abstract class AdminFieldDataPages extends AdminModuleObject {
 		$this->tpl->assign('data', $db->fetchAll());
 		$this->tpl->assign('baseUri', $this->baseUri);
 		$this->tpl->assign('visible', $visible);
-		$this->tpl->output($this->getTemplateFile("/Cms/admin/data_categories"));
+		$this->tpl->output($this->getTemplateFile("/Cms/fields/data_categories"));
 	}
 
 }

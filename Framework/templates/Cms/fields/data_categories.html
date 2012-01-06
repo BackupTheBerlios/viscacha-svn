@@ -1,0 +1,26 @@
+<p class="tright">
+	<a href="<?php echo URI::build($baseUri.'/write'); ?>" class="btn add">Erstellen</a>
+</p>
+<table class="border">
+	<tr>
+		<?php foreach ($visible as $field) { ?>
+		<th><?php echo $field->getName(); ?></th>
+		<?php } ?>
+		<th width="30%">Aktion</th>
+	</tr>
+	<?php foreach ($data as $row) { ?>
+	<tr>
+		<?php foreach ($visible as $field) { $field->setData($row[$field->getFieldName()]); ?>
+		<td><?php echo $field->getOutputCode(); ?></td>
+		<?php } ?>
+		<td>
+			<a href="<?php echo URI::build($baseUri.'/write/' . $row['id']); ?>" class="btn edit">Bearbeiten</a>
+			<a href="<?php echo URI::build($baseUri.'/remove/' . $row['id']); ?>" class="btn delete">Löschen</a>
+			<!-- <a href="#" class="btn view">Ansehen</a> -->
+		</td>
+	</tr>
+	<?php } ?>
+</table>
+<p class="tright">
+	<a href="<?php echo URI::build($baseUri.'/write'); ?>" class="btn add">Erstellen</a>
+</p>

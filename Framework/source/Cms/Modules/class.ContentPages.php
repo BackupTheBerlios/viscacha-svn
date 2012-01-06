@@ -34,16 +34,15 @@ class ContentPages extends CmsModuleObject {
 		$db = Core::_(DB);
 		$db->query("SELECT title, content FROM <p>page WHERE uri = <uri>", compact("uri"));
 		if ($db->numRows() != 1) {
-			$this->header();
-			$this->error('Die angeforderte Seite konnte leider nicht gefunden werden!');
+			$this->notFoundError();
 		}
 		else {
 			$data = $db->fetchAssoc();
 			$this->breadcrumb->add($data['title']);
 			$this->header();
 			echo $this->parse($data['content']);
+			$this->footer();
 		}
-		$this->footer();
 	}
 
 }
