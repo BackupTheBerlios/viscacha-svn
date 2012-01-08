@@ -10,8 +10,6 @@
 class AdminFlightPages extends AdminFieldDataPages {
 
 	public function __construct() {
-		$this->version = '1.0.0';
-		$this->module = 'Admin CP: Flights';
 		parent::__construct(
 			array('Airlines.DataFields.Positions.AirlinesFlightPosition'),
 			'airlines/admin/evals',

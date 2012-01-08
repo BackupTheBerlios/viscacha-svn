@@ -49,7 +49,7 @@ abstract class FieldDataPages extends CmsModuleObject {
 		$this->footer();
 	}
 	
-	public function getTemplateFile($file) {
+	protected function getTemplateFile($file) {
 		return $file;
 	}
 	

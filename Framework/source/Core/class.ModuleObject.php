@@ -10,11 +10,6 @@
 abstract class ModuleObject {
 
 	/**
-	 * Contains internal version number of this module.
-	 * @var string
-	 */
-	protected $version;
-	/**
 	 * Contains name of this module.
 	 * @var string
 	 */
@@ -31,7 +26,6 @@ abstract class ModuleObject {
 	 * Note: Before you call this constructor, you have to set the variable $module!
 	 **/
 	public function __construct($package) {
-		$this->version = '1.0.0';
 		$this->module = get_class($this);
 		$this->package = $package;
 
@@ -70,15 +64,6 @@ abstract class ModuleObject {
 	 * Default page
 	 **/
 	public abstract function main();
-
-	/**
-	 * Returns the internal version number of this module.
-	 *
-	 * @return	string	Version number
-	 */
-	protected function version() {
-		return $this->version;
-	}
 
 }
 ?>

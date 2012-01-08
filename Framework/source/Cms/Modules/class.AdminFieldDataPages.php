@@ -49,7 +49,7 @@ abstract class AdminFieldDataPages extends AdminModuleObject {
 		$this->footer();
 	}
 	
-	public function getTemplateFile($file) {
+	protected function getTemplateFile($file) {
 		return $file;
 	}
 

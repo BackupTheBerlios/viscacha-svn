@@ -13,12 +13,6 @@ class UserPages extends CmsModuleObject {
 
 	public function __construct() {
 		parent::__construct();
-		$this->version = '1.0.0';
-		$this->module = 'User Management';
-	}
-
-	public function __destruct() {
-		parent::__destruct();
 	}
 
 	public function about() {

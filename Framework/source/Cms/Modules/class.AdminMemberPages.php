@@ -10,13 +10,7 @@
 class AdminMemberPages extends AdminModuleObject {
 
 	public function __construct() {
-		$this->version = '1.0.0';
-		$this->module = 'Admin CP: Members';
 		parent::__construct();
-	}
-
-	public function __destruct() {
-		parent::__destruct();
 	}
 
 	public function main(){

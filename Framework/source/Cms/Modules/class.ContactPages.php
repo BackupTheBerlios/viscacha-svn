@@ -10,13 +10,7 @@
 class ContactPages extends CmsModuleObject {
 
 	public function __construct() {
-		$this->version = '1.0.0';
-		$this->module = 'Contact form';
 		parent::__construct();
-	}
-
-	public function __destruct() {
-		parent::__destruct();
 	}
 
 	public function main(){

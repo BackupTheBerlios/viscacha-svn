@@ -10,13 +10,7 @@
 class ContentPages extends CmsModuleObject {
 
 	public function __construct() {
-		$this->version = '1.0.0';
-		$this->module = 'Custom content';
 		parent::__construct();
-	}
-
-	public function __destruct() {
-		parent::__destruct();
 	}
 
 	public function main(){

@@ -10,14 +10,8 @@
 class AdminDocPages extends AdminModuleObject {
 
 	public function __construct() {
-		$this->version = '1.0.0';
-		$this->module = 'Admin CP: Documents';
 		parent::__construct();
 		$this->breadcrumb->add("Seiten", URI::build("cms/admin/documents"));
-	}
-
-	public function __destruct() {
-		parent::__destruct();
 	}
 
 	public function main(){

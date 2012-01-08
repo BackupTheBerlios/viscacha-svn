@@ -24,10 +24,6 @@ abstract class AdminModuleObject extends CmsModuleObject {
 		$this->breadcrumb->add('Administrationsbereich', URI::build('cms/admin'));
 	}
 
-	public function __destruct() {
-		parent::__destruct();
-	}
-
 	protected function header() {
 		parent::header();
 		$this->tpl->assign('menu', $this->menu);

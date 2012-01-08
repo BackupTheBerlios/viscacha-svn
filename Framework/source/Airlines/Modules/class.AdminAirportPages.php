@@ -10,14 +10,8 @@
 class AdminAirportPages extends AdminModuleObject {
 
 	public function __construct() {
-		$this->version = '1.0.0';
-		$this->module = 'Admin CP: Airports';
 		parent::__construct('Airlines');
 		$this->breadcrumb->add('Airports', URI::build('airlines/admin/airports'));
-	}
-
-	public function __destruct() {
-		parent::__destruct();
 	}
 
 	public function main() {

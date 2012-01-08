@@ -1,6 +1,6 @@
 <?php
 /**
- * This is the admin control panel.
+ * This are the airline pages.
  *
  * @package		Airlines
  * @subpackage	Modules
@@ -10,15 +10,13 @@
 class AirlinePages extends FieldDataPages {
 
 	public function __construct() {
-		$this->version = '1.0.0';
-		$this->module = 'Airlines';
 		parent::__construct(
 			array('Airlines.DataFields.Positions.AirlinesCategoryPosition'),
 			'airlines/airlines',
 			array('name'),
 			'Airlines'
 		);
-		$this->breadcrumb->add('Airlines', URI::build('airlines/airlines2'));
+		$this->breadcrumb->add('Airlines', URI::build('airlines/airlines'));
 	}
 	
 	public function main() {
@@ -39,7 +37,7 @@ class AirlinePages extends FieldDataPages {
 		$this->notFoundError();
 	}
 	
-	public function getTemplateFile($file) {
+	protected function getTemplateFile($file) {
 		switch($file) {
 			case '/Cms/fields/data_categories':
 				return 'categories';
