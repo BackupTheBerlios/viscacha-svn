@@ -72,11 +72,16 @@ final class Request {
 					}
 				}
 
+				$default = null;
 				if (isset($level['!'])) {
-					$default = $this->findUriForDefault($level, $default);
-				}
-				else {
-					$default = null; // No default specified
+					if (is_array($level['!'])) {
+						$level = $level['!']; // Default is an array, skip this level
+					}
+					foreach ($level as $l1 => $l2) {
+						if ($l1 != '!' && !is_array($l2) && strcasecmp($l2, $level['!']) == 0) {
+							$default = $l1;
+						}
+					}
 				}
 			}
 		}
@@ -86,11 +91,7 @@ final class Request {
 	
 	// Find "uri" of default module for the specified level
 	protected function findUriForDefault(array $level, $default = null) {
-		foreach ($level as $l1 => $l2) {
-			if ($l1 != '!' && !is_array($l2) && strcasecmp($l2, $level['!']) == 0) {
-				return $l1;
-			}
-		}
+
 		return $default;
 	}
 
