@@ -73,13 +73,7 @@ final class Request {
 				}
 
 				if (isset($level['!'])) {
-					// Find "uri" of default module
-					foreach ($level as $l1 => $l2) {
-						if ($l1 != '!' && strcasecmp($l2, $level['!']) == 0) {
-							$default = $l1;
-							break;
-						}
-					}
+					$default = $this->findUriForDefault($level, $default);
 				}
 				else {
 					$default = null; // No default specified
@@ -88,6 +82,16 @@ final class Request {
 		}
 
 		return trim($shortened, '/');
+	}
+	
+	// Find "uri" of default module for the specified level
+	public function findUriForDefault(array $level, $default = null) {
+		foreach ($level as $l1 => $l2) {
+			if ($l1 != '!' && !is_array($l2) && strcasecmp($l2, $level['!']) == 0) {
+				return $l1;
+			}
+		}
+		return $default;
 	}
 
 	public function getRequestedClass() {
@@ -152,15 +156,14 @@ final class Request {
 		}
 	}
 
-	protected function transformPathToModule($modules, $package, &$query) {
-		$uriToUse = '!';
+	protected function transformPathToModule($modules, $package, &$query, $uriToUse = '!') {
 		foreach ($modules as $uri => $className) {
 			if (count($query) > 0) {
 				if (strcasecmp($uri, $query[0]) == 0) {
 					array_shift($query);
 					if (is_array($className)) {
-						$this->transformPathToModule($modules[$uri], $package, $query);
-						return; // we are skipping this level
+						// we are skipping this level
+						return $this->transformPathToModule($modules[$uri], $package, $query, $uriToUse);
 					}
 					else {
 						$uriToUse = $uri;
@@ -168,8 +171,16 @@ final class Request {
 				}
 			}
 		}
+		
+		// Not found, try the default page if it has levels beneath
+		if (is_array($modules['!'])) {
+			$r = $this->transformPathToModule($modules['!'], $package, $query, null);
+			if ($r !== null) {
+				return; // we are skipping this level
+			}
+		}
 
-		if (!empty($modules[$uriToUse])) {
+		if (!empty($modules[$uriToUse]) && !is_array($modules[$uriToUse])) {
 			$class = $this->convertModuleToClass($package, $modules[$uriToUse]);
 			if (Core::classExists($class)) {
 				$this->requestedClass = $class;
@@ -179,6 +190,7 @@ final class Request {
 				Core::throwError("Routed class '{$class}' not found.");
 			}
 		}
+		return $uriToUse;
 	}
 
 	protected function getRealPackageName($name) {
