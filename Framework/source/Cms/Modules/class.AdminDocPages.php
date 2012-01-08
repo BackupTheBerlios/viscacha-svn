@@ -26,7 +26,7 @@ class AdminDocPages extends AdminModuleObject {
 		$this->header();
 		$id = Request::get(1, VAR_INT);
 		if (Request::get(2) == 'yes') {
-			$db = Core::_(DB);
+			$db = Database::getObject();
 			$db->query("DELETE FROM <p>page WHERE id = <id:int>", compact("id"));
 			if ($db->affectedRows() == 1) {
 				$this->ok("Die gewählte Seite wurde gelöscht.");
@@ -47,7 +47,7 @@ class AdminDocPages extends AdminModuleObject {
 	}
 
 	public function write() {
-		$db = Core::_(DB);
+		$db = Database::getObject();
 		$id = Request::get(1, VAR_INT);
 		$action = Request::get(2, VAR_URI);
 
@@ -114,17 +114,20 @@ class AdminDocPages extends AdminModuleObject {
 			}
 		}
 
-		$this->tpl->assign('data', Sanitize::saveHTML($data));
-		$this->tpl->output('admin/docs_write');
+		$tpl = Response::getObject()->appendTemplate('Cms/admin/docs_write');
+		$tpl->assign('data', $data);
+		$tpl->output();
 
 		$this->footer();
 	}
 
 	protected function docs() {
-		$db = Core::_(DB);
+		$db = Database::getObject();
 		$db->query("SELECT id, title, uri FROM <p>page ORDER BY title");
-		$this->tpl->assign("data", $db->fetchAll());
-		$this->tpl->output("admin/docs");
+		
+		$tpl = Response::getObject()->appendTemplate("Cms/admin/docs");
+		$tpl->assign("data", $db->fetchAll());
+		$tpl->output();
 	}
 
 }

@@ -3,7 +3,7 @@
  * Request class
  *
  * @package		Core
- * @subpackage	Util
+ * @subpackage	System
  * @author		Matthias Mohr
  * @since 		1.0
  */
@@ -85,7 +85,7 @@ final class Request {
 	}
 	
 	// Find "uri" of default module for the specified level
-	public function findUriForDefault(array $level, $default = null) {
+	protected function findUriForDefault(array $level, $default = null) {
 		foreach ($level as $l1 => $l2) {
 			if ($l1 != '!' && !is_array($l2) && strcasecmp($l2, $level['!']) == 0) {
 				return $l1;
@@ -102,15 +102,11 @@ final class Request {
 		return $this->originalModule;
 	}
 
-	public function getArg($index) {
+	protected function getArg($index) {
 		if (isset($this->args[$index]))
 			return $this->args[$index];
 		else
 			return null;
-	}
-
-	public function getArgs() {
-		return $this->args;
 	}
 
 	protected function loadRoutes() {
@@ -209,6 +205,24 @@ final class Request {
 
 	protected function convertModuleToClass($package, $name) {
 		return "{$package}.Modules.{$name}";;
+	}
+
+	/**
+	 * Returns the value of the specified cookie.
+	 *
+	 * If there is no cookie with the specified name, null will be returned.
+	 *
+	 * @param string $name Name of the cookie
+	 * @return mixed Content of the cookie
+	 */
+	public function getCookie($name) {
+		$name = Config::get("http.cookie_prefix") . $name;
+		if (isset($_COOKIE[$name])) {
+			return $_COOKIE[$name];
+		}
+		else {
+			return null;
+		}
 	}
 
 	/**

@@ -22,8 +22,8 @@ class CustomSelectBox extends CustomDataField {
 		return 'VARCHAR('.self::MAX_KEY_LENGTH.')';
 	}
 	public function getInputCode() {
-		Core::_(TPL)->assign('options', Sanitize::saveHTML(self::getOptionList($this->params['options'])));
-		return $this->getCodeImpl('/Cms/bits/selectbox/input');
+		$vars = array('options' => self::getOptionList($this->params['options']));
+		return $this->getCodeImpl('/Cms/bits/selectbox/input', $vars);
 	}
 	public function getOutputCode() {
 		$options = self::getOptionList($this->params['options']);
@@ -33,10 +33,7 @@ class CustomSelectBox extends CustomDataField {
 			$value = $options[$data];
 		}
 
-		$tpl = Core::_(TPL);
-		$tpl->assign('value', Sanitize::saveHTML($value));
-		$tpl->assign('options', Sanitize::saveHTML($options));
-		return $this->getCodeImpl('/Cms/bits/checkbox/output');
+		return $this->getCodeImpl('/Cms/bits/checkbox/output', compact("value", "options"));
 	}
 
 	public function getValidation() {

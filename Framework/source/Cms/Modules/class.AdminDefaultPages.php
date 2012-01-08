@@ -15,8 +15,9 @@ class AdminDefaultPages extends AdminModuleObject {
 
 	public function main(){
 		$this->header();
-		$this->tpl->assign('mysql_version', Core::_(DB)->version());
-		$this->tpl->output("admin/default");
+		$tpl = Response::getObject()->getTemplate('/Cms/admin/default');
+		$tpl->assign('mysql_version', Database::getObject()->version());
+		$tpl->output();
 		$this->footer();
 	}
 
@@ -28,8 +29,9 @@ class AdminDefaultPages extends AdminModuleObject {
 
 		$this->breadcrumb->Add("Serverinfo");
 		$this->header();
-		$this->tpl->assign('content', $match_body[0]);
-		echo $this->tpl->parse("admin/serverinfo");
+		$tpl = Response::getObject()->getTemplate("/Cms/admin/serverinfo");
+		$tpl->assign('content', $match_body[0], false);
+		$tpl->output();
 		$this->footer();
 	}
 

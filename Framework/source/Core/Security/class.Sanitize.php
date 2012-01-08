@@ -64,12 +64,7 @@ class Sanitize {
 		}
 		else {
 			$var = self::removeNullByte($var);
-			if (Core::_(DB) !== null) {
-				$var = Core::_(DB)->escapeString($var);
-			}
-			else {
-				$var = addslashes($var);
-			}
+			$var = Database::getObject()->escapeString($var);
 		}
 		return $var;
 	}

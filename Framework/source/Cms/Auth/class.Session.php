@@ -38,7 +38,7 @@ class Session {
 
 	private function loadSID() {
 		// Get Session ID from Cookie / Query-String
-		$cookie = Core::_(HTTPHEADER)->getCookie('sid');
+		$cookie = Request::getObject()->getCookie('sid');
 		if (strlen($cookie) == 32) {
 			return $cookie;
 		}
@@ -51,7 +51,7 @@ class Session {
 
 	private function setSID($sid) {
 		$this->sid = $sid;
-		Core::_(HTTPHEADER)->setCookie('sid', $sid, 60 * Config::get('security.session_lifetime'), true);
+		Response::getObject()->sendCookie('sid', $sid, 60 * Config::get('security.session_lifetime'), true);
 	}
 
 	public function getSID() {
@@ -61,7 +61,7 @@ class Session {
 	private function invalidate() {
 		// Delete old sessions
 		$time = time()-Config::get('security.session_lifetime') * 60;
-		Core::_(DB)->query("DELETE FROM <p>session WHERE visit <= <time:int>", compact("time"));
+		Database::getObject()->query("DELETE FROM <p>session WHERE visit <= <time:int>", compact("time"));
 	}
 
 	// 0 = Guest, > 0 Member ID, -1 = Invalid
@@ -71,7 +71,7 @@ class Session {
 		}
 
 		$ip = $this->ip->getIP(3);
-		$db = Core::_(DB);
+		$db = Database::getObject();
 		$db->query(
 			"SELECT user_id, settings FROM <p>session WHERE sid = <sid> AND ip LIKE '<ip:noquote>%'",
 			compact("sid", "ip")
@@ -98,7 +98,7 @@ class Session {
 			'settings' => serialize($this->settings),
 			'uid' => $uid
 		);
-		Core::_(DB)->query("INSERT INTO <p>session SET user_id = <uid:int>, sid = <sid>, visit = <time:int>, ip = '<ip:noquote>', settings = <settings>", $data);
+		Database::getObject()->query("INSERT INTO <p>session SET user_id = <uid:int>, sid = <sid>, visit = <time:int>, ip = '<ip:noquote>', settings = <settings>", $data);
 		return $sid;
 	}
 
@@ -123,9 +123,9 @@ class Session {
 			'sid' => $this->sid,
 			'uid' => $this->me->getId()
 		);
-		Core::_(DB)->query("UPDATE <p>session SET visit = <time:int>, settings = <settings>, user_id = <uid:int> WHERE sid = <sid>", $data);
+		Database::getObject()->query("UPDATE <p>session SET visit = <time:int>, settings = <settings>, user_id = <uid:int> WHERE sid = <sid>", $data);
 		if ($data['uid'] > 0) {
-			Core::_(DB)->query("UPDATE <p>user SET lastvisit = <time:int> WHERE id = <uid:int>", $data);
+			Database::getObject()->query("UPDATE <p>user SET lastvisit = <time:int> WHERE id = <uid:int>", $data);
 		}
 	}
 

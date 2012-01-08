@@ -15,7 +15,7 @@ class cache_permissions extends CacheItem implements CacheObject {
 			'guest' => 0,
 			'titles' => array()
 		);
-		$db = Core::_(DB);
+		$db = Database::getObject();
 		$db->query("SELECT * FROM <p>group");
 		while($row = $db->fetchAssoc()) {
 			$id = $row['id'];

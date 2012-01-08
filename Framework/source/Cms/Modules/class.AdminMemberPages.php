@@ -23,7 +23,7 @@ class AdminMemberPages extends AdminModuleObject {
 	public function emailexport() {
 		$this->breadcrumb->add("E-Mail-Adressen exportieren");
 		$this->header();
-		$this->tpl->output("admin/emailexport");
+		Response::getObject()->appendTemplate("Cms/admin/emailexport")->output();
 		$this->footer();
 	}
 
@@ -31,14 +31,15 @@ class AdminMemberPages extends AdminModuleObject {
 		$this->breadcrumb->add("E-Mail-Adressen exportieren");
 		$this->header();
 
-		$db = Core::_(DB);
+		$db = Database::getObject();
 		$sep = Request::get('sep');
 
 		$db->query('SELECT email FROM <p>user WHERE active');
 		$emails = $db->fetchAll(null, null, 'email');
 
-		$this->tpl->assign('data', Sanitize::saveHtml(implode($sep, $emails)));
-		$this->tpl->output("admin/emailexport2");
+		$tpl = Response::getObject()->appendTemplate("Cms/admin/emailexport2");
+		$tpl->assign('data', implode($sep, $emails));
+		$tpl->output();
 		$this->footer();
 	}
 
@@ -58,7 +59,7 @@ class AdminMemberPages extends AdminModuleObject {
 			$max_year = date('Y')-8;
 			$countries = CmsTools::getCountries();
 
-			$db = Core::_(DB);
+			$db = Database::getObject();
 			$db->query("SELECT id, title FROM <p>group WHERE registered = 1 ORDER BY admin ASC, editor ASC, title");
 			$groups = array();
 			while ($row = $db->fetchAssoc()) {
@@ -138,13 +139,14 @@ class AdminMemberPages extends AdminModuleObject {
 			$user = $member->getArray();
 			$user = array_merge($user, $data);
 
-			$this->tpl->assign('user', Sanitize::saveHTML($user));
-			$this->tpl->assign('r_birthday', range(1, 31));
-			$this->tpl->assign('r_birthmonth', range(1, 12));
-			$this->tpl->assign('r_birthyear', range($min_year, $max_year));
-			$this->tpl->assign('countries', Sanitize::saveHTML($countries));
-			$this->tpl->assign('groups', Sanitize::saveHTML($groups));
-			$this->tpl->output('admin/members_edit');
+			$tpl = Response::getObject()->appendTemplate("Cms/admin/members_edit");
+			$tpl->assign('user', $user);
+			$tpl->assign('r_birthday', range(1, 31));
+			$tpl->assign('r_birthmonth', range(1, 12));
+			$tpl->assign('r_birthyear', range($min_year, $max_year));
+			$tpl->assign('countries', $countries);
+			$tpl->assign('groups', $groups);
+			$tpl->output();
 		}
 		$this->footer();
 	}
@@ -154,7 +156,7 @@ class AdminMemberPages extends AdminModuleObject {
 		$this->header();
 		$id = Request::get(1, VAR_INT);
 		if (Request::get(2) == 'yes') {
-			$db = Core::_(DB);
+			$db = Database::getObject();
 
 			try {
 				$db->query("DELETE FROM <p>user WHERE id = <id:int>", compact("id"));
@@ -177,23 +179,25 @@ class AdminMemberPages extends AdminModuleObject {
 	public function groups() {
 		$this->breadcrumb->add("Gruppen");
 		$this->header();
-		$db = Core::_(DB);
+		$db = Database::getObject();
 		$db->query("SELECT * FROM <p>group");
-		$this->tpl->assign("data", Sanitize::saveHTML($db->fetchAll()));
-		$this->tpl->output("admin/groups");
+		$tpl = Response::getObject()->appendTemplate("Cms/admin/groups");
+		$tpl->assign("data", $db->fetchAll());
+		$tpl->output();
 		$this->footer();
 	}
 
 	protected function members() {
-		$db = Core::_(DB);
+		$db = Database::getObject();
 		$db->query("SELECT * FROM <p>user ORDER BY surname, forename");
 		$data = array();
 		while($row = $db->fetchAssoc()){
 			$row['group'] = UserUtils::getGroupName($row['group_id']);
-			$data[] = Sanitize::saveHTML($row);
+			$data[] = $row;
 		}
-		$this->tpl->assign("data", $data);
-		$this->tpl->output("admin/members");
+		$tpl = Response::getObject()->appendTemplate("Cms/admin/members");
+		$tpl->assign("data", $data);
+		$tpl->output();
 	}
 
 }

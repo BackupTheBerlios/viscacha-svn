@@ -184,18 +184,19 @@ abstract class CustomDataField {
 		return array();
 	}
 
-	protected function getCodeImpl($file) {
-		$tpl = Core::_(TPL);
+	protected function getCodeImpl($file, $additionalVars = array()) {
+		$tpl = Response::getObject()->getTemplate($file);
 		$tpl->assign('field', $this->getFieldName());
-		$tpl->assign('title', Sanitize::saveHTML($this->getName()));
-		$tpl->assign('description', Sanitize::saveHTML($this->getDescription()));
-		$tpl->assign('data', Sanitize::saveHTML($this->data));
-		$tpl->assign('params', Sanitize::saveHTML($this->getParamsData()));
-		return $tpl->parse($file);
+		$tpl->assign('title', $this->getName());
+		$tpl->assign('description', $this->getDescription());
+		$tpl->assign('data', $this->data);
+		$tpl->assign('params', $this->getParamsData());
+		$tpl->assignMultiple($additionalVars);
+		return $tpl->parse();
 	}
 
 	public function create() {
-		$db = Core::_(DB);
+		$db = Database::getObject();
 		try {
 			$db->begin();
 			// Einfügen in Felder-Tabelle
@@ -244,7 +245,7 @@ abstract class CustomDataField {
 	}
 
 	public function update() {
-		$db = Core::_(DB);
+		$db = Database::getObject();
 		// Aktualisierung in Daten-Tabelle wird nicht erlaubt
 		// Aktualisiere in Felder-Tabelle
 		$update = array(
@@ -262,7 +263,7 @@ abstract class CustomDataField {
 	}
 
 	public function remove() {
-		$db = Core::_(DB);
+		$db = Database::getObject();
 		try {
 			$db->begin();
 			// Löschen in Felder-Tabelle

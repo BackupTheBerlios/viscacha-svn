@@ -25,7 +25,7 @@ class ContentPages extends CmsModuleObject {
 
 	private function custom_pages() {
 		$uri = Request::get(0, VAR_URI);
-		$db = Core::_(DB);
+		$db = Database::getObject();
 		$db->query("SELECT title, content FROM <p>page WHERE uri = <uri>", compact("uri"));
 		if ($db->numRows() != 1) {
 			$this->notFoundError();

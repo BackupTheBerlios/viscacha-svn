@@ -1,4 +1,9 @@
 <?php
+Core::loadClass('Core.Util.Template.Template');
+Core::loadClass('Cms.Util.CmsTools');
+Core::loadClass('Cms.Util.Breadcrumb');
+Core::loadClass('Cms.Auth.Session');
+
 /**
  * This is a general module object. All modules should extend it.
  *
@@ -26,6 +31,11 @@ abstract class ModuleObject {
 	 * Note: Before you call this constructor, you have to set the variable $module!
 	 **/
 	public function __construct($package) {
+		// Start Benchmark
+		$debug = Core::getObject('Core.System.Debug');
+		$debug->startClock($this->module);
+
+		// Set attributes
 		$this->module = get_class($this);
 		$this->package = $package;
 
@@ -44,13 +54,16 @@ abstract class ModuleObject {
 	 */
 	public function __destruct() {
 		Core::destruct();
+
+		$debug = Core::getObject('Core.System.Debug');
+		$debug->stopClock($this->module);
 	}
 
 	/**
 	 * Default entry point
-	 **/
+	 */
 	public function route() {
-		$method = Request::getObject()->getArg(0);
+		$method = Request::getObject()->get(0);
 		// This checks whether there is a public method with the specified name
 		if (in_array($method, get_class_methods($this))) {
 			$this->$method();
@@ -62,7 +75,7 @@ abstract class ModuleObject {
 
 	/**
 	 * Default page
-	 **/
+	 */
 	public abstract function main();
 
 }

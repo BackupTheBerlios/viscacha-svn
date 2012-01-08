@@ -26,9 +26,8 @@ class AdminAirportPages extends AdminModuleObject {
 		$this->header();
 		$id = Request::get(1, VAR_INT);
 		if (Request::get(2) == 'yes') {
-			$db = Core::_(DB);
 			try {
-				$db->query("DELETE FROM <p>airports WHERE id = <id:int>", compact("id"));
+				Database::getObject()->query("DELETE FROM <p>airports WHERE id = <id:int>", compact("id"));
 				$this->ok("Der gewählte Airport wurde gelöscht.");
 			} catch (QueryException $e) {
 				$this->error("Der gewählte Airport konnte leider nicht gelöscht werden. Möglicherweise referenzieren noch andere Daten auf diesen Airport.");
@@ -52,7 +51,7 @@ class AdminAirportPages extends AdminModuleObject {
 		$this->breadcrumb->add(iif($id > 0, "Bearbeiten", "Hinzufügen"));
 		$this->header();
 
-		$db = Core::_(DB);
+		$db = Database::getObject();
 		$data = array('id' => $id, 'flughafen' => '', 'code' => '', 'land' => '', 'stadt' => '');
 		if ($action == 'send') {
 			$options = array(
@@ -101,24 +100,27 @@ class AdminAirportPages extends AdminModuleObject {
 			}
 		}
 
-		$this->tpl->assign('data', Sanitize::saveHTML($data));
-		$this->tpl->output('admin/airports_edit');
+		$tpl = Response::getObject()->appendTemplate('Airlines/admin/airports_edit');
+		$tpl->assign('data', $data);
+		$tpl->output();
 
 		$this->footer();
 	}
 
 	protected function show() {
-		$country = Request::get('country', VAR_NONE, 'Schweiz');
-
-		$db = Core::_(DB);
+		$db = Database::getObject();
+		$tpl = Response::getObject()->appendTemplate("Airlines/admin/airports");
+		
 		$db->query("SELECT * FROM <p>airports ".iif(!empty($country), "WHERE land = <country>")." ORDER BY land, stadt, flughafen", compact("country"));
-		$this->tpl->assign('data', Sanitize::saveHTML($db->fetchAll()));
+		$tpl->assign('data', $db->fetchAll());
 
 		$db->query("SELECT DISTINCT land FROM <p>airports ORDER BY land");
-		$this->tpl->assign('countries', Sanitize::saveHTML($db->fetchAll(null, null, 'land')));
-		$this->tpl->assign('country', Sanitize::saveHTML($country));
+		$tpl->assign('countries', $db->fetchAll(null, null, 'land'));
 
-		$this->tpl->output("admin/airports");
+		$country = Request::get('country', VAR_NONE, 'Schweiz');
+		$tpl->assign('country', $country);
+
+		$tpl->output();
 	}
 
 }

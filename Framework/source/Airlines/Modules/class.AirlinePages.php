@@ -40,9 +40,9 @@ class AirlinePages extends FieldDataPages {
 	protected function getTemplateFile($file) {
 		switch($file) {
 			case '/Cms/fields/data_categories':
-				return 'categories';
+				return '/Airlines/categories';
 			case '/Cms/fields/data_categories_detail':
-				return 'airline';
+				return '/Airlines/airline';
 			default: 
 				return $file;
 		}

@@ -19,7 +19,7 @@ class UserUtils {
 
 	private static function getByField($field, $data) {
 		$user = null;
-		$db = Core::_(DB);
+		$db = Database::getObject();
 		$db->query("SELECT * FROM <p>user WHERE <field:noquote> = <data>", compact("field", "data"));
 		if ($db->numRows() == 1) {
 			$user = new User($db->fetchAssoc());

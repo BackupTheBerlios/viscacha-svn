@@ -1,8 +1,4 @@
 <?php
-Core::loadClass('Core.Util.Template');
-Core::loadClass('Cms.Util.CmsTools');
-Core::loadClass('Cms.Util.Breadcrumb');
-Core::loadClass('Cms.Auth.Session');
 
 /**
  * This is a general Cms module object. All Cms modules should extend it.
@@ -12,10 +8,9 @@ Core::loadClass('Cms.Auth.Session');
  * @since 		1.0
  * @abstract
  */
-abstract class CmsModuleObject extends CoreModuleObject {
+abstract class CmsModuleObject extends ModuleObject {
 
 	protected $breadcrumb;
-	protected $tpl;
 	protected $cssFiles;
 	protected $scriptFiles;
 	protected $headHtml;
@@ -41,9 +36,6 @@ abstract class CmsModuleObject extends CoreModuleObject {
 		// Html to be placed into the head tag of the page (at last)
 		$this->headHtml = array();
 
-		$this->tpl = new Template($this->package);
-		Core::storeNObject($this->tpl, 'TPL');
-
 		Session::getObject(); // Init session
 
 		$this->breadcrumb = new Breadcrumb();
@@ -54,7 +46,7 @@ abstract class CmsModuleObject extends CoreModuleObject {
 		try {
 			Session::getObject()->update();
 		} catch (QueryException $e) {
-			Core::_(DB)->getDebug()->add($e);
+			Database::getObject()->getDebug()->add($e);
 			throw $e;
 		}
 		parent::__destruct();
@@ -88,8 +80,9 @@ abstract class CmsModuleObject extends CoreModuleObject {
 			$this->executeClientFormValidation($options);
 		}
 		else {
-			$this->tpl->assign('json', json_encode(array_keys($options)));
-			$this->headHtml[] = $this->tpl->parse('/Cms/bits/client_validation');
+			$tpl = Response::getObject()->getTemplate('/Cms/bits/client_validation');
+			$tpl->assign('json', json_encode(array_keys($options)), false);
+			$this->headHtml[] = $tpl->parse();
 		}
 	}
 
@@ -101,7 +94,7 @@ abstract class CmsModuleObject extends CoreModuleObject {
 	}
 
 	private function sendJsonData($data) {
-		Core::_(HTTPHEADER)->rawHeader('Content-Type: text/javascript; charset=utf8');
+		Response::getObject()->sendHeader('Content-Type: text/javascript; charset=utf8');
 		echo json_encode($data);
 		// Terminates the execution ot the script.
 		// Shutdown functions and object destructors will always be executed.
@@ -128,25 +121,28 @@ abstract class CmsModuleObject extends CoreModuleObject {
 	}
 
 	protected function header() {
-		$this->tpl->assign('breadcrumb', $this->breadcrumb);
-		$this->tpl->assign('cssFiles', $this->cssFiles);
-		$this->tpl->assign('scriptFiles', $this->scriptFiles);
-		$this->tpl->assign('headHtml', implode(NL, $this->headHtml));
-		$this->tpl->output('/Cms/header');
+		$tpl = Response::getObject()->appendTemplate('/Cms/header');
+		$tpl->assign('breadcrumb', $this->breadcrumb, false);
+		$tpl->assign('cssFiles', $this->cssFiles, false);
+		$tpl->assign('scriptFiles', $this->scriptFiles, false);
+		$tpl->assign('headHtml', implode(NL, $this->headHtml), false);
+		$tpl->output();
 	}
 
 	protected function footer() {
-		$this->tpl->assign('breadcrumb', $this->breadcrumb);
-		$this->tpl->output('/Cms/footer');
+		$tpl = Response::getObject()->appendTemplate('/Cms/footer');
+		$tpl->assign('breadcrumb', $this->breadcrumb, false);
+		$tpl->output();
 	}
 
 	protected function error($message, $url = null) {
 		if (!is_array($message)) {
 			$message = array($message);
 		}
-		$this->tpl->assign('url', $url);
-		$this->tpl->assign('message', $message);
-		$this->tpl->output('/Cms/error');
+		$tpl = Response::getObject()->appendTemplate('/Cms/error');
+		$tpl->assign('url', $url);
+		$tpl->assign('message', $message);
+		$tpl->output();
 	}
 	
 	protected function notFoundError() {
@@ -156,24 +152,27 @@ abstract class CmsModuleObject extends CoreModuleObject {
 	}
 
 	protected function yesNo($question, $yesUrl, $noUrl) {
-		$this->tpl->assign('yesUrl', $yesUrl);
-		$this->tpl->assign('noUrl', $noUrl);
-		$this->tpl->assign('question', $question);
-		$this->tpl->output('/Cms/yes_no');
+		$tpl = Response::getObject()->appendTemplate('/Cms/yes_no');
+		$tpl->assign('yesUrl', $yesUrl);
+		$tpl->assign('noUrl', $noUrl);
+		$tpl->assign('question', $question);
+		$tpl->output();
 	}
 
 	protected function notice($message) {
-		$this->tpl->assign('message', $message);
-		$this->tpl->output('/Cms/notice');
+		$tpl = Response::getObject()->appendTemplate('/Cms/notice');
+		$tpl->assign('message', $message);
+		$tpl->output();
 	}
 
 	protected function ok($message, $url = null) {
 		if (!is_array($message)) {
 			$message = array($message);
 		}
-		$this->tpl->assign('url', $url);
-		$this->tpl->assign('message', $message);
-		$this->tpl->output('/Cms/ok');
+		$tpl = Response::getObject()->appendTemplate('/Cms/ok');
+		$tpl->assign('url', $url);
+		$tpl->assign('message', $message);
+		$tpl->output();
 	}
 
 }

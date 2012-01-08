@@ -69,19 +69,22 @@ abstract class FieldDataPages extends CmsModuleObject {
 			$html = array();
 			$fields = $data->getFields();
 			foreach ($fields as $field) {
-				$html[] = array(
-					'field' => Sanitize::saveHTML($field->getFieldName()),
-					'name' => Sanitize::saveHTML($field->getName()),
-					'description' => Sanitize::saveHTML($field->getDescription()),
-					'code' => $field->getOutputCode(),
-					'label' => !$field->noLabel()
-				);
+				if ($field->canRead()) {
+					$html[] = array(
+						'field' => Sanitize::saveHTML($field->getFieldName()),
+						'name' => Sanitize::saveHTML($field->getName()),
+						'description' => Sanitize::saveHTML($field->getDescription()),
+						'code' => $field->getOutputCode(),
+						'label' => !$field->noLabel()
+					);
+				}
 			}
-			$this->tpl->assign('data', $data);
-			$this->tpl->assign('fields', $html);
-			$this->tpl->assign('id', $id);
-			$this->tpl->assign('baseUri', $this->baseUri);
-			$this->tpl->output($this->getTemplateFile('/Cms/fields/data_categories_detail'));
+			$tpl = Response::getObject()->appendTemplate($this->getTemplateFile('/Cms/fields/data_categories_detail'));
+			$tpl->assign('data', $data, false);
+			$tpl->assign('fields', $html, false);
+			$tpl->assign('id', $id);
+			$tpl->assign('baseUri', $this->baseUri);
+			$tpl->output();
 			$this->footer();
 		}
 	}
@@ -153,10 +156,11 @@ abstract class FieldDataPages extends CmsModuleObject {
 					'label' => !$field->noLabel()
 				);
 			}
-			$this->tpl->assign('fields', $html);
-			$this->tpl->assign('id', $id);
-			$this->tpl->assign('baseUri', $this->baseUri);
-			$this->tpl->output($this->getTemplateFile('/Cms/fields/data_categories_write'));
+			$tpl = Response::getObject()->appendTemplate($this->getTemplateFile('/Cms/fields/data_categories_write'));
+			$tpl->assign('fields', $html, false);
+			$tpl->assign('id', $id);
+			$tpl->assign('baseUri', $this->baseUri);
+			$tpl->output();
 		}
 
 		$this->footer();
@@ -199,15 +203,16 @@ abstract class FieldDataPages extends CmsModuleObject {
 			$visible[$fieldName] = $fields->getField($fieldName);
 		}
 
-		$db = Core::_(DB);
+		$db = Database::getObject();
 		$db->query(
 			"SELECT * FROM <p><table:noquote> ORDER BY <field:noquote>",
 			array('table' => $this->dbTable, 'field' => reset($this->mainFields))
 		);
-		$this->tpl->assign('data', $db->fetchAll());
-		$this->tpl->assign('baseUri', $this->baseUri);
-		$this->tpl->assign('visible', $visible);
-		$this->tpl->output($this->getTemplateFile("/Cms/fields/data_categories"));
+		$tpl = Response::getObject()->appendTemplate($this->getTemplateFile("/Cms/fields/data_categories"));
+		$tpl->assign('data', $db->fetchAll());
+		$tpl->assign('baseUri', $this->baseUri);
+		$tpl->assign('visible', $visible, false);
+		$tpl->output();
 	}
 
 }

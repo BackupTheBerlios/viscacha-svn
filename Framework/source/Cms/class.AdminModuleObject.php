@@ -26,13 +26,15 @@ abstract class AdminModuleObject extends CmsModuleObject {
 
 	protected function header() {
 		parent::header();
-		$this->tpl->assign('menu', $this->menu);
-		$this->tpl->output("/Cms/admin/header");
+		$tpl = Response::getObject()->appendTemplate("/Cms/admin/header");
+		$tpl->assign('menu', $this->menu, false);
+		$tpl->output();
 	}
 
 	protected function footer() {
-		$this->tpl->assign('menu', $this->menu);
-		$this->tpl->output("/Cms/admin/footer");
+		$tpl = Response::getObject()->appendTemplate("/Cms/admin/footer");
+		$tpl->assign('menu', $this->menu, false);
+		$tpl->output();
 		parent::footer();
 	}
 

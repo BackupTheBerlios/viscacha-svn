@@ -13,7 +13,7 @@ class cache_fields extends CacheItem implements CacheObject {
 
 	public function load() {
 		$this->data = array();
-		$db = Core::_(DB);
+		$db = Database::getObject();
 		$db->query("SELECT * FROM <p>fields ORDER BY priority");
 		while($row = $db->fetchAssoc()) {
 			$this->data[$row['position']][] = $row;

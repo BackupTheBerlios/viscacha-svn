@@ -36,8 +36,7 @@ class CustomRating extends CustomDataField {
 		return $range;
 	}
 	public function getInputCode() {
-		Core::_(TPL)->assign('range', $this->getRange());
-		return $this->getCodeImpl('/Cms/bits/rating/input');
+		return $this->getCodeImpl('/Cms/bits/rating/input', array('range' => $this->getRange()));
 	}
 	public function getOutputCode() {
 		return $this->getCodeImpl('/Cms/bits/rating/output');

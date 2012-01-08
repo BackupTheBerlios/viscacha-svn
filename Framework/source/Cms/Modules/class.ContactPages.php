@@ -69,11 +69,12 @@ class ContactPages extends CmsModuleObject {
 			}
 		}
 
-		$this->tpl->assign('data', Sanitize::saveHTML($data));
+		$tpl = Response::getObject()->appendTemplate('Cms/contact/contact');
+		$tpl->assign('data', $data);
 		if (Config::get('captcha.enable')) {
-			$this->tpl->assign('captcha', recaptcha_get_html(Config::get('captcha.public_key')));
+			$tpl->assign('captcha', recaptcha_get_html(Config::get('captcha.public_key')), false);
 		}
-		$this->tpl->output('contact/contact');
+		$tpl->output();
 		$this->footer();
 	}
 

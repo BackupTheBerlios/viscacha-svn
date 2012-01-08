@@ -1,4 +1,6 @@
 <?php
+Core::loadInterface('Core.DB.DbDriver');
+
 /**
  * Abstract class database, that has to be extended by all database drivers.
  *
@@ -8,7 +10,24 @@
  * @since 		1.0
  * @abstract
  */
-abstract class Database {
+abstract class Database implements DbDriver {
+
+	private static $instance = NULL;
+
+	public static function getObject() {
+		if (self::$instance === NULL) {
+			$driver = Config::get('db.driver');
+			self::$instance = Core::constructObject("Core.DB.{$driver}");
+			if (self::$instance == null || !(self::$instance instanceof DbDriver)) {
+			   throw new Exception("Could not construct database driver of type {$driver}.");
+			}
+			self::$instance->connect(Config::get('db.username'), Config::get('db.password'), Config::get('db.host'), Config::get('db.port'), Config::get('db.socket'));
+			self::$instance->selectDB(Config::get('db.database'), Config::get('db.prefix'));
+		}
+		return self::$instance;
+	}
+
+	private function __clone() {}
 
 	/**
 	 * Contains the prefix for the database tables.

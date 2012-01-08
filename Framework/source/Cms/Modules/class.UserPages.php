@@ -37,16 +37,18 @@ class UserPages extends CmsModuleObject {
 			}
 			$data['regdate'] = DT::fromTimestamp($data['regdate'])->date();
 
-			$db = Core::_(DB);
+			$db = Database::getObject();
 			$db->query("SELECT user_id FROM <p>session WHERE user_id = <id:int> LIMIT 1", compact("id"));
 			$status = ($db->numRows() > 0);
 
 			if (!$user->isActive()) {
 				$this->notice("Dieser Benutzer ist noch nicht freigschaltet und das Profil nur den Administratoren dieser Seite zugänglich.");
 			}
-			$this->tpl->assign('status', $status);
-			$this->tpl->assign('data', Sanitize::saveHTML($data));
-			$this->tpl->output('user/about');
+			
+			$tpl = Response::getObject()->appendTemplate('Cms/user/about');
+			$tpl->assign('status', $status, false);
+			$tpl->assign('data', $data);
+			$tpl->output();
 		}
 		else {
 			$this->header();
@@ -83,7 +85,7 @@ class UserPages extends CmsModuleObject {
 		}
 		else {
 			$error = array();
-			$db = Core::_(DB);
+			$db = Database::getObject();
 			
 			$data = array();
 			if ($action == 'send') {
@@ -123,12 +125,13 @@ class UserPages extends CmsModuleObject {
 			$my = Me::get()->getArray();
 			$my = array_merge($data, $my);
 
-			$this->tpl->assign('my', Sanitize::saveHTML($my));
-			$this->tpl->assign('r_birthday', range(1, 31));
-			$this->tpl->assign('r_birthmonth', range(1, 12));
-			$this->tpl->assign('r_birthyear', range($min_year, $max_year));
-			$this->tpl->assign('countries', Sanitize::saveHTML($countries));
-			$this->tpl->output('user/settings');
+			$tpl = Response::getObject()->appendTemplate('Cms/user/settings');
+			$tpl->assign('my', $my);
+			$tpl->assign('r_birthday', range(1, 31));
+			$tpl->assign('r_birthmonth', range(1, 12));
+			$tpl->assign('r_birthyear', range($min_year, $max_year));
+			$tpl->assign('countries', $countries);
+			$tpl->output();
 		}
 		$this->footer();
 	}
@@ -141,6 +144,7 @@ class UserPages extends CmsModuleObject {
 			$this->error('Sie sind bereits angemeldet!');
 		}
 		else {
+			$tpl = Response::getObject()->appendTemplate('Cms/user/login');
 			if ($action == 'send') {
 				$status = Session::getObject()->open(Request::get('email'), Request::get('pw'));
 				if ($status == true) {
@@ -148,11 +152,11 @@ class UserPages extends CmsModuleObject {
 				}
 				else {
 					$this->error('Die Anmeldung ist leider fehlgeschlagen, da entweder Ihre Zugangsdaten nicht korrekt waren oder Ihr Account noch nicht freigeschaltet ist.');
-					$this->tpl->output('user/login');
+					$tpl->output();
 				}
 			}
 			else {
-				$this->tpl->output('user/login');
+				$tpl->output();
 			}
 		}
 		$this->footer();
@@ -220,7 +224,7 @@ class UserPages extends CmsModuleObject {
 						$data['verification'] = '';
 					}
 
-					$db = Core::_(DB);
+					$db = Database::getObject();
 					$db->query("
 						INSERT INTO <p>user
 						(forename, surname, pw, group_id, email, gender, birth, city, country, regdate, active, verification)
@@ -229,31 +233,33 @@ class UserPages extends CmsModuleObject {
 					", $data);
 					$mid = $db->insertID();
 
-					$this->tpl->assign('mid', $mid);
-					$this->tpl->assign('name', UserUtils::getSalutation($data['gender'], $data['forename'], $data['surname']));
-					$this->tpl->assign('data', $data);
+					$tpl = Response::getObject()->getTemplate('Cms/mails/register' . iif (!$data['active'], '_confirm') );
+					$tpl->assign('mid', $mid, false);
+					$tpl->assign('name', UserUtils::getSalutation($data['gender'], $data['forename'], $data['surname']), false);
+					$tpl->assign('data', $data, false);
 					CmsTools::sendMail(
 						$data['email'],
 						'Betätigung der Anmeldung bei '.Config::get('general.title'),
-						$this->tpl->parse('mails/register' . iif (!$data['active'], '_confirm'))
+						$tpl->parse()
 					);
 
 					$this->ok(
 						"Sie haben sich erfolgreich registriert." . iif(!$data['active'], ' Bitte aktivieren Sie Ihren Account, in dem Sie auf den Link klicken, der Ihnen an Ihre E-Mail-Adresse geschickt wurde.'),
-						URI::build('cms/user/login')
+						URI::build('Cms/user/login')
 					);
 				}
 			}
 			if ($action != 'send' || count($error) > 0) {
-				$this->tpl->assign('data', Sanitize::saveHTML($data));
-				$this->tpl->assign('r_birthday', range(1, 31));
-				$this->tpl->assign('r_birthmonth', range(1, 12));
-				$this->tpl->assign('r_birthyear', range($min_year, $max_year));
-				$this->tpl->assign('countries', Sanitize::saveHTML($countries));
+				$tpl = Response::getObject()->appendTemplate('Cms/user/register');
+				$tpl->assign('data', $data);
+				$tpl->assign('r_birthday', range(1, 31));
+				$tpl->assign('r_birthmonth', range(1, 12));
+				$tpl->assign('r_birthyear', range($min_year, $max_year));
+				$tpl->assign('countries', $countries);
 				if (Config::get('captcha.enable')) {
-					$this->tpl->assign('captcha', recaptcha_get_html(Config::get('captcha.public_key')));
+					$tpl->assign('captcha', recaptcha_get_html(Config::get('captcha.public_key')), false);
 				}
-				$this->tpl->output('user/register');
+				$tpl->output();
 			}
 		}
 		$this->footer();
@@ -268,7 +274,7 @@ class UserPages extends CmsModuleObject {
 		$hash = Request::get(2, VAR_ALNUM);
 		$user = UserUtils::getById($uid);
 		if ($user !== null && !$user->isActive() && strcmp($hash, $user->getVerificationCode()) == 0) {
-			$db = Core::_(DB);
+			$db = Database::getObject();
 			$db->query("UPDATE <p>user SET active = 1, verification = '' WHERE id = <uid:int>", compact("uid"));
 			if ($db->affectedRows() == 1) {
 				$this->ok("Ihr Benutzerkonto wurde erfolgreich freigeschaltet.", URI::build("cms/user/login"));
@@ -296,18 +302,19 @@ class UserPages extends CmsModuleObject {
 			if ($user !== null && $user->isActive() && strcmp($hash, $user->getVerificationCode()) == 0) {
 				$pw = Password::generate();
 				$pwh = Hash::generate($pw);
-				$db = Core::_(DB);
+				$db = Database::getObject();
 				$db->query("UPDATE <p>user SET pw = <pwh>, verification = '' WHERE id = <uid:int>", compact("uid", "pwh"));
 				if ($db->affectedRows() == 1) {
-					$db = Core::_(DB);
+					$db = Database::getObject();
 					$db->query("UPDATE <p>user SET verification = <pwh> WHERE id = <uid:int> AND active = 1", compact("pwh", "uid"));
 
-					$this->tpl->assign('pw', $pw);
-					$this->tpl->assign('name', UserUtils::getSalutation($user->getGender(), $user->getForeName(), $user->getSurName()));
+					$tpl = Response::getObject()->getTemplate('Cms/mails/pwremind_newpw');
+					$tpl->assign('pw', $pw, false);
+					$tpl->assign('name', UserUtils::getSalutation($user->getGender(), $user->getForeName(), $user->getSurName()), false);
 					CmsTools::sendMail(
 						$user->getEmail(),
 						Config::get('general.title') . ': Ihr neues Passwort',
-						$this->tpl->parse('mails/pwremind_newpw')
+						$tpl->parse()
 					);
 					$this->ok("Ihr neues Passwort wurden Ihnen per E-Mail zugeschicht.", URI::build("cms/user/login"));
 				}
@@ -326,6 +333,7 @@ class UserPages extends CmsModuleObject {
 		$action = Request::get(1, VAR_URI);
 		$this->breadcrumb->add('Neues Passwort anfordern');
 		$this->header();
+		$tpl = Response::getObject()->appendTemplate('Cms/user/pwremind');
 		if (Me::get()->loggedIn()) {
 			$this->error('Sie sind bereits angemeldet!');
 		}
@@ -342,14 +350,15 @@ class UserPages extends CmsModuleObject {
 						'id' => $user->getId(),
 						'name' => UserUtils::getSalutation($user->getGender(), $user->getForeName(), $user->getSurName())
 					);
-					$db = Core::_(DB);
+					$db = Database::getObject();
 					$db->query("UPDATE <p>user SET verification = <hash> WHERE id = <id:int> AND active = 1", $data);
 
-					$this->tpl->assign('data', $data);
+					$tpl = Response::getObject()->getTemplate('Cms/mails/pwremind_verify');
+					$tpl->assign('data', $data, false);
 					CmsTools::sendMail(
 						$user->getEmail(),
 						Config::get('general.title') . ': Bestätigung deiner Passwortanfrage',
-						$this->tpl->parse('mails/pwremind_verify')
+						$tpl->parse()
 					);
 
 					$this->ok("Wir haben Ihnen eine E-Mail geschickt. Bitte folgen Sie den dortigen Anweisungen.");
@@ -357,11 +366,11 @@ class UserPages extends CmsModuleObject {
 			}
 			else {
 				$this->error("Die von Ihnen angegebene E-Mail-Adresse wurde leider nicht gefunden.");
-				$this->tpl->output('user/pwremind');
+				$tpl->output();
 			}
 		}
 		else {
-			$this->tpl->output('user/pwremind');
+			$tpl->output();
 		}
 		$this->footer();
 	}
@@ -433,7 +442,7 @@ class UserPages extends CmsModuleObject {
 		);
 	}
 	public static function checkPW($pw) {
-		$db = Core::_(DB);
+		$db = Database::getObject();
 		$data = array(
 			'id' => Me::get()->getId(),
 			'pw' => Hash::generate($pw)

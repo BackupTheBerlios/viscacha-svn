@@ -41,7 +41,7 @@ class CustomData {
 		$this->cacheFields();
 		$sql = compact("field", "value");
 		$sql['table'] = $this->position->getDbTable();
-		$db = Core::_(DB);
+		$db = Database::getObject();
 		$db->query("SELECT * FROM <p><table:noquote> WHERE <field:noquote> = <value> LIMIT 1", $sql);
 		if ($db->numRows() == 1 && $row = $db->fetchAssoc()) {
 			foreach ($this->fields as $name => $field) {
@@ -62,7 +62,7 @@ class CustomData {
 			'table' => $this->position->getDbTable(),
 			'pk' => $this->position->getPrimaryKey()
 		);
-		return Core::_(DB)->query("DELETE FROM <p><table:noquote> WHERE <pk:noquote> = <id:int>", $data);
+		return Database::getObject()->query("DELETE FROM <p><table:noquote> WHERE <pk:noquote> = <id:int>", $data);
 	}
 
 	public function edit($pkValue) {
@@ -80,7 +80,7 @@ class CustomData {
 			}
 		}
 		$sql = implode(', ', $sql);
-		$db = Core::_(DB);
+		$db = Database::getObject();
 		if ($pkValue > 0) {
 			return $db->query("UPDATE <p><table:noquote> SET {$sql} WHERE <pk:noquote> = <id:int>", $data);
 		}
@@ -91,7 +91,7 @@ class CustomData {
 
 	public function add() {
 		if ($this->edit(0)) {
-			$id = Core::_(DB)->insertId();
+			$id = Database::getObject()->insertId();
 			return iif($id > 0, $id, 0);
 		}
 		else {
@@ -158,12 +158,11 @@ class CustomData {
 			return '';
 		}
 		else {
-			$code = $field->getOutputCode(); // Do this before we process our template
-			$tpl = Core::_(TPL);
-			$tpl->assign('field', $field);
-			$tpl->assign('output', $code);
-			$tpl->assign('label', $label);
-			return $tpl->parse($this->getOutputTemplate());
+			$tpl = Response::getObject()->getTemplate($this->getOutputTemplate());
+			$tpl->assign('field', $field, false);
+			$tpl->assign('output', $field->getOutputCode(), false);
+			$tpl->assign('label', $label, false);
+			return $tpl->parse();
 		}
 	}
 

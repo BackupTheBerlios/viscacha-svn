@@ -117,7 +117,7 @@ abstract class AdminFieldPages extends AdminModuleObject {
 								Validator::MESSAGE => 'Der interne Name existiert bereits für eine anderes Feld der Tabelle.',
 								Validator::CLOSURE => function ($internal) use (&$_positions) {
 									if (!empty($internal)) {
-										$db = Core::_(DB);
+										$db = Database::getObject();
 										$db->query("SELECT id FROM <p>fields WHERE internal = <internal> AND position IN(<_positions:string[]>)", compact("internal", "_positions"));
 										return ($db->numRows() == 0);
 									}
@@ -159,11 +159,12 @@ abstract class AdminFieldPages extends AdminModuleObject {
 			}
 		}
 		if (!$isSent || count($error) > 0) {
-			$this->tpl->assign('positions', $positions);
-			$this->tpl->assign('types', $fieldTypes);
-			$this->tpl->assign('data', $data);
-			$this->tpl->assign('baseUri', $this->getBaseURI());
-			$this->tpl->output("/Cms/admin/fields_add");
+			$tpl = Response::getObject()->appendTemplate("/Cms/admin/fields_add");
+			$tpl->assign('positions', $positions, false);
+			$tpl->assign('types', $fieldTypes, false);
+			$tpl->assign('data', $data, false);
+			$tpl->assign('baseUri', $this->getBaseURI());
+			$tpl->output();
 		}
 		$this->footer();
 	}
@@ -172,7 +173,7 @@ abstract class AdminFieldPages extends AdminModuleObject {
 		$id = Request::get(1, VAR_INT);
 		$this->breadcrumb->add('Löschen');
 		$this->header();
-		$db = Core::_(DB);
+		$db = Database::getObject();
 		$db->query("SELECT * FROM <p>fields WHERE id = <id:int>", compact("id"));
 		if ($db->numRows() == 1) {
 			$field = CustomDataField::constructObject($db->fetchAssoc());
@@ -208,7 +209,7 @@ abstract class AdminFieldPages extends AdminModuleObject {
 		$this->breadcrumb->add('Bearbeiten');
 		$this->header();
 
-		$db = Core::_(DB);
+		$db = Database::getObject();
 		$db->query("SELECT * FROM <p>fields WHERE id = <id:int>", compact("id"));
 		if ($db->numRows() == 0) {
 			$this->error('Das Feld wurde leider nicht gefunden.');
@@ -261,11 +262,12 @@ abstract class AdminFieldPages extends AdminModuleObject {
 				}
 			}
 
-			$this->tpl->assign('field', $field);
-			$this->tpl->assign('positions', $positions);
-			$this->tpl->assign('data', Sanitize::saveHTML($data));
-			$this->tpl->assign('baseUri', $this->getBaseURI());
-			$this->tpl->output("/Cms/admin/fields_edit");
+			$tpl = Response::getObject()->appendTemplate("/Cms/admin/fields_edit");
+			$tpl->assign('field', $field, false);
+			$tpl->assign('positions', $positions, false);
+			$tpl->assign('data', $data);
+			$tpl->assign('baseUri', $this->getBaseURI());
+			$tpl->output();
 		}
 		$this->footer();
 	}
@@ -273,9 +275,10 @@ abstract class AdminFieldPages extends AdminModuleObject {
 	protected function overview() {
 		foreach ($this->getPositions() as $p) {
 			$cache = Core::getObject('Core.Cache.CacheServer')->load('fields');
-			$this->tpl->assign("data", $cache->getFields($p));
-			$this->tpl->assign('baseUri', $this->getBaseURI());
-			$this->tpl->output("/Cms/admin/fields");
+			$tpl = Response::getObject()->appendTemplate("/Cms/admin/fields");
+			$tpl->assign("data", $cache->getFields($p), false);
+			$tpl->assign('baseUri', $this->getBaseURI());
+			$tpl->output();
 		}
 	}
 

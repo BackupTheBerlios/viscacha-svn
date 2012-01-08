@@ -48,13 +48,6 @@ class Core {
 	 * @static
 	 */
 	private static $instances = array();
-	/**
-	 * Saves the stored instances of objects
-	 *
-	 * @var array
-	 * @static
-	 */
-	private static $nInstances = array();
 
 	public static function route() {
 		$class = Request::getObject()->getRequestedClass();
@@ -64,78 +57,6 @@ class Core {
 		}
 		else {
 			self::throwError("Could not instantiate object of type '{$class}' for this route.");
-		}
-	}
-
-	/**
-	 * Easy access wrapper for Core::getNObject().
-	 *
-	 * @param string $objId Name of the stored object
-	 * @see Core::getNObject()
-	 */
-	public static function _($objId) {
-		return self::getNObject($objId);
-	}
-
-	/**
-	 * Gets an instance of an object with the stored name passed as parameter.
-	 *
-	 * This method loads a stored Object.
-	 * This object has to be stored before with storeObject().
-	 * On failure null will be returned and a warning will be thrown.
-	 * The parameter is case sensitive.
-	 *
-	 * Alternative: You can directly use the objects via Core::$_DB (in this case the parameter is 'DB')
-	 *
-	 * @param 	string Stored name of object
-	 * @return 	object Returns the object or null on failure
-	 */
-	public static function getNObject($id) {
-		if (isset(self::$nInstances[$id]) && is_object(self::$nInstances[$id])) {
-			return self::$nInstances[$id];
-		}
-		else {
-			self::throwError("Stored instance of object with name '{$id}' not found.");
-			return null;
-		}
-
-	}
-
-	/**
-	 * Stores an object with an specified name.
-	 *
-	 * If no name or no string as second argument is specified the class name is used instead.
-	 * If a stored object with the specified name is existant it will be overwritten.
-	 * The second parameter is case sensitive.
-	 *
-	 * The object name will be declared as a constant, so it is not possible to use names that are already used as constant.
-	 *
-	 * @see 	Core::constructObject()
-	 * @param	object	Object to store
-	 * @param	string	Name for the object
-	 */
-	public static function storeNObject($object, $name = null) {
-		if (is_string($name) == false) {
-			$name = get_class($object);
-		}
-		self::$nInstances[$name] = $object;
-		$upper = strtoupper($name);
-		if (!defined($upper)) {
-			define($upper, $name);
-		}
-	}
-
-	/**
-	 * Deletes an object with an specified name.
-	 *
-	 * If thee specified name is not existant nothing will happen.
-	 * The parameter is case sensitive.
-	 *
-	 * @param	string	Stored name of an object
-	 */
-	public static function unsetNObject($name) {
-		if (isset(self::$nInstances[$name]) == true) {
-			unset(self::$nInstances[$name]);
 		}
 	}
 
