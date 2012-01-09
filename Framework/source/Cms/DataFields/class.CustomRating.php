@@ -39,7 +39,7 @@ class CustomRating extends CustomDataField {
 		return $this->getCodeImpl('/Cms/bits/rating/input', array('range' => $this->getRange()));
 	}
 	public function getOutputCode() {
-		return $this->getCodeImpl('/Cms/bits/rating/output');
+		return $this->getCodeImpl('/Cms/bits/rating/output', array('range' => $this->getRange()));
 	}
 	public function getValidation() {
 		return array(

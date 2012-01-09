@@ -33,7 +33,7 @@ class CustomSelectBox extends CustomDataField {
 			$value = $options[$data];
 		}
 
-		return $this->getCodeImpl('/Cms/bits/checkbox/output', compact("value", "options"));
+		return $this->getCodeImpl('/Cms/bits/selectbox/output', compact("value", "options"));
 	}
 
 	public function getValidation() {

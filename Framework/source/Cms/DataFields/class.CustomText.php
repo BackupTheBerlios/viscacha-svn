@@ -23,7 +23,7 @@ class CustomText extends CustomDataField {
 		return $this->getCodeImpl('/Cms/bits/text/plain');
 	}
 	public function getOutputCode() {
-		return $this->getOutputCode();
+		return $this->getInputCode();
 	}
 	public function noLabel() {
 		return true;
