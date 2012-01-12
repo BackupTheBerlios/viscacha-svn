@@ -88,12 +88,6 @@ final class Request {
 
 		return trim($shortened, '/');
 	}
-	
-	// Find "uri" of default module for the specified level
-	protected function findUriForDefault(array $level, $default = null) {
-
-		return $default;
-	}
 
 	public function getRequestedClass() {
 		return $this->requestedClass;

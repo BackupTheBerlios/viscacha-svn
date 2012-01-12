@@ -380,7 +380,7 @@ table.datepickerViewYears tr.datepickerDoW {
     background-repeat: no-repeat;
 }
 .ui-rating a {
-	cursor: pointer;
+	cursor: default;
 }
 .ui-rating-full  {
     background-position: left top;
