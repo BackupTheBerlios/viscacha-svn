@@ -45,7 +45,7 @@ class CustomDatePicker extends CustomDataField {
 		return $data;
 	}
 	public function setData($data) {
-		if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $data) > 0) {
+		if (strlen($data) == 10 && preg_match('/^\d{4}-\d{2}-\d{2}$/', $data) > 0) {
 			// Data is probably coming from database
 			$dt = DT::createFromFormat('Y-m-d', $data);
 			if ($dt != null) {
