@@ -129,10 +129,10 @@ abstract class CustomDataField {
 		return self::ensurePermissionsValid($this->permissions);
 	}
 	public function canRead(User $user = null) {
-		$this->hasPermission('read', $user);
+		return $this->hasPermission('read', $user);
 	}
 	public function canWrite(User $user = null) {
-		$this->hasPermission('write', $user);
+		return $this->hasPermission('write', $user);
 	}
 	protected function hasPermission($type, $user = null) {
 		if ($user === null) {
