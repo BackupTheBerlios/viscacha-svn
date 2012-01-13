@@ -31,13 +31,13 @@ abstract class ModuleObject {
 	 * Note: Before you call this constructor, you have to set the variable $module!
 	 **/
 	public function __construct($package) {
-		// Start Benchmark
-		$debug = Core::getObject('Core.System.Debug');
-		$debug->startClock($this->module);
-
 		// Set attributes
 		$this->module = get_class($this);
 		$this->package = $package;
+
+		// Start Benchmark
+		$debug = Core::getObject('Core.System.Debug');
+		$debug->startClock($this->module);
 
 		// Set the current working dir into temporary config data.
 		// We need the value later in all __destruct methods because the cwd will be invalid there.

@@ -79,5 +79,8 @@ function iif($if, $true, $false = '') {
 	return ($if ? $true : $false);
 }
 
+function echoSave($data) {
+	echo Sanitize::saveHTML($data);
+}
 
 ?>
