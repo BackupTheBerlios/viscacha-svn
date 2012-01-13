@@ -111,14 +111,14 @@ class AdminMemberPages extends AdminModuleObject {
 
 					// prepare SQL update
 					$sql = $data;
-					unset($sql['pw1'], $sql['pw2'], $sql['birthmonth'], $sql['birthyear']);
+					unset($sql['pw1'], $sql['pw2'], $sql['birthday'], $sql['birthmonth'], $sql['birthyear']);
 					if (Me::get()->getId() == $id) {
 						unset($sql['group_id'], $sql['active']); // Don't allow to change own group or active state
 					}
 
 					$dt = new DT();
 					$dt->setDate($data['birthyear'], $data['birthmonth'], $data['birthday']);
-					$sql['birthday'] = $dt->dbDate();
+					$sql['birth'] = $dt->dbDate();
 
 					$update = array();
 					foreach ($sql as $field => $value) {
