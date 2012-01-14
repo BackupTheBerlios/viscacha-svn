@@ -16,6 +16,8 @@ class CustomDataList {
 
 	public function __construct(CustomDataPosition &$position) {
 		$this->position = $position;
+		$this->data = array();
+		$this->fields = array();
 	}
 
 	public function setFields(array $fields) {

@@ -13,10 +13,22 @@ class AdminFlightPages extends AdminFieldDataPages {
 		parent::__construct(
 			'Airlines.DataFields.Positions.AirlinesFlightPosition',
 			'airlines/admin/evals',
-			array('title', 'published'),
+			array('title'),
 			'Airlines'
 		);
 		$this->breadcrumb->add('Bewertungen', URI::build('airlines/admin/evals'));
+	}
+
+	public function activate() {
+		$this->header();
+
+		$filter = new CustomDataFilter($this->page->getPosition());
+		$filter->field('title');
+		$filter->condition('published', 0);
+		$filter->orderBy('date');
+		$this->page->overview($this->getTemplateFile('/Cms/admin/data_categories'), $filter);
+
+		$this->footer();
 	}
 
 }
