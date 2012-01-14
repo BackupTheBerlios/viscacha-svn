@@ -26,7 +26,7 @@ class AdminFlightPages extends AdminFieldDataPages {
 		$filter->field('title');
 		$filter->condition('published', 0);
 		$filter->orderBy('date');
-		$this->page->overview($this->getTemplateFile('/Cms/admin/data_categories'), $filter);
+		$this->page->overview($this->getTemplateFile('/Cms/admin/data_categories'), Config::get('pagination.admin'), $filter);
 
 		$this->footer();
 	}

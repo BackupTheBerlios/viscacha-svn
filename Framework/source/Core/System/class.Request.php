@@ -98,6 +98,9 @@ final class Request {
 	}
 
 	protected function getArg($index) {
+		if ($index < 0) { // reverse order
+			$index = count($this->args) + $index;
+		}
 		if (isset($this->args[$index]))
 			return $this->args[$index];
 		else

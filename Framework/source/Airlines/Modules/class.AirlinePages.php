@@ -33,9 +33,9 @@ class AirlinePages extends CmsModuleObject {
 		if (preg_match('/^(\d+)-/', $page, $matches) > 0 && !empty($matches[1])) {
 			$airlineData = new CustomData($this->airlinePage->getPosition());
 			if ($airlineData->load($matches[1])) {
-				$uri = AirlineTools::buildUri($airlineData);
+				$uri = AirlineTools::buildUri($airlineData, true);
 				$this->flightPage->setBaseUri($uri);
-				$this->breadcrumb->add($airlineData->getData('name'), $uri);
+				$this->breadcrumb->add($airlineData->getData('name'), URI::build($uri));
 				$flight = Request::get(1, VAR_INT);
 				if (is_id($flight)) {
 					$this->flight($flight);
@@ -67,7 +67,7 @@ class AirlinePages extends CmsModuleObject {
 		$filter->field('title');
 //		$filter->condition('airline', $id);
 		$filter->orderBy('date');
-		$this->flightPage->overview('/Airlines/flights', $filter);
+		$this->flightPage->overview('/Airlines/flights', Config::get('pagination.flights'), $filter);
 
 		$this->footer();
 	}

@@ -170,7 +170,7 @@ class FieldDataPages {
 		}
 	}
 
-	public function overview($tpl = null, CustomDataFilter $filter = null) {
+	public function overview($tpl = null, $pagination = 0, CustomDataFilter $filter = null) {
 		if ($filter === null) {
 			$filter = new CustomDataFilter($this->position);
 			foreach ($this->mainFields as $field) {
@@ -178,10 +178,19 @@ class FieldDataPages {
 			}
 			$filter->orderBy(reset($this->mainFields));
 		}
-		$list = $filter->retrieveList();
+
+		$pages = '';
+		if ($pagination > 0) {
+			$pg = new Pagination($pagination, $filter->getAmount());
+			$pg->setUri($this->baseUri);
+			$pg->parsePage();
+			$filter->limit($pg->getPerPage(), $pg->getOffset());
+			$pages = $pg->build();
+		}
 
 		$tpl = Response::getObject()->appendTemplate($tpl ? $tpl : "/Cms/fields/data_categories");
-		$tpl->assign('list', $list, false);
+		$tpl->assign('pages', $pages, false);
+		$tpl->assign('list', $filter->retrieveList(), false);
 		$tpl->assign('baseUri', $this->baseUri);
 		$tpl->output();
 	}

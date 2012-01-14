@@ -1,16 +1,12 @@
-<span class="pagination">Seiten (<?php echo $anz; ?>):&nbsp;<?php
-foreach ($pages as $page => $row) {
-	if ($row['type'] == CmsTools::PAGES_CURRENT) {
-		echo "<strong class='page_number_current'>{$page}</strong>";
-	}
-	elseif ($row['type'] == CmsTools::PAGES_SEPARATOR) {
-		echo " <span class='page_more'>...</span> ";
-	}
-	elseif ($row['type'] == CmsTools::PAGES_NUM) {
-		echo "<a class='page_number' href='{$row['url']}'>{$page}</a>";
-	}
-	if ($row['separator']) {
-		echo "<span class='page_separator'>, </span>";
-	}
-}
-?></span>
+<?php if ($pageCount > 1) { ?>
+<span class="pagination">
+	<?php foreach ($pages as $page => $row) { ?>
+	<?php if ($row['type'] == Pagination::PAGES_CURRENT) { ?>
+		<span class="page_current"><?php echo $page; ?></span>
+	<?php } elseif ($row['type'] == Pagination::PAGES_SEPARATOR) { ?>
+		<span class="page_more">...</span>
+	<?php } elseif ($row['type'] == Pagination::PAGES_NUM) { ?>
+		<a class="page_number" href="<?php echo $row['url']; ?>"><?php echo $page; ?></a>
+	<?php } } ?>
+</span>
+<?php } ?>

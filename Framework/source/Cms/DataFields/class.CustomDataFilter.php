@@ -54,6 +54,17 @@ class CustomDataFilter {
 		$this->conditions = $conditions;
 	}
 
+	public function getAmount() {
+		$vars = array('table' => $this->position->getDbTable());
+		$where = '';
+		if ($this->conditions != null) {
+			$where = 'WHERE ' . $this->buildWhere($this->conditions, $vars);
+		}
+		$db = Database::getObject();
+		$result = $db->query("SELECT COUNT(*) FROM <p><table:noquote> {$where}", $vars);
+		return $db->fetchOne($result);
+	}
+
 	public function retrieveList() {
 		$list = new CustomDataList($this->position);
 		$list->setFields($this->fields);

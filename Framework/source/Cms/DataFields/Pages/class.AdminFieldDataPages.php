@@ -19,7 +19,7 @@ class AdminFieldDataPages extends AdminModuleObject {
 	public function main() {
 		$this->breadcrumb->resetUrl();
 		$this->header();
-		$this->page->overview($this->getTemplateFile('/Cms/admin/data_categories'));
+		$this->page->overview($this->getTemplateFile('/Cms/admin/data_categories'), Config::get('pagination.admin'));
 		$this->footer();
 	}
 	

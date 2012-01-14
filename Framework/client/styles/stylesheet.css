@@ -44,6 +44,13 @@ table {
 	border-collapse: collapse;
 }
 
+.tcenter {
+	text-align: center;
+}
+.tright {
+	text-align: right;
+}
+
 #container {
 	width: 900px;
 	margin: auto;
@@ -209,44 +216,39 @@ table {
 	display: block;
 }
 
-/* Script related? */
-.tcenter {
-	text-align: center;
-}
-.tright {
-	text-align: right;
-}
-
 /** Pagination **/
-.pagination {
-	font-weight: bold;
-}
-.pagination .page_number {
-	border: 1px solid #000000;
-	background: #E6E2C5;
-	color: #777777;
-	padding: 0px 2px;
+.pagination span, .pagination a {
+	display: block;
+	float: left;
+	border-width: 1px;
+	border-style: solid;
+	border-radius: 3px;
 	margin: 0px 2px;
+	padding: 1px 3px;
+	min-width: 10px;
+	min-height: 14px;
+	text-align: center;
 	text-decoration: none;
 }
-.pagination .page_number:hover {
-	background: #F3F1E2;
-	color: #000000;
-	padding: 0px 2px;
-	margin: 0px 2px;
+.pagination a {
+	background-color: #FFFCD3;
+	color: #74655F;
+	border-color: #C2BEB1;
 }
-.pagination .page_number_current {
-	border: 1px solid #000000;
-	background-color: #000000;
-	color: #FFFFFF;
-	padding: 0px 2px;
-	margin: 0px 2px;
+.pagination a:hover {
+	background-color: #ffffff;
+	color: #000000;
+	border-color: #555555;
+}
+.pagination .page_current {
+	background-color: #D4EBFA;
+	color: #4B6BAB;
+	border-color: #90B1C7;
 }
 .pagination .page_more {
-	margin: 0px 2px;
-}
-.pagination .page_separator {
-	display: none;
+	border-color: #DEDEDE;
+	background-color: #ffffff;
+	color: #999999;
 }
 
 /** Tabellenlose Formulare **/
