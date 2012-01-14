@@ -84,5 +84,17 @@ class AirlinePages extends CmsModuleObject {
 		$this->footer();
 	}
 
+	public function search() {
+		$this->header();
+		CmsPage::notFoundError();
+		$this->footer();
+	}
+
+	public function top() {
+		$this->header();
+		CmsPage::notFoundError();
+		$this->footer();
+	}
+
 }
 ?>

@@ -35,11 +35,16 @@ class CustomData {
 		$this->template = $path;
 	}
 
-	public function set(array &$data) {
-		foreach ($this->position->getFields() as $name => $field) {
+	public function set(array &$data, array $fields = array()) {
+		if (empty($fields)) {
+			$fields = $this->position->getFields();
+		}
+		foreach ($fields as $name => $field) {
+			$value = null;
 			if (isset($data[$name])) {
-				$this->data[$name] = new CustomFieldData($field, $data[$name]);
+				$value = $data[$name];
 			}
+			$this->data[$name] = new CustomFieldData($field, $value);
 		}
 		$this->pk = $data[$this->position->getPrimaryKey()];
 	}
