@@ -3,5 +3,4 @@
 <a href="<?php echo $baseUri; ?>/<?php echo $data->getId(); ?>">
 	<?php echoSave($data->getData('title')); ?>
 </a><br />
-<?php } ?>
-<p><?php echo $pages; ?><br clear="left" /></p>
+<?php } echo iif($pages, '<p>'.$pages.'<br clear="left" /></p>'); ?>

@@ -189,13 +189,20 @@ class AdminMemberPages extends AdminModuleObject {
 
 	protected function members() {
 		$db = Database::getObject();
-		$db->query("SELECT * FROM <p>user ORDER BY surname, forename");
+		$db->query("SELECT COUNT(*) FROM <p>user");
+		$pp = Config::get('pagination.admin');
+		$pg = new Pagination($pp, $db->fetchOne());
+		$pg->parsePage();
+		$pg->setUri(Uri::build('/Cms/admin/members'));
+		$offset = $pg->getOffset();
+		$db->query("SELECT * FROM <p>user ORDER BY surname, forename LIMIT <offset:int>, <pp:int>", compact("offset", "pp"));
 		$data = array();
 		while($row = $db->fetchAssoc()){
 			$row['group'] = UserUtils::getGroupName($row['group_id']);
 			$data[] = $row;
 		}
 		$tpl = Response::getObject()->appendTemplate("Cms/admin/members");
+		$tpl->assign("pages", $pg->build(), false);
 		$tpl->assign("data", $data);
 		$tpl->output();
 	}
