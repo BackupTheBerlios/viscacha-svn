@@ -110,15 +110,15 @@ class AdminAirportPages extends AdminModuleObject {
 	protected function show() {
 		$db = Database::getObject();
 		$tpl = Response::getObject()->appendTemplate("Airlines/admin/airports");
+
+		$country = Request::get('country', VAR_NONE, 'Schweiz');
+		$tpl->assign('country', $country);
 		
 		$db->query("SELECT * FROM <p>airports ".iif(!empty($country), "WHERE land = <country>")." ORDER BY land, stadt, flughafen", compact("country"));
 		$tpl->assign('data', $db->fetchAll());
 
 		$db->query("SELECT DISTINCT land FROM <p>airports ORDER BY land");
 		$tpl->assign('countries', $db->fetchAll(null, null, 'land'));
-
-		$country = Request::get('country', VAR_NONE, 'Schweiz');
-		$tpl->assign('country', $country);
 
 		$tpl->output();
 	}
