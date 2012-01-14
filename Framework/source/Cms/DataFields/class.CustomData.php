@@ -1,6 +1,4 @@
 <?php
-Core::loadInterface('Cms.DataFields.Positions.CustomDataPosition');
-
 /**
  * Base class for custom data field data storage and view positions.
  *
@@ -13,13 +11,17 @@ Core::loadInterface('Cms.DataFields.Positions.CustomDataPosition');
 class CustomData {
 
 	private $position;
-	private $fields;
+	private $data;
 	private $template;
+	private $write;
+	private $pk;
 
-	public function __construct(CustomDataPosition $position) {
-		$this->position = $position;
-		$this->fields = null;
+	public function __construct(CustomDataPosition $position, $write = false) {
 		$this->template = null;
+		$this->position = $position;
+		$this->write = !empty($write);
+		$this->pk = 0;
+		$this->data = array();
 	}
 
 	public function getOutputTemplate() {
@@ -33,22 +35,29 @@ class CustomData {
 		$this->template = $path;
 	}
 
-	public function load($pkValue) {
-		return $this->loadByField($this->position->getPrimaryKey(), $pkValue);
+	public function set(array &$data) {
+		foreach ($this->position->getFields() as $name => $field) {
+			if (isset($data[$name])) {
+				$this->data[$name] = new CustomFieldData($field, $data[$name]);
+			}
+		}
+		$this->pk = $data[$this->position->getPrimaryKey()];
 	}
 
-	public function loadByField($field, $value) {
-		$this->cacheFields();
-		$sql = compact("field", "value");
-		$sql['table'] = $this->position->getDbTable();
-		$db = Database::getObject();
-		$db->query("SELECT * FROM <p><table:noquote> WHERE <field:noquote> = <value> LIMIT 1", $sql);
-		if ($db->numRows() == 1 && $row = $db->fetchAssoc()) {
-			foreach ($this->fields as $name => $field) {
-				if (isset($row[$name])) {
-					$field->setData($row[$name]);
-				}
-			}
+	public function setToDefault() {
+		foreach ($this->position->getFields() as $name => $field) {
+			$this->data[$name] = new CustomFieldData($field, $field->getDefaultData());
+		}
+	}
+
+	public function load($pkValue) {
+		$filter = new CustomDataFilter($this->position);
+		$filter->condition($this->position->getPrimaryKey(), $pkValue);
+		$filter->limit(1);
+		$result = $filter->execute();
+		$row = Database::getObject()->fetchAssoc($result);
+		if ($row) {
+			$this->set($row);
 			return true;
 		}
 		else {
@@ -56,7 +65,10 @@ class CustomData {
 		}
 	}
 
-	public function remove($pkValue) {
+	public function remove($pkValue = null) {
+		if ($pkValue === null) {
+			$pkValue = $this->pk;
+		}
 		$data = array(
 			'id' => $pkValue,
 			'table' => $this->position->getDbTable(),
@@ -65,18 +77,21 @@ class CustomData {
 		return Database::getObject()->query("DELETE FROM <p><table:noquote> WHERE <pk:noquote> = <id:int>", $data);
 	}
 
-	public function edit($pkValue) {
+	public function edit($pkValue = null) {
+		if ($pkValue === null) {
+			$pkValue = $this->pk;
+		}
 		$sql = array();
 		$data = array(
 			'id' => $pkValue,
 			'table' => $this->position->getDbTable(),
 			'pk' => $this->position->getPrimaryKey()
 		);
-		foreach ($this->fields as $field) {
+		foreach ($this->data as $field) {
 			if ($field->getDbDataType() != null) {
 				$name = $field->getFieldName();
 				$sql[] = "{$name} = <{$name}>";
-				$data[$name] = $field->getDataForDb();
+				$data[$name] = $field->formatDataForDb();
 			}
 		}
 		$sql = implode(', ', $sql);
@@ -99,38 +114,33 @@ class CustomData {
 		}
 	}
 
-	public function setFields($fields) {
-		foreach($fields as $field) {
-			$this->setField($field);
-		}
+	public function getId() {
+		return $this->pk;
 	}
 
-	public function setField($field) {
-		$this->fields[$field->getFieldName()] = $field;
+	public function getData($internal) {
+		return $this->data[$internal]->getData();
 	}
 
 	public function getField($internal) {
-		$this->cacheFields();
-		if (isset($this->fields[$internal])) {
-			return $this->fields[$internal];
+		if (isset($this->data[$internal])) {
+			return $this->data[$internal];
 		}
 		return null;
 	}
 
 	public function getFields($internal = null) {
-		$this->cacheFields();
 		if (is_array($internal)) {
-			return array_intersect_key($this->fields, array_fill_keys($internal, null));
+			return array_intersect_key($this->data, array_fill_keys($internal, null));
 		}
-		return $this->fields;
+		return $this->data;
 	}
 
 	public function getFieldsExcept($internal) {
-		$this->cacheFields();
 		if (is_array($internal)) {
-			return array_diff_key($this->fields, array_fill_keys($internal, null));
+			return array_diff_key($this->data, array_fill_keys($internal, null));
 		}
-		return $this->fields;
+		return $this->data;
 	}
 
 	public function outputField($internal, $label = true) {
@@ -153,7 +163,7 @@ class CustomData {
 		return $html;
 	}
 
-	protected function output(CustomDataField $field, $label) {
+	protected function output(CustomFieldData $field, $label) {
 		if ($field == null) {
 			return '';
 		}
@@ -163,14 +173,6 @@ class CustomData {
 			$tpl->assign('output', $field->getOutputCode(), false);
 			$tpl->assign('label', $label, false);
 			return $tpl->parse();
-		}
-	}
-
-	// Lazy loading...
-	protected function cacheFields() {
-		if (!is_array($this->fields)) {
-			$cache = Core::getObject('Core.Cache.CacheServer')->load('fields');
-			$this->fields = $cache->getFields($this->position->getClassPath());
 		}
 	}
 

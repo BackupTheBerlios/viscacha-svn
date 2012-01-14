@@ -29,15 +29,15 @@ class AdminDocPages extends AdminModuleObject {
 			$db = Database::getObject();
 			$db->query("DELETE FROM <p>page WHERE id = <id:int>", compact("id"));
 			if ($db->affectedRows() == 1) {
-				$this->ok("Die gewählte Seite wurde gelöscht.");
+				CmsPage::ok("Die gewählte Seite wurde gelöscht.");
 			}
 			else {
-				$this->error("Die gewählte Seite konnte leider nicht gelöscht werden.");
+				CmsPage::error("Die gewählte Seite konnte leider nicht gelöscht werden.");
 			}
 			$this->docs();
 		}
 		else {
-			$this->yesNo(
+			CmsPage::yesNo(
 				"Möchten Sie die gewählte Seite wirklich löschen?",
 				URI::build('cms/admin/documents/delete/'.$id.'/yes'),
 				URI::build('cms/admin/documents')
@@ -92,7 +92,7 @@ class AdminDocPages extends AdminModuleObject {
 			$data['id'] = $id;
 
 			if (count($error) > 0) {
-				$this->error($error);
+				CmsPage::error($error);
 			}
 			else {
 				if ($id > 0) {
@@ -102,7 +102,7 @@ class AdminDocPages extends AdminModuleObject {
 					$db->query("INSERT INTO <p>page SET title = <title>, uri = <uri>, content = <content>", $data);
 					$data['id'] = $db->insertId();
 				}
-				$this->ok("Die Seite wurde erfolgreich gespeichert.");
+				CmsPage::ok("Die Seite wurde erfolgreich gespeichert.");
 			}
 		}
 		else {

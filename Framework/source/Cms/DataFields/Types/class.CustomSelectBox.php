@@ -8,7 +8,7 @@
  * @since 		1.0
  */
 
-class CustomSelectBox extends CustomDataField {
+class CustomSelectBox extends CustomField {
 
 	const MAX_KEY_LENGTH = 50;
 
@@ -21,19 +21,22 @@ class CustomSelectBox extends CustomDataField {
 	public function getDbDataType() {
 		return 'VARCHAR('.self::MAX_KEY_LENGTH.')';
 	}
-	public function getInputCode() {
+	public function getInputCode($data = null) {
 		$vars = array('options' => self::getOptionList($this->params['options']));
-		return $this->getCodeImpl('/Cms/bits/selectbox/input', $vars);
+		return $this->getDataCode('/Cms/bits/selectbox/input', $data, $vars);
 	}
-	public function getOutputCode() {
+	public function getOutputCode($data = null) {
+		if ($data === null) {
+			$data = $this->getDefaultData();
+		}
+
 		$options = self::getOptionList($this->params['options']);
-		$data = $this->getData();
 		$value = '';
 		if (isset($options[$data]) && $options[$data] !== null) {
 			$value = $options[$data];
 		}
 
-		return $this->getCodeImpl('/Cms/bits/selectbox/output', compact("value", "options"));
+		return $this->getDataCode('/Cms/bits/selectbox/output', $data, compact("value", "options"));
 	}
 
 	public function getValidation() {

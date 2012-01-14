@@ -8,7 +8,7 @@
  * @since 		1.0
  */
 
-class CustomCheckBox extends CustomDataField {
+class CustomCheckBox extends CustomField {
 
 	public function getTypeName() {
 		return 'Checkbox';
@@ -20,11 +20,14 @@ class CustomCheckBox extends CustomDataField {
 	public function getDbDataType() {
 		return 'BOOLEAN';
 	}
-	public function getInputCode() {
-		return $this->getCodeImpl('/Cms/bits/checkbox/input');
+	public function getDefaultData() {
+		return 0;
 	}
-	public function getOutputCode() {
-		return $this->getCodeImpl('/Cms/bits/checkbox/output');
+	public function getInputCode($data = null) {
+		return $this->getDataCode('/Cms/bits/checkbox/input', $data);
+	}
+	public function getOutputCode($data = null) {
+		return $this->getDataCode('/Cms/bits/checkbox/output', $data);
 	}
 	public function getValidation() {
 		return array(

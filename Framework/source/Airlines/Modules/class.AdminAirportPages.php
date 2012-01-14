@@ -28,14 +28,14 @@ class AdminAirportPages extends AdminModuleObject {
 		if (Request::get(2) == 'yes') {
 			try {
 				Database::getObject()->query("DELETE FROM <p>airports WHERE id = <id:int>", compact("id"));
-				$this->ok("Der gewählte Airport wurde gelöscht.");
+				CmsPage::ok("Der gewählte Airport wurde gelöscht.");
 			} catch (QueryException $e) {
-				$this->error("Der gewählte Airport konnte leider nicht gelöscht werden. Möglicherweise referenzieren noch andere Daten auf diesen Airport.");
+				CmsPage::error("Der gewählte Airport konnte leider nicht gelöscht werden. Möglicherweise referenzieren noch andere Daten auf diesen Airport.");
 			}
 			$this->show();
 		}
 		else {
-			$this->yesNo(
+			CmsPage::yesNo(
 				"Möchten Sie den ausgewählten Airport wirklich löschen?",
 				URI::build('airlines/admin/airports/delete/'.$id.'/yes'),
 				URI::build('airlines/admin/airports')
@@ -80,7 +80,7 @@ class AdminAirportPages extends AdminModuleObject {
 			$data['id'] = $id;
 
 			if (count($error) > 0) {
-				$this->error($error);
+				CmsPage::error($error);
 			}
 			else {
 				if ($id > 0) {
@@ -90,7 +90,7 @@ class AdminAirportPages extends AdminModuleObject {
 					$db->query("INSERT INTO <p>airports SET flughafen = <flughafen>, land = <land>, stadt = <stadt>, code = <code>", $data);
 					$data['id'] = $db->insertId();
 				}
-				$this->ok("Der Airport wurde erfolgreich gespeichert.");
+				CmsPage::ok("Der Airport wurde erfolgreich gespeichert.");
 			}
 		}
 		else if ($id > 0) {

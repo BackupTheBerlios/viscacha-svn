@@ -51,7 +51,7 @@ class AdminMemberPages extends AdminModuleObject {
 		$this->header();
 		$member = UserUtils::getById($id);
 		if ($member === null) {
-			$this->error('Das angeforderte Mitglied wurde leider nicht gefunden.');
+			CmsPage::error('Das angeforderte Mitglied wurde leider nicht gefunden.');
 			$this->members();
 		}
 		else {
@@ -101,7 +101,7 @@ class AdminMemberPages extends AdminModuleObject {
 				extract(Validator::checkRequest($options));
 
 				if (count($error) > 0) {
-					$this->error($error);
+					CmsPage::error($error);
 				}
 				else {
 					// Update data
@@ -132,7 +132,7 @@ class AdminMemberPages extends AdminModuleObject {
 					// Update global data about me
 					Session::getObject()->refreshMe();
 
-					$this->ok("Ihre Angaben wurden erfolgreich gespeichert.");
+					CmsPage::ok("Ihre Angaben wurden erfolgreich gespeichert.");
 				}
 			}
 
@@ -160,14 +160,14 @@ class AdminMemberPages extends AdminModuleObject {
 
 			try {
 				$db->query("DELETE FROM <p>user WHERE id = <id:int>", compact("id"));
-				$this->ok("Das gewählte Mitglied wurde gelöscht.");
+				CmsPage::ok("Das gewählte Mitglied wurde gelöscht.");
 			} catch (QueryException $e) {
-				$this->error("Das gewählte Mitglied konnte leider nicht gelöscht werden. Möglicherweise referenzieren noch Daten auf dieses Mitglied.");
+				CmsPage::error("Das gewählte Mitglied konnte leider nicht gelöscht werden. Möglicherweise referenzieren noch Daten auf dieses Mitglied.");
 			}
 			$this->members();
 		}
 		else {
-			$this->yesNo(
+			CmsPage::yesNo(
 				"Möchten Sie das gewählte Mitglied wirklich löschen?",
 				URI::build('cms/admin/members/delete/'.$id.'/yes'),
 				URI::build('cms/admin/members')

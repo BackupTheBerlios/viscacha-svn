@@ -16,8 +16,8 @@ class CustomSpacer extends CustomText {
 	public function getClassPath() {
 		return 'Cms.DataFields.CustomSpacer';
 	}
-	public function getInputCode() {
-		return $this->getCodeImpl('/Cms/bits/text/spacer');
+	public function getInputCode($data = null) {
+		return $this->getDataCode('/Cms/bits/text/spacer', $data);
 	}
 
 }

@@ -22,8 +22,8 @@ class CustomMultilineTextField extends CustomTextField {
 	public function getDbDataType() {
 		return 'MEDIUMTEXT';
 	}
-	public function getInputCode() {
-		return $this->getCodeImpl('/Cms/bits/textfield/ml_input');
+	public function getInputCode($data = null) {
+		return $this->getDataCode('/Cms/bits/textfield/ml_input', $data);
 	}
 
 }

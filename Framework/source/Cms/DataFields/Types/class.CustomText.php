@@ -8,7 +8,7 @@
  * @since 		1.0
  */
 
-class CustomText extends CustomDataField {
+class CustomText extends CustomField {
 
 	public function getTypeName() {
 		return 'Beschreibung';
@@ -19,11 +19,11 @@ class CustomText extends CustomDataField {
 	public function getDbDataType() {
 		return null;
 	}
-	public function getInputCode() {
-		return $this->getCodeImpl('/Cms/bits/text/plain');
+	public function getInputCode($data = null) {
+		return $this->getDataCode('/Cms/bits/text/plain', $data);
 	}
-	public function getOutputCode() {
-		return $this->getInputCode();
+	public function getOutputCode($data = null) {
+		return $this->getInputCode($data);
 	}
 	public function noLabel() {
 		return true;

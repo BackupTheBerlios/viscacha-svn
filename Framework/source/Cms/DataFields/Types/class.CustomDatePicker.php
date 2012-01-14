@@ -8,7 +8,7 @@
  * @since 		1.0
  */
 
-class CustomDatePicker extends CustomDataField {
+class CustomDatePicker extends CustomField {
 
 	public function getTypeName() {
 		return 'Datum';
@@ -19,11 +19,11 @@ class CustomDatePicker extends CustomDataField {
 	public function getDbDataType() {
 		return 'DATE';
 	}
-	public function getInputCode() {
-		return $this->getCodeImpl('/Cms/bits/date/input');
+	public function getInputCode($data = null) {
+		return $this->getDataCode('/Cms/bits/date/input', $data);
 	}
-	public function getOutputCode() {
-		return $this->getCodeImpl('/Cms/bits/date/output');
+	public function getOutputCode($data = null) {
+		return $this->getDataCode('/Cms/bits/date/output', $data);
 	}
 	public function getValidation() {
 		return array(
@@ -31,8 +31,7 @@ class CustomDatePicker extends CustomDataField {
 			Validator::CALLBACK => Validator::CB_DATE
 		);
 	}
-	public function getDataForDb() {
-		$data = $this->data;
+	public function formatDataForDb($data) {
 		if ($data !== null) {
 			$dt = DT::createFromFormat(Config::get('intl.date_format'), $data);
 			if ($dt !== null) {

@@ -59,11 +59,11 @@ class ContactPages extends CmsModuleObject {
 		if ($isSent) {
 			extract(Validator::checkRequest($options));
 			if (count($error) > 0) {
-				$this->error($error);
+				CmsPage::error($error);
 			}
 			else {
 				CmsTools::sendMail(Config::get('general.email'), $data['title'], $data['message'], $data['email'], $data['name']);
-				$this->ok('Die Anfrage wurde erfolgreich verschickt. Vielen Dank!');
+				CmsPage::ok('Die Anfrage wurde erfolgreich verschickt. Vielen Dank!');
 				$data['title'] = '';
 				$data['message'] = '';
 			}

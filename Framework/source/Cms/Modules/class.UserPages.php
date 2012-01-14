@@ -42,7 +42,7 @@ class UserPages extends CmsModuleObject {
 			$status = ($db->numRows() > 0);
 
 			if (!$user->isActive()) {
-				$this->notice("Dieser Benutzer ist noch nicht freigschaltet und das Profil nur den Administratoren dieser Seite zugänglich.");
+				CmsPage::notice("Dieser Benutzer ist noch nicht freigschaltet und das Profil nur den Administratoren dieser Seite zugänglich.");
 			}
 			
 			$tpl = Response::getObject()->appendTemplate('Cms/user/about');
@@ -52,7 +52,7 @@ class UserPages extends CmsModuleObject {
 		}
 		else {
 			$this->header();
-			$this->error('Das von Ihnen angeforderte Profil wurde leider nicht gefunden.');
+			CmsPage::error('Das von Ihnen angeforderte Profil wurde leider nicht gefunden.');
 		}
 		$this->footer();
 	}
@@ -81,7 +81,7 @@ class UserPages extends CmsModuleObject {
 		$this->breadcrumb->add('Einstellungen');
 		$this->header();
 		if (!Me::get()->loggedIn()) {
-			$this->error('Sie müssen sich erst anmelden, bevor Sie auf diese Seite zugreifen können!');
+			CmsPage::error('Sie müssen sich erst anmelden, bevor Sie auf diese Seite zugreifen können!');
 		}
 		else {
 			$error = array();
@@ -91,7 +91,7 @@ class UserPages extends CmsModuleObject {
 			if ($action == 'send') {
 				extract(Validator::checkRequest($options));
 				if (count($error) > 0) {
-					$this->error($error);
+					CmsPage::error($error);
 				}
 				else {
 					// Update data
@@ -118,7 +118,7 @@ class UserPages extends CmsModuleObject {
 					// Update global data about me
 					Session::getObject()->refreshMe();
 
-					$this->ok("Ihre Angaben wurden erfolgreich gespeichert.");
+					CmsPage::ok("Ihre Angaben wurden erfolgreich gespeichert.");
 				}
 			}
 
@@ -141,17 +141,17 @@ class UserPages extends CmsModuleObject {
 		$this->breadcrumb->add('Anmelden');
 		$this->header();
 		if (Me::get()->loggedIn()) {
-			$this->error('Sie sind bereits angemeldet!');
+			CmsPage::error('Sie sind bereits angemeldet!');
 		}
 		else {
 			$tpl = Response::getObject()->appendTemplate('Cms/user/login');
 			if ($action == 'send') {
 				$status = Session::getObject()->open(Request::get('email'), Request::get('pw'));
 				if ($status == true) {
-					$this->ok('Sie haben sich erfolgreich angemeldet!');
+					CmsPage::ok('Sie haben sich erfolgreich angemeldet!');
 				}
 				else {
-					$this->error('Die Anmeldung ist leider fehlgeschlagen, da entweder Ihre Zugangsdaten nicht korrekt waren oder Ihr Account noch nicht freigeschaltet ist.');
+					CmsPage::error('Die Anmeldung ist leider fehlgeschlagen, da entweder Ihre Zugangsdaten nicht korrekt waren oder Ihr Account noch nicht freigeschaltet ist.');
 					$tpl->output();
 				}
 			}
@@ -166,11 +166,11 @@ class UserPages extends CmsModuleObject {
 		$this->breadcrumb->add('Abmelden');
 		$this->header();
 		if (!Me::get()->loggedIn()) {
-			$this->error('Sie sind bereits abgelemdet!');
+			CmsPage::error('Sie sind bereits abgelemdet!');
 		}
 		else {
 			Session::getObject()->close();
-			$this->ok('Sie haben sich erfolgreich abgemeldet!', URI::frontPage());
+			CmsPage::ok('Sie haben sich erfolgreich abgemeldet!', URI::frontPage());
 		}
 		$this->footer();
 	}
@@ -187,7 +187,7 @@ class UserPages extends CmsModuleObject {
 		$this->breadcrumb->add('Registrieren');
 		$this->header();
 		if (Me::get()->loggedIn()) {
-			$this->error('Sie sind bereits registriert!');
+			CmsPage::error('Sie sind bereits registriert!');
 		}
 		else {
 			// Don't validate the captcha via ajax as the session would end
@@ -205,7 +205,7 @@ class UserPages extends CmsModuleObject {
 			if ($action == 'send') {
 				extract(Validator::checkRequest($options));
 				if (count($error) > 0) {
-					$this->error($error);
+					CmsPage::error($error);
 				}
 				else {
 					// Insert data
@@ -243,7 +243,7 @@ class UserPages extends CmsModuleObject {
 						$tpl->parse()
 					);
 
-					$this->ok(
+					CmsPage::ok(
 						"Sie haben sich erfolgreich registriert." . iif(!$data['active'], ' Bitte aktivieren Sie Ihren Account, in dem Sie auf den Link klicken, der Ihnen an Ihre E-Mail-Adresse geschickt wurde.'),
 						URI::build('Cms/user/login')
 					);
@@ -277,14 +277,14 @@ class UserPages extends CmsModuleObject {
 			$db = Database::getObject();
 			$db->query("UPDATE <p>user SET active = 1, verification = '' WHERE id = <uid:int>", compact("uid"));
 			if ($db->affectedRows() == 1) {
-				$this->ok("Ihr Benutzerkonto wurde erfolgreich freigeschaltet.", URI::build("cms/user/login"));
+				CmsPage::ok("Ihr Benutzerkonto wurde erfolgreich freigeschaltet.", URI::build("cms/user/login"));
 			}
 			else {
-				$this->error("Es ist ein Fehler beim Freischalten Ihres Benutzerkontos aufgetreten. Bitte wernden Sie sich an den Systemadministrator.", URI::build("cms/contact"));
+				CmsPage::error("Es ist ein Fehler beim Freischalten Ihres Benutzerkontos aufgetreten. Bitte wernden Sie sich an den Systemadministrator.", URI::build("cms/contact"));
 			}
 		}
 		else {
-			$this->error("Die angegebenen Daten sind nicht mehr gültig. Vermutlich wurde Ihr Benutzerkonto bereits freigeschaltet.", URI::build("cms/user/login"));
+			CmsPage::error("Die angegebenen Daten sind nicht mehr gültig. Vermutlich wurde Ihr Benutzerkonto bereits freigeschaltet.", URI::build("cms/user/login"));
 		}
 		$this->footer();
 	}
@@ -293,7 +293,7 @@ class UserPages extends CmsModuleObject {
 		$this->breadcrumb->add('Neues Passwort generieren');
 		$this->header();
 		if (Me::get()->loggedIn()) {
-			$this->error('Sie sind bereits angemeldet!');
+			CmsPage::error('Sie sind bereits angemeldet!');
 		}
 		else {
 			$uid = Request::get(1, VAR_INT);
@@ -316,14 +316,14 @@ class UserPages extends CmsModuleObject {
 						Config::get('general.title') . ': Ihr neues Passwort',
 						$tpl->parse()
 					);
-					$this->ok("Ihr neues Passwort wurden Ihnen per E-Mail zugeschicht.", URI::build("cms/user/login"));
+					CmsPage::ok("Ihr neues Passwort wurden Ihnen per E-Mail zugeschicht.", URI::build("cms/user/login"));
 				}
 				else {
-					$this->error("Es ist ein Fehler bei der Generierung eines neuen Passworts aufgetreten. Bitte wernden Sie sich an den Systemadministrator.", URI::build("cms/contact"));
+					CmsPage::error("Es ist ein Fehler bei der Generierung eines neuen Passworts aufgetreten. Bitte wernden Sie sich an den Systemadministrator.", URI::build("cms/contact"));
 				}
 			}
 			else {
-				$this->error("Die angegebenen Daten sind nicht mehr gültig.", URI::build("cms/user/pwremind"));
+				CmsPage::error("Die angegebenen Daten sind nicht mehr gültig.", URI::build("cms/user/pwremind"));
 			}
 		}
 		$this->footer();
@@ -335,14 +335,14 @@ class UserPages extends CmsModuleObject {
 		$this->header();
 		$tpl = Response::getObject()->appendTemplate('Cms/user/pwremind');
 		if (Me::get()->loggedIn()) {
-			$this->error('Sie sind bereits angemeldet!');
+			CmsPage::error('Sie sind bereits angemeldet!');
 		}
 		else if ($action == 'send') {
 			$mail = Request::get("email");
 			$user = UserUtils::getByEmail($mail);
 			if ($user !== null) {
 				if (!$user->isActive()) {
-					$this->error("Ihr Benutzerkonto ist leider noch nicht freigeschaltet.");
+					CmsPage::error("Ihr Benutzerkonto ist leider noch nicht freigeschaltet.");
 				}
 				else {
 					$data = array(
@@ -361,11 +361,11 @@ class UserPages extends CmsModuleObject {
 						$tpl->parse()
 					);
 
-					$this->ok("Wir haben Ihnen eine E-Mail geschickt. Bitte folgen Sie den dortigen Anweisungen.");
+					CmsPage::ok("Wir haben Ihnen eine E-Mail geschickt. Bitte folgen Sie den dortigen Anweisungen.");
 				}
 			}
 			else {
-				$this->error("Die von Ihnen angegebene E-Mail-Adresse wurde leider nicht gefunden.");
+				CmsPage::error("Die von Ihnen angegebene E-Mail-Adresse wurde leider nicht gefunden.");
 				$tpl->output();
 			}
 		}

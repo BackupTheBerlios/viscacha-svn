@@ -17,8 +17,8 @@ class CustomImageView extends CustomTextField {
 		return 'Cms.DataFields.CustomImageView';
 	}
 
-	public function getOutputCode() {
-		return $this->getCodeImpl('/Cms/bits/image/output');
+	public function getOutputCode($data = null) {
+		return $this->getDataCode('/Cms/bits/image/output', $data);
 	}
 	public function getValidation() {
 		return array(

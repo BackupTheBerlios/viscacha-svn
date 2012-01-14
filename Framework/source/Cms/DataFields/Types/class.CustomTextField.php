@@ -8,7 +8,7 @@
  * @since 		1.0
  */
 
-class CustomTextField extends CustomDataField {
+class CustomTextField extends CustomField {
 
 	protected function getMaxPossibleLength() {
 		return 255;
@@ -23,11 +23,11 @@ class CustomTextField extends CustomDataField {
 	public function getDbDataType() {
 		return 'VARCHAR('.$this->getMaxPossibleLength().')';
 	}
-	public function getInputCode() {
-		return $this->getCodeImpl('/Cms/bits/textfield/input');
+	public function getInputCode($data = null) {
+		return $this->getDataCode('/Cms/bits/textfield/input', $data);
 	}
-	public function getOutputCode() {
-		return $this->getCodeImpl('/Cms/bits/textfield/output');
+	public function getOutputCode($data = null) {
+		return $this->getDataCode('/Cms/bits/textfield/output', $data);
 	}
 	public function getValidation() {
 		return array(

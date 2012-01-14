@@ -7,65 +7,40 @@
  * @author		Matthias Mohr
  * @since 		1.0
  */
-abstract class FieldDataPages extends CmsModuleObject {
+class FieldDataPages {
 
-	protected $positions;
+	protected $position;
 	protected $baseUri;
 	protected $mainFields;
-	protected $dbTable;
-	protected $dbPk;
 
-	public function  __construct(array $positions, $baseUri, array $mainFields, $package) {
-		parent::__construct($package);
-		$this->positions = Core::constructObjectArray($positions);
-
-		// Check that every position has the same table and primary key or this won't work very well
-		$table = null;
-		$pk = null;
-		foreach ($this->positions as $p) {
-			if ($table != null && strcasecmp($table, $p->getDbTable()) != 0) {
-				Core::throwError('Position "'.$p->getName().'" has a different database table.', INTERNAL_ERROR);
-			}
-			if ($pk != null && strcasecmp($pk, $p->getPrimaryKey()) != 0) {
-				Core::throwError('Position "'.$p->getName().'" has a different primary key.', INTERNAL_ERROR);
-			}
-			$table = $p->getDbTable();
-			$pk = $p->getPrimaryKey();
-		}
+	public function  __construct($position, $baseUri, array $mainFields) {
 		if (count($mainFields) == 0) {
 			Core::throwError('Please provide fields to show.', INTERNAL_ERROR);
 		}
 
-		$this->dbTable = $table;
-		$this->dbPk = $pk;
+		$this->position = Core::constructObject($position);
 		$this->baseUri = $baseUri;
 		$this->mainFields = $mainFields;
 	}
 
-	public function main() {
-		$this->breadcrumb->resetUrl();
-		$this->header();
-		$this->overview();
-		$this->footer();
+	public function getBaseUri() {
+		return $this->baseUri;
+	}
+
+	public function setBaseUri($uri) {
+		$this->baseUri = $uri;
+	}
+
+	public function getPosition() {
+		return $this->position;
 	}
 	
-	protected function getTemplateFile($file) {
-		return $file;
-	}
-	
-	public function detail($id = null) {
-		if ($id === null) {
-			$id = Request::get(1, VAR_INT);
-		}
-		$data = new CustomData(reset($this->positions));
+	public function detail($id, $tpl = null) {
+		$data = new CustomData($this->position);
 		if ($id > 0 && !$data->load($id)) {
 			$this->notFoundError();
 		}
 		else {
-			$caption = $data->getField(reset($this->mainFields));
-			$this->breadcrumb->add($caption->getData());
-			$this->header();
-
 			$html = array();
 			$fields = $data->getFields();
 			foreach ($fields as $field) {
@@ -79,50 +54,52 @@ abstract class FieldDataPages extends CmsModuleObject {
 					);
 				}
 			}
-			$tpl = Response::getObject()->appendTemplate($this->getTemplateFile('/Cms/fields/data_categories_detail'));
+			$tpl = Response::getObject()->appendTemplate($tpl ? $tpl : '/Cms/fields/data_categories_detail');
 			$tpl->assign('data', $data, false);
 			$tpl->assign('fields', $html, false);
 			$tpl->assign('id', $id);
 			$tpl->assign('baseUri', $this->baseUri);
 			$tpl->output();
-			$this->footer();
 		}
 	}
 
-	public function write() {
+	public function write($tpl = null) {
 		$id = Request::get(1, VAR_INT);
 		$isSent = (Request::get(2, VAR_URI) == 'send');
 
-		$this->breadcrumb->add(iif($id > 0, "Bearbeiten", "Hinzufügen"));
-		$this->header();
-
-		$data = new CustomData(reset($this->positions));
+		$data = new CustomData($this->position);
 		if ($id > 0 && !$data->load($id)) {
-			$this->error('Der gewählte Datensatz wurde leider nicht gefunden.');
+			CmsPage::error('Der gewählte Datensatz wurde leider nicht gefunden.');
 		}
 		else {
+			if ($id == 0) {
+				$data->setToDefault();
+			}
 			$fields = $data->getFields();
 
 			if ($isSent) {
 				$options = array();
 				foreach ($fields as $field) {
-					$options[$field->getFieldName()] = $field->getValidation();
+					if ($field->canWrite()) {
+						$options[$field->getFieldName()] = $field->getValidation();
+					}
 				}
 
 				$result = Validator::checkRequest($options);
 
 				foreach ($fields as $field) {
-					$name = $field->getFieldName();
-					if (isset($result['data'][$name])) {
-						$field->setData($result['data'][$name]);
+					if ($field->canWrite()) {
+						$name = $field->getFieldName();
+						if (isset($result['data'][$name])) {
+							$field->setData($result['data'][$name]);
+						}
 					}
 				}
 
 				if (count($result['error']) > 0) {
-					$this->error($result['error']);
+					CmsPage::error($result['error']);
 				}
 				else {
-					$data->setFields($fields);
 					$success = false;
 					if ($id > 0) {
 						$success = $data->edit($id);
@@ -138,52 +115,50 @@ abstract class FieldDataPages extends CmsModuleObject {
 						}
 					}
 					if ($success) {
-						$this->ok("Der Datensatz wurde erfolgreich gespeichert.");
+						CmsPage::ok("Der Datensatz wurde erfolgreich gespeichert.");
 					}
 					else {
-						$this->error("Der Datensatz konnt leider nicht gespeichert werden.");
+						CmsPage::error("Der Datensatz konnt leider nicht gespeichert werden.");
 					}
 				}
 			}
 
 			$html = array();
 			foreach ($fields as $field) {
-				$html[] = array(
-					'field' => Sanitize::saveHTML($field->getFieldName()),
-					'name' => Sanitize::saveHTML($field->getName()),
-					'description' => Sanitize::saveHTML($field->getDescription()),
-					'code' => $field->getInputCode(),
-					'label' => !$field->noLabel()
-				);
+				if ($field->canWrite()) {
+					$html[] = array(
+						'field' => Sanitize::saveHTML($field->getFieldName()),
+						'name' => Sanitize::saveHTML($field->getName()),
+						'description' => Sanitize::saveHTML($field->getDescription()),
+						'code' => $field->getInputCode(),
+						'label' => !$field->noLabel()
+					);
+				}
 			}
-			$tpl = Response::getObject()->appendTemplate($this->getTemplateFile('/Cms/fields/data_categories_write'));
+			$tpl = Response::getObject()->appendTemplate($tpl ? $tpl : '/Cms/fields/data_categories_write');
+			$tpl->assign('data', $data, false);
 			$tpl->assign('fields', $html, false);
 			$tpl->assign('id', $id);
 			$tpl->assign('baseUri', $this->baseUri);
 			$tpl->output();
 		}
-
-		$this->footer();
 	}
 
 	public function remove() {
 		$id = Request::get(1, VAR_INT);
-		$this->breadcrumb->add('Löschen');
-		$this->header();
-
-		$data = new CustomData(reset($this->positions));
+		$data = new CustomData($this->position);
 		if ($data->load($id)) {
 			if (Request::get(2) == 'yes') {
-				if ($data->remove($id)) {
-					$this->ok("Der Datensatz wurde erfolgreich gelöscht.");
+				if ($data->remove()) {
+					CmsPage::ok("Der Datensatz wurde erfolgreich gelöscht.");
 				}
 				else {
-					$this->error("Der Datensatz konnte leider nicht gelöscht werden.");
+					CmsPage::error("Der Datensatz konnte leider nicht gelöscht werden.");
 				}
 				$this->overview();
 			}
 			else {
-				$this->yesNo(
+				CmsPage::yesNo(
 					"Möchten Sie den gewählten Datensatz inkl. aller evtl. verknüpften Daten wirklich löschen?",
 					URI::build($this->baseUri.'/remove/'.$id.'/yes'),
 					URI::build($this->baseUri)
@@ -191,27 +166,23 @@ abstract class FieldDataPages extends CmsModuleObject {
 			}
 		}
 		else {
-			$this->error('Der Datensatz wurde nicht gefunden.');
+			CmsPage::error('Der Datensatz wurde nicht gefunden.');
 		}
-		$this->footer();
 	}
 
-	protected function overview() {
-		$fields = new CustomData(reset($this->positions));
-		$visible = array();
-		foreach ($this->mainFields as $fieldName) {
-			$visible[$fieldName] = $fields->getField($fieldName);
+	public function overview($tpl = null, CustomDataFilter $filter = null) {
+		if ($filter === null) {
+			$filter = new CustomDataFilter($this->position);
+			foreach ($this->mainFields as $field) {
+				$filter->field($field);
+			}
+			$filter->orderBy(reset($this->mainFields));
 		}
+		$list = $filter->retrieveList();
 
-		$db = Database::getObject();
-		$db->query(
-			"SELECT * FROM <p><table:noquote> ORDER BY <field:noquote>",
-			array('table' => $this->dbTable, 'field' => reset($this->mainFields))
-		);
-		$tpl = Response::getObject()->appendTemplate($this->getTemplateFile("/Cms/fields/data_categories"));
-		$tpl->assign('data', $db->fetchAll());
+		$tpl = Response::getObject()->appendTemplate($tpl ? $tpl : "/Cms/fields/data_categories");
+		$tpl->assign('list', $list, false);
 		$tpl->assign('baseUri', $this->baseUri);
-		$tpl->assign('visible', $visible, false);
 		$tpl->output();
 	}
 

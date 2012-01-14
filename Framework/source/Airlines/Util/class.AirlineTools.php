@@ -10,8 +10,8 @@
 
 class AirlineTools {
 
-	public static function buildUri($data) {
-		return URI::build('airlines/airlines/' . $data['id'] . '-' . URI::clean($data['name']));
+	public static function buildUri(CustomData $data) {
+		return URI::build('airlines/airlines/' . $data->getId() . '-' . URI::clean($data->getData('name')));
 	}
 
 }

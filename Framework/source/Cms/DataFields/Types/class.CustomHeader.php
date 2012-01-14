@@ -16,8 +16,8 @@ class CustomHeader extends CustomText {
 	public function getClassPath() {
 		return 'Cms.DataFields.CustomHeader';
 	}
-	public function getInputCode() {
-		return $this->getCodeImpl('/Cms/bits/text/header');
+	public function getInputCode($data = null) {
+		return $this->getDataCode('/Cms/bits/text/header', $data);
 	}
 }
 ?>

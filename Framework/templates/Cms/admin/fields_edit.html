@@ -29,19 +29,19 @@
 		<table class="border">
 			<tr>
 				<th></th>
-				<?php foreach (CustomDataField::getRights() as $right) { ?>
+				<?php foreach (CustomField::getRights() as $right) { ?>
 				<th><?php echo Authentication::getRightName($right); ?></th>
 				<?php } ?>
 			</tr>
 			<tr>
 				<td>Sehen</td>
-				<?php foreach (CustomDataField::getRights() as $right) { ?>
+				<?php foreach (CustomField::getRights() as $right) { ?>
 				<td class="tcenter"><input type="checkbox" name="read[<?php echo $right; ?>]" value="1"<?php echo iif(!empty($data['read'][$right]), ' checked="checked"'); ?> /></td>
 				<?php } ?>
 			</tr>
 			<tr>
 				<td>&Auml;ndern</td>
-				<?php foreach (CustomDataField::getRights() as $right) { ?>
+				<?php foreach (CustomField::getRights() as $right) { ?>
 				<td class="tcenter"><input type="checkbox" name="write[<?php echo $right; ?>]" value="1"<?php echo iif(!empty($data['write'][$right]), ' checked="checked"'); ?> /></td>
 				<?php } ?>
 			</tr>

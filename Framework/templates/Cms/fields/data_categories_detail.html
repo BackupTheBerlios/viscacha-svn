@@ -1,6 +1,14 @@
+<div class="freeform">
 <?php foreach ($fields as $field) { ?>
 <?php if ($field['label']) { ?>
-<label><?php echo $field['name']; ?>:</label>
-<?php } echo $field['code']; ?>
+<label>
+	<?php echo $field['name']; ?>:
+	<?php if (!empty($field['description'])) { ?>
+	<br><small><?php echo $field['description']; ?></small>
+	<?php } ?>
+</label>
+<?php } ?>
+<?php echo $field['code']; ?>
 <br class="newinput" /><hr class="formsep" />
 <?php } ?>
+</div>

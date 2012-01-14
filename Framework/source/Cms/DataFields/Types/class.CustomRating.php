@@ -8,7 +8,7 @@
  * @since 		1.0
  */
 
-class CustomRating extends CustomDataField {
+class CustomRating extends CustomField {
 
 	public function getTypeName() {
 		return 'Bewertung';
@@ -18,6 +18,9 @@ class CustomRating extends CustomDataField {
 	}
 	public function getDbDataType() {
 		return 'TINYINT(2)';
+	}
+	public function getDefaultData() {
+		return 0;
 	}
 	public function getRange() {
 		$range = array();
@@ -35,11 +38,11 @@ class CustomRating extends CustomDataField {
 		}
 		return $range;
 	}
-	public function getInputCode() {
-		return $this->getCodeImpl('/Cms/bits/rating/input', array('range' => $this->getRange()));
+	public function getInputCode($data = null) {
+		return $this->getDataCode('/Cms/bits/rating/input', $data, array('range' => $this->getRange()));
 	}
-	public function getOutputCode() {
-		return $this->getCodeImpl('/Cms/bits/rating/output', array('range' => $this->getRange()));
+	public function getOutputCode($data = null) {
+		return $this->getDataCode('/Cms/bits/rating/output', $data, array('range' => $this->getRange()));
 	}
 	public function getValidation() {
 		return array(

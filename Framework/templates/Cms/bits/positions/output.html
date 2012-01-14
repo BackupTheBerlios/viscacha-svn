@@ -1,5 +1,5 @@
 <?php if ($label && !$field->noLabel()) { ?>
-<label><?php echo Sanitize::saveHtml($field->getName()); ?>:</label>
+<label><?php echoSave($field->getName()); ?>:</label>
 <div class="label"><?php echo $output; ?></div>
 <br class="newinput" />
 <?php } else { ?>

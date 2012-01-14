@@ -17,8 +17,8 @@ class CustomUrlField extends CustomTextField {
 		return 'Cms.DataFields.CustomUrlField';
 	}
 
-	public function getOutputCode() {
-		return $this->getCodeImpl('/Cms/bits/url/output');
+	public function getOutputCode($data = null) {
+		return $this->getDataCode('/Cms/bits/url/output', $data);
 	}
 	public function getValidation() {
 		return array(

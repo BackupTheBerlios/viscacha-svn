@@ -1,0 +1,6 @@
+<h3>Bewertungen und Erfahrungsberichte</h3>
+<?php foreach ($list->getData() as $data) { ?>
+<a href="<?php echo $baseUri; ?>/<?php echo $data->getId(); ?>">
+	<?php echoSave($data->getData('title')); ?>
+</a><br />
+<?php } ?>

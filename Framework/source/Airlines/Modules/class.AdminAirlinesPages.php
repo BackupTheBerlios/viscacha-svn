@@ -11,7 +11,7 @@ class AdminAirlinesPages extends AdminFieldDataPages {
 
 	public function __construct() {
 		parent::__construct(
-			array('Airlines.DataFields.Positions.AirlinesCategoryPosition'),
+			'Airlines.DataFields.Positions.AirlinesCategoryPosition',
 			'airlines/admin/categories',
 			array('name', 'code'),
 			'Airlines'

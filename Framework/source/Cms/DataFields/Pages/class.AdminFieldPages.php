@@ -14,17 +14,17 @@ abstract class AdminFieldPages extends AdminModuleObject {
 
 	protected function getFieldTypes() {
 		return array(
-			'Cms.DataFields.CustomTextField',
-			'Cms.DataFields.CustomMultilineTextField',
-			'Cms.DataFields.CustomCheckBox',
-			'Cms.DataFields.CustomSelectBox',
-			'Cms.DataFields.CustomImageView',
-			'Cms.DataFields.CustomUrlField',
-			'Cms.DataFields.CustomDatePicker',
-			'Cms.DataFields.CustomRating',
-			'Cms.DataFields.CustomHeader',
-			'Cms.DataFields.CustomText',
-			'Cms.DataFields.CustomSpacer',
+			'Cms.DataFields.Types.CustomTextField',
+			'Cms.DataFields.Types.CustomMultilineTextField',
+			'Cms.DataFields.Types.CustomCheckBox',
+			'Cms.DataFields.Types.CustomSelectBox',
+			'Cms.DataFields.Types.CustomImageView',
+			'Cms.DataFields.Types.CustomUrlField',
+			'Cms.DataFields.Types.CustomDatePicker',
+			'Cms.DataFields.Types.CustomRating',
+			'Cms.DataFields.Types.CustomHeader',
+			'Cms.DataFields.Types.CustomText',
+			'Cms.DataFields.Types.CustomSpacer',
 		);
 	}
 
@@ -88,7 +88,7 @@ abstract class AdminFieldPages extends AdminModuleObject {
 			'read' => array(),
 			'write' => array()
 		);
-		foreach(CustomDataField::getRights() as $right) {
+		foreach(CustomField::getRights() as $right) {
 			foreach (array('read', 'write') as $type) {
 				$data[$type][$right] = 1;
 			}
@@ -148,14 +148,14 @@ abstract class AdminFieldPages extends AdminModuleObject {
 				$field = $fieldTypes[$data['type']];
 				$this->injectDataToField($field, $data);
 				if ($field->create()) {
-					$this->ok("Das Feld wurde erfolgreich angelegt.");
+					CmsPage::ok("Das Feld wurde erfolgreich angelegt.");
 				}
 				else {
 					$error[] = 'Das Feld konnt leider nicht angelegt werden.';
 				}
 			}
 			if (count($error) > 0) {
-				$this->error($error);
+				CmsPage::error($error);
 			}
 		}
 		if (!$isSent || count($error) > 0) {
@@ -176,21 +176,21 @@ abstract class AdminFieldPages extends AdminModuleObject {
 		$db = Database::getObject();
 		$db->query("SELECT * FROM <p>fields WHERE id = <id:int>", compact("id"));
 		if ($db->numRows() == 1) {
-			$field = CustomDataField::constructObject($db->fetchAssoc());
+			$field = CustomField::constructObject($db->fetchAssoc());
 			if ($field->isImplemented()) {
-				$this->error('Das Feld kann nicht gelöscht werden, da es durch Nutzung gesperrt wurde.');
+				CmsPage::error('Das Feld kann nicht gelöscht werden, da es durch Nutzung gesperrt wurde.');
 			}
 			else if (Request::get(2) == 'yes') {
 				if ($field->remove()) {
-					$this->ok("Das Feld wurde erfolgreich gelöscht.");
+					CmsPage::ok("Das Feld wurde erfolgreich gelöscht.");
 				}
 				else {
-					$this->error("Das Feld konnte leider nicht gelöscht werden.");
+					CmsPage::error("Das Feld konnte leider nicht gelöscht werden.");
 				}
 				$this->overview();
 			}
 			else {
-				$this->yesNo(
+				CmsPage::yesNo(
 					"Möchten Sie das gewählte Feld inkl. aller verknüpften Daten wirklich löschen? Eine vorherige Datensicherung wird dringend empfohlen!",
 					URI::build($this->getBaseURI().'/remove/'.$id.'/yes'),
 					URI::build($this->getBaseURI())
@@ -198,7 +198,7 @@ abstract class AdminFieldPages extends AdminModuleObject {
 			}
 		}
 		else {
-			$this->error('Das Feld wurde nicht gefunden.');
+			CmsPage::error('Das Feld wurde nicht gefunden.');
 		}
 		$this->footer();
 	}
@@ -212,11 +212,11 @@ abstract class AdminFieldPages extends AdminModuleObject {
 		$db = Database::getObject();
 		$db->query("SELECT * FROM <p>fields WHERE id = <id:int>", compact("id"));
 		if ($db->numRows() == 0) {
-			$this->error('Das Feld wurde leider nicht gefunden.');
+			CmsPage::error('Das Feld wurde leider nicht gefunden.');
 			$this->overview();
 		}
 		else {
-			$field = CustomDataField::constructObject($db->fetchAssoc());
+			$field = CustomField::constructObject($db->fetchAssoc());
 			$_positions = $this->getPositions();
 			$positions = Core::constructObjectArray($_positions);
 			// Fill data array with the default (currently saved) data
@@ -251,14 +251,14 @@ abstract class AdminFieldPages extends AdminModuleObject {
 				if (count($error) == 0) {
 					$this->injectDataToField($field, $data);
 					if ($field->update()) {
-						$this->ok("Das Feld wurde erfolgreich aktualisiert.");
+						CmsPage::ok("Das Feld wurde erfolgreich aktualisiert.");
 					}
 					else {
 						$error[] = 'Das Feld konnt leider nicht aktualisiert werden.';
 					}
 				}
 				if (count($error) > 0) {
-					$this->error($error);
+					CmsPage::error($error);
 				}
 			}
 

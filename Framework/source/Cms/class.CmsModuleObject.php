@@ -56,7 +56,9 @@ abstract class CmsModuleObject extends ModuleObject {
 	 * Default page
 	 **/
 	public function main() {
-		$this->notFoundError();
+		$this->header();
+		CmsPage::notFoundError();
+		$this->footer();
 	}
 
 	/**
@@ -132,46 +134,6 @@ abstract class CmsModuleObject extends ModuleObject {
 	protected function footer() {
 		$tpl = Response::getObject()->appendTemplate('/Cms/footer');
 		$tpl->assign('breadcrumb', $this->breadcrumb, false);
-		$tpl->output();
-	}
-
-	protected function error($message, $url = null) {
-		if (!is_array($message)) {
-			$message = array($message);
-		}
-		$tpl = Response::getObject()->appendTemplate('/Cms/error');
-		$tpl->assign('url', $url);
-		$tpl->assign('message', $message);
-		$tpl->output();
-	}
-	
-	protected function notFoundError() {
-		$this->header();
-		$this->error('Die angeforderte Seite konnte leider nicht gefunden werden!');
-		$this->footer();
-	}
-
-	protected function yesNo($question, $yesUrl, $noUrl) {
-		$tpl = Response::getObject()->appendTemplate('/Cms/yes_no');
-		$tpl->assign('yesUrl', $yesUrl);
-		$tpl->assign('noUrl', $noUrl);
-		$tpl->assign('question', $question);
-		$tpl->output();
-	}
-
-	protected function notice($message) {
-		$tpl = Response::getObject()->appendTemplate('/Cms/notice');
-		$tpl->assign('message', $message);
-		$tpl->output();
-	}
-
-	protected function ok($message, $url = null) {
-		if (!is_array($message)) {
-			$message = array($message);
-		}
-		$tpl = Response::getObject()->appendTemplate('/Cms/ok');
-		$tpl->assign('url', $url);
-		$tpl->assign('message', $message);
 		$tpl->output();
 	}
 

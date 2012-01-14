@@ -1,6 +1,8 @@
 <?php
+Core::loadInterface('Cms.DataFields.CustomFieldInfo');
+
 /**
- * Base implementation for custom fields.
+ * Base class for custom data field data storage and view positions.
  *
  * @package		Cms
  * @subpackage	DataFields
@@ -8,7 +10,7 @@
  * @since 		1.0
  */
 
-abstract class CustomDataField {
+abstract class CustomField implements CustomFieldInfo {
 
 	protected $id;
 	protected $internal;
@@ -18,8 +20,6 @@ abstract class CustomDataField {
 	protected $position;
 	protected $implemented;
 	protected $permissions;
-
-	protected $data;
 	protected $params;
 
 	public static function constructObject($data) {
@@ -37,7 +37,12 @@ abstract class CustomDataField {
 		foreach ($data as $key => $value) {
 			switch ($key) {
 				case 'position':
-					$this->position = Core::constructObject($value);
+					if (is_object($value)) {
+						$this->position = &$value;
+					}
+					else {
+						$this->position = Core::constructObject($value);
+					}
 					break;
 				case 'type':
 					break;
@@ -101,7 +106,7 @@ abstract class CustomDataField {
 	public function getPosition() {
 		return $this->position;
 	}
-	public function setPosition(CustomDataPosition $pos) {
+	public function setPosition(CustomDataPosition &$pos) {
 		$this->position = $pos;
 	}
 	public function isImplemented() {
@@ -113,7 +118,7 @@ abstract class CustomDataField {
 
 	public static function ensurePermissionsValid($permissions) {
 		$data = array();
-		foreach(CustomDataField::getRights() as $right) {
+		foreach(CustomField::getRights() as $right) {
 			foreach (array('read', 'write') as $type) {
 				if (empty($permissions[$type][$right])) {
 					$data[$type][$right] = 0;
@@ -146,21 +151,21 @@ abstract class CustomDataField {
 		return false;
 	}
 
-	public abstract function getTypeName();
-	public abstract function getClassPath(); // Example: Cms.DataFields.CustomDataField
-
-	public function getData() {
-		return $this->data;
+	public function formatDataForDb($data) {
+		return $data;
 	}
-	public function getDataForDb() {
-		return $this->data;
+	public function getDefaultData() {
+		return '';
 	}
-	public function setData($data) {
-		$this->data = $data;
+	public abstract function getInputCode($data = null);
+	public abstract function getOutputCode($data = null);
+	protected function getDataCode($tpl, $data = null, array $vars = array()) {
+		if ($data === null) {
+			$data = $this->getDefaultData();
+		}
+		$vars['data'] = $data;
+		return $this->getCodeImpl($tpl, $vars);
 	}
-	public abstract function getDbDataType(); // Example: INT(10)
-	public abstract function getInputCode();
-	public abstract function getOutputCode();
 	public function getValidation() {
 		return array();
 	}
@@ -189,7 +194,6 @@ abstract class CustomDataField {
 		$tpl->assign('field', $this->getFieldName());
 		$tpl->assign('title', $this->getName());
 		$tpl->assign('description', $this->getDescription());
-		$tpl->assign('data', $this->data);
 		$tpl->assign('params', $this->getParamsData());
 		$tpl->assignMultiple($additionalVars);
 		return $tpl->parse();

@@ -34,7 +34,7 @@ class cache_fields extends CacheItem implements CacheObject {
 	}
 
 	protected function addField($row) {
-		$field = CustomDataField::constructObject($row);
+		$field = CustomField::constructObject($row);
 		if ($field != null) {
 			$this->fields[$row['position']][$field->getFieldName()] = $field;
 		}

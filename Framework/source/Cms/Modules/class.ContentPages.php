@@ -28,7 +28,9 @@ class ContentPages extends CmsModuleObject {
 		$db = Database::getObject();
 		$db->query("SELECT title, content FROM <p>page WHERE uri = <uri>", compact("uri"));
 		if ($db->numRows() != 1) {
+			$this->header();
 			$this->notFoundError();
+			$this->footer();
 		}
 		else {
 			$data = $db->fetchAssoc();
