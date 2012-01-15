@@ -10,8 +10,8 @@
 
 class AirlineTools {
 
-	public static function buildUri(CustomData $data, $raw = false) {
-		$uri = 'airlines/airlines/' . $data->getId() . '-' . URI::clean($data->getData('name'));
+	public static function buildUri($id, $name, $raw = false) {
+		$uri = 'airlines/airlines/' . $id . '-' . URI::clean($name);
 		if (!$raw) {
 			$uri = URI::build($uri);
 		}

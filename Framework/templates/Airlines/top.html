@@ -1,0 +1,12 @@
+<h2>Das AirlineCheck-Ranking</h2>
+<ol>
+<?php foreach ($list->getData() as $data) { ?>
+<li>
+	<a href="<?php echo AirlineTools::buildUri($data->getData('airlineId'), $data->getData('airlineName')); ?>">
+		<?php echoSave($data->getData('airlineName')); ?>
+	</a>
+	<span style="float: right;"><?php echo CustomRating::getStarOutputCode($data->getData('rating')); ?></span>
+	<br class="newinput" />
+</li>
+<?php } ?>
+</ol>

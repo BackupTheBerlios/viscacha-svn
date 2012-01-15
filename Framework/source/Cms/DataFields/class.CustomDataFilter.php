@@ -10,19 +10,28 @@
 
 class CustomDataFilter {
 
+	private $fields;
+	private $fieldsForeign;
+	private $fieldsCalc;
 	private $order;
+	private $group;
 	private $offset;
 	private $num;
 	private $conditions;
 	private $position;
+	private $join;
 
 	public function  __construct(CustomDataPosition $position) {
 		$this->fields = array();
+		$this->fieldsForeign = array();
+		$this->fieldsCalc = array();
 		$this->offset = 0;
 		$this->num = 0;
 		$this->order = array();
+		$this->group = array();
 		$this->conditions = null;
 		$this->position = $position;
+		$this->join = array();
 	}
 
 	public function getPosition() {
@@ -32,9 +41,25 @@ class CustomDataFilter {
 	public function field($fieldName) {
 		$this->fields[] = $fieldName;
 	}
+
+	public function fieldForeign($table, $fieldName, $alias = null) {
+		$this->fieldsForeign[$table.'.'.$fieldName] = $alias === null ? $fieldName : $alias;
+	}
+
+	public function fieldCalculation($fieldName, $calculation) {
+		$this->fieldsCalc[$fieldName] = $calculation;
+	}
+	
+	public function join($table, $primaryKey, $foreignKey) {
+		$this->join[$table] = compact("primaryKey", "foreignKey");
+	}
 	
 	public function orderBy($fieldName, $ascending = true) {
 		$this->order[$fieldName] = $ascending;
+	}
+	
+	public function groupBy($fieldName) {
+		$this->group[] = $fieldName;
 	}
 
 	public function limit($num, $offset = 0) {
@@ -55,13 +80,24 @@ class CustomDataFilter {
 
 	public function getAmount() {
 		$vars = array('table' => $this->position->getDbTable());
+
 		$where = '';
 		if ($this->conditions != null) {
 			$where = 'WHERE ' . $this->buildWhere($this->conditions, $vars);
 		}
+
+		$group = '';
+		if (count($this->group) > 0) {
+			$group = 'GROUP BY ' . $this->buildGroup($vars);
+		}
+
 		$db = Database::getObject();
-		$result = $db->query("SELECT COUNT(*) FROM <p><table:noquote> {$where}", $vars);
+		$result = $db->query("SELECT COUNT(*) FROM <p><table:noquote> {$where} {$group}", $vars);
 		return $db->fetchOne($result);
+	}
+	
+	private function getForeignCalcFields() {
+		return array_merge(array_keys($this->fieldsCalc), array_values($this->fieldsForeign));
 	}
 
 	public function retrieveList() {
@@ -70,7 +106,10 @@ class CustomDataFilter {
 		$result = $this->execute();
 		$db = Database::getObject();
 		while($row = $db->fetchAssoc($result)) {
-			$list->addData($row, true);
+			$fieldData = new CustomData($this->position);
+			$fieldData->set($row, true, $list->getFields());
+			$fieldData->setCalculated($row, $this->getForeignCalcFields());
+			$list->addData($fieldData);
 		}
 		return $list;
 	}
@@ -80,6 +119,7 @@ class CustomDataFilter {
 		$row = Database::getObject()->fetchAssoc($result);
 		if ($row) {
 			$obj->set($row, true);
+			$obj->setCalculated($row, $this->getForeignCalcFields());
 			return true;
 		}
 		else {
@@ -96,29 +136,74 @@ class CustomDataFilter {
 		if ($this->conditions != null) {
 			$where = 'WHERE ' . $this->buildWhere($this->conditions, $vars);
 		}
+		
+		$join = '';
+		if (count($this->join) > 0) {
+			$join = $this->buildJoins($vars);
+		}
 
 		$order = '';
 		if (count($this->order) > 0) {
 			$order = 'ORDER BY ' . $this->buildOrder($vars);
 		}
+		
+		$group = '';
+		if (count($this->group) > 0) {
+			$group = 'GROUP BY ' . $this->buildGroup($vars);
+		}
 
 		$limit = $this->buildLimit($vars);
 
-		return Database::getObject()->query("SELECT {$fields} FROM <p><table:noquote> {$where} {$order} {$limit}", $vars);
+		return Database::getObject()->query("SELECT {$fields} FROM <p><table:noquote> {$join} {$where} {$group} {$order} {$limit}", $vars);
 	}
 
 	protected function buildFields(array &$vars) {
+		$fields = array();
 		if (count($this->fields) > 0) {
-			$fields = array($this->position->getPrimaryKey());
+			$fields[] = $this->position->getPrimaryKey();
 			foreach ($this->fields as $i => $field) {
 				$fields[] = "<field{$i}:noquote>";
 				$vars["field{$i}"] = $field;
 			}
-			return implode(', ', $fields);
 		}
 		else {
-			return '*';
+			$fields[] = '<p><table:noquote>.*';
 		}
+		foreach ($this->fieldsCalc as $name => $expr) {
+			$i = count($vars);
+			$vars["cFieldExpr{$i}"] = $expr;
+			$vars["cFieldName{$i}"] = $name;
+			$fields[] = "<cFieldExpr{$i}:noquote> AS <cFieldName{$i}:noquote>";
+		}
+		foreach ($this->fieldsForeign as $name => $alias) {
+			$i = count($vars);
+			$vars["fField{$i}"] = $name;
+			$vars["fFieldAlias{$i}"] = $alias;
+			$field = "<p><fField{$i}:noquote> AS <fFieldAlias{$i}:noquote>";
+			$fields[] = $field;
+		}
+		return implode(', ', $fields);
+	}
+
+	protected function buildJoins(array &$vars) {
+		$joins = array();
+		foreach ($this->join as $table => $keys) {
+			$i = count($vars);
+			$vars["join{$i}"] = $table;
+			$vars["pk{$i}"] = $keys['primaryKey'];;
+			$vars["fk{$i}"] = $keys['foreignKey'];
+			$joins[] = "LEFT JOIN <p><join{$i}:noquote> ON <p><join{$i}:noquote>.<pk{$i}:noquote> = <p><table:noquote>.<fk{$i}:noquote>";
+		}
+		return implode(' ', $joins);
+	}
+
+	protected function buildGroup(array &$vars) {
+		$group = array();
+		foreach ($this->group as $i => $field) {
+			$group[] = "<group{$i}:noquote>";
+			$vars["group{$i}"] = $field;
+		}
+		return implode(', ', $group);
 	}
 
 	protected function buildOrder(array &$vars) {

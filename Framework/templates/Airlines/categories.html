@@ -5,5 +5,5 @@
 <?php if (strcasecmp($name{0}, $last) != 0) { $last = $name{0} ?>
 	<h3><?php echo $last; ?></h3>
 <?php } ?>
-	<a href="<?php echo AirlineTools::buildUri($data); ?>"><?php echoSave($name); ?></a><br />
+	<a href="<?php echo AirlineTools::buildUri($data->getId(), $name); ?>"><?php echoSave($name); ?></a><br />
 <?php } ?>

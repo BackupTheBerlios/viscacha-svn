@@ -35,6 +35,17 @@ class CustomData {
 		$this->template = $path;
 	}
 
+	public function setCalculated(array &$data, $fields) {
+		$field = new UnknownDataField();
+		foreach ($fields as $name) {
+			$value = null;
+			if (isset($data[$name])) {
+				$value = $data[$name];
+			}
+			$this->data[$name] = new CustomFieldData($field, $value);
+		}
+	}
+	
 	public function set(array &$data, $fromDb = true, array $fields = array()) {
 		if (empty($fields)) {
 			$fields = $this->position->getFields();

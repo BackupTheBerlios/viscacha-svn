@@ -33,7 +33,7 @@ class AirlinePages extends CmsModuleObject {
 		if (preg_match('/^(\d+)-/', $page, $matches) > 0 && !empty($matches[1])) {
 			$airlineData = new CustomData($this->airlinePage->getPosition());
 			if ($airlineData->load($matches[1])) {
-				$uri = AirlineTools::buildUri($airlineData, true);
+				$uri = AirlineTools::buildUri($airlineData->getId(), $airlineData->getData('name'), true);
 				$this->flightPage->setBaseUri($uri);
 				$this->breadcrumb->add($airlineData->getData('name'), URI::build($uri));
 				$flight = Request::get(1, VAR_INT);
@@ -65,6 +65,7 @@ class AirlinePages extends CmsModuleObject {
 
 		$filter = new CustomDataFilter($this->flightPage->getPosition());
 		$filter->field('title');
+		$filter->fieldCalculation('rating', '(vdr_rating+bord_rating+service_rating)/3');
 		$filter->condition('airline', $id);
 		$filter->condition('published', 1);
 		$filter->orderBy('date');
@@ -93,7 +94,17 @@ class AirlinePages extends CmsModuleObject {
 
 	public function top() {
 		$this->header();
-		CmsPage::notFoundError();
+
+		$filter = new CustomDataFilter($this->flightPage->getPosition());
+		$filter->fieldForeign('categories', 'name', 'airlineName');
+		$filter->fieldForeign('categories', 'id', 'airlineId');
+		$filter->fieldCalculation('rating', '(AVG(vdr_rating)+AVG(bord_rating)+AVG(service_rating))/3');
+		$filter->join('categories', 'id', 'airline');
+		$filter->condition('published', 1);
+		$filter->orderBy('rating');
+		$filter->groupBy('airline');
+		$this->flightPage->overview('/Airlines/top', 0, $filter);
+
 		$this->footer();
 	}
 
