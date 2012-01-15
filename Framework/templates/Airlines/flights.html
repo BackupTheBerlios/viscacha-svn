@@ -1,6 +1,8 @@
 <h3>Bewertungen und Erfahrungsberichte</h3>
 <?php foreach ($list->getData() as $data) { ?>
-<a href="<?php echo URI::build($baseUri.'/'.$data->getId()); ?>">
+<a style="float: left;" href="<?php echo URI::build($baseUri.'/'.$data->getId()); ?>">
 	<?php echoSave($data->getData('title')); ?>
-</a><br />
+</a>
+<span style="float: right;"><?php echo CustomRating::getStarOutputCode($data->getData('rating')); ?></span>
+<br class="newinput" /><hr class="formsep" />
 <?php } echo iif($pages, '<p>'.$pages.'<br clear="left" /></p>'); ?>
