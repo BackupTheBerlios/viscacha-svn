@@ -128,9 +128,8 @@ class CustomAutoCompleteTextField extends CustomTextField {
 	public function getPkName() {
 		if ($this->pk == null) {
 			list($table,) = explode('.', $this->params['source']);
-			$db = Database::getObject();
-			$db->query('SHOW COLUMNS FROM <p><table:noquote> WHERE `Key` = "PRI"', compact("table"));
-			$this->pk = $db->fetchOne();
+			$cache = Core::getObject('Core.Cache.CacheServer')->load('field_pk');
+			$this->pk = $cache->getPk($table);
 		}
 		return $this->pk;
 	}
