@@ -42,7 +42,7 @@ class CustomCheckBox extends CustomField {
 		return array('yes', 'no');
 	}
 	public function getParamsCode($add = false) {
-		return $this->getCodeImpl('/Cms/bits/checkbox/params');
+		return $this->getCodeImpl('/Cms/bits/checkbox/params', compact("add"));
 	}
 	public function getValidationParams($add = false) {
 		return array(

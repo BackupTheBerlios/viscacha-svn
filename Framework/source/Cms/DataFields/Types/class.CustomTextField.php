@@ -41,7 +41,7 @@ class CustomTextField extends CustomField {
 		return array('max_length', 'optional');
 	}
 	public function getParamsCode($add = false) {
-		return $this->getCodeImpl('/Cms/bits/textfield/params');
+		return $this->getCodeImpl('/Cms/bits/textfield/params', compact("add"));
 	}
 	public function getValidationParams($add = false) {
 		return array(

@@ -40,7 +40,7 @@ class CustomUrlField extends CustomTextField {
 		return array('caption', 'target', 'optional');
 	}
 	public function getParamsCode($add = false) {
-		return $this->getCodeImpl('/Cms/bits/url/params');
+		return $this->getCodeImpl('/Cms/bits/url/params', compact("add"));
 	}
 	public function getValidationParams($add = false) {
 		return array(

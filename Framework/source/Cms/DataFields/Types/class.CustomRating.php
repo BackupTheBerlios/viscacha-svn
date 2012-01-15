@@ -57,7 +57,7 @@ class CustomRating extends CustomField {
 		return array('max', 'optional');
 	}
 	public function getParamsCode($add = false) {
-		return $this->getCodeImpl('/Cms/bits/rating/params');
+		return $this->getCodeImpl('/Cms/bits/rating/params', compact("add"));
 	}
 	public function getValidationParams($add = false) {
 		return array(

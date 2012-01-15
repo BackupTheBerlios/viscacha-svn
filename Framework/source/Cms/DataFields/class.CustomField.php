@@ -183,7 +183,7 @@ abstract class CustomField implements CustomFieldInfo {
 		);
 	}
 	public function getParamsCode($add = false) {
-		return $this->getCodeImpl('/Cms/bits/no_params');
+		return $this->getCodeImpl('/Cms/bits/no_params', compact("add"));
 	}
 	public function getValidationParams($add = false) {
 		return array();

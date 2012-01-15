@@ -51,7 +51,7 @@ class CustomSelectBox extends CustomField {
 		return array('options');
 	}
 	public function getParamsCode($add = false) {
-		return $this->getCodeImpl('/Cms/bits/selectbox/params');
+		return $this->getCodeImpl('/Cms/bits/selectbox/params', compact("add"));
 	}
 	public function getValidationParams($add = false) {
 		return array(

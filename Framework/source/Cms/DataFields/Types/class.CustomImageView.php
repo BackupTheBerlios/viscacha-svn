@@ -32,7 +32,7 @@ class CustomImageView extends CustomTextField {
 		return array('alt', 'optional');
 	}
 	public function getParamsCode($add = false) {
-		return $this->getCodeImpl('/Cms/bits/image/params');
+		return $this->getCodeImpl('/Cms/bits/image/params', compact("add"));
 	}
 	public function getValidationParams($add = false) {
 		return array(
