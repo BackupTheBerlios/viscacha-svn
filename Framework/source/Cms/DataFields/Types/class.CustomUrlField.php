@@ -14,7 +14,7 @@ class CustomUrlField extends CustomTextField {
 		return 'Link';
 	}
 	public function getClassPath() {
-		return 'Cms.DataFields.CustomUrlField';
+		return 'Cms.DataFields.Types.CustomUrlField';
 	}
 
 	public function getOutputCode($data = null) {

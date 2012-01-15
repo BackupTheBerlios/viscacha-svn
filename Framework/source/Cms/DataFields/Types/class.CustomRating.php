@@ -14,7 +14,7 @@ class CustomRating extends CustomField {
 		return 'Bewertung';
 	}
 	public function getClassPath() {
-		return 'Cms.DataFields.CustomRating';
+		return 'Cms.DataFields.Types.CustomRating';
 	}
 	public function getDbDataType() {
 		return 'TINYINT(2)';

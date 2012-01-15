@@ -14,7 +14,7 @@ class CustomDatePicker extends CustomField {
 		return 'Datum';
 	}
 	public function getClassPath() {
-		return 'Cms.DataFields.CustomDatePicker';
+		return 'Cms.DataFields.Types.CustomDatePicker';
 	}
 	public function getDbDataType() {
 		return 'DATE';

@@ -14,7 +14,7 @@ class CustomCheckBox extends CustomField {
 		return 'Checkbox';
 	}
 	public function getClassPath() {
-		return 'Cms.DataFields.CustomCheckBox';
+		return 'Cms.DataFields.Types.CustomCheckBox';
 	}
 
 	public function getDbDataType() {

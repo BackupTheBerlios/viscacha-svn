@@ -17,7 +17,7 @@ class CustomTextField extends CustomField {
 		return 'Text, einzeilig';
 	}
 	public function getClassPath() {
-		return 'Cms.DataFields.CustomTextField';
+		return 'Cms.DataFields.Types.CustomTextField';
 	}
 
 	public function getDbDataType() {

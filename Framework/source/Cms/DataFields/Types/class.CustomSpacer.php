@@ -14,7 +14,7 @@ class CustomSpacer extends CustomText {
 		return 'Abstandshalter';
 	}
 	public function getClassPath() {
-		return 'Cms.DataFields.CustomSpacer';
+		return 'Cms.DataFields.Types.CustomSpacer';
 	}
 	public function getInputCode($data = null) {
 		return $this->getDataCode('/Cms/bits/text/spacer', $data);

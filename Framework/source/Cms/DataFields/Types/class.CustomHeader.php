@@ -14,7 +14,7 @@ class CustomHeader extends CustomText {
 		return 'Überschrift';
 	}
 	public function getClassPath() {
-		return 'Cms.DataFields.CustomHeader';
+		return 'Cms.DataFields.Types.CustomHeader';
 	}
 	public function getInputCode($data = null) {
 		return $this->getDataCode('/Cms/bits/text/header', $data);

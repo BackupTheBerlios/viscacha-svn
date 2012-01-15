@@ -14,7 +14,7 @@ class CustomImageView extends CustomTextField {
 		return 'Bild';
 	}
 	public function getClassPath() {
-		return 'Cms.DataFields.CustomImageView';
+		return 'Cms.DataFields.Types.CustomImageView';
 	}
 
 	public function getOutputCode($data = null) {

@@ -14,7 +14,7 @@ class CustomText extends CustomField {
 		return 'Beschreibung';
 	}
 	public function getClassPath() {
-		return 'Cms.DataFields.CustomText';
+		return 'Cms.DataFields.Types.CustomText';
 	}
 	public function getDbDataType() {
 		return null;

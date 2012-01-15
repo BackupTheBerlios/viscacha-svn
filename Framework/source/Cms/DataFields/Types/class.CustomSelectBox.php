@@ -16,7 +16,7 @@ class CustomSelectBox extends CustomField {
 		return 'Auswahlliste';
 	}
 	public function getClassPath() {
-		return 'Cms.DataFields.CustomSelectBox';
+		return 'Cms.DataFields.Types.CustomSelectBox';
 	}
 	public function getDbDataType() {
 		return 'VARCHAR('.self::MAX_KEY_LENGTH.')';

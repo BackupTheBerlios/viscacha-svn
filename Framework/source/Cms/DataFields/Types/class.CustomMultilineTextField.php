@@ -17,7 +17,7 @@ class CustomMultilineTextField extends CustomTextField {
 		return 'Text, mehrzeilig';
 	}
 	public function getClassPath() {
-		return 'Cms.DataFields.CustomMultilineTextField';
+		return 'Cms.DataFields.Types.CustomMultilineTextField';
 	}
 	public function getDbDataType() {
 		return 'MEDIUMTEXT';
