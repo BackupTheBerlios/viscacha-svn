@@ -75,22 +75,22 @@ if ($config['tpcallow'] == 1 && $my->p['attachments'] == 1) {
 }
 
 $standard_data = array(
-			'name' => '',
-			'email' => '',
-			'guest' => iif($my->vlogin, 0, 1),
-			'comment' => '',
-			'dosmileys' => 1,
-			'dowords' => 1,
-			'digest' => -1,
-			'topic' => $lang->phrase('reply_prefix').$info['topic'],
-			'human' => false,
-			'id' => $id
-		);
+	'name' => '',
+	'email' => '',
+	'guest' => iif($my->vlogin, 0, 1),
+	'comment' => '',
+	'dosmileys' => 1,
+	'dowords' => 1,
+	'digest' => -1,
+	'topic' => $lang->phrase('reply_prefix').$info['topic'],
+	'human' => false,
+	'id' => $id
+);
 
 ($code = $plugins->load('addreply_start')) ? eval($code) : null;
 
 if ($_GET['action'] == "save") {
-	$digest = $gpc->get('digest', int);
+	$digest = $gpc->get('digest', int, -1);
 	$error = array();
 	if (is_hash($fid)) {
 		$error_data = import_error_data($fid);
@@ -223,13 +223,14 @@ if ($_GET['action'] == "save") {
 		// Set uploads to correct reply
 		$db->query("UPDATE {$db->pre}uploads SET tid = '{$redirect}' WHERE mid = '{$pid}' AND topic_id = '{$id}' AND tid = '0'");
 
-		// Update, insert, delete notifications
+		// Update, insert notifications
 		if ($my->vlogin) {
 			$result = $db->query("SELECT id, type FROM {$db->pre}abos WHERE mid = '{$my->id}' AND tid = '{$id}'");
 			switch ($digest) {
 				case 1:  $type = '';  break;
 				case 2:  $type = 'd'; break;
 				case 3:  $type = 'w'; break;
+				case 9:  $type = 'f'; break;
 				default: $type = null; break;
 			}
 
@@ -242,10 +243,8 @@ if ($_GET['action'] == "save") {
 					$db->query("UPDATE {$db->pre}abos SET type = '{$type}' WHERE id = '{$row['id']}'");
 				}
 			}
-			else {
-				if ($type !== null) { // Füge Abo hinzu
-					$db->query("INSERT INTO {$db->pre}abos (mid, tid, type) VALUES ('{$my->id}', '{$id}', '{$type}')");
-				}
+			else if ($type !== null) { // Füge Abo hinzu
+				$db->query("INSERT INTO {$db->pre}abos (mid, tid, type) VALUES ('{$my->id}', '{$id}', '{$type}')");
 			}
 		}
 
@@ -400,7 +399,8 @@ else {
 				case '':	$data['digest'] = 1; break;
 				case 'd':	$data['digest'] = 2; break;
 				case 'w':	$data['digest'] = 3; break;
-				default:	$data['digest'] = 0; // Favoriten = Keine Benachrichtigung
+				case 'f':	$data['digest'] = 9; break;
+				default:	$data['digest'] = 0;
 			}
 		}
 		else {
