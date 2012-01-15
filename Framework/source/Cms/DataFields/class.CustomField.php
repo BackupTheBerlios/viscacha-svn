@@ -191,6 +191,7 @@ abstract class CustomField implements CustomFieldInfo {
 
 	protected function getCodeImpl($file, $additionalVars = array()) {
 		$tpl = Response::getObject()->getTemplate($file);
+		$tpl->assign('fieldId', $this->getId());
 		$tpl->assign('field', $this->getFieldName());
 		$tpl->assign('title', $this->getName());
 		$tpl->assign('description', $this->getDescription());

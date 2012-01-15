@@ -24,7 +24,8 @@ class CustomUrlField extends CustomTextField {
 		return array(
 			Validator::MULTIPLE => array(
 				array(
-					Validator::MESSAGE => 'Die angegebenen Daten im Feld "'.$this->getName().'" sind zu lang (max. '.$this->getMaxPossibleLength().' Zeichen).',
+					Validator::MESSAGE => 'Die angegebenen Daten im Feld "'.$this->getName().'" sind zu kurz/lang (min. 1, max. '.$this->getMaxPossibleLength().' Zeichen).',
+					Validator::MIN_LENGTH => 1,
 					Validator::MAX_LENGTH => $this->getMaxPossibleLength()
 				),
 				array(

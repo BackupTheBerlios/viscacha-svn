@@ -182,6 +182,7 @@ abstract class Database implements DbDriver {
 	 *
 	 * @param resource Result set
 	 * @param string Field to use for the keys or null to get an enumerated array
+	 * @param string Single field to use for as values
 	 * @return array All results in a multimensional associative array
 	 **/
 	public function fetchAll($result = null, $key = null, $value = null) {
@@ -191,8 +192,8 @@ abstract class Database implements DbDriver {
 				if ($key !== null && !isset($row[$key])) {
 					Core::throwError("Key assigned in fetchAll() was not found in result set. The keys will be enumerated.", INTERNAL_NOTICE);
 				}
-				if ($value !== null && !isset($row[$value])) {
-					Core::throwError("Key assigned in fetchAll() was not found in result set. The keys will be enumerated.", INTERNAL_NOTICE);
+				else if ($value !== null && !isset($row[$value])) {
+					Core::throwError("Key assigned in fetchAll() was not found in result set.");
 				}
 				if ($key !== null && $value === null) {
 					$cache[$row[$key]] = $row;

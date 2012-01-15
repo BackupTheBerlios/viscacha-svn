@@ -66,6 +66,7 @@ class AdminDocPages extends AdminModuleObject {
 					array(
 						// Mindestlänge wird geprüft, da es keine doppelten URIs geben darf, aber die Startseite keine URI hat.
 						Validator::MESSAGE => 'Die URI muss mindestens 1 und darf maximal 100 Zeichen lang sein.',
+						Validator::MIN_LENGTH => 1,
 						Validator::MAX_LENGTH => 100
 					),
 					array(

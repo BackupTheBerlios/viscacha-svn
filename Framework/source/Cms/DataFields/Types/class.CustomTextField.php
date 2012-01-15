@@ -31,7 +31,8 @@ class CustomTextField extends CustomField {
 	}
 	public function getValidation() {
 		return array(
-			Validator::MESSAGE => 'Die angegebenen Daten im Feld "'.$this->getName().'" sind zu lang (max. '.$this->params['max_length'].' Zeichen).',
+			Validator::MESSAGE => 'Die angegebenen Daten im Feld "'.$this->getName().'" sind zu kurz/lang (min. 1, max. '.$this->params['max_length'].' Zeichen).',
+			Validator::MIN_LENGTH => 1,
 			Validator::MAX_LENGTH => $this->params['max_length'],
 			Validator::OPTIONAL => $this->params['optional']
 		);
