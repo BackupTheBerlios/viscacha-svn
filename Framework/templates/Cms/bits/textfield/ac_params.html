@@ -1,0 +1,26 @@
+<label for="strict">Erlaube nur Eingaben aus der Quelle:</label>
+<input type="checkbox" name="strict" id="strict" value="1"<?php echo iif($params['strict'], ' checked="checked"').iif(!$add, ' disabled="disabled"'); ?> />
+<br class="newinput" /><hr class="formsep" />
+<label for="source">Datenquelle:</label>
+<div class="label">
+	<select name="source_type" style="width: 40%"<?php echo iif(!$add, ' disabled="disabled"'); ?>>
+		<option value="db"<?php echo iif($params['source_type'] == 'db', 'selected="selected"'); ?>>Database table column</option>
+		<option value="cb"<?php echo iif($params['source_type'] == 'cb', 'selected="selected"'); ?>>PHP callback function</option>
+		<option value="file"<?php echo iif($params['source_type'] == 'file', 'selected="selected"'); ?>>File from server</option>
+	</select>
+	<input style="width: 57%" type="text" name="source" id="source" value="<?php echo $params['source']; ?>"<?php echo iif(!$add, ' disabled="disabled"'); ?> />
+</div>
+<br class="newinput" />
+<small>
+	Folgende Eingaben sind bei den einzelnen Typen m&ouml;glich:<br />
+	<em>Database table column</em>: Spalte einer Datenbanktabelle (TabellennameOhnePrefix.Spaltenname)<br />
+	<em>PHP callback function</em>: PHP-Funktionsname oder statische Klassenmethode (Klasse::Methode)<br />
+	<em>File from server</em>: Absoluter Pfad zu einer Textdatei auf dem Server, ein Eintrag pro Zeile.
+</small>
+<hr class="formsep" />
+<label for="max_length">Maximale L&auml;nge:</label>
+<input class="label" type="text" name="max_length" id="max_length" value="<?php echo $params['max_length']; ?>"<?php echo iif(!$add, ' disabled="disabled"'); ?> />
+<br class="newinput" /><hr class="formsep" />
+<label for="optional">Optional:</label>
+<input type="checkbox" name="optional" id="optional" value="1"<?php echo iif($params['optional'], ' checked="checked"').iif(!$add, ' disabled="disabled"'); ?> />
+<br class="newinput" />

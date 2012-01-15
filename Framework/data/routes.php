@@ -5,6 +5,7 @@ $config = array(
 		'Cms' => array(
 			'!' => 'ContentPages',
 			'page' => 'ContentPages',
+			'backend' => 'BackendPages',
 			'contact' => 'ContactPages',
 			'user' => 'UserPages',
 			'admin' => array(

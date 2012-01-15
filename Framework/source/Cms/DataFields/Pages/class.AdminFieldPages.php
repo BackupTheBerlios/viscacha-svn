@@ -15,6 +15,7 @@ abstract class AdminFieldPages extends AdminModuleObject {
 	protected function getFieldTypes() {
 		return array(
 			'Cms.DataFields.Types.CustomTextField',
+			'Cms.DataFields.Types.CustomAutoCompleteTextField',
 			'Cms.DataFields.Types.CustomMultilineTextField',
 			'Cms.DataFields.Types.CustomCheckBox',
 			'Cms.DataFields.Types.CustomSelectBox',
