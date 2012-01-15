@@ -74,6 +74,7 @@ if ($config['tpcallow'] == 1 && $my->p['attachments'] == 1) {
 	$p_upload = 1;
 }
 
+$validDigest = array(-1, 1, 2, 3, 9);
 $standard_data = array(
 	'name' => '',
 	'email' => '',
@@ -81,7 +82,7 @@ $standard_data = array(
 	'comment' => '',
 	'dosmileys' => 1,
 	'dowords' => 1,
-	'digest' => -1,
+	'digest' => 0,
 	'topic' => $lang->phrase('reply_prefix').$info['topic'],
 	'human' => false,
 	'id' => $id
@@ -90,7 +91,7 @@ $standard_data = array(
 ($code = $plugins->load('addreply_start')) ? eval($code) : null;
 
 if ($_GET['action'] == "save") {
-	$digest = $gpc->get('digest', int, -1);
+	$digest = $gpc->get('digest', int);
 	$error = array();
 	if (is_hash($fid)) {
 		$error_data = import_error_data($fid);
@@ -224,26 +225,24 @@ if ($_GET['action'] == "save") {
 		$db->query("UPDATE {$db->pre}uploads SET tid = '{$redirect}' WHERE mid = '{$pid}' AND topic_id = '{$id}' AND tid = '0'");
 
 		// Update, insert notifications
-		if ($my->vlogin) {
-			$result = $db->query("SELECT id, type FROM {$db->pre}abos WHERE mid = '{$my->id}' AND tid = '{$id}'");
+		if ($my->vlogin && in_array($digest, $validDigest)) {
 			switch ($digest) {
 				case 1:  $type = '';  break;
 				case 2:  $type = 'd'; break;
 				case 3:  $type = 'w'; break;
 				case 9:  $type = 'f'; break;
-				default: $type = null; break;
+				case -1: $type = null; break;
 			}
-
-			if ($db->num_rows($result) > 0) {
-				$row = $db->fetch_assoc($result);
-				if ($type === null) { // Lösche Abo
-					$db->query("DELETE FROM {$db->pre}abos WHERE id = '{$row['id']}'");
-				}
-				elseif ($row['type'] != $type) { // Aktualisiere Abo, wenn veränderter Typ
-					$db->query("UPDATE {$db->pre}abos SET type = '{$type}' WHERE id = '{$row['id']}'");
-				}
+			
+			$result = $db->query("SELECT id, type FROM {$db->pre}abos WHERE mid = '{$my->id}' AND tid = '{$id}'");
+			$row = $db->fetch_assoc($result);
+			if ($row && $type === null) { // Lösche Abo
+				$db->query("DELETE FROM {$db->pre}abos WHERE id = '{$row['id']}'");
 			}
-			else if ($type !== null) { // Füge Abo hinzu
+			else if ($row && $type != $row['type']) { // Aktualisiere Abo, wenn veränderter Typ
+				$db->query("UPDATE {$db->pre}abos SET type = '{$type}' WHERE id = '{$row['id']}'");
+			}
+			else if (!$row && $type !== null) { // Füge Abo hinzu
 				$db->query("INSERT INTO {$db->pre}abos (mid, tid, type) VALUES ('{$my->id}', '{$id}', '{$type}')");
 			}
 		}
@@ -391,7 +390,7 @@ else {
 		$captcha = null;
 	}
 
-	if ($my->vlogin && $data['digest'] == -1) {
+	if ($my->vlogin && !in_array($data['digest'], $validDigest)) {
 		$result = $db->query("SELECT type FROM {$db->pre}abos WHERE mid = '{$my->id}' AND tid = '{$id}'");
 		if ($db->num_rows($result) > 0) {
 			$temp = $db->fetch_assoc($result);
@@ -400,11 +399,11 @@ else {
 				case 'd':	$data['digest'] = 2; break;
 				case 'w':	$data['digest'] = 3; break;
 				case 'f':	$data['digest'] = 9; break;
-				default:	$data['digest'] = 0;
+				default:	$data['digest'] = -1;
 			}
 		}
 		else {
-			$data['digest'] = 0;
+			$data['digest'] = -1;
 		}
 	}
 
