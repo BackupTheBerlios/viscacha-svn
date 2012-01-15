@@ -155,7 +155,6 @@ class FieldDataPages {
 				else {
 					CmsPage::error("Der Datensatz konnte leider nicht gelöscht werden.");
 				}
-				$this->overview();
 			}
 			else {
 				CmsPage::yesNo(

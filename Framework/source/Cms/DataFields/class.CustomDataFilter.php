@@ -43,11 +43,10 @@ class CustomDataFilter {
 	}
 
 	public function condition($fieldName, $value, $operator = CustomDataFilterCondition::OP_EQUAL) {
-		$this->conditions = new CustomDataFilterConditionGroup(
-			array(
-				new CustomDataFilterCondition($fieldName, $value, $operator)
-			)
-		);
+		if ($this->conditions === null) {
+			$this->conditions = new CustomDataFilterConditionGroup(array());
+		}
+		$this->conditions->newCondition($fieldName, $value, $operator);
 	}
 
 	public function conditions(CustomDataFilterConditionGroup $conditions) {
@@ -172,6 +171,10 @@ class CustomDataFilterConditionGroup {
 	public function __construct(array $conditions, $and = true) {
 		$this->and = $and;
 		$this->conditions = $conditions;
+	}
+	
+	public function newCondition($fieldName, $value, $operator = CustomDataFilterCondition::OP_EQUAL) {
+		$this->conditions[] = new CustomDataFilterCondition($fieldName, $value, $operator);
 	}
 
 	public function getLink() {

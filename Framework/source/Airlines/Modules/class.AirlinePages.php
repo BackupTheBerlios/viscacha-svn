@@ -65,7 +65,8 @@ class AirlinePages extends CmsModuleObject {
 
 		$filter = new CustomDataFilter($this->flightPage->getPosition());
 		$filter->field('title');
-//		$filter->condition('airline', $id);
+		$filter->condition('airline', $id);
+		$filter->condition('published', 1);
 		$filter->orderBy('date');
 		$this->flightPage->overview('/Airlines/flights', Config::get('pagination.flights'), $filter);
 
