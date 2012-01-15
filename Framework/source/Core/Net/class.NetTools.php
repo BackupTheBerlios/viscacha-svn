@@ -11,16 +11,9 @@ Core::loadClass('Core.Net.IDNA');
  */
 class NetTools {
 
-	const ENCODING_LIST = 'ISO-8859-1, ISO-8859-15, UTF-8, ASCII, cp1252, cp1251, GB2312, SJIS, KOI8-R';
-
 	public static function normalizeHost($host) {
 		$idna = new IDNA();
-		if (SystemEnvironment::functionExists('mb_convert_encoding')) {
-			$host = mb_convert_encoding($host, 'UTF-8', self::ENCODING_LIST);
-		}
-		else {
-			$host = utf8_encode($host);
-		}
+		$host = SystemEnvironment::toUtf8($host);
 		$host = $idna->encode($host);
 		return $host;
 	}

@@ -3,7 +3,7 @@
 $("#field_<?php echo $field; ?>").autocomplete(
 	"<?php echo URI::build('/Cms/backend/suggest/'.$fieldId); ?>/",
 	{
-		mustMatch: <?php echo iif($params['strict'], 'true', 'false'); ?>,
+//		mustMatch: <?php echo iif($params['strict'], 'true', 'false'); ?>,
 		maxItemsToShow: 20, 
 		selectFirst: true,
 		autoFill: true,

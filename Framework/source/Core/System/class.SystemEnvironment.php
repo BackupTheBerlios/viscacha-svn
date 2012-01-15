@@ -103,5 +103,31 @@ class SystemEnvironment {
 		}
 		return function_exists($func);
 	}
+
+	public static function fromUtf8($string) {
+		if (SystemEnvironment::functionExists('mb_convert_encoding')) {
+			$string = mb_convert_encoding($string, Config::get('intl.charset'), 'UTF-8');
+		}
+		else if (SystemEnvironment::functionExists('iconv')) {
+			$string = iconv('UTF-8', Config::get('intl.charset'), $string);
+		}
+		else {
+			$string = utf8_decode($string);
+		}
+		return $string;
+	}
+
+	public static function toUtf8($string) {
+		if (SystemEnvironment::functionExists('mb_convert_encoding')) {
+			$string = mb_convert_encoding($string, 'UTF-8', Config::get('intl.charset'));
+		}
+		else if (SystemEnvironment::functionExists('iconv')) {
+			$string = iconv(Config::get('intl.charset'), 'UTF-8', $string);
+		}
+		else {
+			$string = utf8_encode($string);
+		}
+		return $string;
+	}
 }
 ?>
