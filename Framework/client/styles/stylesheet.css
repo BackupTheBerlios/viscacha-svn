@@ -403,6 +403,34 @@ table.datepickerViewYears tr.datepickerDoW {
 .ui-rating-hover {
     background-position: left -48px;
 }
+.res-rating-full, .res-rating-half {
+    width: 80px;
+    height: 16px;
+    font-size: 2px;
+    background-repeat: no-repeat;
+	display: block;
+}
+.res-rating-full {
+    background-image: url(../images/star2.gif);
+}
+.res-rating-half {
+    background-image: url(../images/star3.gif);
+}
+.res-rating-0 {
+	background-position: -80px center;
+}
+.res-rating-1 {
+	background-position: -64px center;
+}
+.res-rating-2 {
+	background-position: -48px center;
+}
+.res-rating-3 {
+	background-position: -32px center;
+}
+.res-rating-4 {
+	background-position: -16px center;
+}
 
 /* Autocomplete box */
 .acResults {

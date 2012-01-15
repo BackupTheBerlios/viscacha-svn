@@ -42,7 +42,7 @@ class CustomRating extends CustomField {
 		return $this->getDataCode('/Cms/bits/rating/input', $data, array('range' => $this->getRange()));
 	}
 	public function getOutputCode($data = null) {
-		return $this->getDataCode('/Cms/bits/rating/output', $data, array('range' => $this->getRange()));
+		return self::getStarOutputCode($data, 0, $this->params['max']);
 	}
 	public function getValidation() {
 		return array(
@@ -71,6 +71,37 @@ class CustomRating extends CustomField {
 				Validator::MAX_VALUE => 99
 			)
 		);
+	}
+
+	public static function findNearestStep($value, $min = 0, $max = 5, $step = 0.5) {
+		if ($step <= 0) {
+			Core::throwError("Step has to be > 0, given {$step}.", INTERNAL_ERROR);
+		}
+		if ($value <= $min) {
+			return $$min;
+		}
+		else if ($value >= $max) {
+			return $max;
+		}
+		else {
+			$margin = $step / 2;
+			for($i = $min; $i < $max;$i += $step) {
+				if ($value > ($i - $margin) && $value <= ($i + $margin)) {
+					return $i;
+				}
+			}
+			return $max;
+		}
+	}
+	
+	public static function getStarOutputCode($data, $min = 0, $max = 5, $step = 0.5) {
+		$nearest = self::findNearestStep($data, $min, $max, $step);
+		$fullStars = intval($nearest);
+		$halfStar = ($nearest != $fullStars);
+		$tpl = Response::getObject()->getTemplate('/Cms/bits/rating/output');
+		$tpl->assignMultiple(compact("fullStars", "halfStar", "data", "min", "max"));
+		return $tpl->parse();
+		
 	}
 
 }
