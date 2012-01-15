@@ -51,10 +51,6 @@ class ftp_base {
 	var $AutoAsciiExt;
 
 	/* Constructor */
-	function ftp_base($port_mode=FALSE, $verb=FALSE, $le=FALSE) {
-		$this->__construct($port_mode, $verb, $le);
-	}
-
 	function __construct($port_mode=FALSE, $verb=FALSE, $le=FALSE) {
 		$this->LocalEcho=$le;
 		$this->Verbose=$verb;
