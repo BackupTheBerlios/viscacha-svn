@@ -154,6 +154,9 @@ abstract class CustomField implements CustomFieldInfo {
 	public function formatDataForDb($data) {
 		return $data;
 	}
+	public function formatDataFromDb($data) {
+		return $data;
+	}
 	public function getDefaultData() {
 		return '';
 	}

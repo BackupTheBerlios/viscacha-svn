@@ -35,7 +35,7 @@ class CustomData {
 		$this->template = $path;
 	}
 
-	public function set(array &$data, array $fields = array()) {
+	public function set(array &$data, $fromDb = true, array $fields = array()) {
 		if (empty($fields)) {
 			$fields = $this->position->getFields();
 		}
@@ -43,6 +43,9 @@ class CustomData {
 			$value = null;
 			if (isset($data[$name])) {
 				$value = $data[$name];
+			}
+			if ($fromDb) {
+				$value = $field->formatDataFromDb($value);
 			}
 			$this->data[$name] = new CustomFieldData($field, $value);
 		}
@@ -59,15 +62,7 @@ class CustomData {
 		$filter = new CustomDataFilter($this->position);
 		$filter->condition($this->position->getPrimaryKey(), $pkValue);
 		$filter->limit(1);
-		$result = $filter->execute();
-		$row = Database::getObject()->fetchAssoc($result);
-		if ($row) {
-			$this->set($row);
-			return true;
-		}
-		else {
-			return false;
-		}
+		return $filter->retrieveTo($this);
 	}
 
 	public function remove($pkValue = null) {

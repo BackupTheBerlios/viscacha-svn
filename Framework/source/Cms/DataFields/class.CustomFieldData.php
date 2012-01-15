@@ -71,6 +71,9 @@ class CustomFieldData implements CustomFieldInfo {
 	public function formatDataForDb() {
 		return $this->field->formatDataForDb($this->data);
 	}
+	public function formatDataFromDb() {
+		return $this->field->formatDataFromDb($this->data);
+	}
 	public function getDbDataType() {
 		return $this->field->getDbDataType();
 	}

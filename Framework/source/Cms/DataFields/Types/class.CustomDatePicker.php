@@ -43,7 +43,7 @@ class CustomDatePicker extends CustomField {
 		}
 		return $data;
 	}
-	public function setData($data) {
+	public function formatDataFromDb($data) {
 		if (strlen($data) == 10 && preg_match('/^\d{4}-\d{2}-\d{2}$/', $data) > 0) {
 			// Data is probably coming from database
 			$dt = DT::createFromFormat('Y-m-d', $data);
@@ -51,7 +51,7 @@ class CustomDatePicker extends CustomField {
 				$data = $dt->date();
 			}
 		}
-		$this->data = $data;
+		return $data;
 	}
 
 }

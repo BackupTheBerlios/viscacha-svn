@@ -24,9 +24,9 @@ class CustomDataList {
 		$this->fields = $this->position->getFields($fields);
 	}
 
-	public function addData(array $data) {
+	public function addData(array $data, $fromDb = true) {
 		$obj = new CustomData($this->position);
-		$obj->set($data, $this->fields);
+		$obj->set($data, $fromDb, $this->fields);
 		$this->data[] = $obj;
 	}
 

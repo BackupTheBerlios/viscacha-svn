@@ -71,12 +71,24 @@ class CustomDataFilter {
 		$result = $this->execute();
 		$db = Database::getObject();
 		while($row = $db->fetchAssoc($result)) {
-			$list->addData($row);
+			$list->addData($row, true);
 		}
 		return $list;
 	}
 
-	public function execute() {
+	public function retrieveTo(CustomData $obj) {
+		$result = $this->execute();
+		$row = Database::getObject()->fetchAssoc($result);
+		if ($row) {
+			$obj->set($row, true);
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
+	protected function execute() {
 		$vars = array('table' => $this->position->getDbTable());
 
 		$fields = $this->buildFields($vars);
