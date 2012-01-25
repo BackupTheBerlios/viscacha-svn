@@ -13,13 +13,11 @@ class CustomData {
 	private $position;
 	private $data;
 	private $template;
-	private $write;
 	private $pk;
 
-	public function __construct(CustomDataPosition $position, $write = false) {
+	public function __construct(CustomDataPosition $position) {
 		$this->template = null;
 		$this->position = $position;
-		$this->write = !empty($write);
 		$this->pk = 0;
 		$this->data = array();
 	}
@@ -60,7 +58,9 @@ class CustomData {
 			}
 			$this->data[$name] = new CustomFieldData($field, $value);
 		}
-		$this->pk = $data[$this->position->getPrimaryKey()];
+		if (isset($data[$this->position->getPrimaryKey()])) {
+			$this->pk = $data[$this->position->getPrimaryKey()];
+		}
 	}
 
 	public function setToDefault() {

@@ -10,11 +10,13 @@
 
 class CustomRating extends CustomField {
 
+	private static $classPath = 'Cms.DataFields.Types.CustomRating';
+	
 	public function getTypeName() {
 		return 'Bewertung';
 	}
 	public function getClassPath() {
-		return 'Cms.DataFields.Types.CustomRating';
+		return self::$classPath;
 	}
 	public function getDbDataType() {
 		return 'TINYINT(2)';
@@ -78,7 +80,7 @@ class CustomRating extends CustomField {
 			Core::throwError("Step has to be > 0, given {$step}.", INTERNAL_ERROR);
 		}
 		if ($value <= $min) {
-			return $$min;
+			return $min;
 		}
 		else if ($value >= $max) {
 			return $max;
@@ -100,8 +102,31 @@ class CustomRating extends CustomField {
 		$halfStar = ($nearest != $fullStars);
 		$tpl = Response::getObject()->getTemplate('/Cms/bits/rating/output');
 		$tpl->assignMultiple(compact("fullStars", "halfStar", "data", "min", "max"));
-		return $tpl->parse();
-		
+		return $tpl->parse();	
+	}
+	
+	public static function getAverageFields(CustomDataPosition $pos, array $params = array()) {
+		$filter = new CustomDataFilter($pos);
+		$filter->field(null);
+		$fields = $pos->getFieldsForClassPath(self::$classPath);
+		foreach ($fields as $field) {
+			$fieldName = Sanitize::saveDb($field->getFieldName());
+			$filter->fieldCalculation($fieldName, "AVG({$fieldName})");
+		}
+		foreach ($params as $field => $value) {
+			$filter->condition($field, $value);
+		}
+		$result = $filter->execute();
+		if ($result) {
+			$data = new CustomData($pos);
+			$row = Database::getObject()->fetchAssoc($result);
+			if ($row) {
+				$data = new CustomData($pos);
+				$data->set($row, true, $fields);
+				return $data->getFields(array_keys($fields));
+			}
+		}
+		return array();
 	}
 
 }

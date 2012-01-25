@@ -42,6 +42,17 @@ abstract class CustomDataPosition {
 		return $this->fields;
 	}
 
+	public function getFieldsForClassPath($classPath) {
+		$this->loadFields();
+		$fields = array();
+		foreach ($this->fields as $field) {
+			if ($field->getClassPath() == $classPath) {
+				$fields[$field->getFieldName()] = $field;
+			}
+		}
+		return $fields;
+	}
+
 	public function getFieldsExcept($internal) {
 		$this->loadFields();
 		if (is_array($internal)) {

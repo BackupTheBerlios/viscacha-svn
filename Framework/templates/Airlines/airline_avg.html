@@ -1,0 +1,11 @@
+<h3>Durchschnittliche Bewertungen</h3>
+<?php foreach ($data as $key => $field) { ?>
+<span style="float: left;">
+<!--	<?php echoSave($field->getName()); ?> -->
+<?php echo iif($key == 'vdr_rating', 'Vor der Reise:'); ?>
+<?php echo iif($key == 'bord_rating', 'An Bord:'); ?>
+<?php echo iif($key == 'service_rating', 'Sonstiger Service:'); ?>
+</span>
+<span style="float: right;"><?php echo CustomRating::getStarOutputCode($field->getData()); ?></span>
+<br clear="all" /><hr class="formsep" />
+<?php } ?>

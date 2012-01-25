@@ -39,7 +39,12 @@ class CustomDataFilter {
 	}
 
 	public function field($fieldName) {
-		$this->fields[] = $fieldName;
+		if ($fieldName === null) {
+			$this->fields = null;
+		}
+		else {
+			$this->fields[] = $fieldName;
+		}
 	}
 
 	public function fieldForeign($table, $fieldName, $alias = null) {
@@ -102,7 +107,9 @@ class CustomDataFilter {
 
 	public function retrieveList() {
 		$list = new CustomDataList($this->position);
-		$list->setFields($this->fields);
+		if ($this->fields !== null) {
+			$list->setFields($this->fields);
+		}
 		$result = $this->execute();
 		$db = Database::getObject();
 		while($row = $db->fetchAssoc($result)) {
@@ -112,6 +119,12 @@ class CustomDataFilter {
 			$list->addData($fieldData);
 		}
 		return $list;
+	}
+
+	public function retrieve() {
+		$data = new CustomData($this->getPosition());
+		$this->retrieveTo($data);
+		return $data;
 	}
 
 	public function retrieveTo(CustomData $obj) {
@@ -127,7 +140,7 @@ class CustomDataFilter {
 		}
 	}
 
-	protected function execute() {
+	public function execute() {
 		$vars = array('table' => $this->position->getDbTable());
 
 		$fields = $this->buildFields($vars);
@@ -159,7 +172,10 @@ class CustomDataFilter {
 
 	protected function buildFields(array &$vars) {
 		$fields = array();
-		if (count($this->fields) > 0) {
+		if ($this->fields === null) {
+			// Add no field
+		}
+		else if (count($this->fields) > 0) {
 			$fields[] = $this->position->getPrimaryKey();
 			foreach ($this->fields as $i => $field) {
 				$fields[] = "<field{$i}:noquote>";

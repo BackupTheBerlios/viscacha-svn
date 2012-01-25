@@ -61,8 +61,19 @@ class AirlinePages extends CmsModuleObject {
 		$this->breadcrumb->resetUrl();
 		$this->header();
 
+		// Airline details
 		$this->airlinePage->detail($id, '/Airlines/airline');
 
+		// Airline average ratings
+		$avgFields = CustomRating::getAverageFields(
+			$this->flightPage->getPosition(),
+			array('airline' => $id, 'published' => 1)
+		);
+		$tpl = Response::getObject()->appendTemplate('/Airlines/airline_avg');
+		$tpl->assign('data', $avgFields, false);
+		$tpl->output();
+
+		// Evaluated flights
 		$filter = new CustomDataFilter($this->flightPage->getPosition());
 		$filter->field('title');
 		$filter->fieldCalculation('rating', '(vdr_rating+bord_rating+service_rating)/3');
@@ -75,24 +86,28 @@ class AirlinePages extends CmsModuleObject {
 	}
 
 	protected function flight($id) {
+		$this->breadcrumb->add('Flug-Bewertung');
 		$this->header();
 		$this->flightPage->detail($id);
 		$this->footer();
 	}
 	
 	public function write() {
+		$this->breadcrumb->add('Bewertung verfassen');
 		$this->header();
 		$this->flightPage->write();
 		$this->footer();
 	}
 
 	public function search() {
+		$this->breadcrumb->add('Suche');
 		$this->header();
 		CmsPage::notFoundError();
 		$this->footer();
 	}
 
 	public function top() {
+		$this->breadcrumb->add('Rating');
 		$this->header();
 
 		$filter = new CustomDataFilter($this->flightPage->getPosition());
@@ -101,7 +116,7 @@ class AirlinePages extends CmsModuleObject {
 		$filter->fieldCalculation('rating', '(AVG(vdr_rating)+AVG(bord_rating)+AVG(service_rating))/3');
 		$filter->join('categories', 'id', 'airline');
 		$filter->condition('published', 1);
-		$filter->orderBy('rating');
+		$filter->orderBy('rating', false);
 		$filter->groupBy('airline');
 		$this->flightPage->overview('/Airlines/top', 0, $filter);
 
