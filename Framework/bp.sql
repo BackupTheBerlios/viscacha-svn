@@ -1,31 +1,13 @@
--- phpMyAdmin SQL Dump
--- version 3.4.5
--- http://www.phpmyadmin.net
---
--- Host: localhost
--- Erstellungszeit: 02. Jan 2012 um 20:55
--- Server Version: 5.5.16
--- PHP-Version: 5.3.8
-
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
-
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
+/*!40101 SET NAMES latin1 */;
 
---
--- Datenbank: `bp`
---
 
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `ac_airports`
---
-
+DROP TABLE IF EXISTS `ac_airports`;
 CREATE TABLE IF NOT EXISTS `ac_airports` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `land` varchar(64) COLLATE latin1_general_ci NOT NULL DEFAULT '',
@@ -34,10 +16,6 @@ CREATE TABLE IF NOT EXISTS `ac_airports` (
   `code` char(3) COLLATE latin1_general_ci NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=1804 ;
-
---
--- Daten für Tabelle `ac_airports`
---
 
 INSERT INTO `ac_airports` (`id`, `land`, `stadt`, `flughafen`, `code`) VALUES
 (1, 'Afghanistan', 'Kabul', 'Kabul', 'KBL'),
@@ -784,7 +762,7 @@ INSERT INTO `ac_airports` (`id`, `land`, `stadt`, `flughafen`, `code`) VALUES
 (742, 'Kanada', 'Toronto', 'Buttonville Flughafen', 'YKZ'),
 (743, 'Kanada', 'Toronto', 'Lester B Pearson International Flughafen', 'YYZ'),
 (744, 'Kanada', 'Toronto', 'Toronto Stadt Centre Flughafen', 'YTZ'),
-(745, 'Kanada', 'Val-d?Or', 'Val-d?Or Stadtflughafen', 'YVO'),
+(745, 'Kanada', 'Val-d'Or', 'Val-d'Or Stadtflughafen', 'YVO'),
 (746, 'Kanada', 'Vancouver', 'Coal Harbor Flughafen', 'CXH'),
 (747, 'Kanada', 'Vancouver', 'Vancouver International Flughafen', 'YVR'),
 (748, 'Kanada', 'Vancouver Boundary', 'Vancoucer Boundary Bay Flughafen', 'YDT'),
@@ -1844,13 +1822,12 @@ INSERT INTO `ac_airports` (`id`, `land`, `stadt`, `flughafen`, `code`) VALUES
 (1801, 'Zypern', 'Ercan', 'Ercan Flughafen', 'ECN'),
 (1802, 'Zypern', 'Nicosia', 'Nicosia', 'NIC'),
 (1803, 'Zypern', 'Paphos', 'Paphos International Flughafen', 'PFO');
-
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `ac_categories`
---
-
+DROP VIEW IF EXISTS `ac_airports_view`;
+CREATE TABLE IF NOT EXISTS `ac_airports_view` (
+`id` int(10) unsigned
+,`fullname` varchar(232)
+);
+DROP TABLE IF EXISTS `ac_categories`;
 CREATE TABLE IF NOT EXISTS `ac_categories` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE latin1_general_ci DEFAULT NULL,
@@ -1863,43 +1840,37 @@ CREATE TABLE IF NOT EXISTS `ac_categories` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=5 ;
 
---
--- Daten für Tabelle `ac_categories`
---
-
 INSERT INTO `ac_categories` (`id`, `name`, `code`, `country`, `foundation_year`, `logo`, `homepage`, `description`) VALUES
 (1, 'Lufthansa', 'LH', 'Deutschland', '1926', 'client/images/airlines/81.jpg', 'http://www.lufthansa.com', NULL),
 (2, 'SWISS', 'LX', 'Schweiz', '2002', 'client/images/airlines/108.jpg', 'http://www.swiss.com', 'Die Swiss International Air Lines AG ist die grösste Schweizer Fluggesellschaft. Sie ist zu 100 Prozent ein Tochterunternehmen der Deutschen Lufthansa AG und hat ihren Heimatflughafen am Flughafen Zürich. Swiss betreibt eine Flotte von rund 60 Flugzeugen des Herstellers Airbus. Für Swiss European sind 30 neue Bombardier CS100 bestellt, die ab 2014 im Einsatz sein werden. In den letzten Jahren wurde nur ein schwerwiegender Zwischenfall im Flugbetrieb registriert, als ein AvroJet bei einer sehr harten Landung in London City stark beschädigt wurde. Das Flottenalter liegt im europäischen Normalbereich.'),
 (4, 'Qantas', 'QF', 'Australien', '1920', 'client/images/airlines/93.jpg', 'http://www.qantas.com.au', '');
 
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `ac_evaluations`
---
-
+DROP TABLE IF EXISTS `ac_evaluations`;
 CREATE TABLE IF NOT EXISTS `ac_evaluations` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `title` varchar(255) COLLATE latin1_general_ci DEFAULT NULL,
   `recommended` tinyint(1) DEFAULT NULL,
   `published` tinyint(1) DEFAULT NULL,
   `class` varchar(50) COLLATE latin1_general_ci DEFAULT NULL,
+  `date` date DEFAULT NULL,
+  `vdr_rating` tinyint(2) DEFAULT NULL,
+  `tipps` mediumtext COLLATE latin1_general_ci,
+  `vdr_text` mediumtext COLLATE latin1_general_ci,
+  `bord_rating` tinyint(2) DEFAULT NULL,
+  `bord_text` mediumtext COLLATE latin1_general_ci,
+  `service_rating` tinyint(2) DEFAULT NULL,
+  `service_text` mediumtext COLLATE latin1_general_ci,
+  `airline` int(10) DEFAULT NULL,
+  `start` int(10) DEFAULT NULL,
+  `ziel` int(10) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=5 ;
 
---
--- Daten für Tabelle `ac_evaluations`
---
+INSERT INTO `ac_evaluations` (`id`, `title`, `recommended`, `published`, `class`, `date`, `vdr_rating`, `tipps`, `vdr_text`, `bord_rating`, `bord_text`, `service_rating`, `service_text`, `airline`, `start`, `ziel`) VALUES
+(1, 'Billigflieger!', 0, 1, '3', '2010-10-13', 4, 'Buchung nur wenn man gute Nerven hat!', 'Alles im normalen Bereich!', 2, 'Essen schmeckte nicht, zu wenig trinken vorhanden.\r\nCrew war akzeptabel.', 1, 'Nichts?!', 2, 1113, 262),
+(4, 'Test', 1, 1, '1', '2012-01-15', 1, 'Tipp', '5', 3, '3', 5, '1', 2, 273, 90);
 
-INSERT INTO `ac_evaluations` (`id`, `title`, `recommended`, `published`, `class`) VALUES
-(1, 'Bewertung Nummer uno', 1, 0, '3');
-
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `ac_fields`
---
-
+DROP TABLE IF EXISTS `ac_fields`;
 CREATE TABLE IF NOT EXISTS `ac_fields` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `internal` varchar(32) COLLATE latin1_general_ci NOT NULL,
@@ -1912,31 +1883,44 @@ CREATE TABLE IF NOT EXISTS `ac_fields` (
   `permissions` mediumtext COLLATE latin1_general_ci NOT NULL,
   `implemented` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=15 ;
-
---
--- Daten für Tabelle `ac_fields`
---
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=39 ;
 
 INSERT INTO `ac_fields` (`id`, `internal`, `name`, `description`, `type`, `position`, `priority`, `params`, `permissions`, `implemented`) VALUES
-(1, 'name', 'Name', '', 'Cms.DataFields.CustomTextField', 'Airlines.DataFields.Positions.AirlinesCategoryPosition', -1, 'a:2:{s:10:"max_length";i:255;s:8:"optional";i:0;}', 'a:2:{s:4:"read";a:3:{s:5:"admin";i:1;s:6:"editor";i:1;s:10:"registered";i:1;}s:5:"write";a:1:{s:5:"admin";i:1;}}', 1),
-(5, 'code', 'Code', '', 'Cms.DataFields.CustomTextField', 'Airlines.DataFields.Positions.AirlinesCategoryPosition', 1, 'a:2:{s:10:"max_length";i:2;s:8:"optional";i:0;}', 'a:2:{s:4:"read";a:3:{s:5:"admin";i:1;s:6:"editor";i:1;s:10:"registered";i:1;}s:5:"write";a:1:{s:5:"admin";i:1;}}', 0),
-(6, 'country', 'Heimatland', '', 'Cms.DataFields.CustomTextField', 'Airlines.DataFields.Positions.AirlinesCategoryPosition', 2, 'a:2:{s:10:"max_length";i:100;s:8:"optional";i:0;}', 'a:2:{s:4:"read";a:3:{s:5:"admin";i:1;s:6:"editor";i:1;s:10:"registered";i:1;}s:5:"write";a:1:{s:5:"admin";i:1;}}', 0),
-(7, 'foundation_year', 'Gründungsjahr', '', 'Cms.DataFields.CustomTextField', 'Airlines.DataFields.Positions.AirlinesCategoryPosition', 3, 'a:2:{s:10:"max_length";i:4;s:8:"optional";i:1;}', 'a:2:{s:4:"read";a:3:{s:5:"admin";i:1;s:6:"editor";i:1;s:10:"registered";i:1;}s:5:"write";a:1:{s:5:"admin";i:1;}}', 0),
-(8, 'logo', 'Logo', '', 'Cms.DataFields.CustomImageView', 'Airlines.DataFields.Positions.AirlinesCategoryPosition', -2, 'a:2:{s:3:"alt";s:16:"Logo der Airline";s:8:"optional";i:0;}', 'a:2:{s:4:"read";a:3:{s:5:"admin";i:1;s:6:"editor";i:1;s:10:"registered";i:1;}s:5:"write";a:1:{s:5:"admin";i:1;}}', 1),
-(9, 'homepage', 'Website', '', 'Cms.DataFields.CustomUrlField', 'Airlines.DataFields.Positions.AirlinesCategoryPosition', 4, 'a:3:{s:7:"caption";s:0:"";s:6:"target";s:6:"_blank";s:8:"optional";i:1;}', 'a:2:{s:4:"read";a:3:{s:5:"admin";i:1;s:6:"editor";i:1;s:10:"registered";i:1;}s:5:"write";a:1:{s:5:"admin";i:1;}}', 0),
-(10, 'description', 'Beschreibung', '', 'Cms.DataFields.CustomMultilineTextField', 'Airlines.DataFields.Positions.AirlinesCategoryPosition', 0, 'a:2:{s:10:"max_length";i:10000;s:8:"optional";i:1;}', 'a:2:{s:4:"read";a:3:{s:5:"admin";i:1;s:6:"editor";i:1;s:10:"registered";i:1;}s:5:"write";a:1:{s:5:"admin";i:1;}}', 1),
-(11, 'title', 'Titel', '', 'Cms.DataFields.CustomTextField', 'Airlines.DataFields.Positions.AirlinesFlightPosition', 0, 'a:2:{s:10:"max_length";i:150;s:8:"optional";i:0;}', 'a:2:{s:4:"read";a:3:{s:5:"admin";i:1;s:6:"editor";i:1;s:10:"registered";i:1;}s:5:"write";a:3:{s:5:"admin";i:1;s:6:"editor";i:1;s:10:"registered";i:1;}}', 1),
-(12, 'recommended', 'Empfehlen Sie diese Airline weiter?', '', 'Cms.DataFields.CustomCheckBox', 'Airlines.DataFields.Positions.AirlinesFlightPosition', 10, 'a:2:{s:3:"yes";s:2:"Ja";s:2:"no";s:4:"Nein";}', 'a:2:{s:4:"read";a:3:{s:5:"admin";i:1;s:6:"editor";i:1;s:10:"registered";i:1;}s:5:"write";a:3:{s:5:"admin";i:1;s:6:"editor";i:1;s:10:"registered";i:1;}}', 0),
-(13, 'published', 'Veröffentlicht', '', 'Cms.DataFields.CustomCheckBox', 'Airlines.DataFields.Positions.AirlinesFlightPosition', -100, 'a:2:{s:3:"yes";s:2:"Ja";s:2:"no";s:4:"Nein";}', 'a:2:{s:4:"read";a:0:{}s:5:"write";a:2:{s:5:"admin";i:1;s:6:"editor";i:1;}}', 1),
-(14, 'class', 'Klasse', '', 'Cms.DataFields.CustomSelectBox', 'Airlines.DataFields.Positions.AirlinesFlightPosition', -3, 'a:1:{s:7:"options";s:49:"1=First\r\n2=Business\r\n4=Premium Economy\r\n3=Economy";}', 'a:2:{s:4:"read";a:3:{s:5:"admin";i:1;s:6:"editor";i:1;s:10:"registered";i:1;}s:5:"write";a:3:{s:5:"admin";i:1;s:6:"editor";i:1;s:10:"registered";i:1;}}', 0);
+(1, 'name', 'Name', '', 'Cms.DataFields.Types.CustomTextField', 'Airlines.DataFields.Positions.AirlinesCategoryPosition', -1, 'a:2:{s:10:"max_length";i:255;s:8:"optional";i:0;}', 'a:2:{s:4:"read";a:3:{s:5:"admin";i:1;s:6:"editor";i:1;s:10:"registered";i:1;}s:5:"write";a:1:{s:5:"admin";i:1;}}', 1),
+(5, 'code', 'Code', '', 'Cms.DataFields.Types.CustomTextField', 'Airlines.DataFields.Positions.AirlinesCategoryPosition', 1, 'a:2:{s:10:"max_length";i:2;s:8:"optional";i:0;}', 'a:2:{s:4:"read";a:3:{s:5:"admin";i:1;s:6:"editor";i:1;s:10:"registered";i:1;}s:5:"write";a:1:{s:5:"admin";i:1;}}', 1),
+(6, 'country', 'Heimatland', '', 'Cms.DataFields.Types.CustomTextField', 'Airlines.DataFields.Positions.AirlinesCategoryPosition', 2, 'a:2:{s:10:"max_length";i:100;s:8:"optional";i:0;}', 'a:2:{s:4:"read";a:3:{s:5:"admin";i:1;s:6:"editor";i:1;s:10:"registered";i:1;}s:5:"write";a:1:{s:5:"admin";i:1;}}', 0),
+(7, 'foundation_year', 'Gründungsjahr', '', 'Cms.DataFields.Types.CustomTextField', 'Airlines.DataFields.Positions.AirlinesCategoryPosition', 3, 'a:2:{s:10:"max_length";i:4;s:8:"optional";i:1;}', 'a:2:{s:4:"read";a:3:{s:5:"admin";i:1;s:6:"editor";i:1;s:10:"registered";i:1;}s:5:"write";a:1:{s:5:"admin";i:1;}}', 0),
+(8, 'logo', 'Logo', '', 'Cms.DataFields.Types.CustomImageView', 'Airlines.DataFields.Positions.AirlinesCategoryPosition', -2, 'a:2:{s:3:"alt";s:16:"Logo der Airline";s:8:"optional";i:0;}', 'a:2:{s:4:"read";a:3:{s:5:"admin";i:1;s:6:"editor";i:1;s:10:"registered";i:1;}s:5:"write";a:1:{s:5:"admin";i:1;}}', 0),
+(9, 'homepage', 'Website', '', 'Cms.DataFields.Types.CustomUrlField', 'Airlines.DataFields.Positions.AirlinesCategoryPosition', 4, 'a:3:{s:7:"caption";s:0:"";s:6:"target";s:6:"_blank";s:8:"optional";i:1;}', 'a:2:{s:4:"read";a:3:{s:5:"admin";i:1;s:6:"editor";i:1;s:10:"registered";i:1;}s:5:"write";a:1:{s:5:"admin";i:1;}}', 0),
+(10, 'description', 'Beschreibung', '', 'Cms.DataFields.Types.CustomMultilineTextField', 'Airlines.DataFields.Positions.AirlinesCategoryPosition', 0, 'a:2:{s:10:"max_length";i:10000;s:8:"optional";i:1;}', 'a:2:{s:4:"read";a:3:{s:5:"admin";i:1;s:6:"editor";i:1;s:10:"registered";i:1;}s:5:"write";a:1:{s:5:"admin";i:1;}}', 0),
+(11, 'title', 'Titel', '', 'Cms.DataFields.Types.CustomTextField', 'Airlines.DataFields.Positions.AirlinesFlightPosition', 0, 'a:2:{s:10:"max_length";i:150;s:8:"optional";i:0;}', 'a:2:{s:4:"read";a:3:{s:5:"admin";i:1;s:6:"editor";i:1;s:10:"registered";i:1;}s:5:"write";a:3:{s:5:"admin";i:1;s:6:"editor";i:1;s:10:"registered";i:1;}}', 1),
+(12, 'recommended', 'Empfehlen Sie diese Airline weiter?', '', 'Cms.DataFields.Types.CustomCheckBox', 'Airlines.DataFields.Positions.AirlinesFlightPosition', 100, 'a:2:{s:3:"yes";s:2:"Ja";s:2:"no";s:4:"Nein";}', 'a:2:{s:4:"read";a:3:{s:5:"admin";i:1;s:6:"editor";i:1;s:10:"registered";i:1;}s:5:"write";a:3:{s:5:"admin";i:1;s:6:"editor";i:1;s:10:"registered";i:1;}}', 0),
+(13, 'published', 'Veröffentlicht', '', 'Cms.DataFields.Types.CustomCheckBox', 'Airlines.DataFields.Positions.AirlinesFlightPosition', -100, 'a:2:{s:3:"yes";s:2:"Ja";s:2:"no";s:4:"Nein";}', 'a:2:{s:4:"read";a:0:{}s:5:"write";a:2:{s:5:"admin";i:1;s:6:"editor";i:1;}}', 1),
+(14, 'class', 'Klasse', '', 'Cms.DataFields.Types.CustomSelectBox', 'Airlines.DataFields.Positions.AirlinesFlightPosition', -72, 'a:1:{s:7:"options";s:49:"1=First\r\n2=Business\r\n4=Premium Economy\r\n3=Economy";}', 'a:2:{s:4:"read";a:3:{s:5:"admin";i:1;s:6:"editor";i:1;s:10:"registered";i:1;}s:5:"write";a:3:{s:5:"admin";i:1;s:6:"editor";i:1;s:10:"registered";i:1;}}', 0),
+(15, 'date', 'Flugdatum', '', 'Cms.DataFields.Types.CustomDatePicker', 'Airlines.DataFields.Positions.AirlinesFlightPosition', -71, 'a:0:{}', 'a:2:{s:4:"read";a:3:{s:5:"admin";i:1;s:6:"editor";i:1;s:10:"registered";i:1;}s:5:"write";a:3:{s:5:"admin";i:1;s:6:"editor";i:1;s:10:"registered";i:1;}}', 0),
+(16, 'vdr_rating', 'Bewertung', '', 'Cms.DataFields.Types.CustomRating', 'Airlines.DataFields.Positions.AirlinesFlightPosition', 11, 'a:2:{s:3:"max";i:5;s:8:"optional";i:0;}', 'a:2:{s:4:"read";a:3:{s:5:"admin";i:1;s:6:"editor";i:1;s:10:"registered";i:1;}s:5:"write";a:3:{s:5:"admin";i:1;s:6:"editor";i:1;s:10:"registered";i:1;}}', 0),
+(17, 'vdr', 'Vor der Reise', 'Beschreiben und bewerten Sie hier bitte die Abläufe vor Ihrer Reise, wie z.B. die Möglichkeit, sich über die Airline zu informieren, Ablauf der Buchung (War es einfach, den Flug zu buchen?), Freundlichkeit des Bodenpersonals, Check-In, Warteräume- und zeiten etc.', 'Cms.DataFields.Types.CustomText', 'Airlines.DataFields.Positions.AirlinesFlightPosition', 10, 'a:0:{}', 'a:2:{s:4:"read";a:3:{s:5:"admin";i:1;s:6:"editor";i:1;s:10:"registered";i:1;}s:5:"write";a:3:{s:5:"admin";i:1;s:6:"editor";i:1;s:10:"registered";i:1;}}', 0),
+(18, 'tipps_header', 'Tipps / Empfehlungen', 'Haben Sie persönliche Tipps oder Empfehlungen an Reisende? Was sollte unbedingt beachtet werden? Was raten Sie anderen Reisenden?', 'Cms.DataFields.Types.CustomText', 'Airlines.DataFields.Positions.AirlinesFlightPosition', 90, 'a:0:{}', 'a:2:{s:4:"read";a:3:{s:5:"admin";i:1;s:6:"editor";i:1;s:10:"registered";i:1;}s:5:"write";a:3:{s:5:"admin";i:1;s:6:"editor";i:1;s:10:"registered";i:1;}}', 0),
+(19, 'tipps', 'Kommentar', '', 'Cms.DataFields.Types.CustomMultilineTextField', 'Airlines.DataFields.Positions.AirlinesFlightPosition', 91, 'a:2:{s:10:"max_length";i:10000;s:8:"optional";i:0;}', 'a:2:{s:4:"read";a:3:{s:5:"admin";i:1;s:6:"editor";i:1;s:10:"registered";i:1;}s:5:"write";a:3:{s:5:"admin";i:1;s:6:"editor";i:1;s:10:"registered";i:1;}}', 0),
+(20, 'reisedaten_header', 'Reisedaten', '', 'Cms.DataFields.Types.CustomHeader', 'Airlines.DataFields.Positions.AirlinesFlightPosition', -80, 'a:0:{}', 'a:2:{s:4:"read";a:3:{s:5:"admin";i:1;s:6:"editor";i:1;s:10:"registered";i:1;}s:5:"write";a:3:{s:5:"admin";i:1;s:6:"editor";i:1;s:10:"registered";i:1;}}', 0),
+(21, 'bewertung_header', 'Bewertung', '', 'Cms.DataFields.Types.CustomHeader', 'Airlines.DataFields.Positions.AirlinesFlightPosition', -10, 'a:0:{}', 'a:2:{s:4:"read";a:3:{s:5:"admin";i:1;s:6:"editor";i:1;s:10:"registered";i:1;}s:5:"write";a:3:{s:5:"admin";i:1;s:6:"editor";i:1;s:10:"registered";i:1;}}', 0),
+(22, 'vdr_text', 'Kommentar', '', 'Cms.DataFields.Types.CustomMultilineTextField', 'Airlines.DataFields.Positions.AirlinesFlightPosition', 12, 'a:2:{s:10:"max_length";i:10000;s:8:"optional";i:0;}', 'a:2:{s:4:"read";a:3:{s:5:"admin";i:1;s:6:"editor";i:1;s:10:"registered";i:1;}s:5:"write";a:3:{s:5:"admin";i:1;s:6:"editor";i:1;s:10:"registered";i:1;}}', 0),
+(25, 'bord-header', 'An Bord', 'Beschreiben und bewerten Sie hier bitte alle Ihre Eindrücke an Bord der Maschine, z.B. Freundlichkeit des Bordpersonals, Gastronomie, Komfort (Zustand des Flugzeuges, Sitze, Sitzabstand), Sauberkeit, Sicherheitsempfinden etc.', 'Cms.DataFields.Types.CustomText', 'Airlines.DataFields.Positions.AirlinesFlightPosition', 20, 'a:0:{}', 'a:2:{s:4:"read";a:3:{s:5:"admin";i:1;s:6:"editor";i:1;s:10:"registered";i:1;}s:5:"write";a:3:{s:5:"admin";i:1;s:6:"editor";i:1;s:10:"registered";i:1;}}', 0),
+(26, 'bord_rating', 'Bewertung', '', 'Cms.DataFields.Types.CustomRating', 'Airlines.DataFields.Positions.AirlinesFlightPosition', 21, 'a:2:{s:3:"max";i:5;s:8:"optional";i:0;}', 'a:2:{s:4:"read";a:3:{s:5:"admin";i:1;s:6:"editor";i:1;s:10:"registered";i:1;}s:5:"write";a:3:{s:5:"admin";i:1;s:6:"editor";i:1;s:10:"registered";i:1;}}', 0),
+(27, 'bord_text', 'Kommentar', '', 'Cms.DataFields.Types.CustomMultilineTextField', 'Airlines.DataFields.Positions.AirlinesFlightPosition', 22, 'a:2:{s:10:"max_length";i:10000;s:8:"optional";i:0;}', 'a:2:{s:4:"read";a:3:{s:5:"admin";i:1;s:6:"editor";i:1;s:10:"registered";i:1;}s:5:"write";a:3:{s:5:"admin";i:1;s:6:"editor";i:1;s:10:"registered";i:1;}}', 0),
+(28, 'service_header', 'Sonstiger Service', 'Beschreiben und bewerten Sie hier bitte den Zusatzservice der Airline, wie z.B. Zeitungen, Unterhaltungssystem, verschiedene Check-In Möglichkeiten (am Bahnhof, Selbst-Check-In-Automaten), Internetseite etc.', 'Cms.DataFields.Types.CustomText', 'Airlines.DataFields.Positions.AirlinesFlightPosition', 30, 'a:0:{}', 'a:2:{s:4:"read";a:3:{s:5:"admin";i:1;s:6:"editor";i:1;s:10:"registered";i:1;}s:5:"write";a:3:{s:5:"admin";i:1;s:6:"editor";i:1;s:10:"registered";i:1;}}', 0),
+(29, 'service_rating', 'Bewertung', '', 'Cms.DataFields.Types.CustomRating', 'Airlines.DataFields.Positions.AirlinesFlightPosition', 31, 'a:2:{s:3:"max";i:5;s:8:"optional";i:0;}', 'a:2:{s:4:"read";a:3:{s:5:"admin";i:1;s:6:"editor";i:1;s:10:"registered";i:1;}s:5:"write";a:3:{s:5:"admin";i:1;s:6:"editor";i:1;s:10:"registered";i:1;}}', 0),
+(30, 'service_text', 'Kommentar', '', 'Cms.DataFields.Types.CustomMultilineTextField', 'Airlines.DataFields.Positions.AirlinesFlightPosition', 32, 'a:2:{s:10:"max_length";i:10000;s:8:"optional";i:0;}', 'a:2:{s:4:"read";a:3:{s:5:"admin";i:1;s:6:"editor";i:1;s:10:"registered";i:1;}s:5:"write";a:3:{s:5:"admin";i:1;s:6:"editor";i:1;s:10:"registered";i:1;}}', 0),
+(31, 'field31', 'Spacer', '', 'Cms.DataFields.Types.CustomSpacer', 'Airlines.DataFields.Positions.AirlinesFlightPosition', 95, 'a:0:{}', 'a:2:{s:4:"read";a:3:{s:5:"admin";i:1;s:6:"editor";i:1;s:10:"registered";i:1;}s:5:"write";a:3:{s:5:"admin";i:1;s:6:"editor";i:1;s:10:"registered";i:1;}}', 0),
+(32, 'field32', 'Spacer', '', 'Cms.DataFields.Types.CustomSpacer', 'Airlines.DataFields.Positions.AirlinesFlightPosition', 35, 'a:0:{}', 'a:2:{s:4:"read";a:3:{s:5:"admin";i:1;s:6:"editor";i:1;s:10:"registered";i:1;}s:5:"write";a:3:{s:5:"admin";i:1;s:6:"editor";i:1;s:10:"registered";i:1;}}', 0),
+(33, 'field33', 'Spacer', '', 'Cms.DataFields.Types.CustomSpacer', 'Airlines.DataFields.Positions.AirlinesFlightPosition', 25, 'a:0:{}', 'a:2:{s:4:"read";a:3:{s:5:"admin";i:1;s:6:"editor";i:1;s:10:"registered";i:1;}s:5:"write";a:3:{s:5:"admin";i:1;s:6:"editor";i:1;s:10:"registered";i:1;}}', 0),
+(34, 'field34', 'Spacer', '', 'Cms.DataFields.Types.CustomSpacer', 'Airlines.DataFields.Positions.AirlinesFlightPosition', 15, 'a:0:{}', 'a:2:{s:4:"read";a:3:{s:5:"admin";i:1;s:6:"editor";i:1;s:10:"registered";i:1;}s:5:"write";a:3:{s:5:"admin";i:1;s:6:"editor";i:1;s:10:"registered";i:1;}}', 0),
+(35, 'field35', 'Spacer', '', 'Cms.DataFields.Types.CustomSpacer', 'Airlines.DataFields.Positions.AirlinesFlightPosition', 5, 'a:0:{}', 'a:2:{s:4:"read";a:3:{s:5:"admin";i:1;s:6:"editor";i:1;s:10:"registered";i:1;}s:5:"write";a:3:{s:5:"admin";i:1;s:6:"editor";i:1;s:10:"registered";i:1;}}', 0),
+(36, 'airline', 'Airline', '', 'Cms.DataFields.Types.CustomAutoCompleteTextField', 'Airlines.DataFields.Positions.AirlinesFlightPosition', -78, 'a:5:{s:10:"max_length";i:255;s:8:"optional";i:0;s:6:"strict";i:1;s:11:"source_type";s:2:"db";s:6:"source";s:15:"categories.name";}', 'a:2:{s:4:"read";a:3:{s:5:"admin";i:1;s:6:"editor";i:1;s:10:"registered";i:1;}s:5:"write";a:3:{s:5:"admin";i:1;s:6:"editor";i:1;s:10:"registered";i:1;}}', 0),
+(37, 'start', 'Startflughafen', '', 'Cms.DataFields.Types.CustomAutoCompleteTextField', 'Airlines.DataFields.Positions.AirlinesFlightPosition', -75, 'a:5:{s:10:"max_length";i:255;s:8:"optional";i:0;s:6:"strict";i:1;s:11:"source_type";s:2:"db";s:6:"source";s:22:"airports_view.fullname";}', 'a:2:{s:4:"read";a:3:{s:5:"admin";i:1;s:6:"editor";i:1;s:10:"registered";i:1;}s:5:"write";a:3:{s:5:"admin";i:1;s:6:"editor";i:1;s:10:"registered";i:1;}}', 0),
+(38, 'ziel', 'Zielflughafen', '', 'Cms.DataFields.Types.CustomAutoCompleteTextField', 'Airlines.DataFields.Positions.AirlinesFlightPosition', -74, 'a:5:{s:10:"max_length";i:255;s:8:"optional";i:0;s:6:"strict";i:1;s:11:"source_type";s:2:"db";s:6:"source";s:22:"airports_view.fullname";}', 'a:2:{s:4:"read";a:3:{s:5:"admin";i:1;s:6:"editor";i:1;s:10:"registered";i:1;}s:5:"write";a:3:{s:5:"admin";i:1;s:6:"editor";i:1;s:10:"registered";i:1;}}', 0);
 
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `ac_group`
---
-
+DROP TABLE IF EXISTS `ac_group`;
 CREATE TABLE IF NOT EXISTS `ac_group` (
   `id` tinyint(2) unsigned NOT NULL AUTO_INCREMENT,
   `title` varchar(50) COLLATE latin1_general_ci NOT NULL,
@@ -1946,22 +1930,13 @@ CREATE TABLE IF NOT EXISTS `ac_group` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=5 ;
 
---
--- Daten für Tabelle `ac_group`
---
-
 INSERT INTO `ac_group` (`id`, `title`, `registered`, `admin`, `editor`) VALUES
 (1, 'Administrator', 1, 1, 1),
 (2, 'Redakteur', 1, 0, 1),
 (3, 'Mitglied', 1, 0, 0),
 (4, 'Gast', 0, 0, 0);
 
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `ac_page`
---
-
+DROP TABLE IF EXISTS `ac_page`;
 CREATE TABLE IF NOT EXISTS `ac_page` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `uri` varchar(100) COLLATE latin1_general_ci NOT NULL,
@@ -1970,10 +1945,6 @@ CREATE TABLE IF NOT EXISTS `ac_page` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `uri` (`uri`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=10 ;
-
---
--- Daten für Tabelle `ac_page`
---
 
 INSERT INTO `ac_page` (`id`, `uri`, `title`, `content`) VALUES
 (1, '', 'Startseite', '<h2>Das Portal für Airline Bewertungen</h2>\r\n<p>Willkommen beim unabhängigen und kostenlosen Bewertungsportal für Airline-Passagiere.</p>\r\n\r\n<p><strong>Sie heben bald ab?</strong>\r\n<br /><br />\r\nDann finden Sie hier Bewertungen zu vielen Airlines dieser Welt.\r\nInformieren Sie sich vor der Reise. Sie haben das Recht zu wissen, was Sie erwarten wird.\r\n<br /><br />\r\n<a href="[@uri:airlines/airlines]">» Bewertungen anschauen</a></p>\r\n\r\n<p><strong>Sie sind gelandet?</strong>\r\n<br /><br />\r\nHat Ihnen der Flug über den Wolken gefallen? Schreiben Sie eine Bewertung.\r\nLassen Sie andere Passagiere an Ihrem Wissen teilhaben. Es dauert nur 5 Minuten.\r\n<br /><br />\r\n<a href="[@uri:airlines/airlines/evaluate]">» Schildern Sie uns Ihre Erfahrungen</a></p>'),
@@ -1986,12 +1957,7 @@ INSERT INTO `ac_page` (`id`, `uri`, `title`, `content`) VALUES
 (8, 'news', 'Aktuelles', '<h2>Aktuelles</h2><p>...</p>'),
 (9, 'media', 'Medien', '<h2>Medien</h2><p>...</p>');
 
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `ac_session`
---
-
+DROP TABLE IF EXISTS `ac_session`;
 CREATE TABLE IF NOT EXISTS `ac_session` (
   `sid` varchar(32) COLLATE latin1_general_ci NOT NULL,
   `user_id` int(10) unsigned NOT NULL,
@@ -2001,19 +1967,10 @@ CREATE TABLE IF NOT EXISTS `ac_session` (
   UNIQUE KEY `sid` (`sid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
 
---
--- Daten für Tabelle `ac_session`
---
-
 INSERT INTO `ac_session` (`sid`, `user_id`, `visit`, `ip`, `settings`) VALUES
-('bead7049747593cf36470cc1f05c81dd', 1, 1325534009, '127.0.0.1', 'a:0:{}');
+('f1e8c2eacaf01e056d715c3ba4e2c034', 0, 1327580221, '79.239.94.250', 'a:0:{}');
 
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `ac_user`
---
-
+DROP TABLE IF EXISTS `ac_user`;
 CREATE TABLE IF NOT EXISTS `ac_user` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `forename` varchar(100) COLLATE latin1_general_ci NOT NULL DEFAULT '',
@@ -2034,21 +1991,14 @@ CREATE TABLE IF NOT EXISTS `ac_user` (
   KEY `group_id` (`group_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=3 ;
 
---
--- Daten für Tabelle `ac_user`
---
-
 INSERT INTO `ac_user` (`id`, `forename`, `surname`, `pw`, `group_id`, `email`, `gender`, `birth`, `city`, `country`, `regdate`, `lastvisit`, `active`, `verification`) VALUES
-(1, 'Matthias', 'Mohr', 'cfcd208495d565ef66e7dff9f98764da', 1, 'm.mohr@mamo-net.de', 'm', '1988-08-08', 'Bielefeld', 'Deutschland', 1214437392, 1325534009, 1, ''),
-(2, 'Otto', 'Walkes', 'cfcd208495d565ef66e7dff9f98764da', 3, 'demo@mamo-net.de', 'm', '1902-02-02', 'Hong Kong', 'China', 1324994422, 1324995130, 1, 'cfcd208495d565ef66e7dff9f98764da');
+(1, 'Matthias', 'Mohr', 'cfcd208495d565ef66e7dff9f98764da', 1, 'm.mohr@mamo-net.de', 'm', '1988-08-08', 'Bielefeld', 'Deutschland', 1214437392, 1327532681, 1, ''),
+(2, 'Max', 'Mustermann', 'cfcd208495d565ef66e7dff9f98764da', 3, 'demo@mamo-net.de', 'm', '1902-02-02', 'Zürich', 'Schweiz', 1324994422, 1326471058, 1, 'cfcd208495d565ef66e7dff9f98764da');
+DROP TABLE IF EXISTS `ac_airports_view`;
 
---
--- Constraints der exportierten Tabellen
---
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `ac_airports_view` AS select `ac_airports`.`id` AS `id`,concat(`ac_airports`.`flughafen`,' (',`ac_airports`.`code`,')',', ',`ac_airports`.`stadt`) AS `fullname` from `ac_airports`;
 
---
--- Constraints der Tabelle `ac_user`
---
+
 ALTER TABLE `ac_user`
   ADD CONSTRAINT `ac_user_ibfk_1` FOREIGN KEY (`group_id`) REFERENCES `ac_group` (`id`) ON UPDATE CASCADE;
 
