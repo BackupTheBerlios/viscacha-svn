@@ -78,7 +78,7 @@ function getRequestURI() {
 		$request_uri = '';
 		$var = parse_url($config['furl']);
 		$request_uri = sprintf('http%s://%s%s',
-			(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == TRUE ? 's': ''),
+			(ini_isSecureHttp() ? 's': ''),
 			(isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : $var['host']),
 			$_SERVER['REQUEST_URI']
 		);

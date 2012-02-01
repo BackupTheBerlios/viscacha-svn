@@ -28,7 +28,7 @@ include('classes/class.gpc.php');
 $gpc = new GPC();
 
 // Thanks to phpBB for this code
-if (@ini_get('register_globals') == '1' || strtolower(@ini_get('register_globals')) == 'on') {
+if (ini_isActive(@ini_get('register_globals'))) {
 	unset($not_used, $input);
 	$not_unset = array('_GET', '_POST', '_COOKIE', '_SERVER', '_SESSION', '_ENV', '_FILES', 'config', 'gpc', 'imagetype_extension', 'var');
 
