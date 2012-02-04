@@ -80,7 +80,7 @@ class AirlinePages extends CmsModuleObject {
 		$filter->condition('airline', $id);
 		$filter->condition('published', 1);
 		$filter->orderBy('date');
-		$this->flightPage->overview('/Airlines/flights', Config::get('pagination.flights'), $filter);
+		$this->flightPage->overview('/Airlines/flights', Config::get('pagination.evaluations'), $filter);
 
 		$this->footer();
 	}
