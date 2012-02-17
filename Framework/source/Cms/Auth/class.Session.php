@@ -86,6 +86,7 @@ class Session {
 			}
 			return $data['user_id'];
 		}
+		return -1;
 	}
 
 	private function create($uid) {
