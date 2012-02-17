@@ -255,7 +255,12 @@ class CustomDataFilter {
 				$vars["wField{$i}"] = $c->getField();
 				$vars["wOp{$i}"] = $c->getOperator();
 				$vars["wValue{$i}"] = $c->getValue();
-				$conditions[] = "<wField{$i}:noquote> <wOp{$i}:noquote> <wValue{$i}>";
+				$sql = "<wField{$i}:noquote> <wOp{$i}:noquote> ";
+				if ($c->getOperator() == CustomDataFilterCondition::OP_LIKE)
+					$sql .= "'%<wValue{$i}:noquote>%'";
+				else
+					$sql .= "<wValue{$i}>";
+				$conditions[] = $sql;
 			}
 		}
 		$link = $group->getLink();
