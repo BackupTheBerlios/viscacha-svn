@@ -29,7 +29,20 @@ abstract class CustomField implements CustomFieldInfo {
 	}
 
 	public static function getRights() {
-		return array('admin', 'editor', 'registered');
+		return array('admin', 'editor', 'registered', 'guest'); // Ordered by priority
+	}
+
+	public static function getRightName($field) {
+		switch ($field) {
+			case 'admin':
+				return 'Administrator';
+			case 'editor':
+				return 'Redakteur';
+			case 'registered':
+				return 'Mitglied';
+			default:
+				return 'Gast';
+		}
 	}
 
 	public function injectData($data) {
@@ -144,7 +157,7 @@ abstract class CustomField implements CustomFieldInfo {
 			$user = Me::get();
 		}
 		foreach (self::getRights() as $right) {
-			if ($user->isAllowed($right) && !empty($this->permissions[$type][$right])) {
+			if (!empty($this->permissions[$type][$right]) && ($right == 'guest' || $user->isAllowed($right))) {
 				return true;
 			}
 		}
