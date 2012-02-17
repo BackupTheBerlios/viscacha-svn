@@ -86,6 +86,11 @@ final class Request {
 			}
 		}
 
+		$index = Config::get('seo.index_file');
+		if (!empty($index)) {
+			$shortened = $index . '/' . $shortened;
+		}
+
 		return trim($shortened, '/');
 	}
 
