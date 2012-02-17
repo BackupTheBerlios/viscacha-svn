@@ -83,4 +83,12 @@ function echoSave($data) {
 	echo Sanitize::saveHTML($data);
 }
 
+function arrayValuesEmpty(array $data) {
+	foreach ($data as $value) {
+		if (!empty($value))
+			return false;
+	}
+	return true;
+}
+
 ?>

@@ -80,7 +80,7 @@ class MySQL extends Database implements DbDriver {
 			$this->socket = $socket;
 		}
 
-		$host = $this->host.iif(is_id($port), ":{$this->port}").iif(!is_null($this->socket), ":{$this->socket}");
+		$host = $this->host.iif(is_id($port), ":{$this->port}").iif(!empty($this->socket), ":{$this->socket}");
 		$this->connection = mysqli_connect($host, $this->username, $this->password);
 
 		if ($this->hasConnection() == false) {

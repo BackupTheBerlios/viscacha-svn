@@ -44,7 +44,7 @@ abstract class AdminModuleObject extends CmsModuleObject {
 		}
 		else {
 			parent::header();
-			CmsPage::error("Sie sind nicht berechtigt den Administrationebereich zu betreten.");
+			CmsPage::error("Sie sind nicht berechtigt den Administrationsbereich zu betreten.");
 			parent::footer();
 		}
 	}

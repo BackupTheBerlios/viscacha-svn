@@ -31,6 +31,10 @@ class CustomDataList {
 	public function getFields() {
 		return $this->fields;
 	}
+	
+	public function hasData() {
+		return count($this->data) > 0;
+	}
 
 	public function getData() {
 		return $this->data;
