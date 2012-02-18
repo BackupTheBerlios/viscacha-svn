@@ -2,7 +2,7 @@
 <?php foreach ($menu['Pages'] as $key => $submenu) { ?>
 <dl class="dropdown">
 	<dt><?php echo $submenu->getHeader($key); ?></dt>
-	<dd title="<?php echo $key; ?>">
+	<dd>
 		<ul>
 <?php foreach ($submenu->getMenu($key) as $url => $name) { ?>
 <?php if (is_array($name)) { ?>

@@ -157,8 +157,8 @@ abstract class CustomField implements CustomFieldInfo {
 			$user = Me::get();
 		}
 		foreach (self::getRights() as $right) {
-			if (!empty($this->permissions[$type][$right]) && ($right == 'guest' || $user->isAllowed($right))) {
-				return true;
+			if ($user->isAllowed($right) || $right == 'guest') {
+				return !empty($this->permissions[$type][$right]);
 			}
 		}
 		return false;
