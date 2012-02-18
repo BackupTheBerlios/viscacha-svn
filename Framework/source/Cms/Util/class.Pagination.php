@@ -125,7 +125,7 @@ class Pagination {
 			$uri = $uri . '/';
 		}
 		$uri .= str_replace('$$', $pageNo, $this->appendix);
-		return $uri;
+		return URI::build($uri);
 	}
 
 	/**

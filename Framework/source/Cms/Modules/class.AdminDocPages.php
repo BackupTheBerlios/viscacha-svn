@@ -63,12 +63,9 @@ class AdminDocPages extends AdminModuleObject {
 						Validator::MESSAGE => 'Die URI enthält Zeichen die nicht erlaubt sind. Erlaubt sind: a-z, 0-9, _, -',
 						Validator::REGEXP => '/^[\w\d\-]*$/i'
 					),
-					array(
-						// Mindestlänge wird geprüft, da es keine doppelten URIs geben darf, aber die Startseite keine URI hat.
-						Validator::MESSAGE => 'Die URI muss mindestens 1 und darf maximal 100 Zeichen lang sein.',
-						Validator::MIN_LENGTH => 1,
-						Validator::MAX_LENGTH => 100
-					),
+					// Mindestlänge braucht nicht geprüft werden, da es keine doppelten URIs geben
+					// darf, unddie Startseite keine URI hat. Daher gibt es sowieso eine Meldung
+					// (URI schon vorhanden), wenn die URI leer ist.
 					array(
 						Validator::MESSAGE => 'Die angegebene URI existiert bereits für eine andere Seite.',
 						Validator::CLOSURE => function ($uri) use ($db, $id) {
