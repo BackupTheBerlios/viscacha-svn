@@ -150,7 +150,10 @@ class Session {
 	}
 
 	public function getSetting($name) {
-		return $this->settings[$name];
+		if (isset($this->settings[$name])) {
+			return $this->settings[$name];
+		}
+		return null;
 	}
 
 	public function setSetting($name, $value) {
