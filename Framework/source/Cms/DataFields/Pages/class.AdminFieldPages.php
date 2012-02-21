@@ -27,6 +27,7 @@ abstract class AdminFieldPages extends AdminModuleObject {
 			'Cms.DataFields.Types.CustomText',
 			'Cms.DataFields.Types.CustomSpacer',
 			'Cms.DataFields.Types.CustomCaptcha',
+			'Cms.DataFields.Types.CustomImageSlider',
 		);
 	}
 

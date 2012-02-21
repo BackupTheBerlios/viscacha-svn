@@ -31,7 +31,7 @@ class AdminFieldDataPages extends AdminModuleObject {
 		$id = Request::get(1, VAR_INT);
 		$this->breadcrumb->add(iif($id > 0, "Bearbeiten", "Hinzufügen"));
 		$this->header();
-		$this->page->write($this->getTemplateFile('/Cms/admin/data_categories_write'));
+		$this->page->write(false, $this->getTemplateFile('/Cms/admin/data_categories_write'));
 		$this->footer();
 	}
 

@@ -85,6 +85,11 @@ class CustomData {
 			'table' => $this->position->getDbTable(),
 			'pk' => $this->position->getPrimaryKey()
 		);
+		foreach ($this->data as $field) {
+			if ($field instanceof CustomExternalDataField) {
+				$field->deleteData();
+			}
+		}
 		return Database::getObject()->query("DELETE FROM <p><table:noquote> WHERE <pk:noquote> = <id:int>", $data);
 	}
 
@@ -102,6 +107,12 @@ class CustomData {
 			if ($field->getDbDataType() != null) {
 				$name = $field->getFieldName();
 				$sql[] = "{$name} = <{$name}>";
+				if ($field instanceof CustomExternalDataField) {
+					if ($pkValue > 0)
+						$field->updateData();
+					else
+						$field->insertData();
+				}
 				$data[$name] = $field->formatDataForDb();
 			}
 		}
@@ -129,8 +140,8 @@ class CustomData {
 		return $this->pk;
 	}
 
-	public function getData($internal) {
-		return $this->data[$internal]->getData();
+	public function getData($internal, $key = null) {
+		return $this->data[$internal]->getData($key);
 	}
 
 	public function getField($internal) {

@@ -63,12 +63,15 @@ class FieldDataPages {
 		}
 	}
 
-	public function write($tpl = null) {
+	public function write($onlyCreate = false, $tpl = null) {
 		$id = Request::get(1, VAR_INT);
 		$isSent = (Request::get(2, VAR_URI) == 'send');
 
 		$data = new CustomData($this->position);
-		if ($id > 0 && !$data->load($id)) {
+		if ($id > 0 && $onlyCreate && Session::getObject()->getSetting('last_added') != $id) {
+			CmsPage::error('Die Bearbeitungszeit ist abgelaufen. Bitte wenden Sie sich an den Administrator.');
+		}
+		else if ($id > 0 && !$data->load($id)) {
 			CmsPage::error('Der gewählte Datensatz wurde leider nicht gefunden.');
 		}
 		else {
@@ -81,7 +84,10 @@ class FieldDataPages {
 				$options = array();
 				foreach ($fields as $field) {
 					if ($field->canWrite()) {
-						$options[$field->getFieldName()] = $field->getValidation();
+						if ($field->getField() instanceof CustomExternalFields)
+							$options = array_merge($options, $field->getValidation());
+						else
+							$options[$field->getFieldName()] = $field->getValidation();
 					}
 				}
 
@@ -106,6 +112,9 @@ class FieldDataPages {
 					}
 					else {
 						$id = $data->add();
+						if ($onlyCreate) {
+							Session::getObject()->setSetting('last_added', $id);
+						}
 						if ($id > 0) {
 							$success = true;
 						}

@@ -20,15 +20,25 @@ class CustomFieldData implements CustomFieldInfo {
 			Core::throwError('First parameter is null.');
 		}
 		$this->field = $field;
-		$this->data = $data;
+		$this->setData($data);
 	}
 
 	public function setData($data = null) {
-		$this->data = $data;
+		if ($this->field instanceof CustomExternalFields) {
+			$this->data = new CustomExternalFieldData($this, $data);
+		}
+		else {
+			$this->data = $data;
+		}
 	}
 
-	public function getData() {
-		return $this->data;
+	public function getData($key = null) {
+		if ($key != null && $this->data instanceof CustomExternalFieldData) {
+			return $this->data->getData($key);
+		}
+		else {
+			return $this->data;
+		}
 	}
 
 	public function getField() {
@@ -90,5 +100,94 @@ class CustomFieldData implements CustomFieldInfo {
 		return $this->field->getValidation();
 	}
 
+}
+
+class CustomExternalFieldData implements ArrayAccess {
+	
+	private $data;
+	private $external;
+	private $parent;
+	
+	public function __construct(CustomFieldData &$parent, $data) {
+		$this->data = $data;
+		$this->parent = $parent;
+		$this->external = null;
+	}
+	
+	public function __toString() {
+		return strval($this->data);
+	}
+	
+	public function changeData($data) {
+		$this->data = $data;
+	}
+	
+	public function setData($data, array $external) {
+		$this->data = $data;
+		$this->external = $external;
+	}
+	
+	public function getExternal() {
+		$this->loadData();
+		return $this->external;
+	}
+	
+	public function getData($key = null) {
+		if ($key !== null) {
+			$this->loadData();
+			return $this->external[$key];
+		}
+		else {
+			return $this->data;
+		}
+	}
+	
+	protected function selectData() {
+		$field = $this->parent->getField();
+		$field->selectData($this);
+	}
+	
+	public function deleteData() {
+		$field = $this->parent->getField();
+		$field->deleteData($this);
+	}
+	
+	public function insertData() {
+		$field = $this->parent->getField();
+		$field->injectData($this);
+	}
+	
+	public function updateData() {
+		$field = $this->parent->getField();
+		$field->updateData($this);
+	}
+	
+	protected function loadData() {
+		if ($this->external === null) {
+			$this->selectData();
+		}
+	}
+
+    public function offsetSet($offset, $value) {
+		$this->loadData();
+        if (is_null($offset)) {
+            $this->external[] = $value;
+        } else {
+            $this->external[$offset] = $value;
+        }
+    }
+    public function offsetExists($offset) {
+		$this->loadData();
+        return isset($this->external[$offset]);
+    }
+    public function offsetUnset($offset) {
+		$this->loadData();
+        unset($this->external[$offset]);
+    }
+    public function offsetGet($offset) {
+		$this->loadData();
+        return isset($this->external[$offset]) ? $this->external[$offset] : null;
+    }
+	
 }
 ?>

@@ -1,0 +1,20 @@
+<div class="imageslider">
+<?php foreach($data->getExternal() as $file) { ?>
+	<a href="<?php echo $file->getFile(); ?>">
+		<img src="<?php echo $file->getThumbnail(); ?>" alt="" />
+	</a>
+<?php } ?>
+</div>
+<script type="text/javascript">
+$(function() {
+	$('.imageslider a').lightBox({
+		fixedNavigation: true,
+		imageLoading: "<?php echo URI::build('client/images/lightbox-ico-loading.gif'); ?>",
+		imageBtnPrev: "<?php echo URI::build('client/images/lightbox-btn-prev.gif'); ?>",
+		imageBtnNext: "<?php echo URI::build('client/images/lightbox-btn-next.gif'); ?>",
+		imageBtnClose: "<?php echo URI::build('client/images/lightbox-btn-close.gif'); ?>",
+		imageBlank:	"<?php echo URI::build('client/images/lightbox-blank.gif'); ?>"
+
+	});
+});
+</script>
