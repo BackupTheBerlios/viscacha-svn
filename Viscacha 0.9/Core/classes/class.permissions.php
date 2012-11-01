@@ -845,6 +845,10 @@ function sid_new() {
 	else {
 		$nodata = true;
 	}
+	
+	if (!isset($my) || !is_object($my)) {
+		$my = new stdClass();
+	}
 
 	if ($nodata == false && $my->confirm == '11') {
 		$id = &$my->id;
