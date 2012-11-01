@@ -200,40 +200,6 @@ function JS_URL($url) {
 	return $url;
 }
 
-function ini_isSecureHttp() {
-	if (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == '443')
-		return true;
-	else if (isset($_SERVER['HTTPS']) && ini_isActive($_SERVER['HTTPS']))
-		return true;
-	else
-		return false;
-}
-
-function ini_isActive($value) {
-	return ($value == 'true' || $value == '1' || strotlower($value) == 'on');
-}
-
-function ini_maxupload() {
-	$keys = array(
-		'post_max_size' => 0,
-		'upload_max_filesize' => 0
-	);
-	foreach ($keys as $key => $bytes) {
-		$val = trim(@ini_get($key));
-		$last = strtolower($val{strlen($val)-1});
-		switch($last) {
-			case 'g':
-				$val *= 1024;
-			case 'm':
-				$val *= 1024;
-			case 'k':
-				$val *= 1024;
-		}
-		$keys[$key] = $val;
-	}
-	return min($keys);
-}
-
 /**
  * orders a multidimentional array on the base of a label-key
  *

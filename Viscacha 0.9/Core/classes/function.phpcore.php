@@ -197,6 +197,40 @@ function isMac() {
 	return ($mac == 'MAC' || $mac == 'DAR');
 }
 
+function ini_isActive($value) {
+	return ($value == 'true' || $value == '1' || strtolower($value) == 'on');
+}
+
+function ini_isSecureHttp() {
+	if (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == '443')
+		return true;
+	else if (isset($_SERVER['HTTPS']) && ini_isActive($_SERVER['HTTPS']))
+		return true;
+	else
+		return false;
+}
+
+function ini_maxupload() {
+	$keys = array(
+		'post_max_size' => 0,
+		'upload_max_filesize' => 0
+	);
+	foreach ($keys as $key => $bytes) {
+		$val = trim(@ini_get($key));
+		$last = strtolower($val{strlen($val)-1});
+		switch($last) {
+			case 'g':
+				$val *= 1024;
+			case 'm':
+				$val *= 1024;
+			case 'k':
+				$val *= 1024;
+		}
+		$keys[$key] = $val;
+	}
+	return min($keys);
+}
+
 /**
  * getDocRoot fixes a problem with Windows where PHP does not have $_SERVER['DOCUMENT_ROOT']
  * built in. getDocRoot returns what $_SERVER['DOCUMENT_ROOT'] should have. It should work on
@@ -281,120 +315,8 @@ if (!defined('PHP_EOL')) {
 		define('PHP_EOL', "\n");
 	}
 }
-/* File constants from PHP-Compat */
-$imagetype_extension = array('gif', 'jpg', 'png', 'swf', 'psd', 'bmp', 'tiff', 'jpc', 'jp2', 'jpf', 'jb2', 'swc', 'aiff', 'wbmp', 'xbm');
-
-if (!defined('IMAGETYPE_GIF')) {
-	define('IMAGETYPE_GIF', 1);
-}
-
-if (!defined('IMAGETYPE_JPEG')) {
-	define('IMAGETYPE_JPEG', 2);
-}
-
-if (!defined('IMAGETYPE_PNG')) {
-	define('IMAGETYPE_PNG', 3);
-}
-
-if (!defined('IMAGETYPE_SWF')) {
-	define('IMAGETYPE_SWF', 4);
-}
-
-if (!defined('IMAGETYPE_PSD')) {
-	define('IMAGETYPE_PSD', 5);
-}
-
-if (!defined('IMAGETYPE_BMP')) {
-	define('IMAGETYPE_BMP', 6);
-}
-
-if (!defined('IMAGETYPE_TIFF_II')) {
-	define('IMAGETYPE_TIFF_II', 7);
-}
-
-if (!defined('IMAGETYPE_TIFF_MM')) {
-	define('IMAGETYPE_TIFF_MM', 8);
-}
-
-if (!defined('IMAGETYPE_JPC')) {
-	define('IMAGETYPE_JPC', 9);
-}
-
-if (!defined('IMAGETYPE_JP2')) {
-	define('IMAGETYPE_JP2', 10);
-}
-
-if (!defined('IMAGETYPE_JPX')) {
-	define('IMAGETYPE_JPX', 11);
-}
-
-if (!defined('IMAGETYPE_JB2')) {
-	define('IMAGETYPE_JB2', 12);
-}
-
-if (!defined('IMAGETYPE_SWC')) {
-	define('IMAGETYPE_SWC', 13);
-}
-
-if (!defined('IMAGETYPE_IFF')) {
-	define('IMAGETYPE_IFF', 14);
-}
-
-if (!defined('IMAGETYPE_WBMP')) {
-	define('IMAGETYPE_WBMP', 15);
-}
-
-if (!defined('IMAGETYPE_XBM')) {
-	define('IMAGETYPE_XBM', 16);
-}
 
 /* Missing functions */
-
-/**
- * Replace image_type_to_extension()
- *
- * Function is not documented yet. It is maybe different from the original function!
- *
- * @link		http://php.net/function.image_type_to_extension
- * @author		Matthias Mohr
- * @require		PHP 4.0.0 (trigger_error)
- */
-if(!viscacha_function_exists('image_type_to_extension')) {
-	function image_type_to_extension($imagetype, $include_dot = true) {
-		if(empty($imagetype)) {
-			return false;
-		}
-		if (!is_bool($include_dot)) {
-			trigger_error('Argument 2 has to be a boolean!', E_WARNING);
-			return false;
-		}
-		if ($include_dot == true) {
-			$dor = '.';
-		}
-		else {
-			$dot = '';
-		}
-		switch($imagetype) {
-			case IMAGETYPE_GIF		: return $dot.'gif';
-			case IMAGETYPE_JPEG		: return $dot.'jpg';
-			case IMAGETYPE_PNG		: return $dot.'png';
-			case IMAGETYPE_SWF		: return $dot.'swf';
-			case IMAGETYPE_PSD		: return $dot.'psd';
-			case IMAGETYPE_BMP		: return $dot.'bmp';
-			case IMAGETYPE_TIFF_II	: return $dot.'tiff';
-			case IMAGETYPE_TIFF_MM	: return $dot.'tiff';
-			case IMAGETYPE_JPC		: return $dot.'jpc';
-			case IMAGETYPE_JP2		: return $dot.'jp2';
-			case IMAGETYPE_JPX		: return $dot.'jpf';
-			case IMAGETYPE_JB2		: return $dot.'jb2';
-			case IMAGETYPE_SWC		: return $dot.'swc';
-			case IMAGETYPE_IFF		: return $dot.'aiff';
-			case IMAGETYPE_WBMP		: return $dot.'wbmp';
-			case IMAGETYPE_XBM		: return $dot.'xbm';
-			default					: return false;
-		}
-	}
-}
 
 /**
  * Replace htmlspecialchars_decode()
@@ -420,7 +342,7 @@ if (!viscacha_function_exists('htmlspecialchars_decode')) {
  * @link		http://php.net/function.array_intersect_key
  * @author		Tom Buskens <ortega@php.net>
  * @version		$Revision: 1.9 $
- * @since		PHP 5.0.2
+ * @since		PHP 5.1.0
  * @require		PHP 4.0.0 (trigger_error)
  */
 if (!viscacha_function_exists('array_intersect_key')) {

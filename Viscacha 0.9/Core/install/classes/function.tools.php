@@ -9,7 +9,7 @@ function ini_isSecureHttp() {
 }
 
 function ini_isActive($value) {
-	return ($value == 'true' || $value == '1' || strotlower($value) == 'on');
+	return ($value == 'true' || $value == '1' || strtolower($value) == 'on');
 }
 function getFUrl() {
 	// HTTP_HOST is having the correct browser url in most cases...
