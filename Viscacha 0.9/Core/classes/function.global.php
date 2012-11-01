@@ -200,6 +200,19 @@ function JS_URL($url) {
 	return $url;
 }
 
+function ini_isSecureHttp() {
+	if (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == '443')
+		return true;
+	else if (isset($_SERVER['HTTPS']) && ini_isActive($_SERVER['HTTPS']))
+		return true;
+	else
+		return false;
+}
+
+function ini_isActive($value) {
+	return ($value == 'true' || $value == '1' || strotlower($value) == 'on');
+}
+
 function ini_maxupload() {
 	$keys = array(
 		'post_max_size' => 0,
@@ -1060,18 +1073,12 @@ function makecookie($name, $value = '', $expire = 31536000) {
 		return FALSE;
 	}
 
-	if ((isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == '443') || isset($_SERVER['HTTPS'])) {
-		$secure = true;
-	}
-	else {
-		$secure = false;
-	}
 	if ($expire != null) {
 		$expire = time() + $expire;
 	}
 	else {
 		$expire = 0;
 	}
-	setcookie($name, $value, $expire, null, null, $secure);
+	setcookie($name, $value, $expire, null, null, ini_isSecureHttp());
 }
 ?>
