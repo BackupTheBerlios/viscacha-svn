@@ -141,25 +141,18 @@ class BBCode {
 	function cb_hlcode ($matches) {
 		global $lang, $scache;
 		$pid = $this->noparse_id();
-		list(,, $sclang, $code, $nl) = $matches;
+		list(,,, $code, $nl) = $matches;
 
 		$code = trim($code, "\r\n");
 		$rows = explode("\n", $code);
 		if (count($rows) > 1 || $this->wordwrap($code) != $code) {
-			$scache->loadClass('UniversalCodeCache');
-			$cache = new UniversalCodeCache();
-			$cache->setData($code, $sclang);
-			$data = $cache->get();
-			if ($cache->hasLanguage()) {
-				$lang->assign('lang_name', $data['language']);
-				$title = $lang->phrase('geshi_hlcode_title');
+			$html = '<div class="highlightcode">';
+			$html .= '<strong>'.$lang->phrase('bb_sourcecode').'</strong>';
+			$html .= '<div class="bb_blockcode"><ol>';
+			foreach ($rows as $row) {
+				$html .= '<li>'.str_replace("\t", "&nbsp;&nbsp;&nbsp;&nbsp;", $row).'</li>';
 			}
-			else {
-				$title = $lang->phrase('bb_sourcecode');
-			}
-			$html = '<div class="highlightcode"><a class="bb_blockcode_options" href="misc.php?action=download_code&amp;fid='.$cache->getHash().'">'.$lang->phrase('geshi_hlcode_txtdownload').'</a>';
-			$html .= '<strong>'.$title.'</strong>';
-			$html .= '<div class="bb_blockcode">'.$data['parsed'].'</div></div>';
+			$html .= '</ol></div></div>';
 			$this->noparse[$pid] = $html;
 		}
 		else {
@@ -1034,9 +1027,6 @@ class BBCode {
 			}
 		}
 
-		$codelang = $scache->load('syntaxhighlight');
-		$clang = $codelang->get();
-
 		$this->cache_smileys();
 		$smileys = array(0 => array(), 1 => array());
 		foreach ($this->smileys as $bb) {
@@ -1048,7 +1038,7 @@ class BBCode {
 			}
 		}
 
-		$tpl->globalvars(compact("id", "content", "taAttr", "cbb", "clang", "smileys", "maxlength", "disable"));
+		$tpl->globalvars(compact("id", "content", "taAttr", "cbb", "smileys", "maxlength", "disable"));
 		return $tpl->parse("main/bbhtml");
 	}
 

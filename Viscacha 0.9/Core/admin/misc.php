@@ -593,7 +593,6 @@ elseif ($job == "credits") {
 		<ul>
 		<li><a href="http://www.phpclasses.org/browse/author/152329.html" target="_blank">Roman Numeral Conversion by Huda M Elmatsani</a> (Roman Numeral Conversion; Freeware)</li>
 		<li><a href="http://www.phpconcept.net" target="_blank">PclZip Library 2.8 by Vincent Blavet</a> (Zip File Handling; GNU LPGL)</li>
-		<li><a href="http://qbnz.com/highlighter" target="_blank">GeSHi 1.0.8.4 by Nigel McNie and Benny Baumann</a> (Syntax Highlighting; GNU GPL)</li>
 		<li><a href="http://magpierss.sourceforge.net" target="_blank">MagPieRSS 0.72 by kellan</a> (Parsing Newsfeeds; GNU GPL)</li>
 		<li><a href="http://phpmailer.sourceforge.net" target="_blank">PHPMailer 2.0.3 (with POP3 and SMTP) by Andy Prevost</a> (Sending E-mails; GNU LGPL)</li>
 		<li><a href="http://www.bitfolge.de" target="_blank">FeedCreator v1.7.x by Kai Blankenhorn</a> (Creating Newsfeeds; GNU LGPL)</li>

@@ -30,9 +30,6 @@ function BBCodeToolBox($id, $content = '', $taAttr = '') {
 		}
 	}
 
-	$codelang = $scache->load('syntaxhighlight');
-	$clang = $codelang->get();
-
 	$cache = $scache->load('smileys');
 	$cache->seturl($config['smileyurl']);
 	$smileydata = $cache->get();
@@ -93,17 +90,6 @@ function BBCodeToolBox($id, $content = '', $taAttr = '') {
 				<br class="iefix_br" />
 			</div>
 			</div>
-			<img src="templates/editor/images/seperator.gif" alt="" />
-			<a id="menu_bbsourcecode_<?php echo $id; ?>" href="#" onmouseover="RegisterMenu('bbsourcecode_<?php echo $id; ?>');" class="editor_toolbar_dropdown"><img src="<?php echo $tpl->img('desc'); ?>" alt="<?php echo $lang->phrase('bbcodes_expand'); ?>" /> <?php echo $lang->phrase('bbcodes_code_short'); ?></a>
-			<div class="popup" id="popup_bbsourcecode_<?php echo $id; ?>">
-			<strong><?php echo $lang->phrase('bbcodes_code'); ?></strong>
-			<ul>
-				<li><span class="popup_line" onclick="InsertTagsMenu('<?php echo $id; ?>', '[code]','[/code]', 'bbsourcecode_<?php echo $id; ?>')"><?php echo $lang->phrase('geshi_bbcode_nohighlighting'); ?></span></li>
-				<?php foreach ($clang as $row) { ?>
-				<li><span class="popup_line" onclick="InsertTagsMenu('<?php echo $id; ?>', '[code=<?php echo $row['short']; ?>]','[/code]', 'bbsourcecode_<?php echo $id; ?>')"><?php echo $row['name']; ?></span></li>
-				<?php } ?>
-			</ul>
-			</div>
 			<?php
 			echo iif(count($cbb), '<img src="templates/editor/images/seperator.gif" alt="" />');
 			foreach ($cbb as $bb) { ?>
@@ -127,6 +113,7 @@ function BBCodeToolBox($id, $content = '', $taAttr = '') {
 			<img src="templates/editor/images/quote.gif" onclick="InsertTags('<?php echo $id; ?>', '[quote]','[/quote]');" title="<?php echo $lang->phrase('bbcodes_quote'); ?>" alt="<?php echo $lang->phrase('bbcodes_quote'); ?>" class="editor_toolbar_button" onmouseover="buttonOver(this)" onmouseout="buttonOut(this)" />
 			<img src="templates/editor/images/ot.gif" onclick="InsertTags('<?php echo $id; ?>', '[ot]','[/ot]');" title="<?php echo $lang->phrase('bbcodes_ot'); ?>" alt="<?php echo $lang->phrase('bbcodes_ot'); ?>" class="editor_toolbar_button" onmouseover="buttonOver(this)" onmouseout="buttonOut(this)" />
 			<img src="templates/editor/images/edit.gif" onclick="InsertTags('<?php echo $id; ?>', '[edit]','[/edit]');" title="<?php echo $lang->phrase('bbcodes_edit'); ?>" alt="<?php echo $lang->phrase('bbcodes_edit'); ?>" class="editor_toolbar_button" onmouseover="buttonOver(this)" onmouseout="buttonOut(this)" />
+			<img src="templates/editor/images/code.gif" onclick="InsertTags('<?php echo $id; ?>', '[code]','[/code]');" title="<?php echo $lang->phrase('bbcodes_code'); ?>" alt="<?php echo $lang->phrase('bbcodes_code'); ?>" class="editor_toolbar_button" onmouseover="buttonOver(this)" onmouseout="buttonOut(this)" />
 			<img src="templates/editor/images/seperator.gif" alt="" />
 			<img src="templates/editor/images/list_unordered.gif" onclick="InsertTagsList('<?php echo $id; ?>');" title="<?php echo $lang->phrase('bbcodes_list'); ?>" alt="<?php echo $lang->phrase('bbcodes_list'); ?>" class="editor_toolbar_button" onmouseover="buttonOver(this)" onmouseout="buttonOut(this)" />
 			<img src="templates/editor/images/list_ordered.gif" onclick="InsertTagsList('<?php echo $id; ?>', 'ol');" title="<?php echo $lang->phrase('bbcodes_list_ol'); ?>" alt="<?php echo $lang->phrase('bbcodes_list_ol'); ?>" class="editor_toolbar_button" onmouseover="buttonOver(this)" onmouseout="buttonOut(this)" />
@@ -1705,7 +1692,7 @@ elseif ($job == 'doc_add2') {
 	if($format['remote'] != 1) {
 		if($format['parser'] == 3) {
 			?>
-			<a class="right" href="misc.php?action=bbhelp<?php echo SID2URL_x; ?>" target="_blank"><?php echo $lang->phrase('bbcode_help'); ?></a>
+			<strong><a class="right" href="misc.php?action=bbhelp<?php echo SID2URL_x; ?>" target="_blank"><?php echo $lang->phrase('bbcode_help'); ?></a></strong>
 			<?php echo $lang->phrase('admin_cms_doc_sourcecode'); ?>
 			<br />
 			<?php
@@ -1919,7 +1906,7 @@ elseif ($job == 'doc_edit') {
 	if($format['remote'] != 1) {
 		if($format['parser'] == 3) {
 			?>
-			<a class="right" href="misc.php?action=bbhelp<?php echo SID2URL_x; ?>" target="_blank"><?php echo $lang->phrase('bbcode_help'); ?></a>
+			<strong><a class="right" href="misc.php?action=bbhelp<?php echo SID2URL_x; ?>" target="_blank"><?php echo $lang->phrase('bbcode_help'); ?></a></strong>
 			<?php echo $lang->phrase('admin_cms_doc_sourcecode'); ?>
 			<br />
 			<?php
@@ -2044,26 +2031,5 @@ elseif ($job == 'doc_edit2') {
 	$delobj->delete();
 
 	ok('admin.php?action=cms&job=doc', $lang->phrase('admin_cms_document_successfully_changed'));
-}
-elseif ($job == 'doc_code') {
-	echo head();
-	$codelang = $scache->load('syntaxhighlight');
-	$clang = $codelang->get();
-	?>
-	<script src="templates/editor/bbcode.js" type="text/javascript"></script>
-	<table class="border">
-	<tr><td class="obox"><?php echo $lang->phrase('admin_cms_bb_tag_code'); ?></td></tr>
-	<tr><td class="mbox">
-	<strong><?php echo $lang->phrase('admin_cms_choose_programming_language'); ?></strong><br /><br />
-	<ul>
-	   <li><input type="radio" name="data" onclick="InsertTagsCode('[code]','[/code]')" /> <?php echo $lang->phrase('admin_cms_no_syntax_highlighting'); ?></li>
-	   <?php foreach ($clang as $row) { ?>
-	   <li><input type="radio" name="data" onclick="InsertTagsCode('[code=<?php echo $row['short']; ?>]','[/code]')" /> <?php echo $row['name']; ?></li>
-	   <?php } ?>
-	</ul>
-	</td></tr>
-	</table>
-	<?php
-	echo foot();
 }
 ?>

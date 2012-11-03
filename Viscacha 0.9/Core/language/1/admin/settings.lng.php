@@ -352,7 +352,6 @@ $lang['admin_select_scheduled_tasks'] = 'Geplante Aufgaben verwalten';
 $lang['admin_select_search_ip'] = 'IP-Adressen suchen';
 $lang['admin_select_search_member'] = 'Mitgliedersuche';
 $lang['admin_select_smiley_manager'] = 'Smiley-Verwaltung';
-$lang['admin_select_syntax_manager'] = 'Syntaxhervorhebung verwalten';
 $lang['admin_select_sys_error_log'] = 'Fehlerprotokolle';
 $lang['admin_select_task_log'] = 'Protokoll der geplante Aufgaben';
 $lang['admin_select_terms_of_behaviour'] = 'Verhaltensbedingungen (Nur Standardsprache)';

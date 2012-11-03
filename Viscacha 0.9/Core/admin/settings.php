@@ -1890,8 +1890,6 @@ elseif ($job == 'syndication2') {
 	$c->getdata();
 	$c->updateconfig('syndication',int);
 	$c->updateconfig('syndication_insert_email',int);
-	$c->updateconfig('syndication_klipfolio_banner',str);
-	$c->updateconfig('syndication_klipfolio_icon',str);
 	$c->updateconfig('rssttl',int);
 	$c->updateconfig('rsschars',int);
 	$c->savedata();
@@ -2364,7 +2362,6 @@ else {
 		  	  <option value="admin.php?action=bbcodes&job=smileys"><?php echo $lang->phrase('admin_select_smiley_manager'); ?></option>
 		  	  <option value="admin.php?action=bbcodes&job=word"><?php echo $lang->phrase('admin_select_glossary_manager'); ?></option>
 		  	  <option value="admin.php?action=bbcodes&job=censor"><?php echo $lang->phrase('admin_select_vocabulary_manager'); ?></option>
-		  	  <option value="admin.php?action=bbcodes&job=codefiles"><?php echo $lang->phrase('admin_select_syntax_manager'); ?></option>
 		  	  <option value="admin.php?action=bbcodes&job=custombb"><?php echo $lang->phrase('admin_select_bb_code_manager'); ?></option>
 		  	  <option value="admin.php?action=bbcodes&job=custombb_test"><?php echo $lang->phrase('admin_select_test_bb_manager'); ?></option>
 	        </select> <input style="width: 18%" type="submit" value="<?php echo $lang->phrase('admin_form_go'); ?>">

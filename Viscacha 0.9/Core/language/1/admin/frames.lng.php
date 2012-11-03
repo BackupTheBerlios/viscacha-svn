@@ -59,7 +59,6 @@ $lang['admin_stats_logs'] = 'Protokolle & Statistik';
 $lang['admin_supportlink'] = 'Support';
 $lang['admin_switch_extended'] = 'Wechsle zum Profi-Modus';
 $lang['admin_switch_simple'] = 'Wechsle zum Einsteiger-Modus';
-$lang['admin_syntaxhighlighting'] = 'Syntaxhervorhebung';
 $lang['admin_topics_posts'] = 'Themen & Beiträge';
 $lang['admin_trashmail'] = 'Wegwerf-E-Mail-Adressen';
 $lang['admin_txtprocessing'] = 'Textverarbeitung';

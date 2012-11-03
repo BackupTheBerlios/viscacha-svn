@@ -97,6 +97,7 @@ $lang['admin_cms_nav_target'] = 'Target:';
 $lang['admin_cms_nav_target_text'] = 'All links will be opened in the same window by default. This option defines the target window for the link. For example: "_blank" will open links in a new window.';
 $lang['admin_cms_nav_title'] = 'Title:';
 $lang['admin_cms_nav_title_text'] = 'To use phrases from the custom language file for this entry simply use the follwoing code: <code>lang->key</code>. Therefor <code>key</code> is the internal name of the phrase you want to use. <a href="admin.php?action=language&amp;job=lang_array&amp;id={@config->langdir}&amp;file=custom" target="_blank">Open the custom language file manager.</a><br />The titles of the documents can also be used for the link text. Therefor you can use the code <code>doc->ID</code>, whereat <code>ID</code> is the ID of the linked document. This code will be set automatically after choosing one of the documents on the page "Existing Documents".';
+$lang['admin_cms_news_title'] = 'Title:';
 $lang['admin_cms_no'] = 'No';
 $lang['admin_cms_no_syntax_highlighting'] = 'No Syntax Highlighting';
 $lang['admin_cms_no_title_specified'] = 'No title specified';

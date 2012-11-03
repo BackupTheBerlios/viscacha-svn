@@ -6,24 +6,6 @@ define('ADMIN_IMPORT_PATH', 'admin/lib/import/');
 // BF: MultiLangAdmin
 $lang->group("admin/db");
 
-function highlight_sql_query($sql) {
-	require_once('classes/class.geshi.php');
-	$path = 'classes/geshi';
-	$language = 'mysql';
-	if (!file_exists($path.'/'.$language.'.php')) {
-		$language = 'sql';
-		if (!file_exists($path.'/'.$language.'.php')) {
-			return null;
-		}
-	}
-	$geshi = new GeSHi($sql, $language, $path);
-	$geshi->enable_classes(false);
-	$geshi->set_header_type(GESHI_HEADER_DIV);
-	$geshi->enable_line_numbers(GESHI_FANCY_LINE_NUMBERS, 5);
-	$geshi->enable_keyword_links(false);
-	return $geshi->parse_code();
-}
-
 function exec_query_form ($query = '') {
 	global $db, $lang;
 	$tables = $db->list_tables();
@@ -650,13 +632,10 @@ elseif ($job == 'query2') {
 			<?php
 		}
 		else {
-			if (count($q['queries']) <= 20) { // To avoid reaching max exec. time
-				$hl = highlight_sql_query($sql);
-			}
 			echo '<table class="border" border="0" cellspacing="0" cellpadding="4" align="center"><tr><td class="obox">'.$lang->phrase('admin_db_queries_extd');
 			echo iif($q['affected'] > 0, ' - '.$lang->phrase('admin_db_rows_affected'));
 			echo '</td></tr>';
-			echo iif(!empty($hl), '<tr><td class="mbox">'.$hl.'</td></tr>');
+			echo iif(!empty($sql), '<tr><td class="mbox"><pre>'.$sql.'</pre></td></tr>');
 			echo '</table>';
 			foreach ($q['queries'] as $num) {
 				if (count($num) > 0) {

@@ -97,6 +97,7 @@ $lang['admin_cms_nav_target'] = 'Ziel:';
 $lang['admin_cms_nav_target_text'] = 'Alle Links werden standardmäßig im gleichen Fenster geöffnet. Diese Option definiert das Zielfenster des Links, zum Beispiel wird "_blank" den Link in einem neuen Fenster öffnen.';
 $lang['admin_cms_nav_title'] = 'Titel:';
 $lang['admin_cms_nav_title_text'] = 'Um Phrasen aus der benutzerdefinierten Sprachdatei für diesen Eintrag zu benutzen, ist der folgende Code vorgesehen: <code>lang->key</code>. Dabei ist <code>key</code> der Schlüssel (interne Name) der jeweiligen zu nutzenden Phrase. <a href="admin.php?action=language&amp;job=lang_array&amp;id={@config->langdir}&amp;file=custom" target="_blank">Öffne die Verwaltung für benutzerdefinierte Phrasen.</a><br />Die Titel der Dokumente können für die Verlinkung ebenfalls verwendet werden. Dazu einfach den Code <code>doc->ID</code> verwenden. <code>ID</code> ist dabei die ID des Dokuments, das Sie verlinken möchten. Dieser Code wird automatisch bei Auswahl über die Seite "Existierende Dokumente" erzeugt.';
+$lang['admin_cms_news_title'] = 'Titel:';
 $lang['admin_cms_no'] = 'Nein';
 $lang['admin_cms_no_syntax_highlighting'] = 'Keine Syntaxhervorhebung';
 $lang['admin_cms_no_title_specified'] = 'Kein Titel angegeben';

@@ -59,27 +59,6 @@ if ($_GET['action'] == "boardin") {
 	}
 
 }
-elseif ($_GET['action'] == "download_code") {
-	$fid = $gpc->get('fid', str);
-	if (!is_hash($fid)) {
-		error($lang->phrase('query_string_error'));
-	}
-	$scache->loadClass('UniversalCodeCache');
-	$cache = new UniversalCodeCache();
-	if (!$cache->setHash($fid)) {
-		error($lang->phrase('no_upload_found'));
-	}
-	$sourcecode = $cache->get();
-
-	$slog->updatelogged();
-	$db->close();
-
-	viscacha_header('Content-Type: text/plain');
-	viscacha_header('Content-Length: '.strlen($sourcecode['source']));
-	viscacha_header('Content-Disposition: attachment; filename="'.gmdate('d-m-Y_H-i', times()).'.txt"');
-	echo $sourcecode['source'];
-	exit;
-}
 elseif ($_GET['action'] == "report_post" || $_GET['action'] == "report_post2") {
 	($code = $plugins->load('showtopic_topic_query')) ? eval($code) : null;
 	$result = $db->query("SELECT r.id, r.report, r.topic_id, r.tstart, r.topic AS title, t.topic, t.status, t.board, t.prefix FROM {$db->pre}replies AS r LEFT JOIN {$db->pre}topics AS t ON r.topic_id = t.id WHERE r.id = '{$_GET['id']}' LIMIT 1");
@@ -483,16 +462,8 @@ elseif ($_GET['action'] == "bbhelp") {
 		$cbb[$key]['syntax'] = '['.$bb['bbcodetag'].iif($bb['twoparams'], '={option}').']{param}[/'.$bb['bbcodetag'].']';
 	}
 
-	$codelang = $scache->load('syntaxhighlight');
-	$clang = $codelang->get();
-	$code_hl = array();
-	foreach ($clang as $l) {
-		$code_hl[] = "{$l['short']} ({$l['name']})";
-	}
-	$code_hl = implode(', ', $code_hl);
-
-	$code = '&lt;?php phpinfo(); ?&gt;';
-	$phpcode = '&lt;?php'."\n".'echo phpversion();'."\n".'?&gt;';
+	$code1 = '&lt;?php echo phpversion(); ?&gt;';
+	$code2 = '&lt;?php'."\n".'echo phpversion();'."\n".'?&gt;';
 
 	$lorem_ipsum = 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.';
 
@@ -523,7 +494,7 @@ elseif ($_GET['action'] == "bbhelp") {
 		array(
 			'tag' => 'img',
 			'params' => 0,
-			'example' => array('[img]'.$config['furl'].'/images/klipfolio_icon.gif[/img]')
+			'example' => array('[img]'.$tpl->img('help').'[/img]')
 		),
 		array(
 			'tag' => 'url',
@@ -595,11 +566,10 @@ elseif ($_GET['action'] == "bbhelp") {
 		),
 		array(
 			'tag' => 'code',
-			'params' => 2,
+			'params' => 0,
 			'example' => array(
-				'[code]'.$code.'[/code]',
-				'[code]'.$phpcode.'[/code]',
-				'[code=php]'.$phpcode.'[/code]'
+				'[code]'.$code1.'[/code]',
+				'[code]'.$code2.'[/code]'
 			)
 		),
 		array(

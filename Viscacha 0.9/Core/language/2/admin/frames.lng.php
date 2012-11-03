@@ -59,7 +59,6 @@ $lang['admin_stats_logs'] = 'Statistics & Logs';
 $lang['admin_supportlink'] = 'Support';
 $lang['admin_switch_extended'] = 'Switch to extended interface';
 $lang['admin_switch_simple'] = 'Switch to simple interface';
-$lang['admin_syntaxhighlighting'] = 'Syntax Highlighting Manager';
 $lang['admin_topics_posts'] = 'Topics & Posts';
 $lang['admin_trashmail'] = 'Trash-E-Mail addresses';
 $lang['admin_txtprocessing'] = 'Text Processing';
