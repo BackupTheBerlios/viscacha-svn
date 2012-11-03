@@ -212,14 +212,6 @@ class BBCode {
 
 		return $o;
 	}
-	function cb_note ($matches) {
-		list(,$desc,$word) = $matches;
-		$this->index++;
-		$pid = $this->noparse_id();
-		$o = "<acronym title=\"<!PID:{$pid}>\" id=\"menu_tooltip_{$this->index}\" onmouseover=\"RegisterTooltip({$this->index})\">{$word}</acronym><div class=\"tooltip tooltip_body\" id=\"popup_tooltip_{$this->index}\"><!PID:{$pid}></div>";
-		$this->noparse[$pid] = $desc;
-		return $o;
-	}
 	function cb_image ($matches) {
 		list(, $url, $extension) = $matches;
 
@@ -466,7 +458,7 @@ class BBCode {
 
 			$text = $this->ListWorkAround($text);
 
-			$text = preg_replace_callback('/\[note=([^\]]+?)\](.+?)\[\/note\]/is', array(&$this, 'cb_note'), $text);
+			$text = preg_replace('/\[note=([^\]]+?)\](.+?)\[\/note\]/is', '<em>\2</em> (\1)', $text);
 
 			$text = empty($this->profile['disallow']['img']) ? preg_replace_callback("~\[img\]([^?&=\[\]]+\.(png|gif|bmp|jpg|jpe|jpeg))\[\/img\]~is", array($this, 'cb_image'), $text) : $text;
 			$text = preg_replace_callback("~\[img\]{$this->url_regex2}\[\/img\]~is", array(&$this, 'cb_plain_url'), $text); // Correct invalid image urls

@@ -573,10 +573,6 @@ elseif ($_GET['action'] == "bbhelp") {
 			)
 		),
 		array(
-			'tag' => 'note',
-			'params' => 1
-		),
-		array(
 			'tag' => 'edit',
 			'params' => 2,
 			'example' => array(
