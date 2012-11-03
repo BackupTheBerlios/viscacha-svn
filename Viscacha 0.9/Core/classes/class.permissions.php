@@ -650,9 +650,6 @@ function logged () {
 		$my->clv = 0;
 	}
 
-	if (!isset($my->opt_hidebad)) {
-		$my->opt_hidebad = 0;
-	}
 	if (!isset($my->opt_showsig)) {
 		$my->opt_showsig = 1;
 	}
@@ -1056,7 +1053,7 @@ function cleanUserData($data) {
 	global $gpc;
 	$trust = array(
 		'id', 'pw', 'regdate', 'posts', 'gender', 'birthday', 'lastvisit', 'icq', 'language',
-		'opt_pmnotify', 'opt_hidebad', 'opt_hidemail', 'opt_newsletter', 'opt_showsig', 'template', 'confirm', // from user-table
+		'opt_pmnotify', 'opt_hidemail', 'opt_newsletter', 'opt_showsig', 'template', 'confirm', // from user-table
 		'ufid', // from userfields-table
 		'mid', 'active', 'wiw_id', 'last_visit', 'is_bot', 'mark', 'pwfaccess', 'settings' // from session-table
 	);

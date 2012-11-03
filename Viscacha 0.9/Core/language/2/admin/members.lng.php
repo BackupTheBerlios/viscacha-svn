@@ -123,7 +123,6 @@ $lang['admin_member_group_s'] = 'Group(s):';
 $lang['admin_member_has_been_banned'] = 'has been banned successfully.';
 $lang['admin_member_has_not_been_activated'] = 'User has neither from the admin nor per e-mail been activated';
 $lang['admin_member_help'] = 'Help:';
-$lang['admin_member_hide_bad_rated_topics'] = 'Hide topics with bad ratings?';
 $lang['admin_member_homepage'] = 'Homepage';
 $lang['admin_member_host_name'] = 'Host Name';
 $lang['admin_member_hours'] = 'Hours';

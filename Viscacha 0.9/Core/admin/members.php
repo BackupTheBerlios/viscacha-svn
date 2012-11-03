@@ -1600,9 +1600,6 @@ elseif ($job == 'edit') {
 <tr><td class="mbox"><?php echo $lang->phrase('admin_member_sending_mail_receiving_pn'); ?></td><td class="mbox">
 <input id="opt_1" type="checkbox" name="opt_1" <?php echo iif($user['opt_pmnotify'] == 1,' checked="checked"'); ?> value="1" />
 </td></tr>
-<tr><td class="mbox"><?php echo $lang->phrase('admin_member_hide_bad_rated_topics'); ?></td><td class="mbox">
-<input id="opt_2" type="checkbox" name="opt_2" <?php echo iif($user['opt_hidebad'] == 1,' checked="checked"'); ?> value="1" />
-</td></tr>
 <tr><td class="mbox"><?php echo $lang->phrase('admin_member_how_should_mail_be_shown'); ?></td><td class="mbox">
 <select id="opt_3" name="opt_3">
 	<option<?php echo iif($user['opt_hidemail'] == 0,' selected="selected"'); ?> value="0"><?php echo $lang->phrase('admin_member_show_mail_provide_form'); ?></option>
@@ -1657,7 +1654,7 @@ elseif ($job == 'edit2') {
 	$loadlanguage_obj = $scache->load('loadlanguage');
 	$cache2 = $loadlanguage_obj->get();
 
-	$keys_int = array('id', 'birthday', 'birthmonth', 'birthyear', 'opt_1', 'opt_2', 'opt_3', 'opt_4', 'opt_5');
+	$keys_int = array('id', 'birthday', 'birthmonth', 'birthyear', 'opt_1', 'opt_3', 'opt_4', 'opt_5');
 	$keys_str = array('groups', 'fullname', 'location', 'icq', 'gender', 'hp', 'signature', 'temp', 'comment');
 	$keys_db = array('email', 'aol', 'yahoo', 'msn', 'jabber', 'pic', 'skype');
 	foreach ($keys_int as $val) {
@@ -1816,7 +1813,7 @@ elseif ($job == 'edit2') {
 
 		admin_customsave($query['id']);
 
-		$db->query("UPDATE {$db->pre}user SET groups = '".saveCommaSeparated($query['groups'])."', timezone = '{$query['temp']}', opt_pmnotify = '{$query['opt_1']}', opt_hidebad = '{$query['opt_2']}', opt_hidemail = '{$query['opt_3']}', template = '{$query['opt_4']}', language = '{$query['opt_5']}', pic = '{$query['pic']}', about = '{$query['comment']}', icq = '{$query['icq']}', yahoo = '{$query['yahoo']}', aol = '{$query['aol']}', msn = '{$query['msn']}', jabber = '{$query['jabber']}', birthday = '{$bday}', gender = '{$query['gender']}', hp = '{$query['hp']}', signature = '{$query['signature']}', location = '{$query['location']}', fullname = '{$query['fullname']}', skype = '{$query['skype']}', mail = '{$query['email']}', name = '{$query['name']}' {$update_sql} WHERE id = '{$user['id']}'");
+		$db->query("UPDATE {$db->pre}user SET groups = '".saveCommaSeparated($query['groups'])."', timezone = '{$query['temp']}', opt_pmnotify = '{$query['opt_1']}', opt_hidemail = '{$query['opt_3']}', template = '{$query['opt_4']}', language = '{$query['opt_5']}', pic = '{$query['pic']}', about = '{$query['comment']}', icq = '{$query['icq']}', yahoo = '{$query['yahoo']}', aol = '{$query['aol']}', msn = '{$query['msn']}', jabber = '{$query['jabber']}', birthday = '{$bday}', gender = '{$query['gender']}', hp = '{$query['hp']}', signature = '{$query['signature']}', location = '{$query['location']}', fullname = '{$query['fullname']}', skype = '{$query['skype']}', mail = '{$query['email']}', name = '{$query['name']}' {$update_sql} WHERE id = '{$user['id']}'");
 
 		$cache = $scache->load('memberdata');
 		$cache = $cache->delete();

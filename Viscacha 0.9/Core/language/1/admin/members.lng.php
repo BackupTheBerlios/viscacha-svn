@@ -123,7 +123,6 @@ $lang['admin_member_group_s'] = 'Gruppe(n):';
 $lang['admin_member_has_been_banned'] = 'wurde erfolgreich gesperrt.';
 $lang['admin_member_has_not_been_activated'] = 'Der Benutzer wurde weder per E-Mail noch vom Administrator freigeschaltet.';
 $lang['admin_member_help'] = 'Hilfe:';
-$lang['admin_member_hide_bad_rated_topics'] = 'Verstecke Themen mit schlechter Bewertung?';
 $lang['admin_member_homepage'] = 'Homepage';
 $lang['admin_member_host_name'] = 'Hostname';
 $lang['admin_member_hours'] = 'Stunden';

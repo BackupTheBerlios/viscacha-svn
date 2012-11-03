@@ -170,9 +170,6 @@
 <label for="opt_1"><?php echo $lang->phrase('editprofile_emailpn'); ?></label>
 <input id="opt_1" type="checkbox" name="opt_1" <?php echo iif($user['opt_pmnotify'] == 1,' checked="checked"'); ?> value="1" />
 <br class="newinput" /><hr class="formsep" />
-<label for="opt_2"><?php echo $lang->phrase('editprofile_bad'); ?></label>
-<input id="opt_2" type="checkbox" name="opt_2" <?php echo iif($user['opt_hidebad'] == 1,' checked="checked"'); ?> value="1" />
-<br class="newinput" /><hr class="formsep" />
 <label for="opt_3"><?php echo $lang->phrase('editprofile_showmail'); ?></label>
 <select id="opt_3" class="label" name="opt_3">
 	<option<?php echo iif($user['opt_hidemail'] == 0,' selected="selected"'); ?> value="0"><?php echo $lang->phrase('editprofile_showmail_0'); ?></option>
@@ -182,17 +179,15 @@
 <br class="newinput" /><hr class="formsep" />
 <label for="opt_4"><?php echo $lang->phrase('editprofile_design'); ?></label>
 <select id="opt_4" class="label" name="opt_4">
-	<option selected="selected" value="<?php echo $user['template']; ?>"><?php echo $lang->phrase('editprofile_design_current'); ?></option>
 	<?php foreach ($design as $row) { ?>
-	<option value="<?php echo $row['id']; ?>"><?php echo $row['name']; ?></option>
+	<option value="<?php echo $row['id']; ?>"<?php echo iif($user['template'] == $row['id'], ' selected="selected"'); ?>><?php echo $row['name']; ?></option>
 	<?php } ?>
 </select>
 <br class="newinput" /><hr class="formsep" />
 <label for="opt_5"><?php echo $lang->phrase('editprofile_language'); ?></label>
 <select id="opt_5" class="label" name="opt_5">
-	<option selected="selected" value="<?php echo $user['language']; ?>"><?php echo $lang->phrase('editprofile_language_current'); ?></option>
 	<?php foreach ($language as $row) { ?>
-	<option value="<?php echo $row['id']; ?>"><?php echo $row['language']; ?></option>
+	<option value="<?php echo $row['id']; ?>"<?php echo iif($user['language'] == $row['id'], ' selected="selected"'); ?>><?php echo $row['language']; ?></option>
 	<?php } ?>
 </select>
 <?php foreach ($customfields['2'] as $row1) { ?>
