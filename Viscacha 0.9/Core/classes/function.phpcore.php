@@ -293,7 +293,7 @@ function extract_dir($source, $realpath = true) {
 	return $dest;
 }
 
-/* Error constants from PHP-Compat */
+/* Error constants */
 if (!defined('E_RECOVERABLE_ERROR')) {
 	define('E_RECOVERABLE_ERROR', 4096);
 }
@@ -302,77 +302,5 @@ if (!defined('E_DEPRECATED')) {
 }
 if (!defined('E_USER_DEPRECATED')) {
 	define('E_USER_DEPRECATED', 16384);
-}
-/* EOL constant from PHP-Compat */
-if (!defined('PHP_EOL')) {
-	if (isWindows() == true) {
-		define('PHP_EOL', "\r\n");
-	}
-	elseif (isMac() == true) {
-		define('PHP_EOL', "\r");
-	}
-	else {
-		define('PHP_EOL', "\n");
-	}
-}
-
-/* Missing functions */
-
-/**
- * Replace htmlspecialchars_decode()
- *
- * @link		http://php.net/function.htmlspecialchars_decode
- * @author		Matthias Mohr
- * @since		PHP 5.1.0
- * @require		PHP 4.0.0 (trigger_error)
- */
-if (!viscacha_function_exists('htmlspecialchars_decode')) {
-	function htmlspecialchars_decode($str, $quote_style = ENT_COMPAT) {
-		return strtr($str, array_flip(get_html_translation_table(HTML_SPECIALCHARS, $quote_style)));
-	}
-}
-
-/**
- * Replace array_intersect_key()
- *
- * @category	PHP
- * @package		PHP_Compat
- * @license		LGPL - http://www.gnu.org/licenses/lgpl.html
- * @copyright	2004-2007 Aidan Lister <aidan@php.net>, Arpad Ray <arpad@php.net>
- * @link		http://php.net/function.array_intersect_key
- * @author		Tom Buskens <ortega@php.net>
- * @version		$Revision: 1.9 $
- * @since		PHP 5.1.0
- * @require		PHP 4.0.0 (trigger_error)
- */
-if (!viscacha_function_exists('array_intersect_key')) {
-	function array_intersect_key() {
-		$args = func_get_args();
-		$array_count = count($args);
-		if ($array_count < 2) {
-			trigger_error('Wrong parameter count for array_intersect_key()', E_USER_WARNING);
-			return;
-		}
-
-		// Check arrays
-		for ($i = $array_count; $i--;) {
-			if (!is_array($args[$i])) {
-				trigger_error('array_intersect_key() Argument #' .
-					($i + 1) . ' is not an array', E_USER_WARNING);
-				return;
-			}
-		}
-
-		// Intersect keys
-		$arg_keys = array_map('array_keys', $args);
-		$result_keys = call_user_func_array('array_intersect', $arg_keys);
-
-		// Build return array
-		$result = array();
-		foreach($result_keys as $key) {
-			$result[$key] = $args[0][$key];
-		}
-		return $result;
-	}
 }
 ?>
