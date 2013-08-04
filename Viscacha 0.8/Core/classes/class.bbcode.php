@@ -574,8 +574,8 @@ class BBCode {
 	}
 	function parseDoc ($text) {
 		if ($this->profile['reduceEndChars'] == 1) {
-			$text = preg_replace('/\!{2,}1{0,}/i', "!", $text);
-			$text = preg_replace('/\?{2,}(&szlig;){0,}/i', "?", $text);
+			$text = preg_replace('/\!{2,}/i', "!", $text);
+			$text = preg_replace('/\?{2,}/i', "?", $text);
 			$text = preg_replace('/\.{4,}/i', "...", $text);
 		}
 		if ($this->profile['reduceNL'] == 1) {
@@ -862,7 +862,7 @@ class BBCode {
 						'\"',
 						'"',
 						substr(
-							preg_replace(
+							@preg_replace( // TODO: Remove @ (omits strict error msg) and replace with preg_replace_callback
 								'#(\>(((?>([^><]+|(?R)))*)\<))#se',
 								"preg_replace('#\b({$token})\b#i', '<span class=\"{$class}\">\\\\1</span>', '\\0')",
 								">{$text}<"
@@ -887,7 +887,7 @@ class BBCode {
 						'\"',
 						'"',
 						substr(
-							preg_replace(
+							@preg_replace( // TODO: Remove @ (omits strict error msg) and replace with preg_replace_callback
 								'#(\>(((?>([^><]+|(?R)))*)\<))#se',
 								"preg_replace(
 									'#\b({$word['search']})\b#i',
@@ -908,7 +908,7 @@ class BBCode {
 						'\"',
 						'"',
 						substr(
-							preg_replace(
+							@preg_replace( // TODO: Remove @ (omits strict error msg) and replace with preg_replace_callback
 								'#(\>(((?>([^><]+|(?R)))*)\<))#se',
 								"preg_replace(
 									'#\b({$word['search']})\b#i',

@@ -301,13 +301,8 @@ class GPC {
 	// from php.net
 	// ToDo: Remove in 0.8 RC5
 	function html_entity_decode($string, $mode = ENT_COMPAT) {
-	    static $trans_tbl;
-
-	    // replace numeric entities
-	    $string = preg_replace('~&#x([0-9a-f]+);~ei', 'code2utf(hexdec("\\1"))', $string);
-	    $string = preg_replace('~&#0*([0-9]+);~e', 'code2utf(\\1)', $string);
-
 	    // replace literal entities
+	    static $trans_tbl;
 	    if (!isset($trans_tbl)) {
 	        $trans_tbl = array();
 
@@ -315,6 +310,18 @@ class GPC {
 	            $trans_tbl[$key] = utf8_encode($val);
 	        }
 	    }
+		static $cb1;
+		if (!isset($cb1)) {
+			$cb1 = create_function('$m', 'return code2utf(hexdec($m[1]));');
+		}
+		static $cb2;
+		if (!isset($cb2)) {
+			$cb2 = create_function('$m', 'return code2utf($m[1]);');
+		}
+
+	    // replace numeric entities
+	    $string = preg_replace_callback('~&#x([0-9a-f]+);~i', $cb1, $string);
+	    $string = preg_replace_callback('~&#0*([0-9]+);~', $cb2, $string);
 
 	    return strtr($string, $trans_tbl);
 	}
@@ -338,8 +345,18 @@ class GPC {
 			}
 			else {
 				global $lang;
-				$var = preg_replace('~&#x([0-9a-f]+);~ei', 'chr(hexdec("\\1"))', $var); // ToDo: Convert to correct charset
-				$var = preg_replace('~&#([0-9]+);~e', 'chr("\\1")', $var);
+				
+				static $cb1;
+				if (!isset($cb1)) {
+					$cb1 = create_function('$m', 'return chr(hexdec($m[1]));');
+				}
+				static $cb2;
+				if (!isset($cb2)) {
+					$cb2 = create_function('$m', 'return chr($m[1]);');
+				}
+				
+				$var = preg_replace_callback('~&#x([0-9a-f]+);~i', $cb1, $var); // ToDo: Convert to correct charset
+				$var = preg_replace_callback('~&#([0-9]+);~', $cb2, $var);
 				$var = html_entity_decode($var, ENT_QUOTES, $lang->charset());
 			}
 		}

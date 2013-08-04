@@ -351,8 +351,8 @@ class BBCode {
 
 		$text = preg_replace('/\[code(=\w+?)?\](.+?)\[\/code\]\n?/is', '\2', $text);
 
-		while (preg_match('/\[list(?:=(a|A|OL|ol))?\](.+?)\[\/list\]/is',$text)) {
-			$text = preg_replace('/\[list(?:=(a|A|OL|ol))?\](.+?)\[\/list\]/is', '\2', $text);
+		while (preg_match('/\[list(?:=(a|A|I|i|OL|ol))?\](.+?)\[\/list\]/is',$text)) { // I and i modes are only for backward compatibility and have no effect at all
+			$text = preg_replace('/\[list(?:=(a|A|I|i|OL|ol))?\](.+?)\[\/list\]/is', '\2', $text);
 		}
 		$text = preg_replace('/\[note=([^\]]+?)\](.+?)\[\/note\]/is', "\\2", $text);
 		$text = preg_replace('/\[color=(\#?[0-9A-F]{3,6})\](.+?)\[\/color\]/is', "\\2", $text);
@@ -409,8 +409,8 @@ class BBCode {
 
 			$text = empty($this->profile['disallow']['code']) ? preg_replace_callback('/\[code(=\w+?)?\](.+?)\[\/code\]/is', array(&$this, 'cb_plain_code'), $text) : $text;
 
-			while (empty($this->profile['disallow']['list']) && preg_match('/\[list(?:=(a|A|OL|ol))?\](.+?)\[\/list\]/is',$text)) {
-				$text = preg_replace_callback('/\[list(?:=(a|A|OL|ol))?\](.+?)\[\/list\]/is', array(&$this, 'cb_plain_list'), $text);
+			while (empty($this->profile['disallow']['list']) && preg_match('/\[list(?:=(a|A|I|i|OL|ol))?\](.+?)\[\/list\]/is',$text)) { // I and i modes are only for backward compatibility and have no effect at all
+				$text = preg_replace_callback('/\[list(?:=(a|A|I|i|OL|ol))?\](.+?)\[\/list\]/is', array(&$this, 'cb_plain_list'), $text);
 			}
 
 			$text = preg_replace('/\[note=([^\]]+?)\](.+?)\[\/note\]/is', "\\1 (\\2)", $text);
@@ -457,7 +457,7 @@ class BBCode {
 
 			$text = $this->ListWorkAround($text);
 
-			$text = preg_replace('/\[note=([^\]]+?)\](.+?)\[\/note\]/is', '<em>\2</em> (\1)', $text);
+			$text = preg_replace('/\[note=([^\]]+?)\](.+?)\[\/note\]/is', '<em>\2</em> (\1)', $text); // For compatibility only
 
 			$text = empty($this->profile['disallow']['img']) ? preg_replace_callback("~\[img\]([^?&=\[\]]+\.(png|gif|bmp|jpg|jpe|jpeg))\[\/img\]~is", array($this, 'cb_image'), $text) : $text;
 			$text = preg_replace_callback("~\[img\]{$this->url_regex2}\[\/img\]~is", array(&$this, 'cb_plain_url'), $text); // Correct invalid image urls
@@ -528,8 +528,8 @@ class BBCode {
 			$char = chr(5);
 			$text = str_ireplace('[/list]', '[/list]'.$char, $text);
 			$text = str_ireplace('[list', $char.'[list', $text);
-			while (preg_match('/'.$char.'\[list(?:=(a|A|OL|ol))?\]([^'.$char.']+)\[\/list\]'.$char.'/is',$text, $treffer)) {
-				$text = preg_replace_callback('/\n?'.$char.'\[list(?:=(a|A|OL|ol))?\]([^'.$char.']+)\[\/list\]'.$char.'\n?/is', array(&$this, 'cb_list'), $text);
+			while (preg_match('/'.$char.'\[list(?:=(a|A|I|i|OL|ol))?\]([^'.$char.']+)\[\/list\]'.$char.'/is',$text, $treffer)) { // I and i modes are only for backward compatibility and have no effect at all
+				$text = preg_replace_callback('/\n?'.$char.'\[list(?:=(a|A|I|i|OL|ol))?\]([^'.$char.']+)\[\/list\]'.$char.'\n?/is', array(&$this, 'cb_list'), $text);
 			}
 		}
 		return $text;
@@ -549,8 +549,8 @@ class BBCode {
 	}
 	function parseDoc ($text) {
 		if ($this->profile['reduceEndChars'] == 1) {
-			$text = preg_replace('/\!{2,}1{0,}/i', "!", $text);
-			$text = preg_replace('/\?{2,}(&szlig;){0,}/i', "?", $text);
+			$text = preg_replace('/\!{2,}/i', "!", $text);
+			$text = preg_replace('/\?{2,}/i', "?", $text);
 			$text = preg_replace('/\.{4,}/i', "...", $text);
 		}
 		if ($this->profile['reduceNL'] == 1) {
@@ -837,7 +837,7 @@ class BBCode {
 						'\"',
 						'"',
 						substr(
-							preg_replace(
+							@preg_replace( // TODO: Remove @ (omits strict error msg) and replace with preg_replace_callback
 								'#(\>(((?>([^><]+|(?R)))*)\<))#se',
 								"preg_replace('#\b({$token})\b#i', '<span class=\"{$class}\">\\\\1</span>', '\\0')",
 								">{$text}<"
@@ -862,7 +862,7 @@ class BBCode {
 						'\"',
 						'"',
 						substr(
-							preg_replace(
+							@preg_replace( // TODO: Remove @ (omits strict error msg) and replace with preg_replace_callback
 								'#(\>(((?>([^><]+|(?R)))*)\<))#se',
 								"preg_replace(
 									'#\b({$word['search']})\b#i',
@@ -883,7 +883,7 @@ class BBCode {
 						'\"',
 						'"',
 						substr(
-							preg_replace(
+							@preg_replace( // TODO: Remove @ (omits strict error msg) and replace with preg_replace_callback
 								'#(\>(((?>([^><]+|(?R)))*)\<))#se',
 								"preg_replace(
 									'#\b({$word['search']})\b#i',
