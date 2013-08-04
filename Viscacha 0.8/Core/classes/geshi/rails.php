@@ -4,7 +4,7 @@
  * ---------
  * Author: Moises Deniz
  * Copyright: (c) 2005 Moises Deniz
- * Release Version: 1.0.8.1
+ * Release Version: 1.0.8.11
  * Date Started: 2007/03/21
  *
  * Ruby (with Ruby on Rails Framework) language file for GeSHi.
@@ -30,7 +30,7 @@
  ************************************************************************************/
 
 $language_data = array (
-    'LANG_NAME' => 'Ruby (on Rails)',
+    'LANG_NAME' => 'Rails',
     'COMMENT_SINGLE' => array(1 => "#"),
     'COMMENT_MULTI' => array("=begin" => "=end"),
     'CASE_KEYWORDS' => GESHI_CAPS_NO_CHANGE,

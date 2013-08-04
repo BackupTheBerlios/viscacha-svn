@@ -4,7 +4,7 @@
  * --------
  * Author: Sean Hanna (smokingrope@gmail.com)
  * Copyright: (c) 2006 Sean Hanna
- * Release Version: 1\.0\.8
+ * Release Version: 1.0.8.11
  * Date Started: 04/23/2006
  *
  * Standard Text File (No Syntax Highlighting).
@@ -45,7 +45,6 @@
 
 $language_data = array (
     'LANG_NAME' => 'Text',
-	'NO_INDEX' => true,
     'COMMENT_SINGLE' => array(),
     'COMMENT_MULTI' => array(),
     'CASE_KEYWORDS' => GESHI_CAPS_NO_CHANGE,
