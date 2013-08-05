@@ -30,7 +30,7 @@
  ************************************************************************************/
 
 $language_data = array (
-    'LANG_NAME' => 'Rails',
+    'LANG_NAME' => 'Ruby (on Rails)',
     'COMMENT_SINGLE' => array(1 => "#"),
     'COMMENT_MULTI' => array("=begin" => "=end"),
     'CASE_KEYWORDS' => GESHI_CAPS_NO_CHANGE,
