@@ -592,7 +592,6 @@ elseif ($job == "credits") {
 		<strong>Used Scripts</strong>:
 		<ul>
 		<li><a href="http://www.phpconcept.net" target="_blank">PclZip Library 2.8 by Vincent Blavet</a> (Zip file handling; GNU LPGL)</li>
-		<li><a href="http://magpierss.sourceforge.net" target="_blank">MagPieRSS 0.72 by kellan</a> (Parsing newsfeeds; GNU GPL)</li>
 		<li><a href="https://github.com/PHPMailer" target="_blank">PHPMailer 5.2.6 by various authors</a> (Sending e-mails; GNU LGPL)</li>
 		<li><a href="http://www.bitfolge.de" target="_blank">FeedCreator v1.7.x by Kai Blankenhorn</a> (Creating newsfeeds; GNU LGPL)</li>
 		<li><a href="http://www.phpclasses.org/browse/author/169072.html" target="_blank">PowerGraphic 1.0 by Carlos Reche</a> (Charts &amp; Diagrams; GNU GPL)</li>
