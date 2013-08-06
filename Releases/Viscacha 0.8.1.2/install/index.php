@@ -98,7 +98,9 @@ if (!SCRIPT_LOCKED) {
 		<h3>Packages</h3>
 		<ul class="nav">
 		<?php foreach ($packages as $id => $data) { ?>
+			<?php if(!is_numeric($id)) { ?>
 			<li><a href="index.php?package=<?php echo $id; ?>"><?php echo $data['title']; ?></a></li>
+			<?php } ?>
 		<?php } ?>
 		</ul>
 		<?php } elseif (!SCRIPT_LOCKED) { ?>
