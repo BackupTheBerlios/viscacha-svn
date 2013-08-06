@@ -5,7 +5,6 @@ var MenuTimeout = 500;
 var active = 0;
 var MenuCountHide = 0;
 var LightBoxCallback = null;
-var LightBoxOnload = null;
 
 ///////////////////////// Global /////////////////////////
 function FetchElement(id) {
@@ -187,7 +186,7 @@ function ResizeImg(img, maxwidth) {
 		img.title = lng['imgtitle'];
 		if (LightBoxCallback) {
 			HandCursor(img);
-			img.onclick = function() {LightBoxCallback(img); }
+			img.onclick = function() {LightBoxCallback(img);}
 		}
 	}
 }

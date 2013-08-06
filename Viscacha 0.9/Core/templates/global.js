@@ -5,7 +5,6 @@ var MenuTimeout = 500;
 var active = 0;
 var MenuCountHide = 0;
 var LightBoxCallback = null;
-var LightBoxOnload = null;
 
 ///////////////////////// Global /////////////////////////
 function FetchElement(id) {

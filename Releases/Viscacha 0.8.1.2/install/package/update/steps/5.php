@@ -132,7 +132,7 @@ while (false !== ($entry = $dir->read())) {
 			}
 		}
 		if (empty($css)) {
-			echo "<br />!!! <strong>Warning:</strong> Updating {$path} failed. Plase copy the following CSS code into your main css file in designs/{$entry}:<br /><code>";
+			echo "<br />!!! <strong>Warning:</strong> Updating {$path} failed. Plase add the following CSS code to your main css file in designs/{$entry}:<br /><code>";
 			echo htmlentities($newCss);
 			echo "</code><br /><br />";
 		}
