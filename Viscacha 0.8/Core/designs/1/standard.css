@@ -820,6 +820,11 @@ label, .labeldiv {
 	left: 0px;
 	width: 100%;
 	height: 100%;
+	text-align:center;
+	color: white;
+	display: table-cell;
+	vertical-align: middle;
+	font-size: 75px;
 }
 #PPwin {
 	background-color: white;

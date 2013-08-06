@@ -35,6 +35,18 @@ function ReloadCountdown(iv) {
 		setTimeout("ReloadCountdown("+iv+")", 1000);
 	}
 }
+function deletenotice(id) {
+	input = confirm(lng['js_confirm_ndelete']);
+	if (input == true) {
+		notices = document.getElementsByName("notice[]");
+		notices[id].value = '';
+		noticeArea = FetchElement("notice_"+id);
+		noticeArea.style.display = 'none';
+		Form = FetchElement('notice');
+		Form.submit();
+		return;
+	}
+}
 function confirmdelete(box) {
 	if (box.checked == true) {
 		input = confirm(lng['js_confirm_pdelete']);
@@ -51,10 +63,6 @@ function jumptopage(url) {
 	if (page !== null && !isNaN(page) && page > 0) {
 		document.location.href = url.replace(/&amp;/g, '&') + 'page=' + page + sidx;
 	}
-}
-function showpost(Link) {
-	prompt(lng['js_permalink_prompt'], Link.href.replace(sidx, ''));
-	return false;
 }
 
 ///////////////////////// AJAX /////////////////////////
@@ -302,6 +310,7 @@ function multiquote(id) {
 	var nxt;        // next button
 	var grpactive = -1;
 	var imgactive = -1;
+	var loading = false;
 
 	var zclose = function () {
 		div.style.visibility = "hidden";
@@ -313,8 +322,28 @@ function multiquote(id) {
 		grpactive = grp;
 		imgactive = -1;
 	};
+	
+	var startLoading = function() {
+		var anim = function() {
+			if (loading) {
+				if ( bak.innerHTML.length >= 3 ) 
+					bak.innerHTML = "";
+				else 
+					bak.innerHTML += ".";
+				window.setTimeout(anim, 200);
+			}
+		};
+		loading = true;
+		anim();
+	};
+	
+	var stopLoading = function() {
+		loading = false;
+		bak.innerHTML = '';
+	};
 
 	var zopen = function (i) {
+		startLoading();
 		imgactive = 0;
 		var imgCnt = 1;
 		var a = i;
@@ -383,6 +412,7 @@ function multiquote(id) {
 		}
 		
 		var cb = function () {
+			stopLoading();
 			zshape(jmg);          // resize window
 			div.replaceChild(jmg, img);
 			img = jmg;
